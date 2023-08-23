@@ -17,16 +17,18 @@ const AppDataSource = new DataSource({
     migrations: [],
 })
   
-export async function initDatabaseConnection() {
+export async function initDatabaseConnection(): Promise<DataSource> {
     try {
         if (!AppDataSource.isInitialized) {
             await AppDataSource.initialize();
             console.log("initialize database");
-            return AppDataSource;
-        }
+            
+        } 
+        return AppDataSource;
     } catch (error) {
         console.log(error);
+        throw(error);
     }
 }
 
-export const dataSource = await initDatabaseConnection();
+export const dataSource: DataSource = await initDatabaseConnection();
