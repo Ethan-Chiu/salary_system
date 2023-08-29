@@ -4,6 +4,10 @@ import { PageLayout } from "~/components/layout";
 import { ProfileForm } from "~/components/profile";
 import { Sidebar } from "~/components/sidebar";
 import { api } from "~/utils/api";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Button } from "~/components/ui/button";
+import { Separator } from "~/components/ui/separator"
+import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 
 export default function Home() {
 	// const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -20,7 +24,7 @@ export default function Home() {
 					<Sidebar className="hidden lg:block lg:border-border" />
 					<div className="col-span-3 lg:col-span-4 lg:border-l">
 						<div className="h-full px-4 py-6 lg:px-8">
-							<ProfileForm/>
+							Main page: Functions
 						</div>
 					</div>
 				</div>
