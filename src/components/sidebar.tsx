@@ -17,6 +17,7 @@ export const playlists = [
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
+// https://www.flaticon.com/free-icon-font/coins_7928197?related_id=7928197
 export function Sidebar({ className }: SidebarProps) {
 	return (
 		<div className={cn("pb-12", className)}>

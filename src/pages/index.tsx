@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import { PageLayout } from "~/components/layout";
+import { ProfileForm } from "~/components/profile";
 import { Sidebar } from "~/components/sidebar";
 import { api } from "~/utils/api";
 
@@ -19,7 +20,7 @@ export default function Home() {
 					<Sidebar className="hidden lg:block lg:border-border" />
 					<div className="col-span-3 lg:col-span-4 lg:border-l">
 						<div className="h-full px-4 py-6 lg:px-8">
-							<h1>Here I m here</h1>
+							<ProfileForm/>
 						</div>
 					</div>
 				</div>
