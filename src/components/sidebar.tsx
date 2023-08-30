@@ -36,9 +36,16 @@ export function Sidebar({ className }: SidebarProps) {
 						Actions
 					</h2>
 					<div className="space-y-1">
-						<Button
-							variant="ghost"
-							className="w-full justify-start"
+					<Link
+							key={"/"}
+							href={"/"}
+							className={cn(
+								buttonVariants({ variant: "ghost" }),
+								pathname === "/"
+									? "bg-muted hover:bg-muted"
+									: "",
+								"justify-start w-full"
+							)}
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -74,7 +81,7 @@ export function Sidebar({ className }: SidebarProps) {
 								/>
 							</svg>
 							Functions
-						</Button>
+						</Link>
 						<Button
 							variant="ghost"
 							className="w-full justify-start"

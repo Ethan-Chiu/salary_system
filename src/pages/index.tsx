@@ -77,6 +77,7 @@ export default function Home() {
 										<motion.div
 											key={f_data.title}
 											variants={stagger}
+											className="cursor-pointer"
 										>
 											<CardFunction
 												title={f_data.title}
