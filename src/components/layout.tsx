@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { ThemeProvider } from "~/components/theme-provider"
+import { ThemeProvider } from "~/components/theme_provider"
 
 export const PageLayout = (props: PropsWithChildren) => {
   return (

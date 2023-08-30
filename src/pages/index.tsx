@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator"
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
+import { UserAvatar } from "~/components/user_avatar";
 
 export default function Home() {
 	// const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -23,6 +24,11 @@ export default function Home() {
 				<div className="grid min-h-screen lg:grid-cols-5">
 					<Sidebar className="hidden lg:block lg:border-border" />
 					<div className="col-span-3 lg:col-span-4 lg:border-l">
+						<div className="flex h-14 px-4">
+							<div className="ml-auto flex items-center space-x-4">
+								<UserAvatar/>
+							</div>
+						</div>
 						<div className="h-full px-4 py-6 lg:px-8">
 							Main page: Functions
 						</div>
