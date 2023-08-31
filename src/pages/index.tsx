@@ -3,6 +3,7 @@ import { PageLayout } from "~/components/layout";
 import { Sidebar } from "~/components/sidebar";
 import { api } from "~/utils/api";
 import { UserAvatar } from "~/components/user_avatar";
+import { ThemeSelector } from "~/components/ThemeSelector";
 import { CardFunction } from "~/components/functions/card_function";
 import type { CardFunctionData } from "~/components/functions/card_function";
 import { motion } from "framer-motion";
@@ -60,7 +61,8 @@ export default function Home() {
 					<Sidebar className="hidden lg:block lg:border-border" />
 					<div className="col-span-3 lg:col-span-4 lg:border-l">
 						<div className="flex h-14 px-4">
-							<div className="ml-auto flex items-center space-x-4">
+							<div className="ml-auto flex items-center align-bot space-x-1">
+								<ThemeSelector />
 								<UserAvatar />
 							</div>
 						</div>
@@ -77,6 +79,7 @@ export default function Home() {
 										<motion.div
 											key={f_data.title}
 											variants={stagger}
+											className="cursor-pointer"
 										>
 											<CardFunction
 												title={f_data.title}
