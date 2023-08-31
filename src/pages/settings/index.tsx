@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator"
 
-export default function Home() {
+export default function Settings() {
 
 	return (
 		<PageLayout>
