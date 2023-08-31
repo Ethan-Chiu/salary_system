@@ -3,7 +3,7 @@ import { PageLayout } from "~/components/layout";
 import { Sidebar } from "~/components/sidebar";
 import { api } from "~/utils/api";
 import { UserAvatar } from "~/components/user_avatar";
-import { ThemeSelector } from "~/components/ThemeSelector";
+import { ThemeSelector } from "~/components/theme_selector";
 import { CardFunction } from "~/components/functions/card_function";
 import type { CardFunctionData } from "~/components/functions/card_function";
 import { motion } from "framer-motion";
@@ -59,14 +59,14 @@ export default function Home() {
 			<main className="min-h-screen bg-background">
 				<div className="grid min-h-screen lg:grid-cols-5">
 					<Sidebar className="hidden lg:block lg:border-border" />
-					<div className="col-span-3 lg:col-span-4 lg:border-l">
+					<div className="max-h-[100vh] overflow-hidden col-span-3 lg:col-span-4 lg:border-l">
 						<div className="flex h-14 px-4">
 							<div className="ml-auto flex items-center align-bot space-x-1">
 								<ThemeSelector />
 								<UserAvatar />
 							</div>
 						</div>
-						<div className="h-full px-4 py-6 lg:px-8">
+						<div className="px-4 py-6 lg:px-8">
 							Main page: Functions
 							<motion.div
 								className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"

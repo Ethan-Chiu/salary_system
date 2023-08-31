@@ -82,14 +82,22 @@ export function Sidebar({ className }: SidebarProps) {
 							</svg>
 							Functions
 						</Link>
-						<Button
-							variant="ghost"
-							className="w-full justify-start"
+						<Link
+							key={"/parameters"}
+							href={"/parameters"}
+							className={cn(
+								buttonVariants({ variant: "ghost" }),
+								pathname === "/parameters"
+									? "bg-muted hover:bg-muted"
+									: "",
+								"justify-start w-full"
+							)}
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								id="Outline"
 								viewBox="0 0 24 24"
+								fill="currentColor"
 								className="mr-2 h-4 w-4"
 							>
 								<path d="M1,4.75H3.736a3.728,3.728,0,0,0,7.195,0H23a1,1,0,0,0,0-2H10.931a3.728,3.728,0,0,0-7.195,0H1a1,1,0,0,0,0,2ZM7.333,2a1.75,1.75,0,1,1-1.75,1.75A1.752,1.752,0,0,1,7.333,2Z" />
@@ -97,7 +105,7 @@ export function Sidebar({ className }: SidebarProps) {
 								<path d="M23,19.25H10.931a3.728,3.728,0,0,0-7.195,0H1a1,1,0,0,0,0,2H3.736a3.728,3.728,0,0,0,7.195,0H23a1,1,0,0,0,0-2ZM7.333,22a1.75,1.75,0,1,1,1.75-1.75A1.753,1.753,0,0,1,7.333,22Z" />
 							</svg>
 							Parameters
-						</Button>
+							</Link>
 						<Button
 							variant="ghost"
 							className="w-full justify-start"
@@ -107,6 +115,7 @@ export function Sidebar({ className }: SidebarProps) {
 								id="Layer_1"
 								data-name="Layer 1"
 								viewBox="0 0 24 24"
+								fill="currentColor"
 								className="mr-2 h-4 w-4"
 							>
 								<path d="M20,12a3.994,3.994,0,0,0-3.172,1.566l-.07-.03a5,5,0,0,0-6.009-6.377l-.091-.172A3.995,3.995,0,1,0,8.879,7.9l.073.137a4.992,4.992,0,0,0-1.134,6.7L5.933,16.5a4,4,0,1,0,1.455,1.377l1.838-1.718a4.993,4.993,0,0,0,6.539-.871l.279.119A4,4,0,1,0,20,12ZM6,4A2,2,0,1,1,8,6,2,2,0,0,1,6,4ZM4,22a2,2,0,1,1,2-2A2,2,0,0,1,4,22Zm8-7a3,3,0,0,1-1.6-5.534l.407-.217A3,3,0,1,1,12,15Zm8,3a2,2,0,1,1,2-2A2,2,0,0,1,20,18Z" />
@@ -135,6 +144,7 @@ export function Sidebar({ className }: SidebarProps) {
 								xmlns="http://www.w3.org/2000/svg"
 								id="Outline"
 								viewBox="0 0 24 24"
+								fill="currentColor"
 								strokeWidth="2"
 								strokeLinecap="round"
 								strokeLinejoin="round"
@@ -153,6 +163,7 @@ export function Sidebar({ className }: SidebarProps) {
 								xmlns="http://www.w3.org/2000/svg"
 								id="Outline"
 								viewBox="0 0 24 24"
+								fill="currentColor"
 								className="mr-2 h-4 w-4"
 							>
 								<path d="M18.581,2.14,12.316.051a1,1,0,0,0-.632,0L5.419,2.14A4.993,4.993,0,0,0,2,6.883V12c0,7.563,9.2,11.74,9.594,11.914a1,1,0,0,0,.812,0C12.8,23.74,22,19.563,22,12V6.883A4.993,4.993,0,0,0,18.581,2.14ZM20,12c0,5.455-6.319,9.033-8,9.889-1.683-.853-8-4.42-8-9.889V6.883A3,3,0,0,1,6.052,4.037L12,2.054l5.948,1.983A3,3,0,0,1,20,6.883Z" />
@@ -219,6 +230,7 @@ export function Sidebar({ className }: SidebarProps) {
 										id="Layer_1"
 										data-name="Layer 1"
 										viewBox="0 0 24 24"
+										fill="currentColor"
 										className="mr-2 h-4 w-4"
 									>
 										<path d="M12,0c-1.65,0-3,1.35-3,3V21c0,1.65,1.35,3,3,3s3-1.35,3-3V3c0-1.65-1.35-3-3-3Zm1,21c0,.55-.45,1-1,1s-1-.45-1-1V3c0-.55,.45-1,1-1s1,.45,1,1V21ZM21,6c-1.65,0-3,1.35-3,3v12c0,1.65,1.35,3,3,3s3-1.35,3-3V9c0-1.65-1.35-3-3-3Zm1,15c0,.55-.45,1-1,1s-1-.45-1-1V9c0-.55,.45-1,1-1s1,.45,1,1v12ZM3,12c-1.65,0-3,1.35-3,3v6c0,1.65,1.35,3,3,3s3-1.35,3-3v-6c0-1.65-1.35-3-3-3Zm1,9c0,.55-.45,1-1,1s-1-.45-1-1v-6c0-.55,.45-1,1-1s1,.45,1,1v6Z" />
