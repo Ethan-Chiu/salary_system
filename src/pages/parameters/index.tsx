@@ -3,6 +3,7 @@ import { PageLayout } from "~/components/layout";
 import { Sidebar } from "~/components/sidebar";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
+import { Label } from "~/components/ui/label"
 
 import * as React from "react";
 import {
@@ -21,7 +22,6 @@ import type {
 	Row,
 } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
-// import { Checkbox } from "~/components/ui/checkbox"
 import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
@@ -41,6 +41,27 @@ import {
 	TableRow,
 } from "~/components/ui/table";
 import { Checkbox } from "~/components/ui/checkbox";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+	DialogTrigger,
+} from "@radix-ui/react-dialog";
+import { DialogHeader } from "~/components/ui/dialog";
+
+import {
+	Dialog as ShadcnDialog,
+	DialogContent as ShadcnDialogContent,
+	DialogDescription as ShadcnDialogDescription,
+	DialogFooter as ShadcnDialogFooter,
+	DialogHeader as ShadcnDialogHeader,
+	DialogTitle as ShadcnDialogTitle,
+	DialogTrigger as ShadcnDialogTrigger,
+} from "~/components/ui/dialog"
+
+
+
 
 export type SettingItem = {
 	name: string;
@@ -116,30 +137,67 @@ export const columns: ColumnDef<SettingItem>[] = [
 			const setting = row.original;
 
 			return (
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" className="h-8 w-8 p-0">
-							<span className="sr-only">Open menu</span>
-							<MoreHorizontal className="h-4 w-4" />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end">
-						<DropdownMenuLabel>Actions</DropdownMenuLabel>
-						<DropdownMenuItem
-							onClick={() => {
-								void (async () => {
-									await navigator.clipboard.writeText(
-										setting.value.toString()
-									);
-								})();
-							}}
-						>
-							Copy Value
-						</DropdownMenuItem>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem>Modify</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
+				<ShadcnDialog>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="ghost" className="h-8 w-8 p-0">
+								<span className="sr-only">Open menu</span>
+								<MoreHorizontal className="h-4 w-4" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuLabel>Actions</DropdownMenuLabel>
+							<DropdownMenuItem
+								onClick={() => {
+									void (async () => {
+										await navigator.clipboard.writeText(
+											setting.value.toString()
+										);
+									})();
+								}}
+							>
+								Copy Value
+							</DropdownMenuItem>
+							<DropdownMenuSeparator />
+							<ShadcnDialogTrigger>
+								<DropdownMenuItem
+									onClick={() => {
+										console.log("Modify");
+									}}
+								>
+									Modify
+								</DropdownMenuItem>
+							</ShadcnDialogTrigger>
+						</DropdownMenuContent>
+					</DropdownMenu>
+					<ShadcnDialogContent>
+						<ShadcnDialogHeader>
+							<ShadcnDialogTitle>Modify</ShadcnDialogTitle>
+							<ShadcnDialogDescription>
+								Modify the value
+							</ShadcnDialogDescription>
+						</ShadcnDialogHeader>
+						<div className="grid gap-4 py-4">
+							<div className="grid grid-cols-4 items-center gap-4">
+								<Label
+									htmlFor="value"
+									className="text-right"
+								>
+									Value
+								</Label>
+								<Input
+									id="value"
+									placeholder={"placeholder"}
+									value=""
+									className="col-span-3"
+								/>
+							</div>
+						</div>
+						<ShadcnDialogFooter>
+							<Button type="submit">Save changes</Button>
+						</ShadcnDialogFooter>
+					</ShadcnDialogContent>
+				</ShadcnDialog>
 			);
 		},
 	},
@@ -191,7 +249,7 @@ export default function Parameters() {
 										Settings
 									</h2>
 								</div>
-								<Separator/>
+								<Separator />
 								{/* top bar */}
 								<div className="flex items-center py-6">
 									{/* search bar */}
