@@ -6,6 +6,7 @@ import { Separator } from "~/components/ui/separator";
 import { Label } from "~/components/ui/label"
 
 import * as React from "react";
+import {useRef, useEffect} from 'react';
 import {
 	flexRender,
 	getCoreRowModel,
@@ -59,6 +60,7 @@ import {
 	DialogTitle as ShadcnDialogTitle,
 	DialogTrigger as ShadcnDialogTrigger,
 } from "~/components/ui/dialog"
+import { TableForeignKey } from "typeorm";
 
 
 
@@ -135,6 +137,13 @@ export const columns: ColumnDef<SettingItem>[] = [
 		enableHiding: false,
 		cell: ({ row }) => {
 			const setting = row.original;
+			const inputRef = useRef<HTMLInputElement>(null);
+			
+			useEffect(() => {
+				if (inputRef.current != null) {
+				  inputRef.current.focus();
+				}
+			  }, []);
 
 			return (
 				<ShadcnDialog>
@@ -160,11 +169,7 @@ export const columns: ColumnDef<SettingItem>[] = [
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 							<ShadcnDialogTrigger>
-								<DropdownMenuItem
-									onClick={() => {
-										console.log("Modify");
-									}}
-								>
+								<DropdownMenuItem>
 									Modify
 								</DropdownMenuItem>
 							</ShadcnDialogTrigger>
@@ -172,9 +177,9 @@ export const columns: ColumnDef<SettingItem>[] = [
 					</DropdownMenu>
 					<ShadcnDialogContent>
 						<ShadcnDialogHeader>
-							<ShadcnDialogTitle>Modify</ShadcnDialogTitle>
+							<ShadcnDialogTitle>Modify the value of {setting.name}</ShadcnDialogTitle>
 							<ShadcnDialogDescription>
-								Modify the value
+								{/* Description */}
 							</ShadcnDialogDescription>
 						</ShadcnDialogHeader>
 						<div className="grid gap-4 py-4">
@@ -185,16 +190,25 @@ export const columns: ColumnDef<SettingItem>[] = [
 								>
 									Value
 								</Label>
-								<Input
+								<Input 
+									ref={inputRef}
 									id="value"
-									placeholder={"placeholder"}
-									value=""
+									defaultValue={setting.value.toString()}
+									type={(Number.isInteger((setting.value)))?"number":"value"}
 									className="col-span-3"
 								/>
 							</div>
 						</div>
 						<ShadcnDialogFooter>
-							<Button type="submit">Save changes</Button>
+							<Button type="submit"
+								onClick={()=>{
+									let newParameterValue = Number(inputRef.current?.value);
+									console.log(newParameterValue)
+									
+								}}
+							>
+								Save changes
+							</Button>
 						</ShadcnDialogFooter>
 					</ShadcnDialogContent>
 				</ShadcnDialog>
