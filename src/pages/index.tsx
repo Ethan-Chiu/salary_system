@@ -1,12 +1,12 @@
-import Head from "next/head";
-import { PageLayout } from "~/components/layout";
-import { Sidebar } from "~/components/sidebar";
+import { RootLayout } from "~/components/layout";
 import { api } from "~/utils/api";
 import { UserAvatar } from "~/components/user_avatar";
 import { ThemeSelector } from "~/components/theme_selector";
 import { CardFunction } from "~/components/functions/card_function";
 import type { CardFunctionData } from "~/components/functions/card_function";
 import { motion } from "framer-motion";
+import { type NextPageWithLayout } from "./_app";
+import { SidebarLayout } from "~/components/sidebar_layout";
 
 const function_data: CardFunctionData[] = [
 	{
@@ -46,54 +46,47 @@ const stagger = {
 	visible: { opacity: 1, y: 0 },
 };
 
-export default function Home() {
+const PageHome: NextPageWithLayout = () => {
 	// const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
 	return (
-		<PageLayout>
-			<Head>
-				<title>Create T3 App</title>
-				<meta name="description" content="Salary system" />
-				<link rel="icon" href="/favicon.ico" />
-			</Head>
-			<main className="min-h-screen bg-background">
-				<div className="grid min-h-screen lg:grid-cols-5">
-					<Sidebar className="hidden lg:block lg:border-border" />
-					<div className="max-h-[100vh] overflow-hidden col-span-3 lg:col-span-4 lg:border-l">
-						<div className="flex h-14 px-4">
-							<div className="ml-auto flex items-center align-bot space-x-1">
-								<ThemeSelector />
-								<UserAvatar />
-							</div>
-						</div>
-						<div className="px-4 py-6 lg:px-8">
-							Main page: Functions
-							<motion.div
-								className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
-								variants={container}
-								initial="hidden"
-								animate="visible"
-							>
-								{function_data.map(
-									(f_data: CardFunctionData) => (
-										<motion.div
-											key={f_data.title}
-											variants={stagger}
-											className="cursor-pointer"
-										>
-											<CardFunction
-												title={f_data.title}
-												iconPath={f_data.iconPath}
-												subscript={f_data.subscript}
-											/>
-										</motion.div>
-									)
-								)}
-							</motion.div>
-						</div>
-					</div>
+		<>
+			<div className="flex h-14 px-4">
+				<div className="align-bot ml-auto flex items-center space-x-1">
+					<ThemeSelector />
+					<UserAvatar />
 				</div>
-			</main>
-		</PageLayout>
+			</div>
+			<motion.div
+				className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+				variants={container}
+				initial="hidden"
+				animate="visible"
+			>
+				{function_data.map((f_data: CardFunctionData) => (
+					<motion.div
+						key={f_data.title}
+						variants={stagger}
+						className="cursor-pointer"
+					>
+						<CardFunction
+							title={f_data.title}
+							iconPath={f_data.iconPath}
+							subscript={f_data.subscript}
+						/>
+					</motion.div>
+				))}
+			</motion.div>
+		</>
 	);
-}
+};
+
+PageHome.getLayout = function getLayout(page: React.ReactElement) {
+	return (
+		<RootLayout>
+			<SidebarLayout pageTitle="functions">{page}</SidebarLayout>
+		</RootLayout>
+	);
+};
+
+export default PageHome;

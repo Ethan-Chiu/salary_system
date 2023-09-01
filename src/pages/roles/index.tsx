@@ -1,7 +1,5 @@
 import { ChevronDownIcon } from "@radix-ui/react-icons";
-import Head from "next/head";
-import { PageLayout } from "~/components/layout";
-import { Sidebar } from "~/components/sidebar";
+import { RootLayout } from "~/components/layout";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
@@ -26,66 +24,48 @@ import {
 	PopoverTrigger,
 } from "~/components/ui/popover";
 import { Separator } from "~/components/ui/separator";
+import { type NextPageWithLayout } from "../_app";
+import { type ReactElement } from "react";
+import { SidebarLayout } from "~/components/sidebar_layout";
 
-export default function DemoTeamMembers() {
+const PageRoles: NextPageWithLayout = () => {
 	return (
-		<PageLayout>
-			<Head>
-				<title>Create T3 App</title>
-				<meta name="description" content="Salary system" />
-				<link rel="icon" href="/favicon.ico" />
-			</Head>
-			<main className="min-h-screen bg-background">
-				<div className="grid min-h-screen lg:grid-cols-5">
-					<Sidebar className="hidden lg:block lg:border-border" />
-					<div className="col-span-3 lg:col-span-4 lg:border-l">
-						<div className="h-full px-4 py-6 lg:px-8">
-							<div className="w-full">
-								{/* header */}
-								<div className="my-4">
-									<h2 className="text-2xl font-semibold tracking-tight">
-										Roles
-									</h2>
-								</div>
-								<Separator />
-								<Card className="my-6">
-									<CardHeader>
-										<CardTitle>Team Members</CardTitle>
-										<CardDescription>
-											Invite your team members to
-											collaborate.
-										</CardDescription>
-									</CardHeader>
-									<CardContent className="grid gap-6">
-										<div className="flex items-center justify-between space-x-4">
-											<div className="flex items-center space-x-4">
-												<Avatar>
-													<AvatarImage src="/avatars/01.png" />
-													<AvatarFallback>
-														OM
-													</AvatarFallback>
-												</Avatar>
-												<div>
-													<p className="text-sm font-medium leading-none">
-														Sofia Davis
-													</p>
-													<p className="text-sm text-muted-foreground">
-														m@example.com
-													</p>
-												</div>
-											</div>
-											<CompRoleDropdown />
-										</div>
-									</CardContent>
-								</Card>
+		<>
+			{/* header */}
+			<div className="my-4">
+				<h2 className="text-2xl font-semibold tracking-tight">Roles</h2>
+			</div>
+			<Separator />
+			<Card className="my-6">
+				<CardHeader>
+					<CardTitle>Team Members</CardTitle>
+					<CardDescription>
+						Invite your team members to collaborate.
+					</CardDescription>
+				</CardHeader>
+				<CardContent className="grid gap-6">
+					<div className="flex items-center justify-between space-x-4">
+						<div className="flex items-center space-x-4">
+							<Avatar>
+								<AvatarImage src="/avatars/01.png" />
+								<AvatarFallback>OM</AvatarFallback>
+							</Avatar>
+							<div>
+								<p className="text-sm font-medium leading-none">
+									Sofia Davis
+								</p>
+								<p className="text-sm text-muted-foreground">
+									m@example.com
+								</p>
 							</div>
 						</div>
+						<CompRoleDropdown />
 					</div>
-				</div>
-			</main>
-		</PageLayout>
+				</CardContent>
+			</Card>
+		</>
 	);
-}
+};
 
 function CompRoleDropdown() {
 	return (
@@ -133,3 +113,15 @@ function CompRoleDropdown() {
 		</Popover>
 	);
 }
+
+PageRoles.getLayout = function getLayout(page: ReactElement) {
+	return (
+		<RootLayout>
+            <SidebarLayout pageTitle="roles">
+			    {page}
+            </SidebarLayout>
+		</RootLayout>
+	);
+};
+
+export default PageRoles;

@@ -3,7 +3,7 @@ import { Button, buttonVariants } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 
 export type Playlist = (typeof playlists)[number];
 

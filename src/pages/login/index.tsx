@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { PageLayout } from "~/components/layout";
+import { RootLayout } from "~/components/layout";
 import { Button } from "~/components/ui/button";
 import {
 	Card,
@@ -20,7 +20,7 @@ export default function Login() {
 	const [forgetPwd, setForgetPwd] = useState(false);
 
 	return !forgetPwd ? (
-		<PageLayout>
+		<RootLayout>
 			<Head>
 				<title>Create T3 App</title>
 				<meta name="description" content="Salary system" />
@@ -59,9 +59,9 @@ export default function Login() {
 					</CardFooter>
 				</Card>
 			</main>
-		</PageLayout>
+		</RootLayout>
 	) : (
-		<PageLayout>
+		<RootLayout>
 			<Head>
 				<title>Create T3 App</title>
 				<meta name="description" content="Salary system" />
@@ -94,6 +94,6 @@ export default function Login() {
 					</CardFooter>
 				</Card>
 			</main>
-		</PageLayout>
+		</RootLayout>
 	);
 }

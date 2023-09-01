@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { PageLayout } from "~/components/layout";
+import { RootLayout } from "~/components/layout";
 import { Sidebar } from "~/components/sidebar";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
@@ -282,7 +282,7 @@ export default function Parameters() {
 	});
 
 	return (
-		<PageLayout>
+		<RootLayout>
 			<Head>
 				<title>Salary system</title>
 				<meta name="description" content="Salary system" />
@@ -466,6 +466,6 @@ export default function Parameters() {
 					</div>
 				</div>
 			</main>{" "}
-		</PageLayout>
+		</RootLayout>
 	);
 }
