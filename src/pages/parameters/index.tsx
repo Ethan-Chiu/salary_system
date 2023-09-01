@@ -266,7 +266,7 @@ export default function Parameters() {
 								{/* header */}
 								<div className="my-4">
 									<h2 className="text-2xl font-semibold tracking-tight">
-										Settings
+										Parameters
 									</h2>
 								</div>
 								<Separator />
