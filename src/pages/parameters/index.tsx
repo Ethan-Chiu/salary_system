@@ -6,7 +6,7 @@ import { Separator } from "~/components/ui/separator";
 import { Label } from "~/components/ui/label"
 
 import * as React from "react";
-import {useRef, useEffect} from 'react';
+
 import {
 	flexRender,
 	getCoreRowModel,
@@ -137,16 +137,19 @@ export const columns: ColumnDef<SettingItem>[] = [
 		enableHiding: false,
 		cell: ({ row }) => {
 			const setting = row.original;
-			const inputRef = useRef<HTMLInputElement>(null);
+
+			const [dialogState, setDialogState] = React.useState(false);
+			const inputRef = React.useRef<HTMLInputElement>(null);
 			
-			useEffect(() => {
+			
+			React.useEffect(() => {
 				if (inputRef.current != null) {
 				  inputRef.current.focus();
 				}
 			  }, []);
 
 			return (
-				<ShadcnDialog>
+				<ShadcnDialog open={dialogState}>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant="ghost" className="h-8 w-8 p-0">
@@ -169,7 +172,7 @@ export const columns: ColumnDef<SettingItem>[] = [
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 							<ShadcnDialogTrigger>
-								<DropdownMenuItem>
+								<DropdownMenuItem onClick={()=>{setDialogState(true)}}>
 									Modify
 								</DropdownMenuItem>
 							</ShadcnDialogTrigger>
@@ -204,7 +207,7 @@ export const columns: ColumnDef<SettingItem>[] = [
 								onClick={()=>{
 									let newParameterValue = Number(inputRef.current?.value);
 									console.log(newParameterValue)
-									
+									setDialogState(false);
 								}}
 							>
 								Save changes
@@ -224,7 +227,7 @@ export default function Parameters() {
 	const [columnVisibility, setColumnVisibility] =
 		React.useState<VisibilityState>({});
 	const [rowSelection, setRowSelection] = React.useState({});
-
+	
 	const table = useReactTable({
 		data,
 		columns,
