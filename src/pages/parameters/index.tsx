@@ -59,8 +59,10 @@ import {
 	DialogHeader as ShadcnDialogHeader,
 	DialogTitle as ShadcnDialogTitle,
 	DialogTrigger as ShadcnDialogTrigger,
+	DialogClose as ShadcnDialogClose
 } from "~/components/ui/dialog"
 import { TableForeignKey } from "typeorm";
+
 
 
 
@@ -149,7 +151,7 @@ export const columns: ColumnDef<SettingItem>[] = [
 			  }, []);
 
 			return (
-				<ShadcnDialog open={dialogState}>
+				<ShadcnDialog>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant="ghost" className="h-8 w-8 p-0">
@@ -203,15 +205,16 @@ export const columns: ColumnDef<SettingItem>[] = [
 							</div>
 						</div>
 						<ShadcnDialogFooter>
+							<ShadcnDialogClose asChild>
 							<Button type="submit"
 								onClick={()=>{
 									let newParameterValue = Number(inputRef.current?.value);
 									console.log(newParameterValue)
-									setDialogState(false);
 								}}
 							>
 								Save changes
 							</Button>
+							</ShadcnDialogClose>
 						</ShadcnDialogFooter>
 					</ShadcnDialogContent>
 				</ShadcnDialog>

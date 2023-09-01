@@ -110,6 +110,20 @@ const DialogDescription = React.forwardRef<
 ))
 DialogDescription.displayName = DialogPrimitive.Description.displayName
 
+
+//DialogClose
+const DialogClose = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Close>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Close>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Close
+    ref={ref}
+    {...props}
+  />
+))
+DialogClose.displayName = DialogPrimitive.Title.displayName
+
+
 export {
   Dialog,
   DialogTrigger,
@@ -118,4 +132,8 @@ export {
   DialogFooter,
   DialogTitle,
   DialogDescription,
+  DialogClose
 }
+
+
+

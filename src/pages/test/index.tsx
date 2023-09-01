@@ -14,6 +14,7 @@ import {
 	getPaginationRowModel,
 	getSortedRowModel,
 	useReactTable,
+	RowData
 } from "@tanstack/react-table";
 import type {
 	ColumnDef,
@@ -59,11 +60,15 @@ import {
 	DialogHeader as ShadcnDialogHeader,
 	DialogTitle as ShadcnDialogTitle,
 	DialogTrigger as ShadcnDialogTrigger,
+	DialogClose as ShadcnDialogClose
 } from "~/components/ui/dialog"
-import { TableForeignKey } from "typeorm";
-import { useScroll } from "framer-motion";
+import { Column, TableForeignKey } from "typeorm";
 
-
+declare module '@tanstack/react-table' {
+	interface TableMeta<TData extends RowData> {
+	  updateData: (rowIndex: number, columnId: string, value: unknown) => void
+	}
+}
 
 
 export type SettingItem = {
@@ -73,7 +78,7 @@ export type SettingItem = {
 	status: "pending" | "processing" | "success" | "failed";
 };
 
-const data: SettingItem[] = [
+const defaultData: SettingItem[] = [
 	{
 		name: "derv1ws0",
 		value: 837,
@@ -136,10 +141,15 @@ export const columns: ColumnDef<SettingItem>[] = [
 	{
 		id: "actions",
 		enableHiding: false,
-		cell: ({ row }) => {
-			const setting = row.original;
-            const [dialogState, setDialogState] = React.useState(false);
+		cell: ({ row, column, table }) => {
+			const [dialogState, setDialogState] = React.useState(false);
 			const inputRef = React.useRef<HTMLInputElement>(null);
+			const setting = row.original;
+
+			//test
+  			const [value, setValue] = React.useState((Number.isInteger(row.original.value)?0:""));
+			//test
+			
 			
 			React.useEffect(() => {
 				if (inputRef.current != null) {
@@ -202,16 +212,18 @@ export const columns: ColumnDef<SettingItem>[] = [
 							</div>
 						</div>
 						<ShadcnDialogFooter>
+							<ShadcnDialogClose>
 							<Button type="submit"
 								onClick={()=>{
-									let newParameterValue = Number(inputRef.current?.value);
-									console.log(newParameterValue);
+									setValue(Number(inputRef.current?.value));
+									console.log(row.index, column.id, Number(inputRef.current?.value));
+									table.options.meta?.updateData(row.index, "value", Number(inputRef.current?.value));
 									setDialogState(false);
-                                    
 								}}
 							>
 								Save changes
 							</Button>
+							</ShadcnDialogClose>
 						</ShadcnDialogFooter>
 					</ShadcnDialogContent>
 				</ShadcnDialog>
@@ -221,14 +233,6 @@ export const columns: ColumnDef<SettingItem>[] = [
 ];
 
 export default function Parameters() {
-
-    const [rowdata, setRowData] = React.useState(() => [...data]);
-    const [originalData, setOriginalData] = React.useState(() => [...data]);
-    const [editedRows, setEditedRows] = React.useState({});
-
-
-
-
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] =
 		React.useState<ColumnFiltersState>([]);
@@ -236,6 +240,11 @@ export default function Parameters() {
 		React.useState<VisibilityState>({});
 	const [rowSelection, setRowSelection] = React.useState({});
 	
+	const [data, setData] = React.useState(() => [...defaultData]);
+	const [originalData, setOriginalData] = React.useState(() => [...defaultData]);
+	const [editedRows, setEditedRows] = React.useState({});
+
+
 	const table = useReactTable({
 		data,
 		columns,
@@ -252,6 +261,23 @@ export default function Parameters() {
 			columnFilters,
 			columnVisibility,
 			rowSelection,
+		},
+		meta: {
+			updateData: (rowIndex: number, columnId: string, value: unknown) => {
+				console.log("input parameters", rowIndex, columnId, value);
+				console.log("previous data", data);
+				setData(old =>
+					old.map((row, index) => {
+					let tmp = row;
+					if (index === rowIndex) {
+						console.log("index === rowIndex")
+						tmp = {...old[rowIndex]!, [columnId]: value,}
+					}
+					console.log(tmp);
+					return tmp ;
+				}));
+				console.log("updated data", data);
+			},
 		},
 	});
 
