@@ -5,12 +5,14 @@ export class Photo {
     @PrimaryGeneratedColumn()
     id: number
 
+    // type need to be specified
     @Column({
+        type: "nchar",
         length: 100,
     })
     name: string
 
-    @Column()
+    @Column("nvarchar2")
     filename: string
 
     @Column("int")

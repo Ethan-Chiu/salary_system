@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { Photo } from "./entity/photo";
+import OracleDB from "oracledb";
 
 const AppDataSource = new DataSource({
     type: "oracle",
@@ -9,7 +10,7 @@ const AppDataSource = new DataSource({
     username: "SALARY",
     password: "salary",
     serviceName: "testplm",
-    driver: require('oracledb'),
+    driver: OracleDB,
     synchronize: true,
     logging: true,
     entities: [Photo],
