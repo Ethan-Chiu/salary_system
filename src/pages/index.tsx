@@ -2,12 +2,16 @@ import { RootLayout } from "~/components/layout/root_layout";
 import { api } from "~/utils/api";
 import { UserAvatar } from "~/components/user_avatar";
 import { ThemeSelector } from "~/components/theme_selector";
-import { CardFunction, CardFunctionIcon } from "~/components/functions/card_function";
+import {
+	CardFunction,
+	CardFunctionIcon,
+} from "~/components/functions/card_function";
 import type { CardFunctionData } from "~/components/functions/card_function";
 import { motion } from "framer-motion";
 import { type NextPageWithLayout } from "./_app";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
 import { IconCoins } from "~/components/icons/svg_icons";
+import { Separator } from "~/components/ui/separator";
 
 const function_data: CardFunctionData[] = [
 	{
@@ -52,12 +56,16 @@ const PageHome: NextPageWithLayout = () => {
 
 	return (
 		<>
-			<div className="flex h-14 px-4">
+			<div className="my-4 flex">
+				<h2 className="text-2xl font-semibold tracking-tight">
+					Functions
+				</h2>
 				<div className="align-bot ml-auto flex items-center space-x-1">
 					<ThemeSelector />
 					<UserAvatar />
 				</div>
 			</div>
+			<Separator /> <br />
 			<motion.div
 				className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
 				variants={container}
@@ -76,7 +84,7 @@ const PageHome: NextPageWithLayout = () => {
 							subscript={f_data.subscript}
 						>
 							<CardFunctionIcon className="text-foreground">
-								<IconCoins/>
+								<IconCoins />
 							</CardFunctionIcon>
 						</CardFunction>
 					</motion.div>
