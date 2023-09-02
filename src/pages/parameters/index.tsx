@@ -1,4 +1,4 @@
-import { RootLayout } from "~/components/layout";
+import { RootLayout } from "~/components/layout/root_layout";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { Label } from "~/components/ui/label";
@@ -48,7 +48,7 @@ import {
 	DialogClose,
 } from "~/components/ui/dialog";
 import { type NextPageWithLayout } from "../_app";
-import { SidebarLayout } from "~/components/sidebar_layout";
+import { PerpageLayout } from "~/components/layout/perpage_layout";
 import { type ReactElement, useRef, useState } from "react";
 
 export type SettingItem = {
@@ -291,7 +291,7 @@ const PageParameters: NextPageWithLayout = () => {
 PageParameters.getLayout = function getLayout(page: ReactElement) {
 	return (
 		<RootLayout>
-			<SidebarLayout pageTitle="parameters">{page}</SidebarLayout>
+			<PerpageLayout pageTitle="parameters">{page}</PerpageLayout>
 		</RootLayout>
 	);
 };

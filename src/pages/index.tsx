@@ -1,4 +1,4 @@
-import { RootLayout } from "~/components/layout";
+import { RootLayout } from "~/components/layout/root_layout";
 import { api } from "~/utils/api";
 import { UserAvatar } from "~/components/user_avatar";
 import { ThemeSelector } from "~/components/theme_selector";
@@ -6,7 +6,7 @@ import { CardFunction } from "~/components/functions/card_function";
 import type { CardFunctionData } from "~/components/functions/card_function";
 import { motion } from "framer-motion";
 import { type NextPageWithLayout } from "./_app";
-import { SidebarLayout } from "~/components/sidebar_layout";
+import { PerpageLayout } from "~/components/layout/perpage_layout";
 
 const function_data: CardFunctionData[] = [
 	{
@@ -84,7 +84,7 @@ const PageHome: NextPageWithLayout = () => {
 PageHome.getLayout = function getLayout(page: React.ReactElement) {
 	return (
 		<RootLayout>
-			<SidebarLayout pageTitle="functions">{page}</SidebarLayout>
+			<PerpageLayout pageTitle="functions">{page}</PerpageLayout>
 		</RootLayout>
 	);
 };

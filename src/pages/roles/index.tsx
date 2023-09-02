@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from "@radix-ui/react-icons";
-import { RootLayout } from "~/components/layout";
+import { RootLayout } from "~/components/layout/root_layout";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
@@ -26,7 +26,7 @@ import {
 import { Separator } from "~/components/ui/separator";
 import { type NextPageWithLayout } from "../_app";
 import { type ReactElement } from "react";
-import { SidebarLayout } from "~/components/sidebar_layout";
+import { PerpageLayout } from "~/components/layout/perpage_layout";
 
 const PageRoles: NextPageWithLayout = () => {
 	return (
@@ -117,9 +117,9 @@ function CompRoleDropdown() {
 PageRoles.getLayout = function getLayout(page: ReactElement) {
 	return (
 		<RootLayout>
-            <SidebarLayout pageTitle="roles">
+            <PerpageLayout pageTitle="roles">
 			    {page}
-            </SidebarLayout>
+            </PerpageLayout>
 		</RootLayout>
 	);
 };
