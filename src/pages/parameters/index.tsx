@@ -1,10 +1,7 @@
 import { RootLayout } from "~/components/layout";
-import { Sidebar } from "~/components/sidebar";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { Label } from "~/components/ui/label";
-
-import * as React from "react";
 
 import {
 	flexRender,
@@ -45,24 +42,14 @@ import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
+	DialogFooter,
+	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
-} from "@radix-ui/react-dialog";
-import { DialogHeader } from "~/components/ui/dialog";
-
-import {
-	Dialog as ShadcnDialog,
-	DialogContent as ShadcnDialogContent,
-	DialogDescription as ShadcnDialogDescription,
-	DialogFooter as ShadcnDialogFooter,
-	DialogHeader as ShadcnDialogHeader,
-	DialogTitle as ShadcnDialogTitle,
-	DialogTrigger as ShadcnDialogTrigger,
-	DialogClose as ShadcnDialogClose,
+	DialogClose,
 } from "~/components/ui/dialog";
-import { TableForeignKey } from "typeorm";
-import { NextPageWithLayout } from "../_app";
+import { type NextPageWithLayout } from "../_app";
 import { SidebarLayout } from "~/components/sidebar_layout";
+import { type ReactElement, useRef, useState } from "react";
 
 export type SettingItem = {
 	name: string;
@@ -137,105 +124,18 @@ export const columns: ColumnDef<SettingItem>[] = [
 		cell: ({ row }) => {
 			const setting = row.original;
 
-			const [dialogState, setDialogState] = React.useState(false);
-			const inputRef = React.useRef<HTMLInputElement>(null);
-
-			React.useEffect(() => {
-				if (inputRef.current != null) {
-					inputRef.current.focus();
-				}
-			}, []);
-
-			return (
-				<ShadcnDialog>
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button variant="ghost" className="h-8 w-8 p-0">
-								<span className="sr-only">Open menu</span>
-								<MoreHorizontal className="h-4 w-4" />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end">
-							<DropdownMenuLabel>Actions</DropdownMenuLabel>
-							<DropdownMenuItem
-								onClick={() => {
-									void (async () => {
-										await navigator.clipboard.writeText(
-											setting.value.toString()
-										);
-									})();
-								}}
-							>
-								Copy Value
-							</DropdownMenuItem>
-							<DropdownMenuSeparator />
-							<ShadcnDialogTrigger>
-								<DropdownMenuItem
-									onClick={() => {
-										setDialogState(true);
-									}}
-								>
-									Modify
-								</DropdownMenuItem>
-							</ShadcnDialogTrigger>
-						</DropdownMenuContent>
-					</DropdownMenu>
-					<ShadcnDialogContent>
-						<ShadcnDialogHeader>
-							<ShadcnDialogTitle>
-								Modify the value of {setting.name}
-							</ShadcnDialogTitle>
-							<ShadcnDialogDescription>
-								{/* Description */}
-							</ShadcnDialogDescription>
-						</ShadcnDialogHeader>
-						<div className="grid gap-4 py-4">
-							<div className="grid grid-cols-4 items-center gap-4">
-								<Label htmlFor="value" className="text-right">
-									Value
-								</Label>
-								<Input
-									ref={inputRef}
-									id="value"
-									defaultValue={setting.value.toString()}
-									type={
-										Number.isInteger(setting.value)
-											? "number"
-											: "value"
-									}
-									className="col-span-3"
-								/>
-							</div>
-						</div>
-						<ShadcnDialogFooter>
-							<ShadcnDialogClose asChild>
-								<Button
-									type="submit"
-									onClick={() => {
-										let newParameterValue = Number(
-											inputRef.current?.value
-										);
-										console.log(newParameterValue);
-									}}
-								>
-									Save changes
-								</Button>
-							</ShadcnDialogClose>
-						</ShadcnDialogFooter>
-					</ShadcnDialogContent>
-				</ShadcnDialog>
-			);
+			return <CompDropdown setting={setting} />;
 		},
 	},
 ];
 
 const PageParameters: NextPageWithLayout = () => {
-	const [sorting, setSorting] = React.useState<SortingState>([]);
-	const [columnFilters, setColumnFilters] =
-		React.useState<ColumnFiltersState>([]);
-	const [columnVisibility, setColumnVisibility] =
-		React.useState<VisibilityState>({});
-	const [rowSelection, setRowSelection] = React.useState({});
+	const [sorting, setSorting] = useState<SortingState>([]);
+	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+		{}
+	);
+	const [rowSelection, setRowSelection] = useState({});
 
 	const table = useReactTable({
 		data,
@@ -388,7 +288,7 @@ const PageParameters: NextPageWithLayout = () => {
 	);
 };
 
-PageParameters.getLayout = function getLayout(page: React.ReactElement) {
+PageParameters.getLayout = function getLayout(page: ReactElement) {
 	return (
 		<RootLayout>
 			<SidebarLayout pageTitle="parameters">{page}</SidebarLayout>
@@ -397,3 +297,106 @@ PageParameters.getLayout = function getLayout(page: React.ReactElement) {
 };
 
 export default PageParameters;
+
+function CompDropdown({ setting }: { setting: SettingItem }) {
+	const [showDialog, setShowDialog] = useState(false);
+
+	return (
+		<>
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<Button variant="ghost" className="h-8 w-8 p-0">
+						<span className="sr-only">Open menu</span>
+						<MoreHorizontal className="h-4 w-4" />
+					</Button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent align="end">
+					<DropdownMenuLabel>Actions</DropdownMenuLabel>
+					<DropdownMenuItem
+						onClick={() => {
+							void (async () => {
+								await navigator.clipboard.writeText(
+									setting.value.toString()
+								);
+							})();
+						}}
+					>
+						Copy Value
+					</DropdownMenuItem>
+					<DropdownMenuSeparator />
+					<DropdownMenuItem
+						onClick={() => {
+							setShowDialog(true);
+						}}
+					>
+						Modify
+					</DropdownMenuItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
+
+			<CompDialog
+				setting={setting}
+				showDialog={showDialog}
+				onOpenChange={(open: boolean) => {
+					setShowDialog(open);
+				}}
+			/>
+		</>
+	);
+}
+
+function CompDialog({
+	setting,
+	showDialog,
+	onOpenChange,
+}: {
+	setting: SettingItem;
+	showDialog: boolean;
+	onOpenChange: (open: boolean) => void;
+}) {
+	const inputRef = useRef<HTMLInputElement>(null);
+
+	return (
+		<Dialog open={showDialog} onOpenChange={onOpenChange}>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>
+						Modify the value of {setting.name}
+					</DialogTitle>
+					<DialogDescription>{/* Description */}</DialogDescription>
+				</DialogHeader>
+				<div className="grid gap-4 py-4">
+					<div className="grid grid-cols-4 items-center gap-4">
+						<Label htmlFor="value" className="text-right">
+							Value
+						</Label>
+						<Input
+							ref={inputRef}
+							id="value"
+							defaultValue={setting.value.toString()}
+							type={
+								Number.isInteger(setting.value)
+									? "number"
+									: "value"
+							}
+							className="col-span-3"
+						/>
+					</div>
+				</div>
+				<DialogFooter>
+					<DialogClose asChild>
+						<Button
+							type="submit"
+							onClick={() => {
+								const value = Number(inputRef.current?.value);
+								console.log(value);
+							}}
+						>
+							Save changes
+						</Button>
+					</DialogClose>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
+	);
+}
