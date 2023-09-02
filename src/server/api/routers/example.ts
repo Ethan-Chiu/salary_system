@@ -13,13 +13,13 @@ export const exampleRouter = createTRPCRouter({
     .input(z.object({ text: z.string() }))
     .query(async ({ input }) => {
 
-    const photo = new Photo()
+    const photo: Photo = new Photo()
     photo.name = "Me and Bears"
     photo.filename = "photo-with-bears.jpg"
     photo.views = 1
     photo.isPublished = true
 
-    await dataSource!.manager.save(photo)
+    await dataSource.manager.save(photo)
     console.log("Photo has been saved. Photo id is", photo.id)
       return {
         greeting: `Hello ${input.text}`,
