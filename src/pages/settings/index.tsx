@@ -1,11 +1,13 @@
 import { RootLayout } from "~/components/layout";
-import { ProfileForm } from "~/components/profile";
 import { api } from "~/utils/api";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Separator } from "~/components/ui/separator";
 import { type NextPageWithLayout } from "../_app";
 import { type ReactElement } from "react";
 import { SidebarLayout } from "~/components/sidebar_layout";
+
+import { ProfileForm } from "./components/profile";
+import { AppearanceForm } from "./components/appearance";
 
 const PageSettings: NextPageWithLayout = () => {
 	return (
@@ -69,6 +71,7 @@ const PageSettings: NextPageWithLayout = () => {
 						</div>
 					</div>
 					<Separator className="my-4" />
+					<AppearanceForm />
 				</TabsContent>
 			</Tabs>
 		</>

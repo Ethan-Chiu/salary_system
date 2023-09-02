@@ -1,6 +1,6 @@
-import Head from "next/head";
 import type { PropsWithChildren } from "react";
 import { ThemeProvider } from "~/components/theme_provider";
+import { Toaster } from "~/components/ui/toaster"
 
 export const RootLayout = (props: PropsWithChildren) => {
 	return (
@@ -8,6 +8,7 @@ export const RootLayout = (props: PropsWithChildren) => {
 			<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
 				{props.children}
 			</ThemeProvider>
+			<Toaster />
 		</main>
 	);
 };
