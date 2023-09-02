@@ -1,3 +1,4 @@
+import { CalendarDays } from "lucide-react";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import { RootLayout } from "~/components/layout/root_layout";
 
@@ -23,12 +24,23 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "~/components/ui/popover";
+import {
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger,
+} from "~/components/ui/hover-card";
+
 import { Separator } from "~/components/ui/separator";
 import { type NextPageWithLayout } from "../_app";
 import { type ReactElement } from "react";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
 
 const PageRoles: NextPageWithLayout = () => {
+
+	let username = "Ethan Chiu";
+	let userEmail = "ethanchiu@gmail.com"
+	let userDescription = "balabalabalabala balabalabala balabala";
+
 	return (
 		<>
 			{/* header */}
@@ -48,15 +60,29 @@ const PageRoles: NextPageWithLayout = () => {
 						<div className="flex items-center space-x-4">
 							<Avatar>
 								<AvatarImage src="https://github.com/shadcn.png" />
-								<AvatarFallback>OM</AvatarFallback>
+								<AvatarFallback>
+									{ username.split(' ').map((eachWord: string) => { return eachWord[0];}).join("") }
+								</AvatarFallback>
 							</Avatar>
 							<div>
-								<p className="text-sm font-medium leading-none">
-									Sofia Davis
-								</p>
-								<p className="text-sm text-muted-foreground">
-									m@example.com
-								</p>
+								<HoverCard>
+									<HoverCardTrigger asChild>
+										<div>
+											<p className="text-sm font-medium leading-none">
+												{username}
+											</p>
+											<p className="text-sm text-muted-foreground">
+												{userEmail}
+											</p>
+										</div>
+									</HoverCardTrigger>
+									<HoverCardContent className="w-80">
+										<ContentOfHoverCard
+											username={username}
+											description={userDescription}
+										/>
+									</HoverCardContent>
+								</HoverCard>
 							</div>
 						</div>
 						<CompRoleDropdown />
@@ -114,12 +140,33 @@ function CompRoleDropdown() {
 	);
 }
 
+function ContentOfHoverCard({ username, description, avatarImgSource }: any) {
+	return (
+		<div className="flex justify-between space-x-4">
+			<Avatar>
+				<AvatarImage src={avatarImgSource} />
+				<AvatarFallback>
+					{ username.split(' ').map((eachWord: string) => { return eachWord[0];}).join("") }
+				</AvatarFallback>
+			</Avatar>
+			<div className="space-y-1">
+				<h4 className="text-sm font-semibold">{username}</h4>
+				<p className="text-sm">{description}</p>
+				<div className="flex items-center pt-2">
+					<CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
+					<span className="text-xs text-muted-foreground">
+						Joined December 2021
+					</span>
+				</div>
+			</div>
+		</div>
+	);
+}
+
 PageRoles.getLayout = function getLayout(page: ReactElement) {
 	return (
 		<RootLayout>
-            <PerpageLayout pageTitle="roles">
-			    {page}
-            </PerpageLayout>
+			<PerpageLayout pageTitle="roles">{page}</PerpageLayout>
 		</RootLayout>
 	);
 };

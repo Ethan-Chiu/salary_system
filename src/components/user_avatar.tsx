@@ -41,6 +41,8 @@ import {
 import Link from "next/link";
 
 export function UserAvatar() {
+	const username = "shadcn"
+	const userEmail = "m@example.com"
 	return (
 		<Dialog>
 			<DropdownMenu>
@@ -59,10 +61,10 @@ export function UserAvatar() {
 					<DropdownMenuLabel className="font-normal">
 						<div className="flex flex-col space-y-1">
 							<p className="text-sm font-medium leading-none">
-								shadcn
+								{username}
 							</p>
 							<p className="text-xs leading-none text-muted-foreground">
-								m@example.com
+								{userEmail}
 							</p>
 						</div>
 					</DropdownMenuLabel>
@@ -83,7 +85,8 @@ export function UserAvatar() {
 							<span>Settings</span>
 							<DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
 						</DropdownMenuItem>
-						<DropdownMenuItem>New Team</DropdownMenuItem>
+						{/* Add new MenuItems here */}
+						{/* <DropdownMenuItem>New Team</DropdownMenuItem> */}
 					</DropdownMenuGroup>
 					<DropdownMenuSeparator />
 					<DialogTrigger asChild>
