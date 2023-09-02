@@ -35,11 +35,20 @@ import { type NextPageWithLayout } from "../_app";
 import { type ReactElement } from "react";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
 
-const PageRoles: NextPageWithLayout = () => {
+type EmployeeInfo = {
+	username: string;
+	userEmail: string;
+	description: string;
+	avatarImgSource: string;
+}
 
-	let username = "Ethan Chiu";
-	let userEmail = "ethanchiu@gmail.com"
-	let userDescription = "balabalabalabala balabalabala balabala";
+const PageRoles: NextPageWithLayout = () => {
+	const info: EmployeeInfo = {
+		username: "Ethan Chiu",
+		userEmail: "ethanchiu@gmail.com",
+		description: "balabalabalabala balabalabala balabala",
+		avatarImgSource: "https://github.com/shadcn.png"
+	}
 
 	return (
 		<>
@@ -59,30 +68,18 @@ const PageRoles: NextPageWithLayout = () => {
 					<div className="flex items-center justify-between space-x-4">
 						<div className="flex items-center space-x-4">
 							<Avatar>
-								<AvatarImage src="https://github.com/shadcn.png" />
+								<AvatarImage src={info.avatarImgSource} />
 								<AvatarFallback>
-									{ username.split(' ').map((eachWord: string) => { return eachWord[0];}).join("") }
+									{info.username
+										.split(" ")
+										.map((eachWord: string) => {
+											return eachWord[0];
+										})
+										.join("")}
 								</AvatarFallback>
 							</Avatar>
 							<div>
-								<HoverCard>
-									<HoverCardTrigger asChild>
-										<div>
-											<p className="text-sm font-medium leading-none">
-												{username}
-											</p>
-											<p className="text-sm text-muted-foreground">
-												{userEmail}
-											</p>
-										</div>
-									</HoverCardTrigger>
-									<HoverCardContent className="w-80">
-										<ContentOfHoverCard
-											username={username}
-											description={userDescription}
-										/>
-									</HoverCardContent>
-								</HoverCard>
+								<CompHoverCard info={info}/>
 							</div>
 						</div>
 						<CompRoleDropdown />
@@ -140,26 +137,43 @@ function CompRoleDropdown() {
 	);
 }
 
-function ContentOfHoverCard({ username, description, avatarImgSource }: any) {
+function CompHoverCard({info}: {info: EmployeeInfo}) {
 	return (
-		<div className="flex justify-between space-x-4">
-			<Avatar>
-				<AvatarImage src={avatarImgSource} />
-				<AvatarFallback>
-					{ username.split(' ').map((eachWord: string) => { return eachWord[0];}).join("") }
-				</AvatarFallback>
-			</Avatar>
-			<div className="space-y-1">
-				<h4 className="text-sm font-semibold">{username}</h4>
-				<p className="text-sm">{description}</p>
-				<div className="flex items-center pt-2">
-					<CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
-					<span className="text-xs text-muted-foreground">
-						Joined December 2021
-					</span>
+		<HoverCard>
+			<HoverCardTrigger asChild>
+				<div>
+					<p className="text-sm font-medium leading-none">
+						{info.username}
+					</p>
+					<p className="text-sm text-muted-foreground">{info.userEmail}</p>
 				</div>
-			</div>
-		</div>
+			</HoverCardTrigger>
+			<HoverCardContent className="w-80">
+				<div className="flex justify-between space-x-4">
+					<Avatar>
+						<AvatarImage src={info.avatarImgSource} />
+						<AvatarFallback>
+							{info.username
+								.split(" ")
+								.map((eachWord: string) => {
+									return eachWord[0];
+								})
+								.join("")}
+						</AvatarFallback>
+					</Avatar>
+					<div className="space-y-1">
+						<h4 className="text-sm font-semibold">{info.username}</h4>
+						<p className="text-sm">{info.description}</p>
+						<div className="flex items-center pt-2">
+							<CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
+							<span className="text-xs text-muted-foreground">
+								Joined December 2021
+							</span>
+						</div>
+					</div>
+				</div>
+			</HoverCardContent>
+		</HoverCard>
 	);
 }
 
