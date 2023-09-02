@@ -5,12 +5,12 @@ import {
 	CardHeader,
 	CardTitle,
 } from "~/components/ui/card";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { cn } from "~/lib/utils";
+import React, { type PropsWithChildren } from "react";
 
 export type CardFunctionData = {
-    title: string;
+	title: string;
 	iconPath: string;
 	subscript: string;
 };
@@ -48,42 +48,45 @@ const imageVariants = {
 	},
 };
 
-export function CardFunction({
-	className,
-	title,
-	iconPath,
-	subscript,
-	...props
-}: CardFunctionProps) {
+const CardFunctionIcon = (
+	props: PropsWithChildren<React.HTMLAttributes<HTMLDivElement>>
+) => <div className={cn(props.className)}>{props.children}</div>;
+
+function CardFunction(props: PropsWithChildren<CardFunctionProps>) {
+	// You can customize the rendering of the children as needed
+	const childElements = React.Children.toArray(props.children);
+
+	const cardIcon = childElements.find(
+		(child) =>
+			React.isValidElement(child) && child.type === CardFunctionIcon
+	);
+
 	return (
 		<motion.a
 			initial="start"
 			animate="end"
 			whileHover="hover"
 			variants={variants}
-			className={cn(className)}
+			className={cn(props.className)}
 		>
 			<Card className="text-foreground hover:text-primary">
 				<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 					<CardTitle className="text-2xl font-medium">
-						{title}
+						{props.title}
 					</CardTitle>
 					<motion.div
 						variants={imageVariants}
 						className="relative h-6 w-6 text-muted-foreground"
 					>
-						<Image
-							src={iconPath}
-							alt="$"
-							layout="fill"
-							objectFit="cover"
-						/>
+						{cardIcon}
 					</motion.div>
 				</CardHeader>
 				<CardContent>
-					<div className="text-sm font-light">{subscript}</div>
+					<div className="text-sm font-light">{props.subscript}</div>
 				</CardContent>
 			</Card>
 		</motion.a>
 	);
 }
+
+export { CardFunction, CardFunctionIcon };

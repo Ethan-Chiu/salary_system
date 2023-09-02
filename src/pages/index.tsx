@@ -2,11 +2,12 @@ import { RootLayout } from "~/components/layout/root_layout";
 import { api } from "~/utils/api";
 import { UserAvatar } from "~/components/user_avatar";
 import { ThemeSelector } from "~/components/theme_selector";
-import { CardFunction } from "~/components/functions/card_function";
+import { CardFunction, CardFunctionIcon } from "~/components/functions/card_function";
 import type { CardFunctionData } from "~/components/functions/card_function";
 import { motion } from "framer-motion";
 import { type NextPageWithLayout } from "./_app";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
+import { IconCoins } from "~/components/icons/svg_icons";
 
 const function_data: CardFunctionData[] = [
 	{
@@ -73,7 +74,11 @@ const PageHome: NextPageWithLayout = () => {
 							title={f_data.title}
 							iconPath={f_data.iconPath}
 							subscript={f_data.subscript}
-						/>
+						>
+							<CardFunctionIcon className="text-foreground">
+								<IconCoins/>
+							</CardFunctionIcon>
+						</CardFunction>
 					</motion.div>
 				))}
 			</motion.div>
