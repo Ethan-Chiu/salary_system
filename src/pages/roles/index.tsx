@@ -47,7 +47,7 @@ const PageRoles: NextPageWithLayout = () => {
 					<div className="flex items-center justify-between space-x-4">
 						<div className="flex items-center space-x-4">
 							<Avatar>
-								<AvatarImage src="/avatars/01.png" />
+								<AvatarImage src="https://github.com/shadcn.png" />
 								<AvatarFallback>OM</AvatarFallback>
 							</Avatar>
 							<div>
