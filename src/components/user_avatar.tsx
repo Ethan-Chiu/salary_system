@@ -1,3 +1,20 @@
+import {
+	Cloud,
+	CreditCard,
+	Github,
+	Keyboard,
+	LifeBuoy,
+	LogOut,
+	Mail,
+	MessageSquare,
+	Plus,
+	PlusCircle,
+	Settings,
+	User,
+	UserPlus,
+	Users,
+  } from "lucide-react"
+
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import {
@@ -52,15 +69,18 @@ export function UserAvatar() {
 					<DropdownMenuSeparator />
 					<DropdownMenuGroup>
 						<DropdownMenuItem onClick={RouteProfile}>
-							Profile
+							<User className="mr-2 h-4 w-4" />
+							<span>Profile</span>
 							<DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
 						</DropdownMenuItem>
 						<DropdownMenuItem>
-							Billing
+							<CreditCard className="mr-2 h-4 w-4" />
+							<span>Billing</span>
 							<DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
 						</DropdownMenuItem>
 						<DropdownMenuItem>
-							Settings
+							<Settings className="mr-2 h-4 w-4" />
+							<span>Settings</span>
 							<DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
 						</DropdownMenuItem>
 						<DropdownMenuItem>New Team</DropdownMenuItem>
@@ -68,6 +88,7 @@ export function UserAvatar() {
 					<DropdownMenuSeparator />
 					<DialogTrigger asChild>
 						<DropdownMenuItem>
+							<LogOut className="mr-2 h-4 w-4" />
 							<span>Log Out</span>
 							<DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
 						</DropdownMenuItem>

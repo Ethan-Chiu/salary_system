@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { RootLayout } from "~/components/layout";
+import { RootLayout } from "~/components/layout/root_layout";
 import { Sidebar } from "~/components/sidebar";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
