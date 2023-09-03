@@ -10,7 +10,6 @@ import type { CardFunctionData } from "~/components/functions/card_function";
 import { motion } from "framer-motion";
 import { type NextPageWithLayout } from "./_app";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
-import { PerpageLayoutWithTitle } from "~/components/layout/perpage_layout_with_title";
 import { IconCoins } from "~/components/icons/svg_icons";
 import { Title } from "~/components/title"
 
