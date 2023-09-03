@@ -1,7 +1,4 @@
 import { RootLayout } from "~/components/layout/root_layout";
-import { api } from "~/utils/api";
-import { UserAvatar } from "~/components/user_avatar";
-import { ThemeSelector } from "~/components/theme_selector";
 import {
 	CardFunction,
 	CardFunctionIcon,
@@ -11,7 +8,7 @@ import { motion } from "framer-motion";
 import { type NextPageWithLayout } from "./_app";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
 import { IconCoins } from "~/components/icons/svg_icons";
-import { Title } from "~/components/title"
+import { Header } from "~/components/title"
 
 const function_data: CardFunctionData[] = [
 	{
@@ -56,7 +53,7 @@ const PageHome: NextPageWithLayout = () => {
 
 	return (
 		<>
-			<Title title="functions" option={true} br={true} />
+			<Header title="functions" showOptions/>
 			<motion.div
 				className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
 				variants={container}

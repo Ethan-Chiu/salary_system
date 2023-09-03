@@ -1,7 +1,6 @@
 import { RootLayout } from "~/components/layout/root_layout";
-import { Title } from "~/components/title"
+import { Header } from "~/components/title"
 import { Button } from "~/components/ui/button";
-import { Separator } from "~/components/ui/separator";
 import { Label } from "~/components/ui/label";
 
 import {
@@ -160,7 +159,7 @@ const PageParameters: NextPageWithLayout = () => {
 	return (
 		<>
 			{/* header */}
-			<Title title = "parameters" option = {true} />
+			<Header title = "parameters" showOptions/>
 			
 			{/* top bar */}
 			<div className="flex items-center py-6">

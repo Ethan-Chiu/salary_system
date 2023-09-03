@@ -1,5 +1,4 @@
 import { RootLayout } from "~/components/layout/root_layout";
-import { api } from "~/utils/api";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Separator } from "~/components/ui/separator";
 import { type NextPageWithLayout } from "../_app";
@@ -8,12 +7,12 @@ import { PerpageLayout } from "~/components/layout/perpage_layout";
 
 import { ProfileForm } from "./components/profile";
 import { AppearanceForm } from "./components/appearance";
-import { Title } from "~/components/title"
+import { Header } from "~/components/title"
 
 const PageSettings: NextPageWithLayout = () => {
 	return (
 		<>
-			<Title title="Settings" option={false} br={true}/>
+			<Header title="Settings" className="mb-4"/>
 			<Tabs defaultValue="profile" className="h-full space-y-6">
 				<div className="space-between flex items-center">
 					<TabsList>

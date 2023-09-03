@@ -30,12 +30,10 @@ import {
 	HoverCardTrigger,
 } from "~/components/ui/hover-card";
 
-import { Separator } from "~/components/ui/separator";
 import { type NextPageWithLayout } from "../_app";
 import { type ReactElement } from "react";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
-import { Title } from "~/components/title";
-import { Badge } from "~/components/ui/badge";
+import { Header } from "~/components/title";
 
 type EmployeeInfo = {
 	username: string;
@@ -60,7 +58,7 @@ const PageRoles: NextPageWithLayout = () => {
 	return (
 		<>
 			{/* header */}
-			<Title title="roles" option={false} />
+			<Header title="roles"/>
 			<Card className="my-6">
 				<CardHeader>
 					<CardTitle>Team Members</CardTitle>
@@ -128,7 +126,7 @@ function CompRoleDropdown() {
 						<CommandEmpty>No roles found.</CommandEmpty>
 						<CommandGroup>
 							{identitylist.map((props: IdentityType) => (
-								<CommandItem className="teamaspace-y-1 flex flex-col items-start px-4 py-2">
+								<CommandItem key={props.identity} className="teamaspace-y-1 flex flex-col items-start px-4 py-2">
 									<p>{props.identity}</p>
 									<p className="text-sm text-muted-foreground">
 										{props.description}

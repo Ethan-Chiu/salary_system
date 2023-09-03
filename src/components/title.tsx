@@ -1,26 +1,24 @@
-import Head from "next/head";
 import type { PropsWithChildren } from "react";
 import { Separator } from "~/components/ui/separator";
 import { UserAvatar } from "~/components/user_avatar";
 import { ThemeSelector } from "~/components/theme_selector";
 
-type TitleProp = {
+interface TitleProp extends React.HTMLAttributes<HTMLDivElement> {
 	title: string;
-	option?: boolean; 
-	br?: boolean;
+	showOptions?: boolean; 
 };
 
-export const Title = (props: PropsWithChildren<TitleProp>) => {
+export const Header = (props: PropsWithChildren<TitleProp>) => {
 	
 	return (
-		<>
+		<div className={props.className}>
 			<div className="my-4 flex">
 				<h2 className="text-2xl font-semibold tracking-tight">
 					{props.title.charAt(0).toUpperCase() +
 						props.title.slice(1).toLowerCase()}
 				</h2>
 				{
-					(props.option) ?
+					(props.showOptions) ?
 					<div className="align-bot ml-auto flex items-center space-x-1">
 						<ThemeSelector />
 						<UserAvatar />
@@ -28,7 +26,6 @@ export const Title = (props: PropsWithChildren<TitleProp>) => {
 				}
 			</div>
 			<Separator />
-			{ (props.br)?<br/>:<></> }
-		</>
+		</div>
 	);
 };

@@ -1,7 +1,6 @@
 import Head from "next/head";
 import type { PropsWithChildren } from "react";
 import { Sidebar } from "~/components/sidebar";
-import { Title } from "~/components/title";
 
 type PerpageLayoutProp = {
 	pageTitle: string;

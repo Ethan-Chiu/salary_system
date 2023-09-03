@@ -1,18 +1,8 @@
 import {
-	Cloud,
 	CreditCard,
-	Github,
-	Keyboard,
-	LifeBuoy,
 	LogOut,
-	Mail,
-	MessageSquare,
-	Plus,
-	PlusCircle,
 	Settings,
 	User,
-	UserPlus,
-	Users,
   } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
