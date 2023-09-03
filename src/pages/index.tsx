@@ -57,6 +57,7 @@ const PageHome: NextPageWithLayout = () => {
 
 	return (
 		<>
+			<Title title="functions" option={true} br={true} />
 			<motion.div
 				className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
 				variants={container}
@@ -89,12 +90,11 @@ PageHome.getLayout = function getLayout(page: React.ReactElement) {
 	return (
 		<RootLayout>
 			{/* <PerpageLayout pageTitle="functions">{page}</PerpageLayout> */}
-			<PerpageLayoutWithTitle
+			<PerpageLayout
 				pageTitle="functions"
-				option={true}
 			>
 					{page}
-			</PerpageLayoutWithTitle>
+			</PerpageLayout>
 		</RootLayout>
 	);
 };
