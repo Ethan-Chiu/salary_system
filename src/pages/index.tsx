@@ -90,7 +90,12 @@ PageHome.getLayout = function getLayout(page: React.ReactElement) {
 	return (
 		<RootLayout>
 			{/* <PerpageLayout pageTitle="functions">{page}</PerpageLayout> */}
-			<PerpageLayoutWithTitle pageTitle="functions">{page}</PerpageLayoutWithTitle>
+			<PerpageLayoutWithTitle
+				pageTitle="functions"
+				option={true}
+			>
+					{page}
+			</PerpageLayoutWithTitle>
 		</RootLayout>
 	);
 };

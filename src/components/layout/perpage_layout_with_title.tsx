@@ -5,6 +5,7 @@ import { Title } from "~/components/title";
 
 type PerpageLayoutWithTitleProp = {
 	pageTitle: string;
+	option: boolean;
 };
 
 export const PerpageLayoutWithTitle = (props: PropsWithChildren<PerpageLayoutWithTitleProp>) => {
@@ -28,7 +29,7 @@ export const PerpageLayoutWithTitle = (props: PropsWithChildren<PerpageLayoutWit
 					<div className="col-span-3 lg:col-span-4 lg:border-l">
 						<div className="h-full px-4 py-6 lg:px-8">
 							<div className="w-full">
-								<Title title={props.pageTitle} />
+								<Title title={props.pageTitle} option={props.option} />
 								{props.children}
 							</div>
 						</div>

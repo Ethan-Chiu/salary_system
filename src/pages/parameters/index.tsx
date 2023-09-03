@@ -160,7 +160,7 @@ const PageParameters: NextPageWithLayout = () => {
 	return (
 		<>
 			{/* header */}
-			<Title title = "parameters" />
+			<Title title = "parameters" option = {true} />
 			
 			{/* top bar */}
 			<div className="flex items-center py-6">

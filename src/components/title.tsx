@@ -6,6 +6,7 @@ import { ThemeSelector } from "~/components/theme_selector";
 
 type TitleProp = {
 	title: string;
+	option: boolean;
 };
 
 export const Title = (props: PropsWithChildren<TitleProp>) => {
@@ -13,12 +14,16 @@ export const Title = (props: PropsWithChildren<TitleProp>) => {
 		<>
 			<div className="my-4 flex">
 				<h2 className="text-2xl font-semibold tracking-tight">
-					{props.title.charAt(0).toUpperCase() + props.title.slice(1).toLowerCase()}
+					{props.title.charAt(0).toUpperCase() +
+						props.title.slice(1).toLowerCase()}
 				</h2>
-				<div className="align-bot ml-auto flex items-center space-x-1">
-					<ThemeSelector />
-					<UserAvatar />
-				</div>
+				{
+					(props.option) ?
+					<div className="align-bot ml-auto flex items-center space-x-1">
+						<ThemeSelector />
+						<UserAvatar />
+					</div> : <></>
+				}
 			</div>
 			<Separator />
 		</>
