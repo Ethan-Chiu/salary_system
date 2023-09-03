@@ -10,8 +10,9 @@ import type { CardFunctionData } from "~/components/functions/card_function";
 import { motion } from "framer-motion";
 import { type NextPageWithLayout } from "./_app";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
+import { PerpageLayoutWithTitle } from "~/components/layout/perpage_layout_with_title";
 import { IconCoins } from "~/components/icons/svg_icons";
-import { Separator } from "~/components/ui/separator";
+import { Title } from "~/components/title"
 
 const function_data: CardFunctionData[] = [
 	{
@@ -56,16 +57,7 @@ const PageHome: NextPageWithLayout = () => {
 
 	return (
 		<>
-			<div className="my-4 flex">
-				<h2 className="text-2xl font-semibold tracking-tight">
-					Functions
-				</h2>
-				<div className="align-bot ml-auto flex items-center space-x-1">
-					<ThemeSelector />
-					<UserAvatar />
-				</div>
-			</div>
-			<Separator /> <br />
+			<br />
 			<motion.div
 				className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
 				variants={container}
@@ -97,7 +89,8 @@ const PageHome: NextPageWithLayout = () => {
 PageHome.getLayout = function getLayout(page: React.ReactElement) {
 	return (
 		<RootLayout>
-			<PerpageLayout pageTitle="functions">{page}</PerpageLayout>
+			{/* <PerpageLayout pageTitle="functions">{page}</PerpageLayout> */}
+			<PerpageLayoutWithTitle pageTitle="functions">{page}</PerpageLayoutWithTitle>
 		</RootLayout>
 	);
 };

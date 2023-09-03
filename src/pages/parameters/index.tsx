@@ -1,4 +1,5 @@
 import { RootLayout } from "~/components/layout/root_layout";
+import { Title } from "~/components/title"
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { Label } from "~/components/ui/label";
@@ -159,12 +160,8 @@ const PageParameters: NextPageWithLayout = () => {
 	return (
 		<>
 			{/* header */}
-			<div className="my-4">
-				<h2 className="text-2xl font-semibold tracking-tight">
-					Parameters
-				</h2>
-			</div>
-			<Separator />
+			<Title title = "parameters" />
+			
 			{/* top bar */}
 			<div className="flex items-center py-6">
 				{/* search bar */}
