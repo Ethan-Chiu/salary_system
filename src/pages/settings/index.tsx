@@ -8,10 +8,12 @@ import { PerpageLayout } from "~/components/layout/perpage_layout";
 
 import { ProfileForm } from "./components/profile";
 import { AppearanceForm } from "./components/appearance";
+import { Title } from "~/components/title"
 
 const PageSettings: NextPageWithLayout = () => {
 	return (
 		<>
+			<Title title="Settings" option={false} />
 			<Tabs defaultValue="profile" className="h-full space-y-6">
 				<div className="space-between flex items-center">
 					<TabsList>

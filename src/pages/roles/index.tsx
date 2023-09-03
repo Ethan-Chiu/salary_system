@@ -34,6 +34,7 @@ import { Separator } from "~/components/ui/separator";
 import { type NextPageWithLayout } from "../_app";
 import { type ReactElement } from "react";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
+import { Title } from "~/components/title"
 
 type EmployeeInfo = {
 	username: string;
@@ -53,10 +54,7 @@ const PageRoles: NextPageWithLayout = () => {
 	return (
 		<>
 			{/* header */}
-			<div className="my-4">
-				<h2 className="text-2xl font-semibold tracking-tight">Roles</h2>
-			</div>
-			<Separator />
+			<Title title="roles" option={false}/>
 			<Card className="my-6">
 				<CardHeader>
 					<CardTitle>Team Members</CardTitle>

@@ -6,10 +6,10 @@ import { ThemeSelector } from "~/components/theme_selector";
 
 type TitleProp = {
 	title: string;
-	option: boolean;
+	option: boolean; 
 };
 
-export const Title = (props: PropsWithChildren<TitleProp>) => {
+export const Title = (props: PropsWithChildren<TitleProp>, br=true) => {
 	return (
 		<>
 			<div className="my-4 flex">
@@ -26,6 +26,7 @@ export const Title = (props: PropsWithChildren<TitleProp>) => {
 				}
 			</div>
 			<Separator />
+			{ (br)?<br/>:<></> }
 		</>
 	);
 };
