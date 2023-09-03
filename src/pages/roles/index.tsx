@@ -34,27 +34,33 @@ import { Separator } from "~/components/ui/separator";
 import { type NextPageWithLayout } from "../_app";
 import { type ReactElement } from "react";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
-import { Title } from "~/components/title"
+import { Title } from "~/components/title";
+import { Badge } from "~/components/ui/badge";
 
 type EmployeeInfo = {
 	username: string;
 	userEmail: string;
 	description: string;
 	avatarImgSource: string;
-}
+};
+
+type IdentityType = {
+	identity: string;
+	description: string;
+};
 
 const PageRoles: NextPageWithLayout = () => {
 	const info: EmployeeInfo = {
 		username: "Ethan Chiu",
 		userEmail: "ethanchiu@gmail.com",
 		description: "balabalabalabala balabalabala balabala",
-		avatarImgSource: "https://github.com/shadcn.png"
-	}
+		avatarImgSource: "https://github.com/shadcn.png",
+	};
 
 	return (
 		<>
 			{/* header */}
-			<Title title="roles" option={false}/>
+			<Title title="roles" option={false} />
 			<Card className="my-6">
 				<CardHeader>
 					<CardTitle>Team Members</CardTitle>
@@ -77,7 +83,7 @@ const PageRoles: NextPageWithLayout = () => {
 								</AvatarFallback>
 							</Avatar>
 							<div>
-								<CompHoverCard info={info}/>
+								<CompHoverCard info={info} />
 							</div>
 						</div>
 						<CompRoleDropdown />
@@ -89,6 +95,24 @@ const PageRoles: NextPageWithLayout = () => {
 };
 
 function CompRoleDropdown() {
+	const identitylist: IdentityType[] = [
+		{
+			identity: "Viewer",
+			description: "Can view and comment.",
+		},
+		{
+			identity: "Developer",
+			description: "Can view, comment and edit.",
+		},
+		{
+			identity: "Billing",
+			description: "Can view, comment and manage billing.",
+		},
+		{
+			identity: "Owner",
+			description: "Admin-level access to all resources.",
+		},
+	];
 	return (
 		<Popover>
 			<PopoverTrigger asChild>
@@ -103,30 +127,14 @@ function CompRoleDropdown() {
 					<CommandList>
 						<CommandEmpty>No roles found.</CommandEmpty>
 						<CommandGroup>
-							<CommandItem className="teamaspace-y-1 flex flex-col items-start px-4 py-2">
-								<p>Viewer</p>
-								<p className="text-sm text-muted-foreground">
-									Can view and comment.
-								</p>
-							</CommandItem>
-							<CommandItem className="teamaspace-y-1 flex flex-col items-start px-4 py-2">
-								<p>Developer</p>
-								<p className="text-sm text-muted-foreground">
-									Can view, comment and edit.
-								</p>
-							</CommandItem>
-							<CommandItem className="teamaspace-y-1 flex flex-col items-start px-4 py-2">
-								<p>Billing</p>
-								<p className="text-sm text-muted-foreground">
-									Can view, comment and manage billing.
-								</p>
-							</CommandItem>
-							<CommandItem className="teamaspace-y-1 flex flex-col items-start px-4 py-2">
-								<p>Owner</p>
-								<p className="text-sm text-muted-foreground">
-									Admin-level access to all resources.
-								</p>
-							</CommandItem>
+							{identitylist.map((props: IdentityType) => (
+								<CommandItem className="teamaspace-y-1 flex flex-col items-start px-4 py-2">
+									<p>{props.identity}</p>
+									<p className="text-sm text-muted-foreground">
+										{props.description}
+									</p>
+								</CommandItem>
+							))}
 						</CommandGroup>
 					</CommandList>
 				</Command>
@@ -135,7 +143,7 @@ function CompRoleDropdown() {
 	);
 }
 
-function CompHoverCard({info}: {info: EmployeeInfo}) {
+function CompHoverCard({ info }: { info: EmployeeInfo }) {
 	return (
 		<HoverCard>
 			<HoverCardTrigger asChild>
@@ -143,7 +151,9 @@ function CompHoverCard({info}: {info: EmployeeInfo}) {
 					<p className="text-sm font-medium leading-none">
 						{info.username}
 					</p>
-					<p className="text-sm text-muted-foreground">{info.userEmail}</p>
+					<p className="text-sm text-muted-foreground">
+						{info.userEmail}
+					</p>
 				</div>
 			</HoverCardTrigger>
 			<HoverCardContent className="w-80">
@@ -160,7 +170,9 @@ function CompHoverCard({info}: {info: EmployeeInfo}) {
 						</AvatarFallback>
 					</Avatar>
 					<div className="space-y-1">
-						<h4 className="text-sm font-semibold">{info.username}</h4>
+						<h4 className="text-sm font-semibold">
+							{info.username}
+						</h4>
 						<p className="text-sm">{info.description}</p>
 						<div className="flex items-center pt-2">
 							<CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
