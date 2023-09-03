@@ -7,7 +7,7 @@ import { PerpageLayout } from "~/components/layout/perpage_layout";
 
 import { ProfileForm } from "./components/profile";
 import { AppearanceForm } from "./components/appearance";
-import { Header } from "~/components/title"
+import { Header } from "~/components/header"
 
 const PageSettings: NextPageWithLayout = () => {
 	return (

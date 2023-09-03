@@ -33,7 +33,7 @@ import {
 import { type NextPageWithLayout } from "../_app";
 import { type ReactElement } from "react";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
-import { Header } from "~/components/title";
+import { Header } from "~/components/header";
 
 type EmployeeInfo = {
 	username: string;

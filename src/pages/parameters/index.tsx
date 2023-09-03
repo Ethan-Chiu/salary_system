@@ -1,5 +1,5 @@
 import { RootLayout } from "~/components/layout/root_layout";
-import { Header } from "~/components/title"
+import { Header } from "~/components/header"
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 

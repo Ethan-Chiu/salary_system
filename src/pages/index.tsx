@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import { type NextPageWithLayout } from "./_app";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
 import { IconCoins } from "~/components/icons/svg_icons";
-import { Header } from "~/components/title"
+import { Header } from "~/components/header"
 
 const function_data: CardFunctionData[] = [
 	{
@@ -53,7 +53,7 @@ const PageHome: NextPageWithLayout = () => {
 
 	return (
 		<>
-			<Header title="functions" showOptions/>
+			<Header title="functions" showOptions className="mb-4"/>
 			<motion.div
 				className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
 				variants={container}
