@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { RootLayout } from "~/components/layout";
+import { RootLayout } from "~/components/layout/root_layout";
 import { Button } from "~/components/ui/button";
 import {
 	Card,
