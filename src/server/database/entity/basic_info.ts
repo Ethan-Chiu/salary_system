@@ -1,8 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm"
 import { BaseMeta } from "./utils/base_meta"
 
-@Entity("U_SETTINGS")
-export class Settings extends BaseMeta {
+@Entity("U_BASIC_INFO")
+export class BasicInfo extends BaseMeta {
     @PrimaryGeneratedColumn()
     id: number
 
