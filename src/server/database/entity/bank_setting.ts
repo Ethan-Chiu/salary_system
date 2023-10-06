@@ -1,23 +1,23 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
-import { BaseMeta } from "./utils/base_meta";
 import { Char } from "./utils/utils";
+import { BaseMeta } from "./utils/base_meta";
 
-@Entity("U_AUTHORITY")
-export class Authority extends BaseMeta {
+@Entity("U_BANK_SETTING")
+export class BankSetting extends BaseMeta {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column("int", { unique: true })
-	employee_id: number;
+	@Column("varchar2", { length: Char(32) })
+	bank_code: string;
 
 	@Column("varchar2", { length: Char(32) })
-	password: string;
-
-	@Column("int")
-	auth_level: number;
+	bank_name: string;
 
 	@Column("varchar2", { length: Char(32) })
-	salt: string;
+	org_code: string;
+
+	@Column("varchar2", { length: Char(32) })
+	org_name: string;
 
 	@Column("date")
 	start_date: Date;
