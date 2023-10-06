@@ -8,7 +8,7 @@ export class Authority extends BaseMeta {
 	id: number;
 
 	@Column("int", { unique: true })
-	employee_id: number;
+	emp_id: number;
 
 	@Column("varchar2", { length: Char(32) })
 	password: string;

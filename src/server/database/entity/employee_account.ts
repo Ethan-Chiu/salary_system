@@ -8,7 +8,7 @@ export class EmployeeAccount extends BaseMeta {
 	id: number;
 
 	@Column("varchar2", { length: Char(32) })
-	employee_id: string;
+	emp_id: string;
 
 	@Column("varchar2", { length: Char(32) })
 	bank_account: string;

@@ -8,10 +8,10 @@ export class EmployeeData extends BaseMeta {
 	id: number;
 
 	@Column("varchar2", { length: Char(32) })
-	employee_id: string;
+	emp_id: string;
 
 	@Column("varchar2", { length: Char(32) })
-	employee_name: string;
+	emp_name: string;
 
 	@Column("varchar2", { length: Char(32) })
 	work_type: string;
@@ -47,7 +47,7 @@ export class EmployeeData extends BaseMeta {
 	dependents_count: number;
 
 	@Column("int")
-	health_insurance_dependents_count: number;
+	h_i_dependents_count: number;
 
 	@Column("date")
 	hire_date: Date;
@@ -59,7 +59,7 @@ export class EmployeeData extends BaseMeta {
 	departure_date?: Date | null;
 
 	@Column("varchar2", { length: Char(32) })
-	id_number: string;
+	identity_number: string;
 
 	@Column()
 	bonus_calculation: boolean;
@@ -68,7 +68,7 @@ export class EmployeeData extends BaseMeta {
 	disability_level: string;
 
 	@Column("float")
-	labor_retirement_self_contribution_ratio: number;
+	labor_retirement_self_ratio: number;
 
 	@Column()
 	has_esot: boolean;

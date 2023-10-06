@@ -6,6 +6,17 @@ import { BonusSetting } from "./entity/bonus_setting";
 import { BonusDepartment } from "./entity/bonus_department";
 import { BonusPosition } from "./entity/bonus_position";
 import { BonusSeniority } from "./entity/bonus_seniority";
+import { AttendanceSetting } from "./entity/attendance_setting";
+import { BankSetting } from "./entity/bank_setting";
+import { BasicInfo } from "./entity/basic_info";
+import { EmployeeAccount } from "./entity/employee_account";
+import { EmployeeData } from "./entity/employee_data";
+import { EmployeePayment } from "./entity/employee_payment";
+import { InsuranceRateSetting } from "./entity/insurance_rate_setting";
+import { LevelRange } from "./entity/level_range";
+import { Level } from "./entity/level";
+import { PerformanceLevel } from "./entity/performance_level";
+import { TrustMoney } from "./entity/trust_money";
 
 const AppDataSource = new DataSource({
 	type: "oracle",
@@ -18,11 +29,22 @@ const AppDataSource = new DataSource({
 	synchronize: true,
 	logging: true,
 	entities: [
+		AttendanceSetting,
 		Authority,
+		BankSetting,
+		BasicInfo,
 		BonusDepartment,
 		BonusPosition,
 		BonusSeniority,
 		BonusSetting,
+		EmployeeAccount,
+		EmployeeData,
+		EmployeePayment,
+		InsuranceRateSetting,
+		LevelRange,
+		Level,
+		PerformanceLevel,
+		TrustMoney,
 	],
 	subscribers: [],
 	migrations: [],
