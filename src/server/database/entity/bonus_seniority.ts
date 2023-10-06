@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm"
-import { BaseMeta } from "./base_meta"
+import { BaseMeta } from "./utils/base_meta"
 
 @Entity("U_BONUS_SENIORITY")
 export class BonusSeniority extends BaseMeta {
