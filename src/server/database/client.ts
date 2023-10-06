@@ -3,6 +3,9 @@ import { DataSource } from "typeorm";
 import { Authority } from "./entity/authority";
 import OracleDB from "oracledb";
 import { BonusSetting } from "./entity/bonus_setting";
+import { BonusDepartment } from "./entity/bonus_department";
+import { BonusPosition } from "./entity/bonus_position";
+import { BonusSeniority } from "./entity/bonus_seniority";
 
 const AppDataSource = new DataSource({
 	type: "oracle",
@@ -14,7 +17,13 @@ const AppDataSource = new DataSource({
 	driver: OracleDB,
 	synchronize: true,
 	logging: true,
-	entities: [Authority, BonusSetting],
+	entities: [
+		Authority,
+		BonusDepartment,
+		BonusPosition,
+		BonusSeniority,
+		BonusSetting,
+	],
 	subscribers: [],
 	migrations: [],
 });

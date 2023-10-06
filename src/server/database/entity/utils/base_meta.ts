@@ -1,9 +1,9 @@
-import { CreateDateColumn, UpdateDateColumn } from "typeorm"
+import { CreateDateColumn, UpdateDateColumn } from "typeorm";
 
 export abstract class BaseMeta {
-    @CreateDateColumn()
-    created_date: Date
+	@CreateDateColumn({ type: "date" })
+	create_date: Date;
 
-    @UpdateDateColumn()
-    updated_date: Date
+	@UpdateDateColumn({ type: "date" })
+	update_date: Date;
 }
