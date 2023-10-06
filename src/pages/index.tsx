@@ -8,7 +8,8 @@ import { motion } from "framer-motion";
 import { type NextPageWithLayout } from "./_app";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
 import { IconCoins } from "~/components/icons/svg_icons";
-import { Header } from "~/components/header"
+import { Header } from "~/components/header";
+import { api } from "~/utils/api";
 
 const function_data: CardFunctionData[] = [
 	{
@@ -49,11 +50,11 @@ const stagger = {
 };
 
 const PageHome: NextPageWithLayout = () => {
-	// const hello = api.example.hello.useQuery({ text: "from tRPC" });
+	const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
 	return (
 		<>
-			<Header title="functions" showOptions className="mb-4"/>
+			<Header title="functions" showOptions className="mb-4" />
 			<motion.div
 				className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
 				variants={container}
@@ -86,11 +87,7 @@ PageHome.getLayout = function getLayout(page: React.ReactElement) {
 	return (
 		<RootLayout>
 			{/* <PerpageLayout pageTitle="functions">{page}</PerpageLayout> */}
-			<PerpageLayout
-				pageTitle="functions"
-			>
-					{page}
-			</PerpageLayout>
+			<PerpageLayout pageTitle="functions">{page}</PerpageLayout>
 		</RootLayout>
 	);
 };
