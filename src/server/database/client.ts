@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { Authority } from "./entity/authority";
+import { User } from "./entity/user";
 import OracleDB from "oracledb";
 import { BonusSetting } from "./entity/bonus_setting";
 import { BonusDepartment } from "./entity/bonus_department";
@@ -30,7 +30,6 @@ const AppDataSource = new DataSource({
 	logging: true,
 	entities: [
 		AttendanceSetting,
-		Authority,
 		BankSetting,
 		BasicInfo,
 		BonusDepartment,
@@ -45,6 +44,7 @@ const AppDataSource = new DataSource({
 		Level,
 		PerformanceLevel,
 		TrustMoney,
+		User,
 	],
 	subscribers: [],
 	migrations: [],
