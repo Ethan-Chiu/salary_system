@@ -31,4 +31,10 @@ export class InsuranceRateSetting {
 
 	@Column("float")
 	v2_h_i_dock_tsx_thres: number;
+
+	@Column("date")
+	start_date: Date;
+
+	@Column("date", { nullable: true })
+	end_date?: Date | null;
 }
