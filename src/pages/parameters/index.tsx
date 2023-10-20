@@ -58,7 +58,7 @@ import {
 } from "~/components/ui/dialog";
 import { type NextPageWithLayout } from "../_app";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
-import { type ReactElement, useRef, useState } from "react";
+import { type ReactElement, useRef, useState, useEffect } from "react";
 import { table } from "console";
 import { ConnectionPoolClosedEvent } from "typeorm";
 import { map } from "@trpc/server/observable";
@@ -143,6 +143,7 @@ export const columns: ColumnDef<SettingItem>[] = [
 ];
 
 let datas: SettingItem[][] = [];
+let run_once = 0;
 
 const PageParameters: NextPageWithLayout = () => {
 	const [sorting, setSorting] = useState<SortingState>([]);
@@ -152,8 +153,27 @@ const PageParameters: NextPageWithLayout = () => {
 	);
 	const [rowSelection, setRowSelection] = useState({});
 
-	const [table_status, setTableStatus] = useState(Array(table_names.length).fill(0));
-	
+	const [table_status, setTableStatus] = useState(Array(table_names.length).fill(false));
+	function changeTableStatus(index: number) {
+		let tmp_status = table_status;
+		tmp_status[index] = !tmp_status[index];
+		setTableStatus(tmp_status);
+	}
+
+	// if(!run_once) {
+	// 	console.log("insert bank data")
+	// const insert = api.parameters.bankAddData.useQuery({
+	// 	bank_code: "900",
+	// 	bank_name: "土地銀行",
+	// 	org_code: "001",
+	// 	org_name: "新竹",
+	// 	start_date: new Date(8.62e15),
+	// 	end_date: new Date(8.64e15),
+	// });
+	// 	run_once += 1;
+	// }
+
+
 	for (var i = 0; i < table_names.length; i++) {
 		if (datas.length<table_names.length)
 			datas.push([]);
@@ -166,9 +186,7 @@ const PageParameters: NextPageWithLayout = () => {
 		console.log("Successful Fetched Attendance Data");
 		let index = find_index("請假加班");
 		console.log(index)
-		let original_table_status = table_status;
-		original_table_status[index] += 1;
-		setTableStatus(original_table_status);
+		changeTableStatus(index)
 		datas[index] = []
 		Object.keys(attendanceData.data?.attendanceData[0]!).map((key)=> {
 			datas[index]?.push({
@@ -180,7 +198,18 @@ const PageParameters: NextPageWithLayout = () => {
 	}
 	if(bankData.isFetched && !table_status[find_index("銀行")]) {
 		console.log("Successful Fetched Bank Data");
+		let index = find_index("銀行");
+		console.log(index)
 		console.log(bankData.data?.bankData)
+		changeTableStatus(index)
+		datas[index] = []
+		Object.keys(bankData.data?.bankData[0]!).map((key)=> {
+			datas[index]?.push({
+				name: key,
+				value: (bankData.data?.bankData[0] as any)[key],
+				status: "pending"
+			})
+		})
 	}
 
 

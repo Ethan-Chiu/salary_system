@@ -15,12 +15,7 @@ export const parametersRouter = createTRPCRouter({
 	bankGetData: publicProcedure
 		.query(async() => {
             const now = new Date()
-			const bank_data = await dataSource.manager.find(BankSetting,{   
-                where:{
-                    start_date: LessThan(now),
-                    end_date: MoreThan(now) || undefined
-                }
-            });
+			const bank_data = await dataSource.manager.find(BankSetting);
 			return {
 				bankData: bank_data,
 			};
