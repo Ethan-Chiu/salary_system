@@ -38,12 +38,13 @@ export const parametersRouter = createTRPCRouter({
     attendanceGetData: publicProcedure
         .query(async () => {
             const now = new Date()
-            const attendanceData = await dataSource.manager.findOne(AttendanceSetting,{
-                where:{
-                    start_date: LessThan(now),
-                    end_date: MoreThan(now) || undefined
-                }
-            });
+            const attendanceData = await dataSource.manager.find(AttendanceSetting)
+                // ,{
+            //     // where:{
+            //     //     start_date: LessThan(now),
+            //     //     end_date: MoreThan(now) || undefined
+            //     // }
+            // });
 
             return {
                 attendanceData: attendanceData,
