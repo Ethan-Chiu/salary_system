@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  oracle-db:
+    image: container-registry.oracle.com/database/free:latest
+    environment:
+      # - ORACLE_SID=ORCLCDB # for enterprise
+      # - ORACLE_PDB=ORCLPDB1
+      - ORACLE_PWD=salary
+    ports:
+      - 1521:1521
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+      - ./oracle_setup:/opt/oracle/scripts/setup
+      # - ./oracle_setup:/opt/oracle/scripts/startup if setup not work
+    # healthcheck:
+    #   test: ["CMD", "sqlplus", "-L", "sys/salary@//localhost:1521/ORCLCDB as sysdba", "@healthcheck.sql"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 5
+volumes:
+  oracle-data:
+    external: true

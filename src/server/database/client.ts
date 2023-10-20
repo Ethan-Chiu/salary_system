@@ -18,6 +18,42 @@ import { Level } from "./entity/level";
 import { PerformanceLevel } from "./entity/performance_level";
 import { TrustMoney } from "./entity/trust_money";
 
+const local_db = true;  
+
+const entities = [
+	AttendanceSetting,
+	Authority,
+	BankSetting,
+	BasicInfo,
+	BonusDepartment,
+	BonusPosition,
+	BonusSeniority,
+	BonusSetting,
+	EmployeeAccount,
+	EmployeeData,
+	EmployeePayment,
+	InsuranceRateSetting,
+	LevelRange,
+	Level,
+	PerformanceLevel,
+	TrustMoney,
+]
+
+const LocalAppDataSource = new DataSource({
+	type: "oracle",
+	host: "localhost",
+	port: 1521,
+	username: "C##SALARY",
+	password: "salary",
+	serviceName: "FREE",
+	driver: OracleDB,
+	synchronize: true,
+	logging: true,
+	entities: entities,
+	subscribers: [],
+	migrations: [],
+});
+
 const AppDataSource = new DataSource({
 	type: "oracle",
 	host: "10.4.3.224",
@@ -28,35 +64,25 @@ const AppDataSource = new DataSource({
 	driver: OracleDB,
 	synchronize: true,
 	logging: true,
-	entities: [
-		AttendanceSetting,
-		Authority,
-		BankSetting,
-		BasicInfo,
-		BonusDepartment,
-		BonusPosition,
-		BonusSeniority,
-		BonusSetting,
-		EmployeeAccount,
-		EmployeeData,
-		EmployeePayment,
-		InsuranceRateSetting,
-		LevelRange,
-		Level,
-		PerformanceLevel,
-		TrustMoney,
-	],
+	entities: entities,
 	subscribers: [],
 	migrations: [],
 });
 
 export async function initDatabaseConnection(): Promise<DataSource> {
+	let dataSource = AppDataSource
+	if (process.env.NODE_ENV == "development") {
+		if (local_db) {
+			dataSource = LocalAppDataSource
+		}
+	}	
+
 	try {
-		if (!AppDataSource.isInitialized) {
-			await AppDataSource.initialize();
+		if (!dataSource.isInitialized) {
+			await dataSource.initialize();
 			console.log("initialize database");
 		}
-		return AppDataSource;
+		return dataSource;
 	} catch (error) {
 		console.log(error);
 		throw error;
