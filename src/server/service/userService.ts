@@ -1,7 +1,8 @@
 import { LessThan, MoreThan } from "typeorm";
 import { dataSource } from "../database/client";
 import { User } from "../database/entity/user";
-import bcrypt from "bcrypt";
+import * as bcrypt from "bcrypt";
+
 
 export class UserService {
 	async findUserByEmpId(emp_id: string) {
@@ -18,7 +19,7 @@ export class UserService {
 
 	async updateHash(userId: number, password: string) {
 		const salt = await bcrypt.genSalt();
-		const hash = await bcrypt.hash(password, salt);
+		const hash= await bcrypt.hash(password, salt);
 		await dataSource.manager.update(User, userId, {
 			hash: hash,
 		});
