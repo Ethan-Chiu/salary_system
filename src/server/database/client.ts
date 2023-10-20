@@ -53,6 +53,7 @@ const AppDataSource = new DataSource({
 export async function initDatabaseConnection(): Promise<DataSource> {
 	try {
 		if (!AppDataSource.isInitialized) {
+			console.log("not initialize")
 			await AppDataSource.initialize();
 			console.log("initialize database");
 		}

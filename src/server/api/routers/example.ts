@@ -9,12 +9,11 @@ import { Authority } from "~/server/database/entity/authority";
 
 export const exampleRouter = createTRPCRouter({
 	hello: publicProcedure
-		.input(z.object({ text: z.string() }))
-		.query(async ({ input }) => {
+		.query(async () => {
 			await dataSource.manager.find(Authority);
 
 			return {
-				greeting: `Hello ${input.text}`,
+				greeting: `Hello`,
 			};
 		}),
 
