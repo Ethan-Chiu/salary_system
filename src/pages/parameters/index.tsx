@@ -64,6 +64,7 @@ import { ConnectionPoolClosedEvent } from "typeorm";
 import { map } from "@trpc/server/observable";
 import { AttendanceSetting } from "~/server/database/entity/attendance_setting";
 import { rangeEnd } from "prettier.config.cjs";
+import Parameters from "../test/table_modify_element";
 
 export type SettingItem = {
 	name: string;
@@ -72,16 +73,16 @@ export type SettingItem = {
 	status: "pending" | "processing" | "success" | "failed";
 };
 
+let datas: SettingItem[][] = [];
+
 // 基本設定、請假加班、勞健保費率
-let table_names: String[] = ["請假加班", "銀行"];
+let table_names: String[] = ["請假加班", "銀行", "勞健保費率"];
 function find_index(table_name: string) {
 	for (var i = 0; i < table_names.length; i++) {
 		if (table_name == table_names[i]) return i;
 	}
 	return -1;
 }
-
-
 
 export const columns: ColumnDef<SettingItem>[] = [
 	{
@@ -142,17 +143,29 @@ export const columns: ColumnDef<SettingItem>[] = [
 	},
 ];
 
-let datas: SettingItem[][] = [];
-let run_once = 0;
+const waitFetch = (dbQuery: any) => {
+	while(!dbQuery.isFetched){continue}
+	return 0;
+}
+
+const API_PARAMETERS = api.parameters;
+
+let testInsertBankData = {
+	bank_code: "900",
+	bank_name: "土地銀行",
+	org_code: "001",
+	org_name: "新竹",
+	start_date: new Date(8.62e15),
+	end_date: new Date(8.64e15),
+}
+
+
 
 const PageParameters: NextPageWithLayout = () => {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-		{}
-	);
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 	const [rowSelection, setRowSelection] = useState({});
-
 	const [table_status, setTableStatus] = useState(Array(table_names.length).fill(false));
 	function changeTableStatus(index: number) {
 		let tmp_status = table_status;
@@ -160,58 +173,61 @@ const PageParameters: NextPageWithLayout = () => {
 		setTableStatus(tmp_status);
 	}
 
-	// if(!run_once) {
-	// 	console.log("insert bank data")
-	// const insert = api.parameters.bankAddData.useQuery({
-	// 	bank_code: "900",
-	// 	bank_name: "土地銀行",
-	// 	org_code: "001",
-	// 	org_name: "新竹",
-	// 	start_date: new Date(8.62e15),
-	// 	end_date: new Date(8.64e15),
-	// });
-	// 	run_once += 1;
-	// }
+	for (var i = 0; i < table_names.length; i++) {if (datas.length < table_names.length) datas.push([]);}
+
+	const bankData = API_PARAMETERS.bankGetData.useQuery();
+	const attendanceData = API_PARAMETERS.attendanceGetData.useQuery();
+	const insuranceData = API_PARAMETERS.insuranceGetData.useQuery();
+
+	const bankAddData = api.parameters.bankAddData.useMutation()
 
 
-	for (var i = 0; i < table_names.length; i++) {
-		if (datas.length<table_names.length)
-			datas.push([]);
-	}
-
-	const bankData = api.parameters.bankGetData.useQuery();
-	const attendanceData = api.parameters.attendanceGetData.useQuery();
-
-	if(attendanceData.isFetched && !table_status[find_index("請假加班")]) {
+	waitFetch(attendanceData)
+	if (attendanceData.isFetched && !table_status[find_index("請假加班")]) {
 		console.log("Successful Fetched Attendance Data");
 		let index = find_index("請假加班");
-		console.log(index)
-		changeTableStatus(index)
-		datas[index] = []
-		Object.keys(attendanceData.data?.attendanceData[0]!).map((key)=> {
+		console.log(index);
+		changeTableStatus(index);
+		datas[index] = [];
+		Object.keys(attendanceData.data?.attendanceData[0]!).map((key) => {
 			datas[index]?.push({
 				name: key,
 				value: (attendanceData.data?.attendanceData[0] as any)[key],
-				status: "pending"
-			})
-		})
+				status: "pending",
+			});
+		});
 	}
-	if(bankData.isFetched && !table_status[find_index("銀行")]) {
+	if (bankData.isFetched && !table_status[find_index("銀行")]) {
 		console.log("Successful Fetched Bank Data");
 		let index = find_index("銀行");
-		console.log(index)
-		console.log(bankData.data?.bankData)
-		changeTableStatus(index)
-		datas[index] = []
-		Object.keys(bankData.data?.bankData[0]!).map((key)=> {
+		console.log(index);
+		console.log(bankData.data?.bankData);
+		changeTableStatus(index);
+		datas[index] = [];
+		Object.keys(bankData.data?.bankData[0]!).map((key) => {
 			datas[index]?.push({
 				name: key,
 				value: (bankData.data?.bankData[0] as any)[key],
-				status: "pending"
-			})
-		})
+				status: "pending",
+			});
+		});
 	}
 
+	if (insuranceData.isFetched && insuranceData.data?.insuranceDate!=null && !table_status[find_index("勞健保費率")]) {
+		console.log("Successful Fetched insurance Data");
+		let index = find_index("勞健保費率");
+		console.log(index);
+		console.log(insuranceData.data?.insuranceDate[0]);
+		changeTableStatus(index);
+		datas[index] = [];
+		Object.keys(insuranceData.data?.insuranceDate[0]!).map((key) => {
+			datas[index]?.push({
+				name: key,
+				value: (insuranceData.data?.insuranceDate[0] as any)[key],
+				status: "pending",
+			});
+		});
+	}
 
 	let tables: any = [];
 	datas.map((data) => {
@@ -391,6 +407,9 @@ const PageParameters: NextPageWithLayout = () => {
 			<Accordion type="single" collapsible className="w-full">
 				{tables_content}
 			</Accordion>
+
+
+			<Button disabled={bankAddData.isLoading} onClick={()=>bankAddData.mutate(testInsertBankData)}></Button>
 		</>
 	);
 };
