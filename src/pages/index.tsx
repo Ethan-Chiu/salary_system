@@ -50,8 +50,6 @@ const stagger = {
 };
 
 const PageHome: NextPageWithLayout = () => {
-	const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
 	return (
 		<>
 			<Header title="functions" showOptions className="mb-4" />

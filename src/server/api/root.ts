@@ -1,7 +1,9 @@
-import { exampleRouter } from "~/server/api/routers/example";
+import "reflect-metadata"
 import { parametersRouter } from "~/server/api/routers/parameters";
 import { createTRPCRouter } from "~/server/api/trpc";
+import { loginRouter } from "./routers/login";
 import { debugRouter } from "./routers/debug";
+import { seedRouter } from "./routers/seed";
 
 /**
  * This is the primary router for your server.
@@ -9,9 +11,10 @@ import { debugRouter } from "./routers/debug";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  example: exampleRouter,
   debug: debugRouter,
-  parameters: parametersRouter
+  parameters: parametersRouter,
+	login: loginRouter,
+	seed: seedRouter,
 });
 
 // export type definition of API

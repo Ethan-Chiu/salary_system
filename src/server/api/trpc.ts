@@ -35,7 +35,7 @@ interface CreateContextOptions {
  *
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
-const createInnerTRPCContext = ({ session }: CreateContextOptions) => {
+export const createInnerTRPCContext = ({ session }: CreateContextOptions) => {
   return {
     session,
   };
