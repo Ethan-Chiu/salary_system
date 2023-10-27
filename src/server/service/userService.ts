@@ -1,14 +1,16 @@
 import { LessThan, MoreThan } from "typeorm";
-import { dataSource } from "../database/client";
 import { User } from "../database/entity/user";
 import * as bcrypt from "bcrypt";
 import {injectable} from "tsyringe";
+import { Database } from "../database/client";
 
 @injectable()
 export class UserService {
+	constructor(private db: Database) {}
+
 	async findUserByEmpId(emp_id: string) {
 		const now = new Date();
-		const user = await dataSource.manager.findOne(User, {
+		const user = await this.db.dataSource.manager.findOne(User, {
 			where: {
 				emp_id: emp_id,
 				start_date: LessThan(now),
@@ -21,7 +23,7 @@ export class UserService {
 	async updateHash(userId: number, password: string) {
 		const salt = await bcrypt.genSalt();
 		const hash= await bcrypt.hash(password, salt);
-		await dataSource.manager.update(User, userId, {
+		await this.db.dataSource.manager.update(User, userId, {
 			hash: hash,
 		});
 	}

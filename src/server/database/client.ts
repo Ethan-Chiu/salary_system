@@ -1,4 +1,4 @@
-import "reflect-metadata";
+// import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { User } from "./entity/user";
 import OracleDB from "oracledb";
@@ -17,6 +17,7 @@ import { LevelRange } from "./entity/level_range";
 import { Level } from "./entity/level";
 import { PerformanceLevel } from "./entity/performance_level";
 import { TrustMoney } from "./entity/trust_money";
+import {singleton} from "tsyringe";
 
 const local_db = true;
 
@@ -69,24 +70,42 @@ const AppDataSource = new DataSource({
 	migrations: [],
 });
 
-export async function initDatabaseConnection(): Promise<DataSource> {
-	let dataSource = AppDataSource;
-	if (process.env.NODE_ENV == "development") {
-		if (local_db) {
-			dataSource = LocalAppDataSource;
-		}
+@singleton()
+export class Database {
+	constructor() {
+		this.initDatabaseConnection();
 	}
 
-	try {
-		if (!dataSource.isInitialized) {
-			await dataSource.initialize();
-			console.log("initialize database");
+	dataSource: DataSource;
+
+	// get dataSource() {
+	// 	return (async () => {
+	// 	   try {
+	// 		 data
+	// 	   } catch(e) {
+	// 		 return null;
+	// 	   }
+	// 	})();
+	// }
+
+ 	async initDatabaseConnection() {
+		let db_data_source = AppDataSource;
+		if (process.env.NODE_ENV == "development") {
+			if (local_db) {
+				db_data_source = LocalAppDataSource;
+			}
 		}
-		return dataSource;
-	} catch (error) {
-		console.log(error);
-		throw error;
+	
+		try {
+			if (!db_data_source.isInitialized) {
+				await db_data_source.initialize();
+				console.log("initialize database");
+			}
+			this.dataSource = db_data_source
+		} catch (error) {
+			console.log(error);
+			throw error;
+		}
 	}
 }
 
-export const dataSource: DataSource = await initDatabaseConnection();

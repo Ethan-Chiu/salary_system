@@ -4,15 +4,15 @@ import {
 	publicProcedure,
 	protectedProcedure,
 } from "~/server/api/trpc";
-import { dataSource } from "~/server/database/client";
+import { Database } from "~/server/database/client";
 import { User } from "~/server/database/entity/user";
 
 export const debugRouter = createTRPCRouter({
-	init: publicProcedure.query(async () => {
-		const data = await dataSource.manager.find(User);
+	// init: publicProcedure.query(async () => {
+	// 	const data = await .find(User);
 
-		return {
-			userData: `data ${data}`,
-		};
-	}),
+	// 	return {
+	// 		userData: `data ${data}`,
+	// 	};
+	// }),
 });

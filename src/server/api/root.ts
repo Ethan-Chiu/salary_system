@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import { createTRPCRouter } from "~/server/api/trpc";
 import { loginRouter } from "./routers/login";
 import { debugRouter } from "./routers/debug";
