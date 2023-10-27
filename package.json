@@ -1,8 +1,8 @@
 {
-  "name": "salary_system",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
+	"name": "salary_system",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
 		"build": "next build",
 		"dev": "next dev",
 		"lint": "next lint",
@@ -11,7 +11,7 @@
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^3.3.1",
-    "@radix-ui/react-accordion": "^1.1.2",
+		"@radix-ui/react-accordion": "^1.1.2",
 		"@radix-ui/react-avatar": "^1.0.3",
 		"@radix-ui/react-checkbox": "^1.0.4",
 		"@radix-ui/react-dialog": "^1.0.4",
@@ -52,13 +52,13 @@
 		"react-hook-form": "^7.45.4",
 		"react-icons": "^4.10.1",
 		"reflect-metadata": "^0.1.13",
+		"sequelize": "^6.33.0",
 		"superjson": "^1.13.1",
 		"tailwind-merge": "^1.14.0",
 		"tailwindcss-animate": "^1.0.6",
-		"ts-node": "^10.9.1",
 		"trpc-playground": "^1.0.4",
+		"ts-node": "^10.9.1",
 		"tsyringe": "^4.8.0",
-		"typeorm": "^0.3.17",
 		"zod": "^3.22.2"
 	},
 	"devDependencies": {
@@ -75,7 +75,7 @@
 		"eslint": "^8.40.0",
 		"eslint-config-next": "^13.4.2",
 		"jest": "^29.7.0",
-		"oracledb": "^6.0.3",
+		"oracledb": "^6.2.0",
 		"postcss": "^8.4.27",
 		"prettier": "^2.8.8",
 		"prettier-plugin-tailwindcss": "^0.2.8",
