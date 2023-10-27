@@ -50,7 +50,7 @@ const stagger = {
 };
 
 const PageHome: NextPageWithLayout = () => {
-	const hello = api.example.hello.useQuery({ text: "from tRPC" });
+	const hello = api.debug.init.useQuery();
 
 	return (
 		<>
