@@ -125,13 +125,13 @@ export const columns: ColumnDef<SettingItem>[] = [
 			return <div className="text-center font-medium">{formatted}</div>;
 		},
 	},
-	{
-		accessorKey: "Last Modified",
-		header: "Last Modified",
-		cell: ({ row }: { row: Row<SettingItem> }) => (
-			<div className="capitalize">{row.getValue("???")}</div>
-		),
-	},
+	// {
+	// 	accessorKey: "Last Modified",
+	// 	header: "Last Modified",
+	// 	cell: ({ row }: { row: Row<SettingItem> }) => (
+	// 		<div className="capitalize">{row.getValue("???")}</div>
+	// 	),
+	// },
 	{
 		id: "actions",
 		enableHiding: false,
@@ -143,10 +143,10 @@ export const columns: ColumnDef<SettingItem>[] = [
 	},
 ];
 
-const waitFetch = (dbQuery: any) => {
-	while(!dbQuery.isFetched){continue}
-	return 0;
-}
+// const waitFetch = (dbQuery: any) => {
+// 	while(!dbQuery.isFetched){continue}
+// 	return 0;
+// }
 
 const API_PARAMETERS = api.parameters;
 
@@ -181,8 +181,6 @@ const PageParameters: NextPageWithLayout = () => {
 
 	const bankAddData = api.parameters.bankAddData.useMutation()
 
-
-	waitFetch(attendanceData)
 	if (attendanceData.isFetched && !table_status[find_index("請假加班")]) {
 		console.log("Successful Fetched Attendance Data");
 		let index = find_index("請假加班");
@@ -192,7 +190,7 @@ const PageParameters: NextPageWithLayout = () => {
 		Object.keys(attendanceData.data?.attendanceData[0]!).map((key) => {
 			datas[index]?.push({
 				name: key,
-				value: (attendanceData.data?.attendanceData[0] as any)[key],
+				value: ((attendanceData.data?.attendanceData[0] as any)[key]==null?"NULL":(attendanceData.data?.attendanceData[0] as any)[key]),
 				status: "pending",
 			});
 		});
@@ -207,7 +205,7 @@ const PageParameters: NextPageWithLayout = () => {
 		Object.keys(bankData.data?.bankData[0]!).map((key) => {
 			datas[index]?.push({
 				name: key,
-				value: (bankData.data?.bankData[0] as any)[key],
+				value: ((bankData.data?.bankData[0] as any)[key]==null?"Null":(bankData.data?.bankData[0] as any)[key]),
 				status: "pending",
 			});
 		});
@@ -223,7 +221,7 @@ const PageParameters: NextPageWithLayout = () => {
 		Object.keys(insuranceData.data?.insuranceDate[0]!).map((key) => {
 			datas[index]?.push({
 				name: key,
-				value: (insuranceData.data?.insuranceDate[0] as any)[key],
+				value: ((insuranceData.data?.insuranceDate[0] as any)[key]==null)?"NULL":((insuranceData.data?.insuranceDate[0] as any)[key]),
 				status: "pending",
 			});
 		});
@@ -254,6 +252,7 @@ const PageParameters: NextPageWithLayout = () => {
 
 	let tables_content: any = [];
 	tables.map((table: any, index: number) => {
+		const [showDialog, setShowDialog] = useState(false);
 		tables_content.push(
 			<AccordionItem value={"item-" + index.toString()}>
 				<AccordionTrigger>{table_names[index]}</AccordionTrigger>
@@ -380,6 +379,16 @@ const PageParameters: NextPageWithLayout = () => {
 							<Button
 								variant="outline"
 								size="sm"
+								onClick={() => {
+									setShowDialog(true);
+								}}
+								disabled={!table_status[index]}
+							>
+								Add
+							</Button>
+							<Button
+								variant="outline"
+								size="sm"
 								onClick={() => table.previousPage()}
 								disabled={!table.getCanPreviousPage()}
 							>
@@ -394,6 +403,14 @@ const PageParameters: NextPageWithLayout = () => {
 								Next
 							</Button>
 						</div>
+						{table_status[index]?<InsertDialog
+							name={""}
+							data={datas[index]}
+							showDialog={showDialog}
+							onOpenChange={(open: boolean) => {
+								setShowDialog(open);
+							}}
+						/>:<></>}
 					</div>
 				</AccordionContent>
 			</AccordionItem>
@@ -409,7 +426,7 @@ const PageParameters: NextPageWithLayout = () => {
 			</Accordion>
 
 
-			<Button disabled={bankAddData.isLoading} onClick={()=>bankAddData.mutate(testInsertBankData)}></Button>
+			<Button disabled={bankAddData.isLoading} onClick={()=>bankAddData.mutate(testInsertBankData)}>Insert Bank Data</Button>
 		</>
 	);
 };
@@ -507,6 +524,64 @@ function CompDialog({
 							}
 							className="col-span-3"
 						/>
+					</div>
+				</div>
+				<DialogFooter>
+					<DialogClose asChild>
+						<Button
+							type="submit"
+							onClick={() => {
+								const value = Number(inputRef.current?.value);
+							}}
+						>
+							Save changes
+						</Button>
+					</DialogClose>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
+	);
+}
+
+
+function InsertDialog({
+	name,
+	data,
+	showDialog,
+	onOpenChange,
+}: {
+	name: string;
+	data: any;
+	showDialog: boolean;
+	onOpenChange: (open: boolean) => void;
+}) {
+	const inputRef = useRef<HTMLInputElement>(null);
+
+	return (
+		<Dialog open={showDialog} onOpenChange={onOpenChange} >
+			<DialogContent className={"lg:max-w-screen-lg overflow-y-scroll max-h-screen"}>
+				<DialogHeader>
+					<DialogTitle>
+						Add Data to [Table] {name}
+					</DialogTitle>
+					<DialogDescription>{/* Description */}</DialogDescription>
+				</DialogHeader>
+				<div className="grid gap-4 py-4">
+					<div className="grid grid-cols-4 items-center gap-4">
+						{
+							data.map((ob: any, index: number) => {
+								return	<>
+								 			<Label htmlFor="value" className="text-right">{ob.name}</Label>
+								 			<Input
+												ref={inputRef}
+												id="value"
+												defaultValue={ob.value}
+												type={
+													Number.isInteger(ob.value)?"number": "value"}
+												className="col-span-3"
+											/></> 
+								})
+						}
 					</div>
 				</div>
 				<DialogFooter>
