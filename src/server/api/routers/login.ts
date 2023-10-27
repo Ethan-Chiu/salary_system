@@ -17,6 +17,7 @@ export const loginRouter = createTRPCRouter({
 
 			const userService = container.resolve(UserService);
 			let user = await userService.findUserByEmpId(input.emp_id);
+			console.log("user", user)
 
 			if (!user) {
 				throw new BaseResponseError("Failed to find available account");
@@ -35,15 +36,15 @@ export const loginRouter = createTRPCRouter({
 	changePassword: publicProcedure
 		.input(z.object({ emp_id: z.string(), password: z.string() }))
 		.mutation(async ({ input }) => {
-			// const userService = container.resolve(UserService);
-			// let user = await userService.findUserByEmpId(input.emp_id);
+			const userService = container.resolve(UserService);
+			let user = await userService.findUserByEmpId(input.emp_id);
 
-			// if (!user) {
-			// 	throw new BaseResponseError("Failed to find available account");
-			// } else {
-			// 	await userService.updateHash(user.id, input.password);
-			// }
+			if (!user) {
+				throw new BaseResponseError("Failed to find available account");
+			} else {
+				await userService.updateHash(user.id, input.password);
+			}
 
-			// return user;
+			return user;
 		}),
 });

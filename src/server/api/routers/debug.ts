@@ -1,3 +1,4 @@
+import { container } from "tsyringe";
 import { z } from "zod";
 import {
 	createTRPCRouter,
@@ -5,14 +6,29 @@ import {
 	protectedProcedure,
 } from "~/server/api/trpc";
 import { Database } from "~/server/database/client";
-import { User } from "~/server/database/entity/user";
 
 export const debugRouter = createTRPCRouter({
-	// init: publicProcedure.query(async () => {
-	// 	const data = await .find(User);
+	init: publicProcedure.query(async () => {
+		const database = container.resolve(Database).connection;
 
-	// 	return {
-	// 		userData: `data ${data}`,
-	// 	};
-	// }),
+		try {
+			const data = await database.sync({ alter: true });
+			return {
+				msg: "All models were synchronized successfully.",
+			};
+		} catch (e) {
+			return {
+				msg: `error ${e}`,
+			};
+		}
+	}),
+	validate: publicProcedure.query(async () => {
+		const database = container.resolve(Database).connection;
+		try {
+			await database.authenticate();
+			return { msg: "Connection has been established successfully." };
+		} catch (error) {
+			return { msg: `Unable to connect to the database: ${error}` };
+		}
+	}),
 });

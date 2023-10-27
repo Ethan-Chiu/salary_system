@@ -33,7 +33,7 @@ export class Database {
 		this.initDatabaseConnection();
 	}
 
-	database: Sequelize;
+	connection: Sequelize;
 
  	initDatabaseConnection() {
 		let config = remoteDatabaseConfig;
@@ -49,6 +49,6 @@ export class Database {
 			port: config.port
 		});
 
-		this.database = sequelize;
+		this.connection = sequelize;
 	}
 }
