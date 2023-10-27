@@ -2,8 +2,9 @@ import { LessThan, MoreThan } from "typeorm";
 import { dataSource } from "../database/client";
 import { User } from "../database/entity/user";
 import * as bcrypt from "bcrypt";
+import {injectable} from "tsyringe";
 
-
+@injectable()
 export class UserService {
 	async findUserByEmpId(emp_id: string) {
 		const now = new Date();
