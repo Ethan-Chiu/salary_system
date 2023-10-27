@@ -57,6 +57,6 @@ export class AttendanceSetting extends BaseMeta {
 	@Column("date")
 	start_date: Date;
 
-	@Column("date")
-	end_date: Date;
+	@Column("date", { nullable: true })
+	end_date?: Date | null;
 }
