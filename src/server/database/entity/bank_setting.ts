@@ -7,7 +7,7 @@ export class BankSetting extends BaseMeta {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column("varchar2", { length: Char(32) })
+	@Column({type:"varchar",length:32})
 	bank_code: string;
 
 	@Column("varchar2", { length: Char(32) })

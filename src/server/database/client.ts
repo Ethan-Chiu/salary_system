@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { DataSource } from "typeorm";
+import { DataSource, Migration } from "typeorm";
 import { Authority } from "./entity/authority";
 import OracleDB from "oracledb";
 import { BonusSetting } from "./entity/bonus_setting";
@@ -18,6 +18,7 @@ import { Level } from "./entity/level";
 import { PerformanceLevel } from "./entity/performance_level";
 import { TrustMoney } from "./entity/trust_money";
 
+
 const AppDataSource = new DataSource({
 	type: "oracle",
 	host: "10.4.3.224",
@@ -26,8 +27,7 @@ const AppDataSource = new DataSource({
 	password: "salary",
 	serviceName: "testplm",
 	driver: OracleDB,
-	synchronize: false,
-	migrationsRun: false,
+	synchronize: true,
 	logging: true,
 	entities: [
 		AttendanceSetting,
@@ -48,7 +48,7 @@ const AppDataSource = new DataSource({
 		TrustMoney,
 	],
 	subscribers: [],
-	migrations: [],
+	// migrations: [],
 });
 
 export async function initDatabaseConnection(): Promise<DataSource> {

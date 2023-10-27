@@ -9,7 +9,7 @@ import { BankSetting } from "~/server/database/entity/bank_setting";
 import {AttendanceSetting} from "~/server/database/entity/attendance_setting";
 import {InsuranceRateSetting} from "~/server/database/entity/insurance_rate_setting";
 import { attendanceInput, bankInput, insuranceInput } from "../input_type/parameters_input";
-import { LessThan, MoreThan } from "typeorm";
+import { IsNull, LessThan, LessThanOrEqual, MoreThan, MoreThanOrEqual } from "typeorm";
 
 export const parametersRouter = createTRPCRouter({
 	bankGetData: publicProcedure
@@ -33,14 +33,15 @@ export const parametersRouter = createTRPCRouter({
     attendanceGetData: publicProcedure
         .query(async () => {
             const now = new Date()
-            const attendanceData = await dataSource.manager.find(AttendanceSetting)
-                // ,{
-            //     // where:{
-            //     //     start_date: LessThan(now),
-            //     //     end_date: MoreThan(now) || undefined
-            //     // }
-            // });
-
+            const attendanceData = await dataSource.manager.find(AttendanceSetting
+                ,{
+                where:{
+                    start_date: LessThanOrEqual(now),
+                    // end_date: MoreThan(now) || IsNull()
+                    end_date:  (IsNull() ||  MoreThanOrEqual(now))
+                }
+            });
+            console.log((attendanceData[0] as any)['end_date'])
             return {
                 attendanceData: attendanceData,
             };
@@ -52,8 +53,8 @@ export const parametersRouter = createTRPCRouter({
             const now = new Date()
             const overlap_data = await dataSource.manager.find(AttendanceSetting,{
                 where:{
-                    start_date: LessThan(input.start_date),
-                    end_date: MoreThan(input.start_date) 
+                    start_date: LessThanOrEqual(input.start_date),
+                    end_date: MoreThanOrEqual(input.start_date) 
                 }
             });
             if (overlap_data != undefined){
@@ -63,8 +64,8 @@ export const parametersRouter = createTRPCRouter({
             }
             const old_attendanceData = await dataSource.manager.find(AttendanceSetting,{
                 where:{
-                    start_date: LessThan(now),
-                    end_date:  undefined
+                    start_date: LessThanOrEqual(now),
+                    end_date:  IsNull()
                 }
             });
             for (const o of old_attendanceData){
@@ -83,8 +84,8 @@ export const parametersRouter = createTRPCRouter({
             const now = new Date()
             const insuranceData = await dataSource.manager.find(InsuranceRateSetting,{
                 where:{
-                    start_date: LessThan(now),
-                    end_date: MoreThan(now) || undefined
+                    start_date: LessThanOrEqual(now),
+                    end_date: (MoreThanOrEqual(now) || IsNull())
                 }
             });
 
@@ -99,8 +100,8 @@ export const parametersRouter = createTRPCRouter({
             const now = new Date()
             const overlap_data = await dataSource.manager.find(InsuranceRateSetting,{
                 where:{
-                    start_date: LessThan(input.start_date),
-                    end_date: MoreThan(input.start_date) 
+                    start_date: LessThanOrEqual(input.start_date),
+                    end_date: MoreThanOrEqual(input.start_date) 
                 }
             });
             if (overlap_data != undefined){
@@ -110,8 +111,8 @@ export const parametersRouter = createTRPCRouter({
             }
             const old_attendanceData = await dataSource.manager.find(InsuranceRateSetting,{
                 where:{
-                    start_date: LessThan(now),
-                    end_date:  undefined
+                    start_date: LessThanOrEqual(now),
+                    end_date:  IsNull()
                 }
             });
             for (const o of old_attendanceData){
