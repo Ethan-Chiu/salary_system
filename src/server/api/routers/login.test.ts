@@ -1,8 +1,8 @@
 import { type inferProcedureInput } from "@trpc/server";
 import {describe, expect, test} from '@jest/globals';
 
-import { appRouter, type AppRouter } from "../../../server/api/root";
-import { createInnerTRPCContext } from "../../../server/api/trpc";
+import { appRouter, type AppRouter } from "~/server/api/root";
+import { createInnerTRPCContext } from "~/server/api/trpc";
 
 test("login but no account", async () => {
 	const ctx = await createInnerTRPCContext({ session: null });

@@ -40,6 +40,7 @@
 		"clsx": "^2.0.0",
 		"cmdk": "^0.2.0",
 		"framer-motion": "^10.16.1",
+		"jest-mock-extended": "^3.0.5",
 		"lucide-react": "^0.268.0",
 		"next": "^13.4.2",
 		"next-auth": "^4.22.4",
@@ -53,6 +54,7 @@
 		"superjson": "^1.13.1",
 		"tailwind-merge": "^1.14.0",
 		"tailwindcss-animate": "^1.0.6",
+		"ts-node": "^10.9.1",
 		"typeorm": "^0.3.17",
 		"zod": "^3.22.2"
 	},

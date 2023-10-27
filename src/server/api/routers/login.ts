@@ -4,7 +4,7 @@ import {
 	publicProcedure,
 	protectedProcedure,
 } from "~/server/api/trpc";
-import bcrypt from "bcrypt";
+import * as bcrypt from "bcrypt";
 import { UserService } from "~/server/service/userService";
 
 export const loginRouter = createTRPCRouter({
