@@ -23,7 +23,7 @@ export const parametersRouter = createTRPCRouter({
 
     bankAddData: publicProcedure
         .input(bankInput)
-        .query(async ({ input }) => {
+        .mutation(async ({ input }) => {
             const error = dataSource.manager.insert(BankSetting,input)
             return {
                 error: error
@@ -49,7 +49,7 @@ export const parametersRouter = createTRPCRouter({
 
     attendanceAddData: publicProcedure
         .input(attendanceInput)
-        .query(async ({ input }) => {
+        .mutation(async ({ input }) => {
             const now = new Date()
             const overlap_data = await dataSource.manager.find(AttendanceSetting,{
                 where:{
@@ -96,7 +96,7 @@ export const parametersRouter = createTRPCRouter({
 
     insuranceAddData: publicProcedure
         .input(insuranceInput)
-        .query(async ({ input }) => {
+        .mutation(async ({ input }) => {
             const now = new Date()
             const overlap_data = await dataSource.manager.find(InsuranceRateSetting,{
                 where:{

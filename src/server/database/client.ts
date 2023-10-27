@@ -27,7 +27,7 @@ const AppDataSource = new DataSource({
 	password: "salary",
 	serviceName: "testplm",
 	driver: OracleDB,
-	synchronize: true,
+	synchronize: false,
 	logging: true,
 	entities: [
 		AttendanceSetting,
