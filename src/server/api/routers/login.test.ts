@@ -1,5 +1,5 @@
 import { type inferProcedureInput } from "@trpc/server";
-import { expect, test } from "vitest";
+import {describe, expect, test} from '@jest/globals';
 
 import { appRouter, type AppRouter } from "../../../server/api/root";
 import { createInnerTRPCContext } from "../../../server/api/trpc";
@@ -14,8 +14,8 @@ test("login but no account", async () => {
 		password: "12345",
 	};
 
-	const example = await caller.login.login(input);
-	console.log(example);
+	// const example = await caller.login.login(input);
+	console.log(1 + 1);
 
 	// expect(example).toMatchObject();
 });

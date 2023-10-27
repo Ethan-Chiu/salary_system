@@ -11,7 +11,7 @@ services:
     volumes:
       - oracle-data:/opt/oracle/oradata
       - ./oracle_setup:/opt/oracle/scripts/setup
-      # - ./oracle_setup:/opt/oracle/scripts/startup if setup not work
+      # - ./oracle_setup:/opt/oracle/scripts/startup # if setup not work
     # healthcheck:
     #   test: ["CMD", "sqlplus", "-L", "sys/salary@//localhost:1521/ORCLCDB as sysdba", "@healthcheck.sql"]
     #   interval: 30s
