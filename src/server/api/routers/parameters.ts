@@ -57,7 +57,7 @@ export const parametersRouter = createTRPCRouter({
                     end_date: MoreThanOrEqual(input.start_date) 
                 }
             });
-            if (overlap_data != undefined){
+            if (overlap_data != null){
                 return {
                     error : 'invalid input'
                 }
@@ -69,7 +69,7 @@ export const parametersRouter = createTRPCRouter({
                 }
             });
             for (const o of old_attendanceData){
-                if (o != undefined){
+                if (o != null){
                     o.end_date=input.start_date
                 }
             }    
@@ -104,7 +104,7 @@ export const parametersRouter = createTRPCRouter({
                     end_date: MoreThanOrEqual(input.start_date) 
                 }
             });
-            if (overlap_data != undefined){
+            if (overlap_data != null){
                 return {
                     error : 'invalid input'
                 }
@@ -116,7 +116,7 @@ export const parametersRouter = createTRPCRouter({
                 }
             });
             for (const o of old_attendanceData){
-                if (o != undefined){
+                if (o != null){
                     o.end_date=input.start_date
                 }
             }    
