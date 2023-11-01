@@ -15,85 +15,74 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import Link from "next/link";
 
 import React, { useState } from "react";
+import { PerpageLayout } from "~/components/layout/perpage_layout";
 
 export default function Login() {
 	const [forgetPwd, setForgetPwd] = useState(false);
 
-	return !forgetPwd ? (
-		<RootLayout>
-			<Head>
-				<title>Create T3 App</title>
-				<meta name="description" content="Salary system" />
-				<link rel="icon" href="/favicon.ico" />
-			</Head>
-			<main className="mt-[15vh] flex justify-center align-middle">
-				<Card className="w-[400px]">
-					<CardHeader>
-						<div className="justify-center">
-							<CardTitle>Login</CardTitle>
-						</div>
-					</CardHeader>
-					<CardContent className="space-y-2">
-						<div className="space-y-1">
-							<Label htmlFor="name">User ID</Label>
-							<Input id="userid" placeholder="user id" />
-						</div>
-						<div className="space-y-1">
-							<Label htmlFor="username">Password</Label>
-							<Input id="password" placeholder="password" />
-						</div>
-						<div className="text-right">
-							<br></br>
-							<button
-								onClick={() => setForgetPwd(true)}
-								className="text-sm text-muted-foreground"
-							>
-								forget password?
-							</button>
-						</div>
-					</CardContent>
-					<CardFooter className="justify-center">
-						<Link key={"/"} href={"/"}>
-							<Button>LOGIN</Button>
-						</Link>
-					</CardFooter>
-				</Card>
-			</main>
-		</RootLayout>
-	) : (
-		<RootLayout>
-			<Head>
-				<title>Create T3 App</title>
-				<meta name="description" content="Salary system" />
-				<link rel="icon" href="/favicon.ico" />
-			</Head>
-			<main className="mt-[15vh] flex justify-center align-middle">
-				<Card className="w-[400px]">
-					<CardHeader>
-						<div className="justify-center">
-							<CardTitle>Forget Password</CardTitle>
-						</div>
-					</CardHeader>
-					<CardContent className="space-y-2">
-						<div className="space-y-1">
-							<Label htmlFor="name">User ID</Label>
-							<Input id="userid" placeholder="user id" />
-						</div>
-						<div className="text-right">
-							<br></br>
-							<button
-								onClick={() => setForgetPwd(false)}
-								className="text-sm text-muted-foreground"
-							>
-								Login
-							</button>
-						</div>
-					</CardContent>
-					<CardFooter className="justify-center">
-						<Button>RESET PASSWORD</Button>
-					</CardFooter>
-				</Card>
-			</main>
-		</RootLayout>
+	return (
+		<PerpageLayout pageTitle="login">
+			<div className="mt-[15vh] flex justify-center align-middle">
+				{!forgetPwd ? (
+					<Card className="w-[400px]">
+						<CardHeader>
+							<div className="justify-center">
+								<CardTitle>Login</CardTitle>
+							</div>
+						</CardHeader>
+						<CardContent className="space-y-2">
+							<div className="space-y-1">
+								<Label htmlFor="name">User ID</Label>
+								<Input id="userid" placeholder="user id" />
+							</div>
+							<div className="space-y-1">
+								<Label htmlFor="username">Password</Label>
+								<Input id="password" placeholder="password" />
+							</div>
+							<div className="text-right">
+								<br></br>
+								<button
+									onClick={() => setForgetPwd(true)}
+									className="text-sm text-muted-foreground"
+								>
+									forget password?
+								</button>
+							</div>
+						</CardContent>
+						<CardFooter className="justify-center">
+							<Link key={"/"} href={"/"}>
+								<Button>LOGIN</Button>
+							</Link>
+						</CardFooter>
+					</Card>
+				) : (
+					<Card className="w-[400px]">
+						<CardHeader>
+							<div className="justify-center">
+								<CardTitle>Forget Password</CardTitle>
+							</div>
+						</CardHeader>
+						<CardContent className="space-y-2">
+							<div className="space-y-1">
+								<Label htmlFor="name">User ID</Label>
+								<Input id="userid" placeholder="user id" />
+							</div>
+							<div className="text-right">
+								<br></br>
+								<button
+									onClick={() => setForgetPwd(false)}
+									className="text-sm text-muted-foreground"
+								>
+									Login
+								</button>
+							</div>
+						</CardContent>
+						<CardFooter className="justify-center">
+							<Button>RESET PASSWORD</Button>
+						</CardFooter>
+					</Card>
+				)}
+			</div>
+		</PerpageLayout>
 	);
 }

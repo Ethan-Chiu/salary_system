@@ -6,7 +6,7 @@ type PerpageLayoutProp = {
 	pageTitle: string;
 };
 
-export const PerpageLayout = (props: PropsWithChildren<PerpageLayoutProp>) => {
+export const PerpageLayoutNav = (props: PropsWithChildren<PerpageLayoutProp>) => {
 	return (
 		<>
 			<Head>
@@ -21,7 +21,18 @@ export const PerpageLayout = (props: PropsWithChildren<PerpageLayoutProp>) => {
 				/>
 			</Head>
 			<main className="min-h-screen bg-background">
-				{props.children}
+				<div className="grid min-h-screen lg:grid-cols-5">
+					
+					<Sidebar className="hidden lg:block lg:border-border" />
+					<div className="col-span-3 lg:col-span-4 lg:border-l">
+						<div className="h-full px-4 py-6 lg:px-8">
+							<div className="w-full">
+								{props.children}
+							</div>
+						</div>
+					</div>
+
+				</div>
 			</main>
 		</>
 	);
