@@ -1,14 +1,50 @@
 import * as bcrypt from "bcrypt";
 import { injectable } from "tsyringe";
-import { Database } from "../database/client";
 import { User } from "../database/entity/user";
 import { Op } from "sequelize";
+import { BaseResponseError } from "../api/error/BaseResponseError";
 
 @injectable()
 export class UserService {
-	constructor(private db: Database) {}
+	constructor() {}
 
-	async findUserByEmpId(emp_id: string): Promise<User | null> {
+	async createUser(
+		emp_id: string,
+		password: string,
+		auth_level: number,
+		start_date: Date | null,
+		end_date: Date | null
+	): Promise<User> {
+		const user = await this.getUser(emp_id);
+		if (user != null) {
+			throw new BaseResponseError("User already exist");
+		}
+
+		const now = new Date();
+
+		if (end_date != null && end_date < (start_date ?? now)) {
+			throw new BaseResponseError("End date is earlier than start date");
+		}
+
+		const salt = await bcrypt.genSalt();
+		const hash = await bcrypt.hash(password, salt);
+
+		const newUser = await User.create({
+			emp_id: emp_id,
+			hash: hash,
+			auth_level: auth_level,
+			start_date: start_date ?? now,
+			end_date: end_date,
+			create_date: now,
+			create_by: "system",
+			update_date: now,
+			update_by: "system",
+		});
+
+		return newUser;
+	}
+
+	async getUser(emp_id: string): Promise<User | null> {
 		const now = new Date();
 		const user = await User.findOne({
 			where: {
@@ -24,16 +60,44 @@ export class UserService {
 		return user;
 	}
 
-	async updateHash(userId: number, password: string): Promise<void> {
-		const salt = await bcrypt.genSalt();
-		const hash = await bcrypt.hash(password, salt);
+	async updateUser(
+		emp_id: string,
+		password: string | null = null,
+		auth_level: number | null = null,
+		start_date: Date | null = null,
+		end_date: Date | null = null
+	): Promise<void> {
+		const user = await this.getUser(emp_id);
+		if (user == null) {
+			throw new BaseResponseError("User does not exist");
+		}
 
+		let hash: string | null = null;
+
+		if (password != null) {
+			const salt = await bcrypt.genSalt();
+			hash = await bcrypt.hash(password, salt);
+		}
+
+		const now = new Date();
 		const affectedCount = await User.update(
-			{ hash: hash },
-			{ where: { id: userId } }
+			{
+				hash: hash ?? user.hash,
+				auth_level: auth_level ?? user.auth_level,
+				start_date: start_date ?? user.start_date,
+				end_date: end_date ?? user.end_date,
+				update_date: now,
+				update_by: "system",
+			},
+			{ where: { emp_id: emp_id } }
 		);
 		if (affectedCount[0] != 1) {
-			// handle error
+			throw new BaseResponseError("Update error");
 		}
+	}
+
+	async deleteUser(emp_id: string): Promise<void> {
+		const now = new Date();
+		this.updateUser(emp_id, null, null, null, now);
 	}
 }

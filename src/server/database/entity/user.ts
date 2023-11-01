@@ -24,7 +24,10 @@ import {
 import { container } from "tsyringe";
 import { Database } from "../client";
 
-export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+export class User extends Model<
+	InferAttributes<User>,
+	InferCreationAttributes<User>
+> {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
 	declare emp_id: string;
@@ -35,9 +38,11 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
 
 	// timestamps!
 	// createdAt can be undefined during creation
-	declare create_date: CreationOptional<Date>;
+	declare create_date: Date;
+	declare create_by: string;
 	// updatedAt can be undefined during creation
-	declare update_date: CreationOptional<Date>;
+	declare update_date: Date;
+	declare update_by: string;
 }
 
 const sequelize = container.resolve(Database).connection;
@@ -70,12 +75,25 @@ User.init(
 			type: DataTypes.DATE,
 			allowNull: true,
 		},
-		create_date: DataTypes.DATE,
-		update_date: DataTypes.DATE,
+		create_date: {
+			type: DataTypes.DATE,
+			allowNull: false,
+		},
+		create_by: {
+			type: DataTypes.STRING(128),
+			allowNull: false,
+		},
+		update_date: {
+			type: DataTypes.DATE,
+			allowNull: false,
+		},
+		update_by: {
+			type: DataTypes.STRING(128),
+			allowNull: false,
+		},
 	},
 	{
 		sequelize,
 		tableName: "U_USER",
 	}
 );
-
