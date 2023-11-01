@@ -32,8 +32,8 @@ import {
 
 import { type NextPageWithLayout } from "../_app";
 import { type ReactElement } from "react";
-import { PerpageLayout } from "~/components/layout/perpage_layout";
 import { Header } from "~/components/header";
+import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 
 type EmployeeInfo = {
 	username: string;
@@ -188,7 +188,7 @@ function CompHoverCard({ info }: { info: EmployeeInfo }) {
 PageRoles.getLayout = function getLayout(page: ReactElement) {
 	return (
 		<RootLayout>
-			<PerpageLayout pageTitle="roles">{page}</PerpageLayout>
+			<PerpageLayoutNav pageTitle="roles">{page}</PerpageLayoutNav>
 		</RootLayout>
 	);
 };

@@ -3,11 +3,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Separator } from "~/components/ui/separator";
 import { type NextPageWithLayout } from "../_app";
 import { type ReactElement } from "react";
-import { PerpageLayout } from "~/components/layout/perpage_layout";
 
 import { ProfileForm } from "./components/profile";
 import { AppearanceForm } from "./components/appearance";
 import { Header } from "~/components/header"
+import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 
 const PageSettings: NextPageWithLayout = () => {
 	return (
@@ -82,7 +82,7 @@ const PageSettings: NextPageWithLayout = () => {
 PageSettings.getLayout = function getLayout(page: ReactElement) {
 	return (
 		<RootLayout>
-			<PerpageLayout pageTitle="functions">{page}</PerpageLayout>
+			<PerpageLayoutNav pageTitle="functions">{page}</PerpageLayoutNav>
 		</RootLayout>
 	);
 };
