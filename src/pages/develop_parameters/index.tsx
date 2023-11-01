@@ -27,7 +27,7 @@ import type {
 	VisibilityState,
 	Row,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, ChevronDown, MoreHorizontal, Settings } from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
@@ -46,7 +46,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
-import { Checkbox } from "~/components/ui/checkbox";
 import {
 	Dialog,
 	DialogContent,
@@ -59,126 +58,50 @@ import {
 import { type NextPageWithLayout } from "../_app";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
 import { type ReactElement, useRef, useState, useEffect } from "react";
-import { table } from "console";
-import { ConnectionPoolClosedEvent } from "typeorm";
-import { map } from "@trpc/server/observable";
-import { AttendanceSetting } from "~/server/database/entity/attendance_setting";
-import { rangeEnd } from "prettier.config.cjs";
-import Parameters from "../test/table_modify_element";
 
-export type SettingItem = {
-	name: string;
-	// type: "boolean" | "list" | "number" | "input"
-	value: number | string;
-	status: "pending" | "processing" | "success" | "failed";
-};
+import { DATA } from "./datatype";
+import { SettingItem, columns1, columns2 } from "./parameter_table"
+import { BankRow, bank_data_columns } from "./bank_table";
 
-let datas: SettingItem[][] = [];
-
-// 基本設定、請假加班、勞健保費率
-let table_names: String[] = ["請假加班", "銀行", "勞健保費率"];
-function find_index(table_name: string) {
-	for (var i = 0; i < table_names.length; i++) {
-		if (table_name == table_names[i]) return i;
-	}
-	return -1;
-}
-
-export const columns: ColumnDef<SettingItem>[] = [
-	{
-		accessorKey: "name",
-		header: ({ column }) => {
-			return (
-				<Button
-					variant="ghost"
-					onClick={() =>
-						column.toggleSorting(column.getIsSorted() === "asc")
-					}
-				>
-					Setting
-					<ArrowUpDown className="ml-2 h-4 w-4" />
-				</Button>
-			);
-		},
-		cell: ({ row }) => (
-			<div className="pl-4 lowercase">{row.getValue("name")}</div>
-		),
-	},
-	{
-		accessorKey: "value",
-		header: () => <div className="text-center">Value</div>,
-		cell: ({ row }) => {
-			var formatted = "";
-			switch (typeof row.getValue("value")) {
-				case "number":
-					const amount = parseFloat(row.getValue("value"));
-					// Format the amount as a dollar amount
-					// formatted = new Intl.NumberFormat("en-US", {
-					// 	style: "currency",
-					// 	currency: "USD",
-					// }).format(amount);
-					formatted = amount.toString();
-					break;
-				case "string":
-					formatted = row.getValue("value");
-			}
-			return <div className="text-center font-medium">{formatted}</div>;
-		},
-	},
-	// {
-	// 	accessorKey: "Last Modified",
-	// 	header: "Last Modified",
-	// 	cell: ({ row }: { row: Row<SettingItem> }) => (
-	// 		<div className="capitalize">{row.getValue("???")}</div>
-	// 	),
-	// },
-	{
-		id: "actions",
-		enableHiding: false,
-		cell: ({ row }) => {
-			const setting = row.original;
-
-			return <CompDropdown setting={setting} />;
-		},
-	},
-];
-
-// const waitFetch = (dbQuery: any) => {
-// 	while(!dbQuery.isFetched){continue}
-// 	return 0;
-// }
+import {testInsertBankData} from "./backup/test"
 
 const API_PARAMETERS = api.parameters;
 
-let testInsertBankData = {
-	bank_code: "900",
-	bank_name: "土地銀行",
-	org_code: "001",
-	org_name: "新竹",
-	start_date: new Date(8.62e15),
-	end_date: new Date(8.64e15),
+var datas: DATA[] = [
+	{
+		table_name: "請假加班",
+		table_type: "typical",
+		table_content: [],
+	},
+	{
+		table_name: "銀行",
+		table_type: "bank",
+		table_content: [],
+	},
+    {
+		table_name: "勞健保費率",
+		table_type: "typical",
+		table_content: [],
+	},
+]
+function find_index(key: string) {
+	for (var i = 0; i < datas.length; i++) {
+		if (key == datas[i]!.table_name) return i;
+	}
+	return -1;
 }
-
-
 
 const PageParameters: NextPageWithLayout = () => {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 	const [rowSelection, setRowSelection] = useState({});
-	const [table_status, setTableStatus] = useState(Array(table_names.length).fill(false));
-	function changeTableStatus(index: number) {
-		let tmp_status = table_status;
-		tmp_status[index] = !tmp_status[index];
-		setTableStatus(tmp_status);
-	}
-
-	for (var i = 0; i < table_names.length; i++) {if (datas.length < table_names.length) datas.push([]);}
-
+	const [table_status, setTableStatus] = useState(Array(datas.length).fill(false));
+	function changeTableStatus(index: number) { let tmp_status = table_status;tmp_status[index] = !tmp_status[index];setTableStatus(tmp_status); }
+	
 	const bankData = API_PARAMETERS.bankGetData.useQuery();
 	const attendanceData = API_PARAMETERS.attendanceGetData.useQuery();
 	const insuranceData = API_PARAMETERS.insuranceGetData.useQuery();
-
 	const bankAddData = api.parameters.bankAddData.useMutation()
 
 	if (attendanceData.isFetched && !table_status[find_index("請假加班")]) {
@@ -186,13 +109,17 @@ const PageParameters: NextPageWithLayout = () => {
 		let index = find_index("請假加班");
 		console.log(index);
 		changeTableStatus(index);
-		datas[index] = [];
+		datas[index]!.table_content = [];
+		// datas[index] = []
 		Object.keys(attendanceData.data?.attendanceData[0]!).map((key) => {
-			datas[index]?.push({
+			let newItem: SettingItem = {
 				name: key,
-				value: ((attendanceData.data?.attendanceData[0] as any)[key]==null?"NULL":(attendanceData.data?.attendanceData[0] as any)[key]),
-				status: "pending",
-			});
+				value: ((attendanceData.data?.attendanceData[0] as any)[key]==null?"NULL":(attendanceData.data?.attendanceData[0] as any)[key])
+			};
+			if(datas[index]!.table_type === "typical") {
+				(datas[index]!.table_content as SettingItem[]).push(newItem);
+			}
+			// datas[index]?.push(newItem)
 		});
 	}
 	if (bankData.isFetched && !table_status[find_index("銀行")]) {
@@ -201,61 +128,99 @@ const PageParameters: NextPageWithLayout = () => {
 		console.log(index);
 		console.log(bankData.data?.bankData);
 		changeTableStatus(index);
-		datas[index] = [];
-		Object.keys(bankData.data?.bankData[0]!).map((key) => {
-			datas[index]?.push({
-				name: key,
-				value: ((bankData.data?.bankData[0] as any)[key]==null?"Null":(bankData.data?.bankData[0] as any)[key]),
-				status: "pending",
-			});
-		});
+		datas[index]!.table_content = [];
+		// datas[index] = []
+		bankData.data?.bankData?.map((bank) => {
+			let newItem: BankRow = {
+				bank_code: bank.bank_code,
+				bank_name: bank.bank_name,
+				org_code: bank.org_code,
+				org_name: bank.org_name
+			};
+			if(datas[index]!.table_type === "bank") {
+				(datas[index]!.table_content as BankRow[]).push(newItem);
+			}
+		})
 	}
-
 	if (insuranceData.isFetched && insuranceData.data?.insuranceDate[0]!=null && !table_status[find_index("勞健保費率")]) {
 		console.log("Successful Fetched insurance Data");
 		let index = find_index("勞健保費率");
 		console.log(index);
 		console.log(insuranceData.data?.insuranceDate[0]);
 		changeTableStatus(index);
-		datas[index] = [];
+		datas[index]!.table_content = [];
+		// datas[index] = []
 		Object.keys(insuranceData.data?.insuranceDate[0]!).map((key) => {
-			datas[index]?.push({
+			let newItem: SettingItem = {
 				name: key,
-				value: ((insuranceData.data?.insuranceDate[0] as any)[key]==null)?"NULL":((insuranceData.data?.insuranceDate[0] as any)[key]),
-				status: "pending",
-			});
+				value: ((insuranceData.data?.insuranceDate[0] as any)[key]==null)?"NULL":((insuranceData.data?.insuranceDate[0] as any)[key])
+			};
+			if(datas[index]!.table_type === "typical") {
+				(datas[index]!.table_content as SettingItem[]).push(newItem);
+			}
+			// datas[index]?.push(newItem)
 		});
 	}
 
 	let tables: any = [];
-	datas.map((data) => {
-		const table = useReactTable({
-			data,
-			columns,
-			onSortingChange: setSorting,
-			onColumnFiltersChange: setColumnFilters,
-			getCoreRowModel: getCoreRowModel(),
-			getPaginationRowModel: getPaginationRowModel(),
-			getSortedRowModel: getSortedRowModel(),
-			getFilteredRowModel: getFilteredRowModel(),
-			onColumnVisibilityChange: setColumnVisibility,
-			onRowSelectionChange: setRowSelection,
-			state: {
-				sorting,
-				columnFilters,
-				columnVisibility,
-				rowSelection,
-			},
-		});
-		tables.push(table);
-	});
+	for(var i = 0 ; i < datas.length ; i ++) {
+		if (datas[i]!.table_type === "typical")
+		{
+			let data = datas[i]!.table_content! as SettingItem[];
+			let columns = columns1;
+			const table = useReactTable({
+				data,
+				columns,
+				onSortingChange: setSorting,
+				onColumnFiltersChange: setColumnFilters,
+				getCoreRowModel: getCoreRowModel(),
+				getPaginationRowModel: getPaginationRowModel(),
+				getSortedRowModel: getSortedRowModel(),
+				getFilteredRowModel: getFilteredRowModel(),
+				onColumnVisibilityChange: setColumnVisibility,
+				onRowSelectionChange: setRowSelection,
+				state: {
+					sorting,
+					columnFilters,
+					columnVisibility,
+					rowSelection,
+				},
+			});
+			tables.push(table);
+		}
+		else if (datas[i]!.table_type === "bank")
+		{
+			let data = datas[i]!.table_content! as BankRow[];
+			let columns = bank_data_columns;
+			const table = useReactTable({
+				data,
+				columns,
+				onSortingChange: setSorting,
+				onColumnFiltersChange: setColumnFilters,
+				getCoreRowModel: getCoreRowModel(),
+				getPaginationRowModel: getPaginationRowModel(),
+				getSortedRowModel: getSortedRowModel(),
+				getFilteredRowModel: getFilteredRowModel(),
+				onColumnVisibilityChange: setColumnVisibility,
+				onRowSelectionChange: setRowSelection,
+				state: {
+					sorting,
+					columnFilters,
+					columnVisibility,
+					rowSelection,
+				},
+			});
+			tables.push(table);
+		}
+		
+	};
 
 	let tables_content: any = [];
 	tables.map((table: any, index: number) => {
 		const [showDialog, setShowDialog] = useState(false);
 		tables_content.push(
 			<AccordionItem value={"item-" + index.toString()}>
-				<AccordionTrigger>{table_names[index]}</AccordionTrigger>
+				<AccordionTrigger>{datas[index]?.table_name}</AccordionTrigger>
 				<AccordionContent>
 					{/* top bar */}
 					<div className="flex items-center py-6">
@@ -363,7 +328,7 @@ const PageParameters: NextPageWithLayout = () => {
 								) : (
 									<TableRow>
 										<TableCell
-											colSpan={columns.length}
+											colSpan={(datas[index]!.table_type==="typical"?columns1:bank_data_columns).length}
 											className="h-24 text-center"
 										>
 											No results.
@@ -404,8 +369,9 @@ const PageParameters: NextPageWithLayout = () => {
 							</Button>
 						</div>
 						{table_status[index]?<InsertDialog
-							name={""}
-							data={datas[index]}
+							name={datas[index]!.table_name}
+							type={datas[index]!.table_type}
+							data={datas[index]!.table_content}
 							showDialog={showDialog}
 							onOpenChange={(open: boolean) => {
 								setShowDialog(open);
@@ -425,8 +391,8 @@ const PageParameters: NextPageWithLayout = () => {
 				{tables_content}
 			</Accordion>
 
-
-			<Button disabled={bankAddData.isLoading} onClick={()=>bankAddData.mutate(testInsertBankData)}>Insert Bank Data</Button>
+			<Button onClick={()=>{console.log(datas)}}>Console log "datas"</Button>
+			{/* <Button disabled={bankAddData.isLoading} onClick={()=>bankAddData.mutate(testInsertBankData)}>Insert Bank Data</Button> */}
 		</>
 	);
 };
@@ -441,128 +407,31 @@ PageParameters.getLayout = function getLayout(page: ReactElement) {
 
 export default PageParameters;
 
-function CompDropdown({ setting }: { setting: SettingItem }) {
-	const [showDialog, setShowDialog] = useState(false);
 
-	return (
-		<>
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<Button variant="ghost" className="h-8 w-8 p-0">
-						<span className="sr-only">Open menu</span>
-						<MoreHorizontal className="h-4 w-4" />
-					</Button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent align="end">
-					<DropdownMenuLabel>Actions</DropdownMenuLabel>
-					<DropdownMenuItem
-						onClick={() => {
-							void (async () => {
-								await navigator.clipboard.writeText(
-									setting.value.toString()
-								);
-							})();
-						}}
-					>
-						Copy Value
-					</DropdownMenuItem>
-					<DropdownMenuSeparator />
-					<DropdownMenuItem
-						onClick={() => {
-							setShowDialog(true);
-						}}
-					>
-						Modify
-					</DropdownMenuItem>
-				</DropdownMenuContent>
-			</DropdownMenu>
-
-			<CompDialog
-				setting={setting}
-				showDialog={showDialog}
-				onOpenChange={(open: boolean) => {
-					setShowDialog(open);
-				}}
-			/>
-		</>
-	);
-}
-
-function CompDialog({
-	setting,
-	showDialog,
-	onOpenChange,
-}: {
-	setting: SettingItem;
-	showDialog: boolean;
-	onOpenChange: (open: boolean) => void;
-}) {
-	const inputRef = useRef<HTMLInputElement>(null);
-
-	return (
-		<Dialog open={showDialog} onOpenChange={onOpenChange}>
-			<DialogContent>
-				<DialogHeader>
-					<DialogTitle>
-						Modify the value of {setting.name}
-					</DialogTitle>
-					<DialogDescription>{/* Description */}</DialogDescription>
-				</DialogHeader>
-				<div className="grid gap-4 py-4">
-					<div className="grid grid-cols-4 items-center gap-4">
-						<Label htmlFor="value" className="text-right">
-							Value
-						</Label>
-						<Input
-							ref={inputRef}
-							id="value"
-							defaultValue={setting.value.toString()}
-							type={
-								Number.isInteger(setting.value)
-									? "number"
-									: "value"
-							}
-							className="col-span-3"
-						/>
-					</div>
-				</div>
-				<DialogFooter>
-					<DialogClose asChild>
-						<Button
-							type="submit"
-							onClick={() => {
-								const value = Number(inputRef.current?.value);
-							}}
-						>
-							Save changes
-						</Button>
-					</DialogClose>
-				</DialogFooter>
-			</DialogContent>
-		</Dialog>
-	);
-}
 
 
 function InsertDialog({
 	name,
+	type,
 	data,
 	showDialog,
 	onOpenChange,
 }: {
 	name: string;
+	type: string;
 	data: any;
 	showDialog: boolean;
 	onOpenChange: (open: boolean) => void;
 }) {
 	const inputRef = useRef<HTMLInputElement>(null);
 
+	if (type == "typical")
 	return (
 		<Dialog open={showDialog} onOpenChange={onOpenChange} >
 			<DialogContent className={"lg:max-w-screen-lg overflow-y-scroll max-h-screen"}>
 				<DialogHeader>
 					<DialogTitle>
-						Add Data to [Table] {name}
+						Add Data to [{name}]
 					</DialogTitle>
 					<DialogDescription>{/* Description */}</DialogDescription>
 				</DialogHeader>
@@ -599,4 +468,47 @@ function InsertDialog({
 			</DialogContent>
 		</Dialog>
 	);
+	else if (type == "bank") {
+	let tmp = ["銀行代碼","銀行名稱","公司代碼","公司名稱"];
+	return (
+			<Dialog open={showDialog} onOpenChange={onOpenChange} >
+				<DialogContent className={"lg:max-w-screen-lg overflow-y-scroll max-h-screen"}>
+					<DialogHeader>
+						<DialogTitle>
+							Add Data to [{name}]
+						</DialogTitle>
+						<DialogDescription>{/* Description */}</DialogDescription>
+					</DialogHeader>
+					<div className="grid gap-4 py-4">
+						<div className="grid grid-cols-4 items-center gap-4">
+							{
+								tmp.map((parameter: any, index: number) => {
+									return	<>
+											<Label htmlFor="value" className="text-right">{parameter}</Label>
+											<Input
+												ref={inputRef}
+												id={"value"+index.toString()}
+												type="value"
+												className="col-span-3"
+											/></> 
+									})
+							}
+						</div>
+					</div>
+					<DialogFooter>
+						<DialogClose asChild>
+							<Button
+								type="submit"
+								onClick={() => {
+									const value = Number(inputRef.current?.value);
+								}}
+							>
+								Confirm
+							</Button>
+						</DialogClose>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+		)
+	}
 }
