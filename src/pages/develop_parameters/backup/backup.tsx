@@ -277,3 +277,76 @@ export function InsertDialog({
 		</Dialog>
 	);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+// let tables: any = [];
+	// for(var i = 0 ; i < datas.length ; i ++ ){
+	// 	if (datas[i]!.table_type === "typical")
+	// 	{
+	// 		const data = (datas[i]!.table_content! as SettingItem[]);
+	// 		let columns = columns1;
+	// 		const table = useReactTable({
+	// 			data,
+	// 			columns,
+	// 			onSortingChange: setSorting,
+	// 			onColumnFiltersChange: setColumnFilters,
+	// 			getCoreRowModel: getCoreRowModel(),
+	// 			getPaginationRowModel: getPaginationRowModel(),
+	// 			getSortedRowModel: getSortedRowModel(),
+	// 			getFilteredRowModel: getFilteredRowModel(),
+	// 			onColumnVisibilityChange: setColumnVisibility,
+	// 			onRowSelectionChange: setRowSelection,
+	// 			state: {
+	// 				sorting,
+	// 				columnFilters,
+	// 				columnVisibility,
+	// 				rowSelection,
+	// 			},
+	// 		});
+	// 		tables.push(table);
+	// 	}
+	// 	else if (datas[i]!.table_type === "bank")
+	// 	{
+	// 		let data = datas[i]!.table_content! as BankRow[];
+	// 		let columns = bank_data_columns;
+	// 		const table = useReactTable({
+	// 			data,
+	// 			columns,
+	// 			onSortingChange: setSorting,
+	// 			onColumnFiltersChange: setColumnFilters,
+	// 			getCoreRowModel: getCoreRowModel(),
+	// 			getPaginationRowModel: getPaginationRowModel(),
+	// 			getSortedRowModel: getSortedRowModel(),
+	// 			getFilteredRowModel: getFilteredRowModel(),
+	// 			onColumnVisibilityChange: setColumnVisibility,
+	// 			onRowSelectionChange: setRowSelection,
+	// 			state: {
+	// 				sorting,
+	// 				columnFilters,
+	// 				columnVisibility,
+	// 				rowSelection,
+	// 			},
+	// 		});
+	// 		tables.push(table);
+	// 	}
+		
+	// };
+	
+
+
+	// <Button onClick={()=>{
+	// 	const newDATA: DATA = createDATA("test", "typical", [])
+	// 	const updatedDatas: DATA[] = [...datas, newDATA];
+	// 	setDatas(updatedDatas);
+	// 	console.log("create new table")
+	// }}> New table </Button>

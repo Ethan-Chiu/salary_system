@@ -1,3 +1,11 @@
+import {
+	flexRender,
+	getCoreRowModel,
+	getFilteredRowModel,
+	getPaginationRowModel,
+	getSortedRowModel,
+	useReactTable,
+} from "@tanstack/react-table";
 import type {
 	ColumnDef,
 	ColumnFiltersState,
@@ -31,9 +39,11 @@ import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { type ReactElement, useRef, useState, useEffect } from "react";
 import { baseObjectInputType } from "zod";
 import { set } from "react-hook-form";
+import { columns } from "./backup";
 
 
 export type BankRow = {
+	id: number;
 	bank_name: string;
 	bank_code: string;
 	org_name: string
@@ -78,9 +88,16 @@ export const bank_data_columns: ColumnDef<BankRow>[] = [
 ];
 
 
-function CompDropdown({ setting }: { setting: BankRow }) {
-	const [showDialog, setShowDialog] = useState(false);
 
+function DeleteRow(id: number) {
+	console.log("delete bank setting whose id = %d", id)
+}
+
+
+function CompDropdown({ setting }: { setting: BankRow }) {
+	const [showModifyDialog, setShowModifyDialog] = useState(false);
+	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+	
 	return (
 		<>
 			<DropdownMenu>
@@ -92,33 +109,40 @@ function CompDropdown({ setting }: { setting: BankRow }) {
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end">
 					<DropdownMenuLabel>Actions</DropdownMenuLabel>
+					<DropdownMenuSeparator />
 					<DropdownMenuItem
 						onClick={() => {
-							void (async () => {
-								await navigator.clipboard.writeText(
-									setting.bank_name.toString()
-								);
-							})();
+							setShowModifyDialog(true);
 						}}
 					>
-						Copy Value
+						Modify
 					</DropdownMenuItem>
 					<DropdownMenuSeparator />
 					<DropdownMenuItem
 						onClick={() => {
-							setShowDialog(true);
+							setShowDeleteDialog(true);
 						}}
 					>
-						Modify
+						Delete
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
 
 			<CompDialog
 				setting={setting}
-				showDialog={showDialog}
+				showDialog={showModifyDialog}
 				onOpenChange={(open: boolean) => {
-					setShowDialog(open);
+					setShowModifyDialog(open);
+				}}
+			/>
+
+			<ConfirmDialog
+				showDialog={showDeleteDialog}
+				setting={setting}
+				message="Are you sure you want to proceed?"
+				title="Confirmation" 
+				onOpenChange={(open: boolean) => {
+					setShowDeleteDialog(open);
 				}}
 			/>
 		</>
@@ -134,8 +158,13 @@ function CompDialog({
 	showDialog: boolean;
 	onOpenChange: (open: boolean) => void;
 }) {
-	const inputRef = useRef<HTMLInputElement>(null);
-
+	const [updatedSetting, setUpdatedSetting] = useState(setting);
+	const handleInputChange = (key: any, value: any) => {
+		setUpdatedSetting((prevSetting: any) => ({
+		  ...prevSetting,
+		  [key]: value
+		}));
+	};
 	return (
 		<Dialog open={showDialog} onOpenChange={onOpenChange}>
 			<DialogContent>
@@ -154,15 +183,11 @@ function CompDialog({
 										{key}
 									</Label>
 									<Input
-										ref={inputRef}
 										id={key}
 										defaultValue={value}
-										type={
-											Number.isInteger(value)
-												? "number"
-												: "value"
-										}
+										type={Number.isInteger(value)?"number": "value"}
 										className="col-span-3"
+										onChange={e => handleInputChange(key, e.target.value)}
 									/>
 								</>
 							})
@@ -174,10 +199,54 @@ function CompDialog({
 						<Button
 							type="submit"
 							onClick={() => {
-								const value = Number(inputRef.current?.value);
+								console.log(setting)
+								console.log(updatedSetting)
 							}}
 						>
 							Save changes
+						</Button>
+					</DialogClose>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
+	);
+}
+
+
+function ConfirmDialog({
+	title,
+	message,
+	setting,
+	showDialog,
+	onOpenChange,
+}: {
+	title: string;
+	message: string;
+	setting: BankRow;
+	showDialog: boolean;
+	onOpenChange: (open: boolean) => void;
+}) {
+	return (
+		<Dialog open={showDialog} onOpenChange={onOpenChange}>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>
+						{title}
+					</DialogTitle>
+					<DialogDescription>{/* Description */}</DialogDescription>
+				</DialogHeader>
+				<div className="grid gap-4 py-4">
+						{message}
+				</div>
+				<DialogFooter>
+					<DialogClose>
+						<Button onClick={()=>{console.log("no delete")}}>
+							No
+						</Button>
+					</DialogClose>
+					<DialogClose asChild>
+						<Button onClick={()=>{DeleteRow(setting.id)}}>
+							Yes
 						</Button>
 					</DialogClose>
 				</DialogFooter>
