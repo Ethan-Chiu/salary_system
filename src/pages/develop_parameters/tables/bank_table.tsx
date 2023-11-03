@@ -66,19 +66,29 @@ import { DATA, createDATA } from "./datatype";
 import { once } from "events";
 
 export type BankRow = {
-	id: number;
+	id: number | null;
 	bank_name: string;
 	bank_code: string;
-	org_name: string
+	org_name: string;
 	org_code: string;
-}
+};
 
-export function createBankRow(id: number, bank_code: string, bank_name: string, org_code: string, org_name: string)
-{
-	let x: BankRow = {id: id,bank_name: bank_name,bank_code: bank_code,org_name: org_name,org_code: org_code}
-	return x
+export function createBankRow(
+	id: number,
+	bank_code: string,
+	bank_name: string,
+	org_code: string,
+	org_name: string
+) {
+	let x: BankRow = {
+		id: id,
+		bank_name: bank_name,
+		bank_code: bank_code,
+		org_name: org_name,
+		org_code: org_code,
+	};
+	return x;
 }
-
 
 export const columns: ColumnDef<BankRow>[] = [
 	{
@@ -97,14 +107,18 @@ export const columns: ColumnDef<BankRow>[] = [
 			);
 		},
 		cell: ({ row }) => {
-			return <div className="pl-4 lowercase">{`(${row.original.bank_code})${row.original.bank_name}`}</div>;
+			return (
+				<div className="pl-4 lowercase">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
+			);
 		},
 	},
 	{
 		accessorKey: "org_name",
 		header: () => <div className="text-center">Company</div>,
 		cell: ({ row }) => {
-			return <div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>;
+			return (
+				<div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>
+			);
 		},
 	},
 	{
@@ -117,19 +131,27 @@ export const columns: ColumnDef<BankRow>[] = [
 	},
 ];
 
-export function BankTable({table_name, table_type, defaultData, index, onChildFunctionRun}: any){
+export function BankTable({
+	table_name,
+	table_type,
+	defaultData,
+	index,
+	bankInsertFunction,
+}: any) {
 	const [data, setData] = useState<BankRow[]>(defaultData);
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+		{}
+	);
 	const [rowSelection, setRowSelection] = useState({});
 
+	const [showDialog, setShowDialog] = useState(false);
+
 	useEffect(() => {
-		console.log("here")
+		console.log("here");
 		setData(defaultData);
-
-	  }, [defaultData]);
-
+	}, [defaultData]);
 
 	const filter_key = "bank_name";
 
@@ -154,9 +176,9 @@ export function BankTable({table_name, table_type, defaultData, index, onChildFu
 
 	const onceCreated = () => {
 		// Do something inside the child function
-		setData(defaultData)
+		setData(defaultData);
 		console.log("Child function is called!");
-	  };
+	};
 	// Store the child function in a ref
 	const childFunctionRef = useRef(onceCreated);
 
@@ -292,8 +314,8 @@ export function BankTable({table_name, table_type, defaultData, index, onChildFu
 								variant="outline"
 								size="sm"
 								onClick={() => {
-									// setShowDialog(true);
-									console.log("click Add button");
+									setShowDialog(true);
+									// console.log("click Add button");
 								}}
 								disabled={false}
 							>
@@ -316,15 +338,18 @@ export function BankTable({table_name, table_type, defaultData, index, onChildFu
 								Next
 							</Button>
 						</div>
-						{/* {table_status[index]?<InsertDialog
-							name={datas[index]!.table_name}
-							type={datas[index]!.table_type}
-							data={datas[index]!.table_content}
-							showDialog={showDialog}
-							onOpenChange={(open: boolean) => {
-								setShowDialog(open);
-							}}
-						/>:<></>} */}
+						{
+							<InsertDialog
+								name={table_name}
+								type={table_type}
+								data={data}
+								showDialog={showDialog}
+								insertFunction={bankInsertFunction}
+								onOpenChange={(open: boolean) => {
+									setShowDialog(open);
+								}}
+							/>
+						}
 					</div>
 				</AccordionContent>
 			</AccordionItem>
@@ -332,17 +357,14 @@ export function BankTable({table_name, table_type, defaultData, index, onChildFu
 	);
 }
 
-
-
 function DeleteRow(id: number) {
-	console.log("delete bank setting whose id = %d", id)
+	console.log("delete bank setting whose id = %d", id);
 }
-
 
 function CompDropdown({ setting }: { setting: BankRow }) {
 	const [showModifyDialog, setShowModifyDialog] = useState(false);
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-	
+
 	return (
 		<>
 			<DropdownMenu>
@@ -385,7 +407,7 @@ function CompDropdown({ setting }: { setting: BankRow }) {
 				showDialog={showDeleteDialog}
 				setting={setting}
 				message="Are you sure you want to proceed?"
-				title="Confirmation" 
+				title="Confirmation"
 				onOpenChange={(open: boolean) => {
 					setShowDeleteDialog(open);
 				}}
@@ -406,37 +428,47 @@ function CompDialog({
 	const [updatedSetting, setUpdatedSetting] = useState(setting);
 	const handleInputChange = (key: any, value: any) => {
 		setUpdatedSetting((prevSetting: any) => ({
-		  ...prevSetting,
-		  [key]: value
+			...prevSetting,
+			[key]: value,
 		}));
 	};
 	return (
 		<Dialog open={showDialog} onOpenChange={onOpenChange}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>
-						Modify
-					</DialogTitle>
+					<DialogTitle>Modify</DialogTitle>
 					<DialogDescription>{/* Description */}</DialogDescription>
 				</DialogHeader>
 				<div className="grid gap-4 py-4">
 					<div className="grid grid-cols-4 items-center gap-4">
-						{
-							Object.entries(setting).map(([key, value]) => {
-								return <>
-									<Label htmlFor="value" className="text-right">
+						{Object.entries(setting).map(([key, value]) => {
+							return (
+								<>
+									<Label
+										htmlFor="value"
+										className="text-right"
+									>
 										{key}
 									</Label>
 									<Input
 										id={key}
-										defaultValue={value}
-										type={Number.isInteger(value)?"number": "value"}
+										defaultValue={value!}
+										type={
+											Number.isInteger(value)
+												? "number"
+												: "value"
+										}
 										className="col-span-3"
-										onChange={e => handleInputChange(key, e.target.value)}
+										onChange={(e) =>
+											handleInputChange(
+												key,
+												e.target.value
+											)
+										}
 									/>
 								</>
-							})
-						}
+							);
+						})}
 					</div>
 				</div>
 				<DialogFooter>
@@ -444,8 +476,8 @@ function CompDialog({
 						<Button
 							type="submit"
 							onClick={() => {
-								console.log(setting)
-								console.log(updatedSetting)
+								console.log(setting);
+								console.log(updatedSetting);
 							}}
 						>
 							Save changes
@@ -456,7 +488,6 @@ function CompDialog({
 		</Dialog>
 	);
 }
-
 
 function ConfirmDialog({
 	title,
@@ -475,23 +506,105 @@ function ConfirmDialog({
 		<Dialog open={showDialog} onOpenChange={onOpenChange}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>
-						{title}
-					</DialogTitle>
+					<DialogTitle>{title}</DialogTitle>
 					<DialogDescription>{/* Description */}</DialogDescription>
 				</DialogHeader>
-				<div className="grid gap-4 py-4">
-						{message}
-				</div>
+				<div className="grid gap-4 py-4">{message}</div>
 				<DialogFooter>
 					<DialogClose>
-						<Button onClick={()=>{console.log("no delete")}}>
+						<Button
+							onClick={() => {
+								console.log("no delete");
+							}}
+						>
 							No
 						</Button>
 					</DialogClose>
 					<DialogClose asChild>
-						<Button onClick={()=>{DeleteRow(setting.id)}}>
+						<Button
+							onClick={() => {
+								DeleteRow(setting.id!);
+							}}
+						>
 							Yes
+						</Button>
+					</DialogClose>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
+	);
+}
+
+function InsertDialog({
+	name,
+	type,
+	data,
+	showDialog,
+	insertFunction,
+	onOpenChange,
+}: {
+	name: string;
+	type: string;
+	data: any;
+	showDialog: boolean;
+	insertFunction: (d: any)=>void
+	onOpenChange: (open: boolean) => void;
+}) {
+	let rows = ["銀行代碼", "銀行名稱", "公司代碼", "公司名稱", "起", "迄"];
+	const lookup = (key: string) => {return rows.findIndex(obj => obj===key)};
+	const inputRef = rows.map(() => {
+		return useRef<HTMLInputElement>(null);
+	});
+
+	return (
+		<Dialog open={showDialog} onOpenChange={onOpenChange}>
+			<DialogContent
+				className={"max-h-screen overflow-y-scroll lg:max-w-screen-lg"}
+			>
+				<DialogHeader>
+					<DialogTitle>Add Data to [{name}]</DialogTitle>
+					<DialogDescription>{/* Description */}</DialogDescription>
+				</DialogHeader>
+				<div className="grid gap-4 py-4">
+					<div className="grid grid-cols-4 items-center gap-4">
+						{rows.map((parameter: any, index: number) => {
+							return (
+								<>
+									<Label
+										htmlFor="value"
+										className="text-right"
+									>
+										{parameter}
+									</Label>
+									<Input
+										ref={inputRef[index]}
+										id={"value" + index.toString()}
+										type={(parameter==="起" || parameter==="迄")?"date":"value"}
+										className="col-span-3"
+									/>
+								</>
+							);
+						})}
+					</div>
+				</div>
+				<DialogFooter>
+					<DialogClose asChild>
+						<Button
+							type="submit"
+							onClick={() => {
+								insertFunction(
+									{
+										bank_code: inputRef[lookup("銀行代碼")]?.current?.value ?? "",
+										bank_name: inputRef[lookup("銀行名稱")]?.current?.value ?? "",
+										org_code: inputRef[lookup("公司代碼")]?.current?.value ?? "",
+										org_name: inputRef[lookup("公司名稱")]?.current?.value ?? "",
+										start_date: new Date(),
+										end_date: new Date(),
+									}
+								)
+							}}
+						>
+							Confirm
 						</Button>
 					</DialogClose>
 				</DialogFooter>
