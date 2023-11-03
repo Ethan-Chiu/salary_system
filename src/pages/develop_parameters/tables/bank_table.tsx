@@ -71,6 +71,8 @@ export type BankRow = {
 	bank_code: string;
 	org_name: string;
 	org_code: string;
+	start_date: Date;
+	end_date: Date;
 };
 
 export function createBankRow(
@@ -78,7 +80,9 @@ export function createBankRow(
 	bank_code: string,
 	bank_name: string,
 	org_code: string,
-	org_name: string
+	org_name: string,
+	start_date: Date,
+	end_date: Date,
 ) {
 	let x: BankRow = {
 		id: id,
@@ -86,9 +90,17 @@ export function createBankRow(
 		bank_code: bank_code,
 		org_name: org_name,
 		org_code: org_code,
+		start_date: start_date,
+		end_date: end_date,
 	};
 	return x;
 }
+
+
+function interpretTimeStamp(t_stamp: string) {
+	return t_stamp.split('T')[0]
+}
+
 
 export function BankTable({
 	table_name,
@@ -349,7 +361,7 @@ export function BankTable({
 								type={table_type}
 								data={data}
 								showDialog={showDialog}
-								insertFunction={createBankSetting}
+								createBankSetting={createBankSetting}
 								onOpenChange={(open: boolean) => {
 									setShowDialog(open);
 								}}
@@ -438,6 +450,8 @@ function ModifyDialog({
 		}));
 	};
 
+	{Object.entries(setting).map(([key, value]) => {console.log("%s %s  %s", key, typeof value, typeof value)})}
+
 	return (
 		<Dialog open={showDialog} onOpenChange={onOpenChange}>
 			<DialogContent>
@@ -448,6 +462,7 @@ function ModifyDialog({
 				<div className="grid gap-4 py-4">
 					<div className="grid grid-cols-4 items-center gap-4">
 						{Object.entries(setting).map(([key, value]) => {
+							if (key == "id")	return <></>;
 							return (
 								<>
 									<Label
@@ -456,22 +471,34 @@ function ModifyDialog({
 									>
 										{key}
 									</Label>
-									<Input
-										id={key}
-										defaultValue={value!}
-										type={
-											Number.isInteger(value)
-												? "number"
-												: "value"
-										}
-										className="col-span-3"
-										onChange={(e) =>
-											handleInputChange(
-												key,
-												e.target.value
-											)
-										}
-									/>
+									
+									{
+										(typeof value === "string" || typeof value === "number")?
+										<Input
+											id={key}
+											defaultValue={value!}
+											type={(typeof value === "string")?"value":"number"}
+											className="col-span-3"
+											onChange={(e) =>
+												handleInputChange(
+													key,
+													e.target.value
+												)
+											}
+										/>:
+										<Input
+											id={key}
+											defaultValue={value?.toISOString().split('T')[0]}
+											type={"date"}
+											className="col-span-3"
+											onChange={(e) =>
+												handleInputChange(
+													key,
+													e.target.value
+												)
+											}
+										/>
+									}
 								</>
 							);
 						})}
@@ -483,7 +510,19 @@ function ModifyDialog({
 							type="submit"
 							onClick={() => {
 								console.log(setting);
+								console.log("updated data:")
 								console.log(updatedSetting);
+								updateBankSetting(
+									{
+										id: updatedSetting.id,
+										bank_code: updatedSetting.bank_code,
+										bank_name: updatedSetting.bank_name,
+										org_code: updatedSetting.org_code,
+										org_name: updatedSetting.org_name,
+										start_date: null,
+										end_date: null,
+									}
+								)
 							}}
 						>
 							Save changes
@@ -548,14 +587,14 @@ function InsertDialog({
 	type,
 	data,
 	showDialog,
-	insertFunction,
+	createBankSetting,
 	onOpenChange,
 }: {
 	name: string;
 	type: string;
 	data: any;
 	showDialog: boolean;
-	insertFunction: (d: any)=>void
+	createBankSetting: (d: any)=>void
 	onOpenChange: (open: boolean) => void;
 }) {
 	let rows = ["銀行代碼", "銀行名稱", "公司代碼", "公司名稱", "起", "迄"];
@@ -600,14 +639,15 @@ function InsertDialog({
 						<Button
 							type="submit"
 							onClick={() => {
-								insertFunction(
+								console.log(inputRef[lookup("起")]?.current?.valueAsDate)
+								createBankSetting(
 									{
 										bank_code: inputRef[lookup("銀行代碼")]?.current?.value ?? "",
 										bank_name: inputRef[lookup("銀行名稱")]?.current?.value ?? "",
 										org_code: inputRef[lookup("公司代碼")]?.current?.value ?? "",
 										org_name: inputRef[lookup("公司名稱")]?.current?.value ?? "",
-										start_date: new Date(),
-										end_date: new Date(),
+										start_date: inputRef[lookup("起")]?.current?.valueAsDate,
+										end_date: inputRef[lookup("迄")]?.current?.valueAsDate,
 									}
 								)
 							}}

@@ -81,12 +81,13 @@ const PageParameters: NextPageWithLayout = () => {
 
 	if (
 		// attendanceData.isFetched &&
-		getBankSetting.isFetched &&
+		getBankSetting.isFetched
 		// insuranceData.isFetched
 	) {
 
 		// updateDatas("請假加班", Object.keys(attendanceData.data ?? {}).map((key) => { return { name: (Translate(key) as string),value: ((attendanceData.data as any)[key]==null?"NULL":(attendanceData.data as any)[key]) }; }));
-		updateDatas("銀行", (getBankSetting.data ?? []).map((bank: any) => {return {id:	bank.id,bank_code: bank.bank_code,bank_name: bank.bank_name,org_code: bank.org_code,org_name: bank.org_name};}))
+		console.log((getBankSetting.data ?? []).map((bank: any) => {return {id:	bank.id,bank_code: bank.bank_code,bank_name: bank.bank_name,org_code: bank.org_code,org_name: bank.org_name,start_date: bank.start_date, end_date: bank.end_date};}))
+		updateDatas("銀行", (getBankSetting.data ?? []).map((bank: any) => {return {id:	bank.id,bank_code: bank.bank_code,bank_name: bank.bank_name,org_code: bank.org_code,org_name: bank.org_name,start_date:bank.start_date,end_date:bank.end_date};}))
 		return HTMLElement();
 	}
 	else {
