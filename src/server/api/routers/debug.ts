@@ -8,20 +8,33 @@ import {
 import { Database } from "~/server/database/client";
 
 export const debugRouter = createTRPCRouter({
-	init: publicProcedure.query(async () => {
-		const database = container.resolve(Database).connection;
+	syncDb: publicProcedure
+		.input(
+			z.object({
+				force: z.boolean().nullable(),
+				alter: z.boolean().nullable(),
+			})
+		)
+		.query(async ({ input }) => {
+			const database = container.resolve(Database).connection;
 
-		try {
-			const data = await database.sync({ alter: true });
-			return {
-				msg: "All models were synchronized successfully.",
-			};
-		} catch (e) {
-			return {
-				msg: `error ${e}`,
-			};
-		}
-	}),
+			try {
+				if (input.force) {
+					const data = await database.sync({ force: true });
+				} else if (input.alter) {
+					const data = await database.sync({ alter: true });
+				}
+				const data = await database.sync();
+
+				return {
+					msg: "All models were synchronized successfully.",
+				};
+			} catch (e) {
+				return {
+					msg: `error ${e}`,
+				};
+			}
+		}),
 	validate: publicProcedure.query(async () => {
 		const database = container.resolve(Database).connection;
 		try {
