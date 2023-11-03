@@ -21,11 +21,11 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
-import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 import { toast } from "~/components/ui/use-toast";
+import { signIn } from "next-auth/react";
 
 const LoginFormSchema = z.object({
 	userid: z.string(),
@@ -37,25 +37,6 @@ export default function Login() {
 
 	const router = useRouter();
 
-	const login = api.login.login.useMutation({
-		onSuccess: (data, variables, context) => {
-			router.push("/");
-		},
-		onError: (error, variables, context) => {
-			console.log(`error ${error}`);
-			toast({
-				title: "Error",
-				description: (
-					<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-						<code className="text-white">
-							{JSON.stringify(error.message, null, 2)}
-						</code>
-					</pre>
-				),
-			});
-		},
-	});
-
 	const form = useForm<z.infer<typeof LoginFormSchema>>({
 		resolver: zodResolver(LoginFormSchema),
 		defaultValues: {
@@ -64,9 +45,34 @@ export default function Login() {
 		},
 	});
 
-	function onSubmit(data: z.infer<typeof LoginFormSchema>) {
-		login.mutate({ emp_id: data.userid, password: data.password });
-	}
+	const onSubmit = useCallback(
+		async (data: z.infer<typeof LoginFormSchema>) => {
+
+			const res = await signIn("credentials", {
+				username: data.userid,
+				password: data.password,
+				callbackUrl: "/",
+				redirect: false
+			});
+			if (!res?.ok) {
+				console.log(`error ${res?.error}`);
+				toast({
+					title: "Error",
+					description: (
+						<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+							<code className="text-white">
+								{JSON.stringify(res?.error, null, 2)}
+							</code>
+						</pre>
+					),
+				});
+			}
+			else {
+				router.push('/');
+			}
+		},
+		[]
+	);
 
 	return (
 		<PerpageLayout pageTitle="login">
@@ -116,7 +122,7 @@ export default function Login() {
 											</FormItem>
 										)}
 									/>
-									<div className="text-right pt-4">
+									<div className="pt-4 text-right">
 										<button
 											type="button"
 											onClick={() => setForgetPwd(true)}
@@ -127,12 +133,7 @@ export default function Login() {
 									</div>
 								</CardContent>
 								<CardFooter className="justify-center">
-									<Button
-										disabled={login.isLoading}
-										type="submit"
-									>
-										LOGIN
-									</Button>
+									<Button disabled={form.formState.isSubmitting} type="submit">LOGIN</Button>
 								</CardFooter>
 							</form>
 						</Form>
@@ -149,7 +150,7 @@ export default function Login() {
 								<Label htmlFor="name">User ID</Label>
 								<Input id="userid" placeholder="user id" />
 							</div>
-							<div className="text-right pt-4">
+							<div className="pt-4 text-right">
 								<button
 									onClick={() => setForgetPwd(false)}
 									className="text-sm text-muted-foreground"

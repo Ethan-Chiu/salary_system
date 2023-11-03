@@ -31,4 +31,7 @@ export const debugRouter = createTRPCRouter({
 			return { msg: `Unable to connect to the database: ${error}` };
 		}
 	}),
+	protect: protectedProcedure.query(async ({ ctx }) => {
+		return ctx;
+	}),
 });
