@@ -90,54 +90,58 @@ export function createBankRow(
 	return x;
 }
 
-export const columns: ColumnDef<BankRow>[] = [
-	{
-		accessorKey: "bank_name",
-		header: ({ column }) => {
-			return (
-				<Button
-					variant="ghost"
-					onClick={() =>
-						column.toggleSorting(column.getIsSorted() === "asc")
-					}
-				>
-					Bank
-					<ArrowUpDown className="ml-2 h-4 w-4" />
-				</Button>
-			);
-		},
-		cell: ({ row }) => {
-			return (
-				<div className="pl-4 lowercase">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
-			);
-		},
-	},
-	{
-		accessorKey: "org_name",
-		header: () => <div className="text-center">Company</div>,
-		cell: ({ row }) => {
-			return (
-				<div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>
-			);
-		},
-	},
-	{
-		id: "actions",
-		enableHiding: false,
-		cell: ({ row }) => {
-			const setting = row.original;
-			return <CompDropdown setting={setting} />;
-		},
-	},
-];
-
 export function BankTable({
 	table_name,
 	table_type,
 	defaultData,
 	index,
-	bankInsertFunction,
+	createBankSetting,
+	updateBankSetting,
+	deleteBankSetting,
 }: any) {
+
+	const columns: ColumnDef<BankRow>[] = [
+		{
+			accessorKey: "bank_name",
+			header: ({ column }) => {
+				return (
+					<Button
+						variant="ghost"
+						onClick={() =>
+							column.toggleSorting(column.getIsSorted() === "asc")
+						}
+					>
+						Bank
+						<ArrowUpDown className="ml-2 h-4 w-4" />
+					</Button>
+				);
+			},
+			cell: ({ row }) => {
+				return (
+					<div className="pl-4 lowercase">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
+				);
+			},
+		},
+		{
+			accessorKey: "org_name",
+			header: () => <div className="text-center">Company</div>,
+			cell: ({ row }) => {
+				return (
+					<div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>
+				);
+			},
+		},
+		{
+			id: "actions",
+			enableHiding: false,
+			cell: ({ row }) => {
+				const setting = row.original;
+				return <CompDropdown setting={setting} deleteBankSetting={deleteBankSetting} updateBankSetting={updateBankSetting}/>;
+			},
+		},
+	];
+
+
 	const [data, setData] = useState<BankRow[]>(defaultData);
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -194,6 +198,7 @@ export function BankTable({
 					{/* top bar */}
 					<div className="flex items-center py-6">
 						{/* search bar */}
+						&nbsp;
 						<Input
 							placeholder="Filter setting..."
 							value={
@@ -344,7 +349,7 @@ export function BankTable({
 								type={table_type}
 								data={data}
 								showDialog={showDialog}
-								insertFunction={bankInsertFunction}
+								insertFunction={createBankSetting}
 								onOpenChange={(open: boolean) => {
 									setShowDialog(open);
 								}}
@@ -357,11 +362,7 @@ export function BankTable({
 	);
 }
 
-function DeleteRow(id: number) {
-	console.log("delete bank setting whose id = %d", id);
-}
-
-function CompDropdown({ setting }: { setting: BankRow }) {
+function CompDropdown({ setting, deleteBankSetting, updateBankSetting }: { setting: BankRow, deleteBankSetting: (d: any)=>void, updateBankSetting: (d: any)=>void}) {
 	const [showModifyDialog, setShowModifyDialog] = useState(false);
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
@@ -395,19 +396,21 @@ function CompDropdown({ setting }: { setting: BankRow }) {
 				</DropdownMenuContent>
 			</DropdownMenu>
 
-			<CompDialog
+			<ModifyDialog
 				setting={setting}
 				showDialog={showModifyDialog}
+				updateBankSetting={updateBankSetting}
 				onOpenChange={(open: boolean) => {
 					setShowModifyDialog(open);
 				}}
 			/>
 
-			<ConfirmDialog
+			<DeleteDialog
 				showDialog={showDeleteDialog}
 				setting={setting}
 				message="Are you sure you want to proceed?"
 				title="Confirmation"
+				deleteBankSetting={deleteBankSetting}
 				onOpenChange={(open: boolean) => {
 					setShowDeleteDialog(open);
 				}}
@@ -416,13 +419,15 @@ function CompDropdown({ setting }: { setting: BankRow }) {
 	);
 }
 
-function CompDialog({
+function ModifyDialog({
 	setting,
 	showDialog,
+	updateBankSetting,
 	onOpenChange,
 }: {
 	setting: BankRow;
 	showDialog: boolean;
+	updateBankSetting: (d: any) => void;
 	onOpenChange: (open: boolean) => void;
 }) {
 	const [updatedSetting, setUpdatedSetting] = useState(setting);
@@ -432,6 +437,7 @@ function CompDialog({
 			[key]: value,
 		}));
 	};
+
 	return (
 		<Dialog open={showDialog} onOpenChange={onOpenChange}>
 			<DialogContent>
@@ -489,17 +495,19 @@ function CompDialog({
 	);
 }
 
-function ConfirmDialog({
+function DeleteDialog({
 	title,
 	message,
 	setting,
 	showDialog,
+	deleteBankSetting,
 	onOpenChange,
 }: {
 	title: string;
 	message: string;
 	setting: BankRow;
 	showDialog: boolean;
+	deleteBankSetting: (d: any) => void;
 	onOpenChange: (open: boolean) => void;
 }) {
 	return (
@@ -523,7 +531,7 @@ function ConfirmDialog({
 					<DialogClose asChild>
 						<Button
 							onClick={() => {
-								DeleteRow(setting.id!);
+								deleteBankSetting({id: setting.id!});
 							}}
 						>
 							Yes

@@ -27,21 +27,21 @@ import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 const API_PARAMETERS = api.parameters;
 
 let datas: DATA[] = [
-	{
-		table_name: "請假加班",
-		table_type: "typical",
-		table_content: [],
-	},
+	// {
+	// 	table_name: "請假加班",
+	// 	table_type: "typical",
+	// 	table_content: [],
+	// },
 	{
 		table_name: "銀行",
 		table_type: "bank",
 		table_content: [],
 	},
-    {
-		table_name: "勞健保費率",
-		table_type: "typical",
-		table_content: [],
-	},
+    // {
+	// 	table_name: "勞健保費率",
+	// 	table_type: "typical",
+	// 	table_content: [],
+	// },
 ]
 
 function find_index(key: string) {
@@ -53,16 +53,18 @@ function find_index(key: string) {
 
 const PageParameters: NextPageWithLayout = () => {
 	
-	// const [table_status, setTableStatus] = useState(Array(datas.length).fill(false));
-	// function changeTableStatus(index: number) { let tmp_status = table_status;tmp_status[index] = !tmp_status[index];setTableStatus(tmp_status); }
-	const dataQuery = api.useQueries((t) => [
+	// const attendanceData = API_PARAMETERS.attendanceGetData.useQuery();
+	// const insuranceData = API_PARAMETERS.insuranceGetData.useQuery();
 
-	])
-	const bankData = API_PARAMETERS.bankGetData.useQuery();
-	const attendanceData = API_PARAMETERS.attendanceGetData.useQuery();
-	const insuranceData = API_PARAMETERS.insuranceGetData.useQuery();
-	const bankAddData = api.parameters.bankAddData.useMutation({
-		onSuccess: () => {bankData.refetch();}
+	const getBankSetting = API_PARAMETERS.getBankSetting.useQuery();
+	const updateBankSetting = api.parameters.updateBankSetting.useMutation({
+		onSuccess: () => {getBankSetting.refetch();}
+	});
+	const createBankSetting = api.parameters.createBankSetting.useMutation({
+		onSuccess: () => {getBankSetting.refetch();}
+	});
+	const deleteBankSetting = api.parameters.deleteBankSetting.useMutation({
+		onSuccess: () => {getBankSetting.refetch();}
 	});
 
 	function updateDatas(t_name: string, new_content: SettingItem[] | BankRow[]) {
@@ -78,13 +80,13 @@ const PageParameters: NextPageWithLayout = () => {
 	}
 
 	if (
-		attendanceData.isFetched &&
-		bankData.isFetched &&
-		insuranceData.isFetched
+		// attendanceData.isFetched &&
+		getBankSetting.isFetched &&
+		// insuranceData.isFetched
 	) {
 
 		// updateDatas("請假加班", Object.keys(attendanceData.data ?? {}).map((key) => { return { name: (Translate(key) as string),value: ((attendanceData.data as any)[key]==null?"NULL":(attendanceData.data as any)[key]) }; }));
-		updateDatas("銀行", (bankData.data ?? []).map((bank) => {return {id:	bank.id,bank_code: bank.bank_code,bank_name: bank.bank_name,org_code: bank.org_code,org_name: bank.org_name};}))
+		updateDatas("銀行", (getBankSetting.data ?? []).map((bank: any) => {return {id:	bank.id,bank_code: bank.bank_code,bank_name: bank.bank_name,org_code: bank.org_code,org_name: bank.org_name};}))
 		return HTMLElement();
 	}
 	else {
@@ -117,7 +119,9 @@ const PageParameters: NextPageWithLayout = () => {
 										table_name={data.table_name}
 										table_type={data.table_type} 
 										index={find_index(data.table_name)} 
-										bankInsertFunction={(d: any) => {bankAddData.mutate(d)}}
+										updateBankSetting={(d: any) => {updateBankSetting.mutate(d)}}
+										createBankSetting={(d: any) => {createBankSetting.mutate(d)}}
+										deleteBankSetting={(d: any) => {deleteBankSetting.mutate(d)}}
 									/>
 								return bankTable;
 							}
