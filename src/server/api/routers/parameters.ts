@@ -6,17 +6,22 @@ import {
 	protectedProcedure,
 } from "~/server/api/trpc";
 import {
-	attendanceInput,
+	createAttendanceSettingInput,
+	updateAttendanceSettingInput,
 	createBankSettingInput,
-	insuranceInput,
 	updateBankSettingInput,
 } from "../input_type/parameters_input";
 import { BankSettingService } from "~/server/service/bank_setting_service";
+import { AttendanceSettingService } from "~/server/service/attendance_setting_service";
+import { BaseResponseError } from "../error/BaseResponseError";
 
 export const parametersRouter = createTRPCRouter({
 	getBankSetting: publicProcedure.query(async () => {
 		const bankService = container.resolve(BankSettingService);
 		let bankSetting = await bankService.getBankSettingList();
+		if (bankSetting == null || bankSetting!.length == 0) {
+			throw new BaseResponseError("BankSetting does not exist");
+		}
 		return bankSetting;
 	}),
 
@@ -24,14 +29,7 @@ export const parametersRouter = createTRPCRouter({
 		.input(createBankSettingInput)
 		.mutation(async ({ input }) => {
 			const bankService = container.resolve(BankSettingService);
-			let newdata = await bankService.createBankSetting(
-				input.bank_code,
-				input.bank_name,
-				input.org_code,
-				input.org_name,
-				input.start_date,
-				input.end_date
-			);
+			let newdata = await bankService.createBankSetting(input);
 			return newdata;
 		}),
 
@@ -39,15 +37,7 @@ export const parametersRouter = createTRPCRouter({
 		.input(updateBankSettingInput)
 		.mutation(async ({ input }) => {
 			const bankService = container.resolve(BankSettingService);
-			let newdata = await bankService.updateBankSetting(
-				input.id,
-				input.bank_code,
-				input.bank_name,
-				input.org_code,
-				input.org_name,
-				input.start_date,
-				input.end_date
-			);
+			let newdata = await bankService.updateBankSetting(input);
 			return newdata;
 		}),
 
@@ -59,96 +49,46 @@ export const parametersRouter = createTRPCRouter({
 			await bankService.deleteBankSetting(input.id);
 		}),
 
-	attendanceGetData: publicProcedure.query(async () => {
-		// const now = new Date()
-		// const attendanceData = await dataSource.manager.find(AttendanceSetting
-		//     ,{
-		//     where:{
-		//         start_date: LessThanOrEqual(now),
-		//         // end_date: MoreThan(now) || IsNull()
-		//         end_date:  (IsNull() ||  MoreThanOrEqual(now))
-		//     }
-		// });
-		// console.log((attendanceData[0] as any)['end_date'])
-		// return {
-		//     attendanceData: attendanceData,
-		// };
+	getAttendanceSetting: publicProcedure.query(async () => {
+		const attendanceService = container.resolve(AttendanceSettingService);
+		let attendanceSetting = await attendanceService.getAttendanceSetting();
+		if (attendanceSetting == null) {
+			throw new BaseResponseError("AttendanceSetting does not exist");
+		}
+		return attendanceSetting;
 	}),
 
-	attendanceAddData: publicProcedure
-		.input(attendanceInput)
+	createAttendanceSetting: publicProcedure
+		.input(createAttendanceSettingInput)
 		.mutation(async ({ input }) => {
-			// const now = new Date()
-			// const overlap_data = await dataSource.manager.find(AttendanceSetting,{
-			//     where:{
-			//         start_date: LessThanOrEqual(input.start_date),
-			//         end_date: MoreThanOrEqual(input.start_date)
-			//     }
-			// });
-			// if (overlap_data != null){
-			//     return {
-			//         error : 'invalid input'
-			//     }
-			// }
-			// const old_attendanceData = await dataSource.manager.find(AttendanceSetting,{
-			//     where:{
-			//         start_date: LessThanOrEqual(now),
-			//         end_date:  IsNull()
-			//     }
-			// });
-			// for (const o of old_attendanceData){
-			//     if (o != null){
-			//         o.end_date=input.start_date
-			//     }
-			// }
-			// const error = dataSource.manager.insert(AttendanceSetting,input)
-			// return {
-			//     error: error
-			// };
+			const attendanceService = container.resolve(
+				AttendanceSettingService
+			);
+			let newdata = await attendanceService.createAttendanceSetting(
+				input
+			);
+			return newdata;
 		}),
 
-	insuranceGetData: publicProcedure.query(async () => {
-		// const now = new Date()
-		// const insuranceData = await dataSource.manager.find(InsuranceRateSetting,{
-		//     where:{
-		//         start_date: LessThanOrEqual(now),
-		//         end_date: (MoreThanOrEqual(now) || IsNull())
-		//     }
-		// });
-		// return {
-		//     insuranceDate: insuranceData,
-		// };
-	}),
-
-	insuranceAddData: publicProcedure
-		.input(insuranceInput)
+	updateAttendanceSetting: publicProcedure
+		.input(updateAttendanceSettingInput)
 		.mutation(async ({ input }) => {
-			// const now = new Date()
-			// const overlap_data = await dataSource.manager.find(InsuranceRateSetting,{
-			//     where:{
-			//         start_date: LessThanOrEqual(input.start_date),
-			//         end_date: MoreThanOrEqual(input.start_date)
-			//     }
-			// });
-			// if (overlap_data != null){
-			//     return {
-			//         error : 'invalid input'
-			//     }
-			// }
-			// const old_attendanceData = await dataSource.manager.find(InsuranceRateSetting,{
-			//     where:{
-			//         start_date: LessThanOrEqual(now),
-			//         end_date:  IsNull()
-			//     }
-			// });
-			// for (const o of old_attendanceData){
-			//     if (o != null){
-			//         o.end_date=input.start_date
-			//     }
-			// }
-			// const error = dataSource.manager.insert(InsuranceRateSetting,input)
-			// return {
-			//     error: error
-			// };
+			const attendanceService = container.resolve(
+				AttendanceSettingService
+			);
+			let newdata = await attendanceService.updateAttendanceSetting(
+				input
+			);
+			return newdata;
+		}),
+
+	deleteAttendanceSetting: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.mutation(async (opts) => {
+			const { input } = opts;
+			const attendanceService = container.resolve(
+				AttendanceSettingService
+			);
+			await attendanceService.deleteAttendanceSetting(input.id);
 		}),
 });
