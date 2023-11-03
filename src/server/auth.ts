@@ -3,6 +3,7 @@ import {
 	getServerSession,
 	type NextAuthOptions,
 	type DefaultSession,
+	DefaultUser,
 } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { container } from "tsyringe";
@@ -17,6 +18,10 @@ import { BaseResponseError } from "./api/error/BaseResponseError";
  *
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
+interface JWTUser extends DefaultUser {
+	emp_id: string;
+}
+
 declare module "next-auth" {
 	interface Session extends DefaultSession {
 		user: DefaultSession["user"] & {
@@ -27,11 +32,12 @@ declare module "next-auth" {
 		};
 	}
 
-	interface User {
-		// ...other properties
-		// role: UserRole;
-		emp_id: string;
-	}
+	interface User extends JWTUser {}
+}
+
+// nextauth.d.ts
+declare module "next-auth/jwt" {
+	interface JWT extends JWTUser {}
 }
 
 /**
@@ -55,6 +61,7 @@ export const authOptions: NextAuthOptions = {
 			if (user) {
 				token.id = user.id;
 				token.email = user.email;
+				token.emp_id = user.emp_id
 			}
 			return token;
 		},
@@ -64,6 +71,7 @@ export const authOptions: NextAuthOptions = {
 				user: {
 					...session.user,
 					id: token.sub,
+					emp_id: token.emp_id
 				},
 			};
 		},

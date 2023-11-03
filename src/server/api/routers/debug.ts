@@ -4,6 +4,7 @@ import {
 	createTRPCRouter,
 	publicProcedure,
 	protectedProcedure,
+	userProcedure,
 } from "~/server/api/trpc";
 import { Database } from "~/server/database/client";
 
@@ -45,6 +46,9 @@ export const debugRouter = createTRPCRouter({
 		}
 	}),
 	protect: protectedProcedure.query(async ({ ctx }) => {
+		return ctx;
+	}),
+	resolveUser: userProcedure.query(async ({ ctx }) => {
 		return ctx;
 	}),
 });

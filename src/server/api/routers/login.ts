@@ -16,7 +16,7 @@ export const loginRouter = createTRPCRouter({
 			const { input } = opts;
 
 			const userService = container.resolve(UserService);
-			let user = await userService.getUser(input.emp_id);
+			const user = await userService.getUser(input.emp_id);
 
 			if (!user) {
 				throw new BaseResponseError("User does not exist");

@@ -92,7 +92,7 @@ export default function Login() {
 										name="userid"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>User Id</FormLabel>
+												<FormLabel>User ID</FormLabel>
 												<FormControl>
 													<Input
 														placeholder="user id"
@@ -100,7 +100,7 @@ export default function Login() {
 													/>
 												</FormControl>
 												<FormDescription>
-													your employ id
+													Your employee ID
 												</FormDescription>
 												<FormMessage />
 											</FormItem>

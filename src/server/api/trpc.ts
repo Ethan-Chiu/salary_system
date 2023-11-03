@@ -12,6 +12,8 @@ import { type Session } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
 import { getServerAuthSession } from "~/server/auth";
+import { UserService } from "../service/userService";
+import { container } from "tsyringe";
 
 /**
  * 1. CONTEXT
@@ -117,6 +119,22 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   });
 });
 
+const resolveAuthedUser = t.middleware(async ({ ctx, next }) => {
+  const user_emp_id = ctx.session?.user.emp_id
+  if (!user_emp_id) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+  const userService = container.resolve(UserService);
+  const user = await userService.getUser(user_emp_id);
+
+  return next({
+    ctx: {
+      ...ctx,
+      user: user
+    },
+  });
+})
+
 /**
  * Protected (authenticated) procedure
  *
@@ -126,3 +144,5 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+
+export const userProcedure = t.procedure.use(enforceUserIsAuthed).use(resolveAuthedUser)
