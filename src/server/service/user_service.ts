@@ -4,6 +4,7 @@ import { User } from "../database/entity/user";
 import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { check_date } from "./helper_function";
+import sequelize from "sequelize/types/sequelize";
 
 @injectable()
 export class UserService {
@@ -43,10 +44,10 @@ export class UserService {
 			where: {
 				emp_id: emp_id,
 				start_date: {
-					[Op.lt]: now,
+					[Op.lte]: now,
 				},
 				end_date: {
-					[Op.or]: [{ [Op.gt]: now }, { [Op.eq]: null }],
+					[Op.or]: [{ [Op.gte]: now }, { [Op.eq]: null }],
 				},
 			},
 		});
@@ -58,10 +59,10 @@ export class UserService {
 		const user = await User.findAll({
 			where: {
 				start_date: {
-					[Op.lt]: now,
+					[Op.lte]: now,
 				},
 				end_date: {
-					[Op.or]: [{ [Op.gt]: now }, { [Op.eq]: null }],
+					[Op.or]: [{ [Op.gte]: now }, { [Op.eq]: null }],
 				},
 			},
 		});

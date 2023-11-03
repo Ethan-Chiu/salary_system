@@ -41,14 +41,15 @@ export class BankSettingService {
 
 	async getBankSetting(id: number): Promise<BankSetting | null> {
 		const now = new Date();
+		const currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 		const bankSettiing = await BankSetting.findOne({
 			where: {
 				id: id,
 				start_date: {
-					[Op.lt]: now,
+					[Op.lte]: currentDate,
 				},
 				end_date: {
-					[Op.or]: [{ [Op.gt]: now }, { [Op.eq]: null }],
+					[Op.or]: [{ [Op.gte]: currentDate }, { [Op.eq]: null }],
 				},
 			},
 		});
