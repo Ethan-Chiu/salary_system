@@ -27,11 +27,17 @@ import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 const API_PARAMETERS = api.parameters;
 
 let datas: DATA[] = [
-	// {
-	// 	table_name: "請假加班",
-	// 	table_type: "typical",
-	// 	table_content: [],
-	// },
+	{
+		table_name: "請假加班",
+		table_type: "typical",
+		table_content: [
+			createSettingItem("test","test",["A","B","C","D","E"]),
+			createSettingItem("test","test",["X","Y","Z"]),
+			createSettingItem("test","test"),
+			createSettingItem("test",123),
+			createSettingItem("test",new Date())
+		],
+	},
 	{
 		table_name: "銀行",
 		table_type: "bank",
@@ -71,7 +77,6 @@ const PageParameters: NextPageWithLayout = () => {
 		
 		const newDatas = datas.map(data => {
 			if (data.table_name === t_name) {
-				console.log(new_content)
 				return createDATA(data.table_name, data.table_type, new_content);
 			}
 			return data;
@@ -80,14 +85,15 @@ const PageParameters: NextPageWithLayout = () => {
 	}
 
 	if (
+		true
 		// attendanceData.isFetched &&
-		getBankSetting.isFetched
+		// getBankSetting.isFetched
 		// insuranceData.isFetched
 	) {
 
 		// updateDatas("請假加班", Object.keys(attendanceData.data ?? {}).map((key) => { return { name: (Translate(key) as string),value: ((attendanceData.data as any)[key]==null?"NULL":(attendanceData.data as any)[key]) }; }));
-		console.log((getBankSetting.data ?? []).map((bank: any) => {return {id:	bank.id,bank_code: bank.bank_code,bank_name: bank.bank_name,org_code: bank.org_code,org_name: bank.org_name,start_date: bank.start_date, end_date: bank.end_date};}))
-		updateDatas("銀行", (getBankSetting.data ?? []).map((bank: any) => {return {id:	bank.id,bank_code: bank.bank_code,bank_name: bank.bank_name,org_code: bank.org_code,org_name: bank.org_name,start_date:bank.start_date,end_date:bank.end_date};}))
+		// console.log((getBankSetting.data ?? []).map((bank: any) => {return {id:	bank.id,bank_code: bank.bank_code,bank_name: bank.bank_name,org_code: bank.org_code,org_name: bank.org_name,start_date: new Date(bank.start_date), end_date: new Date(bank.end_date)};}))
+		// updateDatas("銀行", (getBankSetting.data ?? []).map((bank: any) => {return {id:	bank.id,bank_code: bank.bank_code,bank_name: bank.bank_name,org_code: bank.org_code,org_name: bank.org_name,start_date:bank.start_date,end_date:bank.end_date};}))
 		return HTMLElement();
 	}
 	else {

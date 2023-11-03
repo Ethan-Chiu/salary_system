@@ -96,12 +96,6 @@ export function createBankRow(
 	return x;
 }
 
-
-function interpretTimeStamp(t_stamp: string) {
-	return t_stamp.split('T')[0]
-}
-
-
 export function BankTable({
 	table_name,
 	table_type,
@@ -144,6 +138,24 @@ export function BankTable({
 			},
 		},
 		{
+			accessorKey: "start_date",
+			header: () => <div className="text-center">start</div>,
+			cell: ({ row }) => {
+				return (
+					<div className="text-center font-medium">{`${row.original.start_date.toISOString().split('T')[0]}`}</div>
+				);
+			},
+		},
+		{
+			accessorKey: "end_date",
+			header: () => <div className="text-center">end</div>,
+			cell: ({ row }) => {
+				return (
+					<div className="text-center font-medium">{`${row.original.start_date.toISOString().split('T')[0] ?? ""}`}</div>
+				);
+			},
+		},
+		{
 			id: "actions",
 			enableHiding: false,
 			cell: ({ row }) => {
@@ -165,7 +177,6 @@ export function BankTable({
 	const [showDialog, setShowDialog] = useState(false);
 
 	useEffect(() => {
-		console.log("here");
 		setData(defaultData);
 	}, [defaultData]);
 
@@ -193,7 +204,6 @@ export function BankTable({
 	const onceCreated = () => {
 		// Do something inside the child function
 		setData(defaultData);
-		console.log("Child function is called!");
 	};
 	// Store the child function in a ref
 	const childFunctionRef = useRef(onceCreated);
@@ -450,7 +460,7 @@ function ModifyDialog({
 		}));
 	};
 
-	{Object.entries(setting).map(([key, value]) => {console.log("%s %s  %s", key, typeof value, typeof value)})}
+	// {Object.entries(setting).map(([key, value]) => {console.log("%s %s  %s", key, typeof value, typeof value)})}
 
 	return (
 		<Dialog open={showDialog} onOpenChange={onOpenChange}>
@@ -473,10 +483,10 @@ function ModifyDialog({
 									</Label>
 									
 									{
-										(typeof value === "string" || typeof value === "number")?
+										(key !== "start_date" && key != "end_date")?
 										<Input
 											id={key}
-											defaultValue={value!}
+											defaultValue={(value as string)!}
 											type={(typeof value === "string")?"value":"number"}
 											className="col-span-3"
 											onChange={(e) =>
@@ -488,13 +498,13 @@ function ModifyDialog({
 										/>:
 										<Input
 											id={key}
-											defaultValue={value?.toISOString().split('T')[0]}
+											defaultValue={(value as string)?.split('T')[0]}
 											type={"date"}
 											className="col-span-3"
 											onChange={(e) =>
 												handleInputChange(
 													key,
-													e.target.value
+													new Date(e.target.value)
 												)
 											}
 										/>
@@ -509,9 +519,6 @@ function ModifyDialog({
 						<Button
 							type="submit"
 							onClick={() => {
-								console.log(setting);
-								console.log("updated data:")
-								console.log(updatedSetting);
 								updateBankSetting(
 									{
 										id: updatedSetting.id,
@@ -519,7 +526,7 @@ function ModifyDialog({
 										bank_name: updatedSetting.bank_name,
 										org_code: updatedSetting.org_code,
 										org_name: updatedSetting.org_name,
-										start_date: null,
+										start_date: updatedSetting.start_date,
 										end_date: null,
 									}
 								)
@@ -570,6 +577,7 @@ function DeleteDialog({
 					<DialogClose asChild>
 						<Button
 							onClick={() => {
+								console.log("delete data with id %s", setting.id!)
 								deleteBankSetting({id: setting.id!});
 							}}
 						>
@@ -639,7 +647,7 @@ function InsertDialog({
 						<Button
 							type="submit"
 							onClick={() => {
-								console.log(inputRef[lookup("起")]?.current?.valueAsDate)
+								// console.log(inputRef[lookup("起")]?.current?.valueAsDate)
 								createBankSetting(
 									{
 										bank_code: inputRef[lookup("銀行代碼")]?.current?.value ?? "",

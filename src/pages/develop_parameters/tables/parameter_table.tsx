@@ -9,7 +9,15 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from "~/components/ui/accordion";
-
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
+} from "~/components/ui/select";
 import {
 	flexRender,
 	getCoreRowModel,
@@ -61,15 +69,22 @@ import {
 import { PerpageLayout } from "~/components/layout/perpage_layout";
 import { type ReactElement, useRef, useState, useEffect, useMemo } from "react";
 import { DATA, createDATA } from "./datatype";
+import { List } from "postcss/lib/list";
 
 export type SettingItem = {
 	name: string;
-	value: number | string;
+	value: number | string | Date;
+	setting?: (number | string)[];
 };
 
-export function createSettingItem(name: string, value: number|string) {
-	let x: SettingItem = {name: name, value: value}
-	return x
+export function createSettingItem(
+	name: string,
+	value: number | string | Date,
+	setting?: (number | string)[]
+) {
+	if (setting) return { name: name, value: value, setting: setting };
+	let x: SettingItem = { name: name, value: value };
+	return x;
 }
 
 const columns: ColumnDef<SettingItem>[] = [
@@ -83,7 +98,7 @@ const columns: ColumnDef<SettingItem>[] = [
 						column.toggleSorting(column.getIsSorted() === "asc")
 					}
 				>
-					Setting
+					Parameter
 					<ArrowUpDown className="ml-2 h-4 w-4" />
 				</Button>
 			);
@@ -97,12 +112,15 @@ const columns: ColumnDef<SettingItem>[] = [
 		header: () => <div className="text-center">Value</div>,
 		cell: ({ row }) => {
 			var formatted = "";
-			switch (typeof row.getValue("value")) {
-				case "number":
+			switch (Object.prototype.toString.call(row.getValue("value"))) {
+				case "[object Number]": 
 					formatted = parseFloat(row.getValue("value")).toString();
 					break;
-				case "string":
+				case "[object String]":
 					formatted = row.getValue("value");
+					break
+				case "[object Date]":
+					formatted = (row.getValue("value") as Date).toISOString().split("T")[0] ?? ""
 					break;
 			}
 			return <div className="text-center font-medium">{formatted}</div>;
@@ -118,19 +136,24 @@ const columns: ColumnDef<SettingItem>[] = [
 	},
 ];
 
-export function ParameterTable({table_name, table_type, defaultData, index, onChildFunctionRun}: any){
+export function ParameterTable({
+	table_name,
+	table_type,
+	defaultData,
+	index,
+	onChildFunctionRun,
+}: any) {
 	const [data, setData] = useState<SettingItem[]>(defaultData);
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+		{}
+	);
 	const [rowSelection, setRowSelection] = useState({});
 
 	useEffect(() => {
-		console.log("here")
 		setData(defaultData);
-
-	  }, [defaultData]);
-
+	}, [defaultData]);
 
 	const filter_key = "name";
 
@@ -155,9 +178,8 @@ export function ParameterTable({table_name, table_type, defaultData, index, onCh
 
 	const onceCreated = () => {
 		// Do something inside the child function
-		setData(defaultData)
-		console.log("Child function is called!");
-	  };
+		setData(defaultData);
+	};
 	// Store the child function in a ref
 	const childFunctionRef = useRef(onceCreated);
 
@@ -299,7 +321,7 @@ export function ParameterTable({table_name, table_type, defaultData, index, onCh
 								}}
 								disabled={false}
 							>
-								Add
+								Modify All
 							</Button>
 							<Button
 								variant="outline"
@@ -370,7 +392,7 @@ function CompDropdown({ setting }: { setting: SettingItem }) {
 				</DropdownMenuContent>
 			</DropdownMenu>
 
-			<CompDialog
+			<ModifyDialog
 				setting={setting}
 				showDialog={showDialog}
 				onOpenChange={(open: boolean) => {
@@ -381,10 +403,7 @@ function CompDropdown({ setting }: { setting: SettingItem }) {
 	);
 }
 
-
-
-
-function CompDialog({
+function ModifyDialog({
 	setting,
 	showDialog,
 	onOpenChange,
@@ -394,7 +413,6 @@ function CompDialog({
 	onOpenChange: (open: boolean) => void;
 }) {
 	const inputRef = useRef<HTMLInputElement>(null);
-	if(typeof(setting))	return <></>
 	return (
 		<Dialog open={showDialog} onOpenChange={onOpenChange}>
 			<DialogContent>
@@ -409,17 +427,57 @@ function CompDialog({
 						<Label htmlFor="value" className="text-right">
 							Value
 						</Label>
-						<Input
-							ref={inputRef}
-							id="value"
-							defaultValue={setting.value.toString()}
-							type={
-								Number.isInteger(setting.value)
-									? "number"
-									: "value"
-							}
-							className="col-span-3"
-						/>
+						{setting.setting ? (
+							<Select
+								onValueChange={(v) => {
+									setting.value = v;
+								}}
+							>
+								<SelectTrigger className="w-[180px]">
+									<SelectValue placeholder="Select a value" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectGroup>
+										<SelectLabel>Type</SelectLabel>
+										{setting.setting.map((option) => {
+											return (
+												<SelectItem
+													value={
+														typeof option ===
+														"number"
+															? option.toString()
+															: option
+													}
+												>
+													{option}
+												</SelectItem>
+											);
+										})}
+									</SelectGroup>
+								</SelectContent>
+							</Select>
+						) : typeof setting.value == "number" ||
+						  typeof setting.value == "string" ? (
+							<Input
+								ref={inputRef}
+								id="value"
+								defaultValue={setting.value.toString()}
+								type={
+									Number.isInteger(setting.value)
+										? "number"
+										: "value"
+								}
+								className="col-span-3"
+							/>
+						) : (
+							<Input
+								ref={inputRef}
+								id="value"
+								defaultValue={setting.value.toISOString().split('T')[0]}
+								type={"date"}
+								className="col-span-3"
+							/>
+						)}
 					</div>
 				</div>
 				<DialogFooter>
@@ -427,7 +485,18 @@ function CompDialog({
 						<Button
 							type="submit"
 							onClick={() => {
-								const value = Number(inputRef.current?.value);
+								const value = setting.setting
+									? setting.value
+									: typeof setting.value === "string"
+									? inputRef.current?.value
+									: typeof setting.value === "number"
+									? Number(inputRef.current?.value)
+									: inputRef.current?.valueAsDate;
+								
+								let { ["value"]: x, ...rest } = setting;
+								let newItem = {...rest, ["value"]: value};
+								// 待補
+								console.log(newItem);
 							}}
 						>
 							Save changes
