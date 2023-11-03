@@ -110,10 +110,10 @@ const PageParameters: NextPageWithLayout = () => {
 	function changeTableStatus(index: number) { let tmp_status = table_status;tmp_status[index] = !tmp_status[index];setTableStatus(tmp_status); }
 
 
-	const bankData = API_PARAMETERS.bankGetData.useQuery();
+	const bankData = API_PARAMETERS.getBankSetting.useQuery();
 	const attendanceData = API_PARAMETERS.attendanceGetData.useQuery();
 	const insuranceData = API_PARAMETERS.insuranceGetData.useQuery();
-	const bankAddData = api.parameters.bankAddData.useMutation();
+	const bankAddData = api.parameters.createBankSetting.useMutation();
 
 	if (attendanceData.isFetched && datas[0]?.table_content.length == 0 && !table_status[find_index("請假加班")]) {
 		setRun(true);
@@ -547,3 +547,56 @@ function InsertDialog({
 		)
 	}
 }
+
+
+
+// const [datas, setDatas] = useState(initialData)
+// 	function updateDatas(t_name: string, new_content: SettingItem[] | BankRow[]) {
+// 		setDatas(
+// 			prevDatas => {
+// 			console.log(prevDatas)
+// 			const updatedDatas = prevDatas.map(data => {
+// 				if (data.table_name === t_name) {
+// 					console.log(new_content)
+// 					return createDATA(data.table_name, data.table_type, new_content);
+// 				}
+// 				return data;
+// 			});
+// 			console.log(updatedDatas)
+// 			return updatedDatas;}
+// 		);
+// 	}
+
+
+// if (attendanceData.isFetched) {
+	// 	console.log("Successful Fetched Attendance Data");
+	// 	let initialAttendanceData = Object.keys(attendanceData.data?.attendanceData[0]!).map((key) => { return { name: (Translate(key) as string),value: ((attendanceData.data?.attendanceData[0] as any)[key]==null?"NULL":(attendanceData.data?.attendanceData[0] as any)[key]) }; })
+	// 	updateDatas("請假加班",initialAttendanceData);
+	// }
+	// if (bankData.isFetched) {
+	// 	console.log("Successful Fetched Bank Data");
+	// 	let initialBankData = (bankData.data ?? []).map((bank) => {return {id:	bank.id,bank_code: bank.bank_code,bank_name: bank.bank_name,org_code: bank.org_code,org_name: bank.org_name};})
+	// 	updateDatas("銀行", initialBankData)
+	// }
+	// if (insuranceData.isFetched) {
+	// 	console.log("Successful Fetched Insurance Data");
+	// 	let initialInsuranceData = Object.keys(insuranceData.data?.insuranceDate[0]!).map((key) => { return { name: key,value: ((insuranceData.data?.insuranceDate[0] as any)[key]==null?"NULL":(insuranceData.data?.insuranceDate[0] as any)[key]) }; })
+	// 	updateDatas("勞健保費率",initialInsuranceData);
+	// }
+
+
+	{/* <Button onClick={()=>{console.log(datas)}}>Console log "datas"</Button>
+				<Button onClick={()=>{
+					let testBankItem: BankRow[] = [
+						createBankRow(123,"bc","bn","oc","on"),
+						createBankRow(123,"bc","bn","oc","on"),
+						createBankRow(123,"bc","bn","oc","on"),
+					]
+					let testSettingItem: SettingItem[] = [createSettingItem("name", "value")]
+
+					updateDatas("請假加班", testSettingItem)
+					updateDatas("銀行", testBankItem)
+					console.log("change datas")
+				}}> Change datas </Button> */}
+
+				{/* <Button disabled={bankAddData.isLoading} onClick={()=>bankAddData.mutate(testInsertBankData)}>Insert Bank Data</Button> */}

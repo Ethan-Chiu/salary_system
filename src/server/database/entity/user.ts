@@ -55,12 +55,12 @@ User.init(
 			primaryKey: true,
 		},
 		emp_id: {
-			type: new DataTypes.STRING(128),
+			type: DataTypes.STRING(128),
 			unique: true,
 			allowNull: false,
 		},
 		hash: {
-			type: new DataTypes.STRING(128),
+			type: DataTypes.STRING(128),
 			allowNull: false,
 		},
 		auth_level: {
