@@ -173,6 +173,7 @@ export function ParameterTable({table_name, table_type, defaultData, index, onCh
 					{/* top bar */}
 					<div className="flex items-center py-6">
 						{/* search bar */}
+						&nbsp;
 						<Input
 							placeholder="Filter setting..."
 							value={

@@ -88,15 +88,15 @@ BankSetting.init(
 			allowNull: false,
 		},
 		start_date: {
-			type: DataTypes.DATE,
+			type: DataTypes.DATEONLY,
 			allowNull: false,
 		},
 		end_date: {
-			type: DataTypes.DATE,
+			type: DataTypes.DATEONLY,
 			allowNull: true,
 		},
 		create_date: {
-			type: DataTypes.DATE,
+			type: DataTypes.DATEONLY,
 			allowNull: false,
 		},
 		create_by: {
@@ -104,7 +104,7 @@ BankSetting.init(
 			allowNull: false,
 		},
 		update_date: {
-			type: DataTypes.DATE,
+			type: DataTypes.DATEONLY,
 			allowNull: false,
 		},
 		update_by: {
