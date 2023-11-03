@@ -3,6 +3,7 @@ import { injectable } from "tsyringe";
 import { User } from "../database/entity/user";
 import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
+import { check_date } from "./helper_function";
 
 @injectable()
 export class UserService {
@@ -15,16 +16,8 @@ export class UserService {
 		start_date: Date | null,
 		end_date: Date | null
 	): Promise<User> {
-		const user = await this.getUser(emp_id);
-		if (user != null) {
-			throw new BaseResponseError("User already exist");
-		}
-
 		const now = new Date();
-
-		if (end_date != null && end_date < (start_date ?? now)) {
-			throw new BaseResponseError("End date is earlier than start date");
-		}
+		check_date(start_date, end_date, now);
 
 		const salt = await bcrypt.genSalt();
 		const hash = await bcrypt.hash(password, salt);
@@ -49,6 +42,21 @@ export class UserService {
 		const user = await User.findOne({
 			where: {
 				emp_id: emp_id,
+				start_date: {
+					[Op.lt]: now,
+				},
+				end_date: {
+					[Op.or]: [{ [Op.gt]: now }, { [Op.eq]: null }],
+				},
+			},
+		});
+		return user;
+	}
+
+	async getUserList(): Promise<User[] | null> {
+		const now = new Date();
+		const user = await User.findAll({
+			where: {
 				start_date: {
 					[Op.lt]: now,
 				},

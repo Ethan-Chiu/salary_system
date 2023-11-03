@@ -110,10 +110,10 @@ const PageParameters: NextPageWithLayout = () => {
 	function changeTableStatus(index: number) { let tmp_status = table_status;tmp_status[index] = !tmp_status[index];setTableStatus(tmp_status); }
 
 
-	const bankData = API_PARAMETERS.bankGetData.useQuery();
+	const bankData = API_PARAMETERS.getBankSetting.useQuery();
 	const attendanceData = API_PARAMETERS.attendanceGetData.useQuery();
 	const insuranceData = API_PARAMETERS.insuranceGetData.useQuery();
-	const bankAddData = api.parameters.bankAddData.useMutation();
+	const bankAddData = api.parameters.createBankSetting.useMutation();
 
 	if (attendanceData.isFetched && datas[0]?.table_content.length == 0 && !table_status[find_index("請假加班")]) {
 		setRun(true);

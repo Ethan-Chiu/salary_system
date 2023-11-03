@@ -98,10 +98,10 @@ const PageParameters: NextPageWithLayout = () => {
 	// const [table_status, setTableStatus] = useState(Array(datas.length).fill(false));
 	// function changeTableStatus(index: number) { let tmp_status = table_status;tmp_status[index] = !tmp_status[index];setTableStatus(tmp_status); }
 
-	const bankData = API_PARAMETERS.bankGetData.useQuery();
+	const bankData = API_PARAMETERS.getBankSetting.useQuery();
 	const attendanceData = API_PARAMETERS.attendanceGetData.useQuery();
 	const insuranceData = API_PARAMETERS.insuranceGetData.useQuery();
-	const bankAddData = api.parameters.bankAddData.useMutation();
+	const bankAddData = api.parameters.createBankSetting.useMutation();
 
 	function updateDatas(t_name: string, new_content: SettingItem[] | BankRow[]) {
 		setDatas(
