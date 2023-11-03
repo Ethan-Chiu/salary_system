@@ -26,7 +26,6 @@
 // 	end_date?: Date | null;
 // }
 
-
 import {
 	DataTypes,
 	Model,
@@ -44,9 +43,9 @@ export class BankSetting extends Model<
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
 	declare bank_code: string;
-    declare bank_name: string;
-    declare org_code: string;
-    declare org_name: string;
+	declare bank_name: string;
+	declare org_code: string;
+	declare org_name: string;
 	declare start_date: Date;
 	declare end_date: Date | null;
 
@@ -73,17 +72,17 @@ BankSetting.init(
 			unique: false,
 			allowNull: false,
 		},
-        bank_name: {
+		bank_name: {
 			type: new DataTypes.STRING(128),
 			unique: false,
 			allowNull: false,
 		},
-        org_code: {
+		org_code: {
 			type: new DataTypes.STRING(128),
 			unique: false,
 			allowNull: false,
 		},
-        org_name: {
+		org_name: {
 			type: new DataTypes.STRING(128),
 			unique: false,
 			allowNull: false,
