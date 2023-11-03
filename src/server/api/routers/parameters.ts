@@ -1,24 +1,28 @@
 import { z } from "zod";
+import { container } from "tsyringe";
 import {
 	createTRPCRouter,
 	publicProcedure,
 	protectedProcedure,
 } from "~/server/api/trpc";
 import { attendanceInput, bankInput, insuranceInput } from "../input_type/parameters_input";
+import { BankService } from "~/server/service/bankService";
 
 export const parametersRouter = createTRPCRouter({
 	bankGetData: publicProcedure
 		.query(async() => {
-            // const now = new Date()
-			// const bank_data = await dataSource.manager.find(BankSetting);
-			// return {
-			// 	bankData: bank_data,
-			// };
+            const bankService = container.resolve(BankService);
+            let bankData = await bankService.getData();
+            return bankData
 		}),
 
     bankAddData: publicProcedure
         .input(bankInput)
-        .mutation(async ({ input }) => {
+        .mutation(async (opts) => {
+            const { input } = opts;
+            const bankService = container.resolve(BankService);
+            let newdata = await bankService.addData(input);
+            return newdata
             // const error = dataSource.manager.insert(BankSetting,input)
             // return {
             //     error: error

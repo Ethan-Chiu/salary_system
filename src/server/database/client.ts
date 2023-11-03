@@ -1,7 +1,7 @@
 import {singleton} from "tsyringe";
 import { Sequelize } from "sequelize";
 
-const local_db = true;
+const local_db = false;
 
 interface DatabaseConfig {
 	serviceName: string;
