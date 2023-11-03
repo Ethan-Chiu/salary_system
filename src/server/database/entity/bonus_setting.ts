@@ -65,7 +65,7 @@ BonusSetting.init(
 			allowNull: false,
         },
         criterion_date: {
-			type: DataTypes.DATEONLY,
+			type: DataTypes.DATE,
 			allowNull: false,
 		},
         base_on: {
@@ -77,7 +77,7 @@ BonusSetting.init(
 			allowNull: false,
         },
 		create_date: {
-			type: DataTypes.DATEONLY,
+			type: DataTypes.DATE,
 			allowNull: false,
 		},
 		create_by: {
@@ -85,7 +85,7 @@ BonusSetting.init(
 			allowNull: false,
 		},
 		update_date: {
-			type: DataTypes.DATEONLY,
+			type: DataTypes.DATE,
 			allowNull: false,
 		},
 		update_by: {

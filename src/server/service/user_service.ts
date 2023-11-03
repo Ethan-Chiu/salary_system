@@ -43,10 +43,10 @@ export class UserService {
 			where: {
 				emp_id: emp_id,
 				start_date: {
-					[Op.lte]: fn("DATE", now),
+					[Op.lte]: now,
 				},
 				end_date: {
-					[Op.or]: [{ [Op.gte]: fn("DATE", now) }, { [Op.eq]: null }],
+					[Op.or]: [{ [Op.gte]: now }, { [Op.eq]: null }],
 				},
 			},
 		});
@@ -58,10 +58,10 @@ export class UserService {
 		const user = await User.findAll({
 			where: {
 				start_date: {
-					[Op.lte]: fn("DATE", now),
+					[Op.lte]: now,
 				},
 				end_date: {
-					[Op.or]: [{ [Op.gte]: fn("DATE", now) }, { [Op.eq]: null }],
+					[Op.or]: [{ [Op.gte]: now }, { [Op.eq]: null }],
 				},
 			},
 		});

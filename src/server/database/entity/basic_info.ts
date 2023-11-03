@@ -36,7 +36,7 @@ BasicInfo.init(
 			primaryKey: true,
 		},
         payday: {
-            type: DataTypes.DATEONLY,
+            type: DataTypes.DATE,
 			allowNull: false,
         },
         announcement: {
@@ -45,7 +45,7 @@ BasicInfo.init(
 			allowNull: true,
         },
 		create_date: {
-			type: DataTypes.DATEONLY,
+			type: DataTypes.DATE,
 			allowNull: false,
 		},
 		create_by: {
@@ -53,7 +53,7 @@ BasicInfo.init(
 			allowNull: false,
 		},
 		update_date: {
-			type: DataTypes.DATEONLY,
+			type: DataTypes.DATE,
 			allowNull: false,
 		},
 		update_by: {

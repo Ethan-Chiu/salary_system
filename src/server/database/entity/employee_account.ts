@@ -69,7 +69,7 @@ EmployeeAccount.init(
 			allowNull: false,
         },
 		create_date: {
-			type: DataTypes.DATEONLY,
+			type: DataTypes.DATE,
 			allowNull: false,
 		},
 		create_by: {
@@ -77,7 +77,7 @@ EmployeeAccount.init(
 			allowNull: false,
 		},
 		update_date: {
-			type: DataTypes.DATEONLY,
+			type: DataTypes.DATE,
 			allowNull: false,
 		},
 		update_by: {

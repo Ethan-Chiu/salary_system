@@ -247,15 +247,15 @@ EmployeeData.init(
 			allowNull: false,
         },
         hire_date: {
-			type: DataTypes.DATEONLY,
+			type: DataTypes.DATE,
 			allowNull: false,
 		},
         entry_date: {
-			type: DataTypes.DATEONLY,
+			type: DataTypes.DATE,
 			allowNull: true,
 		},
         departure_date:{
-            type: DataTypes.DATEONLY,
+            type: DataTypes.DATE,
 			allowNull: true,
         },
         identity_number:{
@@ -319,7 +319,7 @@ EmployeeData.init(
 			allowNull: false,
         },
         birthdate: {
-			type: DataTypes.DATEONLY,
+			type: DataTypes.DATE,
 			allowNull: false,
 		},
         bank_account: {
@@ -339,7 +339,7 @@ EmployeeData.init(
 			allowNull: false,
         },
 		create_date: {
-			type: DataTypes.DATEONLY,
+			type: DataTypes.DATE,
 			allowNull: false,
 		},
 		create_by: {
@@ -347,7 +347,7 @@ EmployeeData.init(
 			allowNull: false,
 		},
 		update_date: {
-			type: DataTypes.DATEONLY,
+			type: DataTypes.DATE,
 			allowNull: false,
 		},
 		update_by: {
