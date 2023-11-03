@@ -1,6 +1,6 @@
 import { injectable } from "tsyringe";
 import { AttendanceSetting } from "../database/entity/attendance_setting";
-import { Op } from "sequelize";
+import { Op, fn } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { check_date } from "./helper_function";
 import { z } from "zod";
@@ -70,10 +70,10 @@ export class AttendanceSettingService {
 		const attendanceSettiingList = await AttendanceSetting.findAll({
 			where: {
 				start_date: {
-					[Op.lt]: now,
+					[Op.lte]: fn("DATE", now),
 				},
 				end_date: {
-					[Op.or]: [{ [Op.gt]: now }, { [Op.eq]: null }],
+					[Op.or]: [{ [Op.gte]: fn("DATE", now) }, { [Op.eq]: null }],
 				},
 			},
 		});

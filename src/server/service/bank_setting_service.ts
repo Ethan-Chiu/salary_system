@@ -1,6 +1,6 @@
 import { injectable } from "tsyringe";
 import { BankSetting } from "../database/entity/bank_setting";
-import { Op } from "sequelize";
+import { Op, fn } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { check_date } from "./helper_function";
 import { z } from "zod";
@@ -41,15 +41,14 @@ export class BankSettingService {
 
 	async getBankSetting(id: number): Promise<BankSetting | null> {
 		const now = new Date();
-		const currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 		const bankSettiing = await BankSetting.findOne({
 			where: {
 				id: id,
 				start_date: {
-					[Op.lte]: currentDate,
+					[Op.lte]: fn("DATE", now),
 				},
 				end_date: {
-					[Op.or]: [{ [Op.gte]: currentDate }, { [Op.eq]: null }],
+					[Op.or]: [{ [Op.gte]: fn("DATE", now) }, { [Op.eq]: null }],
 				},
 			},
 		});
@@ -61,10 +60,10 @@ export class BankSettingService {
 		const bankSettiing = await BankSetting.findAll({
 			where: {
 				start_date: {
-					[Op.lt]: now,
+					[Op.lte]: fn("DATE", now),
 				},
 				end_date: {
-					[Op.or]: [{ [Op.gt]: now }, { [Op.eq]: null }],
+					[Op.or]: [{ [Op.gte]: fn("DATE", now) }, { [Op.eq]: null }],
 				},
 			},
 		});
