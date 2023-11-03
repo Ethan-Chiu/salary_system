@@ -1,6 +1,6 @@
 import { injectable } from "tsyringe";
 import { BankSetting } from "../database/entity/bank_setting";
-import { Op } from "sequelize";
+import { NOW, Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { check_date } from "./helper_function";
 
@@ -35,7 +35,11 @@ export class BankSettingService {
 	}
 
 	async getBankSetting(id: number): Promise<BankSetting | null> {
-		const now = new Date();
+		const n = new Date();
+		const year = n.getFullYear();
+		const month = String(n.getMonth() + 1).padStart(2, '0');
+		const day = String(n.getDate()).padStart(2, '0');
+		const now = `${year}-${month}-${day}`;
 		const bankSettiing = await BankSetting.findOne({
 			where: {
 				id: id,
@@ -51,7 +55,13 @@ export class BankSettingService {
 	}
 
 	async getBankSettingList(): Promise<BankSetting[] | null> {
-		const now = new Date();
+		// const now =  Date();
+		const n = new Date();
+		const year = n.getFullYear();
+		const month = String(n.getMonth() + 1).padStart(2, '0');
+		const day = String(n.getDate()).padStart(2, '0');
+		const now = `${year}-${month}-${day}`;
+		// const now = new Date(n)
 		const bankSettiing = await BankSetting.findAll({
 			where: {
 				start_date: {
