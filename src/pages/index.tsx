@@ -6,7 +6,7 @@ import {
 import type { CardFunctionData } from "~/components/functions/card_function";
 import { motion } from "framer-motion";
 import { type NextPageWithLayout } from "./_app";
-import { PerpageLayout } from "~/components/layout/perpage_layout";
+import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { IconCoins } from "~/components/icons/svg_icons";
 import { Header } from "~/components/header";
 import { api } from "~/utils/api";
@@ -50,8 +50,6 @@ const stagger = {
 };
 
 const PageHome: NextPageWithLayout = () => {
-	const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
 	return (
 		<>
 			<Header title="functions" showOptions className="mb-4" />
@@ -86,8 +84,7 @@ const PageHome: NextPageWithLayout = () => {
 PageHome.getLayout = function getLayout(page: React.ReactElement) {
 	return (
 		<RootLayout>
-			{/* <PerpageLayout pageTitle="functions">{page}</PerpageLayout> */}
-			<PerpageLayout pageTitle="functions">{page}</PerpageLayout>
+			<PerpageLayoutNav pageTitle="functions">{page}</PerpageLayoutNav>
 		</RootLayout>
 	);
 };

@@ -57,7 +57,6 @@ import {
 	DialogClose,
 } from "~/components/ui/dialog";
 import { type NextPageWithLayout } from "../_app";
-import { PerpageLayout } from "~/components/layout/perpage_layout";
 import { type ReactElement, useRef, useState, useEffect } from "react";
 import { table } from "console";
 import { ConnectionPoolClosedEvent } from "typeorm";
@@ -65,6 +64,7 @@ import { map } from "@trpc/server/observable";
 import { AttendanceSetting } from "~/server/database/entity/attendance_setting";
 import { rangeEnd } from "prettier.config.cjs";
 import Parameters from "../test/table_modify_element";
+import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 
 export type SettingItem = {
 	name: string;
@@ -434,7 +434,7 @@ const PageParameters: NextPageWithLayout = () => {
 PageParameters.getLayout = function getLayout(page: ReactElement) {
 	return (
 		<RootLayout>
-			<PerpageLayout pageTitle="parameters">{page}</PerpageLayout>
+			<PerpageLayoutNav pageTitle="parameters">{page}</PerpageLayoutNav>
 		</RootLayout>
 	);
 };
