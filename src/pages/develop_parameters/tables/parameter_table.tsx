@@ -2,13 +2,22 @@ import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 
 import { api } from "~/utils/api";
-
+import { Separator } from "~/components/ui/separator";
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
 } from "~/components/ui/accordion";
+import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "~/components/ui/form";
 import {
 	Select,
 	SelectContent,
@@ -70,6 +79,7 @@ import { PerpageLayout } from "~/components/layout/perpage_layout";
 import { type ReactElement, useRef, useState, useEffect, useMemo } from "react";
 import { DATA, createDATA } from "./datatype";
 import { List } from "postcss/lib/list";
+import { isNumber, isDate, isString } from "../utils/checkType";
 
 export type SettingItem = {
 	name: string;
@@ -111,18 +121,13 @@ const columns: ColumnDef<SettingItem>[] = [
 		accessorKey: "value",
 		header: () => <div className="text-center">Value</div>,
 		cell: ({ row }) => {
+			let value = row.getValue("value");
 			var formatted = "";
-			switch (Object.prototype.toString.call(row.getValue("value"))) {
-				case "[object Number]": 
-					formatted = parseFloat(row.getValue("value")).toString();
-					break;
-				case "[object String]":
-					formatted = row.getValue("value");
-					break
-				case "[object Date]":
-					formatted = (row.getValue("value") as Date).toISOString().split("T")[0] ?? ""
-					break;
-			}
+			if (isNumber(value))
+				formatted = parseFloat(row.getValue("value")).toString();
+			else if (isString(value)) formatted = row.getValue("value");
+			else if (isDate(value))
+				formatted = (value as Date).toISOString().split("T")[0] ?? "";
 			return <div className="text-center font-medium">{formatted}</div>;
 		},
 	},
@@ -150,6 +155,8 @@ export function ParameterTable({
 		{}
 	);
 	const [rowSelection, setRowSelection] = useState({});
+
+	const [showDialog, setShowDialog] = useState(false);
 
 	useEffect(() => {
 		setData(defaultData);
@@ -316,8 +323,8 @@ export function ParameterTable({
 								variant="outline"
 								size="sm"
 								onClick={() => {
-									// setShowDialog(true);
-									console.log("click Add button");
+									setShowDialog(true);
+									// console.log("click Add button");
 								}}
 								disabled={false}
 							>
@@ -340,15 +347,15 @@ export function ParameterTable({
 								Next
 							</Button>
 						</div>
-						{/* {table_status[index]?<InsertDialog
-							name={datas[index]!.table_name}
-							type={datas[index]!.table_type}
-							data={datas[index]!.table_content}
+						<ModifyAllDialog
+							name={table_name}
+							type={table_type}
+							datas={data}
 							showDialog={showDialog}
 							onOpenChange={(open: boolean) => {
 								setShowDialog(open);
 							}}
-						/>:<></>} */}
+						/>
 					</div>
 				</AccordionContent>
 			</AccordionItem>
@@ -417,45 +424,45 @@ function ModifyDialog({
 		<Dialog open={showDialog} onOpenChange={onOpenChange}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>
-						Modify the value of {setting.name}
-					</DialogTitle>
+					<DialogTitle>Modify the value</DialogTitle>
 					<DialogDescription>{/* Description */}</DialogDescription>
 				</DialogHeader>
 				<div className="grid gap-4 py-4">
 					<div className="grid grid-cols-4 items-center gap-4">
 						<Label htmlFor="value" className="text-right">
-							Value
+							{setting.name}
 						</Label>
 						{setting.setting ? (
-							<Select
-								onValueChange={(v) => {
-									setting.value = v;
-								}}
-							>
-								<SelectTrigger className="w-[180px]">
-									<SelectValue placeholder="Select a value" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectGroup>
-										<SelectLabel>Type</SelectLabel>
-										{setting.setting.map((option) => {
-											return (
-												<SelectItem
-													value={
-														typeof option ===
-														"number"
-															? option.toString()
-															: option
-													}
-												>
-													{option}
-												</SelectItem>
-											);
-										})}
-									</SelectGroup>
-								</SelectContent>
-							</Select>
+							<>
+								<Select
+									onValueChange={(v) => {
+										setting.value = v;
+									}}
+								>
+									<SelectTrigger className="w-[180px]">
+										<SelectValue placeholder="Select a value" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectGroup>
+											<SelectLabel>Type</SelectLabel>
+											{setting.setting.map((option) => {
+												return (
+													<SelectItem
+														value={
+															typeof option ===
+															"number"
+																? option.toString()
+																: option
+														}
+													>
+														{option}
+													</SelectItem>
+												);
+											})}
+										</SelectGroup>
+									</SelectContent>
+								</Select>
+							</>
 						) : typeof setting.value == "number" ||
 						  typeof setting.value == "string" ? (
 							<Input
@@ -473,7 +480,9 @@ function ModifyDialog({
 							<Input
 								ref={inputRef}
 								id="value"
-								defaultValue={setting.value.toISOString().split('T')[0]}
+								defaultValue={
+									setting.value.toISOString().split("T")[0]
+								}
 								type={"date"}
 								className="col-span-3"
 							/>
@@ -492,14 +501,143 @@ function ModifyDialog({
 									: typeof setting.value === "number"
 									? Number(inputRef.current?.value)
 									: inputRef.current?.valueAsDate;
-								
+
 								let { ["value"]: x, ...rest } = setting;
-								let newItem = {...rest, ["value"]: value};
+								let newItem = { ...rest, ["value"]: value };
 								// 待補
 								console.log(newItem);
 							}}
 						>
 							Save changes
+						</Button>
+					</DialogClose>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
+	);
+}
+
+function ModifyAllDialog({
+	name,
+	type,
+	datas,
+	showDialog,
+	onOpenChange,
+}: {
+	name: string;
+	type: string;
+	datas: SettingItem[];
+	showDialog: boolean;
+	onOpenChange: (open: boolean) => void;
+}) {
+	let newValues = datas;
+	const lookup = (name: string, l: SettingItem[]) => {
+		return l.findIndex((obj) => obj.name === name);
+	};
+	const setNewValues = (
+		toChangeIndex: number,
+		value: string | number | Date
+	) => {
+		newValues =
+			newValues.map((item: SettingItem, index: number) => {
+				if (index === toChangeIndex) {
+					return { ...item, ["value"]: value };
+				}
+				return item;
+			}) ?? [];
+	};
+
+	return (
+		<Dialog open={showDialog} onOpenChange={onOpenChange}>
+			<DialogContent
+				className={"max-h-screen overflow-y-scroll lg:max-w-screen-lg"}
+			>
+				<DialogHeader>
+					<DialogTitle className="text-center">Add Data to [{name}]</DialogTitle>
+					<DialogDescription>{/* Description */}</DialogDescription>
+				</DialogHeader>
+				<div className="grid grid-cols-5 gap-4 py-4 items-center">
+						{datas.map((data: any, index: number) => {
+							return (
+								<>
+									<div className="col-span-1 text-center">
+									<Label
+										htmlFor="value"
+										className=""
+									>
+										{data.name}
+									</Label>
+									</div>
+
+									{data.setting ? (
+										<div className={"col-span-4"}>
+											<Select
+												onValueChange={(v) => {
+													setNewValues(index, v);
+												}}
+											>
+												<SelectTrigger className="w-[180px]">
+													<SelectValue placeholder="Select a value" />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectGroup>
+														<SelectLabel>
+															Type
+														</SelectLabel>
+														{data.setting.map(
+															(option: any) => {
+																return (
+																	<SelectItem
+																		value={
+																			typeof option ===
+																			"number"
+																				? option.toString()
+																				: option
+																		}
+																	>
+																		{option}
+																	</SelectItem>
+																);
+															}
+														)}
+													</SelectGroup>
+												</SelectContent>
+											</Select>
+											
+										</div>
+									) : (
+										<Input
+											id={"value" + index.toString()}
+											type={
+												isDate(data.value)
+													? "date"
+													: isString(data.value)
+													? "value"
+													: "number"
+											}
+											className={"col-span-4"}
+											// className="col-span-3"
+											onChange={(e) => {
+												setNewValues(
+													index,
+													e.target.value
+												);
+											}}
+										/>
+									)}
+								</>
+							);
+						})}
+					</div>
+				<DialogFooter>
+					<DialogClose asChild>
+						<Button
+							type="submit"
+							onClick={() => {
+								console.log(newValues);
+							}}
+						>
+							Confirm
 						</Button>
 					</DialogClose>
 				</DialogFooter>

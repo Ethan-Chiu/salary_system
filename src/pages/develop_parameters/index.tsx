@@ -1,3 +1,4 @@
+import { usePathname } from "next/navigation";
 import { RootLayout } from "~/components/layout/root_layout";
 import { Header } from "~/components/header";
 import { Button } from "~/components/ui/button";
@@ -5,6 +6,8 @@ import { Label } from "~/components/ui/label";
 
 import { api } from "~/utils/api";
 
+import { Checkbox } from "~/components/ui/checkbox"
+import { Separator } from "~/components/ui/separator";
 import {
 	Accordion,
 	AccordionContent,
@@ -14,7 +17,7 @@ import {
 
 import { type NextPageWithLayout } from "../_app";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
-import { type ReactElement, useRef, useState, useEffect, useMemo } from "react";
+import { type ReactElement, useRef, useState, useEffect, useMemo , CSSProperties} from "react";
 
 import { DATA, createDATA } from "./tables/datatype";
 import { BankTable, BankRow, createBankRow } from "./tables/bank_table";
@@ -22,6 +25,7 @@ import { ParameterTable, SettingItem, createSettingItem } from "./tables/paramet
 
 import { Translate } from "./translation";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
+import FadeLoader from "react-spinners/FadeLoader";
 
 
 const API_PARAMETERS = api.parameters;
@@ -31,11 +35,22 @@ let datas: DATA[] = [
 		table_name: "請假加班",
 		table_type: "typical",
 		table_content: [
-			createSettingItem("test","test",["A","B","C","D","E"]),
-			createSettingItem("test","test",["X","Y","Z"]),
-			createSettingItem("test","test"),
-			createSettingItem("test",123),
-			createSettingItem("test",new Date())
+			createSettingItem("test1","A",["A","B","C","D","E"]),
+			createSettingItem("test2","X",["X","Y","Z"]),
+			createSettingItem("test3","test"),
+			createSettingItem("test4",123),
+			createSettingItem("test5",new Date()),
+			createSettingItem("create_by",new Date()),
+			createSettingItem("test1","A",["A","B","C","D","E"]),
+			createSettingItem("test2","X",["X","Y","Z"]),
+			createSettingItem("test3","test"),
+			createSettingItem("test4",123),
+			createSettingItem("test5",new Date()),
+			createSettingItem("test1","A",["A","B","C","D","E"]),
+			createSettingItem("test2","X",["X","Y","Z"]),
+			createSettingItem("test3","test"),
+			createSettingItem("test4",123),
+			createSettingItem("test5",new Date()),
 		],
 	},
 	{
@@ -43,11 +58,18 @@ let datas: DATA[] = [
 		table_type: "bank",
 		table_content: [],
 	},
-    // {
-	// 	table_name: "勞健保費率",
-	// 	table_type: "typical",
-	// 	table_content: [],
-	// },
+	{
+		table_name: "勞健保費率",
+		table_type: "typical",
+		table_content: [
+			createSettingItem("test1","A",["A","B","C","D","E"]),
+			createSettingItem("test2","test"),
+			createSettingItem("test3","X",["X","Y","Z"]),
+			createSettingItem("test4",123),
+			createSettingItem("test5",new Date()),
+			createSettingItem("create_by",new Date())
+		],
+	},
 ]
 
 function find_index(key: string) {
@@ -59,6 +81,9 @@ function find_index(key: string) {
 
 const PageParameters: NextPageWithLayout = () => {
 	
+	const pathname = usePathname();
+	const [single, setSingle] = useState(true);
+
 	// const attendanceData = API_PARAMETERS.attendanceGetData.useQuery();
 	// const insuranceData = API_PARAMETERS.insuranceGetData.useQuery();
 
@@ -84,6 +109,13 @@ const PageParameters: NextPageWithLayout = () => {
 		datas = newDatas;
 	}
 
+	const loaderStyle = {
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		height: '70vh',
+	};
+
 	if (
 		true
 		// attendanceData.isFetched &&
@@ -97,9 +129,12 @@ const PageParameters: NextPageWithLayout = () => {
 		return HTMLElement();
 	}
 	else {
-		return <div className="loader-container">
-					<div className="spinner"></div>
-				</div>
+		return <>
+			<Header title="parameters" showOptions />
+			<div style={loaderStyle}>
+				<FadeLoader color="#000000"/>
+			</div>
+		</>
 	}
 	
 
@@ -108,7 +143,7 @@ const PageParameters: NextPageWithLayout = () => {
 			<>
 				{/* header */}
 				<Header title="parameters" showOptions />
-				<Accordion type="single" collapsible className="w-full">
+				<Accordion type={(single)?"single":"multiple"} collapsible className="w-full">
 					{
 						datas.map((data) => {
 							if(data.table_type == "typical") {
@@ -135,6 +170,7 @@ const PageParameters: NextPageWithLayout = () => {
 						})
 					}
 				</Accordion>
+				{/* <Button onClick={() => {setSingle((prev) => (!prev))}}> TEST </Button> */}
 			</>
 		)
 	}
