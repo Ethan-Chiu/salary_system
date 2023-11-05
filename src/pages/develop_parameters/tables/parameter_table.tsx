@@ -323,9 +323,16 @@ export function ParameterTable({
 								variant="outline"
 								size="sm"
 								onClick={() => {
-									setShowDialog(true);
-									// console.log("click Add button");
+									console.log("switch mode");
 								}}
+								disabled={false}
+							>
+								Switch Mode
+							</Button>
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={() => setShowDialog(true)}
 								disabled={false}
 							>
 								Modify All
@@ -468,9 +475,9 @@ function ModifyDialog({
 							<Input
 								ref={inputRef}
 								id="value"
-								defaultValue={setting.value.toString()}
+								defaultValue={setting.value}
 								type={
-									Number.isInteger(setting.value)
+									isNumber(setting.value)
 										? "number"
 										: "value"
 								}
@@ -553,82 +560,75 @@ function ModifyAllDialog({
 				className={"max-h-screen overflow-y-scroll lg:max-w-screen-lg"}
 			>
 				<DialogHeader>
-					<DialogTitle className="text-center">Add Data to [{name}]</DialogTitle>
+					<DialogTitle className="text-center">
+						Add Data to [{name}]
+					</DialogTitle>
 					<DialogDescription>{/* Description */}</DialogDescription>
 				</DialogHeader>
-				<div className="grid grid-cols-5 gap-4 py-4 items-center">
-						{datas.map((data: any, index: number) => {
-							return (
-								<>
-									<div className="col-span-1 text-center">
-									<Label
-										htmlFor="value"
-										className=""
-									>
-										{data.name}
-									</Label>
-									</div>
+				<div className="grid grid-cols-5 items-center gap-4 py-4">
+					{datas.map((data: any, index: number) => {
+						return (
+							<>
+								<div className="col-span-1 text-center">
+									<Label htmlFor="value"> {data.name} </Label>
+								</div>
 
-									{data.setting ? (
-										<div className={"col-span-4"}>
-											<Select
-												onValueChange={(v) => {
-													setNewValues(index, v);
-												}}
-											>
-												<SelectTrigger className="w-[180px]">
-													<SelectValue placeholder="Select a value" />
-												</SelectTrigger>
-												<SelectContent>
-													<SelectGroup>
-														<SelectLabel>
-															Type
-														</SelectLabel>
-														{data.setting.map(
-															(option: any) => {
-																return (
-																	<SelectItem
-																		value={
-																			typeof option ===
-																			"number"
-																				? option.toString()
-																				: option
-																		}
-																	>
-																		{option}
-																	</SelectItem>
-																);
-															}
-														)}
-													</SelectGroup>
-												</SelectContent>
-											</Select>
-											
-										</div>
-									) : (
-										<Input
-											id={"value" + index.toString()}
-											type={
-												isDate(data.value)
-													? "date"
-													: isString(data.value)
-													? "value"
-													: "number"
-											}
-											className={"col-span-4"}
-											// className="col-span-3"
-											onChange={(e) => {
-												setNewValues(
-													index,
-													e.target.value
-												);
+								{data.setting ? (
+									<div className={"col-span-4"}>
+										<Select
+											onValueChange={(v) => {
+												setNewValues(index, v);
 											}}
-										/>
-									)}
-								</>
-							);
-						})}
-					</div>
+										>
+											<SelectTrigger className="w-[180px]">
+												<SelectValue placeholder="Select a value" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectGroup>
+													<SelectLabel>
+														Type
+													</SelectLabel>
+													{data.setting.map(
+														(option: any) => {
+															return (
+																<SelectItem
+																	value={
+																		typeof option ===
+																		"number"
+																			? option.toString()
+																			: option
+																	}
+																>
+																	{option}
+																</SelectItem>
+															);
+														}
+													)}
+												</SelectGroup>
+											</SelectContent>
+										</Select>
+									</div>
+								) : (
+									<Input
+										id={"value" + index.toString()}
+										type={
+											isDate(data.value)
+												? "date"
+												: isString(data.value)
+												? "value"
+												: "number"
+										}
+										className={"col-span-4"}
+										// className="col-span-3"
+										onChange={(e) => {
+											setNewValues(index, e.target.value);
+										}}
+									/>
+								)}
+							</>
+						);
+					})}
+				</div>
 				<DialogFooter>
 					<DialogClose asChild>
 						<Button
