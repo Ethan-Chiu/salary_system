@@ -97,57 +97,60 @@ export function createSettingItem(
 	return x;
 }
 
-const columns: ColumnDef<SettingItem>[] = [
-	{
-		accessorKey: "name",
-		header: ({ column }) => {
-			return (
-				<Button
-					variant="ghost"
-					onClick={() =>
-						column.toggleSorting(column.getIsSorted() === "asc")
-					}
-				>
-					Parameter
-					<ArrowUpDown className="ml-2 h-4 w-4" />
-				</Button>
-			);
-		},
-		cell: ({ row }) => (
-			<div className="pl-4 lowercase">{row.getValue("name")}</div>
-		),
-	},
-	{
-		accessorKey: "value",
-		header: () => <div className="text-center">Value</div>,
-		cell: ({ row }) => {
-			let value = row.getValue("value");
-			var formatted = "";
-			if (isNumber(value))
-				formatted = parseFloat(row.getValue("value")).toString();
-			else if (isString(value)) formatted = row.getValue("value");
-			else if (isDate(value))
-				formatted = (value as Date).toISOString().split("T")[0] ?? "";
-			return <div className="text-center font-medium">{formatted}</div>;
-		},
-	},
-	{
-		id: "actions",
-		enableHiding: false,
-		cell: ({ row }) => {
-			const setting = row.original;
-			return <CompDropdown setting={setting} />;
-		},
-	},
-];
-
 export function ParameterTable({
 	table_name,
 	table_type,
 	defaultData,
 	index,
+	globalFilter,
 	onChildFunctionRun,
 }: any) {
+
+	const columns: ColumnDef<SettingItem>[] = [
+		{
+			accessorKey: "name",
+			header: ({ column }) => {
+				return (
+					<Button
+						variant="ghost"
+						onClick={() =>
+							column.toggleSorting(column.getIsSorted() === "asc")
+						}
+					>
+						Parameter
+						<ArrowUpDown className="ml-2 h-4 w-4" />
+					</Button>
+				);
+			},
+			cell: ({ row }) => (
+				<div className="pl-4 lowercase">{row.getValue("name")}</div>
+			),
+		},
+		{
+			accessorKey: "value",
+			header: () => <div className="text-center">Value</div>,
+			cell: ({ row }) => {
+				let value = row.getValue("value");
+				var formatted = "";
+				if (isNumber(value))
+					formatted = parseFloat(row.getValue("value")).toString();
+				else if (isString(value)) formatted = row.getValue("value");
+				else if (isDate(value))
+					formatted = (value as Date).toISOString().split("T")[0] ?? "";
+				return <div className="text-center font-medium">{formatted}</div>;
+			},
+		},
+		{
+			id: "actions",
+			enableHiding: false,
+			cell: ({ row }) => {
+				const setting = row.original;
+				return <CompDropdown setting={setting} />;
+			},
+		},
+	];
+
+
 	const [data, setData] = useState<SettingItem[]>(defaultData);
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -194,6 +197,12 @@ export function ParameterTable({
 		childFunctionRef.current();
 	}, []);
 
+	useMemo(() => {
+		table
+			.getColumn(filter_key)
+			?.setFilterValue(globalFilter);
+	}, [globalFilter])
+
 	return (
 		<>
 			<AccordionItem value={"item-" + index.toString()}>
@@ -204,16 +213,19 @@ export function ParameterTable({
 						{/* search bar */}
 						&nbsp;
 						<Input
+							disabled = {globalFilter !== ""}
 							placeholder="Filter setting..."
 							value={
-								(table
-									.getColumn(filter_key)
-									?.getFilterValue() as string) ?? ""
+								(globalFilter === "") 
+								? ((table.getColumn(filter_key)?.getFilterValue() as string) ?? "")
+								: (globalFilter)
 							}
-							onChange={(event) =>
+							onChange={(event) => {
+								console.log("changed");
 								table
 									.getColumn(filter_key)
-									?.setFilterValue(event.target.value)
+									?.setFilterValue(event.target.value);
+							}
 							}
 							className="max-w-sm"
 						/>

@@ -5,29 +5,19 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
-import * as LucideIcons from "lucide-react";
-
-import { api } from "~/utils/api";
-
 import { Checkbox } from "~/components/ui/checkbox";
 import { Separator } from "~/components/ui/separator";
+import * as LucideIcons from "lucide-react";
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
 } from "~/components/ui/accordion";
-
+import { api } from "~/utils/api";
 import { type NextPageWithLayout } from "../_app";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
-import {
-	type ReactElement,
-	useRef,
-	useState,
-	useEffect,
-	useMemo,
-	CSSProperties,
-} from "react";
+import { type ReactElement, useState, useEffect, } from "react";
 
 import { DATA, createDATA } from "./tables/datatype";
 import { BankTable, BankRow, createBankRow } from "./tables/bank_table";
@@ -36,17 +26,17 @@ import {
 	SettingItem,
 	createSettingItem,
 } from "./tables/parameter_table";
-
 import { Translate } from "./utils/translation";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import FadeLoader from "react-spinners/FadeLoader";
 import Multiselect from "multiselect-react-dropdown";
+import * as TABLE_NAMES from "./table_names"
 
 const API_PARAMETERS = api.parameters;
 
 let datas: DATA[] = [
 	{
-		table_name: "請假加班",
+		table_name: TABLE_NAMES.TABLE_ATTENDANCE,
 		table_type: "typical",
 		table_content: [
 			createSettingItem("test1", "A", ["A", "B", "C", "D", "E"]),
@@ -68,19 +58,21 @@ let datas: DATA[] = [
 		],
 	},
 	{
-		table_name: "銀行",
+		table_name: TABLE_NAMES.TABLE_BANK_SETTING,
 		table_type: "bank",
-		table_content: [],
+		table_content: [
+			createBankRow(1, "900", "土地銀行", "001", "新竹分公司", new Date(), new Date())
+		],
 	},
 	{
-		table_name: "勞健保費率",
+		table_name: TABLE_NAMES.TABLE_INSURANCE,
 		table_type: "typical",
 		table_content: [
 			createSettingItem("test1", "A", ["A", "B", "C", "D", "E"]),
 			createSettingItem("test2", "test"),
 			createSettingItem("test3", "X", ["X", "Y", "Z"]),
 			createSettingItem("test4", 123),
-			createSettingItem("test5", new Date()),
+			createSettingItem("勞健保測試", new Date()),
 			createSettingItem("create_by", new Date()),
 		],
 	},
@@ -107,6 +99,7 @@ const PageParameters: NextPageWithLayout = () => {
 	const [single, setSingle] = useState(true);
 
 	const [filterMode, setFilterMode] = useState("select");
+	const [filterDisable, setFilterDisable] = useState(false);
 	const [filterTables, setFilterTables] = useState(
 		Array.from({ length: datas.length }, () => true)
 	);
@@ -121,6 +114,8 @@ const PageParameters: NextPageWithLayout = () => {
 			})
 		);
 	};
+
+	const [parameterGlobalFilter, setParameterGlobalFilter] = useState("");
 
 	const getBankSetting = API_PARAMETERS.getBankSetting.useQuery();
 	const updateBankSetting = api.parameters.updateBankSetting.useMutation({
@@ -192,11 +187,13 @@ const PageParameters: NextPageWithLayout = () => {
 				{/* header */}
 				<Header title="parameters" showOptions />
 
-				<div className="flex items-center py-6">
+				{/* <div className="flex items-center py-6"> */}
+				<div className="grid grid-cols-7 items-center gap-4 py-4">
 					{filterMode === "search" ? (
-						<div className="w-2/3">
+						<div className="col-span-4 text-center">
 							<Input
 								placeholder="Filter tables"
+								disabled={filterDisable}
 								onChange={(event) => {
 									const newFilterTables = datas.map(
 										(data) => {
@@ -210,15 +207,16 @@ const PageParameters: NextPageWithLayout = () => {
 							/>
 						</div>
 					) : (
-						<div className="w-2/3">
+						<div className="col-span-4 text-center" title={filterDisable?"The table filter is disabled because the parameter filter is currently using":""}>
 							<Multiselect
+								disable={filterDisable}
 								isObject={false}
 								showCheckbox
 								onKeyPressFn={function noRefCheck() {}}
 								onRemove={(selectedList, removedItem) =>
 									changeFilterTables(removedItem)
 								}
-								// onSearch={function noRefCheck(){}}
+								onSearch={() => {}}
 								onSelect={(selectedList, selectedItem) => {
 									changeFilterTables(selectedItem);
 								}}
@@ -230,35 +228,7 @@ const PageParameters: NextPageWithLayout = () => {
 									})
 									.filter((x) => x)}
 								options={datas.map((data) => data.table_name)}
-								style={{
-									multiselectContainer: {
-										width: "100%",
-										align: "center",
-									},
-									searchBox: {
-										flex: "1",
-										height: "100%",
-										width: "100%",
-										borderRadius: "0.375rem",
-										border: "1px solid #CCCCCC",
-										padding: "0.25rem 0.5rem",
-										fontSize: "0.875rem",
-										display: "flex",
-										align: 'center',
-									},
-									optionContainer: {
-										// display: "flex",
-										alignItems: "center",
-										maxHight: "80px",
-									},
-									chips: {
-										height: '15px', // Set your desired height for the selected options
-										display: 'flex', // Center vertically
-										alignItems: 'center', // Center vertically
-										marginTop: '4px', // Add space at the top
-										background: "#808080"
-									}
-								}}
+								style={multiselect_style}
 							/>
 						</div>
 					)}
@@ -269,6 +239,18 @@ const PageParameters: NextPageWithLayout = () => {
 							resetFilterTables(true);
 						}}
 					/>
+					<div className="col-span-2 text-center">
+						<Input placeholder="Find Parameter" onChange={
+							(e) => {
+								if(e.target.value!=="")	{
+									setFilterDisable(true)
+									resetFilterTables(true);
+								}
+								else	setFilterDisable(false);
+								setParameterGlobalFilter(e.target.value);
+							}
+						}/>
+					</div>
 				</div>
 
 				<Accordion
@@ -279,12 +261,16 @@ const PageParameters: NextPageWithLayout = () => {
 					{datas.map((data, index) => {
 						if (!filterTables[index]) return <></>;
 						if (data.table_type == "typical") {
+							if(data.table_content.map((x, index) => {
+								return x.name.toLowerCase().includes(parameterGlobalFilter.toLowerCase());
+							}).filter(x => x).length === 0)	return <></>
 							const parameterTable = (
 								<ParameterTable
 									defaultData={data.table_content}
 									table_name={data.table_name}
 									table_type={data.table_type}
 									index={find_index(data.table_name)}
+									globalFilter={parameterGlobalFilter}
 								/>
 							);
 							return parameterTable;
@@ -310,7 +296,6 @@ const PageParameters: NextPageWithLayout = () => {
 						}
 					})}
 				</Accordion>
-				{/* <Button onClick={() => {setFilterTables((prev) => (prev.map((x)=>!x)))}}> TEST </Button> */}
 			</>
 		);
 	}
@@ -325,3 +310,45 @@ PageParameters.getLayout = function getLayout(page: ReactElement) {
 };
 
 export default PageParameters;
+
+
+
+const multiselect_style = {
+	multiselectContainer: {
+		width: "100%",
+		align: "center",
+	},
+	searchBox: {
+		flex: "1",
+		height: "100%",
+		width: "100%",
+		borderRadius: "0.375rem",
+		border: "1px solid #CCCCCC",
+		padding: "0.25rem 0.5rem",
+		fontSize: "0.875rem",
+		display: "flex",
+		align: 'center',
+	},
+	optionContainer: {
+		// display: "flex",
+		alignItems: "center",
+		maxHight: "80px",
+	},
+	chips: {
+		height: '15px', // Set your desired height for the selected options
+		display: 'flex', // Center vertically
+		alignItems: 'center', // Center vertically
+		marginTop: '4px', // Add space at the top
+		background: "#808080"
+	},
+	checkbox: {
+		backgroundColor: "#808080"
+	},
+	option: {
+		cursor: 'pointer',
+		transition: 'background-color 1s', // Add a smooth transition effect
+		// Set the default background color for options
+		backgroundColor: '#ffffff',
+		color: "#000000",
+	}
+}

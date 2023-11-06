@@ -1,6 +1,7 @@
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
-
+import { ToastAction } from "~/components/ui/toast"
+import { useToast } from "~/components/ui/use-toast"
 import { api } from "~/utils/api";
 
 import {
@@ -64,6 +65,9 @@ import { type ReactElement, useRef, useState, useEffect, useMemo } from "react";
 
 import { DATA, createDATA } from "./datatype";
 import { once } from "events";
+import { now } from "sequelize/types/utils";
+
+
 
 export type BankRow = {
 	id: number | null;
@@ -76,7 +80,7 @@ export type BankRow = {
 };
 
 export function createBankRow(
-	id: number,
+	id: number | null,
 	bank_code: string,
 	bank_name: string,
 	org_code: string,
@@ -452,6 +456,8 @@ function ModifyDialog({
 	updateBankSetting: (d: any) => void;
 	onOpenChange: (open: boolean) => void;
 }) {
+
+	const { toast } = useToast();
 	const [updatedSetting, setUpdatedSetting] = useState(setting);
 	const handleInputChange = (key: any, value: any) => {
 		setUpdatedSetting((prevSetting: any) => ({
@@ -498,7 +504,7 @@ function ModifyDialog({
 										/>:
 										<Input
 											id={key}
-											defaultValue={(value as string)?.split('T')[0]}
+											defaultValue={(value as Date).toISOString().split('T')[0]}
 											type={"date"}
 											className="col-span-3"
 											onChange={(e) =>
@@ -519,6 +525,18 @@ function ModifyDialog({
 						<Button
 							type="submit"
 							onClick={() => {
+								toast({
+									title: "Succesfully Modify Bank Setting",
+									description: (new Date()).toISOString().split('T')[0],
+									action: (
+									<ToastAction altText="Goto schedule to undo" onClick={() => {
+										console.log("undo update (set bank setting to previous setting)")
+										updateBankSetting(setting);
+									}}>Undo</ToastAction>
+									),
+								})
+								
+								console.log("update bank setting")
 								updateBankSetting(
 									{
 										id: updatedSetting.id,
@@ -530,6 +548,7 @@ function ModifyDialog({
 										end_date: null,
 									}
 								)
+							
 							}}
 						>
 							Save changes
@@ -576,6 +595,7 @@ function DeleteDialog({
 					</DialogClose>
 					<DialogClose asChild>
 						<Button
+							variant={"destructive"}
 							onClick={() => {
 								console.log("delete data with id %s", setting.id!)
 								deleteBankSetting({id: setting.id!});
