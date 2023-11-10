@@ -1,65 +1,54 @@
 import { injectable } from "tsyringe";
-import { InsuranceRateSetting } from "../database/entity/insurance_rate_setting";
-import { Op, fn } from "sequelize";
+import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
-import { check_date } from "./helper_function";
 import { z } from "zod";
 import {
 	createInsuranceRateSettingInput,
-	updateAttendanceSettingInput,
+	updateInsuranceRateSettingInput,
 } from "../api/input_type/parameters_input";
+import { InsuranceRateSetting } from "../database/entity/insurance_rate_setting";
 
 @injectable()
 export class InsuranceRateSettingService {
 	constructor() {}
 
-	async createAttendanceSetting({
+	async createInsuranceRateSetting({
 		min_wage_rate,
-        l_i_accident_rate,
-        l_i_employment_premium_rate,
-        l_i_occupational_hazard_rate,
-        l_i_wage_replacement_rate,
-        h_i_avg_dependents_count,
-        v2_h_i_supp_premium_rate,
-        v2_h_i_dock_tsx_thres,
+		l_i_accident_rate,
+		l_i_employment_premium_rate,
+		l_i_occupational_hazard_rate,
+		l_i_wage_replacement_rate,
+		h_i_standard_rate,
+		h_i_avg_dependents_count,
+		v2_h_i_supp_premium_rate,
+		v2_h_i_dock_tsx_thres,
 		start_date,
 		end_date,
 	}: z.infer<
 		typeof createInsuranceRateSettingInput
 	>): Promise<InsuranceRateSetting> {
 		const now = new Date();
-		check_date(start_date, end_date, now);
-
 		const newData = await InsuranceRateSetting.create({
 			min_wage_rate: min_wage_rate,
-			l_i_accident_rate: sick_leave_dock,
-			rate_of_unpaid_leave: rate_of_unpaid_leave,
-			unpaid_leave_compensatory_1: unpaid_leave_compensatory_1,
-			unpaid_leave_compensatory_2: unpaid_leave_compensatory_2,
-			unpaid_leave_compensatory_3: unpaid_leave_compensatory_3,
-			unpaid_leave_compensatory_4: unpaid_leave_compensatory_4,
-			unpaid_leave_compensatory_5: unpaid_leave_compensatory_5,
-			overtime_by_local_workers_1: overtime_by_local_workers_1,
-			overtime_by_local_workers_2: overtime_by_local_workers_2,
-			overtime_by_local_workers_3: overtime_by_local_workers_3,
-			local_worker_holiday: local_worker_holiday,
-			overtime_by_foreign_workers_1: overtime_by_foreign_workers_1,
-			overtime_by_foreign_workers_2: overtime_by_foreign_workers_2,
-			overtime_by_foreign_workers_3: overtime_by_foreign_workers_3,
-			foreign_worker_holiday: foreign_worker_holiday,
+			l_i_accident_rate: l_i_accident_rate,
+			l_i_employment_premium_rate: l_i_employment_premium_rate,
+			l_i_occupational_hazard_rate: l_i_occupational_hazard_rate,
+			l_i_wage_replacement_rate: l_i_wage_replacement_rate,
+			h_i_standard_rate: h_i_standard_rate,
+			h_i_avg_dependents_count: h_i_avg_dependents_count,
+			v2_h_i_supp_premium_rate: v2_h_i_supp_premium_rate,
+			v2_h_i_dock_tsx_thres: v2_h_i_dock_tsx_thres,
 			start_date: start_date ?? now,
 			end_date: end_date,
-			create_date: now,
 			create_by: "system",
-			update_date: now,
 			update_by: "system",
 		});
 		return newData;
 	}
 
-	async getAttendanceSetting(): Promise<AttendanceSetting | null> {
+	async getCurrentInsuranceRateSetting(): Promise<InsuranceRateSetting | null> {
 		const now = new Date();
-		const attendanceSettiingList = await AttendanceSetting.findAll({
+		const insuranceRateSettingList = await InsuranceRateSetting.findAll({
 			where: {
 				start_date: {
 					[Op.lte]: now,
@@ -69,99 +58,84 @@ export class InsuranceRateSettingService {
 				},
 			},
 		});
-		if (attendanceSettiingList.length > 1) {
+		if (insuranceRateSettingList.length > 1) {
 			throw new BaseResponseError(
-				"more than one active AttendanceSettiingList"
+				"more than one active InsuranceRateSetting"
 			);
 		}
 
-		const attendanceSettiing =
-			attendanceSettiingList.length == 1
-				? attendanceSettiingList[0]!
+		const insuranceRateSetting =
+			insuranceRateSettingList.length == 1
+				? insuranceRateSettingList[0]!
 				: null;
 
-		return attendanceSettiing;
+		return insuranceRateSetting;
 	}
 
-	async updateAttendanceSetting({
+	async getAllInsuranceRateSetting(): Promise<InsuranceRateSetting[]> {
+		const insuranceRateSettingList = await InsuranceRateSetting.findAll();
+		return insuranceRateSettingList;
+	}
+
+	async getInsuranceRateSettingById(
+		id: number
+	): Promise<InsuranceRateSetting | null> {
+		const insuranceRateSetting = await InsuranceRateSetting.findOne({
+			where: {
+				id: id,
+			},
+		});
+
+		return insuranceRateSetting;
+	}
+
+	async updateInsuranceRateSetting({
 		id,
-		personal_leave_dock,
-		sick_leave_dock,
-		rate_of_unpaid_leave,
-		unpaid_leave_compensatory_1,
-		unpaid_leave_compensatory_2,
-		unpaid_leave_compensatory_3,
-		unpaid_leave_compensatory_4,
-		unpaid_leave_compensatory_5,
-		overtime_by_local_workers_1,
-		overtime_by_local_workers_2,
-		overtime_by_local_workers_3,
-		local_worker_holiday,
-		overtime_by_foreign_workers_1,
-		overtime_by_foreign_workers_2,
-		overtime_by_foreign_workers_3,
-		foreign_worker_holiday,
+		min_wage_rate,
+		l_i_accident_rate,
+		l_i_employment_premium_rate,
+		l_i_occupational_hazard_rate,
+		l_i_wage_replacement_rate,
+		h_i_standard_rate,
+		h_i_avg_dependents_count,
+		v2_h_i_supp_premium_rate,
+		v2_h_i_dock_tsx_thres,
 		start_date,
 		end_date,
-	}: z.infer<typeof updateAttendanceSettingInput>): Promise<void> {
-		const attendance_setting = await this.getAttendanceSetting();
-		if (attendance_setting == null) {
-			throw new BaseResponseError("AttendanceSetting does not exist");
+	}: z.infer<typeof updateInsuranceRateSettingInput>): Promise<void> {
+		const insurance_setting = await this.getInsuranceRateSettingById(id!);
+		if (insurance_setting == null) {
+			throw new BaseResponseError("InsuranceRateSetting does not exist");
 		}
 
 		const now = new Date();
-		const affectedCount = await AttendanceSetting.update(
+		const affectedCount = await InsuranceRateSetting.update(
 			{
-				personal_leave_dock:
-					personal_leave_dock ??
-					attendance_setting.personal_leave_dock,
-				sick_leave_dock:
-					sick_leave_dock ?? attendance_setting.sick_leave_dock,
-				rate_of_unpaid_leave:
-					rate_of_unpaid_leave ??
-					attendance_setting.rate_of_unpaid_leave,
-				unpaid_leave_compensatory_1:
-					unpaid_leave_compensatory_1 ??
-					attendance_setting.unpaid_leave_compensatory_1,
-				unpaid_leave_compensatory_2:
-					unpaid_leave_compensatory_2 ??
-					attendance_setting.unpaid_leave_compensatory_2,
-				unpaid_leave_compensatory_3:
-					unpaid_leave_compensatory_3 ??
-					attendance_setting.unpaid_leave_compensatory_3,
-				unpaid_leave_compensatory_4:
-					unpaid_leave_compensatory_4 ??
-					attendance_setting.unpaid_leave_compensatory_4,
-				unpaid_leave_compensatory_5:
-					unpaid_leave_compensatory_5 ??
-					attendance_setting.unpaid_leave_compensatory_5,
-				overtime_by_local_workers_1:
-					overtime_by_local_workers_1 ??
-					attendance_setting.overtime_by_local_workers_1,
-				overtime_by_local_workers_2:
-					overtime_by_local_workers_2 ??
-					attendance_setting.overtime_by_local_workers_2,
-				overtime_by_local_workers_3:
-					overtime_by_local_workers_3 ??
-					attendance_setting.overtime_by_local_workers_3,
-				local_worker_holiday:
-					local_worker_holiday ??
-					attendance_setting.local_worker_holiday,
-				overtime_by_foreign_workers_1:
-					overtime_by_foreign_workers_1 ??
-					attendance_setting.overtime_by_foreign_workers_1,
-				overtime_by_foreign_workers_2:
-					overtime_by_foreign_workers_2 ??
-					attendance_setting.overtime_by_foreign_workers_2,
-				overtime_by_foreign_workers_3:
-					overtime_by_foreign_workers_3 ??
-					attendance_setting.overtime_by_foreign_workers_3,
-				foreign_worker_holiday:
-					foreign_worker_holiday ??
-					attendance_setting.foreign_worker_holiday,
-				start_date: start_date ?? attendance_setting.start_date,
-				end_date: end_date ?? attendance_setting.end_date,
-				update_date: now,
+				min_wage_rate: min_wage_rate ?? insurance_setting.min_wage_rate,
+				l_i_accident_rate:
+					l_i_accident_rate ?? insurance_setting.l_i_accident_rate,
+				l_i_employment_premium_rate:
+					l_i_employment_premium_rate ??
+					insurance_setting.l_i_employment_premium_rate,
+				l_i_occupational_hazard_rate:
+					l_i_occupational_hazard_rate ??
+					insurance_setting.l_i_occupational_hazard_rate,
+				l_i_wage_replacement_rate:
+					l_i_wage_replacement_rate ??
+					insurance_setting.l_i_wage_replacement_rate,
+				h_i_standard_rate:
+					h_i_standard_rate ?? insurance_setting.h_i_standard_rate,
+				h_i_avg_dependents_count:
+					h_i_avg_dependents_count ??
+					insurance_setting.h_i_avg_dependents_count,
+				v2_h_i_supp_premium_rate:
+					v2_h_i_supp_premium_rate ??
+					insurance_setting.v2_h_i_supp_premium_rate,
+				v2_h_i_dock_tsx_thres:
+					v2_h_i_dock_tsx_thres ??
+					insurance_setting.v2_h_i_dock_tsx_thres,
+				start_date: start_date ?? insurance_setting.start_date,
+				end_date: end_date,
 				update_by: "system",
 			},
 			{ where: { id: id } }
@@ -171,28 +145,37 @@ export class InsuranceRateSettingService {
 		}
 	}
 
-	async deleteAttendanceSetting(id: number): Promise<void> {
-		const now = new Date();
-		this.updateAttendanceSetting({
-			id: id,
-			personal_leave_dock: null,
-			sick_leave_dock: null,
-			rate_of_unpaid_leave: null,
-			unpaid_leave_compensatory_1: null,
-			unpaid_leave_compensatory_2: null,
-			unpaid_leave_compensatory_3: null,
-			unpaid_leave_compensatory_4: null,
-			unpaid_leave_compensatory_5: null,
-			overtime_by_local_workers_1: null,
-			overtime_by_local_workers_2: null,
-			overtime_by_local_workers_3: null,
-			local_worker_holiday: null,
-			overtime_by_foreign_workers_1: null,
-			overtime_by_foreign_workers_2: null,
-			overtime_by_foreign_workers_3: null,
-			foreign_worker_holiday: null,
-			start_date: null,
-			end_date: now,
+	async deleteInsuranceRateSetting(id: number): Promise<void> {
+		const destroyedRows = await InsuranceRateSetting.destroy({
+			where: { id: id },
+		});
+		if (destroyedRows != 1) {
+			throw new BaseResponseError("Delete error");
+		}
+	}
+
+	async rescheduleInsuranceRateSetting(): Promise<void> {
+		const insuranceRateSettingList = await InsuranceRateSetting.findAll({
+			order: [["start_date", "ASC"]],
+		});
+
+		for (let i = 0; i < insuranceRateSettingList.length - 1; i += 1) {
+			if (
+				insuranceRateSettingList[i]!.dataValues.end_date !=
+				insuranceRateSettingList[i + 1]!.dataValues.start_date
+			) {
+				await this.updateInsuranceRateSetting({
+					id: insuranceRateSettingList[i]!.dataValues.id,
+					end_date:
+						insuranceRateSettingList[i + 1]!.dataValues.start_date,
+				});
+			}
+		}
+
+		await this.updateInsuranceRateSetting({
+			id: insuranceRateSettingList[insuranceRateSettingList.length - 1]!
+				.dataValues.id,
+			end_date: null,
 		});
 	}
 }

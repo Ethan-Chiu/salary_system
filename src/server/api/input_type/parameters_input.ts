@@ -65,6 +65,19 @@ export const updateAttendanceSettingInput = z
 	})
 	.partial();
 
+export const createBasicInfoInput = z.object({
+	payday: z.date(),
+	announcement: z.string(),
+});
+
+export const updateBasicInfoInput = z
+	.object({
+		id: z.number(),
+		payday: z.date().nullable(),
+		announcement: z.string().nullable(),
+	})
+	.partial();
+
 export const createInsuranceRateSettingInput = z.object({
 	min_wage_rate: z.number(),
 	l_i_accident_rate: z.number(),
@@ -128,3 +141,81 @@ export const updateBonusSettingInput = z.object({
 	base_on: z.string().nullable(),
 	type: z.string().nullable(),
 });
+
+export const updateInsuranceRateSettingInput = z
+	.object({
+		id: z.number(),
+		min_wage_rate: z.number().nullable(),
+		l_i_accident_rate: z.number().nullable(),
+		l_i_employment_premium_rate: z.number().nullable(),
+		l_i_occupational_hazard_rate: z.number().nullable(),
+		l_i_wage_replacement_rate: z.number().nullable(),
+		h_i_standard_rate: z.number().nullable(),
+		h_i_avg_dependents_count: z.number().nullable(),
+		v2_h_i_supp_premium_rate: z.number().nullable(),
+		v2_h_i_dock_tsx_thres: z.number().nullable(),
+		start_date: z.date().nullable(),
+		end_date: z.date().nullable(),
+	})
+	.partial();
+
+export const createLevelRangeInput = z.object({
+	type: z.string(),
+	level_start: z.number(),
+	level_end: z.number(),
+});
+
+export const updateLevelRangeInput = z
+	.object({
+		id: z.number(),
+		type: z.string().nullable(),
+		level_start: z.number().nullable(),
+		level_end: z.number().nullable(),
+	})
+	.partial();
+
+export const createLevelInput = z.object({
+	level: z.number(),
+});
+
+export const updateLevelInput = z
+	.object({
+		id: z.number(),
+		level: z.number().nullable(),
+	})
+	.partial();
+
+export const createPerformanceLevelInput = z.object({
+	performance_level: z.string(),
+	multiplier: z.number(),
+});
+
+export const updatePerformanceLevelInput = z
+	.object({
+		id: z.number(),
+		performance_level: z.string().nullable(),
+		multiplier: z.number().nullable(),
+	})
+	.partial();
+
+export const createTrustMoneyInput = z.object({
+	position: z.number(),
+	position_type: z.string(),
+	emp_trust_reserve_limit: z.number().nullable(),
+	org_trust_reserve_limit: z.number(),
+	emp_special_trust_incent_limit: z.number().nullable(),
+	org_special_trust_incent_limit: z.number(),
+});
+
+export const updateTrustMoneyInput = z
+	.object({
+		id: z.number(),
+		position: z.number().nullable(),
+		position_type: z.string().nullable(),
+		emp_trust_reserve_limit: z.number().nullable(),
+		org_trust_reserve_limit: z.number().nullable(),
+		emp_special_trust_incent_limit: z.number().nullable(),
+		org_special_trust_incent_limit: z.number().nullable(),
+	})
+	.partial();
+
