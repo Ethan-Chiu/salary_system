@@ -39,23 +39,16 @@ export class BankSettingService {
 		return newData;
 	}
 
-	async getBankSetting(id: number): Promise<BankSetting | null> {
-		const now = new Date();
+	async getBankSettingById(id: number): Promise<BankSetting | null> {
 		const bankSettiing = await BankSetting.findOne({
 			where: {
 				id: id,
-				start_date: {
-					[Op.lte]: now,
-				},
-				end_date: {
-					[Op.or]: [{ [Op.gte]: now }, { [Op.eq]: null }],
-				},
 			},
 		});
 		return bankSettiing;
 	}
 
-	async getBankSettingList(): Promise<BankSetting[] | null> {
+	async getCurrentBankSetting(): Promise<BankSetting[]> {
 		const now = Date();
 		const bankSettiing = await BankSetting.findAll({
 			where: {
@@ -70,6 +63,11 @@ export class BankSettingService {
 		return bankSettiing;
 	}
 
+	async getAllBankSetting(): Promise<BankSetting[]> {
+		const bankSettiing = await BankSetting.findAll();
+		return bankSettiing;
+	}
+
 	async updateBankSetting({
 		id,
 		bank_code,
@@ -79,7 +77,7 @@ export class BankSettingService {
 		start_date,
 		end_date,
 	}: z.infer<typeof updateBankSettingInput>): Promise<void> {
-		const bank_setting = await this.getBankSetting(id);
+		const bank_setting = await this.getBankSettingById(id!);
 		if (bank_setting == null) {
 			throw new BaseResponseError("BankSetting does not exist");
 		}
