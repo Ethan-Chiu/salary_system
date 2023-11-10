@@ -1,17 +1,3 @@
-// import { Entity, Column, PrimaryGeneratedColumn } from "typeorm"
-// import { BaseMeta } from "./utils/base_meta"
-
-// @Entity("U_BONUS_SENIORITY")
-// export class BonusSeniority extends BaseMeta {
-//     @PrimaryGeneratedColumn()
-//     id: number
-
-//     @Column("int")
-//     seniority: number
-
-//     @Column("float")
-//     multiplier: number
-// }
 import {
 	DataTypes,
 	Model,
@@ -33,10 +19,10 @@ export class BonusSeniority extends Model<
 
 	// timestamps!
 	// createdAt can be undefined during creation
-	declare create_date: Date;
+	declare create_date: CreationOptional<Date>;
 	declare create_by: string;
 	// updatedAt can be undefined during creation
-	declare update_date: Date;
+	declare update_date: CreationOptional<Date>;
 	declare update_by: string;
 }
 
@@ -61,7 +47,6 @@ BonusSeniority.init(
         },
 		create_date: {
 			type: DataTypes.DATE,
-			allowNull: false,
 		},
 		create_by: {
 			type: DataTypes.STRING(128),
@@ -69,7 +54,6 @@ BonusSeniority.init(
 		},
 		update_date: {
 			type: DataTypes.DATE,
-			allowNull: false,
 		},
 		update_by: {
 			type: DataTypes.STRING(128),
@@ -79,5 +63,7 @@ BonusSeniority.init(
 	{
 		sequelize,
 		tableName: "U_BONUS_SENIORITY",
+		createdAt: 'create_date',
+		updatedAt: 'update_date',
 	}
 );

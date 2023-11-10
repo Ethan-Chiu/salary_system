@@ -30,6 +30,7 @@ export class AttendanceSettingService {
 		overtime_by_foreign_workers_3,
 		foreign_worker_holiday,
 		start_date,
+		end_date,
 	}: z.infer<
 		typeof createAttendanceSettingInput
 	>): Promise<AttendanceSetting> {
@@ -52,12 +53,10 @@ export class AttendanceSettingService {
 			overtime_by_foreign_workers_3: overtime_by_foreign_workers_3,
 			foreign_worker_holiday: foreign_worker_holiday,
 			start_date: start_date ?? now,
-			create_date: now,
+			end_date: end_date,
 			create_by: "system",
-			update_date: now,
 			update_by: "system",
 		});
-		await this.rescheduleAttendanceSetting();
 		return newData;
 	}
 
@@ -123,8 +122,9 @@ export class AttendanceSettingService {
 		overtime_by_foreign_workers_3,
 		foreign_worker_holiday,
 		start_date,
+		end_date,
 	}: z.infer<typeof updateAttendanceSettingInput>): Promise<void> {
-		const attendance_setting = await this.getCurrentAttendanceSetting();
+		const attendance_setting = await this.getAttendanceSettingById(id!);
 		if (attendance_setting == null) {
 			throw new BaseResponseError("AttendanceSetting does not exist");
 		}
@@ -180,7 +180,7 @@ export class AttendanceSettingService {
 					foreign_worker_holiday ??
 					attendance_setting.foreign_worker_holiday,
 				start_date: start_date ?? attendance_setting.start_date,
-				update_date: now,
+				end_date: end_date,
 				update_by: "system",
 			},
 			{ where: { id: id } }
@@ -197,7 +197,6 @@ export class AttendanceSettingService {
 		if (destroyedRows != 1) {
 			throw new BaseResponseError("Delete error");
 		}
-		await this.rescheduleAttendanceSetting();
 	}
 
 	async rescheduleAttendanceSetting(): Promise<void> {
@@ -207,14 +206,21 @@ export class AttendanceSettingService {
 
 		for (let i = 0; i < attendanceSettiingList.length - 1; i += 1) {
 			if (
-				attendanceSettiingList[i]!.end_date !=
-				attendanceSettiingList[i + 1]!.start_date
+				attendanceSettiingList[i]!.dataValues.end_date !=
+				attendanceSettiingList[i + 1]!.dataValues.start_date
 			) {
-				this.updateAttendanceSetting({
-					id: attendanceSettiingList[i]!.id,
-					end_date: attendanceSettiingList[i + 1]!.start_date,
+				await this.updateAttendanceSetting({
+					id: attendanceSettiingList[i]!.dataValues.id,
+					end_date:
+						attendanceSettiingList[i + 1]!.dataValues.start_date,
 				});
 			}
 		}
+
+		await this.updateAttendanceSetting({
+			id: attendanceSettiingList[attendanceSettiingList.length - 1]!
+				.dataValues.id,
+			end_date: null,
+		});
 	}
 }

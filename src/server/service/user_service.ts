@@ -28,9 +28,7 @@ export class UserService {
 			auth_level: auth_level,
 			start_date: start_date ?? now,
 			end_date: end_date,
-			create_date: now,
 			create_by: "system",
-			update_date: now,
 			update_by: "system",
 		});
 
@@ -94,7 +92,6 @@ export class UserService {
 				auth_level: auth_level ?? user.auth_level,
 				start_date: start_date ?? user.start_date,
 				end_date: end_date ?? user.end_date,
-				update_date: now,
 				update_by: "system",
 			},
 			{ where: { emp_id: emp_id } }

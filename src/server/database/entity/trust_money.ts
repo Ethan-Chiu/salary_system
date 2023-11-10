@@ -1,31 +1,3 @@
-// import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-// import { BaseMeta } from "./utils/base_meta";
-// import { Char } from "./utils/utils";
-
-// @Entity("U_TRUST_MONEY")
-// export class TrustMoney extends BaseMeta {
-// 	@PrimaryGeneratedColumn()
-// 	id: number;
-
-// 	@Column("int")
-// 	position: number;
-
-// 	@Column("varchar2", { length: Char(2) })
-// 	position_type: string;
-
-// 	@Column("int", { nullable: true })
-// 	emp_trust_reserve_limit?: number | null;
-
-// 	@Column("int")
-// 	org_trust_reserve_limit: number;
-
-// 	@Column("int", { nullable: true })
-// 	emp_special_trust_incent_limit?: number | null;
-
-// 	@Column("int")
-// 	org_special_trust_incent_limit: number;
-// }
-
 import {
 	DataTypes,
 	Model,
@@ -51,10 +23,10 @@ export class TrustMoney extends Model<
 
 	// timestamps!
 	// createdAt can be undefined during creation
-	declare create_date: Date;
+	declare create_date: CreationOptional<Date>;
 	declare create_by: string;
 	// updatedAt can be undefined during creation
-	declare update_date: Date;
+	declare update_date: CreationOptional<Date>;
 	declare update_by: string;
 }
 
@@ -94,7 +66,6 @@ TrustMoney.init(
         },
 		create_date: {
 			type: DataTypes.DATE,
-			allowNull: false,
 		},
 		create_by: {
 			type: DataTypes.STRING(128),
@@ -102,7 +73,6 @@ TrustMoney.init(
 		},
 		update_date: {
 			type: DataTypes.DATE,
-			allowNull: false,
 		},
 		update_by: {
 			type: DataTypes.STRING(128),
@@ -112,5 +82,7 @@ TrustMoney.init(
 	{
 		sequelize,
 		tableName: "U_TRUST_MONEY",
+		createdAt: 'create_date',
+		updatedAt: 'update_date',
 	}
 );

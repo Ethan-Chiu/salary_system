@@ -1,18 +1,3 @@
-// import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
-// import { Char } from "./utils/utils";
-// import { BaseMeta } from "./utils/base_meta";
-
-// @Entity("U_BONUS_DEPARTMENT")
-// export class BonusDepartment extends BaseMeta {
-// 	@PrimaryGeneratedColumn()
-// 	id: number;
-
-// 	@Column("varchar2", { length: Char(32) })
-// 	department: string;
-
-// 	@Column("float")
-// 	multiplier: string;
-// }
 import {
 	DataTypes,
 	Model,
@@ -34,10 +19,10 @@ export class BonusDepartment extends Model<
 
 	// timestamps!
 	// createdAt can be undefined during creation
-	declare create_date: Date;
+	declare create_date: CreationOptional<Date>;
 	declare create_by: string;
 	// updatedAt can be undefined during creation
-	declare update_date: Date;
+	declare update_date: CreationOptional<Date>;
 	declare update_by: string;
 }
 
@@ -62,7 +47,6 @@ BonusDepartment.init(
         },
 		create_date: {
 			type: DataTypes.DATE,
-			allowNull: false,
 		},
 		create_by: {
 			type: DataTypes.STRING(128),
@@ -70,7 +54,6 @@ BonusDepartment.init(
 		},
 		update_date: {
 			type: DataTypes.DATE,
-			allowNull: false,
 		},
 		update_by: {
 			type: DataTypes.STRING(128),
@@ -80,5 +63,7 @@ BonusDepartment.init(
 	{
 		sequelize,
 		tableName: "U_BONUS_DEPARTMENT",
+		createdAt: 'create_date',
+		updatedAt: 'update_date',
 	}
 );
