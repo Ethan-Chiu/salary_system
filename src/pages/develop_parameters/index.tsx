@@ -39,11 +39,11 @@ let datas: DATA[] = [
 		table_name: TABLE_NAMES.TABLE_ATTENDANCE,
 		table_type: "typical",
 		table_content: [
-			// createSettingItem("test1", "A", ["A", "B", "C", "D", "E"]),
-			// createSettingItem("test2", "X", ["X", "Y", "Z"]),
-			// createSettingItem("test3", "test"),
-			// createSettingItem("test4", 123),
-			// createSettingItem("test5", new Date()),
+			createSettingItem("test1", "A", ["A", "B", "C", "D", "E"]),
+			createSettingItem("test2", "X", ["X", "Y", "Z"]),
+			createSettingItem("test3", "test"),
+			createSettingItem("test4", 123),
+			createSettingItem("test5", new Date()),
 			// createSettingItem("create_by", new Date()),
 			// createSettingItem("test1", "A", ["A", "B", "C", "D", "E"]),
 			// createSettingItem("test2", "X", ["X", "Y", "Z"]),
@@ -130,6 +130,7 @@ const PageParameters: NextPageWithLayout = () => {
 	});
 	const deleteBankSetting = api.parameters.deleteBankSetting.useMutation({
 		onSuccess: () => {
+			console.log("refetch bank data")
 			getBankSetting.refetch();
 		},
 	});
@@ -147,10 +148,13 @@ const PageParameters: NextPageWithLayout = () => {
 				getAttendanceSetting.refetch();
 			},
 		});
+	
+	const lastMonthDate = new Date();
+  	lastMonthDate.setMonth(lastMonthDate.getMonth() - 1);
 
 	const testInsertAttendanceData = () =>
 		createAttendanceSetting.mutate({
-			start_date: new Date(),
+			start_date: lastMonthDate,
 			end_date: null,
 			personal_leave_dock: 0,
 			sick_leave_dock: 0,
@@ -208,7 +212,7 @@ const PageParameters: NextPageWithLayout = () => {
 					org_code: bank.org_code,
 					org_name: bank.org_name,
 					start_date: new Date(bank.start_date),
-					end_date: new Date(bank.end_date),
+					end_date: (bank.end_date !== null) ? new Date(bank.end_date): null,
 				};
 			})
 		);
@@ -222,7 +226,7 @@ const PageParameters: NextPageWithLayout = () => {
 					org_code: bank.org_code,
 					org_name: bank.org_name,
 					start_date: new Date(bank.start_date),
-					end_date: new Date(bank.end_date),
+					end_date: (bank.end_date !== null) ? new Date(bank.end_date): null,
 				};
 			})
 		);
@@ -348,18 +352,18 @@ const PageParameters: NextPageWithLayout = () => {
 					{datas.map((data, index) => {
 						if (!filterTables[index]) return <></>;
 						if (data.table_type == "typical") {
-							if (
-								data.table_content
-									.map((x, index) => {
-										return x.name
-											.toLowerCase()
-											.includes(
-												parameterGlobalFilter.toLowerCase()
-											);
-									})
-									.filter((x) => x).length === 0
-							)
-								return <></>;
+							// if (
+							// 	data.table_content
+							// 		.map((x, index) => {
+							// 			return x.name
+							// 				.toLowerCase()
+							// 				.includes(
+							// 					parameterGlobalFilter.toLowerCase()
+							// 				);
+							// 		})
+							// 		.filter((x) => x).length === 0
+							// )
+							// 	return <></>;
 							const parameterTable = (
 								<ParameterTable
 									defaultData={data.table_content}
@@ -399,8 +403,7 @@ const PageParameters: NextPageWithLayout = () => {
 					})}
 				</Accordion>
 				<Button onClick={() => testInsertAttendanceData()}>
-					{" "}
-					TEST{" "}
+					TEST
 				</Button>
 			</>
 		);

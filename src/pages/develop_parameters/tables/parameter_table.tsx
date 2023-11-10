@@ -108,7 +108,23 @@ export function ParameterTable({
 	globalFilter,
 	createAttendanceSetting,
 	updateAttendanceSetting,
-}: any) {
+}: any) {	
+	const [data, setData] = useState<SettingItem[]>(defaultData);
+	const [sorting, setSorting] = useState<SortingState>([]);
+	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+		{}
+	);
+	const [rowSelection, setRowSelection] = useState({});
+
+	const [showDialog, setShowDialog] = useState(false);
+
+	useEffect(() => {
+		setData(defaultData);
+	}, [defaultData]);
+
+	const filter_key = "name";
+
 
 	const columns: ColumnDef<SettingItem>[] = [
 		{
@@ -150,33 +166,15 @@ export function ParameterTable({
 				return <div className="text-center font-medium">{formatted}</div>;
 			},
 		},
-		// {
-		// 	id: "actions",
-		// 	enableHiding: false,
-		// 	cell: ({ row }) => {
-		// 		const setting = row.original;
-		// 		return <CompDropdown setting={setting} updateAttendanceSetting={updateAttendanceSetting}/>;
-		// 	},
-		// },
+		{
+			id: "actions",
+			enableHiding: false,
+			cell: ({ row }) => {
+				const setting = row.original;
+				return <CompDropdown ID={(data.find((x) => x.name === "id"))?.value as number} setting={setting} updateAttendanceSetting={updateAttendanceSetting}/>;
+			},
+		},
 	];
-
-
-	const [data, setData] = useState<SettingItem[]>(defaultData);
-	const [sorting, setSorting] = useState<SortingState>([]);
-	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-		{}
-	);
-	const [rowSelection, setRowSelection] = useState({});
-
-	const [showDialog, setShowDialog] = useState(false);
-
-	useEffect(() => {
-		setData(defaultData);
-	}, [defaultData]);
-
-	const filter_key = "name";
-
 	const table = useReactTable({
 		data,
 		columns,
@@ -347,7 +345,7 @@ export function ParameterTable({
 								onClick={() => setShowDialog(true)}
 								disabled={false}
 							>
-								Modify
+								Create
 							</Button>
 							<Button
 								variant="outline"
@@ -366,7 +364,7 @@ export function ParameterTable({
 								Next
 							</Button>
 						</div>
-						<ModifyAllDialog
+						<CreateAllDialog
 							name={table_name}
 							type={table_type}
 							datas={data}
@@ -382,7 +380,7 @@ export function ParameterTable({
 	);
 }
 
-function CompDropdown({ setting, updateAttendanceSetting }: { setting: SettingItem, updateAttendanceSetting: (d:any) => void }) {
+function CompDropdown({ ID, setting, updateAttendanceSetting }: { ID: number, setting: SettingItem, updateAttendanceSetting: (d:any) => void }) {
 	const [showDialog, setShowDialog] = useState(false);
 
 	return (
@@ -413,12 +411,13 @@ function CompDropdown({ setting, updateAttendanceSetting }: { setting: SettingIt
 							setShowDialog(true);
 						}}
 					>
-						Modify
+						Create
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
 
-			<ModifyDialog
+			<CreateDialog
+				ID = {ID}
 				setting={setting}
 				showDialog={showDialog}
 				onOpenChange={(open: boolean) => {
@@ -430,13 +429,15 @@ function CompDropdown({ setting, updateAttendanceSetting }: { setting: SettingIt
 	);
 }
 
-function ModifyDialog({
+function CreateDialog({
+	ID,
 	setting,
 	showDialog,
 	onOpenChange,
 	schema,
 	updateAttendanceSetting,
 }: {
+	ID: number;
 	setting: SettingItem;
 	showDialog: boolean;
 	onOpenChange: (open: boolean) => void;
@@ -453,7 +454,7 @@ function ModifyDialog({
 		<Dialog open={showDialog} onOpenChange={onOpenChange}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Modify the value</DialogTitle>
+					<DialogTitle>Create the value</DialogTitle>
 					<DialogDescription>{/* Description */}</DialogDescription>
 				</DialogHeader>
 				<div className="grid gap-4 py-4">
@@ -553,9 +554,10 @@ function ModifyDialog({
 								let { ["value"]: x, ...rest } = setting;
 								let newItem = { ...rest, ["value"]: value };
 								// 待補
+								console.log(ID)
 								console.log(newItem);
 								if(newItem.name !== "id")
-									updateAttendanceSetting(newItem);
+									updateAttendanceSetting({[setting.name]: value, id: ID});
 							}}
 						>
 							Save changes
@@ -567,7 +569,7 @@ function ModifyDialog({
 	);
 }
 
-function ModifyAllDialog({
+function CreateAllDialog({
 	name,
 	type,
 	datas,
@@ -609,7 +611,9 @@ function ModifyAllDialog({
 					<DialogDescription>{/* Description */}</DialogDescription>
 				</DialogHeader>
 				<div className="grid grid-cols-5 items-center gap-4 py-4">
-					{datas.map((data: any, index: number) => {
+					{datas
+						.filter(x => x.name !== "id" && x.name !== "create_by" && x.name != "update_by")
+						.map((data: any, index: number) => {
 						return (
 							<>
 								<div className="col-span-1 text-center">
