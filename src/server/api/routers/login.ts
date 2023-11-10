@@ -5,7 +5,7 @@ import {
 	protectedProcedure,
 } from "~/server/api/trpc";
 import * as bcrypt from "bcrypt";
-import { UserService } from "~/server/service/userService";
+import { UserService } from "~/server/service/user_service";
 import { container } from "tsyringe";
 import { BaseResponseError } from "../error/BaseResponseError";
 

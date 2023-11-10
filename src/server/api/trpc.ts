@@ -12,8 +12,8 @@ import { type Session } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
 import { getServerAuthSession } from "~/server/auth";
-import { UserService } from "../service/userService";
 import { container } from "tsyringe";
+import { UserService } from "../service/user_service";
 
 /**
  * 1. CONTEXT

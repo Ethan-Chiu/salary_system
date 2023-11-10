@@ -8,7 +8,6 @@ import {
 import CredentialsProvider from "next-auth/providers/credentials";
 import { container } from "tsyringe";
 import { env } from "~/env.mjs";
-import { UserService } from "./service/userService";
 import * as bcrypt from "bcrypt";
 import { BaseResponseError } from "./api/error/BaseResponseError";
 

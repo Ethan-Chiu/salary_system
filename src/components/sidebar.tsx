@@ -123,7 +123,7 @@ export function Sidebar({ className }: React.HTMLAttributes<HTMLDivElement>) {
 						</Button>
 					</div>
 				</div>
-				<div className="py-2">
+				{/* <div className="py-2">
 					<h2 className="relative px-7 text-lg font-semibold tracking-tight">
 						Statistics
 					</h2>
@@ -150,7 +150,7 @@ export function Sidebar({ className }: React.HTMLAttributes<HTMLDivElement>) {
 							))}
 						</div>
 					</ScrollArea>
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);
