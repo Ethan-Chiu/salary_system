@@ -2,14 +2,16 @@ import type { PropsWithChildren } from "react";
 import { Separator } from "~/components/ui/separator";
 import { UserAvatar } from "~/components/user_avatar";
 import { ThemeSelector } from "~/components/theme_selector";
+import { useSession } from "next-auth/react";
 
 interface TitleProp extends React.HTMLAttributes<HTMLDivElement> {
 	title: string;
-	showOptions?: boolean; 
-};
+	showOptions?: boolean;
+}
 
 export const Header = (props: PropsWithChildren<TitleProp>) => {
-	
+	const { data: session, status } = useSession();
+
 	return (
 		<div className={props.className}>
 			<div className="my-4 flex">
@@ -17,13 +19,14 @@ export const Header = (props: PropsWithChildren<TitleProp>) => {
 					{props.title.charAt(0).toUpperCase() +
 						props.title.slice(1).toLowerCase()}
 				</h2>
-				{
-					(props.showOptions) ?
+				{props.showOptions ? (
 					<div className="align-bot ml-auto flex items-center space-x-1">
 						<ThemeSelector />
-						<UserAvatar />
-					</div> : <></>
-				}
+						{status === "authenticated" ? <UserAvatar /> : <></>}
+					</div>
+				) : (
+					<></>
+				)}
 			</div>
 			<Separator />
 		</div>
