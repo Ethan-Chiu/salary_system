@@ -38,17 +38,17 @@ export class BankSettingService {
 	}
 
 	async getBankSettingById(id: number): Promise<BankSetting | null> {
-		const bankSettiing = await BankSetting.findOne({
+		const bankSetting = await BankSetting.findOne({
 			where: {
 				id: id,
 			},
 		});
-		return bankSettiing;
+		return bankSetting;
 	}
 
 	async getCurrentBankSetting(): Promise<BankSetting[]> {
 		const now = Date();
-		const bankSettiing = await BankSetting.findAll({
+		const bankSetting = await BankSetting.findAll({
 			where: {
 				start_date: {
 					[Op.lte]: now,
@@ -58,12 +58,12 @@ export class BankSettingService {
 				},
 			},
 		});
-		return bankSettiing;
+		return bankSetting;
 	}
 
 	async getAllBankSetting(): Promise<BankSetting[]> {
-		const bankSettiing = await BankSetting.findAll();
-		return bankSettiing;
+		const bankSetting = await BankSetting.findAll();
+		return bankSetting;
 	}
 
 	async updateBankSetting({
@@ -75,20 +75,20 @@ export class BankSettingService {
 		start_date,
 		end_date,
 	}: z.infer<typeof updateBankSettingInput>): Promise<void> {
-		const bank_setting = await this.getBankSettingById(id!);
-		if (bank_setting == null) {
+		const bankSetting = await this.getBankSettingById(id!);
+		if (bankSetting == null) {
 			throw new BaseResponseError("BankSetting does not exist");
 		}
 
 		const now = new Date();
 		const affectedCount = await BankSetting.update(
 			{
-				bank_code: bank_code ?? bank_setting.bank_code,
-				bank_name: bank_name ?? bank_setting.bank_name,
-				org_code: org_code ?? bank_setting.org_code,
-				org_name: org_name ?? bank_setting.org_name,
-				start_date: start_date ?? bank_setting.start_date,
-				end_date: end_date ?? bank_setting.end_date,
+				bank_code: bank_code ?? bankSetting.bank_code,
+				bank_name: bank_name ?? bankSetting.bank_name,
+				org_code: org_code ?? bankSetting.org_code,
+				org_name: org_name ?? bankSetting.org_name,
+				start_date: start_date ?? bankSetting.start_date,
+				end_date: end_date ?? bankSetting.end_date,
 				update_by: "system",
 			},
 			{ where: { id: id } }
@@ -100,7 +100,7 @@ export class BankSettingService {
 
 	async deleteBankSetting(id: number): Promise<void> {
 		const now = new Date();
-		this.updateBankSetting({
+		await this.updateBankSetting({
 			id: id,
 			end_date: now,
 		});

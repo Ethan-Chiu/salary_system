@@ -1,6 +1,6 @@
 import { injectable } from "tsyringe";
 import { AttendanceSetting } from "../database/entity/attendance_setting";
-import { Op, fn } from "sequelize";
+import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {
@@ -62,7 +62,7 @@ export class AttendanceSettingService {
 
 	async getCurrentAttendanceSetting(): Promise<AttendanceSetting | null> {
 		const now = new Date();
-		const attendanceSettiingList = await AttendanceSetting.findAll({
+		const attendanceSettingList = await AttendanceSetting.findAll({
 			where: {
 				start_date: {
 					[Op.lte]: now,
@@ -72,35 +72,35 @@ export class AttendanceSettingService {
 				},
 			},
 		});
-		if (attendanceSettiingList.length > 1) {
+		if (attendanceSettingList.length > 1) {
 			throw new BaseResponseError(
-				"more than one active AttendanceSettiingList"
+				"more than one active AttendanceSetting"
 			);
 		}
 
-		const attendanceSettiing =
-			attendanceSettiingList.length == 1
-				? attendanceSettiingList[0]!
+		const attendanceSetting =
+			attendanceSettingList.length == 1
+				? attendanceSettingList[0]!
 				: null;
 
-		return attendanceSettiing;
+		return attendanceSetting;
 	}
 
 	async getAllAttendanceSetting(): Promise<AttendanceSetting[]> {
-		const attendanceSettiingList = await AttendanceSetting.findAll();
-		return attendanceSettiingList;
+		const attendanceSettingList = await AttendanceSetting.findAll();
+		return attendanceSettingList;
 	}
 
 	async getAttendanceSettingById(
 		id: number
 	): Promise<AttendanceSetting | null> {
-		const attendanceSettiing = await AttendanceSetting.findOne({
+		const attendanceSetting = await AttendanceSetting.findOne({
 			where: {
 				id: id,
 			},
 		});
 
-		return attendanceSettiing;
+		return attendanceSetting;
 	}
 
 	async updateAttendanceSetting({
@@ -200,25 +200,25 @@ export class AttendanceSettingService {
 	}
 
 	async rescheduleAttendanceSetting(): Promise<void> {
-		const attendanceSettiingList = await AttendanceSetting.findAll({
+		const attendanceSettingList = await AttendanceSetting.findAll({
 			order: [["start_date", "ASC"]],
 		});
 
-		for (let i = 0; i < attendanceSettiingList.length - 1; i += 1) {
+		for (let i = 0; i < attendanceSettingList.length - 1; i += 1) {
 			if (
-				attendanceSettiingList[i]!.dataValues.end_date !=
-				attendanceSettiingList[i + 1]!.dataValues.start_date
+				attendanceSettingList[i]!.dataValues.end_date !=
+				attendanceSettingList[i + 1]!.dataValues.start_date
 			) {
 				await this.updateAttendanceSetting({
-					id: attendanceSettiingList[i]!.dataValues.id,
+					id: attendanceSettingList[i]!.dataValues.id,
 					end_date:
-						attendanceSettiingList[i + 1]!.dataValues.start_date,
+						attendanceSettingList[i + 1]!.dataValues.start_date,
 				});
 			}
 		}
 
 		await this.updateAttendanceSetting({
-			id: attendanceSettiingList[attendanceSettiingList.length - 1]!
+			id: attendanceSettingList[attendanceSettingList.length - 1]!
 				.dataValues.id,
 			end_date: null,
 		});
