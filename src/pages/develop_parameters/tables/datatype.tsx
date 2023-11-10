@@ -1,5 +1,5 @@
 import { SettingItem } from "./parameter_table"
-import { BankRow } from "../backup/bank_table";
+import { BankRow } from "./bank_table";
 
 
 export type DATA = {

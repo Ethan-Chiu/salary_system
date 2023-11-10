@@ -17,7 +17,7 @@ import {
 import { api } from "~/utils/api";
 import { type NextPageWithLayout } from "../_app";
 import { PerpageLayout } from "~/components/layout/perpage_layout";
-import { type ReactElement, useState, useEffect, } from "react";
+import { type ReactElement, useState, useEffect } from "react";
 
 import { DATA, createDATA } from "./tables/datatype";
 import { BankTable, BankRow, createBankRow } from "./tables/bank_table";
@@ -30,7 +30,7 @@ import { Translate } from "./utils/translation";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import FadeLoader from "react-spinners/FadeLoader";
 import Multiselect from "multiselect-react-dropdown";
-import * as TABLE_NAMES from "./table_names"
+import * as TABLE_NAMES from "../table_names";
 
 const API_PARAMETERS = api.parameters;
 
@@ -39,41 +39,41 @@ let datas: DATA[] = [
 		table_name: TABLE_NAMES.TABLE_ATTENDANCE,
 		table_type: "typical",
 		table_content: [
-			createSettingItem("test1", "A", ["A", "B", "C", "D", "E"]),
-			createSettingItem("test2", "X", ["X", "Y", "Z"]),
-			createSettingItem("test3", "test"),
-			createSettingItem("test4", 123),
-			createSettingItem("test5", new Date()),
-			createSettingItem("create_by", new Date()),
-			createSettingItem("test1", "A", ["A", "B", "C", "D", "E"]),
-			createSettingItem("test2", "X", ["X", "Y", "Z"]),
-			createSettingItem("test3", "test"),
-			createSettingItem("test4", 123),
-			createSettingItem("test5", new Date()),
-			createSettingItem("test1", "A", ["A", "B", "C", "D", "E"]),
-			createSettingItem("test2", "X", ["X", "Y", "Z"]),
-			createSettingItem("test3", "test"),
-			createSettingItem("test4", 123),
-			createSettingItem("test5", new Date()),
+			// createSettingItem("test1", "A", ["A", "B", "C", "D", "E"]),
+			// createSettingItem("test2", "X", ["X", "Y", "Z"]),
+			// createSettingItem("test3", "test"),
+			// createSettingItem("test4", 123),
+			// createSettingItem("test5", new Date()),
+			// createSettingItem("create_by", new Date()),
+			// createSettingItem("test1", "A", ["A", "B", "C", "D", "E"]),
+			// createSettingItem("test2", "X", ["X", "Y", "Z"]),
+			// createSettingItem("test3", "test"),
+			// createSettingItem("test4", 123),
+			// createSettingItem("test5", new Date()),
+			// createSettingItem("test1", "A", ["A", "B", "C", "D", "E"]),
+			// createSettingItem("test2", "X", ["X", "Y", "Z"]),
+			// createSettingItem("test3", "test"),
+			// createSettingItem("test4", 123),
+			// createSettingItem("test5", new Date()),
 		],
 	},
 	{
 		table_name: TABLE_NAMES.TABLE_BANK_SETTING,
 		table_type: "bank",
 		table_content: [
-			createBankRow(1, "900", "土地銀行", "001", "新竹分公司", new Date(), new Date())
+			// createBankRow(1, "900", "土地銀行", "001", "新竹分公司", new Date(), new Date())
 		],
 	},
 	{
 		table_name: TABLE_NAMES.TABLE_INSURANCE,
 		table_type: "typical",
 		table_content: [
-			createSettingItem("test1", "A", ["A", "B", "C", "D", "E"]),
-			createSettingItem("test2", "test"),
-			createSettingItem("test3", "X", ["X", "Y", "Z"]),
-			createSettingItem("test4", 123),
-			createSettingItem("勞健保測試", new Date()),
-			createSettingItem("create_by", new Date()),
+			// createSettingItem("test1", "A", ["A", "B", "C", "D", "E"]),
+			// createSettingItem("test2", "test"),
+			// createSettingItem("test3", "X", ["X", "Y", "Z"]),
+			// createSettingItem("test4", 123),
+			// createSettingItem("勞健保測試", new Date()),
+			// createSettingItem("create_by", new Date()),
 		],
 	},
 ];
@@ -134,8 +134,41 @@ const PageParameters: NextPageWithLayout = () => {
 		},
 	});
 
-	// const attendanceData = API_PARAMETERS.attendanceGetData.useQuery();
-	// const insuranceData = API_PARAMETERS.insuranceGetData.useQuery();
+	const getAttendanceSetting = api.parameters.getAttendanceSetting.useQuery();
+	const updateAttendanceSetting =
+		api.parameters.updateAttendanceSetting.useMutation({
+			onSuccess: () => {
+				getAttendanceSetting.refetch();
+			},
+		});
+	const createAttendanceSetting =
+		api.parameters.createAttendanceSetting.useMutation({
+			onSuccess: () => {
+				getAttendanceSetting.refetch();
+			},
+		});
+
+	const testInsertAttendanceData = () =>
+		createAttendanceSetting.mutate({
+			start_date: new Date(),
+			end_date: null,
+			personal_leave_dock: 0,
+			sick_leave_dock: 0,
+			rate_of_unpaid_leave: 0,
+			unpaid_leave_compensatory_1: 0,
+			unpaid_leave_compensatory_2: 0,
+			unpaid_leave_compensatory_3: 0,
+			unpaid_leave_compensatory_4: 0,
+			unpaid_leave_compensatory_5: 0,
+			overtime_by_foreign_workers_1: 0,
+			overtime_by_foreign_workers_2: 0,
+			overtime_by_foreign_workers_3: 0,
+			overtime_by_local_workers_1: 0,
+			overtime_by_local_workers_2: 0,
+			overtime_by_local_workers_3: 0,
+			local_worker_holiday: 0,
+			foreign_worker_holiday: 0,
+		});
 
 	function updateDatas(
 		t_name: string,
@@ -154,15 +187,62 @@ const PageParameters: NextPageWithLayout = () => {
 		datas = newDatas;
 	}
 
+	function start_condition(l: any) {
+		let condition = true;
+		l.map((x: boolean) => (condition = condition && x));
+		return condition;
+	}
+
 	if (
-		true
-		// attendanceData.isFetched &&
-		// getBankSetting.isFetched
-		// insuranceData.isFetched
+		start_condition([
+			getBankSetting.isFetched,
+			getAttendanceSetting.isFetched,
+		])
 	) {
-		// updateDatas("請假加班", Object.keys(attendanceData.data ?? {}).map((key) => { return { name: (Translate(key) as string),value: ((attendanceData.data as any)[key]==null?"NULL":(attendanceData.data as any)[key]) }; }));
-		// console.log((getBankSetting.data ?? []).map((bank: any) => {return {id:	bank.id,bank_code: bank.bank_code,bank_name: bank.bank_name,org_code: bank.org_code,org_name: bank.org_name,start_date: new Date(bank.start_date), end_date: new Date(bank.end_date)};}))
-		// updateDatas("銀行", (getBankSetting.data ?? []).map((bank: any) => {return {id:	bank.id,bank_code: bank.bank_code,bank_name: bank.bank_name,org_code: bank.org_code,org_name: bank.org_name,start_date:bank.start_date,end_date:bank.end_date};}))
+		console.log(
+			(getBankSetting.data ?? []).map((bank: any) => {
+				return {
+					id: bank.id,
+					bank_code: bank.bank_code,
+					bank_name: bank.bank_name,
+					org_code: bank.org_code,
+					org_name: bank.org_name,
+					start_date: new Date(bank.start_date),
+					end_date: new Date(bank.end_date),
+				};
+			})
+		);
+		updateDatas(
+			"銀行",
+			(getBankSetting.data ?? []).map((bank: any) => {
+				return {
+					id: bank.id,
+					bank_code: bank.bank_code,
+					bank_name: bank.bank_name,
+					org_code: bank.org_code,
+					org_name: bank.org_name,
+					start_date: new Date(bank.start_date),
+					end_date: new Date(bank.end_date),
+				};
+			})
+		);
+
+		console.log(getAttendanceSetting.data);
+		updateDatas(
+			"請假加班",
+			Object.keys(getAttendanceSetting.data ?? {}).map((key) => {
+				return {
+					name: key as string,
+					value:
+						(key.includes("_date") || key.includes("At"))
+							? 
+							(
+								((getAttendanceSetting.data as any)[key]) ? new Date((getAttendanceSetting.data as any)[key]) : null
+							)
+							: (getAttendanceSetting.data as any)[key],
+				};
+			})
+		);
 		return HTMLElement();
 	} else {
 		const loaderStyle = {
@@ -207,7 +287,14 @@ const PageParameters: NextPageWithLayout = () => {
 							/>
 						</div>
 					) : (
-						<div className="col-span-4 text-center" title={filterDisable?"The table filter is disabled because the parameter filter is currently using":""}>
+						<div
+							className="col-span-4 text-center"
+							title={
+								filterDisable
+									? "The table filter is disabled because the parameter filter is currently using"
+									: ""
+							}
+						>
 							<Multiselect
 								disable={filterDisable}
 								isObject={false}
@@ -240,16 +327,16 @@ const PageParameters: NextPageWithLayout = () => {
 						}}
 					/>
 					<div className="col-span-2 text-center">
-						<Input placeholder="Find Parameter" onChange={
-							(e) => {
-								if(e.target.value!=="")	{
-									setFilterDisable(true)
+						<Input
+							placeholder="Find Parameter"
+							onChange={(e) => {
+								if (e.target.value !== "") {
+									setFilterDisable(true);
 									resetFilterTables(true);
-								}
-								else	setFilterDisable(false);
+								} else setFilterDisable(false);
 								setParameterGlobalFilter(e.target.value);
-							}
-						}/>
+							}}
+						/>
 					</div>
 				</div>
 
@@ -261,9 +348,18 @@ const PageParameters: NextPageWithLayout = () => {
 					{datas.map((data, index) => {
 						if (!filterTables[index]) return <></>;
 						if (data.table_type == "typical") {
-							if(data.table_content.map((x, index) => {
-								return x.name.toLowerCase().includes(parameterGlobalFilter.toLowerCase());
-							}).filter(x => x).length === 0)	return <></>
+							if (
+								data.table_content
+									.map((x, index) => {
+										return x.name
+											.toLowerCase()
+											.includes(
+												parameterGlobalFilter.toLowerCase()
+											);
+									})
+									.filter((x) => x).length === 0
+							)
+								return <></>;
 							const parameterTable = (
 								<ParameterTable
 									defaultData={data.table_content}
@@ -271,6 +367,12 @@ const PageParameters: NextPageWithLayout = () => {
 									table_type={data.table_type}
 									index={find_index(data.table_name)}
 									globalFilter={parameterGlobalFilter}
+									updateAttendanceSetting = {(d:any) => {
+										updateAttendanceSetting.mutate(d)
+									}}
+									createAttendanceSetting = {(d:any) => {
+										createAttendanceSetting.mutate(d)
+									}}
 								/>
 							);
 							return parameterTable;
@@ -296,6 +398,10 @@ const PageParameters: NextPageWithLayout = () => {
 						}
 					})}
 				</Accordion>
+				<Button onClick={() => testInsertAttendanceData()}>
+					{" "}
+					TEST{" "}
+				</Button>
 			</>
 		);
 	}
@@ -311,8 +417,6 @@ PageParameters.getLayout = function getLayout(page: ReactElement) {
 
 export default PageParameters;
 
-
-
 const multiselect_style = {
 	multiselectContainer: {
 		width: "100%",
@@ -327,7 +431,7 @@ const multiselect_style = {
 		padding: "0.25rem 0.5rem",
 		fontSize: "0.875rem",
 		display: "flex",
-		align: 'center',
+		align: "center",
 	},
 	optionContainer: {
 		// display: "flex",
@@ -335,20 +439,20 @@ const multiselect_style = {
 		maxHight: "80px",
 	},
 	chips: {
-		height: '15px', // Set your desired height for the selected options
-		display: 'flex', // Center vertically
-		alignItems: 'center', // Center vertically
-		marginTop: '4px', // Add space at the top
-		background: "#808080"
+		height: "15px", // Set your desired height for the selected options
+		display: "flex", // Center vertically
+		alignItems: "center", // Center vertically
+		marginTop: "4px", // Add space at the top
+		background: "#808080",
 	},
 	checkbox: {
-		backgroundColor: "#808080"
+		backgroundColor: "#808080",
 	},
 	option: {
-		cursor: 'pointer',
-		transition: 'background-color 1s', // Add a smooth transition effect
+		cursor: "pointer",
+		transition: "background-color 1s", // Add a smooth transition effect
 		// Set the default background color for options
-		backgroundColor: '#ffffff',
+		backgroundColor: "#ffffff",
 		color: "#000000",
-	}
-}
+	},
+};

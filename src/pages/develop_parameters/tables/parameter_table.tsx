@@ -1,3 +1,5 @@
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 
@@ -80,6 +82,7 @@ import { type ReactElement, useRef, useState, useEffect, useMemo } from "react";
 import { DATA, createDATA } from "./datatype";
 import { List } from "postcss/lib/list";
 import { isNumber, isDate, isString } from "../utils/checkType";
+import { toast } from "~/components/ui/use-toast";
 
 export type SettingItem = {
 	name: string;
@@ -103,7 +106,8 @@ export function ParameterTable({
 	defaultData,
 	index,
 	globalFilter,
-	onChildFunctionRun,
+	createAttendanceSetting,
+	updateAttendanceSetting,
 }: any) {
 
 	const columns: ColumnDef<SettingItem>[] = [
@@ -136,18 +140,24 @@ export function ParameterTable({
 					formatted = parseFloat(row.getValue("value")).toString();
 				else if (isString(value)) formatted = row.getValue("value");
 				else if (isDate(value))
-					formatted = (value as Date).toISOString().split("T")[0] ?? "";
+				{
+					if(value)
+					{	
+						formatted = (value as Date).toISOString().split("T")[0] ?? "";
+					}
+					else	formatted = "";
+				}
 				return <div className="text-center font-medium">{formatted}</div>;
 			},
 		},
-		{
-			id: "actions",
-			enableHiding: false,
-			cell: ({ row }) => {
-				const setting = row.original;
-				return <CompDropdown setting={setting} />;
-			},
-		},
+		// {
+		// 	id: "actions",
+		// 	enableHiding: false,
+		// 	cell: ({ row }) => {
+		// 		const setting = row.original;
+		// 		return <CompDropdown setting={setting} updateAttendanceSetting={updateAttendanceSetting}/>;
+		// 	},
+		// },
 	];
 
 
@@ -334,20 +344,10 @@ export function ParameterTable({
 							<Button
 								variant="outline"
 								size="sm"
-								onClick={() => {
-									console.log("switch mode");
-								}}
-								disabled={false}
-							>
-								Switch Mode
-							</Button>
-							<Button
-								variant="outline"
-								size="sm"
 								onClick={() => setShowDialog(true)}
 								disabled={false}
 							>
-								Modify All
+								Modify
 							</Button>
 							<Button
 								variant="outline"
@@ -382,7 +382,7 @@ export function ParameterTable({
 	);
 }
 
-function CompDropdown({ setting }: { setting: SettingItem }) {
+function CompDropdown({ setting, updateAttendanceSetting }: { setting: SettingItem, updateAttendanceSetting: (d:any) => void }) {
 	const [showDialog, setShowDialog] = useState(false);
 
 	return (
@@ -424,6 +424,7 @@ function CompDropdown({ setting }: { setting: SettingItem }) {
 				onOpenChange={(open: boolean) => {
 					setShowDialog(open);
 				}}
+				updateAttendanceSetting={updateAttendanceSetting}
 			/>
 		</>
 	);
@@ -433,12 +434,21 @@ function ModifyDialog({
 	setting,
 	showDialog,
 	onOpenChange,
+	schema,
+	updateAttendanceSetting,
 }: {
 	setting: SettingItem;
 	showDialog: boolean;
 	onOpenChange: (open: boolean) => void;
+	schema?: any;
+	updateAttendanceSetting: (d: any) => void;
 }) {
 	const inputRef = useRef<HTMLInputElement>(null);
+
+	if(!schema)
+		schema = isDate(setting.value)?z.date():isString(setting.value)?z.string().max(10):z.number().min(0);
+	const [isValid, setIsValid] = useState(schema.safeParse(setting.value).success);
+	const updateIsValid = (x: string | number | Date) => {setIsValid(schema.safeParse(x).success);console.log("update")}
 	return (
 		<Dialog open={showDialog} onOpenChange={onOpenChange}>
 			<DialogContent>
@@ -482,49 +492,70 @@ function ModifyDialog({
 									</SelectContent>
 								</Select>
 							</>
-						) : typeof setting.value == "number" ||
-						  typeof setting.value == "string" ? (
-							<Input
+						) : isNumber(setting.value) ? <Input
 								ref={inputRef}
 								id="value"
-								defaultValue={setting.value}
+								defaultValue={setting.value.toString()}
 								type={
 									isNumber(setting.value)
 										? "number"
 										: "value"
 								}
 								className="col-span-3"
+								onChange={() => updateIsValid(parseFloat(inputRef.current?.value??"0"))}
+							/>:
+						  isString(setting.value) ? (
+							<Input
+								ref={inputRef}
+								id="value"
+								defaultValue={setting.value as string}
+								type={
+									isNumber(setting.value)
+										? "number"
+										: "value"
+								}
+								className="col-span-3"
+								onChange={() => {updateIsValid(inputRef.current?.value??'');}}
 							/>
 						) : (
 							<Input
 								ref={inputRef}
 								id="value"
 								defaultValue={
-									setting.value.toISOString().split("T")[0]
+									(setting.value)?(setting.value as Date).toISOString().split("T")[0]:""
 								}
 								type={"date"}
 								className="col-span-3"
 							/>
 						)}
 					</div>
+					
+					{
+						(!isValid)?
+						<Label htmlFor="value" className="text-justify; text-red-500">The input value is invalid</Label>
+						:<></>
+					}
 				</div>
 				<DialogFooter>
 					<DialogClose asChild>
 						<Button
+							disabled={!isValid}
 							type="submit"
 							onClick={() => {
 								const value = setting.setting
-									? setting.value
-									: typeof setting.value === "string"
-									? inputRef.current?.value
-									: typeof setting.value === "number"
-									? Number(inputRef.current?.value)
-									: inputRef.current?.valueAsDate;
+								? setting.value
+								: typeof setting.value === "string"
+								? inputRef.current?.value
+								: typeof setting.value === "number"
+								? Number(inputRef.current?.value)
+								: inputRef.current?.valueAsDate;
 
 								let { ["value"]: x, ...rest } = setting;
 								let newItem = { ...rest, ["value"]: value };
 								// 待補
 								console.log(newItem);
+								if(newItem.name !== "id")
+									updateAttendanceSetting(newItem);
 							}}
 						>
 							Save changes
