@@ -1,66 +1,3 @@
-// import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-// import { BaseMeta } from "./utils/base_meta";
-// import { Char } from "./utils/utils";
-
-// @Entity("U_EMPLOYEE_PAYMENT")
-// export class EmployeePayment extends BaseMeta {
-// 	@PrimaryGeneratedColumn()
-// 	id: number;
-
-// 	@Column("varchar2", { length: Char(32) })
-// 	emp_id: string;
-
-// 	@Column("int")
-// 	base_salary: number;
-
-// 	@Column("int")
-// 	supervisor_bonus: number;
-
-// 	@Column("int")
-// 	job_bonus: number;
-
-// 	@Column("int")
-// 	subsidy_bonus: number;
-
-// 	@Column("int")
-// 	shift_bonus: number;
-
-// 	@Column("int")
-// 	professional_cert_bonus: number;
-
-// 	@Column("int")
-// 	labor_retirement_self: number;
-
-// 	@Column("int")
-// 	emp_trust_reserve: number;
-
-// 	@Column("int")
-// 	org_trust_reserve: number;
-
-// 	@Column("int")
-// 	emp_special_trust_incent: number;
-
-// 	@Column("int")
-// 	org_special_trust_incent: number;
-
-// 	@Column("float")
-// 	l_i: number;
-
-// 	@Column("float")
-// 	h_i: number;
-
-// 	@Column("float")
-// 	labor_retirement: number;
-
-// 	@Column("float")
-// 	occupational_injury: number;
-
-// 	@Column("date")
-// 	start_date: Date;
-
-// 	@Column("date")
-// 	end_date: Date;
-// }
 import {
 	DataTypes,
 	Model,
@@ -98,10 +35,10 @@ export class EmployeePayment extends Model<
 
 	// timestamps!
 	// createdAt can be undefined during creation
-	declare create_date: Date;
+	declare create_date: CreationOptional<Date>;
 	declare create_by: string;
 	// updatedAt can be undefined during creation
-	declare update_date: Date;
+	declare update_date: CreationOptional<Date>;
 	declare update_by: string;
 }
 
@@ -188,7 +125,6 @@ EmployeePayment.init(
 		},
         create_date: {
 			type: DataTypes.DATE,
-			allowNull: false,
 		},
 		create_by: {
 			type: DataTypes.STRING(128),
@@ -196,7 +132,6 @@ EmployeePayment.init(
 		},
 		update_date: {
 			type: DataTypes.DATE,
-			allowNull: false,
 		},
 		update_by: {
 			type: DataTypes.STRING(128),
@@ -206,5 +141,7 @@ EmployeePayment.init(
 	{
 		sequelize,
 		tableName: "U_EMPLOYEE_PAYMENT",
+		createdAt: 'create_date',
+		updatedAt: 'update_date',
 	}
 )

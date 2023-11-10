@@ -57,9 +57,7 @@ export class AttendanceSettingService {
 			foreign_worker_holiday: foreign_worker_holiday,
 			start_date: start_date ?? now,
 			end_date: end_date,
-			create_date: now,
 			create_by: "system",
-			update_date: now,
 			update_by: "system",
 		});
 		return newData;
