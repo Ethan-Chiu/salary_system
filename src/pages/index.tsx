@@ -10,6 +10,8 @@ import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { IconCoins } from "~/components/icons/svg_icons";
 import { Header } from "~/components/header";
 import { api } from "~/utils/api";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 const function_data: CardFunctionData[] = [
 	{
@@ -50,6 +52,18 @@ const stagger = {
 };
 
 const PageHome: NextPageWithLayout = () => {
+	const { data: session, status } = useSession();
+
+	console.log(status, session);
+
+	if (status === "loading") {
+		return <p>Loading...</p>;
+	}
+
+	if (status === "unauthenticated") {
+		return <p>Access Denied</p>;
+	}
+
 	return (
 		<>
 			<Header title="functions" showOptions className="mb-4" />

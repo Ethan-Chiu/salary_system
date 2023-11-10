@@ -10,6 +10,7 @@ import { container } from "tsyringe";
 import { env } from "~/env.mjs";
 import * as bcrypt from "bcrypt";
 import { BaseResponseError } from "./api/error/BaseResponseError";
+import { UserService } from "./service/user_service";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -51,10 +52,12 @@ export const authOptions: NextAuthOptions = {
 		error: "/login", // Error code passed in query string as ?error=
 	},
 	jwt: {
-		secret: env.NEXTAUTH_JWT_SECRET,
-		maxAge: 15 * 24 * 30 * 60, // 15 days
+		maxAge: 15 * 24 * 60 * 60, // 15 days
 	},
 	secret: env.NEXTAUTH_SECRET,
+	session: {
+		strategy: 'jwt'
+	},
 	callbacks: {
 		jwt: async ({ token, user }) => {
 			if (user) {
