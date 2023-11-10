@@ -89,3 +89,16 @@ export const updateBonusDepartmentInput = z.object({
 	department: z.string().nullable(),
 	multiplier: z.number().nullable(),
 });
+
+export const createBonusPositionInput = z.object({
+	position: z.number(),
+	position_type: z.string(),
+	multiplier: z.number(),
+});
+
+export const updateBonusPositionInput = z.object({
+	id: z.number(),
+	position: z.number(),
+	position_type: z.string(),
+	multiplier: z.number(),
+});

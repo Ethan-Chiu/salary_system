@@ -12,11 +12,14 @@ import {
 	updateBankSettingInput,
 	createBonusDepartmentInput,
 	updateBonusDepartmentInput,
+	createBonusPositionInput,
+	updateBonusPositionInput,
 } from "../input_type/parameters_input";
 import { BankSettingService } from "~/server/service/bank_setting_service";
 import { AttendanceSettingService } from "~/server/service/attendance_setting_service";
 import { BaseResponseError } from "../error/BaseResponseError";
 import { BonusDepartmentService } from "~/server/service/bonus_department_service";
+import { BonusPositionService } from "~/server/service/bonus_position_service";
 
 export const parametersRouter = createTRPCRouter({
 	createBankSetting: publicProcedure
@@ -157,7 +160,7 @@ export const parametersRouter = createTRPCRouter({
 			return newdata;
 		}),
 
-		deleteBonusDepartment: publicProcedure
+	deleteBonusDepartment: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.mutation(async (opts) => {
 			const { input } = opts;
@@ -166,4 +169,54 @@ export const parametersRouter = createTRPCRouter({
 			);
 			await bonusDepartmentService.deleteBonusDepartment(input.id);
 		}),
+
+		createBonusPosition: publicProcedure.input(createBonusPositionInput).mutation(async ({ input }) => {
+			const bonusPositionService = container.resolve(
+				BonusPositionService
+			);
+			let newdata = await bonusPositionService.createBonusPosition(
+				input
+			);
+			return newdata;
+		}),
+	
+		getCurrentBonusPosition: publicProcedure.query(async () => {
+			const bonusPositionService = container.resolve(BonusPositionService);
+			let bonusPosition = await bonusPositionService.getCurrentBonusPosition();
+			if (bonusPosition == null) {
+				throw new BaseResponseError("BonusPosition does not exist");
+			}
+			return bonusPosition;
+		}),
+	
+		getAllBonusPosition: publicProcedure.query(async () => {
+			const bonusPositionService = container.resolve(BonusPositionService);
+			let bonusPosition = await bonusPositionService.getAllBonusPosition();
+			if (bonusPosition == null) {
+				throw new BaseResponseError("BonusDPosition does not exist");
+			}
+			return bonusPosition;
+		}),
+	
+		updateBonusPosition: publicProcedure
+			.input(updateBonusPositionInput)
+			.mutation(async ({ input }) => {
+				const bonusPositionService = container.resolve(
+					BonusPositionService
+				);
+				let newdata = await bonusPositionService.updateBonusPosition(
+					input
+				);
+				return newdata;
+			}),
+	
+		deleteBonusPositon: publicProcedure
+			.input(z.object({ id: z.number() }))
+			.mutation(async (opts) => {
+				const { input } = opts;
+				const bonusPositionService = container.resolve(
+					BonusPositionService
+				);
+				await bonusPositionService.deleteBonusPosition(input.id);
+			}),
 });

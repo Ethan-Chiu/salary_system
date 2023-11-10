@@ -81,10 +81,8 @@ export class BonusDepartmentService {
 
 	async deleteBonusDepartment(id: number): Promise<void> {
 		const now = new Date();
-		this.updateBonusDepartment({
-			id: id,
-			department: null,
-			multiplier: null,
-		});
+        BonusDepartment.destroy(
+            { where: { id: id } }
+        );
 	}
 }

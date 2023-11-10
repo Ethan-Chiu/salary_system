@@ -12,7 +12,7 @@ export const debugRouter = createTRPCRouter({
 		const database = container.resolve(Database).connection;
 
 		try {
-			const data = await database.sync({ alter: true, });
+			const data = await database.sync({ force: true, });
 			return {
 				msg: "All models were synchronized successfully.",
 			};
