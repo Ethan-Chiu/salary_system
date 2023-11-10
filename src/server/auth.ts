@@ -11,6 +11,9 @@ import { env } from "~/env.mjs";
 import * as bcrypt from "bcrypt";
 import { BaseResponseError } from "./api/error/BaseResponseError";
 import { UserService } from "./service/user_service";
+import { RolesEnum, RolesEnumType } from "./api/types/role_type";
+import { DefaultJWT } from "next-auth/jwt";
+import { z } from "zod";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -18,18 +21,35 @@ import { UserService } from "./service/user_service";
  *
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
-interface JWTUser extends DefaultUser {
+interface ExtendedTokenInfo {
 	emp_id: string;
+	role: RolesEnumType;
+}
+
+interface JWTUser extends DefaultUser, ExtendedTokenInfo {
+	// Fields in DefaultUser
+	// id: string
+	// name?: string | null
+	// email?: string | null
+	// image?: string | null
+}
+
+interface JWTToken extends DefaultJWT, ExtendedTokenInfo {
+	// Fields in DefaultJWT
+	// sub?: string
+	// name?: string | null
+	// email?: string | null
+	// picture?: string | null
 }
 
 declare module "next-auth" {
 	interface Session extends DefaultSession {
-		user: DefaultSession["user"] & {
-			id: number;
-			emp_id: string;
-			// ...other properties
-			// role: UserRole;
-		};
+		user: DefaultSession["user"] 
+			// name?: string | null
+			// email?: string | null
+			// image?: string | null
+		& { id: number; } 
+		& ExtendedTokenInfo;
 	}
 
 	interface User extends JWTUser {}
@@ -37,7 +57,7 @@ declare module "next-auth" {
 
 // nextauth.d.ts
 declare module "next-auth/jwt" {
-	interface JWT extends JWTUser {}
+	interface JWT extends JWTToken {}
 }
 
 /**
@@ -56,14 +76,15 @@ export const authOptions: NextAuthOptions = {
 	},
 	secret: env.NEXTAUTH_SECRET,
 	session: {
-		strategy: 'jwt'
+		strategy: "jwt",
 	},
 	callbacks: {
 		jwt: async ({ token, user }) => {
 			if (user) {
-				token.id = user.id;
+				token.sub = user.id;
 				token.email = user.email;
-				token.emp_id = user.emp_id
+				token.emp_id = user.emp_id;
+				token.role = user.role;
 			}
 			return token;
 		},
@@ -73,7 +94,8 @@ export const authOptions: NextAuthOptions = {
 				user: {
 					...session.user,
 					id: token.sub,
-					emp_id: token.emp_id
+					emp_id: token.emp_id,
+					role: token.role,
 				},
 			};
 		},
@@ -107,6 +129,7 @@ export const authOptions: NextAuthOptions = {
 				};
 
 				const userService = container.resolve(UserService);
+				// TODO: move following to user service
 				const user = await userService.getUser(input.emp_id);
 
 				if (!user) {
@@ -126,10 +149,21 @@ export const authOptions: NextAuthOptions = {
 					}
 				}
 
-				return {
-					id: user.id,
+				const parseRole = RolesEnum.safeParse(user.auth_level)
+				if (!parseRole.success) {
+					console.log(parseRole.error);
+					throw new BaseResponseError(`Internal Error: Wrong user role`);
+				}
+
+				console.log(parseRole.data);
+
+				const jwtUser: JWTUser = {
+					id: user.id.toString(),
 					emp_id: user.emp_id,
-				} as any;
+					role: parseRole.data
+				};
+
+				return jwtUser;
 			},
 		}),
 		/**
