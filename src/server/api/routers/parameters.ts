@@ -16,15 +16,6 @@ import { AttendanceSettingService } from "~/server/service/attendance_setting_se
 import { BaseResponseError } from "../error/BaseResponseError";
 
 export const parametersRouter = createTRPCRouter({
-	getBankSetting: publicProcedure.query(async () => {
-		const bankService = container.resolve(BankSettingService);
-		let bankSetting = await bankService.getBankSettingList();
-		if (bankSetting == null || bankSetting!.length == 0) {
-			throw new BaseResponseError("BankSetting does not exist");
-		}
-		return bankSetting;
-	}),
-
 	createBankSetting: publicProcedure
 		.input(createBankSettingInput)
 		.mutation(async ({ input }) => {
@@ -32,6 +23,24 @@ export const parametersRouter = createTRPCRouter({
 			let newdata = await bankService.createBankSetting(input);
 			return newdata;
 		}),
+
+	getCurrentBankSetting: publicProcedure.query(async () => {
+		const bankService = container.resolve(BankSettingService);
+		let bankSetting = await bankService.getCurrentBankSetting();
+		if (bankSetting.length == 0) {
+			throw new BaseResponseError("BankSetting does not exist");
+		}
+		return bankSetting;
+	}),
+
+	getAllBankSetting: publicProcedure.query(async () => {
+		const bankService = container.resolve(BankSettingService);
+		let bankSetting = await bankService.getAllBankSetting();
+		if (bankSetting.length == 0) {
+			throw new BaseResponseError("BankSetting does not exist");
+		}
+		return bankSetting;
+	}),
 
 	updateBankSetting: publicProcedure
 		.input(updateBankSettingInput)
@@ -49,10 +58,21 @@ export const parametersRouter = createTRPCRouter({
 			await bankService.deleteBankSetting(input.id);
 		}),
 
-	getAttendanceSetting: publicProcedure.query(async () => {
+	getCurrentAttendanceSetting: publicProcedure.query(async () => {
 		const attendanceService = container.resolve(AttendanceSettingService);
-		let attendanceSetting = await attendanceService.getAttendanceSetting();
+		let attendanceSetting =
+			await attendanceService.getCurrentAttendanceSetting();
 		if (attendanceSetting == null) {
+			throw new BaseResponseError("AttendanceSetting does not exist");
+		}
+		return attendanceSetting;
+	}),
+
+	getAllAttendanceSetting: publicProcedure.query(async () => {
+		const attendanceService = container.resolve(AttendanceSettingService);
+		let attendanceSetting =
+			await attendanceService.getAllAttendanceSetting();
+		if (attendanceSetting.length == 0) {
 			throw new BaseResponseError("AttendanceSetting does not exist");
 		}
 		return attendanceSetting;
@@ -84,11 +104,13 @@ export const parametersRouter = createTRPCRouter({
 
 	deleteAttendanceSetting: publicProcedure
 		.input(z.object({ id: z.number() }))
-		.mutation(async (opts) => {
-			const { input } = opts;
+		.mutation(async ({ input }) => {
 			const attendanceService = container.resolve(
 				AttendanceSettingService
 			);
-			await attendanceService.deleteAttendanceSetting(input.id);
+			let newdata = await attendanceService.deleteAttendanceSetting(
+				input.id
+			);
+			return newdata;
 		}),
 });
