@@ -9,3 +9,7 @@ export function check_date(
 		throw new BaseResponseError("End date is earlier than start date");
 	}
 }
+
+export function select_value(newData: any, oldData: any) {
+	return newData !== undefined ? newData : oldData;
+}

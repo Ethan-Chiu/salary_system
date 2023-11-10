@@ -7,6 +7,7 @@ import {
 	updateLevelInput,
 } from "../api/input_type/parameters_input";
 import { Level } from "../database/entity/level";
+import { select_value } from "./helper_function";
 
 @injectable()
 export class LevelService {
@@ -53,7 +54,7 @@ export class LevelService {
 
 		const affectedCount = await Level.update(
 			{
-				level: level ?? _level.level,
+				level: select_value(level, _level.level),
 				update_by: "system",
 			},
 			{ where: { id: id } }

@@ -7,6 +7,7 @@ import {
 	updateTrustMoneyInput,
 } from "../api/input_type/parameters_input";
 import { TrustMoney } from "../database/entity/trust_money";
+import { select_value } from "./helper_function";
 
 @injectable()
 export class TrustMoneyService {
@@ -68,20 +69,27 @@ export class TrustMoneyService {
 
 		const affectedCount = await TrustMoney.update(
 			{
-				position: position ?? trustMoney.position,
-				position_type: position_type ?? trustMoney.position_type,
-				emp_trust_reserve_limit:
-					emp_trust_reserve_limit ??
-					trustMoney.emp_trust_reserve_limit,
-				org_trust_reserve_limit:
-					org_trust_reserve_limit ??
-					trustMoney.org_trust_reserve_limit,
-				emp_special_trust_incent_limit:
-					emp_special_trust_incent_limit ??
-					trustMoney.emp_special_trust_incent_limit,
-				org_special_trust_incent_limit:
-					org_special_trust_incent_limit ??
-					trustMoney.org_special_trust_incent_limit,
+				position: select_value(position, trustMoney.position),
+				position_type: select_value(
+					position_type,
+					trustMoney.position_type
+				),
+				emp_trust_reserve_limit: select_value(
+					emp_trust_reserve_limit,
+					trustMoney.emp_trust_reserve_limit
+				),
+				org_trust_reserve_limit: select_value(
+					org_trust_reserve_limit,
+					trustMoney.org_trust_reserve_limit
+				),
+				emp_special_trust_incent_limit: select_value(
+					emp_special_trust_incent_limit,
+					trustMoney.emp_special_trust_incent_limit
+				),
+				org_special_trust_incent_limit: select_value(
+					org_special_trust_incent_limit,
+					trustMoney.org_special_trust_incent_limit
+				),
 				update_by: "system",
 			},
 			{ where: { id: id } }
