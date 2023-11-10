@@ -7,7 +7,7 @@ import { z } from "zod";
 import {
 	createAttendanceSettingInput,
 	updateAttendanceSettingInput,
-} from "../api/input_type/parameters_input";
+} from "../api/types/parameters_input_type";
 
 @injectable()
 export class AttendanceSettingService {

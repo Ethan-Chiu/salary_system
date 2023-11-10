@@ -10,7 +10,7 @@ import {
 	updateAttendanceSettingInput,
 	createBankSettingInput,
 	updateBankSettingInput,
-} from "../input_type/parameters_input";
+} from "../types/parameters_input_type";
 import { BankSettingService } from "~/server/service/bank_setting_service";
 import { AttendanceSettingService } from "~/server/service/attendance_setting_service";
 import { BaseResponseError } from "../error/BaseResponseError";
