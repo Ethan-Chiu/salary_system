@@ -1,25 +1,3 @@
-// import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
-// import { Char } from "./utils/utils";
-// import { BaseMeta } from "./utils/base_meta";
-
-// @Entity("U_BONUS_SETTING")
-// export class BonusSetting extends BaseMeta {
-// 	@PrimaryGeneratedColumn()
-// 	id: number;
-
-// 	@Column("float")
-// 	fixed_multiplier: number;
-
-// 	@Column("date")
-// 	criterion_date: Date;
-
-// 	@Column("varchar2", { length: Char(32) })
-// 	base_on: string;
-
-// 	@Column("varchar2", { length: Char(32) })
-// 	type: string;
-// }
-
 import {
 	DataTypes,
 	Model,
@@ -43,10 +21,10 @@ export class BonusSetting extends Model<
 
 	// timestamps!
 	// createdAt can be undefined during creation
-	declare create_date: Date;
+	declare create_date: CreationOptional<Date>;
 	declare create_by: string;
 	// updatedAt can be undefined during creation
-	declare update_date: Date;
+	declare update_date: CreationOptional<Date>;
 	declare update_by: string;
 }
 
@@ -78,7 +56,6 @@ BonusSetting.init(
         },
 		create_date: {
 			type: DataTypes.DATE,
-			allowNull: false,
 		},
 		create_by: {
 			type: DataTypes.STRING(128),
@@ -86,7 +63,6 @@ BonusSetting.init(
 		},
 		update_date: {
 			type: DataTypes.DATE,
-			allowNull: false,
 		},
 		update_by: {
 			type: DataTypes.STRING(128),
@@ -96,5 +72,7 @@ BonusSetting.init(
 	{
 		sequelize,
 		tableName: "U_BONUS_SETTING",
+		createdAt: 'create_date',
+		updatedAt: 'update_date',
 	}
 );

@@ -19,10 +19,10 @@ export class BasicInfo extends Model<
 
 	// timestamps!
 	// createdAt can be undefined during creation
-	declare create_date: Date;
+	declare create_date: CreationOptional<Date>;
 	declare create_by: string;
 	// updatedAt can be undefined during creation
-	declare update_date: Date;
+	declare update_date: CreationOptional<Date>;
 	declare update_by: string;
 }
 
@@ -46,7 +46,6 @@ BasicInfo.init(
         },
 		create_date: {
 			type: DataTypes.DATE,
-			allowNull: false,
 		},
 		create_by: {
 			type: DataTypes.STRING(128),
@@ -54,7 +53,6 @@ BasicInfo.init(
 		},
 		update_date: {
 			type: DataTypes.DATE,
-			allowNull: false,
 		},
 		update_by: {
 			type: DataTypes.STRING(128),
@@ -64,5 +62,7 @@ BasicInfo.init(
 	{
 		sequelize,
 		tableName: "U_BASIC_INFO",
+		createdAt: 'create_date',
+		updatedAt: 'update_date',
 	}
 );

@@ -1,16 +1,3 @@
-// import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
-// import { Char } from "./utils/utils";
-// import { BaseMeta } from "./utils/base_meta";
-
-// @Entity("U_LEVEL")
-// export class Level extends BaseMeta {
-// 	@PrimaryGeneratedColumn()
-// 	id: number;
-
-// 	@Column("int")
-// 	level: number;
-// }
-
 import {
 	DataTypes,
 	Model,
@@ -31,10 +18,10 @@ export class Level extends Model<
 
 	// timestamps!
 	// createdAt can be undefined during creation
-	declare create_date: Date;
+	declare create_date: CreationOptional<Date>;
 	declare create_by: string;
 	// updatedAt can be undefined during creation
-	declare update_date: Date;
+	declare update_date: CreationOptional<Date>;
 	declare update_by: string;
 }
 
@@ -54,7 +41,6 @@ Level.init(
         },
 		create_date: {
 			type: DataTypes.DATE,
-			allowNull: false,
 		},
 		create_by: {
 			type: DataTypes.STRING(128),
@@ -62,7 +48,6 @@ Level.init(
 		},
 		update_date: {
 			type: DataTypes.DATE,
-			allowNull: false,
 		},
 		update_by: {
 			type: DataTypes.STRING(128),
@@ -72,5 +57,7 @@ Level.init(
 	{
 		sequelize,
 		tableName: "U_LEVEL",
+		createdAt: 'create_date',
+		updatedAt: 'update_date',
 	}
 );
