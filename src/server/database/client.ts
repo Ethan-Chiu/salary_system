@@ -1,7 +1,8 @@
 import {singleton} from "tsyringe";
 import { Sequelize } from "sequelize";
+import { env } from "~/env.mjs";
 
-const local_db = false;
+const local_db = env.USE_LOCAL_DB;
 
 interface DatabaseConfig {
 	serviceName: string;
@@ -39,6 +40,7 @@ export class Database {
 		let config = remoteDatabaseConfig;
 		if (process.env.NODE_ENV == "development") {
 			if (local_db) {
+				console.log("use local database");
 				config = localDatabaseConfig;
 			}
 		}

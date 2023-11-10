@@ -31,9 +31,7 @@ export class BankSettingService {
 			org_name: org_name,
 			start_date: start_date ?? now,
 			end_date: end_date,
-			create_date: now,
 			create_by: "system",
-			update_date: now,
 			update_by: "system",
 		});
 		return newData;
@@ -91,7 +89,6 @@ export class BankSettingService {
 				org_name: org_name ?? bank_setting.org_name,
 				start_date: start_date ?? bank_setting.start_date,
 				end_date: end_date ?? bank_setting.end_date,
-				update_date: now,
 				update_by: "system",
 			},
 			{ where: { id: id } }
@@ -105,11 +102,6 @@ export class BankSettingService {
 		const now = new Date();
 		this.updateBankSetting({
 			id: id,
-			bank_code: null,
-			bank_name: null,
-			org_code: null,
-			org_name: null,
-			start_date: null,
 			end_date: now,
 		});
 	}

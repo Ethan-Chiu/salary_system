@@ -1,19 +1,3 @@
-// import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-// import { BaseMeta } from './utils/base_meta';
-// import { Char } from './utils/utils';
-
-// @Entity('U_PERFORMANCE_LEVEL')
-// export class PerformanceLevel extends BaseMeta{
-//     @PrimaryGeneratedColumn()
-//     id: number;
-
-//     @Column('varchar2', { length: Char(32) })
-//     performance_level: string;
-
-//     @Column('float')
-//     multiplier: number;
-// }
-
 import {
 	DataTypes,
 	Model,
@@ -35,10 +19,10 @@ export class PerformanceLevel extends Model<
 
 	// timestamps!
 	// createdAt can be undefined during creation
-	declare create_date: Date;
+	declare create_date: CreationOptional<Date>;
 	declare create_by: string;
 	// updatedAt can be undefined during creation
-	declare update_date: Date;
+	declare update_date: CreationOptional<Date>;
 	declare update_by: string;
 }
 
@@ -62,7 +46,6 @@ PerformanceLevel.init(
         },
 		create_date: {
 			type: DataTypes.DATE,
-			allowNull: false,
 		},
 		create_by: {
 			type: DataTypes.STRING(128),
@@ -70,7 +53,6 @@ PerformanceLevel.init(
 		},
 		update_date: {
 			type: DataTypes.DATE,
-			allowNull: false,
 		},
 		update_by: {
 			type: DataTypes.STRING(128),
@@ -80,5 +62,7 @@ PerformanceLevel.init(
 	{
 		sequelize,
 		tableName: "U_PERFORMANCE_LEVEL",
+		createdAt: 'create_date',
+		updatedAt: 'update_date',
 	}
 );

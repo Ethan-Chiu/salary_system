@@ -87,6 +87,7 @@ export const parametersRouter = createTRPCRouter({
 			let newdata = await attendanceService.createAttendanceSetting(
 				input
 			);
+			await attendanceService.rescheduleAttendanceSetting();
 			return newdata;
 		}),
 
@@ -96,10 +97,8 @@ export const parametersRouter = createTRPCRouter({
 			const attendanceService = container.resolve(
 				AttendanceSettingService
 			);
-			let newdata = await attendanceService.updateAttendanceSetting(
-				input
-			);
-			return newdata;
+			await attendanceService.updateAttendanceSetting(input);
+			await attendanceService.rescheduleAttendanceSetting();
 		}),
 
 	deleteAttendanceSetting: publicProcedure
@@ -108,9 +107,7 @@ export const parametersRouter = createTRPCRouter({
 			const attendanceService = container.resolve(
 				AttendanceSettingService
 			);
-			let newdata = await attendanceService.deleteAttendanceSetting(
-				input.id
-			);
-			return newdata;
+			await attendanceService.deleteAttendanceSetting(input.id);
+			await attendanceService.rescheduleAttendanceSetting();
 		}),
 });
