@@ -2,7 +2,6 @@ import { injectable } from "tsyringe";
 import { AttendanceSetting } from "../database/entity/attendance_setting";
 import { Op, fn } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
-import { check_date } from "./helper_function";
 import { z } from "zod";
 import {
 	createAttendanceSettingInput,
@@ -31,13 +30,10 @@ export class AttendanceSettingService {
 		overtime_by_foreign_workers_3,
 		foreign_worker_holiday,
 		start_date,
-		end_date,
 	}: z.infer<
 		typeof createAttendanceSettingInput
 	>): Promise<AttendanceSetting> {
 		const now = new Date();
-		check_date(start_date, end_date, now);
-
 		const newData = await AttendanceSetting.create({
 			personal_leave_dock: personal_leave_dock,
 			sick_leave_dock: sick_leave_dock,
@@ -56,16 +52,16 @@ export class AttendanceSettingService {
 			overtime_by_foreign_workers_3: overtime_by_foreign_workers_3,
 			foreign_worker_holiday: foreign_worker_holiday,
 			start_date: start_date ?? now,
-			end_date: end_date,
 			create_date: now,
 			create_by: "system",
 			update_date: now,
 			update_by: "system",
 		});
+		await this.rescheduleAttendanceSetting();
 		return newData;
 	}
 
-	async getAttendanceSetting(): Promise<AttendanceSetting | null> {
+	async getCurrentAttendanceSetting(): Promise<AttendanceSetting | null> {
 		const now = new Date();
 		const attendanceSettiingList = await AttendanceSetting.findAll({
 			where: {
@@ -91,6 +87,23 @@ export class AttendanceSettingService {
 		return attendanceSettiing;
 	}
 
+	async getAllAttendanceSetting(): Promise<AttendanceSetting[]> {
+		const attendanceSettiingList = await AttendanceSetting.findAll();
+		return attendanceSettiingList;
+	}
+
+	async getAttendanceSettingById(
+		id: number
+	): Promise<AttendanceSetting | null> {
+		const attendanceSettiing = await AttendanceSetting.findOne({
+			where: {
+				id: id,
+			},
+		});
+
+		return attendanceSettiing;
+	}
+
 	async updateAttendanceSetting({
 		id,
 		personal_leave_dock,
@@ -110,9 +123,8 @@ export class AttendanceSettingService {
 		overtime_by_foreign_workers_3,
 		foreign_worker_holiday,
 		start_date,
-		end_date,
 	}: z.infer<typeof updateAttendanceSettingInput>): Promise<void> {
-		const attendance_setting = await this.getAttendanceSetting();
+		const attendance_setting = await this.getCurrentAttendanceSetting();
 		if (attendance_setting == null) {
 			throw new BaseResponseError("AttendanceSetting does not exist");
 		}
@@ -168,7 +180,6 @@ export class AttendanceSettingService {
 					foreign_worker_holiday ??
 					attendance_setting.foreign_worker_holiday,
 				start_date: start_date ?? attendance_setting.start_date,
-				end_date: end_date ?? attendance_setting.end_date,
 				update_date: now,
 				update_by: "system",
 			},
@@ -180,27 +191,30 @@ export class AttendanceSettingService {
 	}
 
 	async deleteAttendanceSetting(id: number): Promise<void> {
-		const now = new Date();
-		this.updateAttendanceSetting({
-			id: id,
-			personal_leave_dock: null,
-			sick_leave_dock: null,
-			rate_of_unpaid_leave: null,
-			unpaid_leave_compensatory_1: null,
-			unpaid_leave_compensatory_2: null,
-			unpaid_leave_compensatory_3: null,
-			unpaid_leave_compensatory_4: null,
-			unpaid_leave_compensatory_5: null,
-			overtime_by_local_workers_1: null,
-			overtime_by_local_workers_2: null,
-			overtime_by_local_workers_3: null,
-			local_worker_holiday: null,
-			overtime_by_foreign_workers_1: null,
-			overtime_by_foreign_workers_2: null,
-			overtime_by_foreign_workers_3: null,
-			foreign_worker_holiday: null,
-			start_date: null,
-			end_date: now,
+		const destroyedRows = await AttendanceSetting.destroy({
+			where: { id: id },
 		});
+		if (destroyedRows != 1) {
+			throw new BaseResponseError("Delete error");
+		}
+		await this.rescheduleAttendanceSetting();
+	}
+
+	async rescheduleAttendanceSetting(): Promise<void> {
+		const attendanceSettiingList = await AttendanceSetting.findAll({
+			order: [["start_date", "ASC"]],
+		});
+
+		for (let i = 0; i < attendanceSettiingList.length - 1; i += 1) {
+			if (
+				attendanceSettiingList[i]!.end_date !=
+				attendanceSettiingList[i + 1]!.start_date
+			) {
+				this.updateAttendanceSetting({
+					id: attendanceSettiingList[i]!.id,
+					end_date: attendanceSettiingList[i + 1]!.start_date,
+				});
+			}
+		}
 	}
 }

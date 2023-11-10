@@ -8,15 +8,17 @@ export const createBankSettingInput = z.object({
 	end_date: z.date().nullable(),
 });
 
-export const updateBankSettingInput = z.object({
-	id: z.number(),
-	bank_code: z.string().nullable(),
-	bank_name: z.string().nullable(),
-	org_code: z.string().nullable(),
-	org_name: z.string().nullable(),
-	start_date: z.date().nullable(),
-	end_date: z.date().nullable(),
-});
+export const updateBankSettingInput = z
+	.object({
+		id: z.number(),
+		bank_code: z.string().nullable(),
+		bank_name: z.string().nullable(),
+		org_code: z.string().nullable(),
+		org_name: z.string().nullable(),
+		start_date: z.date().nullable(),
+		end_date: z.date().nullable(),
+	})
+	.partial();
 
 export const createAttendanceSettingInput = z.object({
 	personal_leave_dock: z.number(),
@@ -39,27 +41,29 @@ export const createAttendanceSettingInput = z.object({
 	end_date: z.date().nullable(),
 });
 
-export const updateAttendanceSettingInput = z.object({
-	id: z.number(),
-	personal_leave_dock: z.number().nullable(),
-	sick_leave_dock: z.number().nullable(),
-	rate_of_unpaid_leave: z.number().nullable(),
-	unpaid_leave_compensatory_1: z.number().nullable(),
-	unpaid_leave_compensatory_2: z.number().nullable(),
-	unpaid_leave_compensatory_3: z.number().nullable(),
-	unpaid_leave_compensatory_4: z.number().nullable(),
-	unpaid_leave_compensatory_5: z.number().nullable(),
-	overtime_by_local_workers_1: z.number().nullable(),
-	overtime_by_local_workers_2: z.number().nullable(),
-	overtime_by_local_workers_3: z.number().nullable(),
-	local_worker_holiday: z.number().nullable(),
-	overtime_by_foreign_workers_1: z.number().nullable(),
-	overtime_by_foreign_workers_2: z.number().nullable(),
-	overtime_by_foreign_workers_3: z.number().nullable(),
-	foreign_worker_holiday: z.number().nullable(),
-	start_date: z.date().nullable(),
-	end_date: z.date().nullable(),
-});
+export const updateAttendanceSettingInput = z
+	.object({
+		id: z.number(),
+		personal_leave_dock: z.number().nullable(),
+		sick_leave_dock: z.number().nullable(),
+		rate_of_unpaid_leave: z.number().nullable(),
+		unpaid_leave_compensatory_1: z.number().nullable(),
+		unpaid_leave_compensatory_2: z.number().nullable(),
+		unpaid_leave_compensatory_3: z.number().nullable(),
+		unpaid_leave_compensatory_4: z.number().nullable(),
+		unpaid_leave_compensatory_5: z.number().nullable(),
+		overtime_by_local_workers_1: z.number().nullable(),
+		overtime_by_local_workers_2: z.number().nullable(),
+		overtime_by_local_workers_3: z.number().nullable(),
+		local_worker_holiday: z.number().nullable(),
+		overtime_by_foreign_workers_1: z.number().nullable(),
+		overtime_by_foreign_workers_2: z.number().nullable(),
+		overtime_by_foreign_workers_3: z.number().nullable(),
+		foreign_worker_holiday: z.number().nullable(),
+		start_date: z.date().nullable(),
+		end_date: z.date().nullable(),
+	})
+	.partial();
 
 export const insuranceInput = z.object({
 	min_wage_rate: z.number(),
