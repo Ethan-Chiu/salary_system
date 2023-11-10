@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 export const accessiblePages = z.object({
-	actions: z.boolean(),
-    settings: z.boolean(),
-    roles: z.boolean(),
-    report: z.boolean(),
+	actions: z.boolean().default(false),
+    settings: z.boolean().default(false),
+    roles: z.boolean().default(false),
+    report: z.boolean().default(false),
 });
 
 export type AccessiblePagesType = z.infer<typeof accessiblePages>;
