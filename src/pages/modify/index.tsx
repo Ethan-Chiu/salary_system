@@ -12,12 +12,14 @@ import { Header } from "~/components/header";
 import { api } from "~/utils/api";
 import * as TABLE_NAMES from "../table_names";
 import { useState } from "react";
-import { Table } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 import LongHorizontalTable from "./LongHorizontalTable";
 import { Button } from "~/components/ui/button";
-import { create } from "domain";
 import { SingleParameterSettings } from "./ParameterForm";
 import { attendanceSchema } from "./Schemas/attendanceSchema";
+
+
+
 
 export type TableData = {
 	title: string;
@@ -60,7 +62,8 @@ const stagger = {
 
 const Modify: NextPageWithLayout = () => {
 	const [loadData, setLoadData] = useState("");
-	const [createForm, setCreateForm] = useState(false);
+	const [createForm, setCreateForm] = useState(0);
+
 	function TableList() {
 		return (
 			<motion.div
@@ -100,36 +103,51 @@ const Modify: NextPageWithLayout = () => {
 	function SelectData() {
 		switch (loadData) {
 			case TABLE_NAMES.TABLE_ATTENDANCE:
-				const getAttendanceSetting = api.parameters.getAttendanceSetting.useQuery();
+				const getAllAttendanceSetting =
+					api.parameters.getAllAttendanceSetting.useQuery();
 				const updateAttendanceSetting =
 					api.parameters.updateAttendanceSetting.useMutation({
 						onSuccess: () => {
-							getAttendanceSetting.refetch();
+							getAllAttendanceSetting.refetch();
 						},
 					});
-				if (getAttendanceSetting.isFetched)
+				if (getAllAttendanceSetting.isFetched)
 					return !createForm ? (
-						<div
-							onClick={() => {
-								setCreateForm(true);
-								console.log(getAttendanceSetting.data);
-							}}
-						>
-							<LongHorizontalTable
-								tableData={getAttendanceSetting.data}
-							/>
-						</div>
+						<>
+                            <p style={{fontSize: "20px",fontWeight: "bold",}}>
+                                {"All Data"}
+                            </p>
+							{getAllAttendanceSetting.data?.map(
+								(attendanceData, index) => (
+									<div
+                                        style={{cursor: "pointer"}}
+										onClick={() => {
+											setCreateForm(index + 1);
+											console.log(attendanceData);
+										}}
+									>
+										<LongHorizontalTable
+											tableData={attendanceData}
+										/>
+									</div>
+								)
+							)}
+						</>
 					) : (
 						<SingleParameterSettings
 							formSchema={attendanceSchema(
-								getAttendanceSetting.data
+								getAllAttendanceSetting.data![createForm - 1]
 							)}
-							original_data={getAttendanceSetting.data}
-							updateFunction={
-                                (d:any) => {
-                                    updateAttendanceSetting.mutate(d)
-                                }
-                            }
+							original_data={
+								getAllAttendanceSetting.data![createForm - 1]
+							}
+							updateFunction={(d: any) => {
+								updateAttendanceSetting.mutate(d);
+							}}
+							returnPage={(n: number) => {
+								setLoadData("");
+								setCreateForm(0);
+							}}
 						/>
 					);
 				break;
@@ -142,7 +160,13 @@ const Modify: NextPageWithLayout = () => {
 	return (
 		<>
 			<Header title="Parameter Settings" showOptions className="mb-4" />
+            <LucideIcons.ArrowLeft style={{cursor: "pointer"}} onClick={() => {setCreateForm(0);setLoadData("")}} />
+            <br/>
 			{loadData == "" ? <TableList /> : <SelectData />}
+            <br/>
+            <br/>
+            <br/>
+            
 		</>
 	);
 };

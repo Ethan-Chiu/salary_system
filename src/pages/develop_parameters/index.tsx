@@ -117,7 +117,7 @@ const PageParameters: NextPageWithLayout = () => {
 
 	const [parameterGlobalFilter, setParameterGlobalFilter] = useState("");
 
-	const getBankSetting = API_PARAMETERS.getBankSetting.useQuery();
+	const getBankSetting = API_PARAMETERS.getCurrentBankSetting.useQuery();
 	const updateBankSetting = api.parameters.updateBankSetting.useMutation({
 		onSuccess: () => {
 			getBankSetting.refetch();
@@ -134,7 +134,7 @@ const PageParameters: NextPageWithLayout = () => {
 		},
 	});
 
-	const getAttendanceSetting = api.parameters.getAttendanceSetting.useQuery();
+	const getAttendanceSetting = api.parameters.getCurrentAttendanceSetting.useQuery();
 	const updateAttendanceSetting =
 		api.parameters.updateAttendanceSetting.useMutation({
 			onSuccess: () => {
