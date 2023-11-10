@@ -10,10 +10,13 @@ import {
 	updateAttendanceSettingInput,
 	createBankSettingInput,
 	updateBankSettingInput,
+	createBonusDepartmentInput,
+	updateBonusDepartmentInput,
 } from "../input_type/parameters_input";
 import { BankSettingService } from "~/server/service/bank_setting_service";
 import { AttendanceSettingService } from "~/server/service/attendance_setting_service";
 import { BaseResponseError } from "../error/BaseResponseError";
+import { BonusDepartmentService } from "~/server/service/bonus_department_service";
 
 export const parametersRouter = createTRPCRouter({
 	getBankSetting: publicProcedure.query(async () => {
@@ -90,5 +93,55 @@ export const parametersRouter = createTRPCRouter({
 				AttendanceSettingService
 			);
 			await attendanceService.deleteAttendanceSetting(input.id);
+		}),
+
+	createBonusDepartment: publicProcedure.input(createBonusDepartmentInput).mutation(async ({ input }) => {
+		const bonusDepartmentService = container.resolve(
+			BonusDepartmentService
+		);
+		let newdata = await bonusDepartmentService.createBonusDepartment(
+			input
+		);
+		return newdata;
+	}),
+
+	getCurrentBonusDepartment: publicProcedure.query(async () => {
+		const bonusDepartmentService = container.resolve(BonusDepartmentService);
+		let bonusDepartment = await bonusDepartmentService.getCurrentBonusDepartment();
+		if (bonusDepartment == null) {
+			throw new BaseResponseError("BonusDepartment does not exist");
+		}
+		return bonusDepartment;
+	}),
+
+	getAllBonusDepartment: publicProcedure.query(async () => {
+		const bonusDepartmentService = container.resolve(BonusDepartmentService);
+		let bonusDepartment = await bonusDepartmentService.getAllBonusDepartment();
+		if (bonusDepartment == null) {
+			throw new BaseResponseError("BonusDepartment does not exist");
+		}
+		return bonusDepartment;
+	}),
+
+	updateBonusDepartment: publicProcedure
+		.input(updateBonusDepartmentInput)
+		.mutation(async ({ input }) => {
+			const bonusDepartmentService = container.resolve(
+				BonusDepartmentService
+			);
+			let newdata = await bonusDepartmentService.updateBonusDepartment(
+				input
+			);
+			return newdata;
+		}),
+
+		deleteBonusDepartment: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.mutation(async (opts) => {
+			const { input } = opts;
+			const bonusDepartmentService = container.resolve(
+				BonusDepartmentService
+			);
+			await bonusDepartmentService.deleteBonusDepartment(input.id);
 		}),
 });

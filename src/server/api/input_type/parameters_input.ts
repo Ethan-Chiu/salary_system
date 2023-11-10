@@ -61,7 +61,7 @@ export const updateAttendanceSettingInput = z.object({
 	end_date: z.date().nullable(),
 });
 
-export const insuranceInput = z.object({
+export const createInsuranceRateSettingInput = z.object({
 	min_wage_rate: z.number(),
 	l_i_accident_rate: z.number(),
 	l_i_employment_premium_rate: z.number(),
@@ -73,4 +73,15 @@ export const insuranceInput = z.object({
 	v2_h_i_dock_tsx_thres: z.number(),
 	start_date: z.date(),
 	end_date: z.date().nullable(),
+});
+
+export const createBonusDepartmentInput = z.object({
+	department: z.string(),
+	multiplier: z.number(),
+});
+
+export const updateBonusDepartmentInput = z.object({
+	id: z.number(),
+	department: z.string().nullable(),
+	multiplier: z.number().nullable(),
 });
