@@ -5,25 +5,31 @@ import { check_date } from "./helper_function";
 import { z } from "zod";
 import {
     createBonusSeniorityInput,
+    createBonusSettingInput,
     updateBonusSeniorityInput,
 } from "../api/input_type/parameters_input";
 import { BonusSeniority } from "../database/entity/bonus_seniority";
+import { BonusSetting } from "../database/entity/bonus_setting";
 
 
 @injectable()
-export class BonusSeniorityService {
+export class BonusSettingService {
 	constructor() {}
 
-	async createBonusSeniority({
-		seniority,
-        multiplier,
-	}: z.infer<typeof createBonusSeniorityInput>): Promise<BonusSeniority> {
+	async createBonusSetting({
+		fixed_multiplier,
+        criterion_date,
+        base_on,
+        type,
+	}: z.infer<typeof createBonusSettingInput>): Promise<BonusSetting> {
 		const now = new Date();
 		// check_date(start_date, end_date, now);
 
-		const newData = await BonusSeniority.create({
-            seniority: seniority,
-            multiplier: multiplier,
+		const newData = await BonusSetting.create({
+            fixed_multiplier: fixed_multiplier,
+            criterion_date: criterion_date,
+            base_on: base_on,
+            type: type,
 			create_date: now,
 			create_by: "system",
 			update_date: now,
@@ -32,14 +38,14 @@ export class BonusSeniorityService {
 		return newData;
 	}
 
-	async getBonusSeniorityById(id: number): Promise<BonusSeniority | null> {
+	async getBonusSettingById(id: number): Promise<BonusSetting | null> {
 		const now = new Date();
-		const bonusSeniority = await BonusSeniority.findOne({
+		const bonusSetting = await BonusSetting.findOne({
 			where: {
 				id: id,
 			},
 		});
-		return bonusSeniority;
+		return bonusSetting;
 	}
 
     async getCurrentBonusSeniority(): Promise<BonusSeniority[] | null> {

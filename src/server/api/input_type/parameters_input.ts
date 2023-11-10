@@ -98,7 +98,33 @@ export const createBonusPositionInput = z.object({
 
 export const updateBonusPositionInput = z.object({
 	id: z.number(),
-	position: z.number(),
-	position_type: z.string(),
+	position: z.number().nullable(),
+	position_type: z.string().nullable(),
+	multiplier: z.number().nullable(),
+});
+
+export const createBonusSeniorityInput = z.object({
+	seniority: z.number(),
 	multiplier: z.number(),
+});
+
+export const updateBonusSeniorityInput = z.object({
+	id: z.number(),
+	seniority: z.number().nullable(),
+	multiplier: z.number().nullable(),
+});
+
+export const createBonusSettingInput = z.object({
+	fixed_multiplier: z.number(),
+	criterion_date: z.date(),
+	base_on: z.string(),
+	type: z.string(),
+});
+
+export const updateBonusSettingInput = z.object({
+	id: z.number(),
+	fixed_multiplier: z.number().nullable(),
+	criterion_date: z.date().nullable(),
+	base_on: z.string().nullable(),
+	type: z.string().nullable(),
 });
