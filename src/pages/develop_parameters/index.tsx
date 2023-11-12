@@ -129,9 +129,9 @@ const PageParameters: NextPageWithLayout = () => {
 		},
 	});
 	const deleteBankSetting = api.parameters.deleteBankSetting.useMutation({
-		onSuccess: () => {
+		onSuccess: async() => {
 			console.log("refetch bank data")
-			getBankSetting.refetch();
+			await getBankSetting.refetch();
 		},
 	});
 
@@ -395,6 +395,7 @@ const PageParameters: NextPageWithLayout = () => {
 									}}
 									deleteBankSetting={(d: any) => {
 										deleteBankSetting.mutate(d);
+										getBankSetting.refetch();
 									}}
 								/>
 							);

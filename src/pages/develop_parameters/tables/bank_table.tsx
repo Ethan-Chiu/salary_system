@@ -154,7 +154,6 @@ export function BankTable({
 			accessorKey: "end_date",
 			header: () => <div className="text-center">end</div>,
 			cell: ({ row }) => {
-				console.log(row.original.end_date)
 				return (row.original.end_date)?
 				(
 					<div className="text-center font-medium">{
@@ -492,6 +491,7 @@ function ModifyDialog({
 										(key !== "start_date" && key != "end_date")?
 										<Input
 											id={key}
+											disabled={(key=="bank_code")?true:false}
 											defaultValue={(value as string)!}
 											type={(typeof value === "string")?"value":"number"}
 											className="col-span-3"
@@ -622,7 +622,7 @@ function InsertDialog({
 	type: string;
 	data: any;
 	showDialog: boolean;
-	createBankSetting: (d: any)=>void
+	createBankSetting: (d: any)=>void;
 	onOpenChange: (open: boolean) => void;
 }) {
 	let rows = ["銀行代碼", "銀行名稱", "公司代碼", "公司名稱", "起", "迄"];
