@@ -8,6 +8,7 @@ import * as bcrypt from "bcrypt";
 import { UserService } from "~/server/service/user_service";
 import { container } from "tsyringe";
 import { BaseResponseError } from "../error/BaseResponseError";
+import { createUserInput } from "../input_type/parameters_input";
 
 export const loginRouter = createTRPCRouter({
 	login: publicProcedure
@@ -25,7 +26,10 @@ export const loginRouter = createTRPCRouter({
 				if (!match) {
 					throw new BaseResponseError("Wrong password");
 				} else {
-					await userService.updateUser(input.emp_id, input.password);
+					await userService.updateUser({
+						emp_id: input.emp_id,
+						password: input.password,
+					});
 				}
 			}
 
@@ -36,28 +40,17 @@ export const loginRouter = createTRPCRouter({
 		.input(z.object({ emp_id: z.string(), password: z.string() }))
 		.mutation(async ({ input }) => {
 			const userService = container.resolve(UserService);
-			await userService.updateUser(input.emp_id, input.password);
+			await userService.updateUser({
+				emp_id: input.emp_id,
+				password: input.password,
+			});
 		}),
 
 	createUser: publicProcedure
-		.input(
-			z.object({
-				emp_id: z.string(),
-				password: z.string(),
-				auth_level: z.number(),
-				start_date: z.date().nullable(),
-				end_date: z.date().nullable(),
-			})
-		)
+		.input(createUserInput)
 		.mutation(async ({ input }) => {
 			const userService = container.resolve(UserService);
-			const user = await userService.createUser(
-				input.emp_id,
-				input.password,
-				input.auth_level,
-				input.start_date,
-				input.end_date
-			);
+			const user = await userService.createUser(input);
 
 			return user;
 		}),

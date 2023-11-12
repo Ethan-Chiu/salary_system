@@ -7,6 +7,7 @@ import {
 	updateBasicInfoInput,
 } from "../api/input_type/parameters_input";
 import { BasicInfo } from "../database/entity/basic_info";
+import { select_value } from "./helper_function";
 
 @injectable()
 export class BasicInfoService {
@@ -62,8 +63,11 @@ export class BasicInfoService {
 
 		const affectedCount = await BasicInfo.update(
 			{
-				payday: payday ?? basicInfo.payday,
-				announcement: announcement ?? basicInfo.announcement,
+				payday: select_value(payday, basicInfo.payday),
+				announcement: select_value(
+					announcement,
+					basicInfo.announcement
+				),
 				update_by: "system",
 			},
 			{ where: { id: id } }
