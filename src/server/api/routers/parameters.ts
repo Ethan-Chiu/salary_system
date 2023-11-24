@@ -16,6 +16,8 @@ import {
 	updateBonusPositionInput,
 	createBonusSeniorityInput,
 	updateBonusSeniorityInput,
+	createBonusSettingInput,
+	updateBonusSettingInput,
 } from "../input_type/parameters_input";
 import { BankSettingService } from "~/server/service/bank_setting_service";
 import { AttendanceSettingService } from "~/server/service/attendance_setting_service";
@@ -23,6 +25,7 @@ import { BaseResponseError } from "../error/BaseResponseError";
 import { BonusDepartmentService } from "~/server/service/bonus_department_service";
 import { BonusPositionService } from "~/server/service/bonus_position_service";
 import { BonusSeniorityService } from "~/server/service/bonus_seniority_service";
+import { BonusSettingService } from "~/server/service/bonus_setting_service";
 
 export const parametersRouter = createTRPCRouter({
 	createBankSetting: publicProcedure
@@ -267,5 +270,55 @@ export const parametersRouter = createTRPCRouter({
 				BonusSeniorityService
 			);
 			await bonusSeniorityService.deleteBonusSeniority(input.id);
+		}),
+
+	createBonusSetting: publicProcedure.input(createBonusSettingInput).mutation(async ({ input }) => {
+		const bonusSettingService = container.resolve(
+			BonusSettingService
+		);
+		let newdata = await bonusSettingService.createBonusSetting(
+			input
+		);
+		return newdata;
+	}),
+
+	getCurrentBonusSetting: publicProcedure.query(async () => {
+		const bonusSettingService = container.resolve(BonusSettingService);
+		let bonusSetting = await bonusSettingService.getCurrentBonusSetting();
+		if (bonusSetting == null) {
+			throw new BaseResponseError("BonusPosition does not exist");
+		}
+		return bonusSetting;
+	}),
+
+	getAllBonusSetting: publicProcedure.query(async () => {
+		const bonusSettingService = container.resolve(BonusSettingService);
+		let bonusSetting = await bonusSettingService.getAllBonusSetting();
+		if (bonusSetting == null) {
+			throw new BaseResponseError("BonusSeniority does not exist");
+		}
+		return bonusSetting;
+	}),
+
+	updateBonusSetting: publicProcedure
+		.input(updateBonusSettingInput)
+		.mutation(async ({ input }) => {
+			const bonusSettingService = container.resolve(
+				BonusSettingService
+			);
+			let newdata = await bonusSettingService.updateBonusSetting(
+				input
+			);
+			return newdata;
+		}),
+
+	deleteBonusSetting: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.mutation(async (opts) => {
+			const { input } = opts;
+			const bonusSettingService = container.resolve(
+				BonusSettingService
+			);
+			await bonusSettingService.deleteBonusSetting(input.id);
 		}),
 });

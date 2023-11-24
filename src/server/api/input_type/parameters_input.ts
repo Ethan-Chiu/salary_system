@@ -1,4 +1,24 @@
 import { z } from "zod";
+
+export const createUserInput = z.object({
+	emp_id: z.string(),
+	password: z.string(),
+	auth_level: z.number(),
+	start_date: z.date().nullable(),
+	end_date: z.date().nullable(),
+});
+
+export const updateUserInput = z
+	.object({
+		id: z.number(),
+		emp_id: z.string(),
+		password: z.string().nullable(),
+		auth_level: z.number().nullable(),
+		start_date: z.date().nullable(),
+		end_date: z.date().nullable(),
+	})
+	.partial();
+
 export const createBankSettingInput = z.object({
 	bank_code: z.string(),
 	bank_name: z.string(),

@@ -2,7 +2,7 @@ import { injectable } from "tsyringe";
 import { BankSetting } from "../database/entity/bank_setting";
 import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
-import { check_date } from "./helper_function";
+import { check_date, select_value } from "./helper_function";
 import { z } from "zod";
 import {
 	createBankSettingInput,
@@ -83,12 +83,12 @@ export class BankSettingService {
 		const now = new Date();
 		const affectedCount = await BankSetting.update(
 			{
-				bank_code: bank_code ?? bankSetting.bank_code,
-				bank_name: bank_name ?? bankSetting.bank_name,
-				org_code: org_code ?? bankSetting.org_code,
-				org_name: org_name ?? bankSetting.org_name,
-				start_date: start_date ?? bankSetting.start_date,
-				end_date: end_date ?? bankSetting.end_date,
+				bank_code: select_value(bank_code, bankSetting.bank_code),
+				bank_name: select_value(bank_name, bankSetting.bank_name),
+				org_code: select_value(org_code, bankSetting.org_code),
+				org_name: select_value(org_name, bankSetting.org_name),
+				start_date: select_value(start_date, bankSetting.start_date),
+				end_date: select_value(end_date, bankSetting.end_date),
 				update_by: "system",
 			},
 			{ where: { id: id } }

@@ -4,11 +4,9 @@ import { BaseResponseError } from "../api/error/BaseResponseError";
 import { check_date } from "./helper_function";
 import { z } from "zod";
 import {
-    createBonusSeniorityInput,
     createBonusSettingInput,
-    updateBonusSeniorityInput,
+    updateBonusSettingInput,
 } from "../api/input_type/parameters_input";
-import { BonusSeniority } from "../database/entity/bonus_seniority";
 import { BonusSetting } from "../database/entity/bonus_setting";
 
 
@@ -48,33 +46,40 @@ export class BonusSettingService {
 		return bonusSetting;
 	}
 
-    async getCurrentBonusSeniority(): Promise<BonusSeniority[] | null> {
+    async getCurrentBonusSetting(): Promise<BonusSetting[] > {
 		const now = Date();
-		const bonusSeniority = this.getAllBonusSeniority();
-		return bonusSeniority;
+		const bonusSetting = await this.getAllBonusSetting();
+        // if (bonusSetting.length > 1) {
+		// 	throw new BaseResponseError("More than one bonus setting");
+		// }
+		return bonusSetting;
 	}
 
-	async getAllBonusSeniority(): Promise<BonusSeniority[] | null> {
+	async getAllBonusSetting(): Promise<BonusSetting[] > {
 		const now = Date();
-		const bonusSeniority = await BonusSeniority.findAll();
-		return bonusSeniority;
+		const bonusSetting = await BonusSetting.findAll();
+		return bonusSetting;
 	}
 
-	async updateBonusSeniority({
+	async updateBonusSetting({
 		id,
-		seniority,
-        multiplier,
-	}: z.infer<typeof updateBonusSeniorityInput>): Promise<void> {
-		const bonus_seniority = await this.getBonusSeniorityById(id);
-		if (bonus_seniority == null) {
-			throw new BaseResponseError("BonusSeniority does not exist");
+		fixed_multiplier,
+        criterion_date,
+        base_on,
+        type,
+	}: z.infer<typeof updateBonusSettingInput>): Promise<void> {
+		const bonus_setting = await this.getBonusSettingById(id);
+		if (bonus_setting == null) {
+			throw new BaseResponseError("BonusSetting does not exist");
 		}
 
 		const now = new Date();
-		const affectedCount = await BonusSeniority.update(
+		const affectedCount = await BonusSetting.update(
 			{
-				seniority: seniority ?? bonus_seniority.seniority,
-				multiplier: multiplier ?? bonus_seniority.multiplier,
+				fixed_multiplier: fixed_multiplier ?? bonus_setting.fixed_multiplier,
+				criterion_date: criterion_date ?? bonus_setting.criterion_date,
+                base_on: base_on ?? bonus_setting.base_on,
+                type: type ?? bonus_setting .type,
 				update_date: now,
 				update_by: "system",
 			},
@@ -85,9 +90,9 @@ export class BonusSettingService {
 		}
 	}
 
-	async deleteBonusSeniority(id: number): Promise<void> {
+	async deleteBonusSetting(id: number): Promise<void> {
 		const now = new Date();
-        BonusSeniority.destroy(
+        BonusSetting.destroy(
             { where: { id: id } }
         );
 	}

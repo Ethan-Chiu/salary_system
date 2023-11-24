@@ -7,6 +7,7 @@ import {
 	updatePerformanceLevelInput,
 } from "../api/input_type/parameters_input";
 import { PerformanceLevel } from "../database/entity/performance_level";
+import { select_value } from "./helper_function";
 
 @injectable()
 export class PerformanceLevelService {
@@ -58,9 +59,14 @@ export class PerformanceLevelService {
 
 		const affectedCount = await PerformanceLevel.update(
 			{
-				performance_level:
-					performance_level ?? performanceLevel.performance_level,
-				multiplier: multiplier ?? performanceLevel.multiplier,
+				performance_level: select_value(
+					performance_level,
+					performanceLevel.performance_level
+				),
+				multiplier: select_value(
+					multiplier,
+					performanceLevel.multiplier
+				),
 				update_by: "system",
 			},
 			{ where: { id: id } }

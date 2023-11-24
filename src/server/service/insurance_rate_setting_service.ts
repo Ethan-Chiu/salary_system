@@ -7,6 +7,7 @@ import {
 	updateInsuranceRateSettingInput,
 } from "../api/input_type/parameters_input";
 import { InsuranceRateSetting } from "../database/entity/insurance_rate_setting";
+import { select_value } from "./helper_function";
 
 @injectable()
 export class InsuranceRateSettingService {
@@ -103,39 +104,57 @@ export class InsuranceRateSettingService {
 		start_date,
 		end_date,
 	}: z.infer<typeof updateInsuranceRateSettingInput>): Promise<void> {
-		const insurance_setting = await this.getInsuranceRateSettingById(id!);
-		if (insurance_setting == null) {
+		const insuranceSetting = await this.getInsuranceRateSettingById(id!);
+		if (insuranceSetting == null) {
 			throw new BaseResponseError("InsuranceRateSetting does not exist");
 		}
 
-		const now = new Date();
 		const affectedCount = await InsuranceRateSetting.update(
 			{
-				min_wage_rate: min_wage_rate ?? insurance_setting.min_wage_rate,
-				l_i_accident_rate:
-					l_i_accident_rate ?? insurance_setting.l_i_accident_rate,
-				l_i_employment_premium_rate:
-					l_i_employment_premium_rate ??
-					insurance_setting.l_i_employment_premium_rate,
-				l_i_occupational_hazard_rate:
-					l_i_occupational_hazard_rate ??
-					insurance_setting.l_i_occupational_hazard_rate,
-				l_i_wage_replacement_rate:
-					l_i_wage_replacement_rate ??
-					insurance_setting.l_i_wage_replacement_rate,
-				h_i_standard_rate:
-					h_i_standard_rate ?? insurance_setting.h_i_standard_rate,
-				h_i_avg_dependents_count:
-					h_i_avg_dependents_count ??
-					insurance_setting.h_i_avg_dependents_count,
-				v2_h_i_supp_premium_rate:
-					v2_h_i_supp_premium_rate ??
-					insurance_setting.v2_h_i_supp_premium_rate,
-				v2_h_i_dock_tsx_thres:
-					v2_h_i_dock_tsx_thres ??
-					insurance_setting.v2_h_i_dock_tsx_thres,
-				start_date: start_date ?? insurance_setting.start_date,
-				end_date: end_date,
+				min_wage_rate: select_value(
+					min_wage_rate,
+					insuranceSetting.min_wage_rate
+				),
+				l_i_accident_rate: select_value(
+					l_i_accident_rate,
+					insuranceSetting.l_i_accident_rate
+				),
+				l_i_employment_premium_rate: select_value(
+					l_i_employment_premium_rate,
+					insuranceSetting.l_i_employment_premium_rate
+				),
+				l_i_occupational_hazard_rate: select_value(
+					l_i_occupational_hazard_rate,
+					insuranceSetting.l_i_occupational_hazard_rate
+				),
+				l_i_wage_replacement_rate: select_value(
+					l_i_wage_replacement_rate,
+					insuranceSetting.l_i_wage_replacement_rate
+				),
+				h_i_standard_rate: select_value(
+					h_i_standard_rate,
+					insuranceSetting.h_i_standard_rate
+				),
+				h_i_avg_dependents_count: select_value(
+					h_i_avg_dependents_count,
+					insuranceSetting.h_i_avg_dependents_count
+				),
+				v2_h_i_supp_premium_rate: select_value(
+					v2_h_i_supp_premium_rate,
+					insuranceSetting.v2_h_i_supp_premium_rate
+				),
+				v2_h_i_dock_tsx_thres: select_value(
+					v2_h_i_dock_tsx_thres,
+					insuranceSetting.v2_h_i_dock_tsx_thres
+				),
+				start_date: select_value(
+					v2_h_i_dock_tsx_thres,
+					insuranceSetting.v2_h_i_dock_tsx_thres
+				),
+				end_date: select_value(
+					v2_h_i_dock_tsx_thres,
+					insuranceSetting.v2_h_i_dock_tsx_thres
+				),
 				update_by: "system",
 			},
 			{ where: { id: id } }

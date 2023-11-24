@@ -7,6 +7,7 @@ import {
 	updateLevelRangeInput,
 } from "../api/input_type/parameters_input";
 import { LevelRange } from "../database/entity/level_range";
+import { select_value } from "./helper_function";
 
 @injectable()
 export class LevelRangeService {
@@ -59,9 +60,9 @@ export class LevelRangeService {
 
 		const affectedCount = await LevelRange.update(
 			{
-				type: type ?? levelRange.type,
-				level_start: level_start ?? levelRange.level_start,
-				level_end: level_end ?? levelRange.level_end,
+				type: select_value(type, levelRange.type),
+				level_start: select_value(level_start, levelRange.level_start),
+				level_end: select_value(level_end, levelRange.level_end),
 				update_by: "system",
 			},
 			{ where: { id: id } }
