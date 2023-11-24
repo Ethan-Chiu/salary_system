@@ -32,8 +32,9 @@ import FadeLoader from "react-spinners/FadeLoader";
 import Multiselect from "multiselect-react-dropdown";
 import * as TABLE_NAMES from "../table_names";
 
-import { getAttendanceFunctions, getBankFunctions, getBonusSettingFunctions } from "./apiFunctions";
+import { getAttendanceFunctions, getBankFunctions, getBonusSettingFunctions, getBonusDepartmentFunctions } from "./apiFunctions";
 import { updateAttendanceSettingInput } from "~/server/api/input_type/parameters_input";
+import { BonusDepartmentRow, BonusDepartmentTable } from "./tables/bonus_department"
 
 const API_PARAMETERS = api.parameters;
 
@@ -79,6 +80,11 @@ let datas: DATA[] = [
 	{
 		table_name: TABLE_NAMES.TABLE_BONUS_SETTING,
 		table_type: "typical",
+		table_content: []
+	},
+	{
+		table_name: TABLE_NAMES.TABLE_BONUS_DEPARTMENT,
+		table_type: "bonus_department",
 		table_content: []
 	}
 ];
@@ -137,6 +143,12 @@ const PageParameters: NextPageWithLayout = () => {
 	const createBonusSetting = (getBonusSettingFunctions("create", getBonusSetting) as any);
 	const deleteBonusSetting = (getBonusSettingFunctions("delete", getBonusSetting) as any);
 
+	const getBonusDepartment = api.parameters.getCurrentBonusDepartment.useQuery();
+	const updateBonusDepartment = (getBonusDepartmentFunctions("update", getBonusDepartment) as any);
+	const createBonusDepartment = (getBonusDepartmentFunctions("create", getBonusDepartment) as any);
+	const deleteBonusDepartment = (getBonusDepartmentFunctions("delete", getBonusDepartment) as any);
+
+
 
 	const lastMonthDate = new Date();
   	lastMonthDate.setMonth(lastMonthDate.getMonth() - 1);
@@ -174,7 +186,7 @@ const PageParameters: NextPageWithLayout = () => {
 
 	function updateDatas(
 		t_name: string,
-		new_content: SettingItem[] | BankRow[]
+		new_content: SettingItem[] | BankRow[] | BonusDepartmentRow[]
 	) {
 		const newDatas = datas.map((data) => {
 			if (data.table_name === t_name) {
@@ -400,6 +412,24 @@ const PageParameters: NextPageWithLayout = () => {
 									}}
 								/>
 							);
+							case TABLE_NAMES.TABLE_BONUS_DEPARTMENT:	return (
+								<BonusDepartmentTable
+									defaultData={data.table_content}
+									table_name={data.table_name}
+									table_type={data.table_type}
+									index={find_index(data.table_name)}
+									updateBankSetting={(d: any) => {
+										updateBankSetting.mutate(d);
+									}}
+									createBankSetting={(d: any) => {
+										createBankSetting.mutate(d);
+									}}
+									deleteBankSetting={(d: any) => {
+										deleteBankSetting.mutate(d);
+										getBankSetting.refetch();
+									}}
+								/>
+							)
 							case TABLE_NAMES.TABLE_BANK_SETTING:	return (
 								<BankTable
 									defaultData={data.table_content}

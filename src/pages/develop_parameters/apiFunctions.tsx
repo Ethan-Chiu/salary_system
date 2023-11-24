@@ -70,6 +70,12 @@ export function getBonusPosition(func_name: string, getBonusPosition: any) {
     else    return notFoundFunction;
 }
 
-// export function getBonusSeniority(func_name: string)
-
-// api.parameters.updateBonusSeniority
+export function getBonusSeniority(func_name: string, getBonusSeniority: any) {
+    const updateBonusSeniority = api.parameters.updateBonusSeniority.useMutation({onSuccess: () => {getBonusSeniority.refetch();},});
+    const createBonusSeniority = api.parameters.createBonusSeniority.useMutation({onSuccess: () => {getBonusSeniority.refetch();},});
+    const deleteBonusSeniority = api.parameters.deleteBonusSeniority.useMutation({onSuccess: () => {getBonusSeniority.refetch();},});
+    if(func_name === "update")  return updateBonusSeniority;
+    else if(func_name === "create") return createBonusSeniority;
+    else if(func_name === "delete") return deleteBonusSeniority;
+    else    return notFoundFunction;
+}
