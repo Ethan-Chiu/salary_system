@@ -148,12 +148,12 @@ export class InsuranceRateSettingService {
 					insuranceSetting.v2_h_i_dock_tsx_thres
 				),
 				start_date: select_value(
-					v2_h_i_dock_tsx_thres,
-					insuranceSetting.v2_h_i_dock_tsx_thres
+					start_date,
+					insuranceSetting.start_date
 				),
 				end_date: select_value(
-					v2_h_i_dock_tsx_thres,
-					insuranceSetting.v2_h_i_dock_tsx_thres
+					end_date,
+					insuranceSetting.end_date
 				),
 				update_by: "system",
 			},
