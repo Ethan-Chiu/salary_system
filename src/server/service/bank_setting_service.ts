@@ -79,8 +79,6 @@ export class BankSettingService {
 		if (bankSetting == null) {
 			throw new BaseResponseError("BankSetting does not exist");
 		}
-
-		const now = new Date();
 		const affectedCount = await BankSetting.update(
 			{
 				bank_code: select_value(bank_code, bankSetting.bank_code),

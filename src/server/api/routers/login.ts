@@ -13,9 +13,7 @@ import { createUserInput } from "../input_type/parameters_input";
 export const loginRouter = createTRPCRouter({
 	login: publicProcedure
 		.input(z.object({ emp_id: z.string(), password: z.string() }))
-		.mutation(async (opts) => {
-			const { input } = opts;
-
+		.mutation(async ({ input }) => {
 			const userService = container.resolve(UserService);
 			const user = await userService.getUser(input.emp_id);
 
