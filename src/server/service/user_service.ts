@@ -1,7 +1,7 @@
 import * as bcrypt from "bcrypt";
 import { injectable } from "tsyringe";
 import { User } from "../database/entity/user";
-import { Op, fn } from "sequelize";
+import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { check_date, select_value } from "./helper_function";
 import { z } from "zod";

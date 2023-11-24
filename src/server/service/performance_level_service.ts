@@ -1,5 +1,4 @@
 import { injectable } from "tsyringe";
-import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {
