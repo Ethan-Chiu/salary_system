@@ -18,6 +18,8 @@ import {
 	updateBonusSeniorityInput,
 	createBonusSettingInput,
 	updateBonusSettingInput,
+	createInsuranceRateSettingInput,
+	updateInsuranceRateSettingInput,
 } from "../input_type/parameters_input";
 import { BankSettingService } from "~/server/service/bank_setting_service";
 import { AttendanceSettingService } from "~/server/service/attendance_setting_service";
@@ -129,7 +131,7 @@ export const parametersRouter = createTRPCRouter({
 		let insuranceRateSetting =
 			await insuranceRateService.getCurrentInsuranceRateSetting();
 		if (insuranceRateSetting == null) {
-			throw new BaseResponseError("AttendanceSetting does not exist");
+			throw new BaseResponseError("InsuranceRateSetting does not exist");
 		}
 		return insuranceRateSetting;
 	}),
@@ -139,43 +141,43 @@ export const parametersRouter = createTRPCRouter({
 		let insuranceRateSetting =
 			await insuranceRateService.getAllInsuranceRateSetting();
 		if (insuranceRateSetting.length == 0) {
-			throw new BaseResponseError("AttendanceSetting does not exist");
+			throw new BaseResponseError("InsuranceRateSetting does not exist");
 		}
 		return insuranceRateSetting;
 	}),
 
-	// createAttendanceSetting: publicProcedure
-	// 	.input(createAttendanceSettingInput)
-	// 	.mutation(async ({ input }) => {
-	// 		const attendanceService = container.resolve(
-	// 			AttendanceSettingService
-	// 		);
-	// 		let newdata = await attendanceService.createAttendanceSetting(
-	// 			input
-	// 		);
-	// 		await attendanceService.rescheduleAttendanceSetting();
-	// 		return newdata;
-	// 	}),
+	createInsuranceRateSetting: publicProcedure
+		.input(createInsuranceRateSettingInput)
+		.mutation(async ({ input }) => {
+			const insuranceRateService = container.resolve(
+				InsuranceRateSettingService
+			);
+			let newdata = await insuranceRateService.createInsuranceRateSetting(
+				input
+			);
+			await insuranceRateService.rescheduleInsuranceRateSetting();
+			return newdata;
+		}),
 
-	// updateAttendanceSetting: publicProcedure
-	// 	.input(updateAttendanceSettingInput)
-	// 	.mutation(async ({ input }) => {
-	// 		const attendanceService = container.resolve(
-	// 			AttendanceSettingService
-	// 		);
-	// 		await attendanceService.updateAttendanceSetting(input);
-	// 		await attendanceService.rescheduleAttendanceSetting();
-	// 	}),
+	updateInsuranceRateSetting: publicProcedure
+		.input(updateInsuranceRateSettingInput)
+		.mutation(async ({ input }) => {
+			const insuranceRateService = container.resolve(
+				InsuranceRateSettingService
+			);
+			await insuranceRateService.updateInsuranceRateSetting(input);
+			await insuranceRateService.rescheduleInsuranceRateSetting();
+		}),
 
-	// deleteAttendanceSetting: publicProcedure
-	// 	.input(z.object({ id: z.number() }))
-	// 	.mutation(async ({ input }) => {
-	// 		const attendanceService = container.resolve(
-	// 			AttendanceSettingService
-	// 		);
-	// 		await attendanceService.deleteAttendanceSetting(input.id);
-	// 		await attendanceService.rescheduleAttendanceSetting();
-	// 	}),
+	deleteInsuranceRateSetting: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.mutation(async ({ input }) => {
+			const insuranceRateService = container.resolve(
+				InsuranceRateSettingService
+			);
+			await insuranceRateService.deleteInsuranceRateSetting(input.id);
+			await insuranceRateService.rescheduleInsuranceRateSetting();
+		}),
 
 	createBonusDepartment: publicProcedure.input(createBonusDepartmentInput).mutation(async ({ input }) => {
 		const bonusDepartmentService = container.resolve(
