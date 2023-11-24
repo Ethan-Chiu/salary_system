@@ -528,19 +528,20 @@ PageParameters.getLayout = function getLayout(page: ReactElement) {
 export default PageParameters;
 
 const multiselect_style = {
+	
 	multiselectContainer: {
 		width: "100%",
 		align: "center",
 	},
 	searchBox: {
-		flex: "1",
+		// flex: "1",
 		height: "100%",
 		width: "100%",
 		borderRadius: "0.375rem",
 		border: "1px solid #CCCCCC",
 		padding: "0.25rem 0.5rem",
 		fontSize: "0.875rem",
-		display: "flex",
+		// display: "flex",
 		align: "center",
 	},
 	optionContainer: {
@@ -550,7 +551,7 @@ const multiselect_style = {
 	},
 	chips: {
 		height: "15px", // Set your desired height for the selected options
-		display: "flex", // Center vertically
+		// display: "flex", // Center vertically
 		alignItems: "center", // Center vertically
 		marginTop: "4px", // Add space at the top
 		background: "#808080",
