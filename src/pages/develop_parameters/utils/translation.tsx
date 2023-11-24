@@ -6,8 +6,8 @@ export function Translate(word: string) {
 	if (word === "update_date")    return "更新時間"
 	if (word === "create_date")    return "建立時間"
 	if (word === "performance_level")    return "performance_level"
-	if (word === "position")    return "職等"	//12345678
-	if (word === "position_type")    return "職級"	//ABCDE
+	if (word === "position")    return "職等"	//number
+	if (word === "position_type")    return "職級"	//string
 	if (word === "org_trust_reserve_limit")    return "公司信託提存金"
 	if (word === "emp_trust_reserve_limit")    return "員工信託提存金"
 	if (word === "org_special_trust_incent_limit")    return "特別信託獎勵金　公司"

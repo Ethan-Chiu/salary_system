@@ -62,8 +62,8 @@ export function getBonusDepartmentFunctions(func_name: string, getBonusDepartmen
 
 export function getBonusPositionFunctions(func_name: string, getBonusPosition: any) {
     const updateBonusPosition = api.parameters.updateBonusPosition.useMutation({onSuccess: () => {getBonusPosition.refetch();},});
-    const createBonusPosition = api.parameters.updateBonusPosition.useMutation({onSuccess: () => {getBonusPosition.refetch();},});
-    const deleteBonusPosition = api.parameters.updateBonusPosition.useMutation({onSuccess: () => {getBonusPosition.refetch();},});
+    const createBonusPosition = api.parameters.createBonusPosition.useMutation({onSuccess: () => {getBonusPosition.refetch();},});
+    const deleteBonusPosition = api.parameters.deleteBonusPosition.useMutation({onSuccess: () => {getBonusPosition.refetch();},});
     if(func_name === "update")  return updateBonusPosition;
     else if(func_name === "create") return createBonusPosition;
     else if(func_name === "delete") return deleteBonusPosition;

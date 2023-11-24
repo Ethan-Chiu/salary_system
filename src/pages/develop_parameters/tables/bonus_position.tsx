@@ -67,6 +67,7 @@ import { DATA, createDATA } from "./datatype";
 import { once } from "events";
 import { now } from "sequelize/types/utils";
 import { string } from "zod";
+import { Translate } from "../utils/translation";
 
 
 export type BonusPositionRow = {
@@ -575,7 +576,7 @@ function InsertDialog({
 	createFunction: (d: any)=>void;
 	onOpenChange: (open: boolean) => void;
 }) {
-	let rows = ["部門", "倍率"];
+	let rows = [Translate("position"), Translate("multiplier")];
 	const lookup = (key: string) => {return rows.findIndex(obj => obj===key)};
 	const inputRef = rows.map(() => {
 		return useRef<HTMLInputElement>(null);
@@ -619,8 +620,8 @@ function InsertDialog({
 							onClick={() => {
 								createFunction(
 									{
-										department: inputRef[lookup("部門")]?.current?.value ?? "", 
-										multiplier: inputRef[lookup("倍率")]?.current?.valueAsNumber ?? 0,
+										position: inputRef[lookup(Translate("position")!)]?.current?.valueAsNumber ?? -1, 
+										multiplier: inputRef[lookup(Translate("multiplier")!)]?.current?.valueAsNumber ?? -1,
 									}
 								)
 							}}
