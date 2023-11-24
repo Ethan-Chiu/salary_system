@@ -66,29 +66,29 @@ import { type ReactElement, useRef, useState, useEffect, useMemo } from "react";
 import { DATA, createDATA } from "./datatype";
 import { once } from "events";
 import { now } from "sequelize/types/utils";
+import { string } from "zod";
 
 
-
-export type BonusDepartmentRow = {
+export type BonusPositionRow = {
 	id: number | null;
-	department: string;
+	position: string;
 	multiplier: number;
 };
 
-export function createBonusDepartmentRow(
+export function createBonusPositionRow(
 	id: number | null,
-	department: string,
+	position: string,
 	multiplier: number,
 ) {
-	let x: BonusDepartmentRow = {
+	let x: BonusPositionRow = {
 		id: id,
-		department: department,
+		position: position,
 		multiplier: multiplier,
 	};
 	return x;
 }
 
-export function BonusDepartmentTable({
+export function BonusPositionTable({
 	table_name,
 	table_type,
 	defaultData,
@@ -98,9 +98,9 @@ export function BonusDepartmentTable({
 	deleteFunction,
 }: any) {
 
-	const columns: ColumnDef<BonusDepartmentRow>[] = [
+	const columns: ColumnDef<BonusPositionRow>[] = [
 		{
-			accessorKey: "department",
+			accessorKey: "position",
 			header: ({ column }) => {
 				return (
 					<Button
@@ -109,14 +109,14 @@ export function BonusDepartmentTable({
 							column.toggleSorting(column.getIsSorted() === "asc")
 						}
 					>
-						Department
+						Position
 						<ArrowUpDown className="ml-2 h-4 w-4" />
 					</Button>
 				);
 			},
 			cell: ({ row }) => {
 				return (
-					<div className="pl-4 lowercase">{`${row.original.department}`}</div>
+					<div className="pl-4 lowercase">{`${row.original.position}`}</div>
 				);
 			},
 		},
@@ -140,7 +140,7 @@ export function BonusDepartmentTable({
 	];
 
 
-	const [data, setData] = useState<BonusDepartmentRow[]>(defaultData);
+	const [data, setData] = useState<BonusPositionRow[]>(defaultData);
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
@@ -154,7 +154,7 @@ export function BonusDepartmentTable({
 		setData(defaultData);
 	}, [defaultData]);
 
-	const filter_key = "department";
+	const filter_key = "position";
 
 	const table = useReactTable({
 		data,
@@ -354,7 +354,7 @@ export function BonusDepartmentTable({
 	);
 }
 
-function CompDropdown({ setting, deleteFunction, updateFunction }: { setting: BonusDepartmentRow, deleteFunction: (d: any)=>void, updateFunction: (d: any)=>void}) {
+function CompDropdown({ setting, deleteFunction, updateFunction }: { setting: BonusPositionRow, deleteFunction: (d: any)=>void, updateFunction: (d: any)=>void}) {
 	const [showModifyDialog, setShowModifyDialog] = useState(false);
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
@@ -417,7 +417,7 @@ function ModifyDialog({
 	updateFunction,
 	onOpenChange,
 }: {
-	setting: BonusDepartmentRow;
+	setting: BonusPositionRow;
 	showDialog: boolean;
 	updateFunction: (d: any) => void;
 	onOpenChange: (open: boolean) => void;
@@ -494,7 +494,7 @@ function ModifyDialog({
 								updateFunction(
 									{
 										id: updatedSetting.id,
-										department: updatedSetting.department,
+										position: updatedSetting.position,
 										multiplier: updatedSetting.multiplier,
 									}
 								)
@@ -520,7 +520,7 @@ function DeleteDialog({
 }: {
 	title: string;
 	message: string;
-	setting: BonusDepartmentRow;
+	setting: BonusPositionRow;
 	showDialog: boolean;
 	deleteFunction: (d: any) => void;
 	onOpenChange: (open: boolean) => void;

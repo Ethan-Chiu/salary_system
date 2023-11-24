@@ -32,9 +32,10 @@ import FadeLoader from "react-spinners/FadeLoader";
 import Multiselect from "multiselect-react-dropdown";
 import * as TABLE_NAMES from "../table_names";
 
-import { getAttendanceFunctions, getBankFunctions, getBonusSettingFunctions, getBonusDepartmentFunctions } from "./apiFunctions";
+import { getAttendanceFunctions, getBankFunctions, getBonusSettingFunctions, getBonusDepartmentFunctions, getBonusPositionFunctions, getBonusSeniorityFunctions } from "./apiFunctions";
 import { updateAttendanceSettingInput } from "~/server/api/input_type/parameters_input";
 import { BonusDepartmentRow, BonusDepartmentTable } from "./tables/bonus_department"
+import { BonusPositionRow, BonusPositionTable } from "./tables/bonus_position";
 
 const API_PARAMETERS = api.parameters;
 
@@ -85,6 +86,11 @@ let datas: DATA[] = [
 	{
 		table_name: TABLE_NAMES.TABLE_BONUS_DEPARTMENT,
 		table_type: "bonus_department",
+		table_content: []
+	},
+	{
+		table_name: TABLE_NAMES.TABLE_BONUS_POSITION,
+		table_type: "bonus_position",
 		table_content: []
 	}
 ];
@@ -148,6 +154,11 @@ const PageParameters: NextPageWithLayout = () => {
 	const createBonusDepartment = (getBonusDepartmentFunctions("create", getBonusDepartment) as any);
 	const deleteBonusDepartment = (getBonusDepartmentFunctions("delete", getBonusDepartment) as any);
 
+	const getBonusPosition = api.parameters.getCurrentBonusPosition.useQuery();
+	const updateBonusPosition = (getBonusPositionFunctions("update", getBonusPosition) as any);
+	const createBonusPosition = (getBonusPositionFunctions("create", getBonusPosition) as any);
+	const deleteBonusPosition = (getBonusPositionFunctions("delete", getBonusPosition) as any);
+
 
 
 	const lastMonthDate = new Date();
@@ -186,7 +197,7 @@ const PageParameters: NextPageWithLayout = () => {
 
 	function updateDatas(
 		t_name: string,
-		new_content: SettingItem[] | BankRow[] | BonusDepartmentRow[]
+		new_content: SettingItem[] | BankRow[] | BonusDepartmentRow[] | BonusPositionRow[]
 	) {
 		const newDatas = datas.map((data) => {
 			if (data.table_name === t_name) {
@@ -275,6 +286,29 @@ const PageParameters: NextPageWithLayout = () => {
 				};
 			})
 		);
+		
+		updateDatas(
+			TABLE_NAMES.TABLE_BONUS_DEPARTMENT,
+			(getBonusDepartment.data ?? []).map((bonusDepartment: any) => {
+				return {
+					id: bonusDepartment.id,
+					department: bonusDepartment.department,
+					multiplier: bonusDepartment.multiplier,
+				};
+			})
+		);
+
+		updateDatas(
+			TABLE_NAMES.TABLE_BONUS_POSITION,
+			(getBonusPosition.data ?? []).map((bonusPosition: any) => {
+				return {
+					id: bonusPosition.id,
+					position: bonusPosition.position,
+					multiplier: bonusPosition.multiplier,
+				};
+			})
+		);
+
 
 
 		return HTMLElement();
@@ -418,15 +452,33 @@ const PageParameters: NextPageWithLayout = () => {
 									table_name={data.table_name}
 									table_type={data.table_type}
 									index={find_index(data.table_name)}
-									updateBankSetting={(d: any) => {
-										updateBankSetting.mutate(d);
+									updateFunction={(d: any) => {
+										updateBonusDepartment.mutate(d);
 									}}
-									createBankSetting={(d: any) => {
-										createBankSetting.mutate(d);
+									createFunction={(d: any) => {
+										createBonusDepartment.mutate(d);
 									}}
-									deleteBankSetting={(d: any) => {
-										deleteBankSetting.mutate(d);
-										getBankSetting.refetch();
+									deleteFunction={(d: any) => {
+										deleteBonusDepartment.mutate(d);
+										getBonusDepartment.refetch();
+									}}
+								/>
+							)
+							case TABLE_NAMES.TABLE_BONUS_POSITION:	return (
+								<BonusPositionTable
+									defaultData={data.table_content}
+									table_name={data.table_name}
+									table_type={data.table_type}
+									index={find_index(data.table_name)}
+									updateFunction={(d: any) => {
+										updateBonusPosition.mutate(d);
+									}}
+									createFunction={(d: any) => {
+										createBonusPosition.mutate(d);
+									}}
+									deleteFunction={(d: any) => {
+										deleteBonusPosition.mutate(d);
+										getBonusPosition.refetch();
 									}}
 								/>
 							)
