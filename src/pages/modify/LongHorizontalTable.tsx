@@ -2,7 +2,7 @@ import React from "react";
 
 const LongHorizontalTable = ({ tableData }: any) => {
 	return (
-		<div style={{ overflowX: "auto" }}>
+		<div style={{ margin: '20px', maxWidth: '95%', overflowX: 'auto' }}>
 			<br />
 			<table
 				style={{

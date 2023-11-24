@@ -32,6 +32,9 @@ import FadeLoader from "react-spinners/FadeLoader";
 import Multiselect from "multiselect-react-dropdown";
 import * as TABLE_NAMES from "../table_names";
 
+import { getAttendanceFunctions, getBankFunctions } from "./apiFunctions";
+import { updateAttendanceSettingInput } from "~/server/api/input_type/parameters_input";
+
 const API_PARAMETERS = api.parameters;
 
 let datas: DATA[] = [
@@ -118,36 +121,15 @@ const PageParameters: NextPageWithLayout = () => {
 	const [parameterGlobalFilter, setParameterGlobalFilter] = useState("");
 
 	const getBankSetting = API_PARAMETERS.getCurrentBankSetting.useQuery();
-	const updateBankSetting = api.parameters.updateBankSetting.useMutation({
-		onSuccess: () => {
-			getBankSetting.refetch();
-		},
-	});
-	const createBankSetting = api.parameters.createBankSetting.useMutation({
-		onSuccess: () => {
-			getBankSetting.refetch();
-		},
-	});
-	const deleteBankSetting = api.parameters.deleteBankSetting.useMutation({
-		onSuccess: async() => {
-			console.log("refetch bank data")
-			await getBankSetting.refetch();
-		},
-	});
+	const updateBankSetting = (getBankFunctions("update", getBankSetting) as any);
+	const createBankSetting = (getBankFunctions("create", getBankSetting) as any);
+	const deleteBankSetting = (getBankFunctions("delete", getBankSetting) as any);
+	
 
 	const getAttendanceSetting = api.parameters.getCurrentAttendanceSetting.useQuery();
-	const updateAttendanceSetting =
-		api.parameters.updateAttendanceSetting.useMutation({
-			onSuccess: () => {
-				getAttendanceSetting.refetch();
-			},
-		});
-	const createAttendanceSetting =
-		api.parameters.createAttendanceSetting.useMutation({
-			onSuccess: () => {
-				getAttendanceSetting.refetch();
-			},
-		});
+	const updateAttendanceSetting = (getAttendanceFunctions("update", getAttendanceSetting) as any);
+	const createAttendanceSetting = (getAttendanceFunctions("create", getAttendanceSetting) as any);
+	
 	
 	const lastMonthDate = new Date();
   	lastMonthDate.setMonth(lastMonthDate.getMonth() - 1);
@@ -352,34 +334,21 @@ const PageParameters: NextPageWithLayout = () => {
 					{datas.map((data, index) => {
 						if (!filterTables[index]) return <></>;
 						if (data.table_type == "typical") {
-							// if (
-							// 	data.table_content
-							// 		.map((x, index) => {
-							// 			return x.name
-							// 				.toLowerCase()
-							// 				.includes(
-							// 					parameterGlobalFilter.toLowerCase()
-							// 				);
-							// 		})
-							// 		.filter((x) => x).length === 0
-							// )
-							// 	return <></>;
-							const parameterTable = (
+							return (
 								<ParameterTable
 									defaultData={data.table_content}
 									table_name={data.table_name}
 									table_type={data.table_type}
 									index={find_index(data.table_name)}
 									globalFilter={parameterGlobalFilter}
-									updateAttendanceSetting = {(d:any) => {
+									updateFunction = {(d:any) => {
 										updateAttendanceSetting.mutate(d)
 									}}
-									createAttendanceSetting = {(d:any) => {
+									createFunction = {(d:any) => {
 										createAttendanceSetting.mutate(d)
 									}}
 								/>
 							);
-							return parameterTable;
 						} else if (data.table_type == "bank") {
 							const bankTable = (
 								<BankTable

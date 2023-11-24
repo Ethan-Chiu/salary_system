@@ -106,8 +106,8 @@ export function ParameterTable({
 	defaultData,
 	index,
 	globalFilter,
-	createAttendanceSetting,
-	updateAttendanceSetting,
+	createFunction,
+	updateFunction,
 }: any) {	
 	const [data, setData] = useState<SettingItem[]>(defaultData);
 	const [sorting, setSorting] = useState<SortingState>([]);
@@ -171,7 +171,7 @@ export function ParameterTable({
 			enableHiding: false,
 			cell: ({ row }) => {
 				const setting = row.original;
-				return <CompDropdown ID={(data.find((x) => x.name === "id"))?.value as number} setting={setting} updateAttendanceSetting={updateAttendanceSetting}/>;
+				return <CompDropdown ID={(data.find((x) => x.name === "id"))?.value as number} setting={setting} updateFunction={updateFunction}/>;
 			},
 		},
 	];
@@ -380,7 +380,7 @@ export function ParameterTable({
 	);
 }
 
-function CompDropdown({ ID, setting, updateAttendanceSetting }: { ID: number, setting: SettingItem, updateAttendanceSetting: (d:any) => void }) {
+function CompDropdown({ ID, setting, updateFunction }: { ID: number, setting: SettingItem, updateFunction: (d:any) => void }) {
 	const [showDialog, setShowDialog] = useState(false);
 
 	return (
@@ -423,7 +423,7 @@ function CompDropdown({ ID, setting, updateAttendanceSetting }: { ID: number, se
 				onOpenChange={(open: boolean) => {
 					setShowDialog(open);
 				}}
-				updateAttendanceSetting={updateAttendanceSetting}
+				updateFunction={updateFunction}
 			/>
 		</>
 	);
@@ -435,14 +435,14 @@ function CreateDialog({
 	showDialog,
 	onOpenChange,
 	schema,
-	updateAttendanceSetting,
+	updateFunction,
 }: {
 	ID: number;
 	setting: SettingItem;
 	showDialog: boolean;
 	onOpenChange: (open: boolean) => void;
 	schema?: any;
-	updateAttendanceSetting: (d: any) => void;
+	updateFunction: (d: any) => void;
 }) {
 	const inputRef = useRef<HTMLInputElement>(null);
 
@@ -557,7 +557,7 @@ function CreateDialog({
 								console.log(ID)
 								console.log(newItem);
 								if(newItem.name !== "id")
-									updateAttendanceSetting({[setting.name]: value, id: ID});
+									updateFunction({[setting.name]: value, id: ID});
 							}}
 						>
 							Save changes
