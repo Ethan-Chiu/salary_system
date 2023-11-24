@@ -7,6 +7,9 @@ import {
 	userProcedure,
 } from "~/server/api/trpc";
 import { Database } from "~/server/database/client";
+import { RolesEnum } from "../types/role_type";
+import { accessiblePages } from "../types/access_page_type";
+import { AccessService } from "~/server/service/access_service";
 
 export const debugRouter = createTRPCRouter({
 	syncDb: publicProcedure
@@ -51,4 +54,15 @@ export const debugRouter = createTRPCRouter({
 	resolveUser: userProcedure.query(async ({ ctx }) => {
 		return ctx;
 	}),
+	createAccessSetting: publicProcedure
+		.input(
+			z.object({
+				role: RolesEnum,
+				access: accessiblePages,
+			})
+		)
+		.mutation(async ({ input }) => {
+			const accessService = container.resolve(AccessService);
+			await accessService.createAccessData(input.role, input.access);
+		}),
 });
