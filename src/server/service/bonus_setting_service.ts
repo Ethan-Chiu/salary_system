@@ -20,24 +20,18 @@ export class BonusSettingService {
         base_on,
         type,
 	}: z.infer<typeof createBonusSettingInput>): Promise<BonusSetting> {
-		const now = new Date();
-		// check_date(start_date, end_date, now);
-
 		const newData = await BonusSetting.create({
             fixed_multiplier: fixed_multiplier,
             criterion_date: criterion_date,
             base_on: base_on,
             type: type,
-			create_date: now,
 			create_by: "system",
-			update_date: now,
 			update_by: "system",
 		});
 		return newData;
 	}
 
 	async getBonusSettingById(id: number): Promise<BonusSetting | null> {
-		const now = new Date();
 		const bonusSetting = await BonusSetting.findOne({
 			where: {
 				id: id,
@@ -47,16 +41,11 @@ export class BonusSettingService {
 	}
 
     async getCurrentBonusSetting(): Promise<BonusSetting[] > {
-		const now = Date();
 		const bonusSetting = await this.getAllBonusSetting();
-        if (bonusSetting.length > 1) {
-			throw new BaseResponseError("More than one bonus setting");
-		}
 		return bonusSetting;
 	}
 
 	async getAllBonusSetting(): Promise<BonusSetting[] > {
-		const now = Date();
 		const bonusSetting = await BonusSetting.findAll();
 		return bonusSetting;
 	}
@@ -73,14 +62,12 @@ export class BonusSettingService {
 			throw new BaseResponseError("BonusSetting does not exist");
 		}
 
-		const now = new Date();
 		const affectedCount = await BonusSetting.update(
 			{
 				fixed_multiplier: fixed_multiplier ?? bonus_setting.fixed_multiplier,
 				criterion_date: criterion_date ?? bonus_setting.criterion_date,
                 base_on: base_on ?? bonus_setting.base_on,
                 type: type ?? bonus_setting .type,
-				update_date: now,
 				update_by: "system",
 			},
 			{ where: { id: id } }
@@ -91,7 +78,6 @@ export class BonusSettingService {
 	}
 
 	async deleteBonusSetting(id: number): Promise<void> {
-		const now = new Date();
         BonusSetting.destroy(
             { where: { id: id } }
         );
