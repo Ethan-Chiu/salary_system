@@ -66,7 +66,7 @@ export class BonusSettingService {
         base_on,
         type,
 	}: z.infer<typeof updateBonusSettingInput>): Promise<void> {
-		const bonus_setting = await this.getBonusSettingById(id);
+		const bonus_setting = await this.getBonusSettingById(id!);
 		if (bonus_setting == null) {
 			throw new BaseResponseError("BonusSetting does not exist");
 		}

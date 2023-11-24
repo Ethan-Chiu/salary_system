@@ -6,6 +6,7 @@ import {
     createBonusPositionInput,
 	updateBonusPositionInput,
 } from "../api/input_type/parameters_input";
+import { select_value } from "./helper_function";
 
 
 @injectable()
@@ -52,16 +53,16 @@ export class BonusPositionService {
         position_type,
         multiplier,
 	}: z.infer<typeof updateBonusPositionInput>): Promise<void> {
-		const bonus_position = await this.getBonusPositionById(id);
+		const bonus_position = await this.getBonusPositionById(id!);
 		if (bonus_position == null) {
 			throw new BaseResponseError("BonusPosition does not exist");
 		}
 
 		const affectedCount = await BonusPosition.update(
 			{
-				position: position?? bonus_position.position,
-                position_type: position_type?? bonus_position.position_type,
-				multiplier: multiplier ?? bonus_position.multiplier,
+				position: select_value(position, bonus_position.position),
+                position_type: select_value(position_type, bonus_position.position_type),
+				multiplier: select_value(multiplier , bonus_position.multiplier),
 				update_by: "system",
 			},
 			{ where: { id: id } }

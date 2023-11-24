@@ -121,7 +121,7 @@ export const updateBonusDepartmentInput = z.object({
 	id: z.number(),
 	department: z.string().nullable(),
 	multiplier: z.number().nullable(),
-});
+}).partial();
 
 export const createBonusPositionInput = z.object({
 	position: z.number(),
@@ -134,7 +134,7 @@ export const updateBonusPositionInput = z.object({
 	position: z.number().nullable(),
 	position_type: z.string().nullable(),
 	multiplier: z.number().nullable(),
-});
+}).partial();
 
 export const createBonusSeniorityInput = z.object({
 	seniority: z.number(),
@@ -145,7 +145,7 @@ export const updateBonusSeniorityInput = z.object({
 	id: z.number(),
 	seniority: z.number().nullable(),
 	multiplier: z.number().nullable(),
-});
+}).partial();
 
 export const createBonusSettingInput = z.object({
 	fixed_multiplier: z.number(),
@@ -160,7 +160,8 @@ export const updateBonusSettingInput = z.object({
 	criterion_date: z.date().nullable(),
 	base_on: z.string().nullable(),
 	type: z.string().nullable(),
-}).partial();
+})
+.partial();
 
 export const updateInsuranceRateSettingInput = z
 	.object({

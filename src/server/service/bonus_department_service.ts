@@ -6,6 +6,7 @@ import {
 	createBonusDepartmentInput,
 	updateBonusDepartmentInput,
 } from "../api/input_type/parameters_input";
+import { select_value } from "./helper_function";
 
 
 @injectable()
@@ -49,15 +50,15 @@ export class BonusDepartmentService {
 		department,
         multiplier,
 	}: z.infer<typeof updateBonusDepartmentInput>): Promise<void> {
-		const bonus_department = await this.getBonusDepartmentById(id);
+		const bonus_department = await this.getBonusDepartmentById(id!);
 		if (bonus_department == null) {
 			throw new BaseResponseError("BonusDepartment does not exist");
 		}
 
 		const affectedCount = await BonusDepartment.update(
 			{
-				department: department ?? bonus_department.department,
-				multiplier: multiplier ?? bonus_department.multiplier,
+				department: select_value(department ,bonus_department.department),
+				multiplier: select_value(multiplier ,bonus_department.multiplier),
 				update_by: "system",
 			},
 			{ where: { id: id } }
