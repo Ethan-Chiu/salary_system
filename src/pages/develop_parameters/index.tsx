@@ -36,6 +36,8 @@ import { getAttendanceFunctions, getBankFunctions, getBonusSettingFunctions, get
 import { updateAttendanceSettingInput } from "~/server/api/input_type/parameters_input";
 import { BonusDepartmentRow, BonusDepartmentTable } from "./tables/bonus_department"
 import { BonusPositionRow, BonusPositionTable } from "./tables/bonus_position";
+import { BonusSeniorityRow, BonusSeniorityTable } from "./tables/bonus_seniority";
+import { BonusSeniority } from "~/server/database/entity/bonus_seniority";
 
 const API_PARAMETERS = api.parameters;
 
@@ -91,6 +93,11 @@ let datas: DATA[] = [
 	{
 		table_name: TABLE_NAMES.TABLE_BONUS_POSITION,
 		table_type: "bonus_position",
+		table_content: []
+	},
+	{
+		table_name: TABLE_NAMES.TABLE_BONUS_SENIORITY,
+		table_type: "bonus_seniority",
 		table_content: []
 	}
 ];
@@ -159,6 +166,10 @@ const PageParameters: NextPageWithLayout = () => {
 	const createBonusPosition = (getBonusPositionFunctions("create", getBonusPosition) as any);
 	const deleteBonusPosition = (getBonusPositionFunctions("delete", getBonusPosition) as any);
 
+	const getBonusSeniority = api.parameters.getCurrentBonusSeniority.useQuery();
+	const updateBonusSeniority = (getBonusSeniorityFunctions("update", getBonusSeniority) as any);
+	const createBonusSeniority = (getBonusSeniorityFunctions("create", getBonusSeniority) as any);
+	const deleteBonusSeniority = (getBonusSeniorityFunctions("delete", getBonusSeniority) as any);
 
 
 	const lastMonthDate = new Date();
@@ -197,7 +208,7 @@ const PageParameters: NextPageWithLayout = () => {
 
 	function updateDatas(
 		t_name: string,
-		new_content: SettingItem[] | BankRow[] | BonusDepartmentRow[] | BonusPositionRow[]
+		new_content: SettingItem[] | BankRow[] | BonusDepartmentRow[] | BonusPositionRow[] | BonusSeniorityRow[]
 	) {
 		const newDatas = datas.map((data) => {
 			if (data.table_name === t_name) {
@@ -305,6 +316,17 @@ const PageParameters: NextPageWithLayout = () => {
 					id: bonusPosition.id,
 					position: bonusPosition.position,
 					multiplier: bonusPosition.multiplier,
+				};
+			})
+		);
+
+		updateDatas(
+			TABLE_NAMES.TABLE_BONUS_SENIORITY,
+			(getBonusSeniority.data ?? []).map((bonusSeniority: any) => {
+				return {
+					id: bonusSeniority.id,
+					seniority: bonusSeniority.seniority,
+					multiplier: bonusSeniority.multiplier,
 				};
 			})
 		);
@@ -482,6 +504,24 @@ const PageParameters: NextPageWithLayout = () => {
 									}}
 								/>
 							)
+							case TABLE_NAMES.TABLE_BONUS_SENIORITY:	return (
+								<BonusSeniorityTable
+									defaultData={data.table_content}
+									table_name={data.table_name}
+									table_type={data.table_type}
+									index={find_index(data.table_name)}
+									updateFunction={(d: any) => {
+										updateBonusSeniority.mutate(d);
+									}}
+									createFunction={(d: any) => {
+										createBonusSeniority.mutate(d);
+									}}
+									deleteFunction={(d: any) => {
+										deleteBonusSeniority.mutate(d);
+										getBonusSeniority.refetch();
+									}}
+								/>
+							)
 							case TABLE_NAMES.TABLE_BANK_SETTING:	return (
 								<BankTable
 									defaultData={data.table_content}
@@ -500,6 +540,7 @@ const PageParameters: NextPageWithLayout = () => {
 									}}
 								/>
 							);
+							
 							default: return <></>
 						}
 					})}
