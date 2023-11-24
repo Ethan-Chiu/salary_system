@@ -30,8 +30,8 @@ export class EmployeePayment extends Model<
     declare h_i: number;
     declare labor_retirement: number;
     declare occupational_injury: number;
-    declare start_date: Date;
-    declare end_date: Date;
+    declare start_date: string;
+    declare end_date: string;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -64,7 +64,7 @@ EmployeePayment.init(
 			allowNull: false,
         },
 		job_bonus: {
-			type: DataTypes.DATE,
+			type: DataTypes.STRING(128),
 			allowNull: false,
 		},
         subsidy_bonus: {
@@ -116,11 +116,11 @@ EmployeePayment.init(
 			allowNull: false,
         },
         start_date: {
-			type: DataTypes.DATE,
+			type: DataTypes.STRING(128),
 			allowNull: false,
 		},
         end_date: {
-			type: DataTypes.DATE,
+			type: DataTypes.STRING(128),
 			allowNull: true,
 		},
         create_date: {

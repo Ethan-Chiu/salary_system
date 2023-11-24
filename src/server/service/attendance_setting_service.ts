@@ -4,10 +4,10 @@ import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {
-	createAttendanceSettingInput,
-	updateAttendanceSettingInput,
+	createAttendanceSettingService,
+	updateAttendanceSettingService,
 } from "../api/input_type/parameters_input";
-import { select_value } from "./helper_function";
+import { get_date_string, select_value } from "./helper_function";
 
 @injectable()
 export class AttendanceSettingService {
@@ -33,9 +33,9 @@ export class AttendanceSettingService {
 		start_date,
 		end_date,
 	}: z.infer<
-		typeof createAttendanceSettingInput
+		typeof createAttendanceSettingService
 	>): Promise<AttendanceSetting> {
-		const now = new Date();
+		const current_date_string = get_date_string(new Date());
 		const newData = await AttendanceSetting.create({
 			personal_leave_dock: personal_leave_dock,
 			sick_leave_dock: sick_leave_dock,
@@ -53,7 +53,7 @@ export class AttendanceSettingService {
 			overtime_by_foreign_workers_2: overtime_by_foreign_workers_2,
 			overtime_by_foreign_workers_3: overtime_by_foreign_workers_3,
 			foreign_worker_holiday: foreign_worker_holiday,
-			start_date: start_date ?? now,
+			start_date: start_date ?? current_date_string,
 			end_date: end_date,
 			create_by: "system",
 			update_by: "system",
@@ -62,14 +62,17 @@ export class AttendanceSettingService {
 	}
 
 	async getCurrentAttendanceSetting(): Promise<AttendanceSetting | null> {
-		const now = new Date();
+		const current_date_string = get_date_string(new Date());
 		const attendanceSettingList = await AttendanceSetting.findAll({
 			where: {
 				start_date: {
-					[Op.lte]: now,
+					[Op.lte]: current_date_string,
 				},
 				end_date: {
-					[Op.or]: [{ [Op.gte]: now }, { [Op.eq]: null }],
+					[Op.or]: [
+						{ [Op.gte]: current_date_string },
+						{ [Op.eq]: null },
+					],
 				},
 			},
 		});
@@ -124,7 +127,7 @@ export class AttendanceSettingService {
 		foreign_worker_holiday,
 		start_date,
 		end_date,
-	}: z.infer<typeof updateAttendanceSettingInput>): Promise<void> {
+	}: z.infer<typeof updateAttendanceSettingService>): Promise<void> {
 		const attendance_setting = await this.getAttendanceSettingById(id!);
 		if (attendance_setting == null) {
 			throw new BaseResponseError("AttendanceSetting does not exist");
@@ -225,14 +228,19 @@ export class AttendanceSettingService {
 		});
 
 		for (let i = 0; i < attendanceSettingList.length - 1; i += 1) {
-			if (
-				attendanceSettingList[i]!.dataValues.end_date !=
+			const end_date_string = get_date_string(
+				new Date(attendanceSettingList[i]!.dataValues.end_date!)
+			);
+			const start_date = new Date(
 				attendanceSettingList[i + 1]!.dataValues.start_date
-			) {
+			);
+			const new_end_date_string = get_date_string(
+				new Date(start_date.setDate(start_date.getDate() - 1))
+			);
+			if (end_date_string != new_end_date_string) {
 				await this.updateAttendanceSetting({
 					id: attendanceSettingList[i]!.dataValues.id,
-					end_date:
-						attendanceSettingList[i + 1]!.dataValues.start_date,
+					end_date: new_end_date_string,
 				});
 			}
 		}

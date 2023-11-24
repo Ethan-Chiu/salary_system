@@ -3,11 +3,11 @@ import { injectable } from "tsyringe";
 import { User } from "../database/entity/user";
 import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
-import { check_date, select_value } from "./helper_function";
+import { check_date, get_date_string, select_value } from "./helper_function";
 import { z } from "zod";
 import {
-	createUserInput,
-	updateUserInput,
+	createUserService,
+	updateUserService,
 } from "../api/input_type/parameters_input";
 
 @injectable()
@@ -20,9 +20,8 @@ export class UserService {
 		auth_level,
 		start_date,
 		end_date,
-	}: z.infer<typeof createUserInput>): Promise<User> {
-		const now = new Date();
-		check_date(start_date, end_date, now);
+	}: z.infer<typeof createUserService>): Promise<User> {
+		const current_date_string = get_date_string(new Date());
 
 		const salt = await bcrypt.genSalt();
 		const hash = await bcrypt.hash(password, salt);
@@ -31,7 +30,7 @@ export class UserService {
 			emp_id: emp_id,
 			hash: hash,
 			auth_level: auth_level,
-			start_date: start_date ?? now,
+			start_date: start_date ?? current_date_string,
 			end_date: end_date,
 			create_by: "system",
 			update_by: "system",
@@ -77,7 +76,7 @@ export class UserService {
 		auth_level,
 		start_date,
 		end_date,
-	}: z.infer<typeof updateUserInput>): Promise<void> {
+	}: z.infer<typeof updateUserService>): Promise<void> {
 		const user = await this.getUser(emp_id!);
 		if (user == null) {
 			throw new BaseResponseError("User does not exist");
@@ -106,7 +105,7 @@ export class UserService {
 	}
 
 	async deleteUser(emp_id: string): Promise<void> {
-		const now = new Date();
-		this.updateUser({ emp_id: emp_id, end_date: now });
+		const current_date_string = get_date_string(new Date());
+		this.updateUser({ emp_id: emp_id, end_date: current_date_string });
 	}
 }

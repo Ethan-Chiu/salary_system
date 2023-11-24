@@ -2,8 +2,8 @@ import { injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {
-	createPerformanceLevelInput,
-	updatePerformanceLevelInput,
+	createPerformanceLevelService,
+	updatePerformanceLevelService,
 } from "../api/input_type/parameters_input";
 import { PerformanceLevel } from "../database/entity/performance_level";
 import { select_value } from "./helper_function";
@@ -15,7 +15,9 @@ export class PerformanceLevelService {
 	async createPerformanceLevel({
 		performance_level,
 		multiplier,
-	}: z.infer<typeof createPerformanceLevelInput>): Promise<PerformanceLevel> {
+	}: z.infer<
+		typeof createPerformanceLevelService
+	>): Promise<PerformanceLevel> {
 		const newData = await PerformanceLevel.create({
 			performance_level: performance_level,
 			multiplier: multiplier,
@@ -50,7 +52,7 @@ export class PerformanceLevelService {
 		id,
 		performance_level,
 		multiplier,
-	}: z.infer<typeof updatePerformanceLevelInput>): Promise<void> {
+	}: z.infer<typeof updatePerformanceLevelService>): Promise<void> {
 		const performanceLevel = await this.getPerformanceLevelById(id!);
 		if (performanceLevel == null) {
 			throw new BaseResponseError("PerformanceLevel does not exist");

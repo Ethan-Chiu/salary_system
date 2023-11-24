@@ -2,8 +2,8 @@ import { injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {
-	createLevelInput,
-	updateLevelInput,
+	createLevelService,
+	updateLevelService,
 } from "../api/input_type/parameters_input";
 import { Level } from "../database/entity/level";
 import { select_value } from "./helper_function";
@@ -14,7 +14,7 @@ export class LevelService {
 
 	async createLevel({
 		level,
-	}: z.infer<typeof createLevelInput>): Promise<Level> {
+	}: z.infer<typeof createLevelService>): Promise<Level> {
 		const newData = await Level.create({
 			level: level,
 			create_by: "system",
@@ -45,7 +45,7 @@ export class LevelService {
 	async updateLevel({
 		id,
 		level,
-	}: z.infer<typeof updateLevelInput>): Promise<void> {
+	}: z.infer<typeof updateLevelService>): Promise<void> {
 		const _level = await this.getLevelById(id!);
 		if (_level == null) {
 			throw new BaseResponseError("Level does not exist");

@@ -8,7 +8,8 @@ import * as bcrypt from "bcrypt";
 import { UserService } from "~/server/service/user_service";
 import { container } from "tsyringe";
 import { BaseResponseError } from "../error/BaseResponseError";
-import { createUserInput } from "../input_type/parameters_input";
+import { createUserAPI } from "../input_type/parameters_input";
+import { get_date_string } from "~/server/service/helper_function";
 
 export const loginRouter = createTRPCRouter({
 	login: publicProcedure
@@ -45,10 +46,18 @@ export const loginRouter = createTRPCRouter({
 		}),
 
 	createUser: publicProcedure
-		.input(createUserInput)
+		.input(createUserAPI)
 		.mutation(async ({ input }) => {
 			const userService = container.resolve(UserService);
-			const user = await userService.createUser(input);
+			const user = await userService.createUser({
+				...input,
+				start_date: input.start_date
+					? get_date_string(input.start_date)
+					: null,
+				end_date: input.end_date
+					? get_date_string(input.end_date)
+					: null,
+			});
 
 			return user;
 		}),

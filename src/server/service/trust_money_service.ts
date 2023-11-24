@@ -2,8 +2,8 @@ import { injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {
-	createTrustMoneyInput,
-	updateTrustMoneyInput,
+	createTrustMoneyService,
+	updateTrustMoneyService,
 } from "../api/input_type/parameters_input";
 import { TrustMoney } from "../database/entity/trust_money";
 import { select_value } from "./helper_function";
@@ -19,7 +19,7 @@ export class TrustMoneyService {
 		org_trust_reserve_limit,
 		emp_special_trust_incent_limit,
 		org_special_trust_incent_limit,
-	}: z.infer<typeof createTrustMoneyInput>): Promise<TrustMoney> {
+	}: z.infer<typeof createTrustMoneyService>): Promise<TrustMoney> {
 		const newData = await TrustMoney.create({
 			position: position,
 			position_type: position_type,
@@ -60,7 +60,7 @@ export class TrustMoneyService {
 		org_trust_reserve_limit,
 		emp_special_trust_incent_limit,
 		org_special_trust_incent_limit,
-	}: z.infer<typeof updateTrustMoneyInput>): Promise<void> {
+	}: z.infer<typeof updateTrustMoneyService>): Promise<void> {
 		const trustMoney = await this.getTrustMoneyById(id!);
 		if (trustMoney == null) {
 			throw new BaseResponseError("TrustMoney does not exist");
