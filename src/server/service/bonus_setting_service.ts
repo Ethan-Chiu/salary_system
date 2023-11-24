@@ -37,14 +37,20 @@ export class BonusSettingService {
 				id: id,
 			},
 		});
+
 		return bonusSetting;
 	}
 
-    async getCurrentBonusSetting(): Promise<BonusSetting[] > {
-		const bonusSetting = await this.getAllBonusSetting();
-		if (bonusSetting.length > 1) {
+    async getCurrentBonusSetting(): Promise<BonusSetting|null> {
+		const bonusSettingList = await this.getAllBonusSetting();
+		if (bonusSettingList.length > 1) {
 			throw new BaseResponseError("more than one Bonus setting");
 		}
+		const bonusSetting =
+			bonusSettingList.length == 1
+				? bonusSettingList[0]!
+				: null;
+
 		return bonusSetting;
 	}
 

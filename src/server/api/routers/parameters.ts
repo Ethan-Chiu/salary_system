@@ -26,6 +26,7 @@ import { BonusDepartmentService } from "~/server/service/bonus_department_servic
 import { BonusPositionService } from "~/server/service/bonus_position_service";
 import { BonusSeniorityService } from "~/server/service/bonus_seniority_service";
 import { BonusSettingService } from "~/server/service/bonus_setting_service";
+import { InsuranceRateSettingService } from "~/server/service/insurance_rate_setting_service";
 
 export const parametersRouter = createTRPCRouter({
 	createBankSetting: publicProcedure
@@ -122,6 +123,59 @@ export const parametersRouter = createTRPCRouter({
 			await attendanceService.deleteAttendanceSetting(input.id);
 			await attendanceService.rescheduleAttendanceSetting();
 		}),
+
+	getCurrentInsuranceRateSetting: publicProcedure.query(async () => {
+		const insuranceRateService = container.resolve(InsuranceRateSettingService);
+		let insuranceRateSetting =
+			await insuranceRateService.getCurrentInsuranceRateSetting();
+		if (insuranceRateSetting == null) {
+			throw new BaseResponseError("AttendanceSetting does not exist");
+		}
+		return insuranceRateSetting;
+	}),
+
+	getAllInsuranceRateSetting: publicProcedure.query(async () => {
+		const insuranceRateService = container.resolve(InsuranceRateSettingService);
+		let insuranceRateSetting =
+			await insuranceRateService.getAllInsuranceRateSetting();
+		if (insuranceRateSetting.length == 0) {
+			throw new BaseResponseError("AttendanceSetting does not exist");
+		}
+		return insuranceRateSetting;
+	}),
+
+	// createAttendanceSetting: publicProcedure
+	// 	.input(createAttendanceSettingInput)
+	// 	.mutation(async ({ input }) => {
+	// 		const attendanceService = container.resolve(
+	// 			AttendanceSettingService
+	// 		);
+	// 		let newdata = await attendanceService.createAttendanceSetting(
+	// 			input
+	// 		);
+	// 		await attendanceService.rescheduleAttendanceSetting();
+	// 		return newdata;
+	// 	}),
+
+	// updateAttendanceSetting: publicProcedure
+	// 	.input(updateAttendanceSettingInput)
+	// 	.mutation(async ({ input }) => {
+	// 		const attendanceService = container.resolve(
+	// 			AttendanceSettingService
+	// 		);
+	// 		await attendanceService.updateAttendanceSetting(input);
+	// 		await attendanceService.rescheduleAttendanceSetting();
+	// 	}),
+
+	// deleteAttendanceSetting: publicProcedure
+	// 	.input(z.object({ id: z.number() }))
+	// 	.mutation(async ({ input }) => {
+	// 		const attendanceService = container.resolve(
+	// 			AttendanceSettingService
+	// 		);
+	// 		await attendanceService.deleteAttendanceSetting(input.id);
+	// 		await attendanceService.rescheduleAttendanceSetting();
+	// 	}),
 
 	createBonusDepartment: publicProcedure.input(createBonusDepartmentInput).mutation(async ({ input }) => {
 		const bonusDepartmentService = container.resolve(
