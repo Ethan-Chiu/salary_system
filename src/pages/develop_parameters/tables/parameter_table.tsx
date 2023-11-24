@@ -83,6 +83,7 @@ import { DATA, createDATA } from "./datatype";
 import { List } from "postcss/lib/list";
 import { isNumber, isDate, isString } from "../utils/checkType";
 import { toast } from "~/components/ui/use-toast";
+import { Translate } from "../utils/translation";
 
 export type SettingItem = {
 	name: string;
@@ -143,7 +144,7 @@ export function ParameterTable({
 				);
 			},
 			cell: ({ row }) => (
-				<div className="pl-4 lowercase">{row.getValue("name")}</div>
+				<div className="pl-4 lowercase">{Translate(row.getValue("name"))}</div>
 			),
 		},
 		{
@@ -411,7 +412,7 @@ function CompDropdown({ ID, setting, updateFunction }: { ID: number, setting: Se
 							setShowDialog(true);
 						}}
 					>
-						Create
+						Update
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>

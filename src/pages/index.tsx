@@ -13,25 +13,31 @@ import { api } from "~/utils/api";
 
 const function_data: CardFunctionData[] = [
 	{
-		title: "計算月薪",
+		title: "月薪",
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 	},
 	{
-		title: "計算年薪",
+		title: "15日外勞獎金",
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 	},
 	{
-		title: "計算分紅",
+		title: "持股信託",
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 	},
 	{
-		title: "計算津貼",
+		title: "季獎金",
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 	},
+	{
+		title: "員工分紅",
+		iconPath: "./icons/coins.svg",
+		subscript: "some notes",
+	},
+	
 ];
 
 const container = {

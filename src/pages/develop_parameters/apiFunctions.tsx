@@ -5,6 +5,8 @@ import { create } from "domain";
 import { notFound } from "next/navigation";
 
 
+const notFoundFunction = (d: any) => {console.log("not found")}
+
 // Attendance api functions
 export function getAttendanceFunctions(func_name: string, getAttendanceSetting: any) {
     const updateAttendanceSetting =
@@ -48,5 +50,26 @@ export function getBonusSettingFunctions(func_name: string, getBonusSetting: any
 }
 
 
-const notFoundFunction = (d: any) => {console.log("not found")}
+export function getBonusDepartmentFunctions(func_name: string, getBonusDepartment: any) {
+    const updateBonusDepartment = api.parameters.updateBonusDepartment.useMutation({onSuccess: () => {getBonusDepartment.refetch();},});
+    const createBonusDepartment = api.parameters.createBonusDepartment.useMutation({onSuccess: () => {getBonusDepartment.refetch();},});
+    const deleteBonusDepartment = api.parameters.deleteBonusDepartment.useMutation({onSuccess: () => {getBonusDepartment.refetch();},});
+    if(func_name === "update")  return updateBonusDepartment;
+    else if(func_name === "create") return createBonusDepartment;
+    else if(func_name === "delete") return deleteBonusDepartment;
+    else    return notFoundFunction;
+}
 
+export function getBonusPosition(func_name: string, getBonusPosition: any) {
+    const updateBonusPosition = api.parameters.updateBonusPosition.useMutation({onSuccess: () => {getBonusPosition.refetch();},});
+    const createBonusPosition = api.parameters.updateBonusPosition.useMutation({onSuccess: () => {getBonusPosition.refetch();},});
+    const deleteBonusPosition = api.parameters.updateBonusPosition.useMutation({onSuccess: () => {getBonusPosition.refetch();},});
+    if(func_name === "update")  return updateBonusPosition;
+    else if(func_name === "create") return createBonusPosition;
+    else if(func_name === "delete") return deleteBonusPosition;
+    else    return notFoundFunction;
+}
+
+// export function getBonusSeniority(func_name: string)
+
+// api.parameters.updateBonusSeniority
