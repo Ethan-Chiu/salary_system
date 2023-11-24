@@ -91,6 +91,22 @@ const InsuranceRateSetting = z.object({
 	v2_h_i_supp_premium_rate: z.number(),
 	v2_h_i_dock_tsx_thres: z.number(),
 });
+export const updateInsuranceRateSettingInput = z
+	.object({
+		id: z.number(),
+		min_wage_rate: z.number().nullable(),
+		l_i_accident_rate: z.number().nullable(),
+		l_i_employment_premium_rate: z.number().nullable(),
+		l_i_occupational_hazard_rate: z.number().nullable(),
+		l_i_wage_replacement_rate: z.number().nullable(),
+		h_i_standard_rate: z.number().nullable(),
+		h_i_avg_dependents_count: z.number().nullable(),
+		v2_h_i_supp_premium_rate: z.number().nullable(),
+		v2_h_i_dock_tsx_thres: z.number().nullable(),
+		start_date: z.date().nullable(),
+		end_date: z.date().nullable(),
+	})
+	.partial();
 
 export const createInsuranceRateSettingAPI =
 	InsuranceRateSetting.merge(DateAPI);
@@ -115,7 +131,6 @@ export const updateBonusDepartmentService = BonusDepartment.merge(Id).partial();
 
 const BonusPosition = z.object({
 	position: z.number(),
-	position_type: z.string(),
 	multiplier: z.number(),
 });
 
@@ -123,6 +138,17 @@ export const createBonusPositionAPI = BonusPosition;
 export const createBonusPositionService = BonusPosition;
 export const updateBonusPositionAPI = BonusPosition.merge(Id).partial();
 export const updateBonusPositionService = BonusPosition.merge(Id).partial();
+
+const BonusPositionType = z.object({
+	position_type: z.string(),
+	multiplier: z.number(),
+});
+
+export const createBonusPositionTypeAPI = BonusPositionType;
+export const createBonusPositionTypeService = BonusPositionType;
+export const updateBonusPositionTypeAPI = BonusPositionType.merge(Id).partial();
+export const updateBonusPositionTypeService =
+	BonusPositionType.merge(Id).partial();
 
 const BonusSeniority = z.object({
 	seniority: z.number(),

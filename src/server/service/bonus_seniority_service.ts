@@ -6,6 +6,7 @@ import {
 	updateBonusSeniorityService,
 } from "../api/input_type/parameters_input";
 import { BonusSeniority } from "../database/entity/bonus_seniority";
+import { select_value } from "./helper_function";
 
 @injectable()
 export class BonusSeniorityService {
@@ -55,8 +56,11 @@ export class BonusSeniorityService {
 
 		const affectedCount = await BonusSeniority.update(
 			{
-				seniority: seniority ?? bonus_seniority.seniority,
-				multiplier: multiplier ?? bonus_seniority.multiplier,
+				seniority: select_value(seniority, bonus_seniority.seniority),
+				multiplier: select_value(
+					multiplier,
+					bonus_seniority.multiplier
+				),
 				update_by: "system",
 			},
 			{ where: { id: id } }

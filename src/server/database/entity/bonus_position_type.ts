@@ -8,13 +8,13 @@ import {
 import { container } from "tsyringe";
 import { Database } from "../client";
 
-export class BonusPosition extends Model<
-	InferAttributes<BonusPosition>,
-	InferCreationAttributes<BonusPosition>
+export class BonusPositionType extends Model<
+	InferAttributes<BonusPositionType>,
+	InferCreationAttributes<BonusPositionType>
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-	declare position: number;
+	declare position_type: string;
 	declare multiplier: number;
 
 	// timestamps!
@@ -28,15 +28,15 @@ export class BonusPosition extends Model<
 
 const sequelize = container.resolve(Database).connection;
 
-BonusPosition.init(
+BonusPositionType.init(
 	{
 		id: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		position: {
-			type: DataTypes.INTEGER.UNSIGNED,
+		position_type: {
+			type: new DataTypes.STRING(2),
 			unique: false,
 			allowNull: false,
 		},
@@ -62,7 +62,7 @@ BonusPosition.init(
 	},
 	{
 		sequelize,
-		tableName: "U_BONUS_POSITION",
+		tableName: "U_BONUS_POSITION_TYPE",
 		createdAt: "create_date",
 		updatedAt: "update_date",
 	}

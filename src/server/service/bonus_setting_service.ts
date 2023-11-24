@@ -1,5 +1,6 @@
 import { injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
+import { select_value } from "./helper_function";
 import { z } from "zod";
 import {
 	createBonusSettingService,
@@ -34,14 +35,18 @@ export class BonusSettingService {
 				id: id,
 			},
 		});
+
 		return bonusSetting;
 	}
 
-	async getCurrentBonusSetting(): Promise<BonusSetting[]> {
-		const bonusSetting = await this.getAllBonusSetting();
-		if (bonusSetting.length > 1) {
+	async getCurrentBonusSetting(): Promise<BonusSetting | null> {
+		const bonusSettingList = await this.getAllBonusSetting();
+		if (bonusSettingList.length > 1) {
 			throw new BaseResponseError("more than one Bonus setting");
 		}
+		const bonusSetting =
+			bonusSettingList.length == 1 ? bonusSettingList[0]! : null;
+
 		return bonusSetting;
 	}
 
@@ -64,11 +69,16 @@ export class BonusSettingService {
 
 		const affectedCount = await BonusSetting.update(
 			{
-				fixed_multiplier:
-					fixed_multiplier ?? bonus_setting.fixed_multiplier,
-				criterion_date: criterion_date ?? bonus_setting.criterion_date,
-				base_on: base_on ?? bonus_setting.base_on,
-				type: type ?? bonus_setting.type,
+				fixed_multiplier: select_value(
+					fixed_multiplier,
+					bonus_setting.fixed_multiplier
+				),
+				criterion_date: select_value(
+					criterion_date,
+					bonus_setting.criterion_date
+				),
+				base_on: select_value(base_on, bonus_setting.base_on),
+				type: select_value(type, bonus_setting.type),
 				update_by: "system",
 			},
 			{ where: { id: id } }

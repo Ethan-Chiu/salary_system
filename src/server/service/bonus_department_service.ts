@@ -6,6 +6,7 @@ import {
 	createBonusDepartmentService,
 	updateBonusDepartmentService,
 } from "../api/input_type/parameters_input";
+import { select_value } from "./helper_function";
 
 @injectable()
 export class BonusDepartmentService {
@@ -55,8 +56,14 @@ export class BonusDepartmentService {
 
 		const affectedCount = await BonusDepartment.update(
 			{
-				department: department ?? bonus_department.department,
-				multiplier: multiplier ?? bonus_department.multiplier,
+				department: select_value(
+					department,
+					bonus_department.department
+				),
+				multiplier: select_value(
+					multiplier,
+					bonus_department.multiplier
+				),
 				update_by: "system",
 			},
 			{ where: { id: id } }

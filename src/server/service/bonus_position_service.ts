@@ -6,6 +6,7 @@ import {
 	createBonusPositionService,
 	updateBonusPositionService,
 } from "../api/input_type/parameters_input";
+import { select_value } from "./helper_function";
 
 @injectable()
 export class BonusPositionService {
@@ -13,12 +14,10 @@ export class BonusPositionService {
 
 	async createBonusPosition({
 		position,
-		position_type,
 		multiplier,
 	}: z.infer<typeof createBonusPositionService>): Promise<BonusPosition> {
 		const newData = await BonusPosition.create({
 			position: position,
-			position_type: position_type,
 			multiplier: multiplier,
 			create_by: "system",
 			update_by: "system",
@@ -48,7 +47,6 @@ export class BonusPositionService {
 	async updateBonusPosition({
 		id,
 		position,
-		position_type,
 		multiplier,
 	}: z.infer<typeof updateBonusPositionService>): Promise<void> {
 		const bonus_position = await this.getBonusPositionById(id!);
@@ -58,9 +56,8 @@ export class BonusPositionService {
 
 		const affectedCount = await BonusPosition.update(
 			{
-				position: position ?? bonus_position.position,
-				position_type: position_type ?? bonus_position.position_type,
-				multiplier: multiplier ?? bonus_position.multiplier,
+				position: select_value(position, bonus_position.position),
+				multiplier: select_value(multiplier, bonus_position.multiplier),
 				update_by: "system",
 			},
 			{ where: { id: id } }

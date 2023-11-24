@@ -1,23 +1,24 @@
 import { z } from "zod";
 import { container } from "tsyringe";
-import {
-	createTRPCRouter,
-	publicProcedure,
-	protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { get_date_string } from "~/server/service/helper_function";
 import {
 	createAttendanceSettingAPI,
 	createBankSettingAPI,
 	createBonusDepartmentAPI,
 	createBonusPositionAPI,
+	createBonusPositionTypeAPI,
 	createBonusSeniorityAPI,
 	createBonusSettingAPI,
+	createInsuranceRateSettingAPI,
 	updateAttendanceSettingAPI,
 	updateBankSettingAPI,
 	updateBonusDepartmentAPI,
 	updateBonusPositionAPI,
+	updateBonusPositionTypeAPI,
 	updateBonusSeniorityAPI,
 	updateBonusSettingAPI,
+	updateInsuranceRateSettingAPI,
 } from "../input_type/parameters_input";
 import { BankSettingService } from "~/server/service/bank_setting_service";
 import { AttendanceSettingService } from "~/server/service/attendance_setting_service";
@@ -26,7 +27,8 @@ import { BonusDepartmentService } from "~/server/service/bonus_department_servic
 import { BonusPositionService } from "~/server/service/bonus_position_service";
 import { BonusSeniorityService } from "~/server/service/bonus_seniority_service";
 import { BonusSettingService } from "~/server/service/bonus_setting_service";
-import { get_date_string } from "~/server/service/helper_function";
+import { InsuranceRateSettingService } from "~/server/service/insurance_rate_setting_service";
+import { BonusPositionTypeService } from "~/server/service/bonus_position_type_service";
 
 export const parametersRouter = createTRPCRouter({
 	createBankSetting: publicProcedure
@@ -154,29 +156,92 @@ export const parametersRouter = createTRPCRouter({
 			await attendanceService.rescheduleAttendanceSetting();
 		}),
 
+	getCurrentInsuranceRateSetting: publicProcedure.query(async () => {
+		const insuranceRateService = container.resolve(
+			InsuranceRateSettingService
+		);
+		let insuranceRateSetting =
+			await insuranceRateService.getCurrentInsuranceRateSetting();
+		if (insuranceRateSetting == null) {
+			throw new BaseResponseError("InsuranceRateSetting does not exist");
+		}
+		return insuranceRateSetting;
+	}),
+
+	getAllInsuranceRateSetting: publicProcedure.query(async () => {
+		const insuranceRateService = container.resolve(
+			InsuranceRateSettingService
+		);
+		let insuranceRateSetting =
+			await insuranceRateService.getAllInsuranceRateSetting();
+		if (insuranceRateSetting.length == 0) {
+			throw new BaseResponseError("InsuranceRateSetting does not exist");
+		}
+		return insuranceRateSetting;
+	}),
+
+	createInsuranceRateSetting: publicProcedure
+		.input(createInsuranceRateSettingAPI)
+		.mutation(async ({ input }) => {
+			const insuranceRateService = container.resolve(
+				InsuranceRateSettingService
+			);
+			let newdata = await insuranceRateService.createInsuranceRateSetting(
+				{
+					...input,
+					start_date: input.start_date
+						? get_date_string(input.start_date)
+						: null,
+					end_date: input.end_date
+						? get_date_string(input.end_date)
+						: null,
+				}
+			);
+			await insuranceRateService.rescheduleInsuranceRateSetting();
+			return newdata;
+		}),
+
+	updateInsuranceRateSetting: publicProcedure
+		.input(updateInsuranceRateSettingAPI)
+		.mutation(async ({ input }) => {
+			const insuranceRateService = container.resolve(
+				InsuranceRateSettingService
+			);
+			await insuranceRateService.updateInsuranceRateSetting({
+				...input,
+				start_date: input.start_date
+					? get_date_string(input.start_date)
+					: null,
+				end_date: input.end_date
+					? get_date_string(input.end_date)
+					: null,
+			});
+			await insuranceRateService.rescheduleInsuranceRateSetting();
+		}),
+
+	deleteInsuranceRateSetting: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.mutation(async ({ input }) => {
+			const insuranceRateService = container.resolve(
+				InsuranceRateSettingService
+			);
+			await insuranceRateService.deleteInsuranceRateSetting(input.id);
+			await insuranceRateService.rescheduleInsuranceRateSetting();
+		}),
+
 	createBonusDepartment: publicProcedure
 		.input(createBonusDepartmentAPI)
 		.mutation(async ({ input }) => {
 			const bonusDepartmentService = container.resolve(
 				BonusDepartmentService
 			);
-			let newdata = await bonusDepartmentService.createBonusDepartment(
-				input
-			);
-			return newdata;
+			let bonusDepartment =
+				await bonusDepartmentService.getCurrentBonusDepartment();
+			if (bonusDepartment == null) {
+				throw new BaseResponseError("BonusDepartment does not exist");
+			}
+			return bonusDepartment;
 		}),
-
-	getCurrentBonusDepartment: publicProcedure.query(async () => {
-		const bonusDepartmentService = container.resolve(
-			BonusDepartmentService
-		);
-		let bonusDepartment =
-			await bonusDepartmentService.getCurrentBonusDepartment();
-		if (bonusDepartment == null) {
-			throw new BaseResponseError("BonusDepartment does not exist");
-		}
-		return bonusDepartment;
-	}),
 
 	getAllBonusDepartment: publicProcedure.query(async () => {
 		const bonusDepartmentService = container.resolve(
@@ -249,7 +314,7 @@ export const parametersRouter = createTRPCRouter({
 			return newdata;
 		}),
 
-	deleteBonusPositon: publicProcedure
+	deleteBonusPosition: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.mutation(async (opts) => {
 			const { input } = opts;
@@ -257,6 +322,63 @@ export const parametersRouter = createTRPCRouter({
 				container.resolve(BonusPositionService);
 			await bonusPositionService.deleteBonusPosition(input.id);
 		}),
+
+	createBonusPositionType: publicProcedure
+		.input(createBonusPositionTypeAPI)
+		.mutation(async ({ input }) => {
+			const bonusPositionTypeService = container.resolve(
+				BonusPositionTypeService
+			);
+			let newdata =
+				await bonusPositionTypeService.createBonusPositionType(input);
+			return newdata;
+		}),
+
+	getCurrentBonusPositioType: publicProcedure.query(async () => {
+		const bonusPositionTypeService = container.resolve(
+			BonusPositionTypeService
+		);
+		let bonusPositionType =
+			await bonusPositionTypeService.getCurrentBonusPositionType();
+		if (bonusPositionType == null) {
+			throw new BaseResponseError("BonusPositionType does not exist");
+		}
+		return bonusPositionType;
+	}),
+
+	getAllBonusPositionType: publicProcedure.query(async () => {
+		const bonusPositionTypeService = container.resolve(
+			BonusPositionTypeService
+		);
+		let bonusPositionType =
+			await bonusPositionTypeService.getAllBonusPositionType();
+		if (bonusPositionType == null) {
+			throw new BaseResponseError("BonusPositionType does not exist");
+		}
+		return bonusPositionType;
+	}),
+
+	updateBonusPositionType: publicProcedure
+		.input(updateBonusPositionTypeAPI)
+		.mutation(async ({ input }) => {
+			const bonusPositionTypeService = container.resolve(
+				BonusPositionTypeService
+			);
+			let newdata =
+				await bonusPositionTypeService.updateBonusPositionType(input);
+			return newdata;
+		}),
+
+	deleteBonusPositionType: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.mutation(async (opts) => {
+			const { input } = opts;
+			const bonusPositionTypeService = container.resolve(
+				BonusPositionTypeService
+			);
+			await bonusPositionTypeService.deleteBonusPositionType(input.id);
+		}),
+
 	createBonusSeniority: publicProcedure
 		.input(createBonusSeniorityAPI)
 		.mutation(async ({ input }) => {
