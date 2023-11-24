@@ -48,7 +48,6 @@ export class BonusPositionService {
 	async updateBonusPosition({
 		id,
 		position,
-        position_type,
         multiplier,
 	}: z.infer<typeof updateBonusPositionInput>): Promise<void> {
 		const bonus_position = await this.getBonusPositionById(id!);
