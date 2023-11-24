@@ -10,10 +10,6 @@ interface DatabaseConfig {
 	password: string;
 	host: string;
 	port: number;
-	dialectOptions: {
-		useUTC: boolean; // for reading from database
-	};
-	timezone: string;
 }
 
 const localDatabaseConfig: DatabaseConfig = {
@@ -22,10 +18,6 @@ const localDatabaseConfig: DatabaseConfig = {
 	password: "salary",
 	host: "localhost",
 	port: 1521,
-	dialectOptions: {
-		useUTC: false,
-	},
-	timezone: "+08:00",
 };
 
 const remoteDatabaseConfig: DatabaseConfig = {
@@ -34,10 +26,6 @@ const remoteDatabaseConfig: DatabaseConfig = {
 	password: "salary",
 	host: "10.4.3.224",
 	port: 1521,
-	dialectOptions: {
-		useUTC: false,
-	},
-	timezone: "+08:00",
 };
 
 @singleton()

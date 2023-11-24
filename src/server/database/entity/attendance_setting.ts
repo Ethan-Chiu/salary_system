@@ -30,8 +30,8 @@ export class AttendanceSetting extends Model<
     declare overtime_by_foreign_workers_2: number;
     declare overtime_by_foreign_workers_3: number;
     declare foreign_worker_holiday: number;
-	declare start_date: Date;
-	declare end_date: Date | null;
+	declare start_date: string;
+	declare end_date: string | null;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -132,11 +132,11 @@ AttendanceSetting.init(
 			allowNull: false,
 		},
 		start_date: {
-			type: DataTypes.DATE,
+			type: DataTypes.STRING(128),
 			allowNull: false,
 		},
 		end_date: {
-			type: DataTypes.DATE,
+			type: DataTypes.STRING(128),
 			allowNull: true,
 		},
 		// 

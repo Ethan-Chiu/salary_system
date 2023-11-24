@@ -2,12 +2,11 @@ import { injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {
-    createBonusSeniorityInput,
-    updateBonusSeniorityInput,
+	createBonusSeniorityService,
+	updateBonusSeniorityService,
 } from "../api/input_type/parameters_input";
 import { BonusSeniority } from "../database/entity/bonus_seniority";
 import { select_value } from "./helper_function";
-
 
 @injectable()
 export class BonusSeniorityService {
@@ -15,11 +14,11 @@ export class BonusSeniorityService {
 
 	async createBonusSeniority({
 		seniority,
-        multiplier,
-	}: z.infer<typeof createBonusSeniorityInput>): Promise<BonusSeniority> {
+		multiplier,
+	}: z.infer<typeof createBonusSeniorityService>): Promise<BonusSeniority> {
 		const newData = await BonusSeniority.create({
-            seniority: seniority,
-            multiplier: multiplier,
+			seniority: seniority,
+			multiplier: multiplier,
 			create_by: "system",
 			update_by: "system",
 		});
@@ -35,7 +34,7 @@ export class BonusSeniorityService {
 		return bonusSeniority;
 	}
 
-    async getCurrentBonusSeniority(): Promise<BonusSeniority[] | null> {
+	async getCurrentBonusSeniority(): Promise<BonusSeniority[] | null> {
 		const bonusSeniority = this.getAllBonusSeniority();
 		return bonusSeniority;
 	}
@@ -48,8 +47,8 @@ export class BonusSeniorityService {
 	async updateBonusSeniority({
 		id,
 		seniority,
-        multiplier,
-	}: z.infer<typeof updateBonusSeniorityInput>): Promise<void> {
+		multiplier,
+	}: z.infer<typeof updateBonusSeniorityService>): Promise<void> {
 		const bonus_seniority = await this.getBonusSeniorityById(id!);
 		if (bonus_seniority == null) {
 			throw new BaseResponseError("BonusSeniority does not exist");
@@ -57,8 +56,11 @@ export class BonusSeniorityService {
 
 		const affectedCount = await BonusSeniority.update(
 			{
-				seniority: select_value(seniority , bonus_seniority.seniority),
-				multiplier: select_value(multiplier , bonus_seniority.multiplier),
+				seniority: select_value(seniority, bonus_seniority.seniority),
+				multiplier: select_value(
+					multiplier,
+					bonus_seniority.multiplier
+				),
 				update_by: "system",
 			},
 			{ where: { id: id } }
@@ -69,8 +71,6 @@ export class BonusSeniorityService {
 	}
 
 	async deleteBonusSeniority(id: number): Promise<void> {
-        BonusSeniority.destroy(
-            { where: { id: id } }
-        );
+		BonusSeniority.destroy({ where: { id: id } });
 	}
 }

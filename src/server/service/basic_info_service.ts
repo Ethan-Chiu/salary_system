@@ -2,8 +2,8 @@ import { injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {
-	createBasicInfoInput,
-	updateBasicInfoInput,
+	createBasicInfoService,
+	updateBasicInfoService,
 } from "../api/input_type/parameters_input";
 import { BasicInfo } from "../database/entity/basic_info";
 import { select_value } from "./helper_function";
@@ -15,7 +15,7 @@ export class BasicInfoService {
 	async createBasicInfo({
 		payday,
 		announcement,
-	}: z.infer<typeof createBasicInfoInput>): Promise<BasicInfo> {
+	}: z.infer<typeof createBasicInfoService>): Promise<BasicInfo> {
 		const newData = await BasicInfo.create({
 			payday: payday,
 			announcement: announcement,
@@ -54,7 +54,7 @@ export class BasicInfoService {
 		id,
 		payday,
 		announcement,
-	}: z.infer<typeof updateBasicInfoInput>): Promise<void> {
+	}: z.infer<typeof updateBasicInfoService>): Promise<void> {
 		const basicInfo = await this.getBasicInfoById(id!);
 		if (basicInfo == null) {
 			throw new BaseResponseError("BasicInfo does not exist");

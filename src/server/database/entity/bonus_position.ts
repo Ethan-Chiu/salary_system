@@ -14,8 +14,8 @@ export class BonusPosition extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-    declare position: number;
-    declare multiplier: number;
+	declare position: number;
+	declare multiplier: number;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -35,16 +35,16 @@ BonusPosition.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-        position: {
-            type: DataTypes.INTEGER.UNSIGNED,
+		position: {
+			type: DataTypes.INTEGER.UNSIGNED,
 			unique: false,
 			allowNull: false,
-        },
-        multiplier: {
-            type: DataTypes.FLOAT,
+		},
+		multiplier: {
+			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
-        },
+		},
 		create_date: {
 			type: DataTypes.DATE,
 		},
@@ -63,7 +63,7 @@ BonusPosition.init(
 	{
 		sequelize,
 		tableName: "U_BONUS_POSITION",
-		createdAt: 'create_date',
-		updatedAt: 'update_date',
+		createdAt: "create_date",
+		updatedAt: "update_date",
 	}
 );

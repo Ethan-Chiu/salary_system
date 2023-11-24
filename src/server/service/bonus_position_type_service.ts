@@ -1,32 +1,35 @@
 import { injectable } from "tsyringe";
-import { BonusPositionType} from "../database/entity/bonus_position_type";
+import { BonusPositionType } from "../database/entity/bonus_position_type";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {
-	createBonusPositionTypeInput,
-    updateBonusPositionTypeInput,
+	createBonusPositionTypeService,
+	updateBonusPositionTypeService,
 } from "../api/input_type/parameters_input";
 import { select_value } from "./helper_function";
-
 
 @injectable()
 export class BonusPositionTypeService {
 	constructor() {}
 
 	async createBonusPositionType({
-        position_type,
-        multiplier,
-	}: z.infer<typeof createBonusPositionTypeInput>): Promise<BonusPositionType> {
+		position_type,
+		multiplier,
+	}: z.infer<
+		typeof createBonusPositionTypeService
+	>): Promise<BonusPositionType> {
 		const newData = await BonusPositionType.create({
-            position_type: position_type,
-            multiplier: multiplier,
+			position_type: position_type,
+			multiplier: multiplier,
 			create_by: "system",
 			update_by: "system",
 		});
 		return newData;
 	}
 
-	async getBonusPositionTypeById(id: number): Promise<BonusPositionType | null> {
+	async getBonusPositionTypeById(
+		id: number
+	): Promise<BonusPositionType | null> {
 		const bonusPositionType = await BonusPositionType.findOne({
 			where: {
 				id: id,
@@ -35,7 +38,7 @@ export class BonusPositionTypeService {
 		return bonusPositionType;
 	}
 
-    async getCurrentBonusPositionType(): Promise<BonusPositionType[] | null> {
+	async getCurrentBonusPositionType(): Promise<BonusPositionType[] | null> {
 		const bonusPositionType = this.getAllBonusPositionType();
 		return bonusPositionType;
 	}
@@ -47,9 +50,9 @@ export class BonusPositionTypeService {
 
 	async updateBonusPositionType({
 		id,
-        position_type,
-        multiplier,
-	}: z.infer<typeof updateBonusPositionTypeInput>): Promise<void> {
+		position_type,
+		multiplier,
+	}: z.infer<typeof updateBonusPositionTypeService>): Promise<void> {
 		const bonus_position_type = await this.getBonusPositionTypeById(id!);
 		if (bonus_position_type == null) {
 			throw new BaseResponseError("BonusPositionType does not exist");
@@ -57,8 +60,14 @@ export class BonusPositionTypeService {
 
 		const affectedCount = await BonusPositionType.update(
 			{
-                position_type: select_value(position_type, bonus_position_type.position_type),
-				multiplier: select_value(multiplier , bonus_position_type.multiplier),
+				position_type: select_value(
+					position_type,
+					bonus_position_type.position_type
+				),
+				multiplier: select_value(
+					multiplier,
+					bonus_position_type.multiplier
+				),
 				update_by: "system",
 			},
 			{ where: { id: id } }
@@ -69,8 +78,6 @@ export class BonusPositionTypeService {
 	}
 
 	async deleteBonusPositionType(id: number): Promise<void> {
-        BonusPositionType.destroy(
-            { where: { id: id } }
-        );
+		BonusPositionType.destroy({ where: { id: id } });
 	}
 }

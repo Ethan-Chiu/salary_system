@@ -3,11 +3,11 @@ import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {
-	createInsuranceRateSettingInput,
-	updateInsuranceRateSettingInput,
+	createInsuranceRateSettingService,
+	updateInsuranceRateSettingService,
 } from "../api/input_type/parameters_input";
 import { InsuranceRateSetting } from "../database/entity/insurance_rate_setting";
-import { select_value } from "./helper_function";
+import { get_date_string, select_value } from "./helper_function";
 
 @injectable()
 export class InsuranceRateSettingService {
@@ -26,9 +26,9 @@ export class InsuranceRateSettingService {
 		start_date,
 		end_date,
 	}: z.infer<
-		typeof createInsuranceRateSettingInput
+		typeof createInsuranceRateSettingService
 	>): Promise<InsuranceRateSetting> {
-		const now = new Date();
+		const current_date_string = get_date_string(new Date());
 		const newData = await InsuranceRateSetting.create({
 			min_wage_rate: min_wage_rate,
 			l_i_accident_rate: l_i_accident_rate,
@@ -39,7 +39,7 @@ export class InsuranceRateSettingService {
 			h_i_avg_dependents_count: h_i_avg_dependents_count,
 			v2_h_i_supp_premium_rate: v2_h_i_supp_premium_rate,
 			v2_h_i_dock_tsx_thres: v2_h_i_dock_tsx_thres,
-			start_date: start_date ?? now,
+			start_date: start_date ?? current_date_string,
 			end_date: end_date,
 			create_by: "system",
 			update_by: "system",
@@ -103,7 +103,7 @@ export class InsuranceRateSettingService {
 		v2_h_i_dock_tsx_thres,
 		start_date,
 		end_date,
-	}: z.infer<typeof updateInsuranceRateSettingInput>): Promise<void> {
+	}: z.infer<typeof updateInsuranceRateSettingService>): Promise<void> {
 		const insuranceSetting = await this.getInsuranceRateSettingById(id!);
 		if (insuranceSetting == null) {
 			throw new BaseResponseError("InsuranceRateSetting does not exist");
@@ -151,10 +151,7 @@ export class InsuranceRateSettingService {
 					start_date,
 					insuranceSetting.start_date
 				),
-				end_date: select_value(
-					end_date,
-					insuranceSetting.end_date
-				),
+				end_date: select_value(end_date, insuranceSetting.end_date),
 				update_by: "system",
 			},
 			{ where: { id: id } }

@@ -10,6 +10,10 @@ export function check_date(
 	}
 }
 
+export function get_date_string(date: Date): string {
+	return date.toISOString().split("T")[0]!;
+}
+
 export function select_value(newData: any, oldData: any) {
 	return newData !== undefined ? newData : oldData;
 }

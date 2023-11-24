@@ -3,11 +3,10 @@ import { BonusDepartment } from "../database/entity/bonus_department";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {
-	createBonusDepartmentInput,
-	updateBonusDepartmentInput,
+	createBonusDepartmentService,
+	updateBonusDepartmentService,
 } from "../api/input_type/parameters_input";
 import { select_value } from "./helper_function";
-
 
 @injectable()
 export class BonusDepartmentService {
@@ -15,11 +14,11 @@ export class BonusDepartmentService {
 
 	async createBonusDepartment({
 		department,
-        multiplier,
-	}: z.infer<typeof createBonusDepartmentInput>): Promise<BonusDepartment> {
+		multiplier,
+	}: z.infer<typeof createBonusDepartmentService>): Promise<BonusDepartment> {
 		const newData = await BonusDepartment.create({
-            department: department,
-            multiplier: multiplier,
+			department: department,
+			multiplier: multiplier,
 			create_by: "system",
 			update_by: "system",
 		});
@@ -35,7 +34,7 @@ export class BonusDepartmentService {
 		return bonusDepartment;
 	}
 
-    async getCurrentBonusDepartment(): Promise<BonusDepartment[] | null> {
+	async getCurrentBonusDepartment(): Promise<BonusDepartment[] | null> {
 		const bonusDepartment = this.getAllBonusDepartment();
 		return bonusDepartment;
 	}
@@ -48,8 +47,8 @@ export class BonusDepartmentService {
 	async updateBonusDepartment({
 		id,
 		department,
-        multiplier,
-	}: z.infer<typeof updateBonusDepartmentInput>): Promise<void> {
+		multiplier,
+	}: z.infer<typeof updateBonusDepartmentService>): Promise<void> {
 		const bonus_department = await this.getBonusDepartmentById(id!);
 		if (bonus_department == null) {
 			throw new BaseResponseError("BonusDepartment does not exist");
@@ -57,8 +56,14 @@ export class BonusDepartmentService {
 
 		const affectedCount = await BonusDepartment.update(
 			{
-				department: select_value(department ,bonus_department.department),
-				multiplier: select_value(multiplier ,bonus_department.multiplier),
+				department: select_value(
+					department,
+					bonus_department.department
+				),
+				multiplier: select_value(
+					multiplier,
+					bonus_department.multiplier
+				),
 				update_by: "system",
 			},
 			{ where: { id: id } }
@@ -70,8 +75,6 @@ export class BonusDepartmentService {
 
 	async deleteBonusDepartment(id: number): Promise<void> {
 		const now = new Date();
-        BonusDepartment.destroy(
-            { where: { id: id } }
-        );
+		BonusDepartment.destroy({ where: { id: id } });
 	}
 }

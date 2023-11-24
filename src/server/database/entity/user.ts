@@ -33,8 +33,8 @@ export class User extends Model<
 	declare emp_id: string;
 	declare hash: string; // for nullable fields
 	declare auth_level: number;
-	declare start_date: Date;
-	declare end_date: Date | null;
+	declare start_date: string;
+	declare end_date: string | null;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -68,11 +68,11 @@ User.init(
 			allowNull: false,
 		},
 		start_date: {
-			type: DataTypes.DATE,
+			type: DataTypes.STRING(128),
 			allowNull: false,
 		},
 		end_date: {
-			type: DataTypes.DATE,
+			type: DataTypes.STRING(128),
 			allowNull: true,
 		},
 		create_date: {
@@ -93,7 +93,7 @@ User.init(
 	{
 		sequelize,
 		tableName: "U_USER",
-		createdAt: 'create_date',
-		updatedAt: 'update_date',
+		createdAt: "create_date",
+		updatedAt: "update_date",
 	}
 );

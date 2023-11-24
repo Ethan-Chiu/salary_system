@@ -2,11 +2,11 @@ import { injectable } from "tsyringe";
 import { BankSetting } from "../database/entity/bank_setting";
 import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
-import { check_date, select_value } from "./helper_function";
+import { get_date_string, select_value } from "./helper_function";
 import { z } from "zod";
 import {
-	createBankSettingInput,
-	updateBankSettingInput,
+	createBankSettingService,
+	updateBankSettingService,
 } from "../api/input_type/parameters_input";
 
 @injectable()
@@ -20,16 +20,14 @@ export class BankSettingService {
 		org_name,
 		start_date,
 		end_date,
-	}: z.infer<typeof createBankSettingInput>): Promise<BankSetting> {
-		const now = new Date();
-		check_date(start_date, end_date, now);
-
+	}: z.infer<typeof createBankSettingService>): Promise<BankSetting> {
+		const current_date_string = get_date_string(new Date());
 		const newData = await BankSetting.create({
 			bank_code: bank_code,
 			bank_name: bank_name,
 			org_code: org_code,
 			org_name: org_name,
-			start_date: start_date ?? now,
+			start_date: start_date ?? current_date_string,
 			end_date: end_date,
 			create_by: "system",
 			update_by: "system",
@@ -47,14 +45,17 @@ export class BankSettingService {
 	}
 
 	async getCurrentBankSetting(): Promise<BankSetting[]> {
-		const now = Date();
+		const current_date_string = get_date_string(new Date());
 		const bankSetting = await BankSetting.findAll({
 			where: {
 				start_date: {
-					[Op.lte]: now,
+					[Op.lte]: current_date_string,
 				},
 				end_date: {
-					[Op.or]: [{ [Op.gte]: now }, { [Op.eq]: null }],
+					[Op.or]: [
+						{ [Op.gte]: current_date_string },
+						{ [Op.eq]: null },
+					],
 				},
 			},
 		});
@@ -74,7 +75,7 @@ export class BankSettingService {
 		org_name,
 		start_date,
 		end_date,
-	}: z.infer<typeof updateBankSettingInput>): Promise<void> {
+	}: z.infer<typeof updateBankSettingService>): Promise<void> {
 		const bankSetting = await this.getBankSettingById(id!);
 		if (bankSetting == null) {
 			throw new BaseResponseError("BankSetting does not exist");
@@ -97,10 +98,10 @@ export class BankSettingService {
 	}
 
 	async deleteBankSetting(id: number): Promise<void> {
-		const now = new Date();
+		const current_date_string = get_date_string(new Date());
 		await this.updateBankSetting({
 			id: id,
-			end_date: now,
+			end_date: current_date_string,
 		});
 	}
 }

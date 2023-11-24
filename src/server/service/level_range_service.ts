@@ -2,8 +2,8 @@ import { injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {
-	createLevelRangeInput,
-	updateLevelRangeInput,
+	createLevelRangeService,
+	updateLevelRangeService,
 } from "../api/input_type/parameters_input";
 import { LevelRange } from "../database/entity/level_range";
 import { select_value } from "./helper_function";
@@ -16,7 +16,7 @@ export class LevelRangeService {
 		type,
 		level_start,
 		level_end,
-	}: z.infer<typeof createLevelRangeInput>): Promise<LevelRange> {
+	}: z.infer<typeof createLevelRangeService>): Promise<LevelRange> {
 		const newData = await LevelRange.create({
 			type: type,
 			level_start: level_start,
@@ -51,7 +51,7 @@ export class LevelRangeService {
 		type,
 		level_start,
 		level_end,
-	}: z.infer<typeof updateLevelRangeInput>): Promise<void> {
+	}: z.infer<typeof updateLevelRangeService>): Promise<void> {
 		const levelRange = await this.getLevelRangeById(id!);
 		if (levelRange == null) {
 			throw new BaseResponseError("LevelRange does not exist");

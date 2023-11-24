@@ -1,13 +1,12 @@
 import { injectable } from "tsyringe";
-import { BonusPosition} from "../database/entity/bonus_position";
+import { BonusPosition } from "../database/entity/bonus_position";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {
-    createBonusPositionInput,
-	updateBonusPositionInput,
+	createBonusPositionService,
+	updateBonusPositionService,
 } from "../api/input_type/parameters_input";
 import { select_value } from "./helper_function";
-
 
 @injectable()
 export class BonusPositionService {
@@ -15,11 +14,11 @@ export class BonusPositionService {
 
 	async createBonusPosition({
 		position,
-        multiplier,
-	}: z.infer<typeof createBonusPositionInput>): Promise<BonusPosition> {
+		multiplier,
+	}: z.infer<typeof createBonusPositionService>): Promise<BonusPosition> {
 		const newData = await BonusPosition.create({
-            position: position,
-            multiplier: multiplier,
+			position: position,
+			multiplier: multiplier,
 			create_by: "system",
 			update_by: "system",
 		});
@@ -35,7 +34,7 @@ export class BonusPositionService {
 		return bonusPosition;
 	}
 
-    async getCurrentBonusPosition(): Promise<BonusPosition[] | null> {
+	async getCurrentBonusPosition(): Promise<BonusPosition[] | null> {
 		const bonusPosition = this.getAllBonusPosition();
 		return bonusPosition;
 	}
@@ -48,8 +47,8 @@ export class BonusPositionService {
 	async updateBonusPosition({
 		id,
 		position,
-        multiplier,
-	}: z.infer<typeof updateBonusPositionInput>): Promise<void> {
+		multiplier,
+	}: z.infer<typeof updateBonusPositionService>): Promise<void> {
 		const bonus_position = await this.getBonusPositionById(id!);
 		if (bonus_position == null) {
 			throw new BaseResponseError("BonusPosition does not exist");
@@ -58,7 +57,7 @@ export class BonusPositionService {
 		const affectedCount = await BonusPosition.update(
 			{
 				position: select_value(position, bonus_position.position),
-				multiplier: select_value(multiplier , bonus_position.multiplier),
+				multiplier: select_value(multiplier, bonus_position.multiplier),
 				update_by: "system",
 			},
 			{ where: { id: id } }
@@ -69,8 +68,6 @@ export class BonusPositionService {
 	}
 
 	async deleteBonusPosition(id: number): Promise<void> {
-        BonusPosition.destroy(
-            { where: { id: id } }
-        );
+		BonusPosition.destroy({ where: { id: id } });
 	}
 }

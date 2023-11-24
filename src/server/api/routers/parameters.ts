@@ -1,27 +1,24 @@
 import { z } from "zod";
 import { container } from "tsyringe";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { get_date_string } from "~/server/service/helper_function";
 import {
-	createTRPCRouter,
-	publicProcedure,
-	protectedProcedure,
-} from "~/server/api/trpc";
-import {
-	createAttendanceSettingInput,
-	updateAttendanceSettingInput,
-	createBankSettingInput,
-	updateBankSettingInput,
-	createBonusDepartmentInput,
-	updateBonusDepartmentInput,
-	createBonusPositionInput,
-	updateBonusPositionInput,
-	createBonusSeniorityInput,
-	updateBonusSeniorityInput,
-	createBonusSettingInput,
-	updateBonusSettingInput,
-	createInsuranceRateSettingInput,
-	updateInsuranceRateSettingInput,
-	createBonusPositionTypeInput,
-	updateBonusPositionTypeInput,
+	createAttendanceSettingAPI,
+	createBankSettingAPI,
+	createBonusDepartmentAPI,
+	createBonusPositionAPI,
+	createBonusPositionTypeAPI,
+	createBonusSeniorityAPI,
+	createBonusSettingAPI,
+	createInsuranceRateSettingAPI,
+	updateAttendanceSettingAPI,
+	updateBankSettingAPI,
+	updateBonusDepartmentAPI,
+	updateBonusPositionAPI,
+	updateBonusPositionTypeAPI,
+	updateBonusSeniorityAPI,
+	updateBonusSettingAPI,
+	updateInsuranceRateSettingAPI,
 } from "../input_type/parameters_input";
 import { BankSettingService } from "~/server/service/bank_setting_service";
 import { AttendanceSettingService } from "~/server/service/attendance_setting_service";
@@ -35,10 +32,18 @@ import { BonusPositionTypeService } from "~/server/service/bonus_position_type_s
 
 export const parametersRouter = createTRPCRouter({
 	createBankSetting: publicProcedure
-		.input(createBankSettingInput)
+		.input(createBankSettingAPI)
 		.mutation(async ({ input }) => {
 			const bankService = container.resolve(BankSettingService);
-			let newdata = await bankService.createBankSetting(input);
+			let newdata = await bankService.createBankSetting({
+				...input,
+				start_date: input.start_date
+					? get_date_string(input.start_date)
+					: null,
+				end_date: input.end_date
+					? get_date_string(input.end_date)
+					: null,
+			});
 			return newdata;
 		}),
 
@@ -61,10 +66,18 @@ export const parametersRouter = createTRPCRouter({
 	}),
 
 	updateBankSetting: publicProcedure
-		.input(updateBankSettingInput)
+		.input(updateBankSettingAPI)
 		.mutation(async ({ input }) => {
 			const bankService = container.resolve(BankSettingService);
-			let newdata = await bankService.updateBankSetting(input);
+			let newdata = await bankService.updateBankSetting({
+				...input,
+				start_date: input.start_date
+					? get_date_string(input.start_date)
+					: null,
+				end_date: input.end_date
+					? get_date_string(input.end_date)
+					: null,
+			});
 			return newdata;
 		}),
 
@@ -97,25 +110,39 @@ export const parametersRouter = createTRPCRouter({
 	}),
 
 	createAttendanceSetting: publicProcedure
-		.input(createAttendanceSettingInput)
+		.input(createAttendanceSettingAPI)
 		.mutation(async ({ input }) => {
 			const attendanceService = container.resolve(
 				AttendanceSettingService
 			);
-			let newdata = await attendanceService.createAttendanceSetting(
-				input
-			);
+			let newdata = await attendanceService.createAttendanceSetting({
+				...input,
+				start_date: input.start_date
+					? get_date_string(input.start_date)
+					: null,
+				end_date: input.end_date
+					? get_date_string(input.end_date)
+					: null,
+			});
 			await attendanceService.rescheduleAttendanceSetting();
 			return newdata;
 		}),
 
 	updateAttendanceSetting: publicProcedure
-		.input(updateAttendanceSettingInput)
+		.input(updateAttendanceSettingAPI)
 		.mutation(async ({ input }) => {
 			const attendanceService = container.resolve(
 				AttendanceSettingService
 			);
-			await attendanceService.updateAttendanceSetting(input);
+			await attendanceService.updateAttendanceSetting({
+				...input,
+				start_date: input.start_date
+					? get_date_string(input.start_date)
+					: null,
+				end_date: input.end_date
+					? get_date_string(input.end_date)
+					: null,
+			});
 			await attendanceService.rescheduleAttendanceSetting();
 		}),
 
@@ -130,7 +157,9 @@ export const parametersRouter = createTRPCRouter({
 		}),
 
 	getCurrentInsuranceRateSetting: publicProcedure.query(async () => {
-		const insuranceRateService = container.resolve(InsuranceRateSettingService);
+		const insuranceRateService = container.resolve(
+			InsuranceRateSettingService
+		);
 		let insuranceRateSetting =
 			await insuranceRateService.getCurrentInsuranceRateSetting();
 		if (insuranceRateSetting == null) {
@@ -140,7 +169,9 @@ export const parametersRouter = createTRPCRouter({
 	}),
 
 	getAllInsuranceRateSetting: publicProcedure.query(async () => {
-		const insuranceRateService = container.resolve(InsuranceRateSettingService);
+		const insuranceRateService = container.resolve(
+			InsuranceRateSettingService
+		);
 		let insuranceRateSetting =
 			await insuranceRateService.getAllInsuranceRateSetting();
 		if (insuranceRateSetting.length == 0) {
@@ -150,25 +181,41 @@ export const parametersRouter = createTRPCRouter({
 	}),
 
 	createInsuranceRateSetting: publicProcedure
-		.input(createInsuranceRateSettingInput)
+		.input(createInsuranceRateSettingAPI)
 		.mutation(async ({ input }) => {
 			const insuranceRateService = container.resolve(
 				InsuranceRateSettingService
 			);
 			let newdata = await insuranceRateService.createInsuranceRateSetting(
-				input
+				{
+					...input,
+					start_date: input.start_date
+						? get_date_string(input.start_date)
+						: null,
+					end_date: input.end_date
+						? get_date_string(input.end_date)
+						: null,
+				}
 			);
 			await insuranceRateService.rescheduleInsuranceRateSetting();
 			return newdata;
 		}),
 
 	updateInsuranceRateSetting: publicProcedure
-		.input(updateInsuranceRateSettingInput)
+		.input(updateInsuranceRateSettingAPI)
 		.mutation(async ({ input }) => {
 			const insuranceRateService = container.resolve(
 				InsuranceRateSettingService
 			);
-			await insuranceRateService.updateInsuranceRateSetting(input);
+			await insuranceRateService.updateInsuranceRateSetting({
+				...input,
+				start_date: input.start_date
+					? get_date_string(input.start_date)
+					: null,
+				end_date: input.end_date
+					? get_date_string(input.end_date)
+					: null,
+			});
 			await insuranceRateService.rescheduleInsuranceRateSetting();
 		}),
 
@@ -182,28 +229,26 @@ export const parametersRouter = createTRPCRouter({
 			await insuranceRateService.rescheduleInsuranceRateSetting();
 		}),
 
-	createBonusDepartment: publicProcedure.input(createBonusDepartmentInput).mutation(async ({ input }) => {
+	createBonusDepartment: publicProcedure
+		.input(createBonusDepartmentAPI)
+		.mutation(async ({ input }) => {
+			const bonusDepartmentService = container.resolve(
+				BonusDepartmentService
+			);
+			let bonusDepartment =
+				await bonusDepartmentService.getCurrentBonusDepartment();
+			if (bonusDepartment == null) {
+				throw new BaseResponseError("BonusDepartment does not exist");
+			}
+			return bonusDepartment;
+		}),
+
+	getAllBonusDepartment: publicProcedure.query(async () => {
 		const bonusDepartmentService = container.resolve(
 			BonusDepartmentService
 		);
-		let newdata = await bonusDepartmentService.createBonusDepartment(
-			input
-		);
-		return newdata;
-	}),
-
-	getCurrentBonusDepartment: publicProcedure.query(async () => {
-		const bonusDepartmentService = container.resolve(BonusDepartmentService);
-		let bonusDepartment = await bonusDepartmentService.getCurrentBonusDepartment();
-		if (bonusDepartment == null) {
-			throw new BaseResponseError("BonusDepartment does not exist");
-		}
-		return bonusDepartment;
-	}),
-
-	getAllBonusDepartment: publicProcedure.query(async () => {
-		const bonusDepartmentService = container.resolve(BonusDepartmentService);
-		let bonusDepartment = await bonusDepartmentService.getAllBonusDepartment();
+		let bonusDepartment =
+			await bonusDepartmentService.getAllBonusDepartment();
 		if (bonusDepartment == null) {
 			throw new BaseResponseError("BonusDepartment does not exist");
 		}
@@ -211,7 +256,7 @@ export const parametersRouter = createTRPCRouter({
 	}),
 
 	updateBonusDepartment: publicProcedure
-		.input(updateBonusDepartmentInput)
+		.input(updateBonusDepartmentAPI)
 		.mutation(async ({ input }) => {
 			const bonusDepartmentService = container.resolve(
 				BonusDepartmentService
@@ -232,19 +277,19 @@ export const parametersRouter = createTRPCRouter({
 			await bonusDepartmentService.deleteBonusDepartment(input.id);
 		}),
 
-	createBonusPosition: publicProcedure.input(createBonusPositionInput).mutation(async ({ input }) => {
-		const bonusPositionService = container.resolve(
-			BonusPositionService
-		);
-		let newdata = await bonusPositionService.createBonusPosition(
-			input
-		);
-		return newdata;
-	}),
+	createBonusPosition: publicProcedure
+		.input(createBonusPositionAPI)
+		.mutation(async ({ input }) => {
+			const bonusPositionService =
+				container.resolve(BonusPositionService);
+			let newdata = await bonusPositionService.createBonusPosition(input);
+			return newdata;
+		}),
 
 	getCurrentBonusPosition: publicProcedure.query(async () => {
 		const bonusPositionService = container.resolve(BonusPositionService);
-		let bonusPosition = await bonusPositionService.getCurrentBonusPosition();
+		let bonusPosition =
+			await bonusPositionService.getCurrentBonusPosition();
 		if (bonusPosition == null) {
 			throw new BaseResponseError("BonusPosition does not exist");
 		}
@@ -261,14 +306,11 @@ export const parametersRouter = createTRPCRouter({
 	}),
 
 	updateBonusPosition: publicProcedure
-		.input(updateBonusPositionInput)
+		.input(updateBonusPositionAPI)
 		.mutation(async ({ input }) => {
-			const bonusPositionService = container.resolve(
-				BonusPositionService
-			);
-			let newdata = await bonusPositionService.updateBonusPosition(
-				input
-			);
+			const bonusPositionService =
+				container.resolve(BonusPositionService);
+			let newdata = await bonusPositionService.updateBonusPosition(input);
 			return newdata;
 		}),
 
@@ -276,25 +318,28 @@ export const parametersRouter = createTRPCRouter({
 		.input(z.object({ id: z.number() }))
 		.mutation(async (opts) => {
 			const { input } = opts;
-			const bonusPositionService = container.resolve(
-				BonusPositionService
-			);
+			const bonusPositionService =
+				container.resolve(BonusPositionService);
 			await bonusPositionService.deleteBonusPosition(input.id);
 		}),
 
-	createBonusPositionType: publicProcedure.input(createBonusPositionTypeInput).mutation(async ({ input }) => {
+	createBonusPositionType: publicProcedure
+		.input(createBonusPositionTypeAPI)
+		.mutation(async ({ input }) => {
+			const bonusPositionTypeService = container.resolve(
+				BonusPositionTypeService
+			);
+			let newdata =
+				await bonusPositionTypeService.createBonusPositionType(input);
+			return newdata;
+		}),
+
+	getCurrentBonusPositioType: publicProcedure.query(async () => {
 		const bonusPositionTypeService = container.resolve(
 			BonusPositionTypeService
 		);
-		let newdata = await bonusPositionTypeService.createBonusPositionType(
-			input
-		);
-		return newdata;
-	}),
-
-	getCurrentBonusPositioType: publicProcedure.query(async () => {
-		const bonusPositionTypeService = container.resolve(BonusPositionTypeService);
-		let bonusPositionType = await bonusPositionTypeService.getCurrentBonusPositionType();
+		let bonusPositionType =
+			await bonusPositionTypeService.getCurrentBonusPositionType();
 		if (bonusPositionType == null) {
 			throw new BaseResponseError("BonusPositionType does not exist");
 		}
@@ -302,8 +347,11 @@ export const parametersRouter = createTRPCRouter({
 	}),
 
 	getAllBonusPositionType: publicProcedure.query(async () => {
-		const bonusPositionTypeService = container.resolve(BonusPositionTypeService);
-		let bonusPositionType = await bonusPositionTypeService.getAllBonusPositionType();
+		const bonusPositionTypeService = container.resolve(
+			BonusPositionTypeService
+		);
+		let bonusPositionType =
+			await bonusPositionTypeService.getAllBonusPositionType();
 		if (bonusPositionType == null) {
 			throw new BaseResponseError("BonusPositionType does not exist");
 		}
@@ -311,14 +359,13 @@ export const parametersRouter = createTRPCRouter({
 	}),
 
 	updateBonusPositionType: publicProcedure
-		.input(updateBonusPositionTypeInput)
+		.input(updateBonusPositionTypeAPI)
 		.mutation(async ({ input }) => {
 			const bonusPositionTypeService = container.resolve(
 				BonusPositionTypeService
 			);
-			let newdata = await bonusPositionTypeService.updateBonusPositionType(
-				input
-			);
+			let newdata =
+				await bonusPositionTypeService.updateBonusPositionType(input);
 			return newdata;
 		}),
 
@@ -332,19 +379,22 @@ export const parametersRouter = createTRPCRouter({
 			await bonusPositionTypeService.deleteBonusPositionType(input.id);
 		}),
 
-	createBonusSeniority: publicProcedure.input(createBonusSeniorityInput).mutation(async ({ input }) => {
-		const bonusSeniorityService = container.resolve(
-			BonusSeniorityService
-		);
-		let newdata = await bonusSeniorityService.createBonusSeniority(
-			input
-		);
-		return newdata;
-	}),
+	createBonusSeniority: publicProcedure
+		.input(createBonusSeniorityAPI)
+		.mutation(async ({ input }) => {
+			const bonusSeniorityService = container.resolve(
+				BonusSeniorityService
+			);
+			let newdata = await bonusSeniorityService.createBonusSeniority(
+				input
+			);
+			return newdata;
+		}),
 
 	getCurrentBonusSeniority: publicProcedure.query(async () => {
 		const bonusSeniorityService = container.resolve(BonusSeniorityService);
-		let bonusSeniority = await bonusSeniorityService.getCurrentBonusSeniority();
+		let bonusSeniority =
+			await bonusSeniorityService.getCurrentBonusSeniority();
 		if (bonusSeniority == null) {
 			throw new BaseResponseError("BonusPosition does not exist");
 		}
@@ -361,7 +411,7 @@ export const parametersRouter = createTRPCRouter({
 	}),
 
 	updateBonusSeniority: publicProcedure
-		.input(updateBonusSeniorityInput)
+		.input(updateBonusSeniorityAPI)
 		.mutation(async ({ input }) => {
 			const bonusSeniorityService = container.resolve(
 				BonusSeniorityService
@@ -382,15 +432,13 @@ export const parametersRouter = createTRPCRouter({
 			await bonusSeniorityService.deleteBonusSeniority(input.id);
 		}),
 
-	createBonusSetting: publicProcedure.input(createBonusSettingInput).mutation(async ({ input }) => {
-		const bonusSettingService = container.resolve(
-			BonusSettingService
-		);
-		let newdata = await bonusSettingService.createBonusSetting(
-			input
-		);
-		return newdata;
-	}),
+	createBonusSetting: publicProcedure
+		.input(createBonusSettingAPI)
+		.mutation(async ({ input }) => {
+			const bonusSettingService = container.resolve(BonusSettingService);
+			let newdata = await bonusSettingService.createBonusSetting(input);
+			return newdata;
+		}),
 
 	getCurrentBonusSetting: publicProcedure.query(async () => {
 		const bonusSettingService = container.resolve(BonusSettingService);
@@ -411,14 +459,10 @@ export const parametersRouter = createTRPCRouter({
 	}),
 
 	updateBonusSetting: publicProcedure
-		.input(updateBonusSettingInput)
+		.input(updateBonusSettingAPI)
 		.mutation(async ({ input }) => {
-			const bonusSettingService = container.resolve(
-				BonusSettingService
-			);
-			let newdata = await bonusSettingService.updateBonusSetting(
-				input
-			);
+			const bonusSettingService = container.resolve(BonusSettingService);
+			let newdata = await bonusSettingService.updateBonusSetting(input);
 			return newdata;
 		}),
 
@@ -426,9 +470,7 @@ export const parametersRouter = createTRPCRouter({
 		.input(z.object({ id: z.number() }))
 		.mutation(async (opts) => {
 			const { input } = opts;
-			const bonusSettingService = container.resolve(
-				BonusSettingService
-			);
+			const bonusSettingService = container.resolve(BonusSettingService);
 			await bonusSettingService.deleteBonusSetting(input.id);
 		}),
 });
