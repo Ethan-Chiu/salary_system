@@ -20,6 +20,8 @@ import {
 	updateBonusSettingInput,
 	createInsuranceRateSettingInput,
 	updateInsuranceRateSettingInput,
+	createBonusPositionTypeInput,
+	updateBonusPositionTypeInput,
 } from "../input_type/parameters_input";
 import { BankSettingService } from "~/server/service/bank_setting_service";
 import { AttendanceSettingService } from "~/server/service/attendance_setting_service";
@@ -29,6 +31,7 @@ import { BonusPositionService } from "~/server/service/bonus_position_service";
 import { BonusSeniorityService } from "~/server/service/bonus_seniority_service";
 import { BonusSettingService } from "~/server/service/bonus_setting_service";
 import { InsuranceRateSettingService } from "~/server/service/insurance_rate_setting_service";
+import { BonusPositionTypeService } from "~/server/service/bonus_position_type_service";
 
 export const parametersRouter = createTRPCRouter({
 	createBankSetting: publicProcedure
@@ -269,7 +272,7 @@ export const parametersRouter = createTRPCRouter({
 			return newdata;
 		}),
 
-	deleteBonusPositon: publicProcedure
+	deleteBonusPosition: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.mutation(async (opts) => {
 			const { input } = opts;
@@ -278,6 +281,57 @@ export const parametersRouter = createTRPCRouter({
 			);
 			await bonusPositionService.deleteBonusPosition(input.id);
 		}),
+
+	createBonusPositionType: publicProcedure.input(createBonusPositionTypeInput).mutation(async ({ input }) => {
+		const bonusPositionTypeService = container.resolve(
+			BonusPositionTypeService
+		);
+		let newdata = await bonusPositionTypeService.createBonusPositionType(
+			input
+		);
+		return newdata;
+	}),
+
+	getCurrentBonusPositioType: publicProcedure.query(async () => {
+		const bonusPositionTypeService = container.resolve(BonusPositionTypeService);
+		let bonusPositionType = await bonusPositionTypeService.getCurrentBonusPositionType();
+		if (bonusPositionType == null) {
+			throw new BaseResponseError("BonusPositionType does not exist");
+		}
+		return bonusPositionType;
+	}),
+
+	getAllBonusPositionType: publicProcedure.query(async () => {
+		const bonusPositionTypeService = container.resolve(BonusPositionTypeService);
+		let bonusPositionType = await bonusPositionTypeService.getAllBonusPositionType();
+		if (bonusPositionType == null) {
+			throw new BaseResponseError("BonusPositionType does not exist");
+		}
+		return bonusPositionType;
+	}),
+
+	updateBonusPositionType: publicProcedure
+		.input(updateBonusPositionTypeInput)
+		.mutation(async ({ input }) => {
+			const bonusPositionTypeService = container.resolve(
+				BonusPositionTypeService
+			);
+			let newdata = await bonusPositionTypeService.updateBonusPositionType(
+				input
+			);
+			return newdata;
+		}),
+
+	deleteBonusPositionType: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.mutation(async (opts) => {
+			const { input } = opts;
+			const bonusPositionTypeService = container.resolve(
+				BonusPositionTypeService
+			);
+			await bonusPositionTypeService.deleteBonusPositionType(input.id);
+		}),
+
 	createBonusSeniority: publicProcedure.input(createBonusSeniorityInput).mutation(async ({ input }) => {
 		const bonusSeniorityService = container.resolve(
 			BonusSeniorityService
