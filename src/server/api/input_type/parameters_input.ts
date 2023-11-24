@@ -160,7 +160,7 @@ export const updateBonusSettingInput = z.object({
 	criterion_date: z.date().nullable(),
 	base_on: z.string().nullable(),
 	type: z.string().nullable(),
-});
+}).partial();
 
 export const updateInsuranceRateSettingInput = z
 	.object({
