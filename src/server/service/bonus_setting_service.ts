@@ -42,6 +42,9 @@ export class BonusSettingService {
 
     async getCurrentBonusSetting(): Promise<BonusSetting[] > {
 		const bonusSetting = await this.getAllBonusSetting();
+		if (bonusSetting.length > 1) {
+			throw new BaseResponseError("more than one Bonus setting");
+		}
 		return bonusSetting;
 	}
 
