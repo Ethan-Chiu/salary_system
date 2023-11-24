@@ -62,7 +62,7 @@ BonusPositionType.init(
 	},
 	{
 		sequelize,
-		tableName: "U_BONUS_POSITION",
+		tableName: "U_BONUS_POSITION_TYPE",
 		createdAt: 'create_date',
 		updatedAt: 'update_date',
 	}

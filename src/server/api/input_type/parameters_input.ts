@@ -147,7 +147,6 @@ export const createBonusPositionInput = z.object({
 export const updateBonusPositionInput = z.object({
 	id: z.number(),
 	position: z.number().nullable(),
-	position_type: z.string().nullable(),
 	multiplier: z.number().nullable(),
 }).partial();
 
