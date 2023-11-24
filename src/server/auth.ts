@@ -154,8 +154,7 @@ export const authOptions: NextAuthOptions = {
 					console.log(parseRole.error);
 					throw new BaseResponseError(`Internal Error: Wrong user role`);
 				}
-
-				console.log(parseRole.data);
+				// console.log(parseRole.data);
 
 				const jwtUser: JWTUser = {
 					id: user.id.toString(),

@@ -11,21 +11,16 @@ import { RolesEnum, RolesEnumType } from "../types/role_type";
 import { accessiblePages } from "../types/access_page_type";
 
 export const accessRouter = createTRPCRouter({
-	accessByRole: publicProcedure
-		.input(
-			z.object({
-				role: RolesEnum
-			})
-		)
+	accessByRole: userProcedure
         .output(
             accessiblePages
         )
-		.query(async ({ input }) => {
+		.query(async ({ ctx }) => {
 			const database = container.resolve(Database).connection;
 
             const ret = accessiblePages.parse({});
 
-            switch(input.role) {
+            switch(ctx.session?.user.role) {
                 case RolesEnumType.Admin: {
                     ret.actions = true;
                     ret.report = true;

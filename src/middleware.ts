@@ -1,14 +1,23 @@
 import { NextResponse } from "next/server";
 import { NextRequestWithAuth, withAuth } from "next-auth/middleware";
+import { RolesEnumType } from "./server/api/types/role_type";
 
 export default withAuth(
-	function middleware(request: NextRequestWithAuth) {
-		console.log("request token", request.nextauth.token);
-		// if (request.nextUrl.pathname.startsWith("/parameters")) {
-		// 	return NextResponse.rewrite(
-		// 		new URL("/", request.url)
-		// 	);
-		// }
+	async function middleware(request: NextRequestWithAuth) {
+		const token = request.nextauth.token;
+		// console.log("request token", token);
+
+		if (request.nextUrl.pathname.startsWith("/parameters")) {
+			if (token?.role == RolesEnumType.Admin) {
+				return NextResponse.rewrite(
+					new URL("/parameters", request.url)
+				);
+			}
+			console.log("Only admin can view parameters page")
+			return NextResponse.redirect(
+				new URL("/", request.url)
+			);
+		}
 	},
 	{
 		callbacks: {
