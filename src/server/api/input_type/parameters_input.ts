@@ -111,6 +111,22 @@ export const createInsuranceRateSettingInput = z.object({
 	start_date: z.date(),
 	end_date: z.date().nullable(),
 });
+export const updateInsuranceRateSettingInput = z
+.object({
+	id: z.number(),
+	min_wage_rate: z.number().nullable(),
+	l_i_accident_rate: z.number().nullable(),
+	l_i_employment_premium_rate: z.number().nullable(),
+	l_i_occupational_hazard_rate: z.number().nullable(),
+	l_i_wage_replacement_rate: z.number().nullable(),
+	h_i_standard_rate: z.number().nullable(),
+	h_i_avg_dependents_count: z.number().nullable(),
+	v2_h_i_supp_premium_rate: z.number().nullable(),
+	v2_h_i_dock_tsx_thres: z.number().nullable(),
+	start_date: z.date().nullable(),
+	end_date: z.date().nullable(),
+})
+.partial();
 
 export const createBonusDepartmentInput = z.object({
 	department: z.string(),
@@ -125,13 +141,23 @@ export const updateBonusDepartmentInput = z.object({
 
 export const createBonusPositionInput = z.object({
 	position: z.number(),
-	position_type: z.string(),
 	multiplier: z.number(),
 });
 
 export const updateBonusPositionInput = z.object({
 	id: z.number(),
 	position: z.number().nullable(),
+	position_type: z.string().nullable(),
+	multiplier: z.number().nullable(),
+}).partial();
+
+export const createBonusPositionTypeInput = z.object({
+	position_type: z.string(),
+	multiplier: z.number(),
+});
+
+export const updateBonusPositionTypeInput = z.object({
+	id: z.number(),
 	position_type: z.string().nullable(),
 	multiplier: z.number().nullable(),
 }).partial();
@@ -163,22 +189,23 @@ export const updateBonusSettingInput = z.object({
 })
 .partial();
 
-export const updateInsuranceRateSettingInput = z
+
+
+export const createEmployeeAccountInput = z.object({
+	emp_id: z.string(),
+	bank_account: z.string(),
+	ratio: z.number(),
+});
+
+export const updateEmployeeAccountInput = z
 	.object({
 		id: z.number(),
-		min_wage_rate: z.number().nullable(),
-		l_i_accident_rate: z.number().nullable(),
-		l_i_employment_premium_rate: z.number().nullable(),
-		l_i_occupational_hazard_rate: z.number().nullable(),
-		l_i_wage_replacement_rate: z.number().nullable(),
-		h_i_standard_rate: z.number().nullable(),
-		h_i_avg_dependents_count: z.number().nullable(),
-		v2_h_i_supp_premium_rate: z.number().nullable(),
-		v2_h_i_dock_tsx_thres: z.number().nullable(),
-		start_date: z.date().nullable(),
-		end_date: z.date().nullable(),
+		emp_id: z.string(),
+		bank_account: z.string(),
+		ratio: z.number(),
 	})
 	.partial();
+
 
 export const createLevelRangeInput = z.object({
 	type: z.string(),
