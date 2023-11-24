@@ -22,6 +22,7 @@ export function getAttendanceFunctions(func_name: string, getAttendanceSetting: 
     if(func_name === "create")  return createAttendanceSetting;
     else if(func_name === "update") return updateAttendanceSetting;
     else    return notFoundFunction;
+
 }
 
 // Bank api functions
@@ -35,10 +36,17 @@ export function getBankFunctions(func_name: string, getBankSetting: any) {
     else    return notFoundFunction;
 }
 
-// 
+// Bonus api functions
+export function getBonusSettingFunctions(func_name: string, getBonusSetting: any) {
+    const updateBonusSetting = api.parameters.updateBonusSetting.useMutation({onSuccess: () => {getBonusSetting.refetch();},});
+    const createBonusSetting = api.parameters.createBonusSetting.useMutation({onSuccess: () => {getBonusSetting.refetch();},});
+    const deleteBonusSetting = api.parameters.deleteBonusSetting.useMutation({onSuccess: () => {getBonusSetting.refetch();},});
+    if(func_name === "update")  return updateBonusSetting;
+    else if(func_name === "create") return createBonusSetting;
+    else if(func_name === "delete") return deleteBonusSetting;
+    else    return notFoundFunction;
+}
 
 
 const notFoundFunction = (d: any) => {console.log("not found")}
-
-
 

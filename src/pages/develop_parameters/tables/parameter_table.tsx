@@ -519,6 +519,7 @@ function CreateDialog({
 								onChange={() => {updateIsValid(inputRef.current?.value??'');}}
 							/>
 						) : (
+							// <></>
 							<Input
 								ref={inputRef}
 								id="value"

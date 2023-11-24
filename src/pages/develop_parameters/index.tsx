@@ -32,7 +32,7 @@ import FadeLoader from "react-spinners/FadeLoader";
 import Multiselect from "multiselect-react-dropdown";
 import * as TABLE_NAMES from "../table_names";
 
-import { getAttendanceFunctions, getBankFunctions } from "./apiFunctions";
+import { getAttendanceFunctions, getBankFunctions, getBonusSettingFunctions } from "./apiFunctions";
 import { updateAttendanceSettingInput } from "~/server/api/input_type/parameters_input";
 
 const API_PARAMETERS = api.parameters;
@@ -58,19 +58,6 @@ let datas: DATA[] = [
 			// createSettingItem("test3", "test"),
 			// createSettingItem("test4", 123),
 			// createSettingItem("test5", new Date()),
-		],
-	},
-	{
-		table_name: TABLE_NAMES.TABLE_BANK_SETTING,
-		table_type: "bank",
-		table_content: [
-			// createBankRow(1, "900", "土地銀行", "001", "新竹分公司", new Date(), new Date())
-		],
-	},
-	{
-		table_name: TABLE_NAMES.TABLE_INSURANCE,
-		table_type: "typical",
-		table_content: [
 			// createSettingItem("test1", "A", ["A", "B", "C", "D", "E"]),
 			// createSettingItem("test2", "test"),
 			// createSettingItem("test3", "X", ["X", "Y", "Z"]),
@@ -79,6 +66,21 @@ let datas: DATA[] = [
 			// createSettingItem("create_by", new Date()),
 		],
 	},
+	{
+		table_name: TABLE_NAMES.TABLE_BANK_SETTING,
+		table_type: "bank",
+		table_content: [], // createBankRow(1, "900", "土地銀行", "001", "新竹分公司", new Date(), new Date())
+	},
+	{
+		table_name: TABLE_NAMES.TABLE_INSURANCE,
+		table_type: "typical",
+		table_content: [],
+	},
+	{
+		table_name: TABLE_NAMES.TABLE_BONUS_SETTING,
+		table_type: "typical",
+		table_content: []
+	}
 ];
 
 function find_index(key: string) {
@@ -130,7 +132,12 @@ const PageParameters: NextPageWithLayout = () => {
 	const updateAttendanceSetting = (getAttendanceFunctions("update", getAttendanceSetting) as any);
 	const createAttendanceSetting = (getAttendanceFunctions("create", getAttendanceSetting) as any);
 	
-	
+	const getBonusSetting = api.parameters.getCurrentBonusSetting.useQuery();
+	const updateBonusSetting = (getBonusSettingFunctions("update", getBonusSetting) as any);
+	const createBonusSetting = (getBonusSettingFunctions("create", getBonusSetting) as any);
+	const deleteBonusSetting = (getBonusSettingFunctions("delete", getBonusSetting) as any);
+
+
 	const lastMonthDate = new Date();
   	lastMonthDate.setMonth(lastMonthDate.getMonth() - 1);
 
@@ -155,6 +162,15 @@ const PageParameters: NextPageWithLayout = () => {
 			local_worker_holiday: 0,
 			foreign_worker_holiday: 0,
 		});
+
+	const testInsertBonusSettingData = () => {
+		createBonusSetting.mutate({
+			type: "123",
+			fixed_multiplier: 123,
+			criterion_date: new Date(),
+			base_on: "test"
+		})
+	}
 
 	function updateDatas(
 		t_name: string,
@@ -183,6 +199,7 @@ const PageParameters: NextPageWithLayout = () => {
 		start_condition([
 			getBankSetting.isFetched,
 			getAttendanceSetting.isFetched,
+			getBonusSetting.isFetched,
 		])
 	) {
 		console.log(
@@ -199,7 +216,7 @@ const PageParameters: NextPageWithLayout = () => {
 			})
 		);
 		updateDatas(
-			"銀行",
+			TABLE_NAMES.TABLE_BANK_SETTING,
 			(getBankSetting.data ?? []).map((bank: any) => {
 				return {
 					id: bank.id,
@@ -215,7 +232,7 @@ const PageParameters: NextPageWithLayout = () => {
 
 		console.log(getAttendanceSetting.data);
 		updateDatas(
-			"請假加班",
+			TABLE_NAMES.TABLE_ATTENDANCE,
 			Object.keys(getAttendanceSetting.data ?? {}).map((key) => {
 				return {
 					name: key as string,
@@ -229,6 +246,25 @@ const PageParameters: NextPageWithLayout = () => {
 				};
 			})
 		);
+
+		console.log(getBonusSetting.data);
+		updateDatas(
+			TABLE_NAMES.TABLE_BONUS_SETTING,
+			Object.keys(getBonusSetting.data ?? {}).map((key) => {
+				return {
+					name: key as string,
+					value:
+						(key.includes("_date") || key.includes("At"))
+							? 
+							(
+								((getBonusSetting.data as any)[key]) ? new Date((getBonusSetting.data as any)[key]) : null
+							)
+							: (getBonusSetting.data as any)[key],
+				};
+			})
+		);
+
+
 		return HTMLElement();
 	} else {
 		const loaderStyle = {
@@ -333,8 +369,8 @@ const PageParameters: NextPageWithLayout = () => {
 				>
 					{datas.map((data, index) => {
 						if (!filterTables[index]) return <></>;
-						if (data.table_type == "typical") {
-							return (
+						switch (data.table_name) {
+							case TABLE_NAMES.TABLE_ATTENDANCE:	return (
 								<ParameterTable
 									defaultData={data.table_content}
 									table_name={data.table_name}
@@ -349,8 +385,22 @@ const PageParameters: NextPageWithLayout = () => {
 									}}
 								/>
 							);
-						} else if (data.table_type == "bank") {
-							const bankTable = (
+							case TABLE_NAMES.TABLE_BONUS_SETTING:	return (
+								<ParameterTable
+									defaultData={data.table_content}
+									table_name={data.table_name}
+									table_type={data.table_type}
+									index={find_index(data.table_name)}
+									globalFilter={parameterGlobalFilter}
+									updateFunction = {(d:any) => {
+										updateBonusSetting.mutate(d)
+									}}
+									createFunction = {(d:any) => {
+										createBonusSetting.mutate(d)
+									}}
+								/>
+							);
+							case TABLE_NAMES.TABLE_BANK_SETTING:	return (
 								<BankTable
 									defaultData={data.table_content}
 									table_name={data.table_name}
@@ -368,13 +418,18 @@ const PageParameters: NextPageWithLayout = () => {
 									}}
 								/>
 							);
-							return bankTable;
+							default: return <></>
 						}
 					})}
 				</Accordion>
 				<Button onClick={() => testInsertAttendanceData()}>
-					TEST
+					Insert AttendanceDate
 				</Button>
+				<br/>
+				<Button onClick={() => testInsertBonusSettingData()}>
+					Insert Bonus Setting
+				</Button>
+				<br/>
 			</>
 		);
 	}
