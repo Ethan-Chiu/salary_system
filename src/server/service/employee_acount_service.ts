@@ -13,7 +13,7 @@
 // export class EmployeeAccountService {
 // 	constructor() {}
 
-// 	async createEmployeeAcount({
+// 	async createEmployeeAccount({
 // 		emp_id,
 //         bank_account,
 //         ratio,
@@ -22,62 +22,49 @@
 
 // 		const newData = await EmployeeAccount.create({
 // 			emp_id: emp_id,
+//             bank_account: bank_account,
+//             ratio: ratio,
 // 			create_by: "system",
 // 			update_by: "system",
 // 		});
 // 		return newData;
 // 	}
 
-// 	async getBankSettingById(id: number): Promise<BankSetting | null> {
-// 		const bankSetting = await BankSetting.findOne({
+// 	async getEmployeeAccountById(id: number): Promise<EmployeeAccount | null> {
+// 		const employeeAccount = await EmployeeAccount.findOne({
 // 			where: {
 // 				id: id,
 // 			},
 // 		});
-// 		return bankSetting;
+// 		return employeeAccount;
 // 	}
 
-// 	async getCurrentBankSetting(): Promise<BankSetting[]> {
+// 	async getCurrentEmployeeAccount(): Promise<EmployeeAccount[]> {
 // 		const now = Date();
-// 		const bankSetting = await BankSetting.findAll({
-// 			where: {
-// 				start_date: {
-// 					[Op.lte]: now,
-// 				},
-// 				end_date: {
-// 					[Op.or]: [{ [Op.gte]: now }, { [Op.eq]: null }],
-// 				},
-// 			},
+// 		const employeeAccount = await EmployeeAccount.findAll({
 // 		});
+// 		return employeeAccount;
+// 	}
+
+// 	async getAllEmployeeAccount(): Promise<EmployeeAccount[]> {
+// 		const bankSetting = await EmployeeAccount.findAll();
 // 		return bankSetting;
 // 	}
 
-// 	async getAllBankSetting(): Promise<BankSetting[]> {
-// 		const bankSetting = await BankSetting.findAll();
-// 		return bankSetting;
-// 	}
-
-// 	async updateBankSetting({
+// 	async updateEmployeeAccount({
 // 		id,
-// 		bank_code,
-// 		bank_name,
-// 		org_code,
-// 		org_name,
-// 		start_date,
-// 		end_date,
-// 	}: z.infer<typeof updateBankSettingInput>): Promise<void> {
-// 		const bankSetting = await this.getBankSettingById(id!);
-// 		if (bankSetting == null) {
-// 			throw new BaseResponseError("BankSetting does not exist");
+// 		emp_id,
+//         bank_account,
+//         ratio,
+// 	}: z.infer<typeof updateEmployeeAccountInput>): Promise<void> {
+// 		const employeeAccount = await this.getEmployeeAccountById(id!);
+// 		if (employeeAccount == null) {
+// 			throw new BaseResponseError("Employee account does not exist");
 // 		}
-// 		const affectedCount = await BankSetting.update(
+// 		const affectedCount = await EmployeeAccount.update(
 // 			{
-// 				bank_code: select_value(bank_code, bankSetting.bank_code),
-// 				bank_name: select_value(bank_name, bankSetting.bank_name),
-// 				org_code: select_value(org_code, bankSetting.org_code),
-// 				org_name: select_value(org_name, bankSetting.org_name),
-// 				start_date: select_value(start_date, bankSetting.start_date),
-// 				end_date: select_value(end_date, bankSetting.end_date),
+// 				emp_id: select_value(emp_id, employeeAccount.emp_id),
+// 				bank_account: select_value(bank_account, employeeAccount)
 // 				update_by: "system",
 // 			},
 // 			{ where: { id: id } }
@@ -87,7 +74,7 @@
 // 		}
 // 	}
 
-// 	async deleteBankSetting(id: number): Promise<void> {
+// 	async deleteEmployeeAcount(id: number): Promise<void> {
 // 		const now = new Date();
 // 		await this.updateBankSetting({
 // 			id: id,

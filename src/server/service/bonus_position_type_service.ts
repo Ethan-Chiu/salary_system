@@ -4,7 +4,7 @@ import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {
 	createBonusPositionTypeInput,
-	updateBonusPositionInput,
+    updateBonusPositionTypeInput,
 } from "../api/input_type/parameters_input";
 import { select_value } from "./helper_function";
 
@@ -26,40 +26,39 @@ export class BonusPositionTypeService {
 		return newData;
 	}
 
-	async getBonusPositionById(id: number): Promise<BonusPositionType | null> {
-		const bonusPosition = await BonusPositionType.findOne({
+	async getBonusPositionTypeById(id: number): Promise<BonusPositionType | null> {
+		const bonusPositionType = await BonusPositionType.findOne({
 			where: {
 				id: id,
 			},
 		});
-		return bonusPosition;
+		return bonusPositionType;
 	}
 
-    async getCurrentBonusPosition(): Promise<BonusPositionType[] | null> {
-		const bonusPosition = this.getAllBonusPosition();
-		return bonusPosition;
+    async getCurrentBonusPositionType(): Promise<BonusPositionType[] | null> {
+		const bonusPositionType = this.getAllBonusPositionType();
+		return bonusPositionType;
 	}
 
-	async getAllBonusPosition(): Promise<BonusPositionType[] | null> {
-		const bonusPosition = await BonusPositionType.findAll();
-		return bonusPosition;
+	async getAllBonusPositionType(): Promise<BonusPositionType[] | null> {
+		const bonusPositionType = await BonusPositionType.findAll();
+		return bonusPositionType;
 	}
 
-	async updateBonusPosition({
+	async updateBonusPositionType({
 		id,
-		position,
         position_type,
         multiplier,
-	}: z.infer<typeof updateBonusPositionInput>): Promise<void> {
-		const bonus_position = await this.getBonusPositionById(id!);
-		if (bonus_position == null) {
-			throw new BaseResponseError("BonusPosition does not exist");
+	}: z.infer<typeof updateBonusPositionTypeInput>): Promise<void> {
+		const bonus_position_type = await this.getBonusPositionTypeById(id!);
+		if (bonus_position_type == null) {
+			throw new BaseResponseError("BonusPositionType does not exist");
 		}
 
 		const affectedCount = await BonusPositionType.update(
 			{
-                position_type: select_value(position_type, bonus_position.position_type),
-				multiplier: select_value(multiplier , bonus_position.multiplier),
+                position_type: select_value(position_type, bonus_position_type.position_type),
+				multiplier: select_value(multiplier , bonus_position_type.multiplier),
 				update_by: "system",
 			},
 			{ where: { id: id } }
@@ -69,7 +68,7 @@ export class BonusPositionTypeService {
 		}
 	}
 
-	async deleteBonusPosition(id: number): Promise<void> {
+	async deleteBonusPositionType(id: number): Promise<void> {
         BonusPositionType.destroy(
             { where: { id: id } }
         );
