@@ -7,7 +7,7 @@ import {
 	updateInsuranceRateSettingService,
 } from "../api/input_type/parameters_input";
 import { InsuranceRateSetting } from "../database/entity/insurance_rate_setting";
-import { get_date_string, select_value } from "./helper_function";
+import { check_date, get_date_string, select_value } from "./helper_function";
 
 @injectable()
 export class InsuranceRateSettingService {
@@ -29,6 +29,7 @@ export class InsuranceRateSettingService {
 		typeof createInsuranceRateSettingService
 	>): Promise<InsuranceRateSetting> {
 		const current_date_string = get_date_string(new Date());
+		check_date(start_date, end_date, current_date_string);
 		const newData = await InsuranceRateSetting.create({
 			min_wage_rate: min_wage_rate,
 			l_i_accident_rate: l_i_accident_rate,

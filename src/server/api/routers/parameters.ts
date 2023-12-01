@@ -230,18 +230,25 @@ export const parametersRouter = createTRPCRouter({
 		}),
 
 	createBonusDepartment: publicProcedure
-		.input(createBonusDepartmentAPI)
-		.mutation(async ({ input }) => {
-			const bonusDepartmentService = container.resolve(
-				BonusDepartmentService
-			);
-			let bonusDepartment =
-				await bonusDepartmentService.getCurrentBonusDepartment();
-			if (bonusDepartment == null) {
-				throw new BaseResponseError("BonusDepartment does not exist");
-			}
-			return bonusDepartment;
-		}),
+	.input(createBonusDepartmentAPI)
+	.mutation(async ({ input }) => {
+		const bonusDepartmentService =
+			container.resolve(BonusDepartmentService);
+		let newdata = await bonusDepartmentService.createBonusDepartment(input);
+		return newdata;
+	}),
+
+	getCurrentBonusDepartment: publicProcedure.query(async () => {
+		const bonusDepartmentService = container.resolve(
+			BonusDepartmentService
+		);
+		let bonusDepartment =
+			await bonusDepartmentService.getCurrentBonusDepartment();
+		if (bonusDepartment == null) {
+			throw new BaseResponseError("BonusDepartment does not exist");
+		}
+		return bonusDepartment;
+	}),
 
 	getAllBonusDepartment: publicProcedure.query(async () => {
 		const bonusDepartmentService = container.resolve(
@@ -396,7 +403,7 @@ export const parametersRouter = createTRPCRouter({
 		let bonusSeniority =
 			await bonusSeniorityService.getCurrentBonusSeniority();
 		if (bonusSeniority == null) {
-			throw new BaseResponseError("BonusPosition does not exist");
+			throw new BaseResponseError("BonusSeniority does not exist");
 		}
 		return bonusSeniority;
 	}),
@@ -444,7 +451,7 @@ export const parametersRouter = createTRPCRouter({
 		const bonusSettingService = container.resolve(BonusSettingService);
 		let bonusSetting = await bonusSettingService.getCurrentBonusSetting();
 		if (bonusSetting == null) {
-			throw new BaseResponseError("BonusPosition does not exist");
+			throw new BaseResponseError("BonusSetting does not exist");
 		}
 		return bonusSetting;
 	}),
@@ -453,7 +460,7 @@ export const parametersRouter = createTRPCRouter({
 		const bonusSettingService = container.resolve(BonusSettingService);
 		let bonusSetting = await bonusSettingService.getAllBonusSetting();
 		if (bonusSetting == null) {
-			throw new BaseResponseError("BonusSeniority does not exist");
+			throw new BaseResponseError("BonusSetting does not exist");
 		}
 		return bonusSetting;
 	}),
