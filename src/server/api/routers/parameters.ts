@@ -230,13 +230,16 @@ export const parametersRouter = createTRPCRouter({
 		}),
 
 	createBonusDepartment: publicProcedure
-	.input(createBonusDepartmentAPI)
-	.mutation(async ({ input }) => {
-		const bonusDepartmentService =
-			container.resolve(BonusDepartmentService);
-		let newdata = await bonusDepartmentService.createBonusDepartment(input);
-		return newdata;
-	}),
+		.input(createBonusDepartmentAPI)
+		.mutation(async ({ input }) => {
+			const bonusDepartmentService = container.resolve(
+				BonusDepartmentService
+			);
+			let newdata = await bonusDepartmentService.createBonusDepartment(
+				input
+			);
+			return newdata;
+		}),
 
 	getCurrentBonusDepartment: publicProcedure.query(async () => {
 		const bonusDepartmentService = container.resolve(
