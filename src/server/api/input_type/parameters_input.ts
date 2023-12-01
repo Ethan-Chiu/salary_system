@@ -172,6 +172,17 @@ export const createBonusSettingService = BonusSetting;
 export const updateBonusSettingAPI = BonusSetting.merge(Id).partial();
 export const updateBonusSettingService = BonusSetting.merge(Id).partial();
 
+const EmployeeAccount = z.object({
+	emp_id: z.string(),
+	bank_account: z.string(),
+	ratio: z.number(),
+})
+
+export const createEmployeeAccountAPI = EmployeeAccount;
+export const createEmployeeAccountService = EmployeeAccount;
+export const updateEmployeeAccountAPI = EmployeeAccount.merge(Id).partial();
+export const updateEmployeeAccountService = EmployeeAccount.merge(Id).partial();
+
 const LevelRange = z.object({
 	type: z.string(),
 	level_start: z.number(),
