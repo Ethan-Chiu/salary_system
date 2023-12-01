@@ -48,14 +48,14 @@ export class InsuranceRateSettingService {
 	}
 
 	async getCurrentInsuranceRateSetting(): Promise<InsuranceRateSetting | null> {
-		const now = new Date();
+		const current_date_string = get_date_string(new Date());
 		const insuranceRateSettingList = await InsuranceRateSetting.findAll({
 			where: {
 				start_date: {
-					[Op.lte]: now,
+					[Op.lte]: current_date_string,
 				},
 				end_date: {
-					[Op.or]: [{ [Op.gte]: now }, { [Op.eq]: null }],
+					[Op.or]: [{ [Op.gte]: current_date_string }, { [Op.eq]: null }],
 				},
 			},
 		});
@@ -176,14 +176,19 @@ export class InsuranceRateSettingService {
 		});
 
 		for (let i = 0; i < insuranceRateSettingList.length - 1; i += 1) {
-			if (
-				insuranceRateSettingList[i]!.dataValues.end_date !=
+			const end_date_string = get_date_string(
+				new Date(insuranceRateSettingList[i]!.dataValues.end_date!)
+			);
+			const start_date = new Date(
 				insuranceRateSettingList[i + 1]!.dataValues.start_date
-			) {
+			);
+			const new_end_date_string = get_date_string(
+				new Date(start_date.setDate(start_date.getDate() - 1))
+			);
+			if (end_date_string != new_end_date_string) {
 				await this.updateInsuranceRateSetting({
 					id: insuranceRateSettingList[i]!.dataValues.id,
-					end_date:
-						insuranceRateSettingList[i + 1]!.dataValues.start_date,
+					end_date: new_end_date_string,
 				});
 			}
 		}
