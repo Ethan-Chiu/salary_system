@@ -49,7 +49,10 @@ export class UserService {
 					[Op.lte]: current_date_string,
 				},
 				end_date: {
-					[Op.or]: [{ [Op.gte]: current_date_string }, { [Op.eq]: null }],
+					[Op.or]: [
+						{ [Op.gte]: current_date_string },
+						{ [Op.eq]: null },
+					],
 				},
 			},
 		});
@@ -64,7 +67,10 @@ export class UserService {
 					[Op.lte]: current_date_string,
 				},
 				end_date: {
-					[Op.or]: [{ [Op.gte]: current_date_string }, { [Op.eq]: null }],
+					[Op.or]: [
+						{ [Op.gte]: current_date_string },
+						{ [Op.eq]: null },
+					],
 				},
 			},
 		});
@@ -106,7 +112,11 @@ export class UserService {
 	}
 
 	async deleteUser(emp_id: string): Promise<void> {
-		const current_date_string = get_date_string(new Date());
-		this.updateUser({ emp_id: emp_id, end_date: current_date_string });
+		const destroyedRows = await User.destroy({
+			where: { emp_id: emp_id },
+		});
+		if (destroyedRows != 1) {
+			throw new BaseResponseError("Delete error");
+		}
 	}
 }
