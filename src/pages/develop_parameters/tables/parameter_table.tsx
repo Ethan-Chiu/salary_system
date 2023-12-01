@@ -84,6 +84,7 @@ import { List } from "postcss/lib/list";
 import { isNumber, isDate, isString } from "../utils/checkType";
 import { toast } from "~/components/ui/use-toast";
 import { Translate } from "../utils/translation";
+import { useRouter } from 'next/router';
 
 export type SettingItem = {
 	name: string;
@@ -110,6 +111,9 @@ export function ParameterTable({
 	createFunction,
 	updateFunction,
 }: any) {	
+
+	const router = useRouter();
+
 	const [data, setData] = useState<SettingItem[]>(defaultData);
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -304,6 +308,8 @@ export function ParameterTable({
 							<TableBody>
 								{table.getRowModel().rows?.length ? (
 									table.getRowModel().rows.map((row: any) => (
+										(row.getValue("name") === "id")
+										?<></>:
 										<TableRow
 											key={row.id}
 											data-state={
@@ -340,14 +346,16 @@ export function ParameterTable({
 					{/* buttons */}
 					<div className="flex items-center justify-end space-x-2 py-4">
 						<div className="space-x-2">
-							{/* <Button
+							<Button
 								variant="outline"
 								size="sm"
-								onClick={() => setShowDialog(true)}
+								onClick={() => {
+									
+								}}
 								disabled={false}
 							>
 								Create
-							</Button> */}
+							</Button>
 							<Button
 								variant="outline"
 								size="sm"

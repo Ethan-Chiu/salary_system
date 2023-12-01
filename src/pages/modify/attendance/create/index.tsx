@@ -1,14 +1,18 @@
 import { RootLayout } from "~/components/layout/root_layout";
-import { type NextPageWithLayout } from "../../_app";
+import { type NextPageWithLayout } from "../../../_app";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { api } from "~/utils/api";
-import * as TABLE_NAMES from "../../table_names";
+import * as TABLE_NAMES from "../../../table_names";
 import { useRouter } from 'next/router';
-import Template from "../template";
+import Template from "../../template";
+import { SingleParameterSettings } from "../../ParameterForm";
+import { getSchema } from "../../Schemas/getSchema";
+import AutoForm from "~/components/ui/auto-form";
 
-const PageTitle = "Attendance Setting"
+const PageTitle = "Create Attendance Setting"
 
-const Attendance: NextPageWithLayout = () => {
+const AttendanceCreate: NextPageWithLayout = () => {
+
 	const getAllAttendanceSetting =
 		api.parameters.getAllAttendanceSetting.useQuery();
 	const updateAttendanceSetting =
@@ -25,17 +29,15 @@ const Attendance: NextPageWithLayout = () => {
 		});
 
 	return (
-		<Template
-			headerTitle={PageTitle}
-			table_name={TABLE_NAMES.TABLE_ATTENDANCE}
-			queryFunction={getAllAttendanceSetting}
-			updateFunction={updateAttendanceSetting}
-			deleteFunction={deleteAttendanceSetting}
-		 />
+		<AutoForm
+			formSchema={getSchema(TABLE_NAMES.TABLE_ATTENDANCE)!(data)}
+		>
+		</AutoForm>
+		
 	);
 };
 
-Attendance.getLayout = function getLayout(page: React.ReactElement) {
+AttendanceCreate.getLayout = function getLayout(page: React.ReactElement) {
 	return (
 		<RootLayout>
 			<PerpageLayoutNav pageTitle={PageTitle}>
@@ -45,4 +47,4 @@ Attendance.getLayout = function getLayout(page: React.ReactElement) {
 	);
 };
 
-export default Attendance;
+export default AttendanceCreate;
