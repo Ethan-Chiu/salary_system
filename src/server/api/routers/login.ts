@@ -8,13 +8,13 @@ import * as bcrypt from "bcrypt";
 import { UserService } from "~/server/service/user_service";
 import { container } from "tsyringe";
 import { BaseResponseError } from "../error/BaseResponseError";
+import { createUserAPI } from "../types/parameters_input_type";
+import { get_date_string } from "~/server/service/helper_function";
 
 export const loginRouter = createTRPCRouter({
 	login: publicProcedure
 		.input(z.object({ emp_id: z.string(), password: z.string() }))
-		.mutation(async (opts) => {
-			const { input } = opts;
-
+		.mutation(async ({ input }) => {
 			const userService = container.resolve(UserService);
 			const user = await userService.getUser(input.emp_id);
 
@@ -25,7 +25,10 @@ export const loginRouter = createTRPCRouter({
 				if (!match) {
 					throw new BaseResponseError("Wrong password");
 				} else {
-					await userService.updateUser(input.emp_id, input.password);
+					await userService.updateUser({
+						emp_id: input.emp_id,
+						password: input.password,
+					});
 				}
 			}
 
@@ -36,28 +39,25 @@ export const loginRouter = createTRPCRouter({
 		.input(z.object({ emp_id: z.string(), password: z.string() }))
 		.mutation(async ({ input }) => {
 			const userService = container.resolve(UserService);
-			await userService.updateUser(input.emp_id, input.password);
+			await userService.updateUser({
+				emp_id: input.emp_id,
+				password: input.password,
+			});
 		}),
 
 	createUser: publicProcedure
-		.input(
-			z.object({
-				emp_id: z.string(),
-				password: z.string(),
-				auth_level: z.number(),
-				start_date: z.date().nullable(),
-				end_date: z.date().nullable(),
-			})
-		)
+		.input(createUserAPI)
 		.mutation(async ({ input }) => {
 			const userService = container.resolve(UserService);
-			const user = await userService.createUser(
-				input.emp_id,
-				input.password,
-				input.auth_level,
-				input.start_date,
-				input.end_date
-			);
+			const user = await userService.createUser({
+				...input,
+				start_date: input.start_date
+					? get_date_string(input.start_date)
+					: null,
+				end_date: input.end_date
+					? get_date_string(input.end_date)
+					: null,
+			});
 
 			return user;
 		}),

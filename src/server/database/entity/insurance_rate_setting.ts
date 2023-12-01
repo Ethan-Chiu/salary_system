@@ -23,8 +23,8 @@ export class InsuranceRateSetting extends Model<
     declare h_i_avg_dependents_count: number;
     declare v2_h_i_supp_premium_rate: number;
     declare v2_h_i_dock_tsx_thres: number;
-	declare start_date: Date;
-	declare end_date: Date | null;
+	declare start_date: string;
+	declare end_date: string | null;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -90,11 +90,11 @@ InsuranceRateSetting.init(
 			allowNull: false,
 		},
 		start_date: {
-			type: DataTypes.DATE,
+			type: DataTypes.STRING(128),
 			allowNull: false,
 		},
 		end_date: {
-			type: DataTypes.DATE,
+			type: DataTypes.STRING(128),
 			allowNull: true,
 		},
 		create_date: {

@@ -1,3 +1,5 @@
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 
@@ -80,6 +82,8 @@ import { type ReactElement, useRef, useState, useEffect, useMemo } from "react";
 import { DATA, createDATA } from "./datatype";
 import { List } from "postcss/lib/list";
 import { isNumber, isDate, isString } from "../utils/checkType";
+import { toast } from "~/components/ui/use-toast";
+import { Translate } from "../utils/translation";
 
 export type SettingItem = {
 	name: string;
@@ -103,8 +107,25 @@ export function ParameterTable({
 	defaultData,
 	index,
 	globalFilter,
-	onChildFunctionRun,
-}: any) {
+	createFunction,
+	updateFunction,
+}: any) {	
+	const [data, setData] = useState<SettingItem[]>(defaultData);
+	const [sorting, setSorting] = useState<SortingState>([]);
+	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+		{}
+	);
+	const [rowSelection, setRowSelection] = useState({});
+
+	const [showDialog, setShowDialog] = useState(false);
+
+	useEffect(() => {
+		setData(defaultData);
+	}, [defaultData]);
+
+	const filter_key = "name";
+
 
 	const columns: ColumnDef<SettingItem>[] = [
 		{
@@ -123,7 +144,7 @@ export function ParameterTable({
 				);
 			},
 			cell: ({ row }) => (
-				<div className="pl-4 lowercase">{row.getValue("name")}</div>
+				<div className="pl-4 lowercase">{Translate(row.getValue("name"))}</div>
 			),
 		},
 		{
@@ -136,7 +157,13 @@ export function ParameterTable({
 					formatted = parseFloat(row.getValue("value")).toString();
 				else if (isString(value)) formatted = row.getValue("value");
 				else if (isDate(value))
-					formatted = (value as Date).toISOString().split("T")[0] ?? "";
+				{
+					if(value)
+					{	
+						formatted = (value as Date).toISOString().split("T")[0] ?? "";
+					}
+					else	formatted = "";
+				}
 				return <div className="text-center font-medium">{formatted}</div>;
 			},
 		},
@@ -145,28 +172,10 @@ export function ParameterTable({
 			enableHiding: false,
 			cell: ({ row }) => {
 				const setting = row.original;
-				return <CompDropdown setting={setting} />;
+				return <CompDropdown ID={(data.find((x) => x.name === "id"))?.value as number} setting={setting} updateFunction={updateFunction}/>;
 			},
 		},
 	];
-
-
-	const [data, setData] = useState<SettingItem[]>(defaultData);
-	const [sorting, setSorting] = useState<SortingState>([]);
-	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-		{}
-	);
-	const [rowSelection, setRowSelection] = useState({});
-
-	const [showDialog, setShowDialog] = useState(false);
-
-	useEffect(() => {
-		setData(defaultData);
-	}, [defaultData]);
-
-	const filter_key = "name";
-
 	const table = useReactTable({
 		data,
 		columns,
@@ -331,24 +340,14 @@ export function ParameterTable({
 					{/* buttons */}
 					<div className="flex items-center justify-end space-x-2 py-4">
 						<div className="space-x-2">
-							<Button
-								variant="outline"
-								size="sm"
-								onClick={() => {
-									console.log("switch mode");
-								}}
-								disabled={false}
-							>
-								Switch Mode
-							</Button>
-							<Button
+							{/* <Button
 								variant="outline"
 								size="sm"
 								onClick={() => setShowDialog(true)}
 								disabled={false}
 							>
-								Modify All
-							</Button>
+								Create
+							</Button> */}
 							<Button
 								variant="outline"
 								size="sm"
@@ -366,7 +365,7 @@ export function ParameterTable({
 								Next
 							</Button>
 						</div>
-						<ModifyAllDialog
+						<CreateAllDialog
 							name={table_name}
 							type={table_type}
 							datas={data}
@@ -382,7 +381,7 @@ export function ParameterTable({
 	);
 }
 
-function CompDropdown({ setting }: { setting: SettingItem }) {
+function CompDropdown({ ID, setting, updateFunction }: { ID: number, setting: SettingItem, updateFunction: (d:any) => void }) {
 	const [showDialog, setShowDialog] = useState(false);
 
 	return (
@@ -413,37 +412,50 @@ function CompDropdown({ setting }: { setting: SettingItem }) {
 							setShowDialog(true);
 						}}
 					>
-						Modify
+						Update
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
 
-			<ModifyDialog
+			<CreateDialog
+				ID = {ID}
 				setting={setting}
 				showDialog={showDialog}
 				onOpenChange={(open: boolean) => {
 					setShowDialog(open);
 				}}
+				updateFunction={updateFunction}
 			/>
 		</>
 	);
 }
 
-function ModifyDialog({
+function CreateDialog({
+	ID,
 	setting,
 	showDialog,
 	onOpenChange,
+	schema,
+	updateFunction,
 }: {
+	ID: number;
 	setting: SettingItem;
 	showDialog: boolean;
 	onOpenChange: (open: boolean) => void;
+	schema?: any;
+	updateFunction: (d: any) => void;
 }) {
 	const inputRef = useRef<HTMLInputElement>(null);
+
+	if(!schema)
+		schema = isDate(setting.value)?z.date():isString(setting.value)?z.string().max(10):z.number().min(0);
+	const [isValid, setIsValid] = useState(schema.safeParse(setting.value).success);
+	const updateIsValid = (x: string | number | Date) => {setIsValid(schema.safeParse(x).success);console.log("update")}
 	return (
 		<Dialog open={showDialog} onOpenChange={onOpenChange}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Modify the value</DialogTitle>
+					<DialogTitle>Create the value</DialogTitle>
 					<DialogDescription>{/* Description */}</DialogDescription>
 				</DialogHeader>
 				<div className="grid gap-4 py-4">
@@ -482,49 +494,72 @@ function ModifyDialog({
 									</SelectContent>
 								</Select>
 							</>
-						) : typeof setting.value == "number" ||
-						  typeof setting.value == "string" ? (
-							<Input
+						) : isNumber(setting.value) ? <Input
 								ref={inputRef}
 								id="value"
-								defaultValue={setting.value}
+								defaultValue={setting.value.toString()}
 								type={
 									isNumber(setting.value)
 										? "number"
 										: "value"
 								}
 								className="col-span-3"
+								onChange={() => updateIsValid(parseFloat(inputRef.current?.value??"0"))}
+							/>:
+						  isString(setting.value) ? (
+							<Input
+								ref={inputRef}
+								id="value"
+								defaultValue={setting.value as string}
+								type={
+									isNumber(setting.value)
+										? "number"
+										: "value"
+								}
+								className="col-span-3"
+								onChange={() => {updateIsValid(inputRef.current?.value??'');}}
 							/>
 						) : (
+							// <></>
 							<Input
 								ref={inputRef}
 								id="value"
 								defaultValue={
-									setting.value.toISOString().split("T")[0]
+									(setting.value)?(setting.value as Date).toISOString().split("T")[0]:""
 								}
 								type={"date"}
 								className="col-span-3"
 							/>
 						)}
 					</div>
+					
+					{
+						(!isValid)?
+						<Label htmlFor="value" className="text-justify; text-red-500">The input value is invalid</Label>
+						:<></>
+					}
 				</div>
 				<DialogFooter>
 					<DialogClose asChild>
 						<Button
+							disabled={!isValid}
 							type="submit"
 							onClick={() => {
 								const value = setting.setting
-									? setting.value
-									: typeof setting.value === "string"
-									? inputRef.current?.value
-									: typeof setting.value === "number"
-									? Number(inputRef.current?.value)
-									: inputRef.current?.valueAsDate;
+								? setting.value
+								: typeof setting.value === "string"
+								? inputRef.current?.value
+								: typeof setting.value === "number"
+								? Number(inputRef.current?.value)
+								: inputRef.current?.valueAsDate;
 
 								let { ["value"]: x, ...rest } = setting;
 								let newItem = { ...rest, ["value"]: value };
 								// 待補
+								console.log(ID)
 								console.log(newItem);
+								if(newItem.name !== "id")
+									updateFunction({[setting.name]: value, id: ID});
 							}}
 						>
 							Save changes
@@ -536,7 +571,7 @@ function ModifyDialog({
 	);
 }
 
-function ModifyAllDialog({
+function CreateAllDialog({
 	name,
 	type,
 	datas,
@@ -578,7 +613,9 @@ function ModifyAllDialog({
 					<DialogDescription>{/* Description */}</DialogDescription>
 				</DialogHeader>
 				<div className="grid grid-cols-5 items-center gap-4 py-4">
-					{datas.map((data: any, index: number) => {
+					{datas
+						.filter(x => x.name !== "id" && x.name !== "create_by" && x.name != "update_by")
+						.map((data: any, index: number) => {
 						return (
 							<>
 								<div className="col-span-1 text-center">

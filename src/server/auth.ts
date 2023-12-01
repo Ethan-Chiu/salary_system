@@ -44,12 +44,7 @@ interface JWTToken extends DefaultJWT, ExtendedTokenInfo {
 
 declare module "next-auth" {
 	interface Session extends DefaultSession {
-		user: DefaultSession["user"] 
-			// name?: string | null
-			// email?: string | null
-			// image?: string | null
-		& { id: number; } 
-		& ExtendedTokenInfo;
+		user: DefaultSession["user"] & { id: number } & ExtendedTokenInfo; // image?: string | null // email?: string | null // name?: string | null
 	}
 
 	interface User extends JWTUser {}
@@ -142,24 +137,26 @@ export const authOptions: NextAuthOptions = {
 					if (!match) {
 						throw new BaseResponseError("Wrong password");
 					} else {
-						await userService.updateUser(
-							input.emp_id,
-							input.password
-						);
+						await userService.updateUser({
+							emp_id: input.emp_id,
+							password: input.password,
+						});
 					}
 				}
 
-				const parseRole = RolesEnum.safeParse(user.auth_level)
+				const parseRole = RolesEnum.safeParse(user.auth_level);
 				if (!parseRole.success) {
 					console.log(parseRole.error);
-					throw new BaseResponseError(`Internal Error: Wrong user role`);
+					throw new BaseResponseError(
+						`Internal Error: Wrong user role`
+					);
 				}
 				// console.log(parseRole.data);
 
 				const jwtUser: JWTUser = {
 					id: user.id.toString(),
 					emp_id: user.emp_id,
-					role: parseRole.data
+					role: parseRole.data,
 				};
 
 				return jwtUser;

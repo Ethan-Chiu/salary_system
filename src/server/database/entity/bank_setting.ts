@@ -18,8 +18,8 @@ export class BankSetting extends Model<
 	declare bank_name: string;
 	declare org_code: string;
 	declare org_name: string;
-	declare start_date: Date;
-	declare end_date: Date | null;
+	declare start_date: string;
+	declare end_date: string | null;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -60,11 +60,11 @@ BankSetting.init(
 			allowNull: false,
 		},
 		start_date: {
-			type: DataTypes.DATE,
+			type: DataTypes.STRING(128),
 			allowNull: false,
 		},
 		end_date: {
-			type: DataTypes.DATE,
+			type: DataTypes.STRING(128),
 			allowNull: true,
 		},
 		create_date: {

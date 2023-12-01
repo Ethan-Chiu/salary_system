@@ -76,7 +76,7 @@ export type BankRow = {
 	org_name: string;
 	org_code: string;
 	start_date: Date;
-	end_date: Date;
+	end_date: Date | null;
 };
 
 export function createBankRow(
@@ -86,7 +86,7 @@ export function createBankRow(
 	org_code: string,
 	org_name: string,
 	start_date: Date,
-	end_date: Date,
+	end_date: Date | null,
 ) {
 	let x: BankRow = {
 		id: id,
@@ -154,9 +154,12 @@ export function BankTable({
 			accessorKey: "end_date",
 			header: () => <div className="text-center">end</div>,
 			cell: ({ row }) => {
-				return (
-					<div className="text-center font-medium">{`${row.original.start_date.toISOString().split('T')[0] ?? ""}`}</div>
-				);
+				return (row.original.end_date)?
+				(
+					<div className="text-center font-medium">{
+						`${row.original.end_date.toISOString().split('T')[0] ?? ""}`
+					}</div>
+				): <div className="text-center font-medium"></div>;
 			},
 		},
 		{
@@ -211,10 +214,6 @@ export function BankTable({
 	};
 	// Store the child function in a ref
 	const childFunctionRef = useRef(onceCreated);
-
-	useEffect(() => {
-		childFunctionRef.current();
-	}, []);
 
 	return (
 		<>
@@ -492,6 +491,7 @@ function ModifyDialog({
 										(key !== "start_date" && key != "end_date")?
 										<Input
 											id={key}
+											disabled={(key=="bank_code")?true:false}
 											defaultValue={(value as string)!}
 											type={(typeof value === "string")?"value":"number"}
 											className="col-span-3"
@@ -504,7 +504,7 @@ function ModifyDialog({
 										/>:
 										<Input
 											id={key}
-											defaultValue={(value as Date).toISOString().split('T')[0]}
+											defaultValue={(value)?(value as Date).toISOString().split('T')[0]:""}
 											type={"date"}
 											className="col-span-3"
 											onChange={(e) =>
@@ -622,7 +622,7 @@ function InsertDialog({
 	type: string;
 	data: any;
 	showDialog: boolean;
-	createBankSetting: (d: any)=>void
+	createBankSetting: (d: any)=>void;
 	onOpenChange: (open: boolean) => void;
 }) {
 	let rows = ["銀行代碼", "銀行名稱", "公司代碼", "公司名稱", "起", "迄"];
@@ -667,7 +667,8 @@ function InsertDialog({
 						<Button
 							type="submit"
 							onClick={() => {
-								// console.log(inputRef[lookup("起")]?.current?.valueAsDate)
+								console.log(inputRef[lookup("起")]?.current?.valueAsDate)
+								console.log(inputRef[lookup("訖")]?.current?.valueAsDate)
 								createBankSetting(
 									{
 										bank_code: inputRef[lookup("銀行代碼")]?.current?.value ?? "",
@@ -675,7 +676,7 @@ function InsertDialog({
 										org_code: inputRef[lookup("公司代碼")]?.current?.value ?? "",
 										org_name: inputRef[lookup("公司名稱")]?.current?.value ?? "",
 										start_date: inputRef[lookup("起")]?.current?.valueAsDate,
-										end_date: inputRef[lookup("迄")]?.current?.valueAsDate,
+										end_date: inputRef[lookup("迄")]?.current?.valueAsDate ?? null,
 									}
 								)
 							}}

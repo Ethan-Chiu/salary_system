@@ -22,6 +22,7 @@ export const debugRouter = createTRPCRouter({
 		.query(async ({ input }) => {
 			const database = container.resolve(Database).connection;
 
+
 			try {
 				if (input.force) {
 					const data = await database.sync({ force: true });
@@ -39,6 +40,7 @@ export const debugRouter = createTRPCRouter({
 				};
 			}
 		}),
+
 	validate: publicProcedure.query(async () => {
 		const database = container.resolve(Database).connection;
 		try {
