@@ -344,7 +344,7 @@ export const parametersRouter = createTRPCRouter({
 			return newdata;
 		}),
 
-	getCurrentBonusPositioType: publicProcedure.query(async () => {
+	getCurrentBonusPositionType: publicProcedure.query(async () => {
 		const bonusPositionTypeService = container.resolve(
 			BonusPositionTypeService
 		);

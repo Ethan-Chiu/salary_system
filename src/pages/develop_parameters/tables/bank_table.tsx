@@ -411,13 +411,13 @@ function CompDropdown({ setting, deleteBankSetting, updateBankSetting }: { setti
 						Modify
 					</DropdownMenuItem>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem
+					{/* <DropdownMenuItem
 						onClick={() => {
 							setShowDeleteDialog(true);
 						}}
 					>
 						Delete
-					</DropdownMenuItem>
+					</DropdownMenuItem> */}
 				</DropdownMenuContent>
 			</DropdownMenu>
 
@@ -545,7 +545,7 @@ function ModifyDialog({
 										org_code: updatedSetting.org_code,
 										org_name: updatedSetting.org_name,
 										start_date: updatedSetting.start_date,
-										end_date: null,
+										end_date: updatedSetting.end_date,
 									}
 								)
 							

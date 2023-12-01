@@ -32,11 +32,14 @@ import FadeLoader from "react-spinners/FadeLoader";
 import Multiselect from "multiselect-react-dropdown";
 import * as TABLE_NAMES from "../table_names";
 
-import { getAttendanceFunctions, getBankFunctions, getBonusSettingFunctions, getBonusDepartmentFunctions, getBonusPositionFunctions, getBonusSeniorityFunctions, getInsuranceFunctions } from "./apiFunctions";
+import { getAttendanceFunctions, getBankFunctions, getBonusSettingFunctions, getBonusDepartmentFunctions, getBonusPositionFunctions, getBonusSeniorityFunctions, getInsuranceFunctions, getBonusPositionTypeFunctions } from "./apiFunctions";
 import { BonusDepartmentRow, BonusDepartmentTable } from "./tables/bonus_department"
 import { BonusPositionRow, BonusPositionTable } from "./tables/bonus_position";
 import { BonusSeniorityRow, BonusSeniorityTable } from "./tables/bonus_seniority";
 import { BonusSeniority } from "~/server/database/entity/bonus_seniority";
+import { BonusPositionTypeRow, BonusPositionTypeTable} from "./tables/bonus_position_type";
+import { getSchema } from "../modify/Schemas/getSchema";
+
 
 const API_PARAMETERS = api.parameters;
 
@@ -76,6 +79,11 @@ let datas: DATA[] = [
 	{
 		table_name: TABLE_NAMES.TABLE_BONUS_POSITION,
 		table_type: "bonus_position",
+		table_content: []
+	},
+	{
+		table_name: TABLE_NAMES.TABLE_BONUS_POSITION_TYPE,
+		table_type: "bonus_position_type",
 		table_content: []
 	},
 	{
@@ -153,6 +161,11 @@ const PageParameters: NextPageWithLayout = () => {
 	const createBonusPosition = (getBonusPositionFunctions("create", getBonusPosition) as any);
 	const deleteBonusPosition = (getBonusPositionFunctions("delete", getBonusPosition) as any);
 
+	const getBonusPositionType = api.parameters.getCurrentBonusPositionType.useQuery();
+	const updateBonusPositionType = (getBonusPositionTypeFunctions("update", getBonusPositionType) as any);
+	const createBonusPositionType = (getBonusPositionTypeFunctions("create", getBonusPositionType) as any);
+	const deleteBonusPositionType = (getBonusPositionTypeFunctions("delete", getBonusPositionType) as any);
+
 	const getBonusSeniority = api.parameters.getCurrentBonusSeniority.useQuery();
 	const updateBonusSeniority = (getBonusSeniorityFunctions("update", getBonusSeniority) as any);
 	const createBonusSeniority = (getBonusSeniorityFunctions("create", getBonusSeniority) as any);
@@ -196,7 +209,7 @@ const PageParameters: NextPageWithLayout = () => {
 
 	function updateDatas(
 		t_name: string,
-		new_content: SettingItem[] | BankRow[] | BonusDepartmentRow[] | BonusPositionRow[] | BonusSeniorityRow[]
+		new_content: SettingItem[] | BankRow[] | BonusDepartmentRow[] | BonusPositionRow[] | BonusSeniorityRow[] | BonusPositionTypeRow[]
 	) {
 		const newDatas = datas.map((data) => {
 			if (data.table_name === t_name) {
@@ -210,6 +223,7 @@ const PageParameters: NextPageWithLayout = () => {
 		});
 		datas = newDatas;
 	}
+	
 
 	function start_condition(l: any) {
 		let condition = true;
@@ -227,20 +241,9 @@ const PageParameters: NextPageWithLayout = () => {
 			getBonusPosition.isFetched,
 			getBonusSeniority.isFetched,
 		])
-	) {
-		console.log(
-			(getBankSetting.data ?? []).map((bank: any) => {
-				return {
-					id: bank.id,
-					bank_code: bank.bank_code,
-					bank_name: bank.bank_name,
-					org_code: bank.org_code,
-					org_name: bank.org_name,
-					start_date: new Date(bank.start_date),
-					end_date: (bank.end_date !== null) ? new Date(bank.end_date): null,
-				};
-			})
-		);
+	) {	// updateAllDatas
+
+		console.log(getBankSetting.data)
 		updateDatas(
 			TABLE_NAMES.TABLE_BANK_SETTING,
 			(getBankSetting.data ?? []).map((bank: any) => {
@@ -329,6 +332,17 @@ const PageParameters: NextPageWithLayout = () => {
 				};
 			})
 		);
+		
+		updateDatas(
+			TABLE_NAMES.TABLE_BONUS_POSITION_TYPE,
+			(getBonusPositionType.data ?? []).map((bonusPositionType: any) => {
+				return {
+					id: bonusPositionType.id,
+					position_type: bonusPositionType.position_type,
+					multiplier: bonusPositionType.multiplier,
+				};
+			})
+		);
 
 		updateDatas(
 			TABLE_NAMES.TABLE_BONUS_SENIORITY,
@@ -345,12 +359,7 @@ const PageParameters: NextPageWithLayout = () => {
 
 		return HTMLElement();
 	} else {
-		const loaderStyle = {
-			display: "flex",
-			justifyContent: "center",
-			alignItems: "center",
-			height: "70vh",
-		};
+		const loaderStyle = {display: "flex",justifyContent: "center",alignItems: "center",height: "70vh",};
 		return (
 			<>
 				<Header title="parameters" showOptions />
@@ -529,6 +538,24 @@ const PageParameters: NextPageWithLayout = () => {
 									}}
 								/>
 							)
+							case TABLE_NAMES.TABLE_BONUS_POSITION_TYPE:	return (
+								<BonusPositionTypeTable
+									defaultData={data.table_content}
+									table_name={data.table_name}
+									table_type={data.table_type}
+									index={find_index(data.table_name)}
+									updateFunction={(d: any) => {
+										updateBonusPositionType.mutate(d);
+									}}
+									createFunction={(d: any) => {
+										createBonusPositionType.mutate(d);
+									}}
+									deleteFunction={(d: any) => {
+										deleteBonusPositionType.mutate(d);
+										getBonusPositionType.refetch();
+									}}
+								/>
+							)
 							case TABLE_NAMES.TABLE_BONUS_SENIORITY:	return (
 								<BonusSeniorityTable
 									defaultData={data.table_content}
@@ -570,13 +597,13 @@ const PageParameters: NextPageWithLayout = () => {
 						}
 					})}
 				</Accordion>
-				<Button onClick={() => testInsertAttendanceData()}>
+				{/* <Button onClick={() => testInsertAttendanceData()}>
 					Insert AttendanceDate
 				</Button>
 				<br/>
 				<Button onClick={() => testInsertBonusSettingData()}>
 					Insert Bonus Setting
-				</Button>
+				</Button> */}
 				<br/>
 			</>
 		);
