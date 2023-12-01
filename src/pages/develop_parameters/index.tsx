@@ -33,7 +33,6 @@ import Multiselect from "multiselect-react-dropdown";
 import * as TABLE_NAMES from "../table_names";
 
 import { getAttendanceFunctions, getBankFunctions, getBonusSettingFunctions, getBonusDepartmentFunctions, getBonusPositionFunctions, getBonusSeniorityFunctions } from "./apiFunctions";
-import { updateAttendanceSettingInput } from "~/server/api/input_type/parameters_input";
 import { BonusDepartmentRow, BonusDepartmentTable } from "./tables/bonus_department"
 import { BonusPositionRow, BonusPositionTable } from "./tables/bonus_position";
 import { BonusSeniorityRow, BonusSeniorityTable } from "./tables/bonus_seniority";
@@ -196,7 +195,7 @@ const PageParameters: NextPageWithLayout = () => {
 			local_worker_holiday: 0,
 			foreign_worker_holiday: 0,
 		});
-
+	
 	const testInsertBonusSettingData = () => {
 		createBonusSetting.mutate({
 			type: "123",
@@ -205,6 +204,7 @@ const PageParameters: NextPageWithLayout = () => {
 			base_on: "test"
 		})
 	}
+	
 
 	function updateDatas(
 		t_name: string,
