@@ -59,11 +59,9 @@ import {
 import { type NextPageWithLayout } from "../_app";
 import { type ReactElement, useRef, useState, useEffect } from "react";
 import { table } from "console";
-import { ConnectionPoolClosedEvent } from "typeorm";
 import { map } from "@trpc/server/observable";
 import { AttendanceSetting } from "~/server/database/entity/attendance_setting";
 import { rangeEnd } from "prettier.config.cjs";
-import Parameters from "../test/table_modify_element";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 
 export type SettingItem = {
@@ -174,58 +172,6 @@ const PageParameters: NextPageWithLayout = () => {
 	}
 
 	for (var i = 0; i < table_names.length; i++) {if (datas.length < table_names.length) datas.push([]);}
-
-	const bankData = API_PARAMETERS.getBankSetting.useQuery();
-	const attendanceData = API_PARAMETERS.attendanceGetData.useQuery();
-	const insuranceData = API_PARAMETERS.insuranceGetData.useQuery();
-
-	const bankAddData = api.parameters.createBankSetting.useMutation()
-
-	if (attendanceData.isFetched && !table_status[find_index("請假加班")]) {
-		console.log("Successful Fetched Attendance Data");
-		let index = find_index("請假加班");
-		console.log(index);
-		changeTableStatus(index);
-		datas[index] = [];
-		Object.keys(attendanceData.data?.attendanceData[0]!).map((key) => {
-			datas[index]?.push({
-				name: key,
-				value: ((attendanceData.data?.attendanceData[0] as any)[key]==null?"NULL":(attendanceData.data?.attendanceData[0] as any)[key]),
-				status: "pending",
-			});
-		});
-	}
-	if (bankData.isFetched && !table_status[find_index("銀行")]) {
-		console.log("Successful Fetched Bank Data");
-		let index = find_index("銀行");
-		console.log(index);
-		console.log(bankData.data?.bankData);
-		changeTableStatus(index);
-		datas[index] = [];
-		Object.keys(bankData.data?.bankData[0]!).map((key) => {
-			datas[index]?.push({
-				name: key,
-				value: ((bankData.data?.bankData[0] as any)[key]==null?"Null":(bankData.data?.bankData[0] as any)[key]),
-				status: "pending",
-			});
-		});
-	}
-
-	if (insuranceData.isFetched && insuranceData.data?.insuranceDate[0]!=null && !table_status[find_index("勞健保費率")]) {
-		console.log("Successful Fetched insurance Data");
-		let index = find_index("勞健保費率");
-		console.log(index);
-		console.log(insuranceData.data?.insuranceDate[0]);
-		changeTableStatus(index);
-		datas[index] = [];
-		Object.keys(insuranceData.data?.insuranceDate[0]!).map((key) => {
-			datas[index]?.push({
-				name: key,
-				value: ((insuranceData.data?.insuranceDate[0] as any)[key]==null)?"NULL":((insuranceData.data?.insuranceDate[0] as any)[key]),
-				status: "pending",
-			});
-		});
-	}
 
 	let tables: any = [];
 	datas.map((data) => {
@@ -424,9 +370,6 @@ const PageParameters: NextPageWithLayout = () => {
 			<Accordion type="single" collapsible className="w-full">
 				{tables_content}
 			</Accordion>
-
-
-			<Button disabled={bankAddData.isLoading} onClick={()=>bankAddData.mutate(testInsertBankData)}>Insert Bank Data</Button>
 		</>
 	);
 };
