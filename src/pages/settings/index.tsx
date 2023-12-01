@@ -12,7 +12,7 @@ import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 const PageSettings: NextPageWithLayout = () => {
 	return (
 		<>
-			<Header title="Settings" className="mb-4"/>
+			<Header title="Settings" showOptions className="mb-4"/>
 			<Tabs defaultValue="profile" className="h-full space-y-6">
 				<div className="space-between flex items-center">
 					<TabsList>

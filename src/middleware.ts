@@ -44,6 +44,7 @@ export default withAuth(
 		const accessible = parseAccessible.data;
 
 		const guarded =
+			guardRoute(request, "/functions", accessible.actions) ||
 			guardRoute(request, "/parameters", accessible.actions) ||
 			guardRoute(request, "/roles", accessible.roles) ||
 			guardRoute(request, "/settings", accessible.settings);
