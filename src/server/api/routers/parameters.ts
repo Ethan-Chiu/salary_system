@@ -230,18 +230,25 @@ export const parametersRouter = createTRPCRouter({
 		}),
 
 	createBonusDepartment: publicProcedure
-		.input(createBonusDepartmentAPI)
-		.mutation(async ({ input }) => {
-			const bonusDepartmentService = container.resolve(
-				BonusDepartmentService
-			);
-			let bonusDepartment =
-				await bonusDepartmentService.getCurrentBonusDepartment();
-			if (bonusDepartment == null) {
-				throw new BaseResponseError("BonusDepartment does not exist");
-			}
-			return bonusDepartment;
-		}),
+	.input(createBonusDepartmentAPI)
+	.mutation(async ({ input }) => {
+		const bonusDepartmentService =
+			container.resolve(BonusDepartmentService);
+		let newdata = await bonusDepartmentService.createBonusDepartment(input);
+		return newdata;
+	}),
+
+	getCurrentBonusDepartment: publicProcedure.query(async () => {
+		const bonusDepartmentService = container.resolve(
+			BonusDepartmentService
+		);
+		let bonusDepartment =
+			await bonusDepartmentService.getCurrentBonusDepartment();
+		if (bonusDepartment == null) {
+			throw new BaseResponseError("BonusDepartment does not exist");
+		}
+		return bonusDepartment;
+	}),
 
 	getAllBonusDepartment: publicProcedure.query(async () => {
 		const bonusDepartmentService = container.resolve(
