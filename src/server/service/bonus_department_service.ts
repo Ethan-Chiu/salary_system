@@ -74,7 +74,6 @@ export class BonusDepartmentService {
 	}
 
 	async deleteBonusDepartment(id: number): Promise<void> {
-		const now = new Date();
 		BonusDepartment.destroy({ where: { id: id } });
 	}
 }

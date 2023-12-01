@@ -22,6 +22,7 @@ export class UserService {
 		end_date,
 	}: z.infer<typeof createUserService>): Promise<User> {
 		const current_date_string = get_date_string(new Date());
+		check_date(start_date, end_date, current_date_string);
 
 		const salt = await bcrypt.genSalt();
 		const hash = await bcrypt.hash(password, salt);

@@ -2,7 +2,7 @@ import { injectable } from "tsyringe";
 import { BankSetting } from "../database/entity/bank_setting";
 import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
-import { get_date_string, select_value } from "./helper_function";
+import { check_date, get_date_string, select_value } from "./helper_function";
 import { z } from "zod";
 import {
 	createBankSettingService,
@@ -22,6 +22,7 @@ export class BankSettingService {
 		end_date,
 	}: z.infer<typeof createBankSettingService>): Promise<BankSetting> {
 		const current_date_string = get_date_string(new Date());
+		check_date(start_date, end_date, current_date_string);
 		const newData = await BankSetting.create({
 			bank_code: bank_code,
 			bank_name: bank_name,

@@ -7,7 +7,7 @@ import {
 	createAttendanceSettingService,
 	updateAttendanceSettingService,
 } from "../api/input_type/parameters_input";
-import { get_date_string, select_value } from "./helper_function";
+import { check_date, get_date_string, select_value } from "./helper_function";
 
 @injectable()
 export class AttendanceSettingService {
@@ -36,6 +36,7 @@ export class AttendanceSettingService {
 		typeof createAttendanceSettingService
 	>): Promise<AttendanceSetting> {
 		const current_date_string = get_date_string(new Date());
+		check_date(start_date, end_date, current_date_string);
 		const newData = await AttendanceSetting.create({
 			personal_leave_dock: personal_leave_dock,
 			sick_leave_dock: sick_leave_dock,
