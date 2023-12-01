@@ -60,7 +60,7 @@ export const authOptions: NextAuthOptions = {
 			if (user) {
 				token.id = user.id;
 				token.email = user.email;
-				token.emp_id = user.emp_id
+				token.emp_id = user.emp_id;
 			}
 			return token;
 		},
@@ -70,7 +70,7 @@ export const authOptions: NextAuthOptions = {
 				user: {
 					...session.user,
 					id: token.sub,
-					emp_id: token.emp_id
+					emp_id: token.emp_id,
 				},
 			};
 		},
