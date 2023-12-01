@@ -406,7 +406,7 @@ export const parametersRouter = createTRPCRouter({
 		let bonusSeniority =
 			await bonusSeniorityService.getCurrentBonusSeniority();
 		if (bonusSeniority == null) {
-			throw new BaseResponseError("BonusPosition does not exist");
+			throw new BaseResponseError("BonusSeniority does not exist");
 		}
 		return bonusSeniority;
 	}),
@@ -454,7 +454,7 @@ export const parametersRouter = createTRPCRouter({
 		const bonusSettingService = container.resolve(BonusSettingService);
 		let bonusSetting = await bonusSettingService.getCurrentBonusSetting();
 		if (bonusSetting == null) {
-			throw new BaseResponseError("BonusPosition does not exist");
+			throw new BaseResponseError("BonusSetting does not exist");
 		}
 		return bonusSetting;
 	}),
@@ -463,7 +463,7 @@ export const parametersRouter = createTRPCRouter({
 		const bonusSettingService = container.resolve(BonusSettingService);
 		let bonusSetting = await bonusSettingService.getAllBonusSetting();
 		if (bonusSetting == null) {
-			throw new BaseResponseError("BonusSeniority does not exist");
+			throw new BaseResponseError("BonusSetting does not exist");
 		}
 		return bonusSetting;
 	}),
