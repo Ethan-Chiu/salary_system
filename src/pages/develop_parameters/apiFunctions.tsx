@@ -79,3 +79,13 @@ export function getBonusSeniorityFunctions(func_name: string, getBonusSeniority:
     else if(func_name === "delete") return deleteBonusSeniority;
     else    return notFoundFunction;
 }
+
+export function getInsuranceFunctions(func_name: string, getInsurance: any) {
+    const updateInsuranceRateSetting = api.parameters.updateInsuranceRateSetting.useMutation({onSuccess: () => {getInsurance.refetch();},});
+    const createInsuranceRateSetting = api.parameters.createInsuranceRateSetting.useMutation({onSuccess: () => {getInsurance.refetch();},});
+    const deleteInsuranceRateSetting = api.parameters.deleteInsuranceRateSetting.useMutation({onSuccess: () => {getInsurance.refetch();},});
+    if(func_name === "update")  return updateInsuranceRateSetting;
+    else if(func_name === "create") return createInsuranceRateSetting;
+    else if(func_name === "delete") return deleteInsuranceRateSetting;
+    else    return notFoundFunction;
+}

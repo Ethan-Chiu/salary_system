@@ -32,8 +32,7 @@ import FadeLoader from "react-spinners/FadeLoader";
 import Multiselect from "multiselect-react-dropdown";
 import * as TABLE_NAMES from "../table_names";
 
-import { getAttendanceFunctions, getBankFunctions, getBonusSettingFunctions, getBonusDepartmentFunctions, getBonusPositionFunctions, getBonusSeniorityFunctions } from "./apiFunctions";
-import { updateAttendanceSettingInput } from "~/server/api/input_type/parameters_input";
+import { getAttendanceFunctions, getBankFunctions, getBonusSettingFunctions, getBonusDepartmentFunctions, getBonusPositionFunctions, getBonusSeniorityFunctions, getInsuranceFunctions } from "./apiFunctions";
 import { BonusDepartmentRow, BonusDepartmentTable } from "./tables/bonus_department"
 import { BonusPositionRow, BonusPositionTable } from "./tables/bonus_position";
 import { BonusSeniorityRow, BonusSeniorityTable } from "./tables/bonus_seniority";
@@ -51,29 +50,13 @@ let datas: DATA[] = [
 			createSettingItem("test3", "test"),
 			createSettingItem("test4", 123),
 			createSettingItem("test5", new Date()),
-			// createSettingItem("create_by", new Date()),
-			// createSettingItem("test1", "A", ["A", "B", "C", "D", "E"]),
-			// createSettingItem("test2", "X", ["X", "Y", "Z"]),
-			// createSettingItem("test3", "test"),
-			// createSettingItem("test4", 123),
-			// createSettingItem("test5", new Date()),
-			// createSettingItem("test1", "A", ["A", "B", "C", "D", "E"]),
-			// createSettingItem("test2", "X", ["X", "Y", "Z"]),
-			// createSettingItem("test3", "test"),
-			// createSettingItem("test4", 123),
-			// createSettingItem("test5", new Date()),
-			// createSettingItem("test1", "A", ["A", "B", "C", "D", "E"]),
-			// createSettingItem("test2", "test"),
-			// createSettingItem("test3", "X", ["X", "Y", "Z"]),
-			// createSettingItem("test4", 123),
-			// createSettingItem("勞健保測試", new Date()),
-			// createSettingItem("create_by", new Date()),
 		],
 	},
 	{
 		table_name: TABLE_NAMES.TABLE_BANK_SETTING,
 		table_type: "bank",
-		table_content: [], // createBankRow(1, "900", "土地銀行", "001", "新竹分公司", new Date(), new Date())
+		table_content: [], 
+		// createBankRow(1, "900", "土地銀行", "001", "新竹分公司", new Date(), new Date())
 	},
 	{
 		table_name: TABLE_NAMES.TABLE_INSURANCE,
@@ -141,16 +124,20 @@ const PageParameters: NextPageWithLayout = () => {
 
 	const [parameterGlobalFilter, setParameterGlobalFilter] = useState("");
 
-	const getBankSetting = API_PARAMETERS.getCurrentBankSetting.useQuery();
-	const updateBankSetting = (getBankFunctions("update", getBankSetting) as any);
-	const createBankSetting = (getBankFunctions("create", getBankSetting) as any);
-	const deleteBankSetting = (getBankFunctions("delete", getBankSetting) as any);
-	
-
 	const getAttendanceSetting = api.parameters.getCurrentAttendanceSetting.useQuery();
 	const updateAttendanceSetting = (getAttendanceFunctions("update", getAttendanceSetting) as any);
 	const createAttendanceSetting = (getAttendanceFunctions("create", getAttendanceSetting) as any);
 	
+	const getInsuranceRateSetting = api.parameters.getCurrentInsuranceRateSetting.useQuery();
+	const updateInsuranceRateSetting = (getInsuranceFunctions("update", getInsuranceRateSetting) as any);
+	const createInsuranceRateSetting = (getInsuranceFunctions("create", getInsuranceRateSetting) as any);
+
+
+	const getBankSetting = API_PARAMETERS.getCurrentBankSetting.useQuery();
+	const updateBankSetting = (getBankFunctions("update", getBankSetting) as any);
+	const createBankSetting = (getBankFunctions("create", getBankSetting) as any);
+	const deleteBankSetting = (getBankFunctions("delete", getBankSetting) as any);
+
 	const getBonusSetting = api.parameters.getCurrentBonusSetting.useQuery();
 	const updateBonusSetting = (getBonusSettingFunctions("update", getBonusSetting) as any);
 	const createBonusSetting = (getBonusSettingFunctions("create", getBonusSetting) as any);
@@ -196,7 +183,7 @@ const PageParameters: NextPageWithLayout = () => {
 			local_worker_holiday: 0,
 			foreign_worker_holiday: 0,
 		});
-
+	
 	const testInsertBonusSettingData = () => {
 		createBonusSetting.mutate({
 			type: "123",
@@ -205,6 +192,7 @@ const PageParameters: NextPageWithLayout = () => {
 			base_on: "test"
 		})
 	}
+	
 
 	function updateDatas(
 		t_name: string,
@@ -233,7 +221,11 @@ const PageParameters: NextPageWithLayout = () => {
 		start_condition([
 			getBankSetting.isFetched,
 			getAttendanceSetting.isFetched,
+			getInsuranceRateSetting.isFetched,
 			getBonusSetting.isFetched,
+			getBonusDepartment.isFetched,
+			getBonusPosition.isFetched,
+			getBonusSeniority.isFetched,
 		])
 	) {
 		console.log(
@@ -280,6 +272,24 @@ const PageParameters: NextPageWithLayout = () => {
 				};
 			})
 		);
+
+		console.log(getInsuranceRateSetting.data);
+		updateDatas(
+			TABLE_NAMES.TABLE_INSURANCE,
+			Object.keys(getInsuranceRateSetting.data ?? {}).map((key) => {
+				return {
+					name: key as string,
+					value:
+						(key.includes("_date") || key.includes("At"))
+							? 
+							(
+								((getInsuranceRateSetting.data as any)[key]) ? new Date((getAttendanceSetting.data as any)[key]) : null
+							)
+							: (getInsuranceRateSetting.data as any)[key],
+				};
+			})
+		);
+
 
 		console.log(getBonusSetting.data);
 		updateDatas(
@@ -465,6 +475,21 @@ const PageParameters: NextPageWithLayout = () => {
 									}}
 									createFunction = {(d:any) => {
 										createBonusSetting.mutate(d)
+									}}
+								/>
+							);
+							case TABLE_NAMES.TABLE_INSURANCE:	return (
+								<ParameterTable
+									defaultData={data.table_content}
+									table_name={data.table_name}
+									table_type={data.table_type}
+									index={find_index(data.table_name)}
+									globalFilter={parameterGlobalFilter}
+									updateFunction = {(d:any) => {
+										updateInsuranceRateSetting.mutate(d)
+									}}
+									createFunction = {(d:any) => {
+										createInsuranceRateSetting.mutate(d)
 									}}
 								/>
 							);

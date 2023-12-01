@@ -340,14 +340,14 @@ export function ParameterTable({
 					{/* buttons */}
 					<div className="flex items-center justify-end space-x-2 py-4">
 						<div className="space-x-2">
-							<Button
+							{/* <Button
 								variant="outline"
 								size="sm"
 								onClick={() => setShowDialog(true)}
 								disabled={false}
 							>
 								Create
-							</Button>
+							</Button> */}
 							<Button
 								variant="outline"
 								size="sm"
