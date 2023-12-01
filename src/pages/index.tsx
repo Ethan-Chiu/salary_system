@@ -6,9 +6,14 @@ import { Header } from "~/components/header";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import Router from "next/router";
+import { RolesEnumType } from "~/server/api/types/role_type";
 
 const PageHome: NextPageWithLayout = () => {
 	const { data: session, status } = useSession();
+
+	const { data, refetch } = api.access.accessByRole.useQuery(undefined, {
+		enabled: false,
+	});
 
 	if (status === "loading") {
 		return <p>Loading...</p>;
@@ -19,8 +24,16 @@ const PageHome: NextPageWithLayout = () => {
 	}
 
 	if (status === "authenticated") {
-		console.log(session);
-		Router.push("/functions");
+		console.log("session", session);
+		refetch();
+	}
+
+	if (data && status === "authenticated") {
+		if (data?.actions) {
+			Router.push("/functions");
+		} else {
+			Router.push("/settings");
+		}
 	}
 
 	return <></>;
