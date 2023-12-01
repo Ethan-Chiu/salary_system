@@ -273,6 +273,24 @@ const PageParameters: NextPageWithLayout = () => {
 			})
 		);
 
+		console.log(getInsuranceRateSetting.data);
+		updateDatas(
+			TABLE_NAMES.TABLE_INSURANCE,
+			Object.keys(getInsuranceRateSetting.data ?? {}).map((key) => {
+				return {
+					name: key as string,
+					value:
+						(key.includes("_date") || key.includes("At"))
+							? 
+							(
+								((getInsuranceRateSetting.data as any)[key]) ? new Date((getAttendanceSetting.data as any)[key]) : null
+							)
+							: (getInsuranceRateSetting.data as any)[key],
+				};
+			})
+		);
+
+
 		console.log(getBonusSetting.data);
 		updateDatas(
 			TABLE_NAMES.TABLE_BONUS_SETTING,
