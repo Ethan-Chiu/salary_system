@@ -1,7 +1,7 @@
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
-import { ToastAction } from "~/components/ui/toast"
-import { useToast } from "~/components/ui/use-toast"
+import { ToastAction } from "~/components/ui/toast";
+import { useToast } from "~/components/ui/use-toast";
 import { api } from "~/utils/api";
 
 import {
@@ -69,7 +69,6 @@ import { now } from "sequelize/types/utils";
 import { string } from "zod";
 import { Translate } from "../utils/translation";
 
-
 export type BonusSeniorityRow = {
 	id: number | null;
 	seniority: number;
@@ -79,7 +78,7 @@ export type BonusSeniorityRow = {
 export function createBonusSeniorityRow(
 	id: number | null,
 	seniority: number,
-	multiplier: number,
+	multiplier: number
 ) {
 	let x: BonusSeniorityRow = {
 		id: id,
@@ -98,7 +97,6 @@ export function BonusSeniorityTable({
 	updateFunction,
 	deleteFunction,
 }: any) {
-
 	const columns: ColumnDef<BonusSeniorityRow>[] = [
 		{
 			accessorKey: "seniority",
@@ -135,11 +133,16 @@ export function BonusSeniorityTable({
 			enableHiding: false,
 			cell: ({ row }) => {
 				const setting = row.original;
-				return <CompDropdown setting={setting} deleteFunction={deleteFunction} updateFunction={updateFunction}/>;
+				return (
+					<CompDropdown
+						setting={setting}
+						deleteFunction={deleteFunction}
+						updateFunction={updateFunction}
+					/>
+				);
 			},
 		},
 	];
-
 
 	const [data, setData] = useState<BonusSeniorityRow[]>(defaultData);
 	const [sorting, setSorting] = useState<SortingState>([]);
@@ -355,7 +358,15 @@ export function BonusSeniorityTable({
 	);
 }
 
-function CompDropdown({ setting, deleteFunction, updateFunction }: { setting: BonusSeniorityRow, deleteFunction: (d: any)=>void, updateFunction: (d: any)=>void}) {
+function CompDropdown({
+	setting,
+	deleteFunction,
+	updateFunction,
+}: {
+	setting: BonusSeniorityRow;
+	deleteFunction: (d: any) => void;
+	updateFunction: (d: any) => void;
+}) {
 	const [showModifyDialog, setShowModifyDialog] = useState(false);
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
@@ -423,7 +434,6 @@ function ModifyDialog({
 	updateFunction: (d: any) => void;
 	onOpenChange: (open: boolean) => void;
 }) {
-
 	const { toast } = useToast();
 	const [updatedSetting, setUpdatedSetting] = useState(setting);
 	const handleInputChange = (key: any, value: any) => {
@@ -445,7 +455,7 @@ function ModifyDialog({
 				<div className="grid gap-4 py-4">
 					<div className="grid grid-cols-4 items-center gap-4">
 						{Object.entries(setting).map(([key, value]) => {
-							if (key == "id")	return <></>;
+							if (key == "id") return <></>;
 							return (
 								<>
 									<Label
@@ -454,13 +464,21 @@ function ModifyDialog({
 									>
 										{key}
 									</Label>
-									
+
 									{
 										<Input
 											id={key}
-											disabled={(key=="bank_code")?true:false}
-											defaultValue={(value as number)}
-											type={(typeof value === "string")?"value":"number"}
+											disabled={
+												key == "bank_code"
+													? true
+													: false
+											}
+											defaultValue={value as number}
+											type={
+												typeof value === "string"
+													? "value"
+													: "number"
+											}
 											className="col-span-3"
 											onChange={(e) =>
 												handleInputChange(
@@ -482,24 +500,30 @@ function ModifyDialog({
 							onClick={() => {
 								toast({
 									title: "Succesfully Modify Bank Setting",
-									description: (new Date()).toISOString().split('T')[0],
+									description: new Date()
+										.toISOString()
+										.split("T")[0],
 									action: (
-									<ToastAction altText="Goto schedule to undo" onClick={() => {
-										console.log("undo update (set bank setting to previous setting)")
-										updateFunction(setting);
-									}}>Undo</ToastAction>
+										<ToastAction
+											altText="Goto schedule to undo"
+											onClick={() => {
+												console.log(
+													"undo update (set bank setting to previous setting)"
+												);
+												updateFunction(setting);
+											}}
+										>
+											Undo
+										</ToastAction>
 									),
-								})
-								
-								console.log("update bank setting")
-								updateFunction(
-									{
-										id: updatedSetting.id,
-										seniority: updatedSetting.seniority,
-										multiplier: updatedSetting.multiplier,
-									}
-								)
-							
+								});
+
+								console.log("update bank setting");
+								updateFunction({
+									id: updatedSetting.id,
+									seniority: updatedSetting.seniority,
+									multiplier: updatedSetting.multiplier,
+								});
 							}}
 						>
 							Save changes
@@ -548,8 +572,11 @@ function DeleteDialog({
 						<Button
 							variant={"destructive"}
 							onClick={() => {
-								console.log("delete data with id %s", setting.id!)
-								deleteFunction({id: setting.id!});
+								console.log(
+									"delete data with id %s",
+									setting.id!
+								);
+								deleteFunction({ id: setting.id! });
 							}}
 						>
 							Yes
@@ -573,11 +600,13 @@ function InsertDialog({
 	type: string;
 	data: any;
 	showDialog: boolean;
-	createFunction: (d: any)=>void;
+	createFunction: (d: any) => void;
 	onOpenChange: (open: boolean) => void;
 }) {
 	let rows = [Translate("seniority"), Translate("multiplier")];
-	const lookup = (key: string) => {return rows.findIndex(obj => obj===key)};
+	const lookup = (key: string) => {
+		return rows.findIndex((obj) => obj === key);
+	};
 	const inputRef = rows.map(() => {
 		return useRef<HTMLInputElement>(null);
 	});
@@ -605,7 +634,11 @@ function InsertDialog({
 									<Input
 										ref={inputRef[index]}
 										id={"value" + index.toString()}
-										type={(parameter === "部門")?"value":"number"}
+										type={
+											parameter === "部門"
+												? "value"
+												: "number"
+										}
 										className="col-span-3"
 									/>
 								</>
@@ -618,12 +651,16 @@ function InsertDialog({
 						<Button
 							type="submit"
 							onClick={() => {
-								createFunction(
-									{
-										seniority: inputRef[lookup(Translate("seniority")!)]?.current?.valueAsNumber ?? -1, 
-										multiplier: inputRef[lookup(Translate("multiplier")!)]?.current?.valueAsNumber ?? -1,
-									}
-								)
+								createFunction({
+									seniority:
+										inputRef[
+											lookup(Translate("seniority")!)
+										]?.current?.valueAsNumber ?? -1,
+									multiplier:
+										inputRef[
+											lookup(Translate("multiplier")!)
+										]?.current?.valueAsNumber ?? -1,
+								});
 							}}
 						>
 							Confirm
