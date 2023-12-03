@@ -71,6 +71,11 @@ export class BonusSeniorityService {
 	}
 
 	async deleteBonusSeniority(id: number): Promise<void> {
-		BonusSeniority.destroy({ where: { id: id } });
+		const destroyedRows = await BonusSeniority.destroy({
+			where: { id: id },
+		});
+		if (destroyedRows != 1) {
+			throw new BaseResponseError("Delete error");
+		}
 	}
 }
