@@ -2,19 +2,10 @@ import { Button } from "~/components/ui/button";
 
 import { api } from "~/utils/api";
 import {
-	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
 } from "~/components/ui/accordion";
-import {
-	flexRender,
-	getCoreRowModel,
-	getFilteredRowModel,
-	getPaginationRowModel,
-	getSortedRowModel,
-	useReactTable,
-} from "@tanstack/react-table";
 import type {
 	ColumnDef,
 	ColumnFiltersState,
@@ -22,23 +13,8 @@ import type {
 	VisibilityState,
 	Row,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown } from "lucide-react";
-import {
-	DropdownMenu,
-	DropdownMenuCheckboxItem,
-	DropdownMenuContent,
-	DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import { Input } from "~/components/ui/input";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "~/components/ui/table";
-import { type ReactElement, useRef, useState, useEffect, useMemo } from "react";
+import { ArrowUpDown } from "lucide-react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import {
 	isString,
@@ -138,41 +114,10 @@ export function ParameterTable({
 			<AccordionItem value={"item-" + index.toString()}>
 				<AccordionTrigger>{table_name}</AccordionTrigger>
 				<AccordionContent>
-					{/* table */}
 					<DataTable columns={columns} data={[]}/>
-					{/* buttons */}
-					{/* <CompTablePagination /> */}
 				</AccordionContent>
 			</AccordionItem>
 		</>
 	);
 
-	// TODO: move
-	// function CompTablePagination() {
-	// 	return (
-	// 		<div className="flex items-center justify-end space-x-2 py-4">
-	// 			<div className="space-x-2">
-	// 				<Button variant="outline" size="sm" onClick={() => {}}>
-	// 					Create
-	// 				</Button>
-	// 				<Button
-	// 					variant="outline"
-	// 					size="sm"
-	// 					onClick={() => table.previousPage()}
-	// 					disabled={!table.getCanPreviousPage()}
-	// 				>
-	// 					Previous
-	// 				</Button>
-	// 				<Button
-	// 					variant="outline"
-	// 					size="sm"
-	// 					onClick={() => table.nextPage()}
-	// 					disabled={!table.getCanNextPage()}
-	// 				>
-	// 					Next
-	// 				</Button>
-	// 			</div>
-	// 		</div>
-	// 	);
-	// }
 }
