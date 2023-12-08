@@ -11,6 +11,10 @@ import {
 	createBonusSeniorityAPI,
 	createBonusSettingAPI,
 	createInsuranceRateSettingAPI,
+	createLevelAPI,
+	createLevelRangeAPI,
+	createPerformanceLevelAPI,
+	createTrustMoneyAPI,
 	updateAttendanceSettingAPI,
 	updateBankSettingAPI,
 	updateBonusDepartmentAPI,
@@ -19,6 +23,10 @@ import {
 	updateBonusSeniorityAPI,
 	updateBonusSettingAPI,
 	updateInsuranceRateSettingAPI,
+	updateLevelAPI,
+	updateLevelRangeAPI,
+	updatePerformanceLevelAPI,
+	updateTrustMoneyAPI,
 } from "../types/parameters_input_type";
 import { BankSettingService } from "~/server/service/bank_setting_service";
 import { AttendanceSettingService } from "~/server/service/attendance_setting_service";
@@ -29,6 +37,10 @@ import { BonusSeniorityService } from "~/server/service/bonus_seniority_service"
 import { BonusSettingService } from "~/server/service/bonus_setting_service";
 import { InsuranceRateSettingService } from "~/server/service/insurance_rate_setting_service";
 import { BonusPositionTypeService } from "~/server/service/bonus_position_type_service";
+import { LevelRangeService } from "~/server/service/level_range_service";
+import { LevelService } from "~/server/service/level_service";
+import { PerformanceLevelService } from "~/server/service/performance_level_service";
+import { TrustMoneyService } from "~/server/service/trust_money_service";
 
 export const parametersRouter = createTRPCRouter({
 	createBankSetting: publicProcedure
@@ -482,5 +494,189 @@ export const parametersRouter = createTRPCRouter({
 			const { input } = opts;
 			const bonusSettingService = container.resolve(BonusSettingService);
 			await bonusSettingService.deleteBonusSetting(input.id);
+		}),
+
+	createLevelRange: publicProcedure
+		.input(createLevelRangeAPI)
+		.mutation(async ({ input }) => {
+			const levelRangeService = container.resolve(LevelRangeService);
+			let newdata = await levelRangeService.createLevelRange(input);
+			return newdata;
+		}),
+
+	getCurrentLevelRange: publicProcedure.query(async () => {
+		const levelRangeService = container.resolve(LevelRangeService);
+		let levelRange = await levelRangeService.getCurrentLevelRange();
+		if (levelRange == null) {
+			throw new BaseResponseError("LevelRange does not exist");
+		}
+		return levelRange;
+	}),
+
+	getAllLevelRange: publicProcedure.query(async () => {
+		const levelRangeService = container.resolve(LevelRangeService);
+		let levelRange = await levelRangeService.getAllLevelRange();
+		if (levelRange == null) {
+			throw new BaseResponseError("LevelRange does not exist");
+		}
+		return levelRange;
+	}),
+
+	updateLevelRange: publicProcedure
+		.input(updateLevelRangeAPI)
+		.mutation(async ({ input }) => {
+			const levelRangeService = container.resolve(LevelRangeService);
+			let newdata = await levelRangeService.updateLevelRange(input);
+			return newdata;
+		}),
+
+	deleteLevelRange: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.mutation(async (opts) => {
+			const { input } = opts;
+			const levelRangeService = container.resolve(LevelRangeService);
+			await levelRangeService.deleteLevelRange(input.id);
+		}),
+
+	createLevel: publicProcedure
+		.input(createLevelAPI)
+		.mutation(async ({ input }) => {
+			const levelService = container.resolve(LevelService);
+			let newdata = await levelService.createLevel(input);
+			return newdata;
+		}),
+
+	getCurrentLevel: publicProcedure.query(async () => {
+		const levelService = container.resolve(LevelService);
+		let level = await levelService.getCurrentLevel();
+		if (level == null) {
+			throw new BaseResponseError("Level does not exist");
+		}
+		return level;
+	}),
+
+	getAllLevel: publicProcedure.query(async () => {
+		const levelService = container.resolve(LevelService);
+		let level = await levelService.getAllLevel();
+		if (level == null) {
+			throw new BaseResponseError("Level does not exist");
+		}
+		return level;
+	}),
+
+	updateLevel: publicProcedure
+		.input(updateLevelAPI)
+		.mutation(async ({ input }) => {
+			const levelService = container.resolve(LevelService);
+			let newdata = await levelService.updateLevel(input);
+			return newdata;
+		}),
+
+	deleteLevel: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.mutation(async (opts) => {
+			const { input } = opts;
+			const levelService = container.resolve(LevelService);
+			await levelService.deleteLevel(input.id);
+		}),
+
+	createPerformanceLevel: publicProcedure
+		.input(createPerformanceLevelAPI)
+		.mutation(async ({ input }) => {
+			const performanceLevelService = container.resolve(
+				PerformanceLevelService
+			);
+			let newdata = await performanceLevelService.createPerformanceLevel(
+				input
+			);
+			return newdata;
+		}),
+
+	getCurrentPerformanceLevel: publicProcedure.query(async () => {
+		const performanceLevelService = container.resolve(
+			PerformanceLevelService
+		);
+		let performanceLevel =
+			await performanceLevelService.getCurrentPerformanceLevel();
+		if (performanceLevel == null) {
+			throw new BaseResponseError("PerformanceLevel does not exist");
+		}
+		return performanceLevel;
+	}),
+
+	getAllPerformanceLevel: publicProcedure.query(async () => {
+		const performanceLevelService = container.resolve(
+			PerformanceLevelService
+		);
+		let performanceLevel =
+			await performanceLevelService.getAllPerformanceLevel();
+		if (performanceLevel == null) {
+			throw new BaseResponseError("LevelRange does not exist");
+		}
+		return performanceLevel;
+	}),
+
+	updatePerformanceLevel: publicProcedure
+		.input(updatePerformanceLevelAPI)
+		.mutation(async ({ input }) => {
+			const performanceLevelService = container.resolve(
+				PerformanceLevelService
+			);
+			let newdata = await performanceLevelService.updatePerformanceLevel(
+				input
+			);
+			return newdata;
+		}),
+
+	deletePerformanceLevel: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.mutation(async (opts) => {
+			const { input } = opts;
+			const performanceLevelService = container.resolve(
+				PerformanceLevelService
+			);
+			await performanceLevelService.deletePerformanceLevel(input.id);
+		}),
+
+	createTrustMoney: publicProcedure
+		.input(createTrustMoneyAPI)
+		.mutation(async ({ input }) => {
+			const trustMoneyService = container.resolve(TrustMoneyService);
+			let newdata = await trustMoneyService.createTrustMoney(input);
+			return newdata;
+		}),
+
+	getCurrentTrustMoney: publicProcedure.query(async () => {
+		const trustMoneyService = container.resolve(TrustMoneyService);
+		let trustMoney = await trustMoneyService.getCurrentTrustMoney();
+		if (trustMoney == null) {
+			throw new BaseResponseError("TrustMoney does not exist");
+		}
+		return trustMoney;
+	}),
+
+	getAllTrustMoney: publicProcedure.query(async () => {
+		const trustMoneyService = container.resolve(TrustMoneyService);
+		let trustMoney = await trustMoneyService.getAllTrustMoney();
+		if (trustMoney == null) {
+			throw new BaseResponseError("TrustMoney does not exist");
+		}
+		return trustMoney;
+	}),
+
+	updateTrustMoney: publicProcedure
+		.input(updateTrustMoneyAPI)
+		.mutation(async ({ input }) => {
+			const trustMoneyService = container.resolve(TrustMoneyService);
+			let newdata = await trustMoneyService.updateTrustMoney(input);
+			return newdata;
+		}),
+
+	deleteTrustMoney: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.mutation(async (opts) => {
+			const { input } = opts;
+			const trustMoneyService = container.resolve(TrustMoneyService);
+			await trustMoneyService.deleteTrustMoney(input.id);
 		}),
 });
