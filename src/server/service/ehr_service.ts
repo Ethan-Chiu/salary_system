@@ -17,10 +17,9 @@ export class EHRService {
 		const dataList = await sequelize.query(GETPERIOD, {
 			type: QueryTypes.SELECT,
 		});
-		let periodList: Period[] = [];
-		for (let data of dataList) {
-			periodList.push(Period.fromDB(data));
-		}
+		const periodList: Period[] = dataList.map((data) =>
+			Period.fromDB(data)
+		);
 
 		return periodList;
 	}
