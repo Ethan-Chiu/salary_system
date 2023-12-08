@@ -17,7 +17,7 @@ const DateService = z.object({
 const User = z.object({
 	emp_id: z.string(),
 	password: z.string(),
-	auth_level: z.number(),
+	auth_l: z.number(),
 });
 
 export const createUserAPI = User.merge(DateAPI);

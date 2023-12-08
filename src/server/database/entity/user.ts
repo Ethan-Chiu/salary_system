@@ -32,7 +32,7 @@ export class User extends Model<
 	declare id: CreationOptional<number>;
 	declare emp_id: string;
 	declare hash: string; // for nullable fields
-	declare auth_level: number;
+	declare auth_l: number;
 	declare start_date: string;
 	declare end_date: string | null;
 
@@ -63,7 +63,7 @@ User.init(
 			type: DataTypes.STRING(128),
 			allowNull: false,
 		},
-		auth_level: {
+		auth_l: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
 		},

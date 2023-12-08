@@ -17,7 +17,7 @@ export class UserService {
 	async createUser({
 		emp_id,
 		password,
-		auth_level,
+		auth_l,
 		start_date,
 		end_date,
 	}: z.infer<typeof createUserService>): Promise<User> {
@@ -30,7 +30,7 @@ export class UserService {
 		const newUser = await User.create({
 			emp_id: emp_id,
 			hash: hash,
-			auth_level: auth_level,
+			auth_l: auth_l,
 			start_date: start_date ?? current_date_string,
 			end_date: end_date,
 			create_by: "system",
@@ -74,7 +74,7 @@ export class UserService {
 	async updateUser({
 		emp_id,
 		password,
-		auth_level,
+		auth_l,
 		start_date,
 		end_date,
 	}: z.infer<typeof updateUserService>): Promise<void> {
@@ -93,7 +93,7 @@ export class UserService {
 		const affectedCount = await User.update(
 			{
 				hash: select_value(hash, user.hash),
-				auth_level: select_value(auth_level, user.auth_level),
+				auth_l: select_value(auth_l, user.auth_l),
 				start_date: select_value(start_date, user.start_date),
 				end_date: select_value(end_date, user.end_date),
 				update_by: "system",
