@@ -1,5 +1,5 @@
 import { injectable } from "tsyringe";
-import { BonusPositionType } from "../database/entity/bonus_position_type";
+import { BonusPositionType } from "../database/entity/SALARY/bonus_position_type";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {

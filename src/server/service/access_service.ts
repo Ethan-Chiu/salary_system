@@ -1,7 +1,7 @@
 import { injectable } from "tsyringe";
 import { RolesEnumType } from "../api/types/role_type";
 import { AccessiblePagesType, accessiblePages } from "../api/types/access_page_type";
-import { AccessSetting } from "../database/entity/access_setting";
+import { AccessSetting } from "../database/entity/SALARY/access_setting";
 import "reflect-metadata"
 
 @injectable()

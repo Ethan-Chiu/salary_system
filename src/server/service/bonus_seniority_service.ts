@@ -5,7 +5,7 @@ import {
 	createBonusSeniorityService,
 	updateBonusSeniorityService,
 } from "../api/types/parameters_input_type";
-import { BonusSeniority } from "../database/entity/bonus_seniority";
+import { BonusSeniority } from "../database/entity/SALARY/bonus_seniority";
 import { select_value } from "./helper_function";
 
 @injectable()

@@ -6,16 +6,16 @@ import {
 	CreationOptional,
 } from "sequelize";
 import { container } from "tsyringe";
-import { Database } from "../client";
+import { Database } from "../../client";
 
-export class BonusPositionType extends Model<
-	InferAttributes<BonusPositionType>,
-	InferCreationAttributes<BonusPositionType>
+export class PerformanceLevel extends Model<
+	InferAttributes<PerformanceLevel>,
+	InferCreationAttributes<PerformanceLevel>
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-	declare position_type: string;
-	declare multiplier: number;
+    declare performance_level: string;
+    declare multiplier: number;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -28,23 +28,22 @@ export class BonusPositionType extends Model<
 
 const sequelize = container.resolve(Database).connection;
 
-BonusPositionType.init(
+PerformanceLevel.init(
 	{
 		id: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		position_type: {
-			type: new DataTypes.STRING(2),
+        performance_level: {
+            type: DataTypes.STRING(128),
+			allowNull: false,
+        },
+        multiplier: {
+            type: DataTypes.INTEGER.UNSIGNED,
 			unique: false,
 			allowNull: false,
-		},
-		multiplier: {
-			type: DataTypes.FLOAT,
-			unique: false,
-			allowNull: false,
-		},
+        },
 		create_date: {
 			type: DataTypes.DATE,
 		},
@@ -62,8 +61,8 @@ BonusPositionType.init(
 	},
 	{
 		sequelize,
-		tableName: "U_BONUS_POSITION_TYPE",
-		createdAt: "create_date",
-		updatedAt: "update_date",
+		tableName: "U_PERFORMANCE_LEVEL",
+		createdAt: 'create_date',
+		updatedAt: 'update_date',
 	}
 );

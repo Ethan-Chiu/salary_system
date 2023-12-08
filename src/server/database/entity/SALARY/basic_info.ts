@@ -6,20 +6,16 @@ import {
 	CreationOptional,
 } from "sequelize";
 import { container } from "tsyringe";
-import { Database } from "../client";
+import { Database } from "../../client";
 
-export class AccessSetting extends Model<
-	InferAttributes<AccessSetting>,
-	InferCreationAttributes<AccessSetting>
+export class BasicInfo extends Model<
+	InferAttributes<BasicInfo>,
+	InferCreationAttributes<BasicInfo>
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-	declare auth_l: number;
-
-	declare actions: boolean;
-	declare report: boolean;
-	declare roles: boolean;
-	declare settings: boolean;
+	declare payday: Date;
+    declare announcement: string;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -32,33 +28,21 @@ export class AccessSetting extends Model<
 
 const sequelize = container.resolve(Database).connection;
 
-AccessSetting.init(
+BasicInfo.init(
 	{
 		id: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		auth_l: {
-			type: DataTypes.INTEGER.UNSIGNED,
+        payday: {
+            type: DataTypes.DATE,
 			allowNull: false,
-			unique: true,
-		},
-        actions: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
         },
-        report: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-        },
-        roles: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-        },
-        settings: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
+        announcement: {
+            type: new DataTypes.STRING(512),
+			unique: false,
+			allowNull: true,
         },
 		create_date: {
 			type: DataTypes.DATE,
@@ -77,8 +61,8 @@ AccessSetting.init(
 	},
 	{
 		sequelize,
-		tableName: "U_ACCESS_SETTING",
-		createdAt: "create_date",
-		updatedAt: "update_date",
+		tableName: "U_BASIC_INFO",
+		createdAt: 'create_date',
+		updatedAt: 'update_date',
 	}
 );

@@ -1,6 +1,6 @@
 import * as bcrypt from "bcrypt";
 import { injectable } from "tsyringe";
-import { User } from "../database/entity/user";
+import { User } from "../database/entity/SALARY/user";
 import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { check_date, get_date_string, select_value } from "./helper_function";

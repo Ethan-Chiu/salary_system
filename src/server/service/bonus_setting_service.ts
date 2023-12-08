@@ -6,7 +6,7 @@ import {
 	createBonusSettingService,
 	updateBonusSettingService,
 } from "../api/types/parameters_input_type";
-import { BonusSetting } from "../database/entity/bonus_setting";
+import { BonusSetting } from "../database/entity/SALARY/bonus_setting";
 
 @injectable()
 export class BonusSettingService {

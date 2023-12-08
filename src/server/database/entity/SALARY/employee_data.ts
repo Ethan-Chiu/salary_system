@@ -6,7 +6,7 @@ import {
 	CreationOptional,
 } from "sequelize";
 import { container } from "tsyringe";
-import { Database } from "../client";
+import { Database } from "../../client";
 
 export class EmployeeData extends Model<
 	InferAttributes<EmployeeData>,

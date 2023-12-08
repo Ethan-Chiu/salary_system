@@ -6,17 +6,15 @@ import {
 	CreationOptional,
 } from "sequelize";
 import { container } from "tsyringe";
-import { Database } from "../client";
+import { Database } from "../../client";
 
-export class LevelRange extends Model<
-	InferAttributes<LevelRange>,
-	InferCreationAttributes<LevelRange>
+export class Level extends Model<
+	InferAttributes<Level>,
+	InferCreationAttributes<Level>
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-    declare type: string;
-    declare level_start: number;
-    declare level_end: number;
+    declare level: number;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -29,23 +27,14 @@ export class LevelRange extends Model<
 
 const sequelize = container.resolve(Database).connection;
 
-LevelRange.init(
+Level.init(
 	{
 		id: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			autoIncrement: true,
 			primaryKey: true,
 		},
-        type: {
-            type: DataTypes.STRING(32),
-			allowNull: false,
-        },
-        level_start: {
-            type: DataTypes.INTEGER.UNSIGNED,
-			unique: false,
-			allowNull: false,
-        },
-        level_end: {
+        level: {
             type: DataTypes.INTEGER.UNSIGNED,
 			unique: false,
 			allowNull: false,
@@ -67,7 +56,7 @@ LevelRange.init(
 	},
 	{
 		sequelize,
-		tableName: "U_LEVEL_RANGE",
+		tableName: "U_LEVEL",
 		createdAt: 'create_date',
 		updatedAt: 'update_date',
 	}

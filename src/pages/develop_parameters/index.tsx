@@ -36,7 +36,7 @@ import { getAttendanceFunctions, getBankFunctions, getBonusSettingFunctions, get
 import { BonusDepartmentRow, BonusDepartmentTable } from "./tables/bonus_department"
 import { BonusPositionRow, BonusPositionTable } from "./tables/bonus_position";
 import { BonusSeniorityRow, BonusSeniorityTable } from "./tables/bonus_seniority";
-import { BonusSeniority } from "~/server/database/entity/bonus_seniority";
+import { BonusSeniority } from "~/server/database/entity/SALARY/bonus_seniority";
 
 const API_PARAMETERS = api.parameters;
 

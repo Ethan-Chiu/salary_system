@@ -6,7 +6,7 @@ import {
 	createInsuranceRateSettingService,
 	updateInsuranceRateSettingService,
 } from "../api/types/parameters_input_type";
-import { InsuranceRateSetting } from "../database/entity/insurance_rate_setting";
+import { InsuranceRateSetting } from "../database/entity/SALARY/insurance_rate_setting";
 import { check_date, get_date_string, select_value } from "./helper_function";
 
 @injectable()

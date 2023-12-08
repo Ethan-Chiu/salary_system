@@ -6,16 +6,16 @@ import {
 	CreationOptional,
 } from "sequelize";
 import { container } from "tsyringe";
-import { Database } from "../client";
+import { Database } from "../../client";
 
-export class BasicInfo extends Model<
-	InferAttributes<BasicInfo>,
-	InferCreationAttributes<BasicInfo>
+export class BonusPosition extends Model<
+	InferAttributes<BonusPosition>,
+	InferCreationAttributes<BonusPosition>
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-	declare payday: Date;
-    declare announcement: string;
+	declare position: number;
+	declare multiplier: number;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -28,22 +28,23 @@ export class BasicInfo extends Model<
 
 const sequelize = container.resolve(Database).connection;
 
-BasicInfo.init(
+BonusPosition.init(
 	{
 		id: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			autoIncrement: true,
 			primaryKey: true,
 		},
-        payday: {
-            type: DataTypes.DATE,
-			allowNull: false,
-        },
-        announcement: {
-            type: new DataTypes.STRING(512),
+		position: {
+			type: DataTypes.INTEGER.UNSIGNED,
 			unique: false,
-			allowNull: true,
-        },
+			allowNull: false,
+		},
+		multiplier: {
+			type: DataTypes.FLOAT,
+			unique: false,
+			allowNull: false,
+		},
 		create_date: {
 			type: DataTypes.DATE,
 		},
@@ -61,8 +62,8 @@ BasicInfo.init(
 	},
 	{
 		sequelize,
-		tableName: "U_BASIC_INFO",
-		createdAt: 'create_date',
-		updatedAt: 'update_date',
+		tableName: "U_BONUS_POSITION",
+		createdAt: "create_date",
+		updatedAt: "update_date",
 	}
 );

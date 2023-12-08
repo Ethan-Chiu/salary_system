@@ -22,7 +22,7 @@ import {
 	ForeignKey,
 } from "sequelize";
 import { container } from "tsyringe";
-import { Database } from "../client";
+import { Database } from "../../client";
 
 export class User extends Model<
 	InferAttributes<User>,

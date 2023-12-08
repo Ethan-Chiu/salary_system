@@ -5,7 +5,7 @@ import {
 	createPerformanceLevelService,
 	updatePerformanceLevelService,
 } from "../api/types/parameters_input_type";
-import { PerformanceLevel } from "../database/entity/performance_level";
+import { PerformanceLevel } from "../database/entity/SALARY/performance_level";
 import { select_value } from "./helper_function";
 
 @injectable()

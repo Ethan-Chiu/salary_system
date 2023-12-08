@@ -6,20 +6,16 @@ import {
 	CreationOptional,
 } from "sequelize";
 import { container } from "tsyringe";
-import { Database } from "../client";
+import { Database } from "../../client";
 
-export class BankSetting extends Model<
-	InferAttributes<BankSetting>,
-	InferCreationAttributes<BankSetting>
+export class BonusSeniority extends Model<
+	InferAttributes<BonusSeniority>,
+	InferCreationAttributes<BonusSeniority>
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-	declare bank_code: string;
-	declare bank_name: string;
-	declare org_code: string;
-	declare org_name: string;
-	declare start_date: string;
-	declare end_date: string | null;
+    declare seniority: number;
+    declare multiplier: number;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -32,41 +28,23 @@ export class BankSetting extends Model<
 
 const sequelize = container.resolve(Database).connection;
 
-BankSetting.init(
+BonusSeniority.init(
 	{
 		id: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		bank_code: {
-			type: new DataTypes.STRING(128),
+        seniority: {
+            type: DataTypes.INTEGER.UNSIGNED,
 			unique: false,
 			allowNull: false,
-		},
-		bank_name: {
-			type: new DataTypes.STRING(128),
+        },
+        multiplier: {
+            type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
-		},
-		org_code: {
-			type: new DataTypes.STRING(128),
-			unique: false,
-			allowNull: false,
-		},
-		org_name: {
-			type: new DataTypes.STRING(128),
-			unique: false,
-			allowNull: false,
-		},
-		start_date: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-		end_date: {
-			type: DataTypes.STRING(128),
-			allowNull: true,
-		},
+        },
 		create_date: {
 			type: DataTypes.DATE,
 		},
@@ -84,7 +62,7 @@ BankSetting.init(
 	},
 	{
 		sequelize,
-		tableName: "U_BANK_SETTING",
+		tableName: "U_BONUS_SENIORITY",
 		createdAt: 'create_date',
 		updatedAt: 'update_date',
 	}

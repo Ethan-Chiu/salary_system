@@ -6,16 +6,17 @@ import {
 	CreationOptional,
 } from "sequelize";
 import { container } from "tsyringe";
-import { Database } from "../client";
+import { Database } from "../../client";
 
-export class BonusDepartment extends Model<
-	InferAttributes<BonusDepartment>,
-	InferCreationAttributes<BonusDepartment>
+export class EmployeeAccount extends Model<
+	InferAttributes<EmployeeAccount>,
+	InferCreationAttributes<EmployeeAccount>
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-    declare department: string;
-    declare multiplier: number;
+    declare emp_id: string;
+    declare bank_account: string;
+    declare ratio: number;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -28,19 +29,22 @@ export class BonusDepartment extends Model<
 
 const sequelize = container.resolve(Database).connection;
 
-BonusDepartment.init(
+EmployeeAccount.init(
 	{
 		id: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			autoIncrement: true,
 			primaryKey: true,
 		},
-        department: {
-            type: new DataTypes.STRING(512),
-			unique: false,
+        emp_id: {
+            type: DataTypes.STRING(32),
 			allowNull: false,
         },
-        multiplier: {
+        bank_account: {
+            type: DataTypes.STRING(32),
+			allowNull: false,
+        },
+        ratio: {
             type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
@@ -62,8 +66,8 @@ BonusDepartment.init(
 	},
 	{
 		sequelize,
-		tableName: "U_BONUS_DEPARTMENT",
+		tableName: "U_EMPLOYEE_ACCOUNT",
 		createdAt: 'create_date',
 		updatedAt: 'update_date',
 	}
-);
+)

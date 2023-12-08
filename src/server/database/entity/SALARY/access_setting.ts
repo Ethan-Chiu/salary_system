@@ -6,16 +6,20 @@ import {
 	CreationOptional,
 } from "sequelize";
 import { container } from "tsyringe";
-import { Database } from "../client";
+import { Database } from "../../client";
 
-export class BonusSeniority extends Model<
-	InferAttributes<BonusSeniority>,
-	InferCreationAttributes<BonusSeniority>
+export class AccessSetting extends Model<
+	InferAttributes<AccessSetting>,
+	InferCreationAttributes<AccessSetting>
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-    declare seniority: number;
-    declare multiplier: number;
+	declare auth_l: number;
+
+	declare actions: boolean;
+	declare report: boolean;
+	declare roles: boolean;
+	declare settings: boolean;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -28,22 +32,33 @@ export class BonusSeniority extends Model<
 
 const sequelize = container.resolve(Database).connection;
 
-BonusSeniority.init(
+AccessSetting.init(
 	{
 		id: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			autoIncrement: true,
 			primaryKey: true,
 		},
-        seniority: {
-            type: DataTypes.INTEGER.UNSIGNED,
-			unique: false,
+		auth_l: {
+			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
+			unique: true,
+		},
+        actions: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
         },
-        multiplier: {
-            type: DataTypes.FLOAT,
-			unique: false,
-			allowNull: false,
+        report: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+        },
+        roles: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+        },
+        settings: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
         },
 		create_date: {
 			type: DataTypes.DATE,
@@ -62,8 +77,8 @@ BonusSeniority.init(
 	},
 	{
 		sequelize,
-		tableName: "U_BONUS_SENIORITY",
-		createdAt: 'create_date',
-		updatedAt: 'update_date',
+		tableName: "U_ACCESS_SETTING",
+		createdAt: "create_date",
+		updatedAt: "update_date",
 	}
 );

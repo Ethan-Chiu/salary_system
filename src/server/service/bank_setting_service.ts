@@ -1,5 +1,5 @@
 import { injectable } from "tsyringe";
-import { BankSetting } from "../database/entity/bank_setting";
+import { BankSetting } from "../database/entity/SALARY/bank_setting";
 import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { check_date, get_date_string, select_value } from "./helper_function";

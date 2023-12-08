@@ -5,7 +5,7 @@ import {
 	createTrustMoneyService,
 	updateTrustMoneyService,
 } from "../api/types/parameters_input_type";
-import { TrustMoney } from "../database/entity/trust_money";
+import { TrustMoney } from "../database/entity/SALARY/trust_money";
 import { select_value } from "./helper_function";
 
 @injectable()

@@ -6,18 +6,20 @@ import {
 	CreationOptional,
 } from "sequelize";
 import { container } from "tsyringe";
-import { Database } from "../client";
+import { Database } from "../../client";
 
-export class BonusSetting extends Model<
-	InferAttributes<BonusSetting>,
-	InferCreationAttributes<BonusSetting>
+export class BankSetting extends Model<
+	InferAttributes<BankSetting>,
+	InferCreationAttributes<BankSetting>
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-    declare fixed_multiplier: number;
-    declare criterion_date: Date;
-    declare base_on: string;
-    declare type: string;
+	declare bank_code: string;
+	declare bank_name: string;
+	declare org_code: string;
+	declare org_name: string;
+	declare start_date: string;
+	declare end_date: string | null;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -30,30 +32,41 @@ export class BonusSetting extends Model<
 
 const sequelize = container.resolve(Database).connection;
 
-BonusSetting.init(
+BankSetting.init(
 	{
 		id: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			autoIncrement: true,
 			primaryKey: true,
 		},
-        fixed_multiplier: {
-            type: DataTypes.FLOAT,
+		bank_code: {
+			type: new DataTypes.STRING(128),
 			unique: false,
 			allowNull: false,
-        },
-        criterion_date: {
-			type: DataTypes.DATE,
+		},
+		bank_name: {
+			type: new DataTypes.STRING(128),
+			unique: false,
 			allowNull: false,
 		},
-        base_on: {
-			type: DataTypes.STRING(32),
+		org_code: {
+			type: new DataTypes.STRING(128),
+			unique: false,
 			allowNull: false,
 		},
-        type: {
-            type: DataTypes.STRING(32),
+		org_name: {
+			type: new DataTypes.STRING(128),
+			unique: false,
 			allowNull: false,
-        },
+		},
+		start_date: {
+			type: DataTypes.STRING(128),
+			allowNull: false,
+		},
+		end_date: {
+			type: DataTypes.STRING(128),
+			allowNull: true,
+		},
 		create_date: {
 			type: DataTypes.DATE,
 		},
@@ -71,7 +84,7 @@ BonusSetting.init(
 	},
 	{
 		sequelize,
-		tableName: "U_BONUS_SETTING",
+		tableName: "U_BANK_SETTING",
 		createdAt: 'create_date',
 		updatedAt: 'update_date',
 	}

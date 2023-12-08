@@ -1,5 +1,5 @@
 import { injectable } from "tsyringe";
-import { AttendanceSetting } from "../database/entity/attendance_setting";
+import { AttendanceSetting } from "../database/entity/SALARY/attendance_setting";
 import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";

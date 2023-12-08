@@ -6,17 +6,18 @@ import {
 	CreationOptional,
 } from "sequelize";
 import { container } from "tsyringe";
-import { Database } from "../client";
+import { Database } from "../../client";
 
-export class EmployeeAccount extends Model<
-	InferAttributes<EmployeeAccount>,
-	InferCreationAttributes<EmployeeAccount>
+export class BonusSetting extends Model<
+	InferAttributes<BonusSetting>,
+	InferCreationAttributes<BonusSetting>
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-    declare emp_id: string;
-    declare bank_account: string;
-    declare ratio: number;
+    declare fixed_multiplier: number;
+    declare criterion_date: Date;
+    declare base_on: string;
+    declare type: string;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -29,24 +30,28 @@ export class EmployeeAccount extends Model<
 
 const sequelize = container.resolve(Database).connection;
 
-EmployeeAccount.init(
+BonusSetting.init(
 	{
 		id: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			autoIncrement: true,
 			primaryKey: true,
 		},
-        emp_id: {
-            type: DataTypes.STRING(32),
-			allowNull: false,
-        },
-        bank_account: {
-            type: DataTypes.STRING(32),
-			allowNull: false,
-        },
-        ratio: {
+        fixed_multiplier: {
             type: DataTypes.FLOAT,
 			unique: false,
+			allowNull: false,
+        },
+        criterion_date: {
+			type: DataTypes.DATE,
+			allowNull: false,
+		},
+        base_on: {
+			type: DataTypes.STRING(32),
+			allowNull: false,
+		},
+        type: {
+            type: DataTypes.STRING(32),
 			allowNull: false,
         },
 		create_date: {
@@ -66,8 +71,8 @@ EmployeeAccount.init(
 	},
 	{
 		sequelize,
-		tableName: "U_EMPLOYEE_ACCOUNT",
+		tableName: "U_BONUS_SETTING",
 		createdAt: 'create_date',
 		updatedAt: 'update_date',
 	}
-)
+);

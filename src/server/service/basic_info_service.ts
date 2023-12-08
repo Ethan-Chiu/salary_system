@@ -5,7 +5,7 @@ import {
 	createBasicInfoService,
 	updateBasicInfoService,
 } from "../api/types/parameters_input_type";
-import { BasicInfo } from "../database/entity/basic_info";
+import { BasicInfo } from "../database/entity/SALARY/basic_info";
 import { select_value } from "./helper_function";
 
 @injectable()

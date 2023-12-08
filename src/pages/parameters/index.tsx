@@ -61,7 +61,7 @@ import { type ReactElement, useRef, useState, useEffect } from "react";
 import { table } from "console";
 import { ConnectionPoolClosedEvent } from "typeorm";
 import { map } from "@trpc/server/observable";
-import { AttendanceSetting } from "~/server/database/entity/attendance_setting";
+import { AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
 import { rangeEnd } from "prettier.config.cjs";
 import Parameters from "../test/table_modify_element";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";

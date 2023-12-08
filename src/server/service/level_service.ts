@@ -5,7 +5,7 @@ import {
 	createLevelService,
 	updateLevelService,
 } from "../api/types/parameters_input_type";
-import { Level } from "../database/entity/level";
+import { Level } from "../database/entity/SALARY/level";
 import { select_value } from "./helper_function";
 
 @injectable()
