@@ -1,4 +1,4 @@
-export class PaydraftHolidaysV {
+export class Holiday {
 	// id can be undefined during creation when using `autoIncrement`
 	declare period_id: number;
 	declare emp_no: string;
@@ -46,7 +46,7 @@ export class PaydraftHolidaysV {
 		this.compensatory_2 = compensatory_2;
 	}
 
-	static fromDB(data: any): PaydraftHolidaysV {
+	static fromDB(data: any): Holiday {
 		const {
 			PERIOD_ID,
 			EMP_NO,
@@ -64,7 +64,7 @@ export class PaydraftHolidaysV {
 			COMPENSATORY_2,
 		} = data;
 
-		return new PaydraftHolidaysV(
+		return new Holiday(
 			PERIOD_ID,
 			EMP_NO,
 			EMP_NAME,
