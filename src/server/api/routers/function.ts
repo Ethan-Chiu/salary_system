@@ -19,4 +19,22 @@ export const functionRouter = createTRPCRouter({
 
 			return holiday;
 		}),
+
+	getOvertime: publicProcedure
+		.input(z.object({ period_id: z.number() }))
+		.query(async ({ input }) => {
+			const ehrService = container.resolve(EHRService);
+			const overtime = await ehrService.getOvertime(input.period_id);
+
+			return overtime;
+		}),
+
+	getPayset: publicProcedure
+		.input(z.object({ period_id: z.number() }))
+		.query(async ({ input }) => {
+			const ehrService = container.resolve(EHRService);
+			const payset = await ehrService.getPayset(input.period_id);
+
+			return payset;
+		}),
 });
