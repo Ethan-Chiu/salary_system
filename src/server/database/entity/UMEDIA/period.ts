@@ -43,21 +43,27 @@ export class Period {
 		this.issue_date = issue_date;
 	}
 
-	static fromDB({
-		PERIOD_ID,
-		PERIOD_NAME,
-		START_DATE,
-		END_DATE,
-		STATUS,
-		ISSUE_DATE,
-	}: any): Period {
+	static fromDB(data: any): Period {
+		const {
+			PERIOD_ID,
+			PERIOD_NAME,
+			START_DATE,
+			END_DATE,
+			STATUS,
+			ISSUE_DATE,
+		} = data;
+
+		const formattedStartDate = get_date_string(START_DATE);
+		const formattedEndDate = get_date_string(END_DATE);
+		const formattedIssueDate = get_date_string(ISSUE_DATE);
+
 		return new Period(
 			PERIOD_ID,
 			PERIOD_NAME,
-			get_date_string(START_DATE),
-			get_date_string(END_DATE),
+			formattedStartDate,
+			formattedEndDate,
 			STATUS,
-			get_date_string(ISSUE_DATE)
+			formattedIssueDate
 		);
 	}
 }
