@@ -1,12 +1,4 @@
-import {
-	DataTypes,
-	Model,
-	InferAttributes,
-	InferCreationAttributes,
-	CreationOptional,
-} from "sequelize";
-import { container } from "tsyringe";
-import { Database } from "../../client";
+import { get_date_string } from "~/server/service/helper_function";
 
 export class Period {
 	// id can be undefined during creation when using `autoIncrement`
@@ -49,5 +41,23 @@ export class Period {
 		this.end_date = end_date;
 		this.status = status;
 		this.issue_date = issue_date;
+	}
+
+	static fromDB({
+		PERIOD_ID,
+		PERIOD_NAME,
+		START_DATE,
+		END_DATE,
+		STATUS,
+		ISSUE_DATE,
+	}: any): Period {
+		return new Period(
+			PERIOD_ID,
+			PERIOD_NAME,
+			get_date_string(START_DATE),
+			get_date_string(END_DATE),
+			STATUS,
+			get_date_string(ISSUE_DATE)
+		);
 	}
 }
