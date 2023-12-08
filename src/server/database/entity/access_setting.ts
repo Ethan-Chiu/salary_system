@@ -14,7 +14,7 @@ export class AccessSetting extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-	declare auth_level: number;
+	declare auth_l: number;
 
 	declare actions: boolean;
 	declare report: boolean;
@@ -39,7 +39,7 @@ AccessSetting.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		auth_level: {
+		auth_l: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
 			unique: true,

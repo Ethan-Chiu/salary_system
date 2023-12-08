@@ -144,7 +144,7 @@ export const authOptions: NextAuthOptions = {
 					}
 				}
 
-				const parseRole = RolesEnum.safeParse(user.auth_level);
+				const parseRole = RolesEnum.safeParse(user.auth_l);
 				if (!parseRole.success) {
 					console.log(parseRole.error);
 					throw new BaseResponseError(

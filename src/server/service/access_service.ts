@@ -15,7 +15,7 @@ export class AccessService {
         }
 
         const accessSettings = await AccessSetting.findOne({ where: {
-            auth_level: role
+            auth_l: role
         }});
 
         if (accessSettings === null) {
@@ -28,7 +28,7 @@ export class AccessService {
 
     async createAccessData(role: RolesEnumType, access: AccessiblePagesType) {
         await AccessSetting.create({
-            auth_level: role,
+            auth_l: role,
             actions: access.actions,
             settings: access.settings,
             report: access.report,
