@@ -74,6 +74,11 @@ export class BonusDepartmentService {
 	}
 
 	async deleteBonusDepartment(id: number): Promise<void> {
-		BonusDepartment.destroy({ where: { id: id } });
+		const destroyedRows = await BonusDepartment.destroy({
+			where: { id: id },
+		});
+		if (destroyedRows != 1) {
+			throw new BaseResponseError("Delete error");
+		}
 	}
 }

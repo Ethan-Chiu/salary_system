@@ -99,10 +99,11 @@ export class BankSettingService {
 	}
 
 	async deleteBankSetting(id: number): Promise<void> {
-		const current_date_string = get_date_string(new Date());
-		await this.updateBankSetting({
-			id: id,
-			end_date: current_date_string,
+		const destroyedRows = await BankSetting.destroy({
+			where: { id: id },
 		});
+		if (destroyedRows != 1) {
+			throw new BaseResponseError("Delete error");
+		}
 	}
 }
