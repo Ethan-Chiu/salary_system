@@ -43,7 +43,7 @@ const columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="pl-4 lowercase">{row.getValue("name")}</div>
+			<div className="pl-4 w-[400px] lowercase">{row.getValue("name")}</div>
 		),
 	}),
 	columnHelper.accessor("value", {
@@ -60,7 +60,7 @@ const columns = [
 						(value as Date).toISOString().split("T")[0] ?? "";
 				} else formatted = "";
 			}
-			return <div className="text-center font-medium">{formatted}</div>;
+			return <div className="flex justify-center"><div className="w-80 text-center font-medium">{formatted}</div></div>;
 		},
 	}),
 ];
