@@ -8,14 +8,9 @@ import {
 } from "~/components/ui/accordion";
 import type {
 	ColumnDef,
-	ColumnFiltersState,
-	SortingState,
-	VisibilityState,
-	Row,
 } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { useState } from "react";
-import { useRouter } from "next/router";
 import {
 	isString,
 	isNumber,
@@ -32,23 +27,11 @@ export type SettingItem = {
 
 export function ParameterTable({
 	table_name,
-	table_type,
 	defaultData,
 	index,
 	globalFilter,
-	createFunction,
-	updateFunction,
 }: any) {
-	const router = useRouter();
-
 	const [data, setData] = useState<SettingItem[]>(defaultData);
-	const [sorting, setSorting] = useState<SortingState>([]);
-	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-		{}
-	);
-	const [rowSelection, setRowSelection] = useState({});
-
 	const [showDialog, setShowDialog] = useState(false);
 
 	const filter_key = "name";
