@@ -16,10 +16,7 @@ const PageParameters: NextPageWithLayout = () => {
 			<Header title="parameters" showOptions />
 
 			<Accordion type="single" collapsible className="w-full">
-				<AttendanceTable
-					index={0}
-					globalFilter={""}
-				/>
+				<AttendanceTable index={0} globalFilter={""} />
 			</Accordion>
 		</>
 	);

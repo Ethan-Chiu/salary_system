@@ -14,14 +14,18 @@ import {
 } from "~/pages/develop_parameters/utils/checkType";
 import { DataTable } from "../components/data_table";
 import { AttendanceSetting } from "~/server/database/entity/attendance_setting";
-import { c_CreateDateStr, c_EndDateStr, c_IdStr, c_StartDateStr } from "../constant";
+import {
+	c_CreateDateStr,
+	c_EndDateStr,
+	c_StartDateStr,
+} from "../constant";
 
 export type SettingItem = {
 	name: string;
 	value: number | string | Date;
 };
 
-const columnHelper = createColumnHelper<SettingItem>()
+const columnHelper = createColumnHelper<SettingItem>();
 
 const columns = [
 	columnHelper.accessor("name", {
@@ -156,13 +160,17 @@ export function AttendanceTable({ index, globalFilter }: any) {
 	if (isError) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
-	
+
 	return (
 		<>
 			<AccordionItem value={"item-" + index.toString()}>
 				<AccordionTrigger>{"請假加班"}</AccordionTrigger>
 				<AccordionContent>
-					<DataTable columns={columns} data={attendanceMapper(data)} filterColumnKey={filterKey}/>
+					<DataTable
+						columns={columns}
+						data={attendanceMapper(data)}
+						filterColumnKey={filterKey}
+					/>
 				</AccordionContent>
 			</AccordionItem>
 		</>
