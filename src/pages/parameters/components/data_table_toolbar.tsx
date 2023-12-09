@@ -5,7 +5,7 @@ import { Input } from "~/components/ui/input"
 interface DataTableToolbarProps<TData> {
   table: Table<TData>,
   globalFilter: string,
-  filterKey: string
+  filterKey: keyof TData
 }
 
 export function DataTableToolbar<TData>({
@@ -20,13 +20,13 @@ export function DataTableToolbar<TData>({
             value={
                 globalFilter === ""
                     ? (table
-                            .getColumn(filterKey)
+                            .getColumn(filterKey.toString())
                             ?.getFilterValue() as string) ?? ""
                     : globalFilter
             }
             onChange={(event) => {
                 table
-                    .getColumn(filterKey)
+                    .getColumn(filterKey.toString())
                     ?.setFilterValue(event.target.value);
             }}
             className="h-8 max-w-sm"

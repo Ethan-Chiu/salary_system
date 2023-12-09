@@ -20,12 +20,13 @@ import {
 	c_StartDateStr,
 } from "../constant";
 
-export type SettingItem = {
+export type RowItem = {
 	name: string;
 	value: number | string | Date;
 };
+type RowItemKey = keyof RowItem;
 
-const columnHelper = createColumnHelper<SettingItem>();
+const columnHelper = createColumnHelper<RowItem>();
 
 const columns = [
 	columnHelper.accessor("name", {
@@ -65,7 +66,7 @@ const columns = [
 	}),
 ];
 
-function attendanceMapper(attendanceData: AttendanceSetting): SettingItem[] {
+function attendanceMapper(attendanceData: AttendanceSetting): RowItem[] {
 	return [
 		{
 			name: "事假扣薪",
@@ -151,7 +152,7 @@ function attendanceMapper(attendanceData: AttendanceSetting): SettingItem[] {
 export function AttendanceTable({ index, globalFilter }: any) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentAttendanceSetting.useQuery();
-	const filterKey = "name";
+	const filterKey: RowItemKey = "name";
 
 	if (isLoading) {
 		return <span>Loading</span>; // TODO: Loading element with toast
