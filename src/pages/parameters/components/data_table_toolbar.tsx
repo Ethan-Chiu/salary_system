@@ -25,12 +25,11 @@ export function DataTableToolbar<TData>({
                     : globalFilter
             }
             onChange={(event) => {
-                console.log("changed");
                 table
                     .getColumn(filterKey)
                     ?.setFilterValue(event.target.value);
             }}
-            className="max-w-sm"
+            className="h-8 max-w-sm"
         />
         <DataTableViewOptions table={table} />
     </div>

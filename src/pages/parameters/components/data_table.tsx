@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import {
 	ColumnDef,
@@ -27,16 +25,16 @@ import {
 import { DataTableToolbar } from "./data_table_toolbar";
 import { DataTablePagination } from "./data_table_pagination";
 
-// import { DataTablePagination } from "../components/data-table-pagination";
-
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
+	filterColumnKey: string;
 }
 
 export function DataTable<TData, TValue>({
 	columns,
 	data,
+	filterColumnKey,
 }: DataTableProps<TData, TValue>) {
 	const [rowSelection, setRowSelection] = React.useState({});
 	const [columnVisibility, setColumnVisibility] =
@@ -69,7 +67,8 @@ export function DataTable<TData, TValue>({
 
 	return (
 		<div className="space-y-4">
-			<DataTableToolbar table={table} globalFilter="" filterKey=""/> {/* TODO: fix */}
+			{/* TODO: fix */}
+			<DataTableToolbar table={table} globalFilter="" filterKey={filterColumnKey}/>
 			<div className="rounded-md border">
 				<Table>
 					<TableHeader>
