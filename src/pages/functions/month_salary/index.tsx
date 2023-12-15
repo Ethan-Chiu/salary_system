@@ -2,7 +2,6 @@ import { RootLayout } from "~/components/layout/root_layout";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { Header } from "~/components/header";
 import { NextPageWithLayout } from "../../_app";
-import { useRouter } from "next/router";
 import { FadeLoader } from "react-spinners";
 import { api } from "~/utils/api";
 import {
@@ -14,52 +13,31 @@ import {
 	SelectContent,
 	SelectLabel,
 } from "~/components/ui/select";
-import { Button } from "~/components/ui/button";
-import {
-	Table,
-	TableBody,
-	TableCaption,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "~/components/ui/table";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { useState } from "react";
+import { HolidayTable } from "../tables/holiday_table";
+import { OvertimeTable } from "../tables/overtime_table";
+import { PaysetTable } from "../tables/payset_table";
 
-const TabOptions = ["請假", "加班", "工作天數", "Max", "劉承亞"];
+const TabOptions = ["請假", "加班", "工作天數", "其他", "其他"];
 
 const MonthSalary: NextPageWithLayout = () => {
 	const getPeriod = api.function.getPeriod.useQuery();
 	const [period, setPeriod] = useState(-1);
-
-	const getHoliday = api.function.getHoliday.useQuery({ period_id: period });
-	const getOvertime = api.function.getOvertime.useQuery({
-		period_id: period,
-	});
-	const getPayset = api.function.getPayset.useQuery({ period_id: period });
-
 	function getTable(table_name: string) {
 		switch (table_name) {
 			case "請假":
-				const holidayTable = getHoliday.data;
-				console.log(holidayTable);
-				return createTable(table_name, holidayTable);
+				return <HolidayTable period={period} />;
 			case "加班":
-				const overtimeTable = getOvertime.data;
-				console.log(overtimeTable);
-				return createTable(table_name, overtimeTable);
+				return <OvertimeTable period={period} />;
 			case "工作天數":
-				const paysetTable = getPayset.data;
-				console.log(paysetTable);
-				return createTable(table_name, paysetTable);
+				return <PaysetTable period={period} />;
 			default:
 				return <p>No implement</p>;
 		}
 	}
 
+<<<<<<< HEAD
 	function createTable(table_name: string, datas: any) {
 		if (table_name === "請假" && !getHoliday.isFetched) return <></>;
 		if (table_name === "加班" && !getOvertime.isFetched) return <></>;
@@ -126,6 +104,8 @@ const MonthSalary: NextPageWithLayout = () => {
 		);
 	}
 
+=======
+>>>>>>> 7c799273f5ef8c586f29bd620316596039bdfa28
 	if (getPeriod.isFetched)
 		return (
 			<>

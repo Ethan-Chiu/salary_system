@@ -8,12 +8,12 @@ import {
 	isDate,
 } from "~/pages/develop_parameters/utils/checkType";
 import { DataTable } from "../components/data_table";
-import { AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
 import {
 	c_CreateDateStr,
 	c_EndDateStr,
 	c_StartDateStr,
 } from "../constant";
+import { BonusSetting } from "~/server/database/entity/SALARY/bonus_setting";
 
 export type RowItem = {
 	name: string;
@@ -61,92 +61,34 @@ const columns = [
 	}),
 ];
 
-function attendanceMapper(attendanceData: AttendanceSetting): RowItem[] {
+function bonusMapper(bonusData: BonusSetting): RowItem[] {
 	return [
 		{
-			name: "事假扣薪",
-			value: attendanceData.personal_leave_dock,
+			name: "固定比率",
+			value: bonusData.fixed_multiplier,
 		},
-		{
-			name: "病假扣薪",
-			value: attendanceData.sick_leave_dock,
+        {
+			name: "獎金(發放)基準日",
+			value: bonusData.criterion_date,
 		},
-		{
-			name: "不休假代金比率",
-			value: attendanceData.rate_of_unpaid_leave,
+        {
+			name: "獎金計算依據",
+			value: bonusData.base_on,
 		},
-		{
-			name: "不休假-補休1",
-			value: attendanceData.unpaid_leave_compensatory_1,
-		},
-		{
-			name: "不休假-補休2",
-			value: attendanceData.unpaid_leave_compensatory_2,
-		},
-		{
-			name: "不休假-補休3",
-			value: attendanceData.unpaid_leave_compensatory_3,
-		},
-		{
-			name: "不休假-補休4",
-			value: attendanceData.unpaid_leave_compensatory_4,
-		},
-		{
-			name: "不休假-補休5",
-			value: attendanceData.unpaid_leave_compensatory_5,
-		},
-		{
-			name: "本勞加班1",
-			value: attendanceData.overtime_by_local_workers_1,
-		},
-		{
-			name: "本勞加班2",
-			value: attendanceData.overtime_by_local_workers_2,
-		},
-		{
-			name: "本勞加班3",
-			value: attendanceData.overtime_by_local_workers_3,
-		},
-		{
-			name: "本勞假日",
-			value: attendanceData.local_worker_holiday,
-		},
-		{
-			name: "外勞加班1",
-			value: attendanceData.overtime_by_foreign_workers_1,
-		},
-		{
-			name: "外勞加班2",
-			value: attendanceData.overtime_by_foreign_workers_2,
-		},
-		{
-			name: "外勞加班3",
-			value: attendanceData.overtime_by_foreign_workers_3,
-		},
-		{
-			name: "外勞假日",
-			value: attendanceData.foreign_worker_holiday,
-		},
-		{
-			name: c_StartDateStr,
-			value: new Date(attendanceData.start_date),
-		},
-		{
-			name: c_EndDateStr,
-			value: attendanceData.end_date
-				? new Date(attendanceData.end_date)
-				: new Date(),
+        {
+			name: "類別",
+			value: bonusData.type,
 		},
 		{
 			name: c_CreateDateStr,
-			value: attendanceData.create_date,
+			value: bonusData.create_date,
 		},
 	];
 }
 
-export function AttendanceTable({ index, globalFilter }: any) {
+export function BonusTable({ index, globalFilter }: any) {
 	const { isLoading, isError, data, error } =
-		api.parameters.getCurrentAttendanceSetting.useQuery();
+		api.parameters.getCurrentBonusSetting.useQuery();
 	const filterKey: RowItemKey = "name";
 
 	if (isLoading) {
@@ -160,7 +102,7 @@ export function AttendanceTable({ index, globalFilter }: any) {
 	return (
 		<DataTable
 			columns={columns}
-			data={attendanceMapper(data)}
+			data={bonusMapper(data)}
 			filterColumnKey={filterKey}
 		/>
 	);

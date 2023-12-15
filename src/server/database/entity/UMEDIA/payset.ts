@@ -1,32 +1,32 @@
 export class Payset {
 	// id can be undefined during creation when using `autoIncrement`
-	declare period_id: number;
-	declare period_name: string;
-	declare status: string;
-	declare nid: number;
-	declare emp_no: string;
-	declare name: string;
-	declare country_id: number;
-	declare pay_type: number;
-	declare pay_set: number;
-	declare pay_delay: number;
-	declare work_day: number;
-	declare li_day: number;
-	declare delay_count: number;
+	declare period_id?: number;
+	declare period_name?: string;
+	declare status?: string;
+	declare nid?: number;
+	declare emp_no?: string;
+	declare name?: string;
+	declare country_id?: number;
+	declare pay_type?: number;
+	declare pay_set?: number;
+	declare pay_delay?: number;
+	declare work_day?: number;
+	declare li_day?: number;
+	declare delay_count?: number;
 	constructor(
-		period_id: number,
-		period_name: string,
-		status: string,
-		nid: number,
-		emp_no: string,
-		name: string,
-		country_id: number,
-		pay_type: number,
-		pay_set: number,
-		pay_delay: number,
-		work_day: number,
-		li_day: number,
-		delay_count: number
+		period_id?: number,
+		period_name?: string,
+		status?: string,
+		nid?: number,
+		emp_no?: string,
+		name?: string,
+		country_id?: number,
+		pay_type?: number,
+		pay_set?: number,
+		pay_delay?: number,
+		work_day?: number,
+		li_day?: number,
+		delay_count?: number
 	) {
 		this.period_id = period_id;
 		this.period_name = period_name;

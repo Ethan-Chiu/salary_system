@@ -1,34 +1,34 @@
 export class Holiday {
 	// id can be undefined during creation when using `autoIncrement`
-	declare period_id: number;
-	declare emp_no: string;
-	declare emp_name: string;
-	declare pay_order: number;
-	declare pay_period: number;
-	declare pay_delay: number;
-	declare period_name: string;
-	declare total_hours: number;
-	declare annual_1: number;
-	declare compensatory_134: number;
-	declare compensatory_167: number;
-	declare compensatory_267: number;
-	declare compensatory_1: number;
-	declare compensatory_2: number;
+	declare period_id?: number;
+	declare emp_no?: string;
+	declare emp_name?: string;
+	declare pay_order?: number;
+	declare pay_period?: number;
+	declare pay_delay?: number;
+	declare period_name?: string;
+	declare total_hours?: number;
+	declare annual_1?: number;
+	declare compensatory_134?: number;
+	declare compensatory_167?: number;
+	declare compensatory_267?: number;
+	declare compensatory_1?: number;
+	declare compensatory_2?: number;
 	constructor(
-		period_id: number,
-		emp_no: string,
-		emp_name: string,
-		pay_order: number,
-		pay_period: number,
-		pay_delay: number,
-		period_name: string,
-		total_hours: number,
-		annual_1: number,
-		compensatory_134: number,
-		compensatory_167: number,
-		compensatory_267: number,
-		compensatory_1: number,
-		compensatory_2: number
+		period_id?: number,
+		emp_no?: string,
+		emp_name?: string,
+		pay_order?: number,
+		pay_period?: number,
+		pay_delay?: number,
+		period_name?: string,
+		total_hours?: number,
+		annual_1?: number,
+		compensatory_134?: number,
+		compensatory_167?: number,
+		compensatory_267?: number,
+		compensatory_1?: number,
+		compensatory_2?: number
 	) {
 		this.period_id = period_id;
 		this.emp_no = emp_no;
