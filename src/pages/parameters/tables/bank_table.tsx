@@ -3,7 +3,7 @@ import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { DataTable } from "../components/data_table";
-import { BankSetting } from "~/server/database/entity/bank_setting";
+import { BankSetting } from "~/server/database/entity/SALARY/bank_setting";
 
 export type RowItem = {
 	bank_name: string;
@@ -33,7 +33,7 @@ const columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="pl-4 w-[400px] lowercase">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
+			<div className="w-[400px] pl-4 lowercase">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
 		),
 	}),
 	columnHelper.accessor("org_name", {
@@ -48,19 +48,22 @@ const columns = [
 		header: () => <div className="text-center">start</div>,
 		cell: ({ row }) => {
 			return (
-				<div className="text-center font-medium">{`${row.original.start_date.toISOString().split('T')[0]}`}</div>
+				<div className="text-center font-medium">{`${
+					row.original.start_date.toISOString().split("T")[0]
+				}`}</div>
 			);
 		},
 	}),
 	columnHelper.accessor("end_date", {
 		header: () => <div className="text-center">end</div>,
 		cell: ({ row }) => {
-			return (row.original.end_date)?
-			(
-				<div className="text-center font-medium">{
-					`${row.original.end_date.toISOString().split('T')[0] ?? ""}`
-				}</div>
-			): <div className="text-center font-medium"></div>;
+			return row.original.end_date ? (
+				<div className="text-center font-medium">{`${
+					row.original.end_date.toISOString().split("T")[0] ?? ""
+				}`}</div>
+			) : (
+				<div className="text-center font-medium"></div>
+			);
 		},
 	}),
 ];
@@ -74,8 +77,8 @@ function bankSettingMapper(bankSettingData: BankSetting[]): RowItem[] {
 			org_code: d.org_code,
 			start_date: new Date(d.start_date),
 			end_date: d.end_date ? new Date(d.end_date) : null,
-		}
-	})
+		};
+	});
 }
 
 export function BankTable({ index, globalFilter }: any) {

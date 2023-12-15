@@ -13,15 +13,15 @@ import {
 	isDate,
 } from "~/pages/develop_parameters/utils/checkType";
 import { DataTable } from "../components/data_table";
-import { AttendanceSetting } from "~/server/database/entity/attendance_setting";
+import { AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
 import {
 	c_CreateDateStr,
 	c_EndDateStr,
 	c_StartDateStr,
 } from "../constant";
-import { BonusDepartment } from "~/server/database/entity/bonus_department";
-import { BonusPosition } from "~/server/database/entity/bonus_position";
-import { BonusSeniority } from "~/server/database/entity/bonus_seniority";
+import { BonusDepartment } from "~/server/database/entity/SALARY/bonus_department";
+import { BonusPosition } from "~/server/database/entity/SALARY/bonus_position";
+import { BonusSeniority } from "~/server/database/entity/SALARY/bonus_seniority";
 
 export type RowItem = {
 	seniority: number;

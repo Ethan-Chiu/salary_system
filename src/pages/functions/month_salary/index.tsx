@@ -15,27 +15,23 @@ import {
 } from "~/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { useState } from "react";
+import { HolidayTable } from "../tables/holiday_table";
+import { OvertimeTable } from "../tables/overtime_table";
+import { PaysetTable } from "../tables/payset_table";
 
 const TabOptions = ["請假", "加班", "工作天數", "其他", "其他"];
 
 const MonthSalary: NextPageWithLayout = () => {
 	const getPeriod = api.function.getPeriod.useQuery();
 	const [period, setPeriod] = useState(-1);
-
-	const getHoliday = api.function.getHoliday.useQuery({ period_id: period });
-	const getOvertime = api.function.getOvertime.useQuery({
-		period_id: period,
-	});
-	const getPayset = api.function.getPayset.useQuery({ period_id: period });
-
 	function getTable(table_name: string) {
 		switch (table_name) {
 			case "請假":
-				return getHoliday.isFetched ? <></> : <></>;
+				return <HolidayTable period={period} />;
 			case "加班":
-				return getOvertime.isFetched ? <></> : <></>;
+				return <OvertimeTable period={period} />;
 			case "工作天數":
-				return getPayset.isFetched ? <></> : <></>;
+				return <PaysetTable period={period} />;
 			default:
 				return <p>No implement</p>;
 		}

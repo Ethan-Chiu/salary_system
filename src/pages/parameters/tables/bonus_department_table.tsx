@@ -8,7 +8,7 @@ import {
 	c_EndDateStr,
 	c_StartDateStr,
 } from "../constant";
-import { BonusDepartment } from "~/server/database/entity/bonus_department";
+import { BonusDepartment } from "~/server/database/entity/SALARY/bonus_department";
 
 export type RowItem = {
 	department: string;

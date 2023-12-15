@@ -8,7 +8,7 @@ import {
 	c_EndDateStr,
 	c_StartDateStr,
 } from "../constant";
-import { BonusPositionType } from "~/server/database/entity/bonus_position_type";
+import { BonusPositionType } from "~/server/database/entity/SALARY/bonus_position_type";
 
 export type RowItem = {
 	position_type: string;

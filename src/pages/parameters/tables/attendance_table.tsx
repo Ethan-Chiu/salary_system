@@ -8,7 +8,7 @@ import {
 	isDate,
 } from "~/pages/develop_parameters/utils/checkType";
 import { DataTable } from "../components/data_table";
-import { AttendanceSetting } from "~/server/database/entity/attendance_setting";
+import { AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
 import {
 	c_CreateDateStr,
 	c_EndDateStr,

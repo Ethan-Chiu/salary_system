@@ -13,7 +13,7 @@ import {
 	c_EndDateStr,
 	c_StartDateStr,
 } from "../constant";
-import { InsuranceRateSetting } from "~/server/database/entity/insurance_rate_setting";
+import { InsuranceRateSetting } from "~/server/database/entity/SALARY/insurance_rate_setting";
 
 export type RowItem = {
 	name: string;
