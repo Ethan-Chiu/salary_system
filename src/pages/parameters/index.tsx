@@ -9,6 +9,8 @@ import { type ReactElement } from "react";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { AttendanceTable } from "./tables/attendance_table";
 import { BankTable } from "./tables/bank_table";
+import { InsuranceRateTable } from "./tables/insurance_rate_table";
+import { BonusTable } from "./tables/bonus_table";
 
 const PageParameters: NextPageWithLayout = () => {
 	return (
@@ -19,6 +21,8 @@ const PageParameters: NextPageWithLayout = () => {
 			<Accordion type="single" collapsible className="w-full">
 				<AttendanceTable index={0} globalFilter={""} />
 				<BankTable index={1} globalFilter={""} />
+				<InsuranceRateTable index={2} globalFilter={""} />
+				<BonusTable index={3} globalFilter={""} />
 			</Accordion>
 		</>
 	);
