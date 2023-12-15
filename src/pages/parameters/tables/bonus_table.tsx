@@ -1,10 +1,5 @@
 import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
-import {
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "~/components/ui/accordion";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import {
@@ -13,13 +8,11 @@ import {
 	isDate,
 } from "~/pages/develop_parameters/utils/checkType";
 import { DataTable } from "../components/data_table";
-import { AttendanceSetting } from "~/server/database/entity/attendance_setting";
 import {
 	c_CreateDateStr,
 	c_EndDateStr,
 	c_StartDateStr,
 } from "../constant";
-import { InsuranceRateSetting } from "~/server/database/entity/insurance_rate_setting";
 import { BonusSetting } from "~/server/database/entity/bonus_setting";
 
 export type RowItem = {
@@ -107,18 +100,11 @@ export function BonusTable({ index, globalFilter }: any) {
 	}
 
 	return (
-		<>
-			<AccordionItem value={"item-" + index.toString()}>
-				<AccordionTrigger>{"獎金"}</AccordionTrigger>
-				<AccordionContent>
-					<DataTable
-						columns={columns}
-						data={bonusMapper(data)}
-						filterColumnKey={filterKey}
-					/>
-				</AccordionContent>
-			</AccordionItem>
-		</>
+		<DataTable
+			columns={columns}
+			data={bonusMapper(data)}
+			filterColumnKey={filterKey}
+		/>
 	);
 
 	// useMemo(() => {

@@ -80,18 +80,11 @@ export function BonusSeniorityTable({ index, globalFilter }: any) {
 	}
 
 	return (
-		<>
-			<AccordionItem value={"item-" + index.toString()}>
-				<AccordionTrigger>{"獎金年資"}</AccordionTrigger>
-				<AccordionContent>
-					<DataTable
-						columns={columns}
-						data={bonusSeniorityMapper(data)}
-						filterColumnKey={filterKey}
-					/>
-				</AccordionContent>
-			</AccordionItem>
-		</>
+		<DataTable
+			columns={columns}
+			data={bonusSeniorityMapper(data)}
+			filterColumnKey={filterKey}
+		/>
 	);
 
 	// useMemo(() => {

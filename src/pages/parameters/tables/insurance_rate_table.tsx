@@ -1,10 +1,5 @@
 import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
-import {
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "~/components/ui/accordion";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import {
@@ -13,7 +8,6 @@ import {
 	isDate,
 } from "~/pages/develop_parameters/utils/checkType";
 import { DataTable } from "../components/data_table";
-import { AttendanceSetting } from "~/server/database/entity/attendance_setting";
 import {
 	c_CreateDateStr,
 	c_EndDateStr,
@@ -136,18 +130,11 @@ export function InsuranceRateTable({ index, globalFilter }: any) {
 	}
 
 	return (
-		<>
-			<AccordionItem value={"item-" + index.toString()}>
-				<AccordionTrigger>{"勞健保費率"}</AccordionTrigger>
-				<AccordionContent>
-					<DataTable
-						columns={columns}
-						data={insuranceRateMapper(data)}
-						filterColumnKey={filterKey}
-					/>
-				</AccordionContent>
-			</AccordionItem>
-		</>
+		<DataTable
+			columns={columns}
+			data={insuranceRateMapper(data)}
+			filterColumnKey={filterKey}
+		/>
 	);
 
 	// useMemo(() => {

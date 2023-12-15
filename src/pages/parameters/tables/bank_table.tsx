@@ -1,10 +1,5 @@
 import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
-import {
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "~/components/ui/accordion";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { DataTable } from "../components/data_table";
@@ -97,17 +92,10 @@ export function BankTable({ index, globalFilter }: any) {
 	}
 
 	return (
-		<>
-			<AccordionItem value={"item-" + index.toString()}>
-				<AccordionTrigger>{"銀行"}</AccordionTrigger>
-				<AccordionContent>
-					<DataTable
-						columns={columns}
-						data={bankSettingMapper(data)}
-						filterColumnKey={filterKey}
-					/>
-				</AccordionContent>
-			</AccordionItem>
-		</>
+		<DataTable
+			columns={columns}
+			data={bankSettingMapper(data)}
+			filterColumnKey={filterKey}
+		/>
 	);
 }

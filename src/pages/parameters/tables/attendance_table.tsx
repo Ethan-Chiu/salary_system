@@ -1,10 +1,5 @@
 import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
-import {
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "~/components/ui/accordion";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import {
@@ -163,18 +158,11 @@ export function AttendanceTable({ index, globalFilter }: any) {
 	}
 
 	return (
-		<>
-			<AccordionItem value={"item-" + index.toString()}>
-				<AccordionTrigger>{"請假加班"}</AccordionTrigger>
-				<AccordionContent>
-					<DataTable
-						columns={columns}
-						data={attendanceMapper(data)}
-						filterColumnKey={filterKey}
-					/>
-				</AccordionContent>
-			</AccordionItem>
-		</>
+		<DataTable
+			columns={columns}
+			data={attendanceMapper(data)}
+			filterColumnKey={filterKey}
+		/>
 	);
 
 	// useMemo(() => {
