@@ -31,23 +31,11 @@ const MonthSalary: NextPageWithLayout = () => {
 	function getTable(table_name: string) {
 		switch (table_name) {
 			case "請假":
-				return getHoliday.isFetched ? (
-					<></>
-				) : (
-					<></>
-				);
+				return getHoliday.isFetched ? <></> : <></>;
 			case "加班":
-				return getOvertime.isFetched ? (
-					<></>
-				) : (
-					<></>
-				);
+				return getOvertime.isFetched ? <></> : <></>;
 			case "工作天數":
-				return getPayset.isFetched ? (
-					<></>
-				) : (
-					<></>
-				);
+				return getPayset.isFetched ? <></> : <></>;
 			default:
 				return <p>No implement</p>;
 		}

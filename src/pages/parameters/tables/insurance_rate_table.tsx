@@ -8,12 +8,12 @@ import {
 	isDate,
 } from "~/pages/develop_parameters/utils/checkType";
 import { DataTable } from "../components/data_table";
-import { AttendanceSetting } from "~/server/database/entity/attendance_setting";
 import {
 	c_CreateDateStr,
 	c_EndDateStr,
 	c_StartDateStr,
 } from "../constant";
+import { InsuranceRateSetting } from "~/server/database/entity/insurance_rate_setting";
 
 export type RowItem = {
 	name: string;
@@ -61,92 +61,64 @@ const columns = [
 	}),
 ];
 
-function attendanceMapper(attendanceData: AttendanceSetting): RowItem[] {
+function insuranceRateMapper(insuranceRateData: InsuranceRateSetting): RowItem[] {
 	return [
 		{
-			name: "事假扣薪",
-			value: attendanceData.personal_leave_dock,
+			name: "最低薪資率",
+			value: insuranceRateData.min_wage_rate,
 		},
 		{
-			name: "病假扣薪",
-			value: attendanceData.sick_leave_dock,
+			name: "勞保事故費率",
+			value: insuranceRateData.l_i_accident_rate,
 		},
 		{
-			name: "不休假代金比率",
-			value: attendanceData.rate_of_unpaid_leave,
+			name: "勞保就業保險費率",
+			value: insuranceRateData.l_i_employment_premium_rate,
 		},
 		{
-			name: "不休假-補休1",
-			value: attendanceData.unpaid_leave_compensatory_1,
+			name: "勞保職業災害費率",
+			value: insuranceRateData.l_i_occupational_hazard_rate,
 		},
 		{
-			name: "不休假-補休2",
-			value: attendanceData.unpaid_leave_compensatory_2,
+			name: "勞保工資墊償基金提繳率",
+			value: insuranceRateData.l_i_wage_replacement_rate,
 		},
 		{
-			name: "不休假-補休3",
-			value: attendanceData.unpaid_leave_compensatory_3,
+			name: "健保一般費率",
+			value: insuranceRateData.h_i_standard_rate,
 		},
 		{
-			name: "不休假-補休4",
-			value: attendanceData.unpaid_leave_compensatory_4,
+			name: "健保平均眷口數",
+			value: insuranceRateData.h_i_avg_dependents_count,
 		},
 		{
-			name: "不休假-補休5",
-			value: attendanceData.unpaid_leave_compensatory_5,
+			name: "二代健保補充保費率",
+			value: insuranceRateData.v2_h_i_supp_premium_rate,
 		},
 		{
-			name: "本勞加班1",
-			value: attendanceData.overtime_by_local_workers_1,
-		},
-		{
-			name: "本勞加班2",
-			value: attendanceData.overtime_by_local_workers_2,
-		},
-		{
-			name: "本勞加班3",
-			value: attendanceData.overtime_by_local_workers_3,
-		},
-		{
-			name: "本勞假日",
-			value: attendanceData.local_worker_holiday,
-		},
-		{
-			name: "外勞加班1",
-			value: attendanceData.overtime_by_foreign_workers_1,
-		},
-		{
-			name: "外勞加班2",
-			value: attendanceData.overtime_by_foreign_workers_2,
-		},
-		{
-			name: "外勞加班3",
-			value: attendanceData.overtime_by_foreign_workers_3,
-		},
-		{
-			name: "外勞假日",
-			value: attendanceData.foreign_worker_holiday,
+			name: "二代健保扣繳門檻單次",
+			value: insuranceRateData.v2_h_i_dock_tsx_thres,
 		},
 		{
 			name: c_StartDateStr,
-			value: new Date(attendanceData.start_date),
+			value: new Date(insuranceRateData.start_date),
 		},
 		{
 			name: c_EndDateStr,
-			value: attendanceData.end_date
-				? new Date(attendanceData.end_date)
+			value: insuranceRateData.end_date
+				? new Date(insuranceRateData.end_date)
 				: new Date(),
 		},
 		{
 			name: c_CreateDateStr,
-			value: attendanceData.create_date,
+			value: insuranceRateData.create_date,
 		},
 	];
 }
 
-export function AttendanceTable({ index, globalFilter }: any) {
+export function InsuranceRateTable({ index, globalFilter }: any) {
 	const { isLoading, isError, data, error } =
-		api.parameters.getCurrentAttendanceSetting.useQuery();
+		api.parameters.getCurrentInsuranceRateSetting.useQuery();
 	const filterKey: RowItemKey = "name";
 
 	if (isLoading) {
@@ -160,7 +132,7 @@ export function AttendanceTable({ index, globalFilter }: any) {
 	return (
 		<DataTable
 			columns={columns}
-			data={attendanceMapper(data)}
+			data={insuranceRateMapper(data)}
 			filterColumnKey={filterKey}
 		/>
 	);
