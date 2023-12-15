@@ -2,7 +2,6 @@ import { RootLayout } from "~/components/layout/root_layout";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { Header } from "~/components/header";
 import { NextPageWithLayout } from "../../_app";
-import { useRouter } from "next/router";
 import { FadeLoader } from "react-spinners";
 import { api } from "~/utils/api";
 import {
@@ -14,22 +13,10 @@ import {
 	SelectContent,
 	SelectLabel,
 } from "~/components/ui/select";
-import { Button } from "~/components/ui/button";
-import {
-	Table,
-	TableBody,
-	TableCaption,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "~/components/ui/table";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { useState } from "react";
 
-const TabOptions = ["請假", "加班", "工作天數", "Max", "劉承亞"];
+const TabOptions = ["請假", "加班", "工作天數", "其他", "其他"];
 
 const MonthSalary: NextPageWithLayout = () => {
 	const getPeriod = api.function.getPeriod.useQuery();
@@ -44,86 +31,26 @@ const MonthSalary: NextPageWithLayout = () => {
 	function getTable(table_name: string) {
 		switch (table_name) {
 			case "請假":
-				const holidayTable = getHoliday.data;
-				console.log(holidayTable);
-				return createTable(table_name, holidayTable);
+				return getHoliday.isFetched ? (
+					<></>
+				) : (
+					<></>
+				);
 			case "加班":
-				const overtimeTable = getOvertime.data;
-				console.log(overtimeTable);
-				return createTable(table_name, overtimeTable);
+				return getOvertime.isFetched ? (
+					<></>
+				) : (
+					<></>
+				);
 			case "工作天數":
-				const paysetTable = getPayset.data;
-				console.log(paysetTable);
-				return createTable(table_name, paysetTable);
+				return getPayset.isFetched ? (
+					<></>
+				) : (
+					<></>
+				);
 			default:
 				return <p>No implement</p>;
 		}
-	}
-
-	function createTable(table_name: string, datas: any) {
-		if (table_name === "請假" && !getHoliday.isFetched) return <></>;
-		if (table_name === "加班" && !getOvertime.isFetched) return <></>;
-		if (table_name === "工作天數" && !getPayset.isFetched) return <></>;
-		if (datas.length === 0)
-			return (
-				<Table>
-					{/* <TableCaption>{table_name}</TableCaption> */}
-					<TableHeader></TableHeader>
-					<TableBody>
-						<TableRow>
-							<TableCell
-								colSpan={1}
-								className="h-24 text-center"
-							>
-								No results.
-							</TableCell>
-						</TableRow>
-					</TableBody>
-				</Table>
-			);
-		return (
-			<Table>
-				{/* <TableCaption>{table_name}</TableCaption> */}
-				<TableHeader>
-					<TableRow>
-						{Object.keys(datas[0]).map((key) => {
-							return key === "period_id" ? (
-								<TableHead className="w-[100%]">
-									{key}
-								</TableHead>
-							) : (
-								<TableHead>{key}</TableHead>
-							);
-						})}
-					</TableRow>
-				</TableHeader>
-				<TableBody>
-					{datas.map((data: any, index: number) => (
-						// TableCell className = "font-medium" | "text-right"
-						<TableRow key={"tablerow" + index.toString()}>
-							<TableCell className="font-medium">
-								{data.period_id}
-							</TableCell>
-							{Object.keys(data)
-								.filter((key) => key !== "period_id")
-								.map((key: any) => {
-									return (
-										<TableCell>
-											{data[key] ?? "null"}
-										</TableCell>
-									);
-								})}
-						</TableRow>
-					))}
-				</TableBody>
-				{/* <TableFooter>
-					<TableRow>
-						<TableCell colSpan={3}>Total</TableCell>
-						<TableCell className="text-right">$2,500.00</TableCell>
-					</TableRow>
-				</TableFooter> */}
-			</Table>
-		);
 	}
 
 	if (getPeriod.isFetched)
