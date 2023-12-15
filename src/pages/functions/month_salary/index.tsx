@@ -83,7 +83,7 @@ const MonthSalary: NextPageWithLayout = () => {
 			);
 		return (
 			<Table>
-				{/* <TableCaption>{table_name}</TableCaption> */}
+				<TableCaption>{table_name}</TableCaption>
 				<TableHeader>
 					<TableRow>
 						{Object.keys(datas[0]).map((key) => {
