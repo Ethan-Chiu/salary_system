@@ -11,6 +11,10 @@ import { AttendanceTable } from "./tables/attendance_table";
 import { BankTable } from "./tables/bank_table";
 import { InsuranceRateTable } from "./tables/insurance_rate_table";
 import { BonusTable } from "./tables/bonus_table";
+import { BonusDepartmentTable } from "./tables/bonus_department_table";
+import { BonusPositionTable } from "./tables/bonus_position_table";
+import { BonusPositionTypeTable } from "./tables/bonus_position_type_table";
+import { BonusSeniorityTable } from "./tables/bonus_seniority_table";
 
 const PageParameters: NextPageWithLayout = () => {
 	return (
@@ -23,6 +27,10 @@ const PageParameters: NextPageWithLayout = () => {
 				<BankTable index={1} globalFilter={""} />
 				<InsuranceRateTable index={2} globalFilter={""} />
 				<BonusTable index={3} globalFilter={""} />
+				<BonusDepartmentTable index={4} globalFilter={""} />
+				<BonusPositionTable index={5} globalFilter={""} />
+				<BonusPositionTypeTable index={6} globalFilter={""} />
+				<BonusSeniorityTable index={7} globalFilter={""} />
 			</Accordion>
 		</>
 	);
