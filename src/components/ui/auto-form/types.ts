@@ -34,4 +34,5 @@ export type AutoFormInputComponentProps = {
   isRequired: boolean;
   fieldProps: any;
   zodItem: z.ZodAny;
+  Translate?: (s: string) => any;
 };

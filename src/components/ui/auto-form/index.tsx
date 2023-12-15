@@ -29,6 +29,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   fieldConfig,
   children,
   className,
+  Translate,
 }: {
   formSchema: SchemaType;
   values?: Partial<z.infer<SchemaType>>;
@@ -38,6 +39,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   fieldConfig?: FieldConfig<z.infer<SchemaType>>;
   children?: React.ReactNode;
   className?: string;
+  Translate?: (s: string) => any;
 }) {
   const objectFormSchema = getObjectFormSchema(formSchema);
   const defaultValues: DefaultValues<z.infer<typeof objectFormSchema>> =
@@ -76,6 +78,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
           schema={objectFormSchema}
           form={form}
           fieldConfig={fieldConfig}
+          Translate={Translate}
         />
 
         {children}

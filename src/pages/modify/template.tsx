@@ -47,7 +47,8 @@ const Template = (props: any) => {
 			) : (
 				<SingleParameterSettings
 					formSchema={attendanceSchema(
-						queryFunction.data![createForm - 1]
+						queryFunction.data![createForm - 1],
+						false
 					)}
 					original_data={
 						queryFunction.data![createForm - 1]

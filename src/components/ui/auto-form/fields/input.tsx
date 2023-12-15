@@ -13,6 +13,7 @@ export default function AutoFormInput({
   isRequired,
   fieldConfigItem,
   fieldProps,
+  Translate,
 }: AutoFormInputComponentProps) {
   const { showLabel: _showLabel, ...fieldPropsWithoutShowLabel } = fieldProps;
   const showLabel = _showLabel === undefined ? true : _showLabel;
@@ -20,7 +21,7 @@ export default function AutoFormInput({
     <FormItem>
       {showLabel && (
         <FormLabel>
-          {label}
+          {Translate?Translate(label):label}
           {isRequired && <span className="text-destructive"> *</span>}
         </FormLabel>
       )}

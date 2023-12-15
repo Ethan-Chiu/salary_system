@@ -28,11 +28,13 @@ export default function AutoFormObject<
   form,
   fieldConfig,
   path = [],
+  Translate,
 }: {
   schema: SchemaType | z.ZodEffects<SchemaType>;
   form: ReturnType<typeof useForm>;
   fieldConfig?: FieldConfig<z.infer<SchemaType>>;
   path?: string[];
+  Translate?: (s: string) => any
 }) {
   const { shape } = getBaseSchema<SchemaType>(schema);
 
@@ -117,6 +119,7 @@ export default function AutoFormObject<
                         ? field.value ?? ""
                         : undefined,
                     }}
+                    Translate={Translate}
                   />
                 </ParentElement>
               );

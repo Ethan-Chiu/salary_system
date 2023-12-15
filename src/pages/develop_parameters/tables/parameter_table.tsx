@@ -350,7 +350,10 @@ export function ParameterTable({
 								variant="outline"
 								size="sm"
 								onClick={() => {
-									
+									router.push({
+										pathname: '/modify/attendance/create',
+										query: {data: JSON.stringify(data)},
+									  });
 								}}
 								disabled={false}
 							>

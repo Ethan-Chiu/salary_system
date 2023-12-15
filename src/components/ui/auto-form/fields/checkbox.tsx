@@ -8,6 +8,7 @@ export default function AutoFormCheckbox({
   field,
   fieldConfigItem,
   fieldProps,
+  Translate
 }: AutoFormInputComponentProps) {
   return (
     <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
@@ -20,7 +21,7 @@ export default function AutoFormCheckbox({
       </FormControl>
       <div className="space-y-1 leading-none">
         <FormLabel>
-          {label}
+          {(Translate)?Translate(label):label}
           {isRequired && <span className="text-destructive"> *</span>}
         </FormLabel>
         {fieldConfigItem.description && (

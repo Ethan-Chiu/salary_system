@@ -106,4 +106,5 @@ export function Translate(word: string) {
 	if (word === "level")    return "level"
 	if (word === "level_end")    return "level_end"
 	if (word === "level_start")    return "level_start"
+	else	return word
 }

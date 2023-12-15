@@ -14,11 +14,12 @@ export default function AutoFormDate({
   field,
   fieldConfigItem,
   fieldProps,
+  Translate,
 }: AutoFormInputComponentProps) {
   return (
     <FormItem>
       <FormLabel>
-        {label}
+        {Translate?Translate(label):label}
         {isRequired && <span className="text-destructive"> *</span>}
       </FormLabel>
       <FormControl>

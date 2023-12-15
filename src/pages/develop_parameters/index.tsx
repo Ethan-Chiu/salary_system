@@ -597,13 +597,13 @@ const PageParameters: NextPageWithLayout = () => {
 						}
 					})}
 				</Accordion>
-				{/* <Button onClick={() => testInsertAttendanceData()}>
+				<Button onClick={() => testInsertAttendanceData()}>
 					Insert AttendanceDate
 				</Button>
 				<br/>
 				<Button onClick={() => testInsertBonusSettingData()}>
 					Insert Bonus Setting
-				</Button> */}
+				</Button>
 				<br/>
 			</>
 		);

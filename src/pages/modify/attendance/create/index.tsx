@@ -7,33 +7,52 @@ import { useRouter } from 'next/router';
 import Template from "../../template";
 import { SingleParameterSettings } from "../../ParameterForm";
 import { getSchema } from "../../Schemas/getSchema";
-import AutoForm from "~/components/ui/auto-form";
+import { Button } from "~/components/ui/button";
+import AutoForm, {AutoFormSubmit} from "~/components/ui/auto-form";
+import { attendanceSchema } from "../../Schemas/attendanceSchema";
+import { Header } from "~/components/header";
+import { Translate } from "~/pages/develop_parameters/utils/translation";
 
 const PageTitle = "Create Attendance Setting"
 
 const AttendanceCreate: NextPageWithLayout = () => {
+	const router = useRouter();
+	const serializedData = router.query.data;
 
-	const getAllAttendanceSetting =
-		api.parameters.getAllAttendanceSetting.useQuery();
-	const updateAttendanceSetting =
-		api.parameters.updateAttendanceSetting.useMutation({
+	const getCurrentAttendanceSetting =
+		api.parameters.getCurrentAttendanceSetting.useQuery();
+	const createAttendanceSetting =
+		api.parameters.createAttendanceSetting.useMutation({
 			onSuccess: () => {
-				getAllAttendanceSetting.refetch();
+				getCurrentAttendanceSetting.refetch();
 			},
 		});
-	const deleteAttendanceSetting = 
-		api.parameters.deleteAttendanceSetting.useMutation({
-			onSuccess: () => {
-				getAllAttendanceSetting.refetch();
-			},
-		});
-
 	return (
+		<>
+		<Header title={"新增["+TABLE_NAMES.TABLE_ATTENDANCE+"]參數"} showOptions/>
+		<br/>
+		{(getCurrentAttendanceSetting.isFetched)?
 		<AutoForm
-			formSchema={getSchema(TABLE_NAMES.TABLE_ATTENDANCE)!(data)}
+			formSchema={attendanceSchema(getCurrentAttendanceSetting.data, true)}
+			onSubmit={(data) => {
+				try {
+					const updatedData = {
+						...data,
+						end_date: (data as any).end_date ? (data as any).end_date : null,
+					};
+					console.log(data);
+					console.log(updatedData);
+					createAttendanceSetting.mutate(updatedData);
+				} catch(e) {
+					console.log(e);
+				}
+			}}
+			Translate={Translate}
 		>
-		</AutoForm>
-		
+			<AutoFormSubmit>Create</AutoFormSubmit>
+		</AutoForm>:
+		<></>}
+		</>
 	);
 };
 
