@@ -78,6 +78,11 @@ export class BonusPositionTypeService {
 	}
 
 	async deleteBonusPositionType(id: number): Promise<void> {
-		BonusPositionType.destroy({ where: { id: id } });
+		const destroyedRows = await BonusPositionType.destroy({
+			where: { id: id },
+		});
+		if (destroyedRows != 1) {
+			throw new BaseResponseError("Delete error");
+		}
 	}
 }

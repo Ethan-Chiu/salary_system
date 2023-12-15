@@ -5,7 +5,7 @@ import { isNumber, isDate, isString } from "../develop_parameters/utils/checkTyp
 import { useRouter } from 'next/router';
 
 
-export function SingleParameterSettings({ formSchema, original_data, updateFunction, deleteFunction, returnPage, mode, disabled }: any) {
+export function SingleParameterSettings({ formSchema, original_data, updateFunction, createFunction, deleteFunction, returnPage, mode, disabled }: any) {
 	const router = useRouter();
 	console.log(mode);
 	return (
