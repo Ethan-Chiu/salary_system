@@ -13,7 +13,7 @@ function guardRoute(
 ): NextResponse | null {
 	if (request.nextUrl.pathname.startsWith(route)) {
 		if (access) {
-			return NextResponse.rewrite(new URL(route, request.url));
+			return NextResponse.rewrite(new URL(request.nextUrl.pathname, request.url));
 		}
 		console.log(`You cannot view ${route} page`);
 		return NextResponse.redirect(new URL("/", request.url));

@@ -5,51 +5,48 @@ import {
 } from "~/components/functions/card_function";
 import type { CardFunctionData } from "~/components/functions/card_function";
 import { motion } from "framer-motion";
+import { type NextPageWithLayout } from "../_app";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { IconCoins } from "~/components/icons/svg_icons";
 import { Header } from "~/components/header";
-import { NextPageWithLayout } from "../_app";
+import { api } from "~/utils/api";
+import { useRouter } from "next/router";
 
 const function_data: CardFunctionData[] = [
 	{
-		title: "計算月薪",
+		title: "月薪",
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 	},
 	{
-		title: "計算年薪",
+		title: "15日外勞獎金",
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 	},
 	{
-		title: "計算分紅",
+		title: "持股信託",
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 	},
 	{
-		title: "計算津貼",
+		title: "季獎金",
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 	},
+	{
+		title: "員工分紅",
+		iconPath: "./icons/coins.svg",
+		subscript: "some notes",
+	},
+	
 ];
 
-const container = {
-	hidden: {},
-	visible: {
-		transition: {
-			staggerChildren: 0.2,
-			delayChildren: 0.1,
-		},
-	},
-};
+let routerMap = new Map();
+routerMap.set("月薪", "/functions/month_salary");
+routerMap.set("15日外勞獎金", "/functions/month_salary");
 
-const stagger = {
-	hidden: { opacity: 0, y: -100 },
-	visible: { opacity: 1, y: 0 },
-};
-
-const PageFunctions: NextPageWithLayout = () => {
-
+const PageHome: NextPageWithLayout = () => {
+	const router = useRouter();
 	return (
 		<>
 			<Header title="functions" showOptions className="mb-4" />
@@ -64,6 +61,7 @@ const PageFunctions: NextPageWithLayout = () => {
 						key={f_data.title}
 						variants={stagger}
 						className="cursor-pointer"
+						onClick={() => router.push(routerMap.get(f_data.title))}
 					>
 						<CardFunction
 							title={f_data.title}
@@ -81,7 +79,7 @@ const PageFunctions: NextPageWithLayout = () => {
 	);
 };
 
-PageFunctions.getLayout = function getLayout(page: React.ReactElement) {
+PageHome.getLayout = function getLayout(page: React.ReactElement) {
 	return (
 		<RootLayout>
 			<PerpageLayoutNav pageTitle="functions">{page}</PerpageLayoutNav>
@@ -89,4 +87,20 @@ PageFunctions.getLayout = function getLayout(page: React.ReactElement) {
 	);
 };
 
-export default PageFunctions;
+export default PageHome;
+
+
+const container = {
+	hidden: {},
+	visible: {
+		transition: {
+			staggerChildren: 0.2,
+			delayChildren: 0.1,
+		},
+	},
+};
+
+const stagger = {
+	hidden: { opacity: 0, y: -100 },
+	visible: { opacity: 1, y: 0 },
+};
