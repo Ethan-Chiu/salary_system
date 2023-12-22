@@ -31,6 +31,7 @@ import { Translate } from "~/pages/develop_parameters/utils/translation";
 import ExcelJS from "exceljs"
 
 import { motion } from "framer-motion";
+import ExcelViewer from "./ExcelViewer";
 
 
 
@@ -181,6 +182,29 @@ function ExportPage() {
 		return [columns, rows];
 	}
 
+	function getExcelData(Alldatas: any) {
+		let excelData: any = [];
+		Alldatas.map((sheetDatas: any) => {
+			let name: string = sheetDatas.name;
+			try {
+				let datas = sheetDatas.data;
+				let columns = Object.keys(datas[0]).map((key: string) => Translate(key));
+				let rows = datas.map((data: any, index: number) => {
+					return Object.keys(data).map((key: string) => {
+						return data[key];
+					})
+				})
+				rows.unshift(columns);
+				excelData.push({sheetName: name, data: rows});
+			}
+			catch {
+				excelData.push({sheetName: name, data: [["psedu data"], [123]]});
+			}
+			
+		})
+		return excelData;
+	}
+
 
 	const function_data: CardFunctionData[] = [
 		{
@@ -235,32 +259,39 @@ function ExportPage() {
 		URL.revokeObjectURL(url);
 	};
 	return (
-		<motion.div
-			className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
-			variants={container}
-			initial="hidden"
-			animate="visible"
-		>
-			{function_data.map((f_data: CardFunctionData) => (
-				<motion.div
-					key={f_data.title}
-					variants={stagger}
-					className="cursor-pointer"
-					onClick={() => handleExportExcel(getExcelA.data, 'exported_data.xlsx')}
-				>
-					{getExcelA?<CardFunction
-						title={f_data.title}
-						iconPath={f_data.iconPath}
-						subscript={f_data.subscript}
-					>
-						<CardFunctionIcon className="text-foreground">
-							<IconCoins />
-						</CardFunctionIcon>
-					</CardFunction>:<></>}
+		<>
+		{getExcelA.isFetched?
+			<ExcelViewer sheets={getExcelData(getExcelA.data)}/>:
+			<></>
+		}
+		
+		</>
+		// <motion.div
+		// 	className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+		// 	variants={container}
+		// 	initial="hidden"
+		// 	animate="visible"
+		// >
+		// 	{function_data.map((f_data: CardFunctionData) => (
+		// 		<motion.div
+		// 			key={f_data.title}
+		// 			variants={stagger}
+		// 			className="cursor-pointer"
+		// 			onClick={() => handleExportExcel(getExcelA.data, 'exported_data.xlsx')}
+		// 		>
+		// 			{getExcelA?<CardFunction
+		// 				title={f_data.title}
+		// 				iconPath={f_data.iconPath}
+		// 				subscript={f_data.subscript}
+		// 			>
+		// 				<CardFunctionIcon className="text-foreground">
+		// 					<IconCoins />
+		// 				</CardFunctionIcon>
+		// 			</CardFunction>:<></>}
 					
-				</motion.div>
-			))}
-		</motion.div>
+		// 		</motion.div>
+		// 	))}
+		// </motion.div>
 	);
 }
 
