@@ -87,7 +87,7 @@ export function SingleParameterSettings({
 		getDefaults(formSchema)
 	);
 	const [openDialog, setOpenDialog] = useState(false);
-	
+
 	function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
 		return Object.fromEntries(
 			Object.entries(schema.shape).map(([key, value]) => {
@@ -100,19 +100,12 @@ export function SingleParameterSettings({
 
 	function submitForm() {
 		const parsedValues = formSchema.safeParse(values);
-		console.log(
-			{
-				id: original_data.id,
-				...parsedValues,
-			}
-		);
 		updateFunction({
-			...parsedValues,
+			...parsedValues.data,
 			id: original_data.id,
 		});
 		returnPage(0);
 	}
-
 
 	const handleSubmit = () => {
 		// Trigger button click programmatically
@@ -135,8 +128,9 @@ export function SingleParameterSettings({
 			formSchema={formSchema}
 			fieldConfig={fieldConfig}
 		>
-			
-			<Button className="hidden" ref={buttonRef}>Submit</Button>
+			<Button className="hidden" ref={buttonRef}>
+				Submit
+			</Button>
 
 			<div className="grid grid-cols-6 gap-3">
 				<div>
@@ -167,7 +161,7 @@ export function SingleParameterSettings({
 						console.log(handleSubmit());
 						// setOpenDialog(true);
 					}}
-					className="text-center mb-2 me-2 cursor-pointer rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+					className="mb-2 me-2 cursor-pointer rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
 				>
 					Update
 				</p>
@@ -185,13 +179,16 @@ export function SingleParameterSettings({
 					<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
 						<DialogHeader>
 							<DialogTitle>Are you sure to update?</DialogTitle>
-							<DialogDescription>
-								
-							</DialogDescription>
+							<DialogDescription></DialogDescription>
 						</DialogHeader>
 						{simpleTable(values)}
 						<DialogFooter>
-							<Button onClick={() => {submitForm()}} type="submit">
+							<Button
+								onClick={() => {
+									submitForm();
+								}}
+								type="submit"
+							>
 								Save changes
 							</Button>
 							<DialogClose />
