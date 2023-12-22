@@ -16,12 +16,12 @@ export class Holiday {
 	declare compensatory_2?: number;
 	constructor(
 		period_id?: number,
+		period_name?: string,
 		emp_no?: string,
 		emp_name?: string,
 		pay_order?: number,
 		pay_period?: number,
 		pay_delay?: number,
-		period_name?: string,
 		total_hours?: number,
 		annual_1?: number,
 		compensatory_134?: number,
@@ -31,12 +31,12 @@ export class Holiday {
 		compensatory_2?: number
 	) {
 		this.period_id = period_id;
+		this.period_name = period_name;
 		this.emp_no = emp_no;
 		this.emp_name = emp_name;
 		this.pay_order = pay_order;
 		this.pay_period = pay_period;
 		this.pay_delay = pay_delay;
-		this.period_name = period_name;
 		this.total_hours = total_hours;
 		this.annual_1 = annual_1;
 		this.compensatory_134 = compensatory_134;
@@ -49,12 +49,12 @@ export class Holiday {
 	static fromDB(data: any): Holiday {
 		const {
 			PERIOD_ID,
+			PERIOD_NAME,
 			EMP_NO,
 			EMP_NAME,
 			PAY_ORDER,
 			PAY_PERIOD,
 			PAY_DELAY,
-			PERIOD_NAME,
 			TOTAL_HOURS,
 			ANNUAL_1,
 			COMPENSATORY_134,
@@ -66,12 +66,12 @@ export class Holiday {
 
 		return new Holiday(
 			PERIOD_ID,
+			PERIOD_NAME,
 			EMP_NO,
 			EMP_NAME,
 			PAY_ORDER,
 			PAY_PERIOD,
 			PAY_DELAY,
-			PERIOD_NAME,
 			TOTAL_HOURS,
 			ANNUAL_1,
 			COMPENSATORY_134,

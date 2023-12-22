@@ -15,7 +15,7 @@ export class UserService {
 	constructor() {}
 
 	async createUser({
-		emp_id,
+		emp_no,
 		password,
 		auth_l,
 		start_date,
@@ -28,7 +28,7 @@ export class UserService {
 		const hash = await bcrypt.hash(password, salt);
 
 		const newUser = await User.create({
-			emp_id: emp_id,
+			emp_no: emp_no,
 			hash: hash,
 			auth_l: auth_l,
 			start_date: start_date ?? current_date_string,
@@ -40,11 +40,11 @@ export class UserService {
 		return newUser;
 	}
 
-	async getUser(emp_id: string): Promise<User | null> {
+	async getUser(emp_no: string): Promise<User | null> {
 		const current_date_string = get_date_string(new Date());
 		const user = await User.findOne({
 			where: {
-				emp_id: emp_id,
+				emp_no: emp_no,
 				start_date: {
 					[Op.lte]: current_date_string,
 				},
@@ -78,13 +78,13 @@ export class UserService {
 	}
 
 	async updateUser({
-		emp_id,
+		emp_no,
 		password,
 		auth_l,
 		start_date,
 		end_date,
 	}: z.infer<typeof updateUserService>): Promise<void> {
-		const user = await this.getUser(emp_id!);
+		const user = await this.getUser(emp_no!);
 		if (user == null) {
 			throw new BaseResponseError("User does not exist");
 		}
@@ -104,16 +104,16 @@ export class UserService {
 				end_date: select_value(end_date, user.end_date),
 				update_by: "system",
 			},
-			{ where: { emp_id: emp_id } }
+			{ where: { emp_no: emp_no } }
 		);
 		if (affectedCount[0] != 1) {
 			throw new BaseResponseError("Update error");
 		}
 	}
 
-	async deleteUser(emp_id: string): Promise<void> {
+	async deleteUser(emp_no: string): Promise<void> {
 		const destroyedRows = await User.destroy({
-			where: { emp_id: emp_id },
+			where: { emp_no: emp_no },
 		});
 		if (destroyedRows != 1) {
 			throw new BaseResponseError("Delete error");

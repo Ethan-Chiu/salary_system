@@ -22,7 +22,7 @@ import { z } from "zod";
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
 interface ExtendedTokenInfo {
-	emp_id: string;
+	emp_no: string;
 	role: RolesEnumType;
 }
 
@@ -78,7 +78,7 @@ export const authOptions: NextAuthOptions = {
 			if (user) {
 				token.sub = user.id;
 				token.email = user.email;
-				token.emp_id = user.emp_id;
+				token.emp_no = user.emp_no;
 				token.role = user.role;
 			}
 			return token;
@@ -89,7 +89,7 @@ export const authOptions: NextAuthOptions = {
 				user: {
 					...session.user,
 					id: token.sub,
-					emp_id: token.emp_id,
+					emp_no: token.emp_no,
 					role: token.role,
 				},
 			};
@@ -119,13 +119,13 @@ export const authOptions: NextAuthOptions = {
 				// You can also use the `req` object to obtain additional parameters
 				// (i.e., the request IP address)
 				const input = {
-					emp_id: credentials?.username ?? "",
+					emp_no: credentials?.username ?? "",
 					password: credentials?.password ?? "",
 				};
 
 				const userService = container.resolve(UserService);
 				// TODO: move following to user service
-				const user = await userService.getUser(input.emp_id);
+				const user = await userService.getUser(input.emp_no);
 
 				if (!user) {
 					throw new BaseResponseError("User does not exist");
@@ -138,7 +138,7 @@ export const authOptions: NextAuthOptions = {
 						throw new BaseResponseError("Wrong password");
 					} else {
 						await userService.updateUser({
-							emp_id: input.emp_id,
+							emp_no: input.emp_no,
 							password: input.password,
 						});
 					}
@@ -155,7 +155,7 @@ export const authOptions: NextAuthOptions = {
 
 				const jwtUser: JWTUser = {
 					id: user.id.toString(),
-					emp_id: user.emp_id,
+					emp_no: user.emp_no,
 					role: parseRole.data,
 				};
 

@@ -14,7 +14,7 @@ export class EmployeePayment extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-    declare emp_id: string;
+    declare emp_no: string;
     declare base_salary: number;
     declare supervisor_bonus: number;
     declare job_bonus: number;
@@ -51,7 +51,7 @@ EmployeePayment.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-        emp_id: {
+        emp_no: {
             type: DataTypes.STRING(32),
 			allowNull: false,
         },

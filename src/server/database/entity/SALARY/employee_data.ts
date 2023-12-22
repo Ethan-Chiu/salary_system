@@ -14,7 +14,7 @@ export class EmployeeData extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-    declare emp_id: string;
+    declare emp_no: string;
     declare emp_name: string;
     declare work_type: string;
     declare work_status: string;
@@ -70,7 +70,7 @@ EmployeeData.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-        emp_id: {
+        emp_no: {
             type: DataTypes.STRING(32),
 			allowNull: false,
         },

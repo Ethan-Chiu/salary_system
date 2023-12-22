@@ -10,7 +10,7 @@ test("login but no account", async () => {
 
 	type Input = inferProcedureInput<AppRouter["login"]["login"]>;
 	const input: Input = {
-		emp_id: "12345",
+		emp_no: "12345",
 		password: "12345",
 	};
 

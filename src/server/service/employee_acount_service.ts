@@ -14,14 +14,14 @@
 // 	constructor() {}
 
 // 	async createEmployeeAccount({
-// 		emp_id,
+// 		emp_no,
 //         bank_account,
 //         ratio,
 // 	}: z.infer<typeof createEmployeeAccountInput>): Promise<EmployeeAccount> {
 // 		const now = new Date();
 
 // 		const newData = await EmployeeAccount.create({
-// 			emp_id: emp_id,
+// 			emp_no: emp_no,
 //             bank_account: bank_account,
 //             ratio: ratio,
 // 			create_by: "system",
@@ -53,7 +53,7 @@
 
 // 	async updateEmployeeAccount({
 // 		id,
-// 		emp_id,
+// 		emp_no,
 //         bank_account,
 //         ratio,
 // 	}: z.infer<typeof updateEmployeeAccountInput>): Promise<void> {
@@ -63,7 +63,7 @@
 // 		}
 // 		const affectedCount = await EmployeeAccount.update(
 // 			{
-// 				emp_id: select_value(emp_id, employeeAccount.emp_id),
+// 				emp_no: select_value(emp_no, employeeAccount.emp_no),
 // 				bank_account: select_value(bank_account, employeeAccount)
 // 				update_by: "system",
 // 			},
