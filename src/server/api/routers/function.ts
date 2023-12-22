@@ -2,6 +2,7 @@ import { container } from "tsyringe";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { EHRService } from "~/server/service/ehr_service";
+import { ExcelService } from "~/server/service/excel_service";
 
 export const functionRouter = createTRPCRouter({
 	getPeriod: publicProcedure.query(async () => {
@@ -37,4 +38,20 @@ export const functionRouter = createTRPCRouter({
 
 			return payset;
 		}),
+	getExcelA: publicProcedure.query(async () => {
+		const excelService = container.resolve(ExcelService);
+		const SheetA = await excelService.getSheetA();
+		const SheetB = await excelService.getSheetB();
+		const Sheets = [
+			{
+				name: "SheetA",
+				data: SheetA,
+			},
+			{
+				name: "SheetB",
+				data: SheetB,
+			},
+		];
+		return Sheets;
+	}),
 });
