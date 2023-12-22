@@ -191,7 +191,7 @@ function ExportPage() {
 	];
 
 
-	const handleExportExcel = async (datas: any) => {
+	const handleExportExcel = async (datas: any, filename: string) => {
 		const workbook = new ExcelJS.Workbook();
 		// const worksheet = workbook.addWorksheet('Sheet 1');
 		// // Add data to the worksheet
@@ -230,7 +230,7 @@ function ExportPage() {
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement('a');
 		a.href = url;
-		a.download = 'exported_data.xlsx';
+		a.download = filename;
 		a.click();
 		URL.revokeObjectURL(url);
 	};
@@ -246,7 +246,7 @@ function ExportPage() {
 					key={f_data.title}
 					variants={stagger}
 					className="cursor-pointer"
-					onClick={() => handleExportExcel(getExcelA.data)}
+					onClick={() => handleExportExcel(getExcelA.data, 'exported_data.xlsx')}
 				>
 					{getExcelA?<CardFunction
 						title={f_data.title}
