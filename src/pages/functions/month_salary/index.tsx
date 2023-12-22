@@ -19,8 +19,20 @@ import { HolidayTable } from "../tables/holiday_table";
 import { OvertimeTable } from "../tables/overtime_table";
 import { PaysetTable } from "../tables/payset_table";
 import { ProgressBar } from "~/components/functions/progress_bar";
+import {
+	CardFunction,
+	CardFunctionIcon,
+	CardFunctionData
+} from "~/components/functions/card_function";
+import { IconCoins } from "~/components/icons/svg_icons";
 import { Button } from "~/components/ui/button";
 import { Translate } from "~/pages/develop_parameters/utils/translation";
+
+import ExcelJS from "exceljs"
+
+import { motion } from "framer-motion";
+
+
 
 const TabOptions = ["請假", "加班", "工作天數", "其他", "其他"];
 const progressBarLabels = ["確認資料", "確認參數", "匯出報表"];
@@ -154,12 +166,57 @@ function ParameterPage() {
 }
 
 function ExportPage() {
+	const function_data: CardFunctionData[] = [
+		{
+			title: "Download Excel",
+			iconPath: "./icons/coins.svg",
+			subscript: "下載Excel",
+		}
+	];
+	const handleExportExcel = async () => {
+		const workbook = new ExcelJS.Workbook();
+		const worksheet = workbook.addWorksheet('Sheet 1');
+		// Add data to the worksheet
+		worksheet.addRow(['Name', 'Age', 'Country']);
+		worksheet.addRow(['John Doe', 25, 'USA']);
+		worksheet.addRow(['Jane Smith', 30, 'Canada']);
+		worksheet.addRow(['Bob Johnson', 28, 'UK']);
+		// Save the workbook to a file
+		const buffer = await workbook.xlsx.writeBuffer();
+		const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = 'exported_data.xlsx';
+		a.click();
+		URL.revokeObjectURL(url);
+	};
 	return (
-		<>
-			<div style={loaderStyle}>
-				<FadeLoader color="#000000" />
-			</div>
-		</>
+		<motion.div
+			className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+			variants={container}
+			initial="hidden"
+			animate="visible"
+		>
+			{function_data.map((f_data: CardFunctionData) => (
+				<motion.div
+					key={f_data.title}
+					variants={stagger}
+					className="cursor-pointer"
+					onClick={handleExportExcel}
+				>
+					<CardFunction
+						title={f_data.title}
+						iconPath={f_data.iconPath}
+						subscript={f_data.subscript}
+					>
+						<CardFunctionIcon className="text-foreground">
+							<IconCoins />
+						</CardFunctionIcon>
+					</CardFunction>
+				</motion.div>
+			))}
+		</motion.div>
 	);
 }
 
@@ -168,4 +225,19 @@ const loaderStyle = {
 	justifyContent: "center",
 	alignItems: "center",
 	height: "70vh",
+};
+
+const container = {
+	hidden: {},
+	visible: {
+		transition: {
+			staggerChildren: 0.2,
+			delayChildren: 0.1,
+		},
+	},
+};
+
+const stagger = {
+	hidden: { opacity: 0, y: -100 },
+	visible: { opacity: 1, y: 0 },
 };
