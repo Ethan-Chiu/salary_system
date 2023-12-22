@@ -14,7 +14,7 @@ export class EmployeeAccount extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-    declare emp_id: string;
+    declare emp_no: string;
     declare bank_account: string;
     declare ratio: number;
 
@@ -36,7 +36,7 @@ EmployeeAccount.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-        emp_id: {
+        emp_no: {
             type: DataTypes.STRING(32),
 			allowNull: false,
         },

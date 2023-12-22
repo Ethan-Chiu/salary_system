@@ -13,10 +13,10 @@ import { get_date_string } from "~/server/service/helper_function";
 
 export const loginRouter = createTRPCRouter({
 	login: publicProcedure
-		.input(z.object({ emp_id: z.string(), password: z.string() }))
+		.input(z.object({ emp_no: z.string(), password: z.string() }))
 		.mutation(async ({ input }) => {
 			const userService = container.resolve(UserService);
-			const user = await userService.getUser(input.emp_id);
+			const user = await userService.getUser(input.emp_no);
 
 			if (!user) {
 				throw new BaseResponseError("User does not exist");
@@ -26,7 +26,7 @@ export const loginRouter = createTRPCRouter({
 					throw new BaseResponseError("Wrong password");
 				} else {
 					await userService.updateUser({
-						emp_id: input.emp_id,
+						emp_no: input.emp_no,
 						password: input.password,
 					});
 				}
@@ -36,11 +36,11 @@ export const loginRouter = createTRPCRouter({
 		}),
 
 	changePassword: publicProcedure
-		.input(z.object({ emp_id: z.string(), password: z.string() }))
+		.input(z.object({ emp_no: z.string(), password: z.string() }))
 		.mutation(async ({ input }) => {
 			const userService = container.resolve(UserService);
 			await userService.updateUser({
-				emp_id: input.emp_id,
+				emp_no: input.emp_no,
 				password: input.password,
 			});
 		}),
@@ -63,9 +63,9 @@ export const loginRouter = createTRPCRouter({
 		}),
 
 	deleteUser: publicProcedure
-		.input(z.object({ emp_id: z.string() }))
+		.input(z.object({ emp_no: z.string() }))
 		.mutation(async ({ input }) => {
 			const userService = container.resolve(UserService);
-			await userService.deleteUser(input.emp_id);
+			await userService.deleteUser(input.emp_no);
 		}),
 });

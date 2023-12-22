@@ -30,7 +30,7 @@ export class User extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-	declare emp_id: string;
+	declare emp_no: string;
 	declare hash: string; // for nullable fields
 	declare auth_l: number;
 	declare start_date: string;
@@ -54,7 +54,7 @@ User.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		emp_id: {
+		emp_no: {
 			type: DataTypes.STRING(128),
 			unique: true,
 			allowNull: false,

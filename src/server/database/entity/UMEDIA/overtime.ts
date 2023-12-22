@@ -21,6 +21,7 @@ export class Overtime {
 	declare hours_2_TAX?: number;
 	constructor(
 		period_id?: number,
+		period_name?: string,
 		emp_no?: string,
 		emp_name?: string,
 		pay?: number,
@@ -28,7 +29,6 @@ export class Overtime {
 		days_radio?: string,
 		type_name?: string,
 		pay_period?: number,
-		period_name?: string,
 		pay_delay?: number,
 		hours_1?: number,
 		hours_134?: number,
@@ -41,6 +41,7 @@ export class Overtime {
 		hours_2_TAX?: number
 	) {
 		this.period_id = period_id;
+		this.period_name = period_name;
 		this.emp_no = emp_no;
 		this.emp_name = emp_name;
 		this.pay = pay;
@@ -48,7 +49,6 @@ export class Overtime {
 		this.days_radio = days_radio;
 		this.type_name = type_name;
 		this.pay_period = pay_period;
-		this.period_name = period_name;
 		this.pay_delay = pay_delay;
 		this.hours_1 = hours_1;
 		this.hours_134 = hours_134;
@@ -63,6 +63,7 @@ export class Overtime {
 	static fromDB(data: any): Overtime {
 		const {
 			PERIOD_ID,
+			PERIOD_NAME,
 			EMP_NO,
 			EMP_NAME,
 			PAY,
@@ -70,7 +71,6 @@ export class Overtime {
 			DAYS_RADIO,
 			TYPE_NAME,
 			PAY_PERIOD,
-			PERIOD_NAME,
 			PAY_DELAY,
 			HOURS_1,
 			HOURS_134,
@@ -82,8 +82,10 @@ export class Overtime {
 			HOURS_267_TAX,
 			HOURS_2_TAX,
 		} = data;
+
 		return new Overtime(
 			PERIOD_ID,
+			PERIOD_NAME,
 			EMP_NO,
 			EMP_NAME,
 			PAY,
@@ -91,7 +93,6 @@ export class Overtime {
 			DAYS_RADIO,
 			TYPE_NAME,
 			PAY_PERIOD,
-			PERIOD_NAME,
 			PAY_DELAY,
 			HOURS_1,
 			HOURS_134,

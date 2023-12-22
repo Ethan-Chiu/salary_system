@@ -31,7 +31,7 @@ export function Translate(word: string) {
 	if (word === "overtime_by_foreign_workers_2")    return "外勞加班2"
 	if (word === "overtime_by_foreign_workers_3")    return "外勞加班3"
 	if (word === "salt")    return "鹽"
-	if (word === "emp_id")    return "員工編號"
+	if (word === "emp_no")    return "員工編號"
 	if (word === "password")    return "密碼"
 	if (word === "auth_l")    return "權限等級"
 	if (word === "org_name")    return "公司名稱"

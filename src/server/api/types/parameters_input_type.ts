@@ -15,7 +15,7 @@ const DateService = z.object({
 });
 
 const User = z.object({
-	emp_id: z.string(),
+	emp_no: z.string(),
 	password: z.string(),
 	auth_l: z.number(),
 });
