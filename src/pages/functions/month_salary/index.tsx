@@ -29,16 +29,17 @@ const MonthSalary: NextPageWithLayout = () => {
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const pageList = [<DataPage />, <ParameterPage />, <ExportPage />];
 	return (
-		<div className="h-full">
+		<div className="flex min-h-full flex-col">
 			<Header title="functions" showOptions className="mb-4" />
 			<ProgressBar
 				labels={progressBarLabels}
 				selectedIndex={selectedIndex}
 			/>
-			<span>&nbsp;</span>
+			<br />
 			{pageList[selectedIndex]}
-			<span>&nbsp;</span>
-			<div className="flex justify-between">
+			<br />
+			<div className="grow" />
+			<div className="flex justify-between ">
 				<Button
 					onClick={() => setSelectedIndex(selectedIndex - 1)}
 					disabled={selectedIndex === 0}
@@ -112,7 +113,7 @@ function DataPage() {
 					</SelectContent>
 				</Select>
 				<br />
-				<Tabs defaultValue={TabOptions[0]} className="h-full w-full">
+				<Tabs defaultValue={TabOptions[0]} className="w-full">
 					<TabsList className={"grid w-full grid-cols-5"}>
 						{TabOptions.map((option) => {
 							return (
