@@ -9,7 +9,6 @@ import { type NextPageWithLayout } from "../_app";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { IconCoins } from "~/components/icons/svg_icons";
 import { Header } from "~/components/header";
-import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 
 const function_data: CardFunctionData[] = [
@@ -38,7 +37,6 @@ const function_data: CardFunctionData[] = [
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 	},
-	
 ];
 
 let routerMap = new Map();
@@ -88,7 +86,6 @@ PageHome.getLayout = function getLayout(page: React.ReactElement) {
 };
 
 export default PageHome;
-
 
 const container = {
 	hidden: {},
