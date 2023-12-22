@@ -18,12 +18,58 @@ import { useState } from "react";
 import { HolidayTable } from "../tables/holiday_table";
 import { OvertimeTable } from "../tables/overtime_table";
 import { PaysetTable } from "../tables/payset_table";
+import { ProgressBar } from "~/components/functions/progress_bar";
+import { Button } from "~/components/ui/button";
+import { Translate } from "~/pages/develop_parameters/utils/translation";
 
 const TabOptions = ["請假", "加班", "工作天數", "其他", "其他"];
+const progressBarLabels = ["確認資料", "確認參數", "匯出報表"];
 
 const MonthSalary: NextPageWithLayout = () => {
+	const [selectedIndex, setSelectedIndex] = useState(0);
+	const pageList = [<DataPage />, <ParameterPage />, <ExportPage />];
+	return (
+		<div className="h-full">
+			<Header title="functions" showOptions className="mb-4" />
+			<ProgressBar
+				labels={progressBarLabels}
+				selectedIndex={selectedIndex}
+			/>
+			<span>&nbsp;</span>
+			{pageList[selectedIndex]}
+			<span>&nbsp;</span>
+			<div className="flex justify-between">
+				<Button
+					onClick={() => setSelectedIndex(selectedIndex - 1)}
+					disabled={selectedIndex === 0}
+				>
+					{Translate("previous_step")}
+				</Button>
+				<Button
+					onClick={() => setSelectedIndex(selectedIndex + 1)}
+					disabled={selectedIndex === progressBarLabels.length - 1}
+				>
+					{Translate("next_step")}
+				</Button>
+			</div>
+		</div>
+	);
+};
+
+MonthSalary.getLayout = function getLayout(page: React.ReactElement) {
+	return (
+		<RootLayout>
+			<PerpageLayoutNav pageTitle="functions">{page}</PerpageLayoutNav>
+		</RootLayout>
+	);
+};
+
+export default MonthSalary;
+
+function DataPage() {
 	const getPeriod = api.function.getPeriod.useQuery();
 	const [period, setPeriod] = useState(-1);
+
 	function getTable(table_name: string) {
 		switch (table_name) {
 			case "請假":
@@ -40,7 +86,6 @@ const MonthSalary: NextPageWithLayout = () => {
 	if (getPeriod.isFetched)
 		return (
 			<>
-				<Header title="functions" showOptions className="mb-4" />
 				<Select
 					onValueChange={(chosen) =>
 						setPeriod(
@@ -67,7 +112,7 @@ const MonthSalary: NextPageWithLayout = () => {
 					</SelectContent>
 				</Select>
 				<br />
-				<Tabs defaultValue={TabOptions[0]} className="w-[100%]">
+				<Tabs defaultValue={TabOptions[0]} className="h-full w-full">
 					<TabsList className={"grid w-full grid-cols-5"}>
 						{TabOptions.map((option) => {
 							return (
@@ -90,23 +135,32 @@ const MonthSalary: NextPageWithLayout = () => {
 	else
 		return (
 			<>
-				<Header title="parameters" showOptions />
 				<div style={loaderStyle}>
 					<FadeLoader color="#000000" />
 				</div>
 			</>
 		);
-};
+}
 
-MonthSalary.getLayout = function getLayout(page: React.ReactElement) {
+function ParameterPage() {
 	return (
-		<RootLayout>
-			<PerpageLayoutNav pageTitle="functions">{page}</PerpageLayoutNav>
-		</RootLayout>
+		<>
+			<div style={loaderStyle}>
+				<FadeLoader color="#000000" />
+			</div>
+		</>
 	);
-};
+}
 
-export default MonthSalary;
+function ExportPage() {
+	return (
+		<>
+			<div style={loaderStyle}>
+				<FadeLoader color="#000000" />
+			</div>
+		</>
+	);
+}
 
 const loaderStyle = {
 	display: "flex",
