@@ -39,20 +39,7 @@ const table_data: TableData[] = [
 	},
 ];
 
-const container = {
-	hidden: {},
-	visible: {
-		transition: {
-			staggerChildren: 0.2,
-			delayChildren: 0.1,
-		},
-	},
-};
 
-const stagger = {
-	hidden: { opacity: 0, y: -100 },
-	visible: { opacity: 1, y: 0 },
-};
 
 const Modify: NextPageWithLayout = () => {
 	const pathname = usePathname();
@@ -107,3 +94,20 @@ Modify.getLayout = function getLayout(page: React.ReactElement) {
 };
 
 export default Modify;
+
+
+
+const container = {
+	hidden: {},
+	visible: {
+		transition: {
+			staggerChildren: 0.2,
+			delayChildren: 0.1,
+		},
+	},
+};
+
+const stagger = {
+	hidden: { opacity: 0, y: -100 },
+	visible: { opacity: 1, y: 0 },
+};

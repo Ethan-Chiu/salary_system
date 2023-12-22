@@ -1,60 +1,204 @@
 import AutoForm, { AutoFormSubmit } from "~/components/ui/auto-form";
 import * as z from "zod";
 import { Button } from "~/components/ui/button";
-import { isNumber, isDate, isString } from "../develop_parameters/utils/checkType";
-import { useRouter } from 'next/router';
+import {
+	isNumber,
+	isDate,
+	isString,
+} from "../develop_parameters/utils/checkType";
+import { useRouter } from "next/router";
+import { useState, useRef } from "react";
 
+import {
+	Table,
+	TableBody,
+	TableCaption,
+	TableCell,
+	TableFooter,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "~/components/ui/table";
+import { Translate } from "../develop_parameters/utils/translation";
 
-export function SingleParameterSettings({ formSchema, original_data, updateFunction, createFunction, deleteFunction, returnPage, mode, disabled }: any) {
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+	DialogClose,
+	DialogFooter,
+} from "~/components/ui/dialog";
+
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+
+const simpleTable = (d: any) => {
+	console.log(d);
+	return (
+		<Table>
+			<TableHeader>
+				<TableRow>
+					<TableHead className="whitespace-nowrap text-center">
+						{"Key"}
+					</TableHead>
+					<TableHead className="whitespace-nowrap text-center">
+						{"Value"}
+					</TableHead>
+				</TableRow>
+			</TableHeader>
+			<TableBody>
+				{Object.keys(d).map((key: string, index: number) => {
+					return (
+						<TableRow key={index.toString()}>
+							<TableCell className="text-center font-medium">
+								{Translate(key)}
+							</TableCell>
+							<TableCell className="text-center font-medium">
+								{isDate(d[key])
+									? d[key].toISOString().split("T")[0]
+									: d[key]}
+							</TableCell>
+						</TableRow>
+					);
+				})}
+			</TableBody>
+		</Table>
+	);
+};
+
+export function SingleParameterSettings({
+	formSchema,
+	fieldConfig,
+	original_data,
+	updateFunction,
+	createFunction,
+	deleteFunction,
+	returnPage,
+	mode,
+	disabled,
+}: any) {
+	const buttonRef = useRef<HTMLButtonElement | null>(null);
+
 	const router = useRouter();
-	console.log(mode);
+	const [values, setValues] = useState<Partial<z.infer<typeof formSchema>>>(
+		getDefaults(formSchema)
+	);
+	const [openDialog, setOpenDialog] = useState(false);
+	
+	function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
+		return Object.fromEntries(
+			Object.entries(schema.shape).map(([key, value]) => {
+				if (value instanceof z.ZodDefault)
+					return [key, value._def.defaultValue()];
+				return [key, undefined];
+			})
+		);
+	}
+
+	function submitForm() {
+		const parsedValues = formSchema.safeParse(values);
+		console.log(
+			{
+				id: original_data.id,
+				...parsedValues,
+			}
+		);
+		updateFunction({
+			...parsedValues,
+			id: original_data.id,
+		});
+		returnPage(0);
+	}
+
+
+	const handleSubmit = () => {
+		// Trigger button click programmatically
+		if (buttonRef.current) {
+			buttonRef.current.click();
+		}
+		const parsedValues = formSchema.safeParse(values);
+		if (parsedValues.success) {
+			setOpenDialog(true);
+		}
+	};
+
 	return (
 		<AutoForm
-			formSchema={formSchema}
+			values={values}
 			onSubmit={(data) => {
-				if(mode === "create") {
-					console.log(mode)
-				}
-				else {
-					console.log(original_data);
-					console.log(data);
-					updateFunction(
-						{
-							...data,
-							id: original_data.id,
-						}
-					)
-					returnPage(0);	
-				}
+				console.log(data);
 			}}
+			onValuesChange={setValues}
+			formSchema={formSchema}
+			fieldConfig={fieldConfig}
 		>
-			{(mode === "create")?(<>
+			
+			<Button className="hidden" ref={buttonRef}>Submit</Button>
+
+			<div className="grid grid-cols-6 gap-3">
+				<div>
+					<Button
+						variant={"outline"}
+						onClick={() => {
+							console.log("Cancel");
+							returnPage(0);
+						}}
+					>
+						Cancel
+					</Button>
+				</div>
 				<Button
+					className="col-start-5"
 					variant={"destructive"}
 					onClick={() => {
-						console.log("Cancel");
-						router.back();
+						console.log("delete data id = %d", original_data.id);
+						deleteFunction({ id: original_data.id });
+						returnPage(0);
 					}}
-				>
-					Cancel
-				</Button>
-				&nbsp; &nbsp; &nbsp;
-				<AutoFormSubmit>Create</AutoFormSubmit>
-			</>):(<>
-				<Button
-					variant={"destructive"}
-					onClick={() => {
-						console.log("delete data id = %d",original_data.id)
-						deleteFunction({id: original_data.id});
-					}}
-					disabled = {disabled}
+					disabled={disabled}
 				>
 					Delete
 				</Button>
-				&nbsp; &nbsp; &nbsp;
-				<AutoFormSubmit>Update</AutoFormSubmit>
-			</>)}
-			
+				<p
+					onClick={() => {
+						console.log(handleSubmit());
+						// setOpenDialog(true);
+					}}
+					className="text-center mb-2 me-2 cursor-pointer rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+				>
+					Update
+				</p>
+				<Dialog open={openDialog} onOpenChange={setOpenDialog}>
+					{/* <DialogTrigger asChild>
+						<div className="text-center">
+							<p
+								onClick={() => {}}
+								className="mb-2 me-2 cursor-pointer rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+							>
+								Update
+							</p>
+						</div>
+					</DialogTrigger> */}
+					<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
+						<DialogHeader>
+							<DialogTitle>Are you sure to update?</DialogTitle>
+							<DialogDescription>
+								
+							</DialogDescription>
+						</DialogHeader>
+						{simpleTable(values)}
+						<DialogFooter>
+							<Button onClick={() => {submitForm()}} type="submit">
+								Save changes
+							</Button>
+							<DialogClose />
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
+			</div>
 		</AutoForm>
 	);
 }

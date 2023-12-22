@@ -1,5 +1,6 @@
 import AutoFormCheckbox from "./fields/checkbox";
-import AutoFormDate from "./fields/date";
+import AutoFormDate from "./fields/customdate";
+// import AutoFormDate from "./fields/date";
 import AutoFormEnum from "./fields/enum";
 import AutoFormInput from "./fields/input";
 import AutoFormNumber from "./fields/number";

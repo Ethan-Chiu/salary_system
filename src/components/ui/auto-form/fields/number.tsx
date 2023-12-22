@@ -3,6 +3,7 @@ import AutoFormInput from "./input";
 
 export default function AutoFormNumber({
   fieldProps,
+  isRequired,
   ...props
 }: AutoFormInputComponentProps) {
   return (
@@ -11,6 +12,7 @@ export default function AutoFormNumber({
         type: "number",
         ...fieldProps,
       }}
+      isRequired={true}
       {...props}
     />
   );

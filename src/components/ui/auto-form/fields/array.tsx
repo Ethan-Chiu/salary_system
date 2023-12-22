@@ -5,11 +5,11 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../../accordion.tsx";
+} from "../../accordion";
 import AutoFormObject from "./object";
-import { Button } from "../../button.tsx";
+import { Button } from "../../button";
 import { Plus, Trash } from "lucide-react";
-import { Separator } from "../../separator.tsx";
+import { Separator } from "../../separator";
 
 export default function AutoFormArray({
   name,
