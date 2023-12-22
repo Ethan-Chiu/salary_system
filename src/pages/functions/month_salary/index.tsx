@@ -34,6 +34,8 @@ import { motion } from "framer-motion";
 
 
 
+
+
 const TabOptions = ["請假", "加班", "工作天數", "其他", "其他"];
 const progressBarLabels = ["確認資料", "確認參數", "匯出報表"];
 
@@ -166,21 +168,62 @@ function ParameterPage() {
 }
 
 function ExportPage() {
+
+	const getExcelA = api.function.getExcelA.useQuery();
+
+	function splitKeys(datas: any) {
+		let columns = Object.keys(datas[0]);
+		let rows = datas.map((data: any, index: number) => {
+			return Object.keys(data).map((key: string) => {
+				return data[key];
+			})
+		})
+		return [columns, rows];
+	}
+
+
 	const function_data: CardFunctionData[] = [
 		{
-			title: "Download Excel",
+			title: "Download Excel A",
 			iconPath: "./icons/coins.svg",
-			subscript: "下載Excel",
+			subscript: "下載 Excel A",
 		}
 	];
-	const handleExportExcel = async () => {
+
+
+	const handleExportExcel = async (datas: any) => {
 		const workbook = new ExcelJS.Workbook();
-		const worksheet = workbook.addWorksheet('Sheet 1');
-		// Add data to the worksheet
-		worksheet.addRow(['Name', 'Age', 'Country']);
-		worksheet.addRow(['John Doe', 25, 'USA']);
-		worksheet.addRow(['Jane Smith', 30, 'Canada']);
-		worksheet.addRow(['Bob Johnson', 28, 'UK']);
+		// const worksheet = workbook.addWorksheet('Sheet 1');
+		// // Add data to the worksheet
+		// worksheet.addRow(['Name', 'Age', 'Country']);
+		// worksheet.addRow(['John Doe', 25, 'USA']);
+		// worksheet.addRow(['Jane Smith', 30, 'Canada']);
+		// worksheet.addRow(['Bob Johnson', 28, 'UK']);
+
+		if(datas) {
+			datas.map((sheet: any, index: number) => {
+				console.log(sheet.data)
+				const worksheet = workbook.addWorksheet(sheet.name);
+				try {
+					console.log(splitKeys(sheet.data));
+					let [columns, rows] = splitKeys(sheet.data)
+					worksheet.addRow(columns);
+					rows.map((row: any, i: number) => {
+						worksheet.addRow(row);
+					})
+					// const cell = worksheet.getCell('A1');
+					// 	cell.fill = {
+					// 	type: 'pattern',
+					// 	pattern: 'solid',
+					// 	fgColor: { argb: 'FFFF0000' } // 背景颜色为红色
+					// };
+				}
+				catch {
+
+				}
+			})
+		}
+
 		// Save the workbook to a file
 		const buffer = await workbook.xlsx.writeBuffer();
 		const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
@@ -203,9 +246,9 @@ function ExportPage() {
 					key={f_data.title}
 					variants={stagger}
 					className="cursor-pointer"
-					onClick={handleExportExcel}
+					onClick={() => handleExportExcel(getExcelA.data)}
 				>
-					<CardFunction
+					{getExcelA?<CardFunction
 						title={f_data.title}
 						iconPath={f_data.iconPath}
 						subscript={f_data.subscript}
@@ -213,7 +256,8 @@ function ExportPage() {
 						<CardFunctionIcon className="text-foreground">
 							<IconCoins />
 						</CardFunctionIcon>
-					</CardFunction>
+					</CardFunction>:<></>}
+					
 				</motion.div>
 			))}
 		</motion.div>
