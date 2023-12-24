@@ -117,7 +117,6 @@ const Template = (props: any) => {
 			<ParameterForm
 				mode={"create"}
 				formSchema={getSchema(props.table_name)!("create")}
-				original_data={queryFunction.data![createForm - 1]}
 				createFunction={(d: any) => {
 					createFunction
 						? createFunction.mutate(d)

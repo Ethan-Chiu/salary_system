@@ -8,21 +8,27 @@ import Template from "../template";
 import { Button } from "~/components/ui/button";
 import { Translate } from "~/pages/develop_parameters/utils/translation";
 
-const PageTitle = "Attendance Setting";
+const PageTitle = "InsuranceRate Setting";
 
-const Attendance: NextPageWithLayout = () => {
-	const getAllAttendanceSetting =
-		api.parameters.getAllAttendanceSetting.useQuery();
-	const updateAttendanceSetting =
-		api.parameters.updateAttendanceSetting.useMutation({
+const InsuranceRate: NextPageWithLayout = () => {
+	const getAllInsuranceRateSetting =
+		api.parameters.getAllInsuranceRateSetting.useQuery();
+	const updateInsuranceRateSetting =
+		api.parameters.updateInsuranceRateSetting.useMutation({
 			onSuccess: () => {
-				getAllAttendanceSetting.refetch();
+				getAllInsuranceRateSetting.refetch();
 			},
 		});
-	const deleteAttendanceSetting =
-		api.parameters.deleteAttendanceSetting.useMutation({
+	const createInsuranceRateSetting =
+		api.parameters.createInsuranceRateSetting.useMutation({
 			onSuccess: () => {
-				getAllAttendanceSetting.refetch();
+				getAllInsuranceRateSetting.refetch();
+			},
+		});
+	const deleteInsuranceRateSetting =
+		api.parameters.deleteInsuranceRateSetting.useMutation({
+			onSuccess: () => {
+				getAllInsuranceRateSetting.refetch();
 			},
 		});
 
@@ -31,16 +37,17 @@ const Attendance: NextPageWithLayout = () => {
 			<div className="" />
 			<Template
 				headerTitle={PageTitle}
-				table_name={TABLE_NAMES.TABLE_ATTENDANCE}
-				queryFunction={getAllAttendanceSetting}
-				updateFunction={updateAttendanceSetting}
-				deleteFunction={deleteAttendanceSetting}
+				table_name={TABLE_NAMES.TABLE_INSURANCE}
+				queryFunction={getAllInsuranceRateSetting}
+				updateFunction={updateInsuranceRateSetting}
+				createFunction={createInsuranceRateSetting}
+				deleteFunction={deleteInsuranceRateSetting}
 			/>
 		</div>
 	);
 };
 
-Attendance.getLayout = function getLayout(page: React.ReactElement) {
+InsuranceRate.getLayout = function getLayout(page: React.ReactElement) {
 	return (
 		<RootLayout>
 			<PerpageLayoutNav pageTitle={PageTitle}>{page}</PerpageLayoutNav>
@@ -48,4 +55,4 @@ Attendance.getLayout = function getLayout(page: React.ReactElement) {
 	);
 };
 
-export default Attendance;
+export default InsuranceRate;

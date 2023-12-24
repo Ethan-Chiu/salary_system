@@ -126,7 +126,7 @@ export function ParameterForm({
 
 	return (
 		<AutoForm
-			_defaultValues={original_data}
+			_defaultValues={original_data?(original_data):{}}
 			values={values}
 			onSubmit={(data) => {
 
