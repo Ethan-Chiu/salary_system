@@ -204,6 +204,17 @@ const PageParameters: NextPageWithLayout = () => {
 			base_on: "test"
 		})
 	}
+
+	const testInsertBankSettingData = () => {
+		createBankSetting.mutate({
+			bank_code: "123",
+			bank_name: "456",
+			org_code: "abc",
+			org_name: "def",
+			start_date: new Date(),
+			end_date: null,
+		})
+	}
 	
 
 	function updateDatas(
@@ -242,7 +253,6 @@ const PageParameters: NextPageWithLayout = () => {
 		])
 	) {	// updateAllDatas
 
-		console.log(getBankSetting.data)
 		updateDatas(
 			TABLE_NAMES.TABLE_BANK_SETTING,
 			(getBankSetting.data ?? []).map((bank: any) => {
@@ -258,7 +268,6 @@ const PageParameters: NextPageWithLayout = () => {
 			})
 		);
 
-		console.log(getAttendanceSetting.data);
 		updateDatas(
 			TABLE_NAMES.TABLE_ATTENDANCE,
 			Object.keys(getAttendanceSetting.data ?? {}).map((key) => {
@@ -275,7 +284,6 @@ const PageParameters: NextPageWithLayout = () => {
 			})
 		);
 
-		console.log(getInsuranceRateSetting.data);
 		updateDatas(
 			TABLE_NAMES.TABLE_INSURANCE,
 			Object.keys(getInsuranceRateSetting.data ?? {}).map((key) => {
@@ -602,6 +610,10 @@ const PageParameters: NextPageWithLayout = () => {
 				<br/>
 				<Button onClick={() => testInsertBonusSettingData()}>
 					Insert Bonus Setting
+				</Button>
+				<br/>
+				<Button onClick={() => testInsertBankSettingData()}>
+					Insert Bank Setting
 				</Button>
 				<br/>
 			</>

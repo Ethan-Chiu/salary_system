@@ -113,6 +113,7 @@ export function SingleParameterSettings({
 			buttonRef.current.click();
 		}
 		const parsedValues = formSchema.safeParse(values);
+		console.log(values)
 		console.log(parsedValues);
 		if (parsedValues.success) {
 			setOpenDialog(true);
@@ -121,9 +122,10 @@ export function SingleParameterSettings({
 
 	return (
 		<AutoForm
+			// _defaultValues={original_data}
 			values={values}
 			onSubmit={(data) => {
-				
+
 			}}
 			onValuesChange={setValues}
 			formSchema={formSchema}

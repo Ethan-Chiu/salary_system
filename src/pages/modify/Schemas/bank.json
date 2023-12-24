@@ -1,0 +1,28 @@
+{
+    "bank_code": {
+      "type": "string",
+      "min": 3,
+      "max": 3,
+      "isNumber": true
+    },
+    "bank_name": {
+      "type": "string"
+    },
+    "org_code": {
+      "type": "string",
+      "min": 3,
+      "max": 3,
+      "isNumber": true
+    },
+    "org_name": {
+      "type": "string"
+    },
+    "start_date": {
+      "type": "date"
+    },
+    "end_date": {
+        "type": "date",
+        "optional": true
+    }
+}
+  

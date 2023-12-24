@@ -19,6 +19,7 @@ import {
 	TableRow,
 } from "~/components/ui/table";
 import { Translate } from "../develop_parameters/utils/translation";
+import { getSchema } from "./Schemas/getSchema";
 
 const Template = (props: any) => {
 	const router = useRouter();
@@ -90,12 +91,14 @@ const Template = (props: any) => {
 				</>
 			) : (
 				<SingleParameterSettings
-					formSchema={attendanceSchema(
+					formSchema={getSchema(props.table_name)!(
 						queryFunction.data![createForm - 1]
 					)}
 					original_data={queryFunction.data![createForm - 1]}
 					updateFunction={(d: any) => {
-						updateFunction.mutate(d);
+						updateFunction
+							? updateFunction.mutate(d)
+							: console.log("update function not exist");
 					}}
 					deleteFunction={(d: any) => {
 						deleteFunction
@@ -113,21 +116,21 @@ const Template = (props: any) => {
 	return (
 		<>
 			<Header title={headerTitle} showOptions className="mb-4" />
-			<LucideIcons.ArrowLeft
-				style={{ cursor: "pointer" }}
-				className="hidden"
-				onClick={() => {
-					if(createForm)
-						setCreateForm(0);
-					else
-						router.push("/modify");
-				}}
-			/>
+			<div>
+				<Button
+					onClick={() => {
+						if (createForm) setCreateForm(0);
+						else router.push("/modify");
+					}}
+					className={createForm ? "hidden" : ""}
+					disabled={false}
+					variant={"link"}
+				>
+					{Translate("previous_page")}
+				</Button>
+			</div>
 			<br />
 			<SelectData />
-			<br />
-			<br />
-			<br />
 		</>
 	);
 };

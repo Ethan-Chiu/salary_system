@@ -1,6 +1,8 @@
 import * as TABLE_NAMES from "../../table_names";
-import {attendanceSchema} from "./schemas"
-import { bankSchema } from "./bankSchema"
+import {
+    attendanceSchema,
+    bankSchema
+} from "./schemas"
 
 
 export function getSchema(table_name: string) {

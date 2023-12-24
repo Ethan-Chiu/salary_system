@@ -22,6 +22,7 @@ export function AutoFormSubmit({ children }: { children?: React.ReactNode }) {
 
 function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   formSchema,
+  _defaultValues,
   values: valuesProp,
   onValuesChange: onValuesChangeProp,
   onParsedValuesChange,
@@ -31,6 +32,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   className,
 }: {
   formSchema: SchemaType;
+  _defaultValues?: any;
   values?: Partial<z.infer<SchemaType>>;
   onValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
   onParsedValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
@@ -41,7 +43,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
 }) {
   const objectFormSchema = getObjectFormSchema(formSchema);
   const defaultValues: DefaultValues<z.infer<typeof objectFormSchema>> =
-    getDefaultValues(objectFormSchema);
+    (_defaultValues) ? _defaultValues : getDefaultValues(objectFormSchema);
 
   const form = useForm<z.infer<typeof objectFormSchema>>({
     resolver: zodResolver(formSchema),

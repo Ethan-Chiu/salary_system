@@ -12,7 +12,7 @@ export default function AutoFormNumber({
         type: "number",
         ...fieldProps,
       }}
-      isRequired={true}
+      isRequired={isRequired}
       {...props}
     />
   );

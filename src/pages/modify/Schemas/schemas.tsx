@@ -2,6 +2,7 @@ import * as z from "zod";
 import { Translate } from "~/pages/develop_parameters/utils/translation";
 import { createSchema } from "./createSchema";
 import attendanceConfig from "./attendance.json"
+import bankConfig from "./bank.json"
 
 function getTranslate(key: string) {
 	return Translate(key) ?? "Not found"
@@ -19,3 +20,6 @@ export const attendanceSchema = (data:any) => {
 	return createSchema(attendanceConfig, data);
 }
 
+export const bankSchema = (data: any) => {
+	return createSchema(bankConfig, data);
+}
