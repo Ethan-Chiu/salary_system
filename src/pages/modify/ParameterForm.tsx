@@ -36,7 +36,6 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 
 const simpleTable = (d: any) => {
-	console.log(d);
 	return (
 		<Table>
 			<TableHeader>
@@ -120,8 +119,6 @@ export function ParameterForm({
 			buttonRef.current.click();
 		}
 		const parsedValues = formSchema.safeParse(values);
-		console.log(values)
-		console.log(parsedValues);
 		if (parsedValues.success) {
 			setOpenDialog(true);
 		}
@@ -154,7 +151,7 @@ export function ParameterForm({
 						Cancel
 					</Button>
 				</div>
-				{mode!=="create" && <Button
+				{mode==="update" && <Button
 					className="col-start-5"
 					variant={"destructive"}
 					onClick={() => {
@@ -173,7 +170,8 @@ export function ParameterForm({
 					}}
 					className="col-start-6 mb-2 me-2 cursor-pointer rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
 				>
-					{mode==="create"?"Create":"Update"}
+					{mode==="create" && "Create"}
+					{mode==="update" && "Update"}
 				</p>
 				<Dialog open={openDialog} onOpenChange={setOpenDialog}>
 					<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">

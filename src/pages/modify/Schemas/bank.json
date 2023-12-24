@@ -22,7 +22,8 @@
     },
     "end_date": {
         "type": "date",
-        "optional": true
+        "optional": true,
+        "onlynullwhen": ["create"]
     }
 }
   

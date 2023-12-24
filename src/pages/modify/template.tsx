@@ -89,10 +89,11 @@ const Template = (props: any) => {
 		);
 	};
 
-	const ModifyData = () => {
+	const UpdateData = () => {
 		return (
 			<ParameterForm
-				formSchema={getSchema(props.table_name)!("modify")}
+				mode = {"update"}
+				formSchema={getSchema(props.table_name)!("update")}
 				original_data={queryFunction.data![createForm - 1]}
 				updateFunction={(d: any) => {
 					updateFunction
@@ -115,9 +116,7 @@ const Template = (props: any) => {
 		return (
 			<ParameterForm
 				mode={"create"}
-				formSchema={getSchema(props.table_name)!(
-					"create"
-				)}
+				formSchema={getSchema(props.table_name)!("create")}
 				original_data={queryFunction.data![createForm - 1]}
 				createFunction={(d: any) => {
 					createFunction
@@ -129,15 +128,17 @@ const Template = (props: any) => {
 				}}
 			/>
 		);
-	}
+	};
 
 	function SelectData() {
 		if (queryFunction.isFetched)
-			return createForm === 0 ? 
-				<ViewAllDatas /> 			// createForm == 0
-				:(createForm === -1)?
-				<CreateData /> 				// createForm == -1
-				:<ModifyData />;			// createForm > 0
+			return (
+				<>
+					{createForm === 0 && <ViewAllDatas />}
+					{createForm === -1 && <CreateData />}
+					{createForm > 0 && <UpdateData />}
+				</>
+			);
 		return <Loader></Loader>;
 	}
 
@@ -160,7 +161,7 @@ const Template = (props: any) => {
 					onClick={() => {
 						setCreateForm(-1);
 					}}
-					className={createForm !==0 ? "hidden" : "col-start-5"}
+					className={createForm !== 0 ? "hidden" : "col-start-5"}
 					disabled={false}
 					variant={"ghost"}
 				>

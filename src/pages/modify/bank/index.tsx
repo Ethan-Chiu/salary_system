@@ -19,6 +19,12 @@ const Bank: NextPageWithLayout = () => {
 				getAllBankSetting.refetch();
 			},
 		});
+	const createBankSetting =
+		api.parameters.createBankSetting.useMutation({
+			onSuccess: () => {
+				getAllBankSetting.refetch();
+			},
+		});
 	const deleteBankSetting =
 		api.parameters.deleteBankSetting.useMutation({
 			onSuccess: () => {
@@ -32,6 +38,7 @@ const Bank: NextPageWithLayout = () => {
 				headerTitle={PageTitle}
 				table_name={TABLE_NAMES.TABLE_BANK_SETTING}
 				queryFunction={getAllBankSetting}
+				createFunction={createBankSetting}
 				updateFunction={updateBankSetting}
 				deleteFunction={deleteBankSetting}
 			/>

@@ -28,15 +28,20 @@ function createOneKeySchema(key: string, config: any) {
 		if (type === "date") {
 			schema = z.preprocess((d) => {
 				if(d === "") {
-					return undefined;
-				} else {
+					return (config.onlynull)?null:undefined;
+				} 
+				else if(d === undefined) {
+					return null;
+				}
+				else {
 					return d;
 				}
 			}
 				, z.coerce.date().optional().nullable()
 			);
 		}
-	} else {
+	} 
+	else {
 		if (type === "string") {
 			// schema = z.string({required_error: "test"});
 			schema = z.preprocess((a) => {
@@ -82,7 +87,6 @@ function createOneKeySchema(key: string, config: any) {
 		return /^[0-9]*$/.test(sss);
 	}
 	if(config.isNumber && type === "string") {
-		console.log("here");
 		schema = (schema as any).refine((val: string) => checkString(val), {
 			message: "Should be a number string",
 		})
@@ -97,7 +101,7 @@ function createOneKeySchema(key: string, config: any) {
 			);
 		if (type === "string")
 			schema = (schema as any).refine(
-				(s: string) => s.length >= config.min,
+				(s: string) => (s??"").length >= config.min,
 				"min length: " + config.min.toString()
 			);
 		if (type === "date")
@@ -116,7 +120,7 @@ function createOneKeySchema(key: string, config: any) {
 			);
 		if (type === "string")
 			schema = (schema as any).refine(
-				(s: string) => s.length <= config.max,
+				(s: string) => (s??"").length <= config.max,
 				"max length: " + config.max.toString()
 			);
 		if (type === "date")
@@ -145,6 +149,12 @@ function createOneKeySchema(key: string, config: any) {
 export function createSchema(config: any, mode?: string) {
 	let schemas: any = {};
 	Object.keys(config).forEach(function (key) {
+		if((config[key].optionalonly ?? []).includes(mode??"")) {
+			config[key].optional = true;
+		}
+		if((config[key].onlynullwhen ?? []).includes(mode??"")) {
+			config[key].onlynull = true;
+		}
 		if(config[key].onlymode !== undefined) {
 			if(config[key].onlymode.includes(mode??"")) {
 				const schema = createOneKeySchema(key, config[key]);
