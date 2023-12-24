@@ -37,10 +37,10 @@ import { BonusDepartmentRow, BonusDepartmentTable } from "./tables/bonus_departm
 import { BonusPositionRow, BonusPositionTable } from "./tables/bonus_position";
 import { BonusSeniorityRow, BonusSeniorityTable } from "./tables/bonus_seniority";
 import { BonusPositionTypeRow, BonusPositionTypeTable} from "./tables/bonus_position_type";
-import { getSchema } from "../modify/Schemas/getSchema";
+import { getSchema } from "../modify/Schemas/schemas";
 
 
-const API_PARAMETERS = api.parameters;
+const API_PARAMETERS: any = api.parameters;
 
 let datas: DATA[] = [
 	{

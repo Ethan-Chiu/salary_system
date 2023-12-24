@@ -35,7 +35,7 @@ export default function AutoFormObject<
 	path?: string[];
 }) {
 	const { shape } = getBaseSchema<SchemaType>(schema);
-
+	
 	return (
 		<Accordion type="multiple" className="space-y-5">
 			{Object.keys(shape).map((name) => {

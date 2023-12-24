@@ -39,17 +39,23 @@ const Template = (props: any) => {
 					<Table>
 						<TableHeader>
 							<TableRow>
-								<TableHead className="whitespace-nowrap text-center">
-									{""}
-								</TableHead>
-								{Object.keys(queryFunction.data[0]).map(
-									(key: string) => {
-										return (
-											<TableHead className="whitespace-nowrap text-center">
-												{Translate(key)}
-											</TableHead>
-										);
-									}
+								{queryFunction.data[0] &&
+									Object.keys(queryFunction.data[0]).map(
+										(key: string) => {
+											return (
+												<TableHead className="whitespace-nowrap text-center">
+													{Translate(key)}
+												</TableHead>
+											);
+										}
+									)}
+								{!queryFunction.data[0] && (
+									<TableCell
+										colSpan={5}
+										className="h-24 text-center"
+									>
+										No results.
+									</TableCell>
 								)}
 							</TableRow>
 						</TableHeader>
@@ -92,7 +98,7 @@ const Template = (props: any) => {
 	const UpdateData = () => {
 		return (
 			<ParameterForm
-				mode = {"update"}
+				mode={"update"}
 				formSchema={getSchema(props.table_name)!("update")}
 				original_data={queryFunction.data![createForm - 1]}
 				updateFunction={(d: any) => {

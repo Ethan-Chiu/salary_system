@@ -81,6 +81,9 @@ function createOneKeySchema(key: string, config: any) {
 				}
 			}, z.coerce.date(getRequiredError(key)));
 		}
+		if (type === "enum") {
+			schema = z.enum(config.options);
+		}
 	}
 
 	function checkString(sss: string) {

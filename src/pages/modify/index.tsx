@@ -3,17 +3,18 @@ import { CardFunction, CardFunctionIcon, CardFunctionData } from "~/components/f
 import { motion } from "framer-motion";
 import { type NextPageWithLayout } from "../_app";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
-import { IconCoins } from "~/components/icons/svg_icons";
+import { IconCoins, IconCreditCard } from "~/components/icons/svg_icons";
 import { Header } from "~/components/header";
 import * as TABLE_NAMES from "../table_names";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useRouter } from 'next/router';
+import * as Icon from "~/components/icons/svg_icons"
 
 export type TableData = {
 	title: string;
-	iconPath: string;
+	icon: any;
 	subscript: string;
 	navLink: string;
 };
@@ -21,21 +22,51 @@ export type TableData = {
 const table_data: TableData[] = [
 	{
 		title: TABLE_NAMES.TABLE_ATTENDANCE,
-		iconPath: "./icons/coins.svg",
+		icon: Icon.IconClock(6),
 		subscript: "Attendance data",
 		navLink: "/modify/attendance",
 	},
 	{
 		title: TABLE_NAMES.TABLE_BANK_SETTING,
-		iconPath: "./icons/coins.svg",
+		icon: Icon.IconCreditCard(6),
 		subscript: "Bank setting",
 		navLink: "/modify/bank",
 	},
 	{
 		title: TABLE_NAMES.TABLE_INSURANCE,
-		iconPath: "./icons/coins.svg",
+		icon: Icon.IconShieldCheck(6),
 		subscript: "Insurance setting",
 		navLink: "/modify/insurance",
+	},
+	{
+		title: TABLE_NAMES.TABLE_BONUS_SETTING,
+		icon: Icon.IconDollar(6),
+		subscript: "Bonus setting",
+		navLink: "/modify/bonusSetting",
+	},
+	{
+		title: TABLE_NAMES.TABLE_BONUS_DEPARTMENT,
+		icon: Icon.IconUsers(6),
+		subscript: "Bonus Department setting",
+		navLink: "/modify/bonusDepartment",
+	},
+	{
+		title: TABLE_NAMES.TABLE_BONUS_POSITION,
+		icon: Icon.IconBriefcase(6),
+		subscript: "Bonus Position setting",
+		navLink: "/modify/bonusPosition",
+	},
+	{
+		title: TABLE_NAMES.TABLE_BONUS_POSITION_TYPE,
+		icon: Icon.IconKey(6),
+		subscript: "Bonus Position Type setting",
+		navLink: "/modify/bonusPositionType",
+	},
+	{
+		title: TABLE_NAMES.TABLE_BONUS_SENIORITY,
+		icon: Icon.IconCake(7),
+		subscript: "Bonus Seniority setting",
+		navLink: "/modify/bonusSeniority",
 	},
 ];
 
@@ -63,11 +94,10 @@ const Modify: NextPageWithLayout = () => {
 						>
 								<CardFunction
 									title={f_data.title}
-									iconPath={f_data.iconPath}
 									subscript={f_data.subscript}
 								>
 									<CardFunctionIcon className="text-foreground">
-										<IconCoins />
+										{f_data.icon}
 									</CardFunctionIcon>
 								</CardFunction>
 						</motion.div>

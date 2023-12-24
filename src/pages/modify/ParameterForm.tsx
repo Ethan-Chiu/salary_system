@@ -165,6 +165,7 @@ export function ParameterForm({
 				</Button>}
 				<p
 					onClick={() => {
+						console.log(values);
 						handleSubmit();
 						// setOpenDialog(true);
 					}}
