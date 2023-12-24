@@ -1,0 +1,55 @@
+{
+    "personal_leave_dock": {
+      "type": "number",
+      "min": 0
+    },
+    "sick_leave_dock": {
+      "type": "number"
+    },
+    "rate_of_unpaid_leave": {
+      "type": "number"
+    },
+    "unpaid_leave_compensatory_1": {
+      "type": "number"
+    },
+    "unpaid_leave_compensatory_2": {
+      "type": "number"
+    },
+    "unpaid_leave_compensatory_3": {
+      "type": "number"
+    },
+    "unpaid_leave_compensatory_4": {
+      "type": "number"
+    },
+    "unpaid_leave_compensatory_5": {
+      "type": "number"
+    },
+    "overtime_by_foreign_workers_1": {
+      "type": "number"
+    },
+    "overtime_by_foreign_workers_2": {
+      "type": "number"
+    },
+    "overtime_by_foreign_workers_3": {
+      "type": "number"
+    },
+    "overtime_by_local_workers_1": {
+      "type": "number"
+    },
+    "overtime_by_local_workers_2": {
+      "type": "number"
+    },
+    "overtime_by_local_workers_3": {
+      "type": "number"
+    },
+    "local_worker_holiday": {
+      "type": "number"
+    },
+    "foreign_worker_holiday": {
+      "type": "number"
+    },
+    "start_date": {
+      "type": "date"
+    }
+}
+  

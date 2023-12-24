@@ -1,5 +1,5 @@
 import * as TABLE_NAMES from "../../table_names";
-import {attendanceSchema} from "./attendanceSchema"
+import {attendanceSchema} from "./schemas"
 import { bankSchema } from "./bankSchema"
 
 
