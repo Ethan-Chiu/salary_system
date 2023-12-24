@@ -18,7 +18,7 @@ import {
 	TableRow,
 } from "~/components/ui/table";
 import { Translate } from "../develop_parameters/utils/translation";
-import { getSchema } from "./Schemas/getSchema";
+import { getSchema } from "./Schemas/schemas";
 
 const Template = (props: any) => {
 	const router = useRouter();
@@ -123,11 +123,6 @@ const Template = (props: any) => {
 					createFunction
 						? createFunction.mutate(d)
 						: console.log("create function not exist");
-				}}
-				deleteFunction={(d: any) => {
-					deleteFunction
-						? deleteFunction.mutate(d)
-						: console.log("delete function not exist");
 				}}
 				returnPage={(n: number) => {
 					setCreateForm(n);

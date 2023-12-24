@@ -154,7 +154,7 @@ export function ParameterForm({
 						Cancel
 					</Button>
 				</div>
-				<Button
+				{mode!=="create" && <Button
 					className="col-start-5"
 					variant={"destructive"}
 					onClick={() => {
@@ -165,27 +165,17 @@ export function ParameterForm({
 					disabled={disabled}
 				>
 					Delete
-				</Button>
+				</Button>}
 				<p
 					onClick={() => {
 						handleSubmit();
 						// setOpenDialog(true);
 					}}
-					className="mb-2 me-2 cursor-pointer rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+					className="col-start-6 mb-2 me-2 cursor-pointer rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
 				>
-					Update
+					{mode==="create"?"Create":"Update"}
 				</p>
 				<Dialog open={openDialog} onOpenChange={setOpenDialog}>
-					{/* <DialogTrigger asChild>
-						<div className="text-center">
-							<p
-								onClick={() => {}}
-								className="mb-2 me-2 cursor-pointer rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-							>
-								Update
-							</p>
-						</div>
-					</DialogTrigger> */}
 					<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
 						<DialogHeader>
 							<DialogTitle>Are you sure to update?</DialogTitle>
