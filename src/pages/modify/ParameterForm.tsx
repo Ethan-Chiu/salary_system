@@ -69,7 +69,7 @@ const simpleTable = (d: any) => {
 	);
 };
 
-export function SingleParameterSettings({
+export function ParameterForm({
 	formSchema,
 	fieldConfig,
 	original_data,
@@ -100,10 +100,17 @@ export function SingleParameterSettings({
 
 	function submitForm() {
 		const parsedValues = formSchema.safeParse(values);
-		updateFunction({
-			...parsedValues.data,
-			id: original_data.id,
-		});
+		if (mode === "create") {
+			createFunction({
+				...parsedValues.data,
+			});
+		}
+		else {
+			updateFunction({
+				...parsedValues.data,
+				id: original_data.id,
+			});
+		}
 		returnPage(0);
 	}
 
@@ -122,7 +129,7 @@ export function SingleParameterSettings({
 
 	return (
 		<AutoForm
-			// _defaultValues={original_data}
+			_defaultValues={original_data}
 			values={values}
 			onSubmit={(data) => {
 

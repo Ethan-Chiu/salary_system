@@ -16,10 +16,10 @@ function getInvalidNumberError(key: string) {
 	return {invalid_type_error: getTranslate(key) + " must be a number.",};
 }
 
-export const attendanceSchema = (data:any) => {
-	return createSchema(attendanceConfig, data);
+export const attendanceSchema = (mode?: string) => {
+	return createSchema(attendanceConfig, mode);
 }
 
-export const bankSchema = (data: any) => {
-	return createSchema(bankConfig, data);
+export const bankSchema = (mode?: string) => {
+	return createSchema(bankConfig, mode);
 }

@@ -111,4 +111,5 @@ export function Translate(word: string) {
 	if (word === "next_step") return "下一步";
 	if (word === "previous_step") return "上一步";
 	if (word === "previous_page") return "回上頁";
+	if (word === "create") return "建立";
 }

@@ -19,6 +19,12 @@ const Attendance: NextPageWithLayout = () => {
 				getAllAttendanceSetting.refetch();
 			},
 		});
+	const createAttendanceSetting =
+		api.parameters.createAttendanceSetting.useMutation({
+			onSuccess: () => {
+				getAllAttendanceSetting.refetch();
+			},
+		});
 	const deleteAttendanceSetting =
 		api.parameters.deleteAttendanceSetting.useMutation({
 			onSuccess: () => {
@@ -34,6 +40,7 @@ const Attendance: NextPageWithLayout = () => {
 				table_name={TABLE_NAMES.TABLE_ATTENDANCE}
 				queryFunction={getAllAttendanceSetting}
 				updateFunction={updateAttendanceSetting}
+				createFunction={createAttendanceSetting}
 				deleteFunction={deleteAttendanceSetting}
 			/>
 		</div>

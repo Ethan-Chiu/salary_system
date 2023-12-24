@@ -17,7 +17,7 @@ function getRequiredError(key: string) {
 }
 
 // input: [{key = key1, type = "string" | "number" | "date" required = true}, {}, {}]
-function createOneKeySchema(key: string, config: any, defaultValue?: any) {
+function createOneKeySchema(key: string, config: any) {
 	let schema = undefined;
 	let type = config.type;
 
@@ -132,25 +132,29 @@ function createOneKeySchema(key: string, config: any, defaultValue?: any) {
 		: (schema as any).describe(config.description);
 
 	// set default value
-	if (defaultValue !== undefined && defaultValue !== null) {
-		if (type === "date")
-			schema = (schema as any).default(defaultValue);
-		if (type === "number") schema = (schema as any).default(defaultValue);
-		if (type === "string") schema = (schema as any).default(defaultValue);
-	}
+	// if (defaultValue !== undefined && defaultValue !== null) {
+	// 	if (type === "date")
+	// 		schema = (schema as any).default(defaultValue);
+	// 	if (type === "number") schema = (schema as any).default(defaultValue);
+	// 	if (type === "string") schema = (schema as any).default(defaultValue);
+	// }
 
 	return schema;
 }
 
-export function createSchema(config: any, defaultValues?: any) {
+export function createSchema(config: any, mode?: string) {
 	let schemas: any = {};
 	Object.keys(config).forEach(function (key) {
-		const schema =
-			key in defaultValues
-				? createOneKeySchema(key, config[key], defaultValues[key])
-				: createOneKeySchema(key, config[key]);
-
-		schemas[key] = schema;
+		if(config[key].onlymode !== undefined) {
+			if(config[key].onlymode.includes(mode??"")) {
+				const schema = createOneKeySchema(key, config[key]);
+				schemas[key] = schema;
+			}
+		}
+		else {
+			const schema = createOneKeySchema(key, config[key]);
+			schemas[key] = schema;
+		}
 	});
 
 	return z.object(schemas);
