@@ -1,0 +1,12 @@
+{
+	"type": {
+		"type": "enum",
+		"options": ["勞保", "健保", "勞災"]
+	},
+	"level_start": {
+		"type": "number"
+	},
+	"level_end": {
+		"type": "number"
+	}
+}

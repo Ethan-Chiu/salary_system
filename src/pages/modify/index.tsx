@@ -14,7 +14,7 @@ import * as Icon from "~/components/icons/svg_icons"
 
 export type TableData = {
 	title: string;
-	icon: any;
+	icon: React.ReactElement;
 	subscript: string;
 	navLink: string;
 };
@@ -68,6 +68,30 @@ const table_data: TableData[] = [
 		subscript: "Bonus Seniority setting",
 		navLink: "/modify/bonusSeniority",
 	},
+	{
+		title: TABLE_NAMES.TABLE_LEVEL,
+		icon: Icon.IconCake(7),
+		subscript: "Level setting",
+		navLink: "/modify/level",
+	},
+	{
+		title: TABLE_NAMES.TABLE_LEVEL_RANGE,
+		icon: Icon.IconCake(7),
+		subscript: "Level Range setting",
+		navLink: "/modify/levelRange",
+	},
+	{
+		title: TABLE_NAMES.TABLE_PERFORMANCE_LEVEL,
+		icon: Icon.IconCake(7),
+		subscript: "Performance Level setting",
+		navLink: "/modify/performanceLevel",
+	},
+	{
+		title: TABLE_NAMES.TABLE_TRUST_MONEY,
+		icon: Icon.IconCake(7),
+		subscript: "Trust Money setting",
+		navLink: "/modify/trustMoney",
+	},
 ];
 
 
@@ -85,7 +109,7 @@ const Modify: NextPageWithLayout = () => {
 				initial="hidden"
 				animate="visible"
 			>
-				{table_data.map((f_data: TableData, index) => (
+				{table_data.map((f_data: TableData, index: number) => (
 						<motion.div
 							onClick={() => router.push(f_data.navLink)}
 							key={f_data.title}

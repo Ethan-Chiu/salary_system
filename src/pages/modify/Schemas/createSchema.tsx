@@ -26,9 +26,11 @@ function createOneKeySchema(key: string, config: any) {
 	let type = config.type;
 
 	// required prop (default: required = true)
-	if (config.required === false || config.optional === true) {
+	if (config.required === false || config.optional === true || config.optional === "true") {
 		if (type === "string") schema = z.string().nullable().optional();
-		if (type === "number") schema = z.coerce.number().optional();
+		if (type === "number") {
+			schema = z.coerce.number().optional();
+		}
 		if (type === "date") {
 			schema = z.preprocess((d) => {
 				if(d === "") {
@@ -89,6 +91,12 @@ function createOneKeySchema(key: string, config: any) {
 			schema = z.enum(config.options);
 		}
 	}
+
+	// if(config.onlynull) {
+	// 	schema = schema?.nullable().transform((val) => (val === (undefined) || val === 0)?null:val);
+	// }
+
+
 
 	function checkString(sss: string) {
 		return /^[0-9]*$/.test(sss);
