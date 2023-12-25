@@ -9,11 +9,15 @@ import {
 import { Translate } from "~/pages/develop_parameters/utils/translation";
 
 function getTranslate(key: string) {
-	return Translate(key) ?? "Not found";
+	return Translate(key) ?? "Not found"
 }
 
 function getRequiredError(key: string) {
-	return { required_error: getTranslate(key) + " is required." };
+	return { required_error: getTranslate(key) + " is required."}
+}
+
+function getInvalidNumberError(key: string) {
+	return {invalid_type_error: getTranslate(key) + " must be a number.",};
 }
 
 // input: [{key = key1, type = "string" | "number" | "date" required = true}, {}, {}]

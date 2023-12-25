@@ -7,33 +7,43 @@ import attendanceConfig from "./configurations/attendance.json"
 import bankConfig from "./configurations/bank.json"
 import insuranceConfig from "./configurations/insurance.json"
 import bonusSettingConfig from "./configurations/bonus.json"
+import bonusDepartmentConfig from "./configurations/bonusDepartment.json"
+import bonusPositionConfig from "./configurations/bonusPosition.json"
+import bonusPositionTypeConfig from "./configurations/bonusPositionType.json"
+import bonusSeniorityConfig from "./configurations/bonusSeniority.json"
 
-function getTranslate(key: string) {
-	return Translate(key) ?? "Not found"
-}
 
-function getRequiredError(key: string) {
-	return {required_error: getTranslate(key) + " is required."}
-}
 
-function getInvalidNumberError(key: string) {
-	return {invalid_type_error: getTranslate(key) + " must be a number.",};
-}
-
-export const attendanceSchema = (mode: string) => {
+const attendanceSchema = (mode: string) => {
 	return createSchema(attendanceConfig, mode);
 }
 
-export const bankSchema = (mode: string) => {
+const bankSchema = (mode: string) => {
 	return createSchema(bankConfig, mode);
 }
 
-export const insuranceSchema = (mode: string) => {
+const insuranceSchema = (mode: string) => {
 	return createSchema(insuranceConfig, mode);
 }
 
-export const bonusSettingSchema = (mode: string) => {
+const bonusSettingSchema = (mode: string) => {
 	return createSchema(bonusSettingConfig, mode);
+}
+
+const bonusDepartmentSchema = (mode: string) => {
+    return createSchema(bonusDepartmentConfig, mode);
+}
+
+const bonusPositionSchema = (mode: string) => {
+    return createSchema(bonusPositionConfig, mode);
+}
+
+const bonusPositionTypeSchema = (mode: string) => {
+    return createSchema(bonusPositionTypeConfig, mode);
+}
+
+const bonusSenioritySchema = (mode: string) => {
+    return createSchema(bonusSeniorityConfig, mode);
 }
 
 export function getSchema(table_name: string) {
@@ -46,6 +56,14 @@ export function getSchema(table_name: string) {
 			return insuranceSchema;
         case TABLE_NAMES.TABLE_BONUS_SETTING:
             return bonusSettingSchema;
+        case TABLE_NAMES.TABLE_BONUS_DEPARTMENT:
+            return bonusDepartmentSchema;
+        case TABLE_NAMES.TABLE_BONUS_POSITION:
+            return bonusPositionSchema;
+        case TABLE_NAMES.TABLE_BONUS_POSITION_TYPE:
+            return bonusPositionTypeSchema;
+        case TABLE_NAMES.TABLE_BONUS_SENIORITY:
+            return bonusSenioritySchema;
         default:
             return null
     }
