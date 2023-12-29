@@ -216,3 +216,38 @@ export const createTrustMoneyAPI = TrustMoney;
 export const createTrustMoneyService = TrustMoney;
 export const updateTrustMoneyAPI = TrustMoney.merge(Id).partial();
 export const updateTrustMoneyService = TrustMoney.merge(Id).partial();
+
+const EmployeeAccount = z.object({
+	emp_no: z.string(),
+	bank_account: z.string(),
+	ratio: z.number(),
+});
+
+export const createEmployeeAccountAPI = EmployeeAccount;
+export const createEmployeeAccountService = EmployeeAccount;
+export const updateEmployeeAccountAPI = EmployeeAccount.merge(Id).partial();
+export const updateEmployeeAccountService = EmployeeAccount.merge(Id).partial();
+
+const EmployeePayment = z.object({
+	emp_no: z.string(),
+	base_salary: z.number(),
+	supervisor_bonus: z.number(),
+	job_bonus: z.number(),
+	subsidy_bonus: z.number(),
+	shift_bonus: z.number(),
+	professional_cert_bonus: z.number(),
+	labor_retirement_self: z.number(),
+	emp_trust_reserve: z.number(),
+	org_trust_reserve: z.number(),
+	emp_special_trust_incent: z.number(),
+	org_special_trust_incent: z.number(),
+	l_i: z.number(),
+	h_i: z.number(),
+	labor_retirement: z.number(),
+	occupational_injury: z.number(),
+});
+
+export const createEmployeePaymentAPI = EmployeePayment.merge(DateAPI);
+export const createEmployeePaymentService = EmployeePayment.merge(DateService);
+export const updateEmployeePaymentAPI = EmployeePayment.merge(Id).merge(DateAPI).partial();
+export const updateEmployeePaymentService = EmployeePayment.merge(Id).merge(DateService).partial();

@@ -31,7 +31,7 @@ export class EmployeePayment extends Model<
     declare labor_retirement: number;
     declare occupational_injury: number;
     declare start_date: string;
-    declare end_date: string;
+    declare end_date: string | null;
 
 	// timestamps!
 	// createdAt can be undefined during creation
