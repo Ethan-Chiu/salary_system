@@ -1,24 +1,45 @@
 import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import {
 	isString,
 	isNumber,
 	isDate,
 } from "~/pages/develop_parameters/utils/checkType";
-import { DataTable } from "../components/data_table";
-import { AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
 import {
-	c_CreateDateStr,
-	c_EndDateStr,
-	c_StartDateStr,
-} from "../constant";
+	DropdownMenu,
+	DropdownMenuCheckboxItem,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+import { Input } from "~/components/ui/input";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogClose,
+} from "~/components/ui/dialog";
+import { DataTable } from "../components/data_table";
+import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
+import { useRef, useState } from "react";
+import { z } from "zod";
+import { Label } from "~/components/ui/label";
+import { DropdownCopyAction } from "../components/dropdown_copy_action";
+import { AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
 
-export type RowItem = {
-	name: string;
-	value: number | string | Date;
-};
+const rowSchema = z.object({
+	name: z.string(),
+	value: z.union([z.number(), z.string(), z.date()]),
+});
+type RowItem = z.infer<typeof rowSchema>;
+
 type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
@@ -39,7 +60,9 @@ const columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="pl-4 w-[400px] lowercase">{row.getValue("name")}</div>
+			<div className="w-[400px] pl-4 lowercase">
+				{row.getValue("name")}
+			</div>
 		),
 	}),
 	columnHelper.accessor("value", {
@@ -56,7 +79,20 @@ const columns = [
 						(value as Date).toISOString().split("T")[0] ?? "";
 				} else formatted = "";
 			}
-			return <div className="flex justify-center"><div className="w-80 text-center font-medium">{formatted}</div></div>;
+			return (
+				<div className="flex justify-center">
+					<div className="w-80 text-center font-medium">
+						{formatted}
+					</div>
+				</div>
+			);
+		},
+	}),
+	columnHelper.display({
+		id: "actions",
+		enableHiding: false,
+		cell: ({ row }) => {
+			return <CompDropdown row={row.original} />;
 		},
 	}),
 ];
@@ -168,4 +204,150 @@ export function AttendanceTable({ index, globalFilter }: any) {
 	// useMemo(() => {
 	// 	table.getColumn(filter_key)?.setFilterValue(globalFilter);
 	// }, [globalFilter]);
+}
+
+function CompDropdown({ row }: { row: RowItem }) {
+	const [showDialog, setShowDialog] = useState(false);
+
+	return (
+		<>
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<Button variant="ghost" className="h-8 w-8 p-0">
+						<span className="sr-only">Open menu</span>
+						<MoreHorizontal className="h-4 w-4" />
+					</Button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent align="end">
+					<DropdownMenuLabel>Actions</DropdownMenuLabel>
+					<DropdownMenuSeparator />
+
+					<DropdownCopyAction value={row.value.toString()} />
+					<DropdownMenuItem
+						onClick={() => {
+							setShowDialog(true);
+						}}
+					>
+						Update
+					</DropdownMenuItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
+
+			<CreateDialog
+				row={row}
+				showDialog={showDialog}
+				onOpenChange={(open: boolean) => {
+					setShowDialog(open);
+				}}
+				updateFunction={()=>{}}
+			/>
+		</>
+	);
+}
+
+function CreateDialog({
+	row,
+	showDialog,
+	onOpenChange,
+	schema,
+	updateFunction,
+}: {
+	row: RowItem;
+	showDialog: boolean;
+	onOpenChange: (open: boolean) => void;
+	schema?: any;
+	updateFunction: (d: any) => void;
+}) {
+	const inputRef = useRef<HTMLInputElement>(null);
+
+	if (!schema)
+		schema = isDate(row.value)
+			? z.date()
+			: isString(row.value)
+			? z.string().max(10)
+			: z.number().min(0);
+	const [isValid, setIsValid] = useState(schema.safeParse(row.value).success);
+	const updateIsValid = (x: string | number | Date) => {
+		setIsValid(schema.safeParse(x).success);
+
+	};
+	return (
+		<Dialog open={showDialog} onOpenChange={onOpenChange}>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>Create the value</DialogTitle>
+				</DialogHeader>
+				<div className="grid gap-4 py-4">
+					<div className="grid grid-cols-4 items-center gap-4">
+						<Label htmlFor="value" className="text-right">
+							{row.name}
+						</Label>
+						{isNumber(row.value) ? (
+							<Input
+								ref={inputRef}
+								id="value"
+								defaultValue={row.value.toString()}
+								type="number"
+								className="col-span-3"
+								onChange={() =>
+									updateIsValid(
+										parseFloat(
+											inputRef.current?.value ?? "0"
+										)
+									)
+								}
+							/>
+						) : isString(row.value) ? (
+							<Input
+								ref={inputRef}
+								id="value"
+								defaultValue={row.value as string}
+								type={"value"}
+								className="col-span-3"
+								onChange={() => {
+									updateIsValid(
+										inputRef.current?.value ?? ""
+									);
+								}}
+							/>
+						) : (
+							<Input
+								ref={inputRef}
+								id="value"
+								defaultValue={
+									row.value
+										? (row.value as Date)
+												.toISOString()
+												.split("T")[0]
+										: ""
+								}
+								type={"date"}
+								className="col-span-3"
+							/>
+						)}
+					</div>
+
+					{!isValid && (
+						<Label
+							htmlFor="value"
+							className="text-justify; text-red-500"
+						>
+							The input value is invalid
+						</Label>
+					)}
+				</div>
+				<DialogFooter>
+					<DialogClose asChild>
+						<Button
+							disabled={!isValid}
+							type="submit"
+							onClick={() => {}}
+						>
+							Save changes
+						</Button>
+					</DialogClose>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
+	);
 }
