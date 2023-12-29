@@ -22,6 +22,7 @@ import { BonusPositionTypeTable } from "./tables/bonus_position_type_table";
 import { BonusSeniorityTable } from "./tables/bonus_seniority_table";
 import { Input } from "~/components/ui/input";
 import { ArrowUpDown } from "lucide-react";
+import { MultiSelect } from "./components/multi_select";
 
 enum FilterMode {
 	Search,
@@ -41,8 +42,10 @@ type TableComponent = {
 const PageParameters: NextPageWithLayout = () => {
 	const [filterMode, setFilterMode] = useState<FilterMode>(FilterMode.Search);
 	const [filterTableDisable, setFilterTableDisable] = useState(false);
-	const [globalFilter, setGlobalFilter] = useState("");
+
+	const [globalFilterInput, setGlobalFilterInput] = useState("");
 	const [filterInput, setFilterInput] = useState("");
+	const [selected, setSelected] = useState<string[]>([]);
 
 	const tables: TableComponent[] = [
 		{
@@ -86,8 +89,8 @@ const PageParameters: NextPageWithLayout = () => {
 
 			{/* top search bar */}
 			<div className="grid grid-cols-7 items-center gap-4 py-4">
-				{filterMode === FilterMode.Search ? (
-					<div className="col-span-4 text-center">
+				<div className="col-span-4 text-center">
+					{filterMode === FilterMode.Search ? (
 						<Input
 							className="max-w-sm"
 							placeholder="Filter tables"
@@ -96,10 +99,15 @@ const PageParameters: NextPageWithLayout = () => {
 								setFilterInput(event.target.value);
 							}}
 						/>
-					</div>
-				) : (
-					<></>
-				)}
+					) : (
+						<MultiSelect
+							options={tables.map((t) => {
+								return { label: t.tag, value: t.tag };
+							})}
+							onChange={setSelected}
+						/>
+					)}
+				</div>
 				<ArrowUpDown
 					className="ml-2 h-5 w-5 cursor-pointer hover:text-gray-500"
 					onClick={() => {
@@ -115,7 +123,7 @@ const PageParameters: NextPageWithLayout = () => {
 						placeholder="Find Parameter"
 						onChange={(e) => {
 							setFilterTableDisable(e.target.value !== "");
-							setGlobalFilter(e.target.value);
+							setGlobalFilterInput(e.target.value);
 						}}
 					/>
 				</div>
@@ -123,23 +131,31 @@ const PageParameters: NextPageWithLayout = () => {
 
 			<Accordion type="single" collapsible className="w-full">
 				{tables.map((table, index) => {
-					if (table.tag.includes(filterInput)) {
+					if (
+						(filterMode === FilterMode.Search &&
+							table.tag.includes(filterInput)) ||
+						(filterMode === FilterMode.Select &&
+							selected.includes(table.tag))
+					) {
 						return (
-							<AccordionItem value={"item-" + index.toString()}>
+							<AccordionItem
+								key={table.tag}
+								value={"item-" + index.toString()}
+							>
 								<AccordionTrigger>{table.tag}</AccordionTrigger>
 								<AccordionContent>
 									{React.cloneElement<TableComponentProps>(
 										table.component,
 										{
 											index: index,
-											globalFilter: globalFilter,
+											globalFilter: globalFilterInput,
 										}
 									)}
 								</AccordionContent>
 							</AccordionItem>
 						);
 					}
-					return <></>;
+					return <div key={table.tag}></div>;
 				})}
 			</Accordion>
 		</>
