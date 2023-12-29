@@ -8,45 +8,46 @@ import Template from "../template";
 import { Button } from "~/components/ui/button";
 import { Translate } from "~/pages/develop_parameters/utils/translation";
 
-const PageTitle = "Bank Setting";
+const PageTitle = "Level Setting";
 
-const Bank: NextPageWithLayout = () => {
-	const getAllBankSetting =
-		api.parameters.getAllBankSetting.useQuery();
-	const updateBankSetting =
-		api.parameters.updateBankSetting.useMutation({
+const Level: NextPageWithLayout = () => {
+	const getAllLevel =
+		api.parameters.getAllLevel.useQuery();
+	const updateLevel =
+		api.parameters.updateLevel.useMutation({
 			onSuccess: () => {
-				getAllBankSetting.refetch();
+				getAllLevel.refetch();
 			},
 		});
-	const createBankSetting =
-		api.parameters.createBankSetting.useMutation({
+	const createLevel =
+		api.parameters.createLevel.useMutation({
 			onSuccess: () => {
-				getAllBankSetting.refetch();
+				getAllLevel.refetch();
 			},
 		});
-	const deleteBankSetting =
-		api.parameters.deleteBankSetting.useMutation({
+	const deleteLevel =
+		api.parameters.deleteLevel.useMutation({
 			onSuccess: () => {
-				getAllBankSetting.refetch();
+				getAllLevel.refetch();
 			},
 		});
 
 	return (
 		<div className="flex min-h-full flex-col">
+			<div className="" />
 			<Template
 				headerTitle={PageTitle}
-				table_name={TABLE_NAMES.TABLE_BANK_SETTING}
-				queryFunction={getAllBankSetting}
-				createFunction={createBankSetting}
-				updateFunction={updateBankSetting}
-				deleteFunction={deleteBankSetting}
+				table_name={TABLE_NAMES.TABLE_LEVEL}
+				queryFunction={getAllLevel}
+				updateFunction={updateLevel}
+				createFunction={createLevel}
+				deleteFunction={deleteLevel}
 			/>
 		</div>
 	);
 };
 
-Bank.getLayout = function getLayout(page: React.ReactElement) {
+Level.getLayout = function getLayout(page: React.ReactElement) {
 	return (
 		<RootLayout>
 			<PerpageLayoutNav pageTitle={PageTitle}>{page}</PerpageLayoutNav>
@@ -54,4 +55,4 @@ Bank.getLayout = function getLayout(page: React.ReactElement) {
 	);
 };
 
-export default Bank;
+export default Level;

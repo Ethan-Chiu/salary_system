@@ -83,6 +83,8 @@
 		"eslint": "^8.40.0",
 		"eslint-config-next": "^13.4.2",
 		"jest": "^29.7.0",
+		"js-yaml": "^4.1.0",
+		"lint-staged": "^15.2.0",
 		"oracledb": "^6.2.0",
 		"postcss": "^8.4.27",
 		"prettier": "^2.8.8",

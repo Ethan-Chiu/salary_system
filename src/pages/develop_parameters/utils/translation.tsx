@@ -110,4 +110,10 @@ export function Translate(word: string) {
 	// button
 	if (word === "next_step") return "下一步";
 	if (word === "previous_step") return "上一步";
+
+	if (word === "previous_page") return "回上頁";
+	
+	if (word === "create") return "建立";
+	if (word === "update") return "更新";
+	if (word === "modify") return "修改";
 }

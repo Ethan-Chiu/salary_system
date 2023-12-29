@@ -11,13 +11,13 @@ import React, { type PropsWithChildren } from "react";
 
 export type CardFunctionData = {
 	title: string;
-	iconPath: string;
+	iconPath?: string;
 	subscript: string;
 };
 
 interface CardFunctionProps extends React.HTMLAttributes<HTMLDivElement> {
 	title: string;
-	iconPath: string;
+	iconPath?: string;
 	subscript: string;
 }
 

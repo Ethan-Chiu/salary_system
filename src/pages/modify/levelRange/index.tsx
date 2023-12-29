@@ -8,45 +8,46 @@ import Template from "../template";
 import { Button } from "~/components/ui/button";
 import { Translate } from "~/pages/develop_parameters/utils/translation";
 
-const PageTitle = "Bank Setting";
+const PageTitle = "Level Range Setting";
 
-const Bank: NextPageWithLayout = () => {
-	const getAllBankSetting =
-		api.parameters.getAllBankSetting.useQuery();
-	const updateBankSetting =
-		api.parameters.updateBankSetting.useMutation({
+const LevelRange: NextPageWithLayout = () => {
+	const getAllLevelRange =
+		api.parameters.getAllLevelRange.useQuery();
+	const updateLevelRange =
+		api.parameters.updateLevelRange.useMutation({
 			onSuccess: () => {
-				getAllBankSetting.refetch();
+				getAllLevelRange.refetch();
 			},
 		});
-	const createBankSetting =
-		api.parameters.createBankSetting.useMutation({
+	const createLevelRange =
+		api.parameters.createLevelRange.useMutation({
 			onSuccess: () => {
-				getAllBankSetting.refetch();
+				getAllLevelRange.refetch();
 			},
 		});
-	const deleteBankSetting =
-		api.parameters.deleteBankSetting.useMutation({
+	const deleteLevelRange =
+		api.parameters.deleteLevelRange.useMutation({
 			onSuccess: () => {
-				getAllBankSetting.refetch();
+				getAllLevelRange.refetch();
 			},
 		});
 
 	return (
 		<div className="flex min-h-full flex-col">
+			<div className="" />
 			<Template
 				headerTitle={PageTitle}
-				table_name={TABLE_NAMES.TABLE_BANK_SETTING}
-				queryFunction={getAllBankSetting}
-				createFunction={createBankSetting}
-				updateFunction={updateBankSetting}
-				deleteFunction={deleteBankSetting}
+				table_name={TABLE_NAMES.TABLE_LEVEL_RANGE}
+				queryFunction={getAllLevelRange}
+				updateFunction={updateLevelRange}
+				createFunction={createLevelRange}
+				deleteFunction={deleteLevelRange}
 			/>
 		</div>
 	);
 };
 
-Bank.getLayout = function getLayout(page: React.ReactElement) {
+LevelRange.getLayout = function getLayout(page: React.ReactElement) {
 	return (
 		<RootLayout>
 			<PerpageLayoutNav pageTitle={PageTitle}>{page}</PerpageLayoutNav>
@@ -54,4 +55,4 @@ Bank.getLayout = function getLayout(page: React.ReactElement) {
 	);
 };
 
-export default Bank;
+export default LevelRange;

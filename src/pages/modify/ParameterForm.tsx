@@ -36,7 +36,6 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 
 const simpleTable = (d: any) => {
-	console.log(d);
 	return (
 		<Table>
 			<TableHeader>
@@ -69,7 +68,7 @@ const simpleTable = (d: any) => {
 	);
 };
 
-export function SingleParameterSettings({
+export function ParameterForm({
 	formSchema,
 	fieldConfig,
 	original_data,
@@ -87,7 +86,7 @@ export function SingleParameterSettings({
 		getDefaults(formSchema)
 	);
 	const [openDialog, setOpenDialog] = useState(false);
-	
+
 	function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
 		return Object.fromEntries(
 			Object.entries(schema.shape).map(([key, value]) => {
@@ -100,19 +99,19 @@ export function SingleParameterSettings({
 
 	function submitForm() {
 		const parsedValues = formSchema.safeParse(values);
-		console.log(
-			{
+		if (mode === "create") {
+			createFunction({
+				...parsedValues.data,
+			});
+		}
+		else {
+			updateFunction({
+				...parsedValues.data,
 				id: original_data.id,
-				...parsedValues,
-			}
-		);
-		updateFunction({
-			...parsedValues,
-			id: original_data.id,
-		});
+			});
+		}
 		returnPage(0);
 	}
-
 
 	const handleSubmit = () => {
 		// Trigger button click programmatically
@@ -127,16 +126,18 @@ export function SingleParameterSettings({
 
 	return (
 		<AutoForm
+			_defaultValues={original_data?(original_data):{}}
 			values={values}
 			onSubmit={(data) => {
-				console.log(data);
+
 			}}
 			onValuesChange={setValues}
 			formSchema={formSchema}
 			fieldConfig={fieldConfig}
 		>
-			
-			<Button className="hidden" ref={buttonRef}>Submit</Button>
+			<Button className="hidden" ref={buttonRef}>
+				Submit
+			</Button>
 
 			<div className="grid grid-cols-6 gap-3">
 				<div>
@@ -150,7 +151,7 @@ export function SingleParameterSettings({
 						Cancel
 					</Button>
 				</div>
-				<Button
+				{mode==="update" && <Button
 					className="col-start-5"
 					variant={"destructive"}
 					onClick={() => {
@@ -161,37 +162,32 @@ export function SingleParameterSettings({
 					disabled={disabled}
 				>
 					Delete
-				</Button>
+				</Button>}
 				<p
 					onClick={() => {
-						console.log(handleSubmit());
+						console.log(values);
+						handleSubmit();
 						// setOpenDialog(true);
 					}}
-					className="text-center mb-2 me-2 cursor-pointer rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+					className="col-start-6 mb-2 me-2 cursor-pointer rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
 				>
-					Update
+					{mode==="create" && "Create"}
+					{mode==="update" && "Update"}
 				</p>
 				<Dialog open={openDialog} onOpenChange={setOpenDialog}>
-					{/* <DialogTrigger asChild>
-						<div className="text-center">
-							<p
-								onClick={() => {}}
-								className="mb-2 me-2 cursor-pointer rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-							>
-								Update
-							</p>
-						</div>
-					</DialogTrigger> */}
 					<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
 						<DialogHeader>
 							<DialogTitle>Are you sure to update?</DialogTitle>
-							<DialogDescription>
-								
-							</DialogDescription>
+							<DialogDescription></DialogDescription>
 						</DialogHeader>
 						{simpleTable(values)}
 						<DialogFooter>
-							<Button onClick={() => {submitForm()}} type="submit">
+							<Button
+								onClick={() => {
+									submitForm();
+								}}
+								type="submit"
+							>
 								Save changes
 							</Button>
 							<DialogClose />

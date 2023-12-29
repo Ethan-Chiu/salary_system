@@ -31,6 +31,9 @@ import { Translate } from "~/pages/develop_parameters/utils/translation";
 import ExcelJS from "exceljs"
 
 import { motion } from "framer-motion";
+import ExcelViewer from "./ExcelViewer";
+
+
 
 
 
@@ -41,16 +44,17 @@ const MonthSalary: NextPageWithLayout = () => {
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const pageList = [<DataPage />, <ParameterPage />, <ExportPage />];
 	return (
-		<div className="h-full">
+		<div className="flex min-h-full flex-col">
 			<Header title="functions" showOptions className="mb-4" />
 			<ProgressBar
 				labels={progressBarLabels}
 				selectedIndex={selectedIndex}
 			/>
-			<span>&nbsp;</span>
+			<br />
 			{pageList[selectedIndex]}
-			<span>&nbsp;</span>
-			<div className="flex justify-between">
+			<br />
+			<div className="grow" />
+			<div className="flex justify-between ">
 				<Button
 					onClick={() => setSelectedIndex(selectedIndex - 1)}
 					disabled={selectedIndex === 0}
@@ -124,7 +128,7 @@ function DataPage() {
 					</SelectContent>
 				</Select>
 				<br />
-				<Tabs defaultValue={TabOptions[0]} className="h-full w-full">
+				<Tabs defaultValue={TabOptions[0]} className="w-full">
 					<TabsList className={"grid w-full grid-cols-5"}>
 						{TabOptions.map((option) => {
 							return (
@@ -165,57 +169,129 @@ function ParameterPage() {
 }
 
 function ExportPage() {
+
+	const getExcelA = api.function.getExcelA.useQuery();
+
+	function splitKeys(datas: any) {
+		let columns = Object.keys(datas[0]);
+		let rows = datas.map((data: any, index: number) => {
+			return Object.keys(data).map((key: string) => {
+				return data[key];
+			})
+		})
+		return [columns, rows];
+	}
+
+	function getExcelData(Alldatas: any) {
+		let excelData: any = [];
+		Alldatas.map((sheetDatas: any) => {
+			let name: string = sheetDatas.name;
+			try {
+				let datas = sheetDatas.data;
+				let columns = Object.keys(datas[0]).map((key: string) => Translate(key));
+				let rows = datas.map((data: any, index: number) => {
+					return Object.keys(data).map((key: string) => {
+						return data[key];
+					})
+				})
+				rows.unshift(columns);
+				excelData.push({sheetName: name, data: rows});
+			}
+			catch {
+				excelData.push({sheetName: name, data: [["psedu data"], [123]]});
+			}
+			
+		})
+		return excelData;
+	}
+
+
 	const function_data: CardFunctionData[] = [
 		{
-			title: "Download Excel",
+			title: "Download Excel A",
 			iconPath: "./icons/coins.svg",
-			subscript: "下載Excel",
+			subscript: "下載 Excel A",
 		}
 	];
-	const handleExportExcel = async () => {
+
+
+	const handleExportExcel = async (datas: any, filename: string) => {
 		const workbook = new ExcelJS.Workbook();
-		const worksheet = workbook.addWorksheet('Sheet 1');
-		// Add data to the worksheet
-		worksheet.addRow(['Name', 'Age', 'Country']);
-		worksheet.addRow(['John Doe', 25, 'USA']);
-		worksheet.addRow(['Jane Smith', 30, 'Canada']);
-		worksheet.addRow(['Bob Johnson', 28, 'UK']);
+		// const worksheet = workbook.addWorksheet('Sheet 1');
+		// // Add data to the worksheet
+		// worksheet.addRow(['Name', 'Age', 'Country']);
+		// worksheet.addRow(['John Doe', 25, 'USA']);
+		// worksheet.addRow(['Jane Smith', 30, 'Canada']);
+		// worksheet.addRow(['Bob Johnson', 28, 'UK']);
+
+		if(datas) {
+			datas.map((sheet: any, index: number) => {
+				console.log(sheet.data)
+				const worksheet = workbook.addWorksheet(sheet.name);
+				try {
+					console.log(splitKeys(sheet.data));
+					let [columns, rows] = splitKeys(sheet.data)
+					worksheet.addRow(columns);
+					rows.map((row: any, i: number) => {
+						worksheet.addRow(row);
+					})
+					// const cell = worksheet.getCell('A1');
+					// 	cell.fill = {
+					// 	type: 'pattern',
+					// 	pattern: 'solid',
+					// 	fgColor: { argb: 'FFFF0000' } // 背景颜色为红色
+					// };
+				}
+				catch {
+
+				}
+			})
+		}
+
 		// Save the workbook to a file
 		const buffer = await workbook.xlsx.writeBuffer();
 		const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement('a');
 		a.href = url;
-		a.download = 'exported_data.xlsx';
+		a.download = filename;
 		a.click();
 		URL.revokeObjectURL(url);
 	};
 	return (
-		<motion.div
-			className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
-			variants={container}
-			initial="hidden"
-			animate="visible"
-		>
-			{function_data.map((f_data: CardFunctionData) => (
-				<motion.div
-					key={f_data.title}
-					variants={stagger}
-					className="cursor-pointer"
-					onClick={handleExportExcel}
-				>
-					<CardFunction
-						title={f_data.title}
-						iconPath={f_data.iconPath}
-						subscript={f_data.subscript}
-					>
-						<CardFunctionIcon className="text-foreground">
-							<IconCoins />
-						</CardFunctionIcon>
-					</CardFunction>
-				</motion.div>
-			))}
-		</motion.div>
+		<>
+		{getExcelA.isFetched?
+			<ExcelViewer sheets={getExcelData(getExcelA.data)}/>:
+			<></>
+		}
+		
+		</>
+		// <motion.div
+		// 	className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+		// 	variants={container}
+		// 	initial="hidden"
+		// 	animate="visible"
+		// >
+		// 	{function_data.map((f_data: CardFunctionData) => (
+		// 		<motion.div
+		// 			key={f_data.title}
+		// 			variants={stagger}
+		// 			className="cursor-pointer"
+		// 			onClick={() => handleExportExcel(getExcelA.data, 'exported_data.xlsx')}
+		// 		>
+		// 			{getExcelA?<CardFunction
+		// 				title={f_data.title}
+		// 				iconPath={f_data.iconPath}
+		// 				subscript={f_data.subscript}
+		// 			>
+		// 				<CardFunctionIcon className="text-foreground">
+		// 					<IconCoins />
+		// 				</CardFunctionIcon>
+		// 			</CardFunction>:<></>}
+					
+		// 		</motion.div>
+		// 	))}
+		// </motion.div>
 	);
 }
 

@@ -1,13 +1,10 @@
 import { Header } from "~/components/header";
-import * as TABLE_NAMES from "../table_names";
 import { useState } from "react";
 import * as LucideIcons from "lucide-react";
-import LongHorizontalTable from "./LongHorizontalTable";
 import { Button } from "~/components/ui/button";
-import { SingleParameterSettings } from "./ParameterForm";
-import { attendanceConfig, attendanceSchema } from "./Schemas/attendanceSchema";
+import { ParameterForm } from "./ParameterForm";
 import Link from "next/link";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import FadeLoader from "react-spinners/FadeLoader";
 
 import {
@@ -19,83 +16,135 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-  } from "~/components/ui/table"
+} from "~/components/ui/table";
 import { Translate } from "../develop_parameters/utils/translation";
-
-
+import { getSchema } from "./Schemas/schemas";
 
 const Template = (props: any) => {
-    const router = useRouter();
+	const router = useRouter();
 
-    const headerTitle = props.headerTitle
+	const headerTitle = props.headerTitle;
 
-    const queryFunction = props.queryFunction;
-    const updateFunction = props.updateFunction;
-    const deleteFunction = props.deleteFunction;
+	const queryFunction = props.queryFunction;
+	const updateFunction = props.updateFunction;
+	const deleteFunction = props.deleteFunction;
+	const createFunction = props.createFunction;
 
 	const [createForm, setCreateForm] = useState(0);
 
-	function SelectData() {
-		if (queryFunction.isFetched)
-			return !createForm ? (
-				<>
-					{/* <p style={{ fontSize: "20px", fontWeight: "bold" }}>
-						{"All Data"}
-					</p> */}
-					{(queryFunction.data)?
-						<Table>
+	const ViewAllDatas = () => {
+		return (
+			<>
+				{queryFunction.data ? (
+					<Table>
 						<TableHeader>
-						  <TableRow>
-						  	<TableHead className="whitespace-nowrap text-center">{""}</TableHead>	
-						  	{Object.keys(queryFunction.data[0]).map((key: string) => {
-								return <TableHead className="whitespace-nowrap text-center">{Translate(key)}</TableHead>	
-							})}
-						  </TableRow>
+							<TableRow>
+							<TableHead className="whitespace-nowrap text-center">{""}</TableHead>
+								{queryFunction.data[0] &&
+									Object.keys(queryFunction.data[0]).map(
+										(key: string) => {
+											console.log(queryFunction.data);
+											return (
+												<TableHead className="whitespace-nowrap text-center">
+													{Translate(key)} 
+												</TableHead>
+											);
+										}
+									)}
+								{!queryFunction.data[0] && (
+									<TableCell
+										colSpan={5}
+										className="h-24 text-center"
+									>
+										No results.
+									</TableCell>
+								)}
+							</TableRow>
 						</TableHeader>
 						<TableBody>
-						  {queryFunction.data?.map((data: any, index: number) => {
-							return <TableRow key={data.id} >
-								<TableCell className="items-center">
-									<LucideIcons.PenSquare size={18} className="cursor-pointer" onClick={() => {setCreateForm(index+1)}}/>
-								</TableCell>
-								{Object.keys(data).map(key => {
-									return <TableCell className="font-medium text-center">{data[key]}</TableCell>
-								})}
-							</TableRow>
-						  })}
+							{queryFunction.data?.map(
+								(data: any, index: number) => {
+									return (
+										<TableRow key={data.id}>
+											<TableCell className="items-center">
+												<LucideIcons.PenSquare
+													size={18}
+													className="cursor-pointer"
+													onClick={() => {
+														setCreateForm(
+															index + 1
+														);
+													}}
+												/>
+											</TableCell>
+											{Object.keys(data).map((key) => {
+												return (
+													<TableCell className="text-center font-medium">
+														{data[key]}
+													</TableCell>
+												);
+											})}
+										</TableRow>
+									);
+								}
+							)}
 						</TableBody>
-						{/* <TableFooter>
-						  <TableRow>
-							<TableCell colSpan={3}>Total</TableCell>
-							<TableCell className="text-right">$2,500.00</TableCell>
-						  </TableRow>
-						</TableFooter> */}
-					  </Table>:
+					</Table>
+				) : (
 					<></>
-					}
+				)}
+			</>
+		);
+	};
+
+	const UpdateData = () => {
+		return (
+			<ParameterForm
+				mode={"update"}
+				formSchema={getSchema(props.table_name)!("update")}
+				original_data={queryFunction.data![createForm - 1]}
+				updateFunction={(d: any) => {
+					updateFunction
+						? updateFunction.mutate(d)
+						: console.log("update function not exist");
+				}}
+				deleteFunction={(d: any) => {
+					deleteFunction
+						? deleteFunction.mutate(d)
+						: console.log("delete function not exist");
+				}}
+				returnPage={(n: number) => {
+					setCreateForm(n);
+				}}
+			/>
+		);
+	};
+
+	const CreateData = () => {
+		return (
+			<ParameterForm
+				mode={"create"}
+				formSchema={getSchema(props.table_name)!("create")}
+				createFunction={(d: any) => {
+					createFunction
+						? createFunction.mutate(d)
+						: console.log("create function not exist");
+				}}
+				returnPage={(n: number) => {
+					setCreateForm(n);
+				}}
+			/>
+		);
+	};
+
+	function SelectData() {
+		if (queryFunction.isFetched)
+			return (
+				<>
+					{createForm === 0 && <ViewAllDatas />}
+					{createForm === -1 && <CreateData />}
+					{createForm > 0 && <UpdateData />}
 				</>
-			) : (
-				<SingleParameterSettings
-					formSchema={attendanceSchema(
-						queryFunction.data![createForm - 1]
-					)}
-					formConfig={
-						attendanceConfig(
-							queryFunction.data![createForm - 1]
-					)}
-					original_data={
-						queryFunction.data![createForm - 1]
-					}
-					updateFunction={(d: any) => {
-						updateFunction.mutate(d);
-					}}
-                    deleteFunction={(d: any) => {
-                        (deleteFunction) ? deleteFunction.mutate(d) : console.log("delete function not exist");
-                    }}
-					returnPage={(n: number) => {
-						setCreateForm(0);
-					}}
-				/>
 			);
 		return <Loader></Loader>;
 	}
@@ -103,20 +152,31 @@ const Template = (props: any) => {
 	return (
 		<>
 			<Header title={headerTitle} showOptions className="mb-4" />
-			{/* <LucideIcons.ArrowLeft
-				style={{ cursor: "pointer" }}
-				onClick={() => {
-					if(createForm)
-						setCreateForm(0);
-					else
-						router.push("/modify");
-				}}
-			/> */}
+			<div className="grid grid-cols-5">
+				<Button
+					onClick={() => {
+						if (createForm) setCreateForm(0);
+						else router.push("/modify");
+					}}
+					className={createForm ? "hidden" : ""}
+					disabled={false}
+					variant={"ghost"}
+				>
+					{Translate("previous_page")}
+				</Button>
+				<Button
+					onClick={() => {
+						setCreateForm(-1);
+					}}
+					className={createForm !== 0 ? "hidden" : "col-start-5"}
+					disabled={false}
+					variant={"ghost"}
+				>
+					{Translate("create")}
+				</Button>
+			</div>
 			<br />
 			<SelectData />
-			<br />
-			<br />
-			<br />
 		</>
 	);
 };

@@ -3,10 +3,12 @@ import { type NextPageWithLayout } from "../../_app";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { api } from "~/utils/api";
 import * as TABLE_NAMES from "../../table_names";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import Template from "../template";
+import { Button } from "~/components/ui/button";
+import { Translate } from "~/pages/develop_parameters/utils/translation";
 
-const PageTitle = "Attendance Setting"
+const PageTitle = "Attendance Setting";
 
 const Attendance: NextPageWithLayout = () => {
 	const getAllAttendanceSetting =
@@ -17,7 +19,13 @@ const Attendance: NextPageWithLayout = () => {
 				getAllAttendanceSetting.refetch();
 			},
 		});
-	const deleteAttendanceSetting = 
+	const createAttendanceSetting =
+		api.parameters.createAttendanceSetting.useMutation({
+			onSuccess: () => {
+				getAllAttendanceSetting.refetch();
+			},
+		});
+	const deleteAttendanceSetting =
 		api.parameters.deleteAttendanceSetting.useMutation({
 			onSuccess: () => {
 				getAllAttendanceSetting.refetch();
@@ -25,22 +33,24 @@ const Attendance: NextPageWithLayout = () => {
 		});
 
 	return (
-		<Template
-			headerTitle={PageTitle}
-			table_name={TABLE_NAMES.TABLE_ATTENDANCE}
-			queryFunction={getAllAttendanceSetting}
-			updateFunction={updateAttendanceSetting}
-			deleteFunction={deleteAttendanceSetting}
-		 />
+		<div className="flex min-h-full flex-col">
+			<div className="" />
+			<Template
+				headerTitle={PageTitle}
+				table_name={TABLE_NAMES.TABLE_ATTENDANCE}
+				queryFunction={getAllAttendanceSetting}
+				updateFunction={updateAttendanceSetting}
+				createFunction={createAttendanceSetting}
+				deleteFunction={deleteAttendanceSetting}
+			/>
+		</div>
 	);
 };
 
 Attendance.getLayout = function getLayout(page: React.ReactElement) {
 	return (
 		<RootLayout>
-			<PerpageLayoutNav pageTitle={PageTitle}>
-				{page}
-			</PerpageLayoutNav>
+			<PerpageLayoutNav pageTitle={PageTitle}>{page}</PerpageLayoutNav>
 		</RootLayout>
 	);
 };

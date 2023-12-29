@@ -1,0 +1,9 @@
+{
+    "performance_level": {
+      "type": "string"
+    },
+    "multiplier": {
+      "type": "number"
+    }
+}
+  

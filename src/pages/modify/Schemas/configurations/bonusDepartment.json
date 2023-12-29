@@ -1,0 +1,9 @@
+{
+    "department": {
+      "type": "string"
+    },
+    "multiplier": {
+      "type": "number"
+    }
+}
+  

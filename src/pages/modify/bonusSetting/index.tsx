@@ -8,45 +8,46 @@ import Template from "../template";
 import { Button } from "~/components/ui/button";
 import { Translate } from "~/pages/develop_parameters/utils/translation";
 
-const PageTitle = "Bank Setting";
+const PageTitle = "Bonus Setting";
 
-const Bank: NextPageWithLayout = () => {
-	const getAllBankSetting =
-		api.parameters.getAllBankSetting.useQuery();
-	const updateBankSetting =
-		api.parameters.updateBankSetting.useMutation({
+const Bonus: NextPageWithLayout = () => {
+	const getAllBonusSetting =
+		api.parameters.getAllBonusSetting.useQuery();
+	const updateBonusSetting =
+		api.parameters.updateBonusSetting.useMutation({
 			onSuccess: () => {
-				getAllBankSetting.refetch();
+				getAllBonusSetting.refetch();
 			},
 		});
-	const createBankSetting =
-		api.parameters.createBankSetting.useMutation({
+	const createBonusSetting =
+		api.parameters.createBonusSetting.useMutation({
 			onSuccess: () => {
-				getAllBankSetting.refetch();
+				getAllBonusSetting.refetch();
 			},
 		});
-	const deleteBankSetting =
-		api.parameters.deleteBankSetting.useMutation({
+	const deleteBonusSetting =
+		api.parameters.deleteBonusSetting.useMutation({
 			onSuccess: () => {
-				getAllBankSetting.refetch();
+				getAllBonusSetting.refetch();
 			},
 		});
 
 	return (
 		<div className="flex min-h-full flex-col">
+			<div className="" />
 			<Template
 				headerTitle={PageTitle}
-				table_name={TABLE_NAMES.TABLE_BANK_SETTING}
-				queryFunction={getAllBankSetting}
-				createFunction={createBankSetting}
-				updateFunction={updateBankSetting}
-				deleteFunction={deleteBankSetting}
+				table_name={TABLE_NAMES.TABLE_BONUS_SETTING}
+				queryFunction={getAllBonusSetting}
+				updateFunction={updateBonusSetting}
+				createFunction={createBonusSetting}
+				deleteFunction={deleteBonusSetting}
 			/>
 		</div>
 	);
 };
 
-Bank.getLayout = function getLayout(page: React.ReactElement) {
+Bonus.getLayout = function getLayout(page: React.ReactElement) {
 	return (
 		<RootLayout>
 			<PerpageLayoutNav pageTitle={PageTitle}>{page}</PerpageLayoutNav>
@@ -54,4 +55,4 @@ Bank.getLayout = function getLayout(page: React.ReactElement) {
 	);
 };
 
-export default Bank;
+export default Bonus;
