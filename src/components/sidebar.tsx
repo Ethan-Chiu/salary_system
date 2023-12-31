@@ -16,6 +16,14 @@ import {
 	SlidersHorizontal,
 } from "lucide-react";
 
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "~/components/ui/tooltip";
+import { Separator } from "~/components/ui/separator";
+
 export type Playlist = (typeof playlists)[number];
 
 export const playlists = [
@@ -37,7 +45,28 @@ type NavLinkProp = {
 };
 
 function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
-	return (
+	return props.collapsed ? (
+		<TooltipProvider>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<Link
+						key={props.navLink}
+						href={props.navLink}
+						className={cn(
+							buttonVariants({ variant: "ghost" }),
+							props.currentPath === props.navLink
+								? "bg-muted hover:bg-muted"
+								: "",
+							"w-full justify-start"
+						)}
+					>
+						<props.icon className="h-4 w-4" />
+						<TooltipContent>{props.children}</TooltipContent>
+					</Link>
+				</TooltipTrigger>
+			</Tooltip>
+		</TooltipProvider>
+	) : (
 		<Link
 			key={props.navLink}
 			href={props.navLink}
@@ -50,7 +79,7 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 			)}
 		>
 			<props.icon className="h-4 w-4" />
-			{!props.collapsed && props.children}
+			<p className="ps-2">{props.children}</p>
 		</Link>
 	);
 }
@@ -96,7 +125,7 @@ export function Sidebar({ className, isCollapsed }: SidebarProp) {
 
 	return (
 		<div className={cn("pb-12", className)}>
-			<div className="space-y-4 py-4">
+			<div className="space-y-2 py-4">
 				{data?.actions && (
 					<div className={cn("py-2", !isCollapsed && "px-3")}>
 						{!isCollapsed && (
@@ -118,6 +147,7 @@ export function Sidebar({ className, isCollapsed }: SidebarProp) {
 						</div>
 					</div>
 				)}
+				<Separator />
 				<div className={cn("py-2", !isCollapsed && "px-3")}>
 					{!isCollapsed && (
 						<h2 className="mb-2 text-lg font-semibold tracking-tight">
