@@ -9,6 +9,7 @@ import {
 	c_StartDateStr,
 } from "../constant";
 import { BonusPosition } from "~/server/database/entity/SALARY/bonus_position";
+import { LoadingSpinner } from "~/components/loading";
 
 export type RowItem = {
 	position: number;
@@ -59,7 +60,7 @@ export function BonusPositionTable({ index, globalFilter }: any) {
 	const filterKey: RowItemKey = "position";
 
 	if (isLoading) {
-		return <span>Loading</span>; // TODO: Loading element with toast
+		return <LoadingSpinner />; // TODO: Loading element with toast
 	}
 
 	if (isError) {

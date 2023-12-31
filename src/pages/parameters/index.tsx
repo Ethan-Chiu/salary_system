@@ -1,16 +1,13 @@
 import { RootLayout } from "~/components/layout/root_layout";
 import { Header } from "~/components/header";
-
-import { api } from "~/utils/api";
-
 import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "~/components/ui/accordion";
+	ResizableHandle,
+	ResizablePanel,
+	ResizablePanelGroup,
+} from "~/components/ui/resizable";
+import { ScrollArea } from "~/components/ui/scroll-area";
 import { type NextPageWithLayout } from "../_app";
-import React, { useState, type ReactElement } from "react";
+import React, { useState, type ReactElement, useRef } from "react";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { AttendanceTable } from "./tables/attendance_table";
 import { BankTable } from "./tables/bank_table";
@@ -20,9 +17,8 @@ import { BonusDepartmentTable } from "./tables/bonus_department_table";
 import { BonusPositionTable } from "./tables/bonus_position_table";
 import { BonusPositionTypeTable } from "./tables/bonus_position_type_table";
 import { BonusSeniorityTable } from "./tables/bonus_seniority_table";
-import { Input } from "~/components/ui/input";
-import { ArrowUpDown } from "lucide-react";
-import { MultiSelect } from "./components/multi_select";
+import { cn } from "~/lib/utils";
+import * as LucideIcons from "lucide-react";
 
 enum FilterMode {
 	Search,
@@ -40,13 +36,6 @@ type TableComponent = {
 };
 
 const PageParameters: NextPageWithLayout = () => {
-	const [filterMode, setFilterMode] = useState<FilterMode>(FilterMode.Search);
-	const [filterTableDisable, setFilterTableDisable] = useState(false);
-
-	const [globalFilterInput, setGlobalFilterInput] = useState("");
-	const [filterInput, setFilterInput] = useState("");
-	const [selected, setSelected] = useState<string[]>([]);
-
 	const tables: TableComponent[] = [
 		{
 			tag: "請假加班",
@@ -81,84 +70,53 @@ const PageParameters: NextPageWithLayout = () => {
 			component: <BonusSeniorityTable />,
 		},
 	];
+	const [selectedTag, setSelectedTag] = useState<string>(tables[0]!.tag);
 
 	return (
-		<>
-			{/* header */}
+		<div className="flex h-screen flex-col">
 			<Header title="parameters" showOptions />
-
-			{/* top search bar */}
-			<div className="grid grid-cols-7 items-center gap-4 py-4">
-				<div className="col-span-4 text-center">
-					{filterMode === FilterMode.Search ? (
-						<Input
-							className="max-w-sm"
-							placeholder="Filter tables"
-							disabled={filterTableDisable}
-							onChange={(event) => {
-								setFilterInput(event.target.value);
-							}}
-						/>
-					) : (
-						<MultiSelect
-							options={tables.map((t) => {
-								return { label: t.tag, value: t.tag };
-							})}
-							onChange={setSelected}
-						/>
-					)}
-				</div>
-				<ArrowUpDown
-					className="ml-2 h-5 w-5 cursor-pointer hover:text-gray-500"
-					onClick={() => {
-						setFilterMode((mode) => {
-							return mode === FilterMode.Search
-								? FilterMode.Select
-								: FilterMode.Search;
-						});
-					}}
-				/>
-				<div className="col-span-2 text-center">
-					<Input
-						placeholder="Find Parameter"
-						onChange={(e) => {
-							setFilterTableDisable(e.target.value !== "");
-							setGlobalFilterInput(e.target.value);
-						}}
-					/>
-				</div>
-			</div>
-
-			<Accordion type="single" collapsible className="w-full">
-				{tables.map((table, index) => {
-					if (
-						(filterMode === FilterMode.Search &&
-							table.tag.includes(filterInput)) ||
-						(filterMode === FilterMode.Select &&
-							selected.includes(table.tag))
-					) {
-						return (
-							<AccordionItem
-								key={table.tag}
-								value={"item-" + index.toString()}
-							>
-								<AccordionTrigger>{table.tag}</AccordionTrigger>
-								<AccordionContent>
-									{React.cloneElement<TableComponentProps>(
-										table.component,
-										{
-											index: index,
-											globalFilter: globalFilterInput,
+			<ResizablePanelGroup direction="horizontal" className="grow">
+				<ResizablePanel defaultSize={15}>
+					<ScrollArea className="h-full">
+						<>
+							{tables.map((table) => (
+								<>
+									<div
+										key={table.tag}
+										className={cn(
+											"m-1 flex rounded-md border p-1 hover:bg-muted",
+											table.tag === selectedTag &&
+												"bg-muted"
+										)}
+										onClick={() =>
+											setSelectedTag(table.tag)
 										}
-									)}
-								</AccordionContent>
-							</AccordionItem>
-						);
-					}
-					return <div key={table.tag}></div>;
-				})}
-			</Accordion>
-		</>
+									>
+										<LucideIcons.PenSquare
+											size={18}
+											className="mr-2 cursor-pointer"
+										/>
+										<div className="m-1">{table.tag}</div>
+									</div>
+								</>
+							))}
+						</>
+					</ScrollArea>
+				</ResizablePanel>
+				<ResizableHandle />
+				<ResizablePanel>
+					<ScrollArea className="h-full">
+						<div className="m-1">
+							{
+								tables.filter(
+									(table) => table.tag === selectedTag
+								)[0]!.component
+							}
+						</div>
+					</ScrollArea>
+				</ResizablePanel>
+			</ResizablePanelGroup>
+		</div>
 	);
 };
 
