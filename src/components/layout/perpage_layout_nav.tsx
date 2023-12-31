@@ -75,7 +75,7 @@ export const PerpageLayoutNav = (
 								"transition-all duration-300 ease-in-out"
 						)}
 					>
-							<div className="h-full px-4 py-6 lg:px-8">
+							<div className="h-full px-4 pt-6 lg:px-8">
 								<div className="h-full w-full">
 									{props.children}
 								</div>

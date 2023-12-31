@@ -70,35 +70,31 @@ const PageParameters: NextPageWithLayout = () => {
 			component: <BonusSeniorityTable />,
 		},
 	];
+
 	const [selectedTag, setSelectedTag] = useState<string>(tables[0]!.tag);
 
 	return (
 		<div className="flex h-screen flex-col">
 			<Header title="parameters" showOptions />
 			<ResizablePanelGroup direction="horizontal" className="grow">
-				<ResizablePanel defaultSize={15}>
+				<ResizablePanel defaultSize={15} minSize={10}>
 					<ScrollArea className="h-full">
 						<>
 							{tables.map((table) => (
-								<>
-									<div
-										key={table.tag}
-										className={cn(
-											"m-1 flex rounded-md border p-1 hover:bg-muted",
-											table.tag === selectedTag &&
-												"bg-muted"
-										)}
-										onClick={() =>
-											setSelectedTag(table.tag)
-										}
-									>
-										<LucideIcons.PenSquare
-											size={18}
-											className="mr-2 cursor-pointer"
-										/>
-										<div className="m-1">{table.tag}</div>
-									</div>
-								</>
+								<div
+									key={table.tag}
+									className={cn(
+										"m-1 flex rounded-md border p-1 hover:bg-muted",
+										table.tag === selectedTag && "bg-muted"
+									)}
+									onClick={() => setSelectedTag(table.tag)}
+								>
+									<LucideIcons.PenSquare
+										size={18}
+										className="mr-2 cursor-pointer"
+									/>
+									<div className="m-1">{table.tag}</div>
+								</div>
 							))}
 						</>
 					</ScrollArea>
@@ -107,11 +103,18 @@ const PageParameters: NextPageWithLayout = () => {
 				<ResizablePanel>
 					<ScrollArea className="h-full">
 						<div className="m-1">
-							{
-								tables.filter(
-									(table) => table.tag === selectedTag
-								)[0]!.component
-							}
+							{tables
+								.filter((table) => table.tag === selectedTag)
+								.map((t) => {
+									return (
+										<div key={t.tag}>
+											{React.cloneElement<TableComponentProps>(
+												t.component,
+												{}
+											)}
+										</div>
+									);
+								})}
 						</div>
 					</ScrollArea>
 				</ResizablePanel>
