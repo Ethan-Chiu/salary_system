@@ -66,7 +66,7 @@ export function DataTable<TData>({
 	});
 
 	return (
-		<div className="space-y-4">
+		<div>
 			{/* TODO: fix */}
 			<DataTableToolbar
 				table={table}
@@ -107,7 +107,7 @@ export function DataTable<TData>({
 									}
 								>
 									{row.getVisibleCells().map((cell) => (
-										<TableCell key={cell.id} align="center">
+										<TableCell key={cell.id} align="center" className="max-w-xs">
 											{flexRender(
 												cell.column.columnDef.cell,
 												cell.getContext()
@@ -120,7 +120,7 @@ export function DataTable<TData>({
 							<TableRow>
 								<TableCell
 									colSpan={columns.length}
-									className="h-24 text-center"
+									className="h-24 text-center max-w-xs"
 								>
 									No results.
 								</TableCell>

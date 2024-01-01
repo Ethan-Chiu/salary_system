@@ -102,7 +102,7 @@ const PageParameters: NextPageWithLayout = () => {
 							<div
 								key={table.tag}
 								className={cn(
-									"m-1 flex items-center rounded-md border p-1 hover:bg-muted",
+									"m-2 flex items-center rounded-md border p-1 hover:bg-muted",
 									table.tag === selectedTag && "bg-muted"
 								)}
 								onClick={() => setSelectedTag(table.tag)}
@@ -116,10 +116,10 @@ const PageParameters: NextPageWithLayout = () => {
 						))}
 					</ScrollArea>
 				</ResizablePanel>
-				<ResizableHandle />
-				<ResizablePanel>
+				<ResizableHandle withHandle />
+				<ResizablePanel minSize={40}>
 					<ScrollArea className="h-full">
-						<div className="m-1">
+						<div className="m-4">
 							{tables
 								.filter((table) => table.tag === selectedTag)
 								.map((t) => {

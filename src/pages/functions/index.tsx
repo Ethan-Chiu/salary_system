@@ -49,7 +49,7 @@ const PageHome: NextPageWithLayout = () => {
 		<>
 			<Header title="functions" showOptions className="mb-4" />
 			<motion.div
-				className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+				className="m-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3"
 				variants={container}
 				initial="hidden"
 				animate="visible"
