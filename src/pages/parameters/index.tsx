@@ -76,7 +76,7 @@ const PageParameters: NextPageWithLayout = () => {
 		<div className="flex h-screen flex-col">
 			<Header title="parameters" showOptions />
 			<ResizablePanelGroup direction="horizontal" className="grow">
-				<ResizablePanel defaultSize={15}>
+				<ResizablePanel defaultSize={15} minSize={15}>
 					<ScrollArea className="h-full">
 						<>
 							{tables.map((table) => (
@@ -104,9 +104,9 @@ const PageParameters: NextPageWithLayout = () => {
 					</ScrollArea>
 				</ResizablePanel>
 				<ResizableHandle />
-				<ResizablePanel>
+				<ResizablePanel minSize={75}>
 					<ScrollArea className="h-full">
-						<div className="m-1">
+						<div className="m-5">
 							{
 								tables.filter(
 									(table) => table.tag === selectedTag
