@@ -1,3 +1,4 @@
+import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "~/pages/parameters/components/data_table";
 import { Overtime } from "~/server/database/entity/UMEDIA/overtime";
 import { api } from "~/utils/api";
@@ -15,7 +16,7 @@ export function OvertimeTable({ period, index, globalFilter }: any) {
 	const filterKey = "emp_no";
 
 	if (isLoading) {
-		return <span>Loading</span>; // TODO: Loading element with toast
+		return <LoadingSpinner />; // TODO: Loading element with toast
 	}
 
 	if (isError) {

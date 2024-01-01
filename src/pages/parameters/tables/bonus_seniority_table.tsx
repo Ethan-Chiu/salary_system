@@ -22,6 +22,7 @@ import {
 import { BonusDepartment } from "~/server/database/entity/SALARY/bonus_department";
 import { BonusPosition } from "~/server/database/entity/SALARY/bonus_position";
 import { BonusSeniority } from "~/server/database/entity/SALARY/bonus_seniority";
+import { LoadingSpinner } from "~/components/loading";
 
 export type RowItem = {
 	seniority: number;
@@ -72,7 +73,7 @@ export function BonusSeniorityTable({ index, globalFilter }: any) {
 	const filterKey: RowItemKey = "seniority";
 
 	if (isLoading) {
-		return <span>Loading</span>; // TODO: Loading element with toast
+		return <LoadingSpinner />; // TODO: Loading element with toast
 	}
 
 	if (isError) {

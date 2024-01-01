@@ -33,6 +33,7 @@ import { z } from "zod";
 import { Label } from "~/components/ui/label";
 import { DropdownCopyAction } from "../components/dropdown_copy_action";
 import { AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
+import { LoadingSpinner } from "~/components/loading";
 
 const rowSchema = z.object({
 	name: z.string(),
@@ -186,7 +187,7 @@ export function AttendanceTable({ index, globalFilter }: any) {
 	const filterKey: RowItemKey = "name";
 
 	if (isLoading) {
-		return <span>Loading</span>; // TODO: Loading element with toast
+		return <LoadingSpinner />; // TODO: Loading element with toast
 	}
 
 	if (isError) {
@@ -239,7 +240,7 @@ function CompDropdown({ row }: { row: RowItem }) {
 				onOpenChange={(open: boolean) => {
 					setShowDialog(open);
 				}}
-				updateFunction={()=>{}}
+				updateFunction={() => {}}
 			/>
 		</>
 	);
@@ -269,7 +270,6 @@ function CreateDialog({
 	const [isValid, setIsValid] = useState(schema.safeParse(row.value).success);
 	const updateIsValid = (x: string | number | Date) => {
 		setIsValid(schema.safeParse(x).success);
-
 	};
 	return (
 		<Dialog open={showDialog} onOpenChange={onOpenChange}>

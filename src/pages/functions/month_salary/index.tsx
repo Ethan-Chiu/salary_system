@@ -2,7 +2,6 @@ import { RootLayout } from "~/components/layout/root_layout";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { Header } from "~/components/header";
 import { NextPageWithLayout } from "../../_app";
-import { FadeLoader } from "react-spinners";
 import { api } from "~/utils/api";
 import {
 	Select,
@@ -22,20 +21,17 @@ import { ProgressBar } from "~/components/functions/progress_bar";
 import {
 	CardFunction,
 	CardFunctionIcon,
-	CardFunctionData
+	CardFunctionData,
 } from "~/components/functions/card_function";
 import { IconCoins } from "~/components/icons/svg_icons";
 import { Button } from "~/components/ui/button";
 import { Translate } from "~/pages/develop_parameters/utils/translation";
 
-import ExcelJS from "exceljs"
+import ExcelJS from "exceljs";
 
 import { motion } from "framer-motion";
 import ExcelViewer from "./ExcelViewer";
-
-
-
-
+import { LoadingSpinner } from "~/components/loading";
 
 const TabOptions = ["請假", "加班", "工作天數", "其他", "其他"];
 const progressBarLabels = ["確認資料", "確認參數", "匯出報表"];
@@ -152,7 +148,7 @@ function DataPage() {
 		return (
 			<>
 				<div style={loaderStyle}>
-					<FadeLoader color="#000000" />
+					<LoadingSpinner />
 				</div>
 			</>
 		);
@@ -162,14 +158,13 @@ function ParameterPage() {
 	return (
 		<>
 			<div style={loaderStyle}>
-				<FadeLoader color="#000000" />
+				<LoadingSpinner />
 			</div>
 		</>
 	);
 }
 
 function ExportPage() {
-
 	const getExcelA = api.function.getExcelA.useQuery();
 
 	function splitKeys(datas: any) {
@@ -177,8 +172,8 @@ function ExportPage() {
 		let rows = datas.map((data: any, index: number) => {
 			return Object.keys(data).map((key: string) => {
 				return data[key];
-			})
-		})
+			});
+		});
 		return [columns, rows];
 	}
 
@@ -188,32 +183,33 @@ function ExportPage() {
 			let name: string = sheetDatas.name;
 			try {
 				let datas = sheetDatas.data;
-				let columns = Object.keys(datas[0]).map((key: string) => Translate(key));
+				let columns = Object.keys(datas[0]).map((key: string) =>
+					Translate(key)
+				);
 				let rows = datas.map((data: any, index: number) => {
 					return Object.keys(data).map((key: string) => {
 						return data[key];
-					})
-				})
+					});
+				});
 				rows.unshift(columns);
-				excelData.push({sheetName: name, data: rows});
+				excelData.push({ sheetName: name, data: rows });
+			} catch {
+				excelData.push({
+					sheetName: name,
+					data: [["psedu data"], [123]],
+				});
 			}
-			catch {
-				excelData.push({sheetName: name, data: [["psedu data"], [123]]});
-			}
-			
-		})
+		});
 		return excelData;
 	}
-
 
 	const function_data: CardFunctionData[] = [
 		{
 			title: "Download Excel A",
 			iconPath: "./icons/coins.svg",
 			subscript: "下載 Excel A",
-		}
+		},
 	];
-
 
 	const handleExportExcel = async (datas: any, filename: string) => {
 		const workbook = new ExcelJS.Workbook();
@@ -224,35 +220,34 @@ function ExportPage() {
 		// worksheet.addRow(['Jane Smith', 30, 'Canada']);
 		// worksheet.addRow(['Bob Johnson', 28, 'UK']);
 
-		if(datas) {
+		if (datas) {
 			datas.map((sheet: any, index: number) => {
-				console.log(sheet.data)
+				console.log(sheet.data);
 				const worksheet = workbook.addWorksheet(sheet.name);
 				try {
 					console.log(splitKeys(sheet.data));
-					let [columns, rows] = splitKeys(sheet.data)
+					let [columns, rows] = splitKeys(sheet.data);
 					worksheet.addRow(columns);
 					rows.map((row: any, i: number) => {
 						worksheet.addRow(row);
-					})
+					});
 					// const cell = worksheet.getCell('A1');
 					// 	cell.fill = {
 					// 	type: 'pattern',
 					// 	pattern: 'solid',
 					// 	fgColor: { argb: 'FFFF0000' } // 背景颜色为红色
 					// };
-				}
-				catch {
-
-				}
-			})
+				} catch {}
+			});
 		}
 
 		// Save the workbook to a file
 		const buffer = await workbook.xlsx.writeBuffer();
-		const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+		const blob = new Blob([buffer], {
+			type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+		});
 		const url = URL.createObjectURL(blob);
-		const a = document.createElement('a');
+		const a = document.createElement("a");
 		a.href = url;
 		a.download = filename;
 		a.click();
@@ -260,11 +255,11 @@ function ExportPage() {
 	};
 	return (
 		<>
-		{getExcelA.isFetched?
-			<ExcelViewer sheets={getExcelData(getExcelA.data)}/>:
-			<></>
-		}
-		
+			{getExcelA.isFetched ? (
+				<ExcelViewer sheets={getExcelData(getExcelA.data)} />
+			) : (
+				<></>
+			)}
 		</>
 		// <motion.div
 		// 	className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
@@ -288,7 +283,7 @@ function ExportPage() {
 		// 					<IconCoins />
 		// 				</CardFunctionIcon>
 		// 			</CardFunction>:<></>}
-					
+
 		// 		</motion.div>
 		// 	))}
 		// </motion.div>

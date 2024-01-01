@@ -4,6 +4,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { DataTable } from "../components/data_table";
 import { BankSetting } from "~/server/database/entity/SALARY/bank_setting";
+import { LoadingSpinner } from "~/components/loading";
 
 export type RowItem = {
 	bank_name: string;
@@ -87,7 +88,7 @@ export function BankTable({ index, globalFilter }: any) {
 	const filterKey: RowItemKey = "bank_name";
 
 	if (isLoading) {
-		return <span>Loading</span>; // TODO: Loading element with toast
+		return <LoadingSpinner />; // TODO: Loading element with toast
 	}
 
 	if (isError) {
