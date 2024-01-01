@@ -16,7 +16,8 @@
     },
     "emp_special_trust_incent_limit": {
       "type": "number",
-      "nullable": true
+      "optional": true,
+      "onlynull": true
     },
     "org_special_trust_incent_limit": {
       "type": "number"
