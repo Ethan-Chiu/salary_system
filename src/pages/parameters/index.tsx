@@ -76,7 +76,7 @@ const PageParameters: NextPageWithLayout = () => {
 		<div className="flex h-screen flex-col">
 			<Header title="parameters" showOptions />
 			<ResizablePanelGroup direction="horizontal" className="grow">
-				<ResizablePanel defaultSize={15}>
+				<ResizablePanel defaultSize={20}>
 					<ScrollArea className="h-full">
 						<>
 							{tables.map((table) => (
@@ -84,7 +84,7 @@ const PageParameters: NextPageWithLayout = () => {
 									<div
 										key={table.tag}
 										className={cn(
-											"m-1 flex rounded-md border p-1 hover:bg-muted",
+											"m-4 flex rounded-md border p-1 hover:bg-muted",
 											table.tag === selectedTag &&
 												"bg-muted"
 										)}
@@ -92,21 +92,23 @@ const PageParameters: NextPageWithLayout = () => {
 											setSelectedTag(table.tag)
 										}
 									>
-										<LucideIcons.PenSquare
-											size={18}
-											className="mr-2 cursor-pointer"
-										/>
-										<div className="m-1">{table.tag}</div>
+										<div className="m-2">
+											<LucideIcons.PenSquare
+												size={18}
+												className="h-full mr-2 justify-center items-center cursor-pointer "
+											/>
+										</div>
+										<div className="m-2">{table.tag}</div>
 									</div>
 								</>
 							))}
 						</>
 					</ScrollArea>
 				</ResizablePanel>
-				<ResizableHandle />
+				<ResizableHandle withHandle />
 				<ResizablePanel>
 					<ScrollArea className="h-full">
-						<div className="m-1">
+						<div className="m-4">
 							{
 								tables.filter(
 									(table) => table.tag === selectedTag

@@ -66,7 +66,7 @@ export function DataTable<TData>({
 	});
 
 	return (
-		<div className="space-y-4">
+		<div>
 			{/* TODO: fix */}
 			<DataTableToolbar
 				table={table}
