@@ -29,6 +29,7 @@ import {
 	LucideIcon,
 	Users,
 } from "lucide-react";
+import { Separator } from "~/components/ui/separator";
 
 enum FilterMode {
 	Search,
@@ -95,47 +96,52 @@ const PageParameters: NextPageWithLayout = () => {
 	return (
 		<div className="flex h-screen flex-col">
 			<Header title="parameters" showOptions />
-			<ResizablePanelGroup direction="horizontal" className="grow">
-				<ResizablePanel defaultSize={15} minSize={10}>
-					<ScrollArea className="h-full">
-						{tables.map((table) => (
-							<div
-								key={table.tag}
-								className={cn(
-									"m-2 flex items-center rounded-md border p-1 hover:bg-muted",
-									table.tag === selectedTag && "bg-muted"
-								)}
-								onClick={() => setSelectedTag(table.tag)}
-							>
-								<table.icon
-									size={18}
-									className="ml-1 mr-2 cursor-pointer"
-								/>
-								<div className="m-1 truncate">{table.tag}</div>
-							</div>
-						))}
-					</ScrollArea>
-				</ResizablePanel>
-				<ResizableHandle withHandle />
-				<ResizablePanel minSize={40}>
-					<ScrollArea className="h-full">
-						<div className="m-4">
-							{tables
-								.filter((table) => table.tag === selectedTag)
-								.map((t) => {
-									return (
-										<div key={t.tag}>
-											{React.cloneElement<TableComponentProps>(
-												t.component,
-												{}
-											)}
-										</div>
-									);
-								})}
+			<div className="m-4 rounded-md border-2 grow">
+				<ResizablePanelGroup direction="horizontal">
+					<ResizablePanel defaultSize={15} minSize={10}>
+						<div className="flex h-[48px] items-center justify-center text-lg">
+							<div>Tables</div>
 						</div>
-					</ScrollArea>
-				</ResizablePanel>
-			</ResizablePanelGroup>
+						<Separator />
+						{/* TODO: fix overflow */}
+						<ScrollArea className="h-full">
+							{tables.map((table) => (
+								<div
+									key={table.tag}
+									className={cn(
+										"m-2 flex items-center rounded-md border p-1 hover:bg-muted",
+										table.tag === selectedTag && "bg-muted"
+									)}
+									onClick={() => setSelectedTag(table.tag)}
+								>
+									<table.icon
+										size={18}
+										className="ml-1 mr-2 cursor-pointer"
+									/>
+									<div className="m-1 truncate">
+										{table.tag}
+									</div>
+								</div>
+							))}
+						</ScrollArea>
+					</ResizablePanel>
+					<ResizableHandle />
+					<ResizablePanel minSize={40}>
+						{tables
+							.filter((table) => table.tag === selectedTag)
+							.map((t) => {
+								return (
+									<div key={t.tag} className="h-full">
+										{React.cloneElement<TableComponentProps>(
+											t.component,
+											{}
+										)}
+									</div>
+								);
+							})}
+					</ResizablePanel>
+				</ResizablePanelGroup>
+			</div>
 		</div>
 	);
 };
