@@ -49,20 +49,26 @@ const columns = [
 	columnHelper.accessor("name", {
 		header: ({ column }) => {
 			return (
-				<Button
-					variant="ghost"
-					onClick={() =>
-						column.toggleSorting(column.getIsSorted() === "asc")
-					}
-				>
-					Parameter
-					<ArrowUpDown className="ml-2 h-4 w-4" />
-				</Button>
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(column.getIsSorted() === "asc")
+							}
+						>
+							Parameter
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
 			);
 		},
 		cell: ({ row }) => (
-			<div className="w-[400px] pl-4 lowercase">
-				{row.getValue("name")}
+			<div className="flex justify-center">
+				<div className="text-center font-medium">
+					{row.getValue("name")}
+				</div>
 			</div>
 		),
 	}),
@@ -82,7 +88,7 @@ const columns = [
 			}
 			return (
 				<div className="flex justify-center">
-					<div className="w-80 text-center font-medium">
+					<div className="text-center font-medium">
 						{formatted}
 					</div>
 				</div>
