@@ -10,6 +10,10 @@ import { container } from "tsyringe";
 import { env } from "~/env.mjs";
 import * as bcrypt from "bcrypt";
 import { BaseResponseError } from "./api/error/BaseResponseError";
+import { UserService } from "./service/user_service";
+import { RolesEnum, RolesEnumType } from "./api/types/role_type";
+import { DefaultJWT } from "next-auth/jwt";
+import { z } from "zod";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -17,18 +21,30 @@ import { BaseResponseError } from "./api/error/BaseResponseError";
  *
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
-interface JWTUser extends DefaultUser {
-	emp_id: string;
+interface ExtendedTokenInfo {
+	emp_no: string;
+	role: RolesEnumType;
+}
+
+interface JWTUser extends DefaultUser, ExtendedTokenInfo {
+	// Fields in DefaultUser
+	// id: string
+	// name?: string | null
+	// email?: string | null
+	// image?: string | null
+}
+
+interface JWTToken extends DefaultJWT, ExtendedTokenInfo {
+	// Fields in DefaultJWT
+	// sub?: string
+	// name?: string | null
+	// email?: string | null
+	// picture?: string | null
 }
 
 declare module "next-auth" {
 	interface Session extends DefaultSession {
-		user: DefaultSession["user"] & {
-			id: number;
-			emp_id: string;
-			// ...other properties
-			// role: UserRole;
-		};
+		user: DefaultSession["user"] & { id: number } & ExtendedTokenInfo; // image?: string | null // email?: string | null // name?: string | null
 	}
 
 	interface User extends JWTUser {}
@@ -36,7 +52,7 @@ declare module "next-auth" {
 
 // nextauth.d.ts
 declare module "next-auth/jwt" {
-	interface JWT extends JWTUser {}
+	interface JWT extends JWTToken {}
 }
 
 /**
@@ -51,16 +67,19 @@ export const authOptions: NextAuthOptions = {
 		error: "/login", // Error code passed in query string as ?error=
 	},
 	jwt: {
-		secret: env.NEXTAUTH_JWT_SECRET,
-		maxAge: 15 * 24 * 30 * 60, // 15 days
+		maxAge: 15 * 24 * 60 * 60, // 15 days
 	},
 	secret: env.NEXTAUTH_SECRET,
+	session: {
+		strategy: "jwt",
+	},
 	callbacks: {
 		jwt: async ({ token, user }) => {
 			if (user) {
-				token.id = user.id;
+				token.sub = user.id;
 				token.email = user.email;
-				token.emp_id = user.emp_id
+				token.emp_no = user.emp_no;
+				token.role = user.role;
 			}
 			return token;
 		},
@@ -70,7 +89,8 @@ export const authOptions: NextAuthOptions = {
 				user: {
 					...session.user,
 					id: token.sub,
-					emp_id: token.emp_id
+					emp_no: token.emp_no,
+					role: token.role,
 				},
 			};
 		},
@@ -99,12 +119,13 @@ export const authOptions: NextAuthOptions = {
 				// You can also use the `req` object to obtain additional parameters
 				// (i.e., the request IP address)
 				const input = {
-					emp_id: credentials?.username ?? "",
+					emp_no: credentials?.username ?? "",
 					password: credentials?.password ?? "",
 				};
 
 				const userService = container.resolve(UserService);
-				const user = await userService.getUser(input.emp_id);
+				// TODO: move following to user service
+				const user = await userService.getUser(input.emp_no);
 
 				if (!user) {
 					throw new BaseResponseError("User does not exist");
@@ -116,17 +137,29 @@ export const authOptions: NextAuthOptions = {
 					if (!match) {
 						throw new BaseResponseError("Wrong password");
 					} else {
-						await userService.updateUser(
-							input.emp_id,
-							input.password
-						);
+						await userService.updateUser({
+							emp_no: input.emp_no,
+							password: input.password,
+						});
 					}
 				}
 
-				return {
-					id: user.id,
-					emp_id: user.emp_id,
-				} as any;
+				const parseRole = RolesEnum.safeParse(user.auth_l);
+				if (!parseRole.success) {
+					console.log(parseRole.error);
+					throw new BaseResponseError(
+						`Internal Error: Wrong user role`
+					);
+				}
+				// console.log(parseRole.data);
+
+				const jwtUser: JWTUser = {
+					id: user.id.toString(),
+					emp_no: user.emp_no,
+					role: parseRole.data,
+				};
+
+				return jwtUser;
 			},
 		}),
 		/**

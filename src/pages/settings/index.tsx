@@ -8,11 +8,12 @@ import { ProfileForm } from "./components/profile";
 import { AppearanceForm } from "./components/appearance";
 import { Header } from "~/components/header"
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
+import { changePasswordForm } from "./components/changePassword";
 
 const PageSettings: NextPageWithLayout = () => {
 	return (
 		<>
-			<Header title="Settings" className="mb-4"/>
+			<Header title="Settings" showOptions className="mb-4"/>
 			<Tabs defaultValue="profile" className="h-full space-y-6">
 				<div className="space-between flex items-center">
 					<TabsList>
@@ -43,18 +44,19 @@ const PageSettings: NextPageWithLayout = () => {
 				</TabsContent>
 				<TabsContent
 					value="account"
-					className="h-full flex-col border-none p-0 data-[state=active]:flex"
+					// className="h-full flex-col border-none p-0 data-[state=active]:flex"
 				>
 					<div className="flex items-center justify-between">
 						<div className="space-y-1">
 							<h2 className="text-2xl font-semibold tracking-tight">
 								Account
 							</h2>
-							<p className="text-sm text-muted-foreground">
+							{/* <p className="text-sm text-muted-foreground">
 								Edit your account information here
-							</p>
+							</p> */}
 						</div>
 					</div>
+					{changePasswordForm("card")}
 					<Separator className="my-4" />
 				</TabsContent>
 				<TabsContent

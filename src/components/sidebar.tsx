@@ -1,10 +1,28 @@
 import { cn } from "~/lib/utils";
 import { Button, buttonVariants } from "~/components/ui/button";
-import { ScrollArea } from "~/components/ui/scroll-area";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import type { PropsWithChildren } from "react";
-import { IconFunctions, IconParameters, IconRoles, IconSettings } from "./icons/svg_icons";
+import { api } from "~/utils/api";
+import {
+	CalendarRange,
+	GanttChartSquare,
+	LayoutGrid,
+	LucideIcon,
+	LucideSettings,
+	LucideShieldCheck,
+	Settings,
+	ShieldCheck,
+	SlidersHorizontal,
+} from "lucide-react";
+
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "~/components/ui/tooltip";
+import { Separator } from "~/components/ui/separator";
 
 export type Playlist = (typeof playlists)[number];
 
@@ -19,14 +37,36 @@ export const playlists = [
 	"Table 5",
 ];
 
-
 type NavLinkProp = {
 	navLink: string;
 	currentPath: string;
+	icon: LucideIcon;
+	collapsed: boolean;
 };
 
 function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
-	return (
+	return props.collapsed ? (
+		<TooltipProvider>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<Link
+						key={props.navLink}
+						href={props.navLink}
+						className={cn(
+							buttonVariants({ variant: "ghost" }),
+							props.currentPath === props.navLink
+								? "bg-muted hover:bg-muted"
+								: "",
+							"w-full justify-start"
+						)}
+					>
+						<props.icon className="h-4 w-4" />
+						<TooltipContent>{props.children}</TooltipContent>
+					</Link>
+				</TooltipTrigger>
+			</Tooltip>
+		</TooltipProvider>
+	) : (
 		<Link
 			key={props.navLink}
 			href={props.navLink}
@@ -38,89 +78,111 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 				"w-full justify-start"
 			)}
 		>
-			{props.children}
+			<props.icon className="h-4 w-4" />
+			<p className="ps-2">{props.children}</p>
 		</Link>
 	);
 }
 
+interface SidebarProp extends React.HTMLAttributes<HTMLDivElement> {
+	isCollapsed: boolean;
+}
+
+type NavLinkEntry = {
+	title: string;
+	icon: LucideIcon;
+	url: string;
+};
+
+const actionLinks: NavLinkEntry[] = [
+	{
+		title: "Functions",
+		icon: LayoutGrid,
+		url: "/functions",
+	},
+	{
+		title: "Parameters",
+		icon: SlidersHorizontal,
+		url: "/parameters",
+	},
+	{
+		title: "Modify",
+		icon: CalendarRange,
+		url: "/modify",
+	},
+];
+
 // https://www.flaticon.com/free-icon-font/coins_7928197?related_id=7928197
-export function Sidebar({ className }: React.HTMLAttributes<HTMLDivElement>) {
+export function Sidebar({ className, isCollapsed }: SidebarProp) {
 	const pathname = usePathname();
+
+	const { isLoading, isError, data, error } =
+		api.access.accessByRole.useQuery();
+
+	if (isLoading) {
+		return <></>;
+	}
 
 	return (
 		<div className={cn("pb-12", className)}>
-			<div className="space-y-4 py-4">
-				<div className="px-3 py-2">
-					<h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-						Actions
-					</h2>
-					<div className="space-y-1">
-						<CompNavLinkWrap navLink="/" currentPath={pathname}>
-							<IconFunctions />
-							Functions
-						</CompNavLinkWrap>
-						<CompNavLinkWrap
-							navLink="/parameters"
-							currentPath={pathname}
-						>
-							<IconParameters />
-							Parameters
-						</CompNavLinkWrap>
-						<Button
-							variant="ghost"
-							className="w-full justify-start"
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								id="Layer_1"
-								data-name="Layer 1"
-								viewBox="0 0 24 24"
-								fill="currentColor"
-								className="mr-2 h-4 w-4"
-							>
-								<path d="M20,12a3.994,3.994,0,0,0-3.172,1.566l-.07-.03a5,5,0,0,0-6.009-6.377l-.091-.172A3.995,3.995,0,1,0,8.879,7.9l.073.137a4.992,4.992,0,0,0-1.134,6.7L5.933,16.5a4,4,0,1,0,1.455,1.377l1.838-1.718a4.993,4.993,0,0,0,6.539-.871l.279.119A4,4,0,1,0,20,12ZM6,4A2,2,0,1,1,8,6,2,2,0,0,1,6,4ZM4,22a2,2,0,1,1,2-2A2,2,0,0,1,4,22Zm8-7a3,3,0,0,1-1.6-5.534l.407-.217A3,3,0,1,1,12,15Zm8,3a2,2,0,1,1,2-2A2,2,0,0,1,20,18Z" />
-							</svg>
-							Modify
-						</Button>
+			<div className="space-y-2 py-4">
+				{data?.actions && (
+					<div className={cn("py-2", !isCollapsed && "px-3")}>
+						{!isCollapsed && (
+							<h2 className="mb-2 text-lg font-semibold tracking-tight">
+								Actions
+							</h2>
+						)}
+						<div className="space-y-1">
+							{actionLinks.map((link) => (
+								<CompNavLinkWrap
+									navLink={link.url}
+									currentPath={pathname}
+									icon={link.icon}
+									collapsed={isCollapsed}
+								>
+									{link.title}
+								</CompNavLinkWrap>
+							))}
+						</div>
 					</div>
-				</div>
-				<div className="px-3 py-2">
-					<h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-						Configurations
-					</h2>
+				)}
+				<Separator />
+				<div className={cn("py-2", !isCollapsed && "px-3")}>
+					{!isCollapsed && (
+						<h2 className="mb-2 text-lg font-semibold tracking-tight">
+							Configurations
+						</h2>
+					)}
 					<div className="space-y-1">
-						<CompNavLinkWrap
-							navLink="settings"
-							currentPath={pathname}
-						>
-							<IconSettings />
-							Settings
-						</CompNavLinkWrap>
-						<CompNavLinkWrap navLink="roles" currentPath={pathname}>
-							<IconRoles/>
-							Roles
-						</CompNavLinkWrap>
-						<Button
-							variant="ghost"
-							className="w-full justify-start"
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="2"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								className="mr-2 h-4 w-4"
+						{data?.settings && (
+							<CompNavLinkWrap
+								navLink="settings"
+								currentPath={pathname}
+								icon={Settings}
+								collapsed={isCollapsed}
 							>
-								<path d="m16 6 4 14" />
-								<path d="M12 6v14" />
-								<path d="M8 8v12" />
-								<path d="M4 4v16" />
-							</svg>
+								Settings
+							</CompNavLinkWrap>
+						)}
+						{data?.roles && (
+							<CompNavLinkWrap
+								navLink="roles"
+								currentPath={pathname}
+								icon={ShieldCheck}
+								collapsed={isCollapsed}
+							>
+								Roles
+							</CompNavLinkWrap>
+						)}
+						<CompNavLinkWrap
+							navLink=""
+							currentPath={pathname}
+							icon={GanttChartSquare}
+							collapsed={isCollapsed}
+						>
 							Report
-						</Button>
+						</CompNavLinkWrap>
 					</div>
 				</div>
 				{/* <div className="py-2">

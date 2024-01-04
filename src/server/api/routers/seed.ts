@@ -5,9 +5,9 @@ import {
 	protectedProcedure,
 } from "~/server/api/trpc";
 import { dataSource } from "~/server/database/client";
-import { AttendanceSetting } from "~/server/database/entity/attendance_setting";
-import { BankSetting } from "~/server/database/entity/bank_setting";
-import { InsuranceRateSetting } from "~/server/database/entity/insurance_rate_setting";
+import { AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
+import { BankSetting } from "~/server/database/entity/SALARY/bank_setting";
+import { InsuranceRateSetting } from "~/server/database/entity/SALARY/insurance_rate_setting";
 
 export const seedRouter = createTRPCRouter({
 	seed: publicProcedure

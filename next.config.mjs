@@ -7,7 +7,10 @@ await import("./src/env.mjs");
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
-
+  experimental: {
+    instrumentationHook: true,
+    serverComponentsExternalPackages: ['sequelize', 'sequelize-typescript', 'webpack', 'typescript'],
+  },
   /**
    * If you are using `appDir` then you must comment the below `i18n` config out.
    *

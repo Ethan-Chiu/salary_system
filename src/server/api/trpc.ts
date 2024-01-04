@@ -120,12 +120,12 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 });
 
 const resolveAuthedUser = t.middleware(async ({ ctx, next }) => {
-  const user_emp_id = ctx.session?.user.emp_id
-  if (!user_emp_id) {
+  const user_emp_no = ctx.session?.user.emp_no
+  if (!user_emp_no) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   const userService = container.resolve(UserService);
-  const user = await userService.getUser(user_emp_id);
+  const user = await userService.getUser(user_emp_no);
 
   return next({
     ctx: {

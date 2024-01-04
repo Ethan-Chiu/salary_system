@@ -29,6 +29,7 @@ import {
 } from "~/components/ui/dialog";
 
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 
 export function UserAvatar() {
 	const username = "shadcn"
@@ -60,21 +61,20 @@ export function UserAvatar() {
 					</DropdownMenuLabel>
 					<DropdownMenuSeparator />
 					<DropdownMenuGroup>
-						<DropdownMenuItem onClick={RouteProfile}>
-							<User className="mr-2 h-4 w-4" />
-							<span>Profile</span>
-							<DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-						</DropdownMenuItem>
-						<DropdownMenuItem>
-							<CreditCard className="mr-2 h-4 w-4" />
-							<span>Billing</span>
-							<DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-						</DropdownMenuItem>
-						<DropdownMenuItem>
-							<Settings className="mr-2 h-4 w-4" />
-							<span>Settings</span>
-							<DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-						</DropdownMenuItem>
+						<Link href={"/profile"}>
+							<DropdownMenuItem>
+								<User className="mr-2 h-4 w-4" />
+								<span>Profile</span>
+								<DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+							</DropdownMenuItem>
+						</Link>
+						<Link href={"/settings"}>
+							<DropdownMenuItem>
+								<Settings className="mr-2 h-4 w-4" />
+								<span>Settings</span>
+								<DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+							</DropdownMenuItem>
+						</Link>
 						{/* Add new MenuItems here */}
 						{/* <DropdownMenuItem>New Team</DropdownMenuItem> */}
 					</DropdownMenuGroup>
@@ -108,9 +108,5 @@ export function UserAvatar() {
 }
 
 function LogoutFunction() {
-	console.log("Implement log out function here");
-}
-
-function RouteProfile() {
-	console.log("Route to profile page")
+	signOut();
 }

@@ -1,12 +1,23 @@
 import Head from "next/head";
-import type { PropsWithChildren } from "react";
+import { useState, type PropsWithChildren } from "react";
 import { Sidebar } from "~/components/sidebar";
+import {
+	ResizableHandle,
+	ResizablePanel,
+	ResizablePanelGroup,
+} from "../ui/resizable";
+import { cn } from "~/lib/utils";
 
 type PerpageLayoutProp = {
 	pageTitle: string;
 };
 
-export const PerpageLayoutNav = (props: PropsWithChildren<PerpageLayoutProp>) => {
+export const PerpageLayoutNav = (
+	props: PropsWithChildren<PerpageLayoutProp>
+) => {
+
+	const [isCollapsed, setIsCollapsed] = useState(false)
+
 	return (
 		<>
 			<Head>
@@ -21,18 +32,56 @@ export const PerpageLayoutNav = (props: PropsWithChildren<PerpageLayoutProp>) =>
 				/>
 			</Head>
 			<main className="min-h-screen bg-background">
-				<div className="grid min-h-screen lg:grid-cols-5">
-					
-					<Sidebar className="hidden lg:block lg:border-border" />
-					<div className="col-span-3 lg:col-span-4 lg:border-l">
-						<div className="h-full px-4 py-6 lg:px-8">
-							<div className="w-full">
-								{props.children}
+				<ResizablePanelGroup
+					direction="horizontal"
+					onLayout={(sizes: number[]) => {
+						document.cookie = `react-resizable-panels:layout=${JSON.stringify(
+							sizes
+						)}`;
+					}}
+					className="min-h-screen items-stretch"
+				>
+					<ResizablePanel
+						defaultSize={265}
+						collapsedSize={3}
+						collapsible={true}
+						minSize={10}
+						maxSize={20}
+						onExpand={() => {
+								setIsCollapsed(false)
+								document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
+								false
+								)}`
+						}}
+						onCollapse={() => {
+								setIsCollapsed(true)
+								document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
+								true
+								)}`
+							}}
+						className={cn(
+							isCollapsed &&
+								"min-w-[50px] transition-all duration-300 ease-in-out"
+						)}
+					>
+						<Sidebar isCollapsed={isCollapsed} className="hidden lg:block lg:border-border" />
+					</ResizablePanel>
+					<ResizableHandle withHandle />
+					<ResizablePanel
+						defaultSize={440}
+						minSize={30}
+						className={cn(
+							isCollapsed &&
+								"transition-all duration-300 ease-in-out"
+						)}
+					>
+							<div className="h-full px-4 py-6 lg:px-8">
+								<div className="h-full w-full">
+									{props.children}
+								</div>
 							</div>
-						</div>
-					</div>
-
-				</div>
+					</ResizablePanel>
+				</ResizablePanelGroup>
 			</main>
 		</>
 	);
