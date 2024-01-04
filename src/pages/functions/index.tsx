@@ -67,7 +67,7 @@ const PageHome: NextPageWithLayout = () => {
 							subscript={f_data.subscript}
 						>
 							<CardFunctionIcon className="text-foreground">
-								<IconCoins />
+								{IconCoins()}
 							</CardFunctionIcon>
 						</CardFunction>
 					</motion.div>
