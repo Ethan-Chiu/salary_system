@@ -9,7 +9,7 @@ import { Payset } from "../database/entity/UMEDIA/payset";
 import { BankSetting } from "../database/entity/SALARY/bank_setting";
 import { Holiday } from "../database/entity/UMEDIA/holiday";
 
-interface CombinedData {
+export interface CombinedData {
     id: number | null;
     start_date: string | null;
     end_date: string | null;

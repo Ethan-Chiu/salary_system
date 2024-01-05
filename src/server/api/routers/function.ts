@@ -38,9 +38,11 @@ export const functionRouter = createTRPCRouter({
 
 			return payset;
 		}),
-	getExcelA: publicProcedure.query(async () => {
+	getExcelA: publicProcedure
+		.input(z.object({ ids: z.array(z.number()) }))
+		.query(async ({input}) => {
 		const excelService = container.resolve(ExcelService);
-		const SheetA = await excelService.getSheetA();
+		const SheetA = await excelService.getSheetA(input.ids);
 		const SheetB = await excelService.getSheetB();
 		const Sheets = [
 			{
