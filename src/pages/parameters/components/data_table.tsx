@@ -92,7 +92,7 @@ export function DataTable<TData>({
 						/>
 					</div>
 				</TabsContent>
-				<TabsContent value="calendar" asChild>
+				<TabsContent value="calendar" asChild className="m-0">
 					<div className="flex min-h-0 w-full flex-grow flex-col">
 						<CalendarView />
 					</div>
