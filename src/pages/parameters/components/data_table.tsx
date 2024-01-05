@@ -29,6 +29,8 @@ import { ScrollArea } from "~/components/ui/scroll-area";
 import { Tabs, TabsContent } from "~/components/ui/tabs";
 import { DataTableDataHeader } from "./data_table_data_header";
 import { DataTableDataBody } from "./data_table_data_body";
+import Month from "./calendar_view/components/month";
+import { getDayInMonth } from "./calendar_view/utils/utils";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
@@ -96,6 +98,11 @@ export function DataTable<TData>({
 							table={table}
 							className="bg-secondary"
 						/>
+					</div>
+				</TabsContent>
+				<TabsContent value="calendar" asChild>
+					<div className="flex min-h-0 w-full flex-grow flex-col">
+						<Month month={getDayInMonth(null)}/>
 					</div>
 				</TabsContent>
 			</div>

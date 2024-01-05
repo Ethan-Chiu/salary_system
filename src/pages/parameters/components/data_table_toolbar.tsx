@@ -38,7 +38,7 @@ export function DataTableToolbar<TData>({
 			<TabsList className="grid w-96 grid-cols-3 h-8">
 				<TabsTrigger value="now" className="h-6">Now</TabsTrigger>
 				<TabsTrigger value="history" className="h-6">History</TabsTrigger>
-				<TabsTrigger value="month" className="h-6">Month</TabsTrigger>
+				<TabsTrigger value="calendar" className="h-6">Calendar</TabsTrigger>
 			</TabsList>
 			{/*  */}
 			<DataTableViewOptions table={table} />

@@ -1,14 +1,15 @@
 import dayjs from "dayjs";
 
-export function getMonth(month = dayjs().month()) {
-	month = Math.floor(month);
+export function getDayInMonth(mon: number | null): Array<Array<dayjs.Dayjs>> {
+	let month = mon || new Date().getMonth();
+	month = Number(month);
 	const year = dayjs().year();
-	const firstDayOfTheMonth = dayjs(new Date(year, month, 1)).day();
-	let currentMonthCount = 0 - firstDayOfTheMonth;
-	const daysMatrix = new Array(5).fill([]).map(() => {
+	const firstDayOfTheMonth = dayjs().year(year).month(month).date(1).day();
+	let currentMonthCount = -firstDayOfTheMonth;
+	const daysMatrix = Array.from({ length: 5 }, () => {
 		return new Array(7).fill(null).map(() => {
 			currentMonthCount++;
-			return dayjs(new Date(year, month, currentMonthCount));
+			return dayjs().year(year).month(month).date(currentMonthCount);
 		});
 	});
 	return daysMatrix;
