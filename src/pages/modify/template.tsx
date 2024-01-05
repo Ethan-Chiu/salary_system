@@ -45,7 +45,6 @@ const Template = (props: any) => {
 								{queryFunction.data[0] &&
 									Object.keys(queryFunction.data[0]).map(
 										(key: string) => {
-											console.log(queryFunction.data);
 											return (
 												<TableHead className="whitespace-nowrap text-center">
 													{Translate(key)}
