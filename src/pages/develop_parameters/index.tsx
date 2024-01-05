@@ -28,7 +28,6 @@ import {
 } from "./tables/parameter_table";
 import { Translate } from "./utils/translation";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
-import FadeLoader from "react-spinners/FadeLoader";
 import Multiselect from "multiselect-react-dropdown";
 import * as TABLE_NAMES from "../table_names";
 
@@ -38,6 +37,7 @@ import { BonusPositionRow, BonusPositionTable } from "./tables/bonus_position";
 import { BonusSeniorityRow, BonusSeniorityTable } from "./tables/bonus_seniority";
 import { BonusPositionTypeRow, BonusPositionTypeTable} from "./tables/bonus_position_type";
 import { getSchema } from "../modify/Schemas/schemas";
+import { LoadingSpinner } from "~/components/loading";
 
 
 const API_PARAMETERS: any = api.parameters;
@@ -366,13 +366,10 @@ const PageParameters: NextPageWithLayout = () => {
 
 		return HTMLElement();
 	} else {
-		const loaderStyle = {display: "flex",justifyContent: "center",alignItems: "center",height: "70vh",};
 		return (
 			<>
 				<Header title="parameters" showOptions />
-				<div style={loaderStyle}>
-					<FadeLoader color="#000000" />
-				</div>
+				<LoadingSpinner  />
 			</>
 		);
 	}

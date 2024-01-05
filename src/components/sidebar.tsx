@@ -1,17 +1,28 @@
 import { cn } from "~/lib/utils";
 import { Button, buttonVariants } from "~/components/ui/button";
-import { ScrollArea } from "~/components/ui/scroll-area";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import type { PropsWithChildren } from "react";
-import {
-	IconFunctions,
-	IconModfiy,
-	IconParameters,
-	IconRoles,
-	IconSettings,
-} from "./icons/svg_icons";
 import { api } from "~/utils/api";
+import {
+	CalendarRange,
+	GanttChartSquare,
+	LayoutGrid,
+	LucideIcon,
+	LucideSettings,
+	LucideShieldCheck,
+	Settings,
+	ShieldCheck,
+	SlidersHorizontal,
+} from "lucide-react";
+
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "~/components/ui/tooltip";
+import { Separator } from "~/components/ui/separator";
 
 export type Playlist = (typeof playlists)[number];
 
@@ -29,10 +40,33 @@ export const playlists = [
 type NavLinkProp = {
 	navLink: string;
 	currentPath: string;
+	icon: LucideIcon;
+	collapsed: boolean;
 };
 
 function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
-	return (
+	return props.collapsed ? (
+		<TooltipProvider>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<Link
+						key={props.navLink}
+						href={props.navLink}
+						className={cn(
+							buttonVariants({ variant: "ghost" }),
+							props.currentPath === props.navLink
+								? "bg-muted hover:bg-muted"
+								: "",
+							"w-full justify-start"
+						)}
+					>
+						<props.icon className="h-4 w-4" />
+						<TooltipContent>{props.children}</TooltipContent>
+					</Link>
+				</TooltipTrigger>
+			</Tooltip>
+		</TooltipProvider>
+	) : (
 		<Link
 			key={props.navLink}
 			href={props.navLink}
@@ -44,13 +78,42 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 				"w-full justify-start"
 			)}
 		>
-			{props.children}
+			<props.icon className="h-4 w-4" />
+			<p className="ps-2">{props.children}</p>
 		</Link>
 	);
 }
 
+interface SidebarProp extends React.HTMLAttributes<HTMLDivElement> {
+	isCollapsed: boolean;
+}
+
+type NavLinkEntry = {
+	title: string;
+	icon: LucideIcon;
+	url: string;
+};
+
+const actionLinks: NavLinkEntry[] = [
+	{
+		title: "Functions",
+		icon: LayoutGrid,
+		url: "/functions",
+	},
+	{
+		title: "Parameters",
+		icon: SlidersHorizontal,
+		url: "/parameters",
+	},
+	{
+		title: "Modify",
+		icon: CalendarRange,
+		url: "/modify",
+	},
+];
+
 // https://www.flaticon.com/free-icon-font/coins_7928197?related_id=7928197
-export function Sidebar({ className }: React.HTMLAttributes<HTMLDivElement>) {
+export function Sidebar({ className, isCollapsed }: SidebarProp) {
 	const pathname = usePathname();
 
 	const { isLoading, isError, data, error } =
@@ -62,45 +125,43 @@ export function Sidebar({ className }: React.HTMLAttributes<HTMLDivElement>) {
 
 	return (
 		<div className={cn("pb-12", className)}>
-			<div className="space-y-4 py-4">
+			<div className="space-y-2 py-4">
 				{data?.actions && (
-					<div className="px-3 py-2">
-						<h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-							Actions
-						</h2>
+					<div className={cn("py-2", !isCollapsed && "px-3")}>
+						{!isCollapsed && (
+							<h2 className="mb-2 text-lg font-semibold tracking-tight">
+								Actions
+							</h2>
+						)}
 						<div className="space-y-1">
-							<CompNavLinkWrap navLink="/" currentPath={pathname}>
-								<IconFunctions />
-								Functions
-							</CompNavLinkWrap>
-							<CompNavLinkWrap
-								navLink="/parameters"
-								currentPath={pathname}
-							>
-								<IconParameters />
-								Parameters
-							</CompNavLinkWrap>
-							<CompNavLinkWrap
-								navLink="/modify"
-								currentPath={pathname}
-							>
-								<IconModfiy />
-								Modfiy
-							</CompNavLinkWrap>
+							{actionLinks.map((link) => (
+								<CompNavLinkWrap
+									navLink={link.url}
+									currentPath={pathname}
+									icon={link.icon}
+									collapsed={isCollapsed}
+								>
+									{link.title}
+								</CompNavLinkWrap>
+							))}
 						</div>
 					</div>
 				)}
-				<div className="px-3 py-2">
-					<h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-						Configurations
-					</h2>
+				<Separator />
+				<div className={cn("py-2", !isCollapsed && "px-3")}>
+					{!isCollapsed && (
+						<h2 className="mb-2 text-lg font-semibold tracking-tight">
+							Configurations
+						</h2>
+					)}
 					<div className="space-y-1">
 						{data?.settings && (
 							<CompNavLinkWrap
 								navLink="settings"
 								currentPath={pathname}
+								icon={Settings}
+								collapsed={isCollapsed}
 							>
-								<IconSettings />
 								Settings
 							</CompNavLinkWrap>
 						)}
@@ -108,32 +169,20 @@ export function Sidebar({ className }: React.HTMLAttributes<HTMLDivElement>) {
 							<CompNavLinkWrap
 								navLink="roles"
 								currentPath={pathname}
+								icon={ShieldCheck}
+								collapsed={isCollapsed}
 							>
-								<IconRoles />
 								Roles
 							</CompNavLinkWrap>
 						)}
-						<Button
-							variant="ghost"
-							className="w-full justify-start"
+						<CompNavLinkWrap
+							navLink=""
+							currentPath={pathname}
+							icon={GanttChartSquare}
+							collapsed={isCollapsed}
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="2"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								className="mr-2 h-4 w-4"
-							>
-								<path d="m16 6 4 14" />
-								<path d="M12 6v14" />
-								<path d="M8 8v12" />
-								<path d="M4 4v16" />
-							</svg>
 							Report
-						</Button>
+						</CompNavLinkWrap>
 					</div>
 				</div>
 				{/* <div className="py-2">

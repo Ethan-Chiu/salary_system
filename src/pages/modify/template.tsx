@@ -5,7 +5,6 @@ import { Button } from "~/components/ui/button";
 import { ParameterForm } from "./ParameterForm";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import FadeLoader from "react-spinners/FadeLoader";
 
 import {
 	Table,
@@ -19,6 +18,7 @@ import {
 } from "~/components/ui/table";
 import { Translate } from "../develop_parameters/utils/translation";
 import { getSchema } from "./Schemas/schemas";
+import { LoadingSpinner } from "~/components/loading";
 
 const Template = (props: any) => {
 	const router = useRouter();
@@ -39,14 +39,16 @@ const Template = (props: any) => {
 					<Table>
 						<TableHeader>
 							<TableRow>
-							<TableHead className="whitespace-nowrap text-center">{""}</TableHead>
+								<TableHead className="whitespace-nowrap text-center">
+									{""}
+								</TableHead>
 								{queryFunction.data[0] &&
 									Object.keys(queryFunction.data[0]).map(
 										(key: string) => {
 											console.log(queryFunction.data);
 											return (
 												<TableHead className="whitespace-nowrap text-center">
-													{Translate(key)} 
+													{Translate(key)}
 												</TableHead>
 											);
 										}
@@ -191,7 +193,7 @@ function Loader() {
 	return (
 		<>
 			<div style={loaderStyle}>
-				<FadeLoader color="#000000" />
+				<LoadingSpinner />
 			</div>
 		</>
 	);

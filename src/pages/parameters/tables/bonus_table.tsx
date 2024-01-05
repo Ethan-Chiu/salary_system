@@ -14,6 +14,7 @@ import {
 	c_StartDateStr,
 } from "../constant";
 import { BonusSetting } from "~/server/database/entity/SALARY/bonus_setting";
+import { LoadingSpinner } from "~/components/loading";
 
 export type RowItem = {
 	name: string;
@@ -92,7 +93,7 @@ export function BonusTable({ index, globalFilter }: any) {
 	const filterKey: RowItemKey = "name";
 
 	if (isLoading) {
-		return <span>Loading</span>; // TODO: Loading element with toast
+		return <LoadingSpinner />; // TODO: Loading element with toast
 	}
 
 	if (isError) {

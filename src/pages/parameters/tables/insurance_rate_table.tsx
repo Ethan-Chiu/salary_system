@@ -14,6 +14,7 @@ import {
 	c_StartDateStr,
 } from "../constant";
 import { InsuranceRateSetting } from "~/server/database/entity/SALARY/insurance_rate_setting";
+import { LoadingSpinner } from "~/components/loading";
 
 export type RowItem = {
 	name: string;
@@ -122,7 +123,7 @@ export function InsuranceRateTable({ index, globalFilter }: any) {
 	const filterKey: RowItemKey = "name";
 
 	if (isLoading) {
-		return <span>Loading</span>; // TODO: Loading element with toast
+		return <LoadingSpinner />; // TODO: Loading element with toast
 	}
 
 	if (isError) {
