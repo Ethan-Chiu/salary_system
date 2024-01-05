@@ -96,7 +96,7 @@ const PageParameters: NextPageWithLayout = () => {
 	return (
 		<div className="flex h-screen flex-col">
 			<Header title="parameters" showOptions />
-			<div className="m-4 flex-grow rounded-md border-2 min-h-0">
+			<div className="m-4 min-h-0 flex-grow rounded-md border-2">
 				<ResizablePanelGroup direction="horizontal">
 					<ResizablePanel defaultSize={15} minSize={10}>
 						<div className="flex h-[48px] items-center justify-center text-lg">
@@ -115,9 +115,9 @@ const PageParameters: NextPageWithLayout = () => {
 								>
 									<table.icon
 										size={18}
-										className="ml-1 mr-2 cursor-pointer"
+										className="ml-1 mr-2 flex-shrink-0 cursor-pointer"
 									/>
-									<div className="m-1 truncate">
+									<div className="m-1 line-clamp-1">
 										{table.tag}
 									</div>
 								</div>
@@ -130,7 +130,7 @@ const PageParameters: NextPageWithLayout = () => {
 							.filter((table) => table.tag === selectedTag)
 							.map((t) => {
 								return (
-									<div key={t.tag} className="h-full">
+									<div key={t.tag} className="flex h-full">
 										{React.cloneElement<TableComponentProps>(
 											t.component,
 											{}

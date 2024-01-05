@@ -3,11 +3,7 @@ import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { DataTable } from "../components/data_table";
-import {
-	c_CreateDateStr,
-	c_EndDateStr,
-	c_StartDateStr,
-} from "../constant";
+import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
 import { BonusDepartment } from "~/server/database/entity/SALARY/bonus_department";
 import { LoadingSpinner } from "~/components/loading";
 
@@ -35,23 +31,32 @@ const columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="pl-4 w-[400px] lowercase">{row.getValue("department")}</div>
+			<div className="w-[400px] pl-4 lowercase">
+				{row.getValue("department")}
+			</div>
 		),
 	}),
 	columnHelper.accessor("multiplier", {
 		header: () => <div className="text-center">Multiplier</div>,
 		cell: ({ row }) => {
-			return <div className="flex justify-center"><div className="w-80 text-center font-medium">{`${row.original.multiplier}`}</div></div>;
+			return (
+				<div className="flex justify-center">
+					<div className="w-80 text-center font-medium">{`${row.original.multiplier}`}</div>
+				</div>
+			);
 		},
 	}),
 ];
 
-function bonusDepartmentMapper(bonusDepartmentData: BonusDepartment[]): RowItem[] {
+function bonusDepartmentMapper(
+	bonusDepartmentData: BonusDepartment[]
+): RowItem[] {
 	return bonusDepartmentData.map((d) => {
 		return {
 			department: d.department,
 			multiplier: d.multiplier,
-		}})
+		};
+	});
 }
 
 export function BonusDepartmentTable({ index, globalFilter }: any) {
@@ -60,7 +65,11 @@ export function BonusDepartmentTable({ index, globalFilter }: any) {
 	const filterKey: RowItemKey = "department";
 
 	if (isLoading) {
-		return <LoadingSpinner />; // TODO: Loading element with toast
+		return (
+			<div className="flex grow items-center justify-center">
+				<LoadingSpinner />
+			</div>
+		); // TODO: Loading element with toast
 	}
 
 	if (isError) {

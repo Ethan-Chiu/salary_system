@@ -8,11 +8,7 @@ import {
 	isDate,
 } from "~/pages/develop_parameters/utils/checkType";
 import { DataTable } from "../components/data_table";
-import {
-	c_CreateDateStr,
-	c_EndDateStr,
-	c_StartDateStr,
-} from "../constant";
+import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
 import { InsuranceRateSetting } from "~/server/database/entity/SALARY/insurance_rate_setting";
 import { LoadingSpinner } from "~/components/loading";
 
@@ -40,7 +36,9 @@ const columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="pl-4 w-[400px] lowercase">{row.getValue("name")}</div>
+			<div className="w-[400px] pl-4 lowercase">
+				{row.getValue("name")}
+			</div>
 		),
 	}),
 	columnHelper.accessor("value", {
@@ -57,12 +55,20 @@ const columns = [
 						(value as Date).toISOString().split("T")[0] ?? "";
 				} else formatted = "";
 			}
-			return <div className="flex justify-center"><div className="w-80 text-center font-medium">{formatted}</div></div>;
+			return (
+				<div className="flex justify-center">
+					<div className="w-80 text-center font-medium">
+						{formatted}
+					</div>
+				</div>
+			);
 		},
 	}),
 ];
 
-function insuranceRateMapper(insuranceRateData: InsuranceRateSetting): RowItem[] {
+function insuranceRateMapper(
+	insuranceRateData: InsuranceRateSetting
+): RowItem[] {
 	return [
 		{
 			name: "最低薪資率",
@@ -123,7 +129,11 @@ export function InsuranceRateTable({ index, globalFilter }: any) {
 	const filterKey: RowItemKey = "name";
 
 	if (isLoading) {
-		return <LoadingSpinner />; // TODO: Loading element with toast
+		return (
+			<div className="flex grow items-center justify-center">
+				<LoadingSpinner />
+			</div>
+		); // TODO: Loading element with toast
 	}
 
 	if (isError) {

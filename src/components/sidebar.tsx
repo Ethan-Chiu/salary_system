@@ -78,8 +78,10 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 				"w-full justify-start"
 			)}
 		>
-			<props.icon className="h-4 w-4" />
-			<p className="ps-2">{props.children}</p>
+			<div className="flex ">
+				<props.icon className="h-4 w-4 flex-shrink-0" />
+				<div className="break-all line-clamp-1 ps-2">{props.children}</div>
+			</div>
 		</Link>
 	);
 }
@@ -129,9 +131,9 @@ export function Sidebar({ className, isCollapsed }: SidebarProp) {
 				{data?.actions && (
 					<div className={cn("py-2", !isCollapsed && "px-3")}>
 						{!isCollapsed && (
-							<h2 className="px-4 mb-2 text-lg font-semibold tracking-tight">
+							<div className="mb-2 break-all line-clamp-1 px-4 text-lg font-semibold tracking-tight">
 								Actions
-							</h2>
+							</div>
 						)}
 						<div className="space-y-1">
 							{actionLinks.map((link) => (
@@ -151,9 +153,9 @@ export function Sidebar({ className, isCollapsed }: SidebarProp) {
 				{isCollapsed && <Separator />}
 				<div className={cn("py-2", !isCollapsed && "px-3")}>
 					{!isCollapsed && (
-						<h2 className="px-4 mb-2 text-lg font-semibold tracking-tight">
+						<div className="mb-2 break-all line-clamp-1 px-4 text-lg font-semibold tracking-tight">
 							Configurations
-						</h2>
+						</div>
 					)}
 					<div className="space-y-1">
 						{data?.settings && (

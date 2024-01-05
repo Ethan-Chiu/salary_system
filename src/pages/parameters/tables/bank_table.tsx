@@ -88,7 +88,11 @@ export function BankTable({ index, globalFilter }: any) {
 	const filterKey: RowItemKey = "bank_name";
 
 	if (isLoading) {
-		return <LoadingSpinner />; // TODO: Loading element with toast
+		return (
+			<div className="flex grow items-center justify-center">
+				<LoadingSpinner />
+			</div>
+		); // TODO: Loading element with toast
 	}
 
 	if (isError) {
