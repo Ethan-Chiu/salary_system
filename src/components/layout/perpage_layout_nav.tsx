@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState, type PropsWithChildren } from "react";
+import { useState, type PropsWithChildren, useRef } from "react";
 import { Sidebar } from "~/components/sidebar";
 import {
 	ResizableHandle,
@@ -16,6 +16,7 @@ export const PerpageLayoutNav = (
 	props: PropsWithChildren<PerpageLayoutProp>
 ) => {
 	const [isCollapsed, setIsCollapsed] = useState(false);
+	const ref = useRef<typeof ResizablePanel>(null);
 
 	return (
 		<>
@@ -41,6 +42,7 @@ export const PerpageLayoutNav = (
 					className="min-h-screen items-stretch"
 				>
 					<ResizablePanel
+						ref={ref}
 						defaultSize={265}
 						collapsedSize={3}
 						collapsible={true}
@@ -65,6 +67,8 @@ export const PerpageLayoutNav = (
 					>
 						<Sidebar
 							isCollapsed={isCollapsed}
+							collapseFunction={() => ref.current?.collapse()}
+							expandFunction={() => ref.current?.expand()}
 							className="hidden lg:block lg:border-border"
 						/>
 					</ResizablePanel>
