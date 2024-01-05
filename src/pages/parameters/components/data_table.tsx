@@ -26,6 +26,9 @@ import { DataTableToolbar } from "./data_table_toolbar";
 import { DataTablePagination } from "./data_table_pagination";
 import { Separator } from "~/components/ui/separator";
 import { ScrollArea } from "~/components/ui/scroll-area";
+import { Tabs, TabsContent } from "~/components/ui/tabs";
+import { DataTableDataHeader } from "./data_table_data_header";
+import { DataTableDataBody } from "./data_table_data_body";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
@@ -68,81 +71,34 @@ export function DataTable<TData>({
 	});
 
 	return (
-		<div className="flex h-full flex-col">
-			{/* TODO: fix global filter*/}
-			<DataTableToolbar
-				table={table}
-				globalFilter=""
-				filterKey={filterColumnKey}
-			/>
-			<Separator />
-			<div className="min-h-0 w-full flex-grow">
-				<ScrollArea className="h-full">
-					<Table className="border-b-[1px]">
-						<TableHeader className="bg-secondary">
-							{table.getHeaderGroups().map((headerGroup) => (
-								<TableRow
-									key={headerGroup.id}
-									className="sticky top-0 bg-secondary"
-								>
-									{headerGroup.headers.map((header) => {
-										return (
-											<TableHead
-												key={header.id}
-												colSpan={header.colSpan}
-											>
-												{header.isPlaceholder
-													? null
-													: flexRender(
-															header.column
-																.columnDef
-																.header,
-															header.getContext()
-													  )}
-											</TableHead>
-										);
-									})}
-								</TableRow>
-							))}
-						</TableHeader>
-						<TableBody>
-							{table.getRowModel().rows?.length ? (
-								table.getRowModel().rows.map((row) => (
-									<TableRow
-										key={row.id}
-										data-state={
-											row.getIsSelected() && "selected"
-										}
-									>
-										{row.getVisibleCells().map((cell) => (
-											<TableCell
-												key={cell.id}
-												align="center"
-												className="max-w-xs"
-											>
-												{flexRender(
-													cell.column.columnDef.cell,
-													cell.getContext()
-												)}
-											</TableCell>
-										))}
-									</TableRow>
-								))
-							) : (
-								<TableRow>
-									<TableCell
-										colSpan={columns.length}
-										className="h-24 max-w-xs text-center"
-									>
-										No results.
-									</TableCell>
-								</TableRow>
-							)}
-						</TableBody>
-					</Table>
-				</ScrollArea>
+		<Tabs defaultValue="now" className="h-full w-full">
+			<div className="flex h-full flex-col">
+				{/* TODO: fix global filter*/}
+				<DataTableToolbar
+					table={table}
+					globalFilter=""
+					filterKey={filterColumnKey}
+				/>
+				<Separator />
+				<TabsContent value="now" asChild>
+					<div className="flex min-h-0 w-full flex-grow flex-col">
+						{/* table header and body */}
+						<div className="min-h-0 w-full flex-grow">
+							<ScrollArea className="h-full">
+								<Table className="border-b-[1px]">
+									<DataTableDataHeader table={table} />
+									<DataTableDataBody table={table} />
+								</Table>
+							</ScrollArea>
+						</div>
+						{/* table pagination */}
+						<DataTablePagination
+							table={table}
+							className="bg-secondary"
+						/>
+					</div>
+				</TabsContent>
 			</div>
-			<DataTablePagination table={table} className="bg-secondary" />
-		</div>
+		</Tabs>
 	);
 }
