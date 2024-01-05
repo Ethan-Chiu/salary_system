@@ -12,8 +12,8 @@ export function Translate(word: string) {
 	if (word === "emp_trust_reserve_limit") return "員工信託提存金";
 	if (word === "org_special_trust_incent_limit") return "特別信託獎勵金公司";
 	if (word === "emp_special_trust_incent_limit") return "特別信託獎勵金員工";
-	if (word === "end_date") return "截止時間";
-	if (word === "start_date") return "開始時間";
+	if (word === "end_date") return "失效日";
+	if (word === "start_date") return "生效日";
 	if (word === "sick_leave_dock") return "病假扣薪";
 	if (word === "personal_leave_dock") return "事假扣薪";
 	if (word === "rate_of_unpaid_leave") return "不休假代金比率";
