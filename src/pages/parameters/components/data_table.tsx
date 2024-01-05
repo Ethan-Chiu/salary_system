@@ -25,6 +25,7 @@ import {
 import { DataTableToolbar } from "./data_table_toolbar";
 import { DataTablePagination } from "./data_table_pagination";
 import { Separator } from "~/components/ui/separator";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
@@ -75,7 +76,8 @@ export function DataTable<TData>({
 				filterKey={filterColumnKey}
 			/>
 			<Separator />
-			<div className="flex-grow">
+			<div className="min-h-0 w-full flex-grow">
+				<ScrollArea className="h-full">
 				<Table className="border-b-[1px]">
 					<TableHeader className=" bg-secondary">
 						{table.getHeaderGroups().map((headerGroup) => (
@@ -134,6 +136,7 @@ export function DataTable<TData>({
 						)}
 					</TableBody>
 				</Table>
+				</ScrollArea>
 			</div>
 			<DataTablePagination table={table} className="bg-secondary" />
 		</div>
