@@ -15,8 +15,7 @@ type PerpageLayoutProp = {
 export const PerpageLayoutNav = (
 	props: PropsWithChildren<PerpageLayoutProp>
 ) => {
-
-	const [isCollapsed, setIsCollapsed] = useState(false)
+	const [isCollapsed, setIsCollapsed] = useState(false);
 
 	return (
 		<>
@@ -48,25 +47,28 @@ export const PerpageLayoutNav = (
 						minSize={10}
 						maxSize={20}
 						onExpand={() => {
-								setIsCollapsed(false)
-								document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
+							setIsCollapsed(false);
+							document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
 								false
-								)}`
+							)}`;
 						}}
 						onCollapse={() => {
-								setIsCollapsed(true)
-								document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
+							setIsCollapsed(true);
+							document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
 								true
-								)}`
-							}}
+							)}`;
+						}}
 						className={cn(
 							isCollapsed &&
 								"min-w-[50px] transition-all duration-300 ease-in-out"
 						)}
 					>
-						<Sidebar isCollapsed={isCollapsed} className="hidden lg:block lg:border-border" />
+						<Sidebar
+							isCollapsed={isCollapsed}
+							className="hidden lg:block lg:border-border"
+						/>
 					</ResizablePanel>
-					<ResizableHandle withHandle />
+					<ResizableHandle />
 					<ResizablePanel
 						defaultSize={440}
 						minSize={30}
@@ -75,11 +77,7 @@ export const PerpageLayoutNav = (
 								"transition-all duration-300 ease-in-out"
 						)}
 					>
-							<div className="h-full px-4 py-6 lg:px-8">
-								<div className="h-full w-full">
-									{props.children}
-								</div>
-							</div>
+						<div className="h-full w-full">{props.children}</div>
 					</ResizablePanel>
 				</ResizablePanelGroup>
 			</main>

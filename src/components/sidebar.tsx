@@ -129,13 +129,14 @@ export function Sidebar({ className, isCollapsed }: SidebarProp) {
 				{data?.actions && (
 					<div className={cn("py-2", !isCollapsed && "px-3")}>
 						{!isCollapsed && (
-							<h2 className="mb-2 text-lg font-semibold tracking-tight">
+							<h2 className="px-4 mb-2 text-lg font-semibold tracking-tight">
 								Actions
 							</h2>
 						)}
 						<div className="space-y-1">
 							{actionLinks.map((link) => (
 								<CompNavLinkWrap
+									key={link.title}
 									navLink={link.url}
 									currentPath={pathname}
 									icon={link.icon}
@@ -147,10 +148,10 @@ export function Sidebar({ className, isCollapsed }: SidebarProp) {
 						</div>
 					</div>
 				)}
-				<Separator />
+				{isCollapsed && <Separator />}
 				<div className={cn("py-2", !isCollapsed && "px-3")}>
 					{!isCollapsed && (
-						<h2 className="mb-2 text-lg font-semibold tracking-tight">
+						<h2 className="px-4 mb-2 text-lg font-semibold tracking-tight">
 							Configurations
 						</h2>
 					)}

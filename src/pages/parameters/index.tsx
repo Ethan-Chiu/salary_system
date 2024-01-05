@@ -18,7 +18,18 @@ import { BonusPositionTable } from "./tables/bonus_position_table";
 import { BonusPositionTypeTable } from "./tables/bonus_position_type_table";
 import { BonusSeniorityTable } from "./tables/bonus_seniority_table";
 import { cn } from "~/lib/utils";
-import * as LucideIcons from "lucide-react";
+import {
+	ActivitySquare,
+	Briefcase,
+	Cake,
+	CircleDollarSign,
+	Clock,
+	CreditCard,
+	Key,
+	LucideIcon,
+	Users,
+} from "lucide-react";
+import { Separator } from "~/components/ui/separator";
 
 enum FilterMode {
 	Search,
@@ -33,6 +44,7 @@ type TableComponentProps = {
 type TableComponent = {
 	tag: string;
 	component: React.ReactElement<TableComponentProps>;
+	icon: LucideIcon;
 };
 
 const PageParameters: NextPageWithLayout = () => {
@@ -40,82 +52,95 @@ const PageParameters: NextPageWithLayout = () => {
 		{
 			tag: "請假加班",
 			component: <AttendanceTable />,
+			icon: Clock,
 		},
 		{
 			tag: "銀行",
 			component: <BankTable />,
+			icon: CreditCard,
 		},
 		{
 			tag: "勞健保費率",
 			component: <InsuranceRateTable />,
+			icon: ActivitySquare,
 		},
 		{
 			tag: "獎金",
 			component: <BonusTable />,
+			icon: CircleDollarSign,
 		},
 		{
 			tag: "獎金部門",
 			component: <BonusDepartmentTable />,
+			icon: Users,
 		},
 		{
 			tag: "獎金職等",
 			component: <BonusPositionTable />,
+			icon: Briefcase,
 		},
 		{
 			tag: "獎金職級",
 			component: <BonusPositionTypeTable />,
+			icon: Key,
 		},
 		{
 			tag: "獎金年資",
 			component: <BonusSeniorityTable />,
+			icon: Cake,
 		},
 	];
+
 	const [selectedTag, setSelectedTag] = useState<string>(tables[0]!.tag);
 
 	return (
 		<div className="flex h-screen flex-col">
 			<Header title="parameters" showOptions />
-			<ResizablePanelGroup direction="horizontal" className="grow">
-				<ResizablePanel defaultSize={15}>
-					<ScrollArea className="h-full">
-						<>
-							{tables.map((table) => (
-								<>
-									<div
-										key={table.tag}
-										className={cn(
-											"m-1 flex rounded-md border p-1 hover:bg-muted",
-											table.tag === selectedTag &&
-												"bg-muted"
-										)}
-										onClick={() =>
-											setSelectedTag(table.tag)
-										}
-									>
-										<LucideIcons.PenSquare
-											size={18}
-											className="mr-2 cursor-pointer"
-										/>
-										<div className="m-1">{table.tag}</div>
-									</div>
-								</>
-							))}
-						</>
-					</ScrollArea>
-				</ResizablePanel>
-				<ResizableHandle />
-				<ResizablePanel>
-					<ScrollArea className="h-full">
-						<div className="m-1">
-							{
-								tables.filter(
-									(table) => table.tag === selectedTag
-								)[0]!.component
-							}
+			<div className="m-4 flex-grow rounded-md border-2 min-h-0">
+				<ResizablePanelGroup direction="horizontal">
+					<ResizablePanel defaultSize={15} minSize={10}>
+						<div className="flex h-[48px] items-center justify-center text-lg">
+							<div>Tables</div>
 						</div>
-					</ScrollArea>
-				</ResizablePanel>
-			</ResizablePanelGroup>
+						<Separator />
+						<ScrollArea className="h-full">
+							{tables.map((table) => (
+								<div
+									key={table.tag}
+									className={cn(
+										"m-2 flex items-center rounded-md border p-1 hover:bg-muted",
+										table.tag === selectedTag && "bg-muted"
+									)}
+									onClick={() => setSelectedTag(table.tag)}
+								>
+									<table.icon
+										size={18}
+										className="ml-1 mr-2 cursor-pointer"
+									/>
+									<div className="m-1 truncate">
+										{table.tag}
+									</div>
+								</div>
+							))}
+						</ScrollArea>
+					</ResizablePanel>
+					<ResizableHandle />
+					<ResizablePanel minSize={40}>
+						{tables
+							.filter((table) => table.tag === selectedTag)
+							.map((t) => {
+								return (
+									<div key={t.tag} className="h-full">
+										{React.cloneElement<TableComponentProps>(
+											t.component,
+											{}
+										)}
+									</div>
+								);
+							})}
+					</ResizablePanel>
+				</ResizablePanelGroup>
+			</div>
 		</div>
 	);
 };

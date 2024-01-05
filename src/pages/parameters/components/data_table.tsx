@@ -24,6 +24,8 @@ import {
 } from "~/components/ui/table";
 import { DataTableToolbar } from "./data_table_toolbar";
 import { DataTablePagination } from "./data_table_pagination";
+import { Separator } from "~/components/ui/separator";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
@@ -66,70 +68,81 @@ export function DataTable<TData>({
 	});
 
 	return (
-		<div className="space-y-4">
-			{/* TODO: fix */}
+		<div className="flex h-full flex-col">
+			{/* TODO: fix global filter*/}
 			<DataTableToolbar
 				table={table}
 				globalFilter=""
 				filterKey={filterColumnKey}
 			/>
-			<div className="rounded-md border">
-				<Table>
-					<TableHeader>
-						{table.getHeaderGroups().map((headerGroup) => (
-							<TableRow key={headerGroup.id}>
-								{headerGroup.headers.map((header) => {
-									return (
-										<TableHead
-											key={header.id}
-											colSpan={header.colSpan}
-										>
-											{header.isPlaceholder
-												? null
-												: flexRender(
-														header.column.columnDef
-															.header,
-														header.getContext()
-												  )}
-										</TableHead>
-									);
-								})}
-							</TableRow>
-						))}
-					</TableHeader>
-					<TableBody>
-						{table.getRowModel().rows?.length ? (
-							table.getRowModel().rows.map((row) => (
+			<Separator />
+			<div className="min-h-0 w-full flex-grow">
+				<ScrollArea className="h-full">
+					<Table className="border-b-[1px]">
+						<TableHeader className="bg-secondary">
+							{table.getHeaderGroups().map((headerGroup) => (
 								<TableRow
-									key={row.id}
-									data-state={
-										row.getIsSelected() && "selected"
-									}
+									key={headerGroup.id}
+									className="sticky top-0 bg-secondary"
 								>
-									{row.getVisibleCells().map((cell) => (
-										<TableCell key={cell.id} align="center">
-											{flexRender(
-												cell.column.columnDef.cell,
-												cell.getContext()
-											)}
-										</TableCell>
-									))}
+									{headerGroup.headers.map((header) => {
+										return (
+											<TableHead
+												key={header.id}
+												colSpan={header.colSpan}
+											>
+												{header.isPlaceholder
+													? null
+													: flexRender(
+															header.column
+																.columnDef
+																.header,
+															header.getContext()
+													  )}
+											</TableHead>
+										);
+									})}
 								</TableRow>
-							))
-						) : (
-							<TableRow>
-								<TableCell
-									colSpan={columns.length}
-									className="h-24 text-center"
-								>
-									No results.
-								</TableCell>
-							</TableRow>
-						)}
-					</TableBody>
-				</Table>
+							))}
+						</TableHeader>
+						<TableBody>
+							{table.getRowModel().rows?.length ? (
+								table.getRowModel().rows.map((row) => (
+									<TableRow
+										key={row.id}
+										data-state={
+											row.getIsSelected() && "selected"
+										}
+									>
+										{row.getVisibleCells().map((cell) => (
+											<TableCell
+												key={cell.id}
+												align="center"
+												className="max-w-xs"
+											>
+												{flexRender(
+													cell.column.columnDef.cell,
+													cell.getContext()
+												)}
+											</TableCell>
+										))}
+									</TableRow>
+								))
+							) : (
+								<TableRow>
+									<TableCell
+										colSpan={columns.length}
+										className="h-24 max-w-xs text-center"
+									>
+										No results.
+									</TableCell>
+								</TableRow>
+							)}
+						</TableBody>
+					</Table>
+				</ScrollArea>
 			</div>
-			<DataTablePagination table={table} />
+			<DataTablePagination table={table} className="bg-secondary" />
 		</div>
 	);
 }

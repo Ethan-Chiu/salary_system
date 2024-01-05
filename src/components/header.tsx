@@ -14,7 +14,7 @@ export const Header = (props: PropsWithChildren<TitleProp>) => {
 
 	return (
 		<div className={props.className}>
-			<div className="my-4 flex">
+			<div className="m-4 flex">
 				<h2 className="text-2xl font-semibold tracking-tight">
 					{props.title.charAt(0).toUpperCase() +
 						props.title.slice(1).toLowerCase()}

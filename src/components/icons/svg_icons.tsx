@@ -1,4 +1,4 @@
-import * as Lucide from "lucide-react"
+import * as Lucide from "lucide-react";
 export function IconFunctions() {
 	return (
 		<svg
@@ -101,9 +101,9 @@ export function IconProfiles() {
 	);
 }
 
-export function IconCoins(size?: number) {
+export function IconCoins({ size }: { size?: number }) {
 	let icon_size = 4;
-	if(size !== undefined) {
+	if (size !== undefined) {
 		icon_size = size;
 	}
 	return (
@@ -113,76 +113,110 @@ export function IconCoins(size?: number) {
 			data-name="Layer 1"
 			viewBox="0 0 24 24"
 			fill="currentColor"
-			className={"mr-2 h-" + icon_size.toString() + " w-" + icon_size.toString()}
+			className={
+				"h- mr-2" + icon_size.toString() + " w-" + icon_size.toString()
+			}
 		>
 			<path d="M16.5,0c-4.206,0-7.5,1.977-7.5,4.5v2.587c-.483-.057-.985-.087-1.5-.087C3.294,7,0,8.977,0,11.5v8c0,2.523,3.294,4.5,7.5,4.5,3.407,0,6.216-1.297,7.16-3.131,.598,.087,1.214,.131,1.84,.131,4.206,0,7.5-1.977,7.5-4.5V4.5c0-2.523-3.294-4.5-7.5-4.5Zm5.5,12.5c0,1.18-2.352,2.5-5.5,2.5-.512,0-1.014-.035-1.5-.103v-1.984c.49,.057,.992,.087,1.5,.087,2.194,0,4.14-.538,5.5-1.411v.911ZM2,14.589c1.36,.873,3.306,1.411,5.5,1.411s4.14-.538,5.5-1.411v.911c0,1.18-2.352,2.5-5.5,2.5s-5.5-1.32-5.5-2.5v-.911Zm20-6.089c0,1.18-2.352,2.5-5.5,2.5-.535,0-1.06-.038-1.566-.112-.193-.887-.8-1.684-1.706-2.323,.984,.28,2.092,.435,3.272,.435,2.194,0,4.14-.538,5.5-1.411v.911Zm-5.5-6.5c3.148,0,5.5,1.32,5.5,2.5s-2.352,2.5-5.5,2.5-5.5-1.32-5.5-2.5,2.352-2.5,5.5-2.5ZM7.5,9c3.148,0,5.5,1.32,5.5,2.5s-2.352,2.5-5.5,2.5-5.5-1.32-5.5-2.5,2.352-2.5,5.5-2.5Zm0,13c-3.148,0-5.5-1.32-5.5-2.5v-.911c1.36,.873,3.306,1.411,5.5,1.411s4.14-.538,5.5-1.411v.911c0,1.18-2.352,2.5-5.5,2.5Zm9-3c-.512,0-1.014-.035-1.5-.103v-1.984c.49,.057,.992,.087,1.5,.087,2.194,0,4.14-.538,5.5-1.411v.911c0,1.18-2.352,2.5-5.5,2.5Z" />
 		</svg>
 	);
 }
 
-
-export function IconCreditCard(size?:number) {
-	let icon_size = (size ?? 4);
+export function IconCreditCard(size?: number) {
+	let icon_size = size ?? 4;
 	return (
-		<Lucide.CreditCard 
-			className={"mr-2 h-" + icon_size.toString() + " w-" + icon_size.toString()}
+		<Lucide.CreditCard
+			className={
+				"h- mr-2" + icon_size.toString() + " w-" + icon_size.toString()
+			}
 		/>
 	);
 }
 
 export function IconDollar(size?: number) {
-	let icon_size = (size ?? 4);
-	return <Lucide.CircleDollarSign 
-		className={"mr-2 h-" + icon_size.toString() + " w-" + icon_size.toString()}
-	/>
+	let icon_size = size ?? 4;
+	return (
+		<Lucide.CircleDollarSign
+			className={
+				"h- mr-2" + icon_size.toString() + " w-" + icon_size.toString()
+			}
+		/>
+	);
 }
 
 export function IconCake(size?: number) {
-	let icon_size = (size ?? 4);
-	return <Lucide.Cake 
-		className={"mr-2 h-" + icon_size.toString() + " w-" + icon_size.toString()}
-	/>
+	let icon_size = size ?? 4;
+	return (
+		<Lucide.Cake
+			className={
+				"h- mr-2" + icon_size.toString() + " w-" + icon_size.toString()
+			}
+		/>
+	);
 }
 
-
 export function IconGift(size?: number) {
-	let icon_size = (size ?? 4);
-	return <Lucide.Gift 
-		className={"mr-2 h-" + icon_size.toString() + " w-" + icon_size.toString()}
-	/>
+	let icon_size = size ?? 4;
+	return (
+		<Lucide.Gift
+			className={
+				"h- mr-2" + icon_size.toString() + " w-" + icon_size.toString()
+			}
+		/>
+	);
 }
 
 export function IconClock(size?: number) {
-	let icon_size = (size ?? 4);
-	return <Lucide.Clock 
-		className={"mr-2 h-" + icon_size.toString() + " w-" + icon_size.toString()}
-	/>
+	let icon_size = size ?? 4;
+	return (
+		<Lucide.Clock
+			className={
+				"h- mr-2" + icon_size.toString() + " w-" + icon_size.toString()
+			}
+		/>
+	);
 }
 
 export function IconUsers(size?: number) {
-	let icon_size = (size ?? 4);
-	return <Lucide.UsersIcon
-		className={"mr-2 h-" + icon_size.toString() + " w-" + icon_size.toString()}
-	/>
+	let icon_size = size ?? 4;
+	return (
+		<Lucide.UsersIcon
+			className={
+				"h- mr-2" + icon_size.toString() + " w-" + icon_size.toString()
+			}
+		/>
+	);
 }
 
 export function IconBriefcase(size?: number) {
-	let icon_size = (size ?? 4);
-	return <Lucide.BriefcaseIcon
-		className={"mr-2 h-" + icon_size.toString() + " w-" + icon_size.toString()}
-	/>
+	let icon_size = size ?? 4;
+	return (
+		<Lucide.BriefcaseIcon
+			className={
+				"h- mr-2" + icon_size.toString() + " w-" + icon_size.toString()
+			}
+		/>
+	);
 }
 
 export function IconKey(size?: number) {
-	let icon_size = (size ?? 4);
-	return <Lucide.KeyIcon  
-		className={"mr-2 h-" + icon_size.toString() + " w-" + icon_size.toString()}
-	/>
+	let icon_size = size ?? 4;
+	return (
+		<Lucide.KeyIcon
+			className={
+				"h- mr-2" + icon_size.toString() + " w-" + icon_size.toString()
+			}
+		/>
+	);
 }
 
 export function IconShieldCheck(size?: number) {
-	let icon_size = (size ?? 4);
-	return <Lucide.ShieldCheckIcon  
-		className={"mr-2 h-" + icon_size.toString() + " w-" + icon_size.toString()}
-	/>
+	let icon_size = size ?? 4;
+	return (
+		<Lucide.ShieldCheckIcon
+			className={
+				"h- mr-2" + icon_size.toString() + " w-" + icon_size.toString()
+			}
+		/>
+	);
 }
