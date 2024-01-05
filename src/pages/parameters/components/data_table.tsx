@@ -25,7 +25,7 @@ import {
 import { DataTableToolbar } from "./data_table_toolbar";
 import { DataTablePagination } from "./data_table_pagination";
 import { Separator } from "~/components/ui/separator";
-import { ScrollArea } from "~/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Tabs, TabsContent } from "~/components/ui/tabs";
 import { DataTableDataHeader } from "./data_table_data_header";
 import { DataTableDataBody } from "./data_table_data_body";
@@ -34,12 +34,14 @@ interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
 	data: TData[];
 	filterColumnKey: keyof TData;
+	showTabs?: boolean;
 }
 
 export function DataTable<TData>({
 	columns,
 	data,
 	filterColumnKey,
+	showTabs
 }: DataTableProps<TData>) {
 	const [rowSelection, setRowSelection] = React.useState({});
 	const [columnVisibility, setColumnVisibility] =
@@ -78,17 +80,19 @@ export function DataTable<TData>({
 					table={table}
 					globalFilter=""
 					filterKey={filterColumnKey}
+					showTabs={showTabs}
 				/>
 				<Separator />
 				<TabsContent value="now" asChild>
 					<div className="flex min-h-0 w-full flex-grow flex-col">
 						{/* table header and body */}
 						<div className="min-h-0 w-full flex-grow">
-							<ScrollArea className="h-full">
+							<ScrollArea className="h-full scroll">
 								<Table className="border-b-[1px]">
 									<DataTableDataHeader table={table} />
 									<DataTableDataBody table={table} />
 								</Table>
+								<ScrollBar orientation="horizontal" hidden={true}/>
 							</ScrollArea>
 						</div>
 						{/* table pagination */}
