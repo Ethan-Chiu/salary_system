@@ -68,7 +68,7 @@ export const PerpageLayoutNav = (
 							className="hidden lg:block lg:border-border"
 						/>
 					</ResizablePanel>
-					<ResizableHandle withHandle />
+					<ResizableHandle />
 					<ResizablePanel
 						defaultSize={440}
 						minSize={30}

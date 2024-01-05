@@ -6,16 +6,18 @@ import {
 } from "@radix-ui/react-icons";
 import { Table } from "@tanstack/react-table";
 import { Button } from "~/components/ui/button";
+import { cn } from "~/lib/utils";
 
-interface DataTablePaginationProps<TData> {
+interface DataTablePaginationProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
 	table: Table<TData>;
 }
 
 export function DataTablePagination<TData>({
 	table,
+	className
 }: DataTablePaginationProps<TData>) {
 	return (
-		<div className="justify-betFween flex items-center m-2">
+		<div className={cn("justify-between flex items-center p-2", className)}>
 			<div className="flex-1 text-sm text-muted-foreground">
 				{table.getFilteredSelectedRowModel().rows.length} of{" "}
 				{table.getFilteredRowModel().rows.length} row(s) selected.

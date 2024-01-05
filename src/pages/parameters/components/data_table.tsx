@@ -24,6 +24,7 @@ import {
 } from "~/components/ui/table";
 import { DataTableToolbar } from "./data_table_toolbar";
 import { DataTablePagination } from "./data_table_pagination";
+import { Separator } from "~/components/ui/separator";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
@@ -66,16 +67,17 @@ export function DataTable<TData>({
 	});
 
 	return (
-		<div>
-			{/* TODO: fix */}
+		<div className="flex h-full flex-col">
+			{/* TODO: fix global filter*/}
 			<DataTableToolbar
 				table={table}
 				globalFilter=""
 				filterKey={filterColumnKey}
 			/>
-			<div className="rounded-md border">
-				<Table>
-					<TableHeader>
+			<Separator />
+			<div className="flex-grow">
+				<Table className="border-b-[1px]">
+					<TableHeader className=" bg-secondary">
 						{table.getHeaderGroups().map((headerGroup) => (
 							<TableRow key={headerGroup.id}>
 								{headerGroup.headers.map((header) => {
@@ -107,7 +109,11 @@ export function DataTable<TData>({
 									}
 								>
 									{row.getVisibleCells().map((cell) => (
-										<TableCell key={cell.id} align="center" className="max-w-xs">
+										<TableCell
+											key={cell.id}
+											align="center"
+											className="max-w-xs"
+										>
 											{flexRender(
 												cell.column.columnDef.cell,
 												cell.getContext()
@@ -120,7 +126,7 @@ export function DataTable<TData>({
 							<TableRow>
 								<TableCell
 									colSpan={columns.length}
-									className="h-24 text-center max-w-xs"
+									className="h-24 max-w-xs text-center"
 								>
 									No results.
 								</TableCell>
@@ -129,7 +135,7 @@ export function DataTable<TData>({
 					</TableBody>
 				</Table>
 			</div>
-			<DataTablePagination table={table} />
+			<DataTablePagination table={table} className="bg-secondary" />
 		</div>
 	);
 }
