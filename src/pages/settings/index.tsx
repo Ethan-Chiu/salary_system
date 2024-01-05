@@ -59,6 +59,7 @@ const PageSettings: NextPageWithLayout = () => {
 								</p>
 							</div>
 						</div>
+						{changePasswordForm("card")}
 						<Separator className="my-4" />
 					</TabsContent>
 					<TabsContent
