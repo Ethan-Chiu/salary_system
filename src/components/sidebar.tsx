@@ -36,9 +36,8 @@ export const playlists = [
 ];
 
 type NavLinkProp = {
-	navLink: string;
+	navLinkEntry: NavLinkEntry;
 	currentPath: string;
-	icon: LucideIcon;
 	collapsed: boolean;
 	collapseFunction: () => void;
 	expandFunction: () => void;
@@ -50,17 +49,22 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<Link
-						key={props.navLink}
-						href={props.navLink}
+						key={props.navLinkEntry.url}
+						href={props.navLinkEntry.url}
+						onClick={() => {
+							if (!props.navLinkEntry.collapsed) {
+								props.expandFunction();
+							}
+						}}
 						className={cn(
 							buttonVariants({ variant: "ghost" }),
-							props.currentPath === props.navLink
+							props.currentPath === props.navLinkEntry.url
 								? "bg-muted hover:bg-muted"
 								: "",
 							"w-full justify-start"
 						)}
 					>
-						<props.icon className="h-4 w-4" />
+						<props.navLinkEntry.icon className="h-4 w-4" />
 						<TooltipContent>{props.children}</TooltipContent>
 					</Link>
 				</TooltipTrigger>
@@ -68,25 +72,23 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 		</TooltipProvider>
 	) : (
 		<Link
-			key={props.navLink}
-			href={props.navLink}
+			key={props.navLinkEntry.url}
+			href={props.navLinkEntry.url}
 			onClick={() => {
-				if (props.navLink === "/parameters") {
+				if (props.navLinkEntry.collapsed) {
 					props.collapseFunction();
-				} else {
-					props.expandFunction();
 				}
 			}}
 			className={cn(
 				buttonVariants({ variant: "ghost" }),
-				props.currentPath === props.navLink
+				props.currentPath === props.navLinkEntry.url
 					? "bg-muted hover:bg-muted"
 					: "",
 				"w-full justify-start"
 			)}
 		>
 			<div className="flex ">
-				<props.icon className="h-4 w-4 flex-shrink-0" />
+				<props.navLinkEntry.icon className="h-4 w-4 flex-shrink-0" />
 				<div className="line-clamp-1 break-all ps-2">
 					{props.children}
 				</div>
@@ -105,6 +107,7 @@ type NavLinkEntry = {
 	title: string;
 	icon: LucideIcon;
 	url: string;
+	collapsed: boolean;
 };
 
 const actionLinks: NavLinkEntry[] = [
@@ -112,16 +115,40 @@ const actionLinks: NavLinkEntry[] = [
 		title: "Functions",
 		icon: LayoutGrid,
 		url: "/functions",
+		collapsed: false,
 	},
 	{
 		title: "Parameters",
 		icon: SlidersHorizontal,
 		url: "/parameters",
+		collapsed: true,
 	},
 	{
 		title: "Modify",
 		icon: CalendarRange,
 		url: "/modify",
+		collapsed: false,
+	},
+];
+
+const settingLinks: NavLinkEntry[] = [
+	{
+		title: "Settings",
+		icon: Settings,
+		url: "/settings",
+		collapsed: false,
+	},
+	{
+		title: "Roles",
+		icon: ShieldCheck,
+		url: "/roles",
+		collapsed: false,
+	},
+	{
+		title: "Report",
+		icon: GanttChartSquare,
+		url: "/report",
+		collapsed: false,
 	},
 ];
 
@@ -155,9 +182,8 @@ export function Sidebar({
 							{actionLinks.map((link) => (
 								<CompNavLinkWrap
 									key={link.title}
-									navLink={link.url}
+									navLinkEntry={link}
 									currentPath={pathname}
-									icon={link.icon}
 									collapsed={isCollapsed}
 									collapseFunction={collapseFunction}
 									expandFunction={expandFunction}
@@ -176,40 +202,18 @@ export function Sidebar({
 						</div>
 					)}
 					<div className="space-y-1">
-						{data?.settings && (
+						{settingLinks.map((link) => (
 							<CompNavLinkWrap
-								navLink="settings"
+								key={link.title}
+								navLinkEntry={link}
 								currentPath={pathname}
-								icon={Settings}
 								collapsed={isCollapsed}
 								collapseFunction={collapseFunction}
 								expandFunction={expandFunction}
 							>
-								Settings
+								{link.title}
 							</CompNavLinkWrap>
-						)}
-						{data?.roles && (
-							<CompNavLinkWrap
-								navLink="roles"
-								currentPath={pathname}
-								icon={ShieldCheck}
-								collapsed={isCollapsed}
-								collapseFunction={collapseFunction}
-								expandFunction={expandFunction}
-							>
-								Roles
-							</CompNavLinkWrap>
-						)}
-						<CompNavLinkWrap
-							navLink=""
-							currentPath={pathname}
-							icon={GanttChartSquare}
-							collapsed={isCollapsed}
-							collapseFunction={collapseFunction}
-							expandFunction={expandFunction}
-						>
-							Report
-						</CompNavLinkWrap>
+						))}
 					</div>
 				</div>
 			</div>

@@ -7,6 +7,7 @@ import {
 	ResizablePanelGroup,
 } from "../ui/resizable";
 import { cn } from "~/lib/utils";
+import { ImperativePanelHandle } from "react-resizable-panels";
 
 type PerpageLayoutProp = {
 	pageTitle: string;
@@ -16,7 +17,7 @@ export const PerpageLayoutNav = (
 	props: PropsWithChildren<PerpageLayoutProp>
 ) => {
 	const [isCollapsed, setIsCollapsed] = useState(false);
-	const ref = useRef<typeof ResizablePanel>(null);
+	const ref = useRef<ImperativePanelHandle>(null);
 
 	return (
 		<>
