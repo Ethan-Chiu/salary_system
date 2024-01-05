@@ -106,6 +106,12 @@ export function Translate(word: string) {
 	if (word === "level") return "級距";
 	if (word === "level_end") return "迄";
 	if (word === "level_start") return "起";
+	if (word === "bonus_ratio") return "獎金比率"
+	if (word === "dir_sup_comp") return "董監事酬勞"
+	if (word === "food_bonus") return "伙食津貼"
+	if (word === "moon_fes_bonus") return "中秋獎金"
+	if (word === "dragonboat_fes_bonus") return "端午獎金"
+	if (word === "performance_bonus") return "績效獎金"
 
 	// button
 	if (word === "next_step") return "下一步";

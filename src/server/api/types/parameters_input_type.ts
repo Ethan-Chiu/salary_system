@@ -245,6 +245,11 @@ const EmployeePayment = z.object({
 	h_i: z.number(),
 	labor_retirement: z.number(),
 	occupational_injury: z.number(),
+	dir_sup_comp: z.number(),
+	food_bonus: z.number(),
+	moon_fes_bonus: z.number(),
+	dragonboat_fes_bonus: z.number(),
+	performance_bonus: z.number(),
 });
 
 export const createEmployeePaymentAPI = EmployeePayment.merge(DateAPI);

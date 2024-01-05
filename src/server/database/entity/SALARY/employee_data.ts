@@ -33,6 +33,7 @@ export class EmployeeData extends Model<
     declare departure_date: Date | null;
     declare identity_number: string;
     declare bonus_calculation: boolean;
+    declare bonus_ratio: number;
     declare disability_level: string;
     declare labor_retirement_self_ratio: number;
     declare has_esot: boolean;
@@ -145,6 +146,10 @@ EmployeeData.init(
         bonus_calculation: {
             type: DataTypes.BOOLEAN,
 			allowNull: false,
+        },
+        bonus_ratio:{
+            type: DataTypes.FLOAT,
+            allowNull: false,
         },
         disability_level:{
             type: DataTypes.STRING(32),

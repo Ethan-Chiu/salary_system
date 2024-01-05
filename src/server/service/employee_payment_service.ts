@@ -32,6 +32,11 @@ export class EmployeePaymentService {
         occupational_injury,
         start_date,
         end_date,
+		dir_sup_comp,
+		food_bonus,
+		moon_fes_bonus,
+		dragonboat_fes_bonus,
+		performance_bonus,
 	}: z.infer<typeof createEmployeePaymentService>): Promise<EmployeePayment> {
 		const current_date_string = get_date_string(new Date());
 		check_date(start_date, end_date, current_date_string);
@@ -54,6 +59,11 @@ export class EmployeePaymentService {
             occupational_injury: occupational_injury,
             start_date: start_date ?? current_date_string,
 			end_date: end_date,
+			dir_sup_comp: dir_sup_comp,
+			food_bonus: food_bonus,
+			moon_fes_bonus: moon_fes_bonus,
+			dragonboat_fes_bonus: dragonboat_fes_bonus,
+			performance_bonus: performance_bonus,
 			create_by: "system",
 			update_by: "system",
 		});
@@ -133,6 +143,11 @@ export class EmployeePaymentService {
         occupational_injury,
         start_date,
         end_date,
+		dir_sup_comp: dir_sup_comp,
+		food_bonus: food_bonus,
+		moon_fes_bonus: moon_fes_bonus,
+		dragonboat_fes_bonus: dragonboat_fes_bonus,
+		performance_bonus: performance_bonus,
 	}: z.infer<typeof updateEmployeePaymentService>): Promise<void> {
 		const employeePayment = await this.getEmployeePaymentById(id!);
 		if (employeePayment == null) {
@@ -158,6 +173,11 @@ export class EmployeePaymentService {
                 occupational_injury: select_value(occupational_injury, employeePayment.occupational_injury),
                 start_date: select_value(start_date, employeePayment.start_date),
                 end_date: select_value(end_date, employeePayment.end_date),
+				dir_sup_comp: select_value(dir_sup_comp, employeePayment.dir_sup_comp),
+				food_bonus: select_value(food_bonus, employeePayment.food_bonus),
+				moon_fes_bonus: select_value(moon_fes_bonus, employeePayment.moon_fes_bonus),
+				dragonboat_fes_bonus: select_value(dragonboat_fes_bonus, employeePayment.dragonboat_fes_bonus),
+				performance_bonus: select_value(performance_bonus, employeePayment.performance_bonus),
 				update_by: "system",
 			},
 			{ where: { id: id } }
