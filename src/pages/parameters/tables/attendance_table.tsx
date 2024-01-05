@@ -54,7 +54,9 @@ const columns = [
 						<Button
 							variant="ghost"
 							onClick={() =>
-								column.toggleSorting(column.getIsSorted() === "asc")
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
 							}
 						>
 							Parameter
@@ -88,9 +90,7 @@ const columns = [
 			}
 			return (
 				<div className="flex justify-center">
-					<div className="text-center font-medium">
-						{formatted}
-					</div>
+					<div className="text-center font-medium">{formatted}</div>
 				</div>
 			);
 		},
@@ -193,7 +193,11 @@ export function AttendanceTable({ index, globalFilter }: any) {
 	const filterKey: RowItemKey = "name";
 
 	if (isLoading) {
-		return <LoadingSpinner />; // TODO: Loading element with toast
+		return (
+			<div className="flex grow items-center justify-center">
+				<LoadingSpinner />
+			</div>
+		); // TODO: Loading element with toast
 	}
 
 	if (isError) {
@@ -207,10 +211,6 @@ export function AttendanceTable({ index, globalFilter }: any) {
 			filterColumnKey={filterKey}
 		/>
 	);
-
-	// useMemo(() => {
-	// 	table.getColumn(filter_key)?.setFilterValue(globalFilter);
-	// }, [globalFilter]);
 }
 
 function CompDropdown({ row }: { row: RowItem }) {

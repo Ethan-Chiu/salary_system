@@ -3,11 +3,7 @@ import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { DataTable } from "../components/data_table";
-import {
-	c_CreateDateStr,
-	c_EndDateStr,
-	c_StartDateStr,
-} from "../constant";
+import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
 import { BonusPosition } from "~/server/database/entity/SALARY/bonus_position";
 import { LoadingSpinner } from "~/components/loading";
 
@@ -35,13 +31,19 @@ const columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="pl-4 w-[400px] lowercase">{row.getValue("position")}</div>
+			<div className="w-[400px] pl-4 lowercase">
+				{row.getValue("position")}
+			</div>
 		),
 	}),
 	columnHelper.accessor("multiplier", {
 		header: () => <div className="text-center">Multiplier</div>,
 		cell: ({ row }) => {
-			return <div className="flex justify-center"><div className="w-80 text-center font-medium">{`${row.original.multiplier}`}</div></div>;
+			return (
+				<div className="flex justify-center">
+					<div className="w-80 text-center font-medium">{`${row.original.multiplier}`}</div>
+				</div>
+			);
 		},
 	}),
 ];
@@ -51,7 +53,8 @@ function bonusPositionMapper(bonusPositionData: BonusPosition[]): RowItem[] {
 		return {
 			position: d.position,
 			multiplier: d.multiplier,
-		}})
+		};
+	});
 }
 
 export function BonusPositionTable({ index, globalFilter }: any) {
@@ -60,7 +63,11 @@ export function BonusPositionTable({ index, globalFilter }: any) {
 	const filterKey: RowItemKey = "position";
 
 	if (isLoading) {
-		return <LoadingSpinner />; // TODO: Loading element with toast
+		return (
+			<div className="flex grow items-center justify-center">
+				<LoadingSpinner />
+			</div>
+		); // TODO: Loading element with toast
 	}
 
 	if (isError) {
