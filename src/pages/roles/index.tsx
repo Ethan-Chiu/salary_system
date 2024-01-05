@@ -59,7 +59,7 @@ const PageRoles: NextPageWithLayout = () => {
 		<>
 			{/* header */}
 			<Header title="roles"/>
-			<Card className="my-6">
+			<Card className="m-4">
 				<CardHeader>
 					<CardTitle>Team Members</CardTitle>
 					<CardDescription>

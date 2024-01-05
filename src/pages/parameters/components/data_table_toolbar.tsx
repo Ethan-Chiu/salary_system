@@ -12,7 +12,7 @@ export function DataTableToolbar<TData>({
   table, globalFilter, filterKey
 }: DataTableToolbarProps<TData>) {
   return (
-    <div className="flex items-center justify-between px-2 py-6">
+    <div className="flex items-center justify-between px-2 py-2">
         {/* search bar */}
         <Input
             disabled={globalFilter !== ""} // TODO: fix
