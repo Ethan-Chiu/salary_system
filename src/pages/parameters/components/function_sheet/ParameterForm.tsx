@@ -89,6 +89,8 @@ export function ParameterForm({
 	const deleteFunction = functions![table_name]?.deleteFunction;
 
 	const original_data = queryFunction.data;
+	
+	
 
 
 	const buttonRef = useRef<HTMLButtonElement | null>(null);

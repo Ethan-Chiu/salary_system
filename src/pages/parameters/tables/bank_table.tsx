@@ -5,6 +5,7 @@ import { ArrowUpDown } from "lucide-react";
 import { DataTable } from "../components/data_table";
 import { BankSetting } from "~/server/database/entity/SALARY/bank_setting";
 import { LoadingSpinner } from "~/components/loading";
+import { TABLE_BANK_SETTING } from "~/pages/table_names";
 
 export type RowItem = {
 	bank_name: string;
@@ -22,19 +23,25 @@ const columns = [
 	columnHelper.accessor("bank_name", {
 		header: ({ column }) => {
 			return (
-				<Button
-					variant="ghost"
-					onClick={() =>
-						column.toggleSorting(column.getIsSorted() === "asc")
-					}
-				>
-					Bank
-					<ArrowUpDown className="ml-2 h-4 w-4" />
-				</Button>
+				<div className="flex justify-center">
+					<div className="text-center font-medium pl-4 lowercase">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							Bank
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
 			);
 		},
 		cell: ({ row }) => (
-			<div className="w-[400px] pl-4 lowercase">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
+			<div className="pl-4 lowercase">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
 		),
 	}),
 	columnHelper.accessor("org_name", {
@@ -104,6 +111,7 @@ export function BankTable({ index, globalFilter }: any) {
 			columns={columns}
 			data={bankSettingMapper(data)}
 			filterColumnKey={filterKey}
+			table_name={TABLE_BANK_SETTING}
 		/>
 	);
 }

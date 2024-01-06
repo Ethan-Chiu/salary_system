@@ -27,6 +27,7 @@ import * as TN from "~/pages/table_names";
 import { getSchema } from "~/pages/modify/Schemas/schemas";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Button } from "~/components/ui/button";
+import { Translate } from "~/pages/develop_parameters/utils/translation";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	table_name: string;
@@ -88,9 +89,11 @@ export function DataTableFunctions({
 					</DropdownMenu>
 					<SheetContent>
 						<SheetHeader>
-							<SheetTitle>Modify {table_name}</SheetTitle>
+							<SheetTitle>{Translate(mode)! + Translate("form") + "(" + table_name + ")"}</SheetTitle>
 							<SheetDescription>
-								Make changes to the table here.
+								{(mode === "create") 
+                                    ?"Fill in the parameters to create new table."
+                                    :"Make changes to the table by modifying the parameters."}
 							</SheetDescription>
 						</SheetHeader>
 						<br />

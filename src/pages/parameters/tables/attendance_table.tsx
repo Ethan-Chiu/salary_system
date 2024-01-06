@@ -51,7 +51,7 @@ const columns = [
 		header: ({ column }) => {
 			return (
 				<div className="flex justify-center">
-					<div className="text-center font-medium">
+					<div className="text-center font-medium pl-4">
 						<Button
 							variant="ghost"
 							onClick={() =>
