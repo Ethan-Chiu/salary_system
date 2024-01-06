@@ -31,7 +31,7 @@ import {
 	DialogFooter,
 } from "~/components/ui/dialog";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
-import { PenSquare } from "lucide-react";
+import { PenSquare, Trash2 } from "lucide-react";
 
 import { SheetClose } from "~/components/ui/sheet";
 import { Input } from "~/components/ui/input";
@@ -87,6 +87,7 @@ export function ParameterForm({
 	const createFunction = functions![table_name]?.createFunction;
 	const deleteFunction = functions![table_name]?.deleteFunction;
 	const isList = Array.isArray(queryFunction.data);
+	const onlyOne = (isList)?(queryFunction.data.length !== 1)?false:true:true;
 
 	const [originalData, setOriginalData] = useState(
 		isList ? null : queryFunction.data
@@ -135,17 +136,28 @@ export function ParameterForm({
 									return (
 										<TableRow key={data.id}>
 											<TableCell className="items-center">
-												<PenSquare
-													size={18}
-													className="cursor-pointer"
-													onClick={() => {
-														setOriginalData(
-															queryFunction.data[
-																index
-															]
-														);
-													}}
-												/>
+												{mode === "modify" ? (
+													<PenSquare
+														size={18}
+														className="cursor-pointer"
+														onClick={() => {
+															setOriginalData(
+																queryFunction
+																	.data[index]
+															);
+														}}
+													/>
+												) : (
+													<Trash2 
+														size={18}
+														className="cursor-pointer"
+														onClick={() => {
+															deleteFunction.mutate(
+																{id: queryFunction.data[index].id}
+															);
+														}}
+													/>
+												)}
 											</TableCell>
 											{Object.keys(data).map((key) => {
 												return (
@@ -209,9 +221,13 @@ export function ParameterForm({
 		}
 	};
 
+	if(mode === "delete" && (onlyOne))	return <p>There's only one data left. Please create a new one before you continue to delete.</p>
+
 	if (originalData === null && mode !== "create") {
 		return <ViewAllDatas />;
 	}
+
+
 	return (
 		<AutoForm
 			className="m-5"
