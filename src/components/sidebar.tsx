@@ -1,5 +1,5 @@
 import { cn } from "~/lib/utils";
-import { Button, buttonVariants } from "~/components/ui/button";
+import { buttonVariants } from "~/components/ui/button";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import type { PropsWithChildren } from "react";
@@ -9,8 +9,6 @@ import {
 	GanttChartSquare,
 	LayoutGrid,
 	LucideIcon,
-	LucideSettings,
-	LucideShieldCheck,
 	Settings,
 	ShieldCheck,
 	SlidersHorizontal,
@@ -38,10 +36,11 @@ export const playlists = [
 ];
 
 type NavLinkProp = {
-	navLink: string;
+	navLinkEntry: NavLinkEntry;
 	currentPath: string;
-	icon: LucideIcon;
 	collapsed: boolean;
+	collapseFunction: () => void;
+	expandFunction: () => void;
 };
 
 function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
@@ -50,17 +49,22 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<Link
-						key={props.navLink}
-						href={props.navLink}
+						key={props.navLinkEntry.url}
+						href={props.navLinkEntry.url}
+						onClick={() => {
+							if (!props.navLinkEntry.collapsed) {
+								props.expandFunction();
+							}
+						}}
 						className={cn(
 							buttonVariants({ variant: "ghost" }),
-							props.currentPath === props.navLink
+							props.currentPath === props.navLinkEntry.url
 								? "bg-muted hover:bg-muted"
 								: "",
 							"w-full justify-start"
 						)}
 					>
-						<props.icon className="h-4 w-4" />
+						<props.navLinkEntry.icon className="h-4 w-4" />
 						<TooltipContent>{props.children}</TooltipContent>
 					</Link>
 				</TooltipTrigger>
@@ -68,19 +72,26 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 		</TooltipProvider>
 	) : (
 		<Link
-			key={props.navLink}
-			href={props.navLink}
+			key={props.navLinkEntry.url}
+			href={props.navLinkEntry.url}
+			onClick={() => {
+				if (props.navLinkEntry.collapsed) {
+					props.collapseFunction();
+				}
+			}}
 			className={cn(
 				buttonVariants({ variant: "ghost" }),
-				props.currentPath === props.navLink
+				props.currentPath === props.navLinkEntry.url
 					? "bg-muted hover:bg-muted"
 					: "",
 				"w-full justify-start"
 			)}
 		>
 			<div className="flex ">
-				<props.icon className="h-4 w-4 flex-shrink-0" />
-				<div className="break-all line-clamp-1 ps-2">{props.children}</div>
+				<props.navLinkEntry.icon className="h-4 w-4 flex-shrink-0" />
+				<div className="line-clamp-1 break-all ps-2">
+					{props.children}
+				</div>
 			</div>
 		</Link>
 	);
@@ -88,12 +99,15 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 
 interface SidebarProp extends React.HTMLAttributes<HTMLDivElement> {
 	isCollapsed: boolean;
+	collapseFunction: () => void;
+	expandFunction: () => void;
 }
 
 type NavLinkEntry = {
 	title: string;
 	icon: LucideIcon;
 	url: string;
+	collapsed: boolean;
 };
 
 const actionLinks: NavLinkEntry[] = [
@@ -101,21 +115,50 @@ const actionLinks: NavLinkEntry[] = [
 		title: "Functions",
 		icon: LayoutGrid,
 		url: "/functions",
+		collapsed: false,
 	},
 	{
 		title: "Parameters",
 		icon: SlidersHorizontal,
 		url: "/parameters",
+		collapsed: true,
 	},
 	{
 		title: "Modify",
 		icon: CalendarRange,
 		url: "/modify",
+		collapsed: false,
+	},
+];
+
+const settingLinks: NavLinkEntry[] = [
+	{
+		title: "Settings",
+		icon: Settings,
+		url: "/settings",
+		collapsed: false,
+	},
+	{
+		title: "Roles",
+		icon: ShieldCheck,
+		url: "/roles",
+		collapsed: false,
+	},
+	{
+		title: "Report",
+		icon: GanttChartSquare,
+		url: "/report",
+		collapsed: false,
 	},
 ];
 
 // https://www.flaticon.com/free-icon-font/coins_7928197?related_id=7928197
-export function Sidebar({ className, isCollapsed }: SidebarProp) {
+export function Sidebar({
+	className,
+	isCollapsed,
+	collapseFunction,
+	expandFunction,
+}: SidebarProp) {
 	const pathname = usePathname();
 
 	const { isLoading, isError, data, error } =
@@ -131,7 +174,7 @@ export function Sidebar({ className, isCollapsed }: SidebarProp) {
 				{data?.actions && (
 					<div className={cn("py-2", !isCollapsed && "px-3")}>
 						{!isCollapsed && (
-							<div className="mb-2 break-all line-clamp-1 px-4 text-lg font-semibold tracking-tight">
+							<div className="mb-2 line-clamp-1 break-all px-4 text-lg font-semibold tracking-tight">
 								Actions
 							</div>
 						)}
@@ -139,10 +182,11 @@ export function Sidebar({ className, isCollapsed }: SidebarProp) {
 							{actionLinks.map((link) => (
 								<CompNavLinkWrap
 									key={link.title}
-									navLink={link.url}
+									navLinkEntry={link}
 									currentPath={pathname}
-									icon={link.icon}
 									collapsed={isCollapsed}
+									collapseFunction={collapseFunction}
+									expandFunction={expandFunction}
 								>
 									{link.title}
 								</CompNavLinkWrap>
@@ -153,69 +197,25 @@ export function Sidebar({ className, isCollapsed }: SidebarProp) {
 				{isCollapsed && <Separator />}
 				<div className={cn("py-2", !isCollapsed && "px-3")}>
 					{!isCollapsed && (
-						<div className="mb-2 break-all line-clamp-1 px-4 text-lg font-semibold tracking-tight">
+						<div className="mb-2 line-clamp-1 break-all px-4 text-lg font-semibold tracking-tight">
 							Configurations
 						</div>
 					)}
 					<div className="space-y-1">
-						{data?.settings && (
+						{settingLinks.map((link) => (
 							<CompNavLinkWrap
-								navLink="settings"
+								key={link.title}
+								navLinkEntry={link}
 								currentPath={pathname}
-								icon={Settings}
 								collapsed={isCollapsed}
+								collapseFunction={collapseFunction}
+								expandFunction={expandFunction}
 							>
-								Settings
+								{link.title}
 							</CompNavLinkWrap>
-						)}
-						{data?.roles && (
-							<CompNavLinkWrap
-								navLink="roles"
-								currentPath={pathname}
-								icon={ShieldCheck}
-								collapsed={isCollapsed}
-							>
-								Roles
-							</CompNavLinkWrap>
-						)}
-						<CompNavLinkWrap
-							navLink=""
-							currentPath={pathname}
-							icon={GanttChartSquare}
-							collapsed={isCollapsed}
-						>
-							Report
-						</CompNavLinkWrap>
+						))}
 					</div>
 				</div>
-				{/* <div className="py-2">
-					<h2 className="relative px-7 text-lg font-semibold tracking-tight">
-						Statistics
-					</h2>
-					<ScrollArea className="h-[300px] px-1">
-						<div className="space-y-1 p-2">
-							{playlists?.map((playlist, i) => (
-								<Button
-									key={`${playlist}-${i}`}
-									variant="ghost"
-									className="w-full justify-start font-normal"
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										id="Layer_1"
-										data-name="Layer 1"
-										viewBox="0 0 24 24"
-										fill="currentColor"
-										className="mr-2 h-4 w-4"
-									>
-										<path d="M12,0c-1.65,0-3,1.35-3,3V21c0,1.65,1.35,3,3,3s3-1.35,3-3V3c0-1.65-1.35-3-3-3Zm1,21c0,.55-.45,1-1,1s-1-.45-1-1V3c0-.55,.45-1,1-1s1,.45,1,1V21ZM21,6c-1.65,0-3,1.35-3,3v12c0,1.65,1.35,3,3,3s3-1.35,3-3V9c0-1.65-1.35-3-3-3Zm1,15c0,.55-.45,1-1,1s-1-.45-1-1V9c0-.55,.45-1,1-1s1,.45,1,1v12ZM3,12c-1.65,0-3,1.35-3,3v6c0,1.65,1.35,3,3,3s3-1.35,3-3v-6c0-1.65-1.35-3-3-3Zm1,9c0,.55-.45,1-1,1s-1-.45-1-1v-6c0-.55,.45-1,1-1s1,.45,1,1v6Z" />
-									</svg>
-									{playlist}
-								</Button>
-							))}
-						</div>
-					</ScrollArea>
-				</div> */}
 			</div>
 		</div>
 	);
