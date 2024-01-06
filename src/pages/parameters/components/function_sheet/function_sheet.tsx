@@ -20,15 +20,14 @@ import { ScrollArea } from "~/components/ui/scroll-area";
 
 
 export function FunctionSheet({ table_name, mode }: any): any {
-
-	const [open, setOpen] = useState(false);
+	const [open, setOpen] = useState<boolean | undefined>(undefined);
 	mode = "update";
 
 	return (
 		<>
 			<Sheet open={open}>
 				<SheetTrigger asChild>
-					<Button variant="outline" onClick={() => setOpen(true)}>Edit</Button>
+					<Button variant="outline" onClick={() => setOpen(undefined)}>Edit</Button>
 				</SheetTrigger>
 				<SheetContent>
 					<SheetHeader>

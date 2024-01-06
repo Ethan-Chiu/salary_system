@@ -6,7 +6,6 @@ import {
 	isDate,
 	isString,
 } from "~/pages/develop_parameters/utils/checkType";
-import { useRouter } from "next/router";
 import { useState, useRef } from "react";
 
 import {
@@ -32,6 +31,7 @@ import {
 	DialogFooter,
 } from "~/components/ui/dialog";
 
+import { SheetClose } from "~/components/ui/sheet";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 
@@ -138,9 +138,7 @@ export function ParameterForm({
 		<AutoForm className="m-5"
 			_defaultValues={original_data?(original_data):{}}
 			values={values}
-			onSubmit={(data) => {
-
-			}}
+			onSubmit={(data) => {}}
 			onValuesChange={setValues}
 			formSchema={formSchema}
 			fieldConfig={fieldConfig}
@@ -180,6 +178,7 @@ export function ParameterForm({
 						</DialogHeader>
 						{simpleTable(values)}
 						<DialogFooter>
+							<DialogClose>
 							<Button
 								onClick={() => {
 									submitForm();
@@ -188,7 +187,7 @@ export function ParameterForm({
 							>
 								Save changes
 							</Button>
-							<DialogClose />
+							</DialogClose>
 						</DialogFooter>
 					</DialogContent>
 				</Dialog>
