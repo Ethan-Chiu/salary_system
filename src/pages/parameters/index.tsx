@@ -30,6 +30,8 @@ import {
 	Users,
 } from "lucide-react";
 import { Separator } from "~/components/ui/separator";
+import { FunctionSheet } from "./components/function_sheet/function_sheet";
+import FunctionsProvider from "./components/function_sheet/Contexts";
 
 enum FilterMode {
 	Search,
@@ -96,6 +98,9 @@ const PageParameters: NextPageWithLayout = () => {
 	return (
 		<div className="flex h-screen flex-col">
 			<Header title="parameters" showOptions />
+		
+			<FunctionSheet table_name={selectedTag}/>
+		
 			<div className="m-4 min-h-0 flex-grow rounded-md border-2">
 				<ResizablePanelGroup direction="horizontal">
 					<ResizablePanel defaultSize={15} minSize={10}>
