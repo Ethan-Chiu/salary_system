@@ -25,7 +25,7 @@ import FunctionsProvider, { FunctionsContext } from "./function_sheet/Contexts";
 import { ParameterForm } from "./function_sheet/ParameterForm";
 import * as TN from "~/pages/table_names";
 import { getSchema } from "~/pages/modify/Schemas/schemas";
-import { ScrollArea } from "~/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Button } from "~/components/ui/button";
 import { Translate } from "~/pages/develop_parameters/utils/translation";
 
@@ -39,7 +39,6 @@ export function DataTableFunctions({
 }: DataTableFunctionsProps) {
 	const [open, setOpen] = useState<boolean | undefined>(undefined);
 	const [mode, setMode] = useState<"create" | "update" | "">("");
-	console.log(table_name);
 
 	return (
 		<>
@@ -58,7 +57,7 @@ export function DataTableFunctions({
 								</div>
 							</div>
 						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end" className="w-[80px]">
+						<DropdownMenuContent align="end" className="w-[120px]">
 							<DropdownMenuLabel>Functions</DropdownMenuLabel>
 							<DropdownMenuSeparator />
 							<SheetTrigger
@@ -73,31 +72,37 @@ export function DataTableFunctions({
 									<span>Update</span>
 								</DropdownMenuItem>
 							</SheetTrigger>
-                            <SheetTrigger
-                                    className="w-full"
-									onClick={() => {
-										setMode("create");
-										setOpen(undefined);
-									}}
+							<SheetTrigger
+								className="w-full"
+								onClick={() => {
+									setMode("create");
+									setOpen(undefined);
+								}}
 							>
-                                <DropdownMenuItem className="cursor-pointer">
-                                    <Plus className="mr-2 h-4 w-4" />
-                                    <span>Create</span>
-                                </DropdownMenuItem>
-                            </SheetTrigger>
+								<DropdownMenuItem className="cursor-pointer">
+									<Plus className="mr-2 h-4 w-4" />
+									<span>Create</span>
+								</DropdownMenuItem>
+							</SheetTrigger>
 						</DropdownMenuContent>
 					</DropdownMenu>
-					<SheetContent>
+					<SheetContent className="w-[50%]">
 						<SheetHeader>
-							<SheetTitle>{Translate(mode)! + Translate("form") + "(" + table_name + ")"}</SheetTitle>
+							<SheetTitle>
+								{Translate(mode)! +
+									Translate("form") +
+									"(" +
+									table_name +
+									")"}
+							</SheetTitle>
 							<SheetDescription>
-								{(mode === "create") 
-                                    ?"Fill in the parameters to create new table."
-                                    :"Make changes to the table by modifying the parameters."}
+								{mode === "create"
+									? "Fill in the parameters to create new table."
+									: "Make changes to the table by modifying the parameters."}
 							</SheetDescription>
 						</SheetHeader>
 						<br />
-						<ScrollArea className="h-[85%] w-full">
+							<ScrollArea className="h-[85%] w-full">
 							<FunctionsProvider>
 								<ParameterForm
 									table_name={table_name}
@@ -106,7 +111,15 @@ export function DataTableFunctions({
 									closeSheet={() => setOpen(false)}
 								/>
 							</FunctionsProvider>
+							<ScrollBar
+								orientation="horizontal"
+								className=""
+							/>
 						</ScrollArea>
+
+							{/* </div> */}
+						{/* </div> */}
+						
 					</SheetContent>
 				</Sheet>
 			</div>

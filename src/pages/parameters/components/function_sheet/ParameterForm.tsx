@@ -30,6 +30,8 @@ import {
 	DialogClose,
 	DialogFooter,
 } from "~/components/ui/dialog";
+import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
+import { PenSquare } from "lucide-react";
 
 import { SheetClose } from "~/components/ui/sheet";
 import { Input } from "~/components/ui/input";
@@ -37,7 +39,6 @@ import { Label } from "~/components/ui/label";
 
 import { useContext } from "react";
 import { FunctionsContext } from "./Contexts";
-
 
 const simpleTable = (d: any) => {
 	return (
@@ -80,18 +81,91 @@ export function ParameterForm({
 	closeSheet,
 	disabled,
 }: any) {
-
 	const functions: any = useContext(FunctionsContext);
-
 	const queryFunction = functions![table_name]?.queryFunction;
 	const updateFunction = functions![table_name]?.updateFunction;
 	const createFunction = functions![table_name]?.createFunction;
 	const deleteFunction = functions![table_name]?.deleteFunction;
+	const isList = Array.isArray(queryFunction.data);
 
-	const original_data = queryFunction.data;
-	
-	
+	const [originalData, setOriginalData] = useState(
+		isList ? null : queryFunction.data
+	);
 
+	const ViewAllDatas = () => {
+		console.log(queryFunction.data);
+		let noIDData: any[] = queryFunction.data.map((item: any) => {
+			const { ["id"]: id, ...rest } = item;
+			return rest;
+		});
+		console.log(noIDData);
+
+		return (
+			<>
+				{noIDData ? (
+					<div className="m-4">
+						<Table>
+							<TableHeader>
+								<TableRow>
+									<TableHead className="whitespace-nowrap text-center">
+										{""}
+									</TableHead>
+									{noIDData[0] &&
+										Object.keys(noIDData[0]).map(
+											(key: string) => {
+												return (
+													<TableHead className="whitespace-nowrap text-center">
+														{Translate(key)}
+													</TableHead>
+												);
+											}
+										)}
+									{!noIDData[0] && (
+										<TableCell
+											colSpan={5}
+											className="h-24 text-center"
+										>
+											No results.
+										</TableCell>
+									)}
+								</TableRow>
+							</TableHeader>
+							<TableBody>
+								{noIDData?.map((data: any, index: number) => {
+									return (
+										<TableRow key={data.id}>
+											<TableCell className="items-center">
+												<PenSquare
+													size={18}
+													className="cursor-pointer"
+													onClick={() => {
+														setOriginalData(
+															queryFunction.data[
+																index
+															]
+														);
+													}}
+												/>
+											</TableCell>
+											{Object.keys(data).map((key) => {
+												return (
+													<TableCell className="text-center font-medium">
+														{data[key]}
+													</TableCell>
+												);
+											})}
+										</TableRow>
+									);
+								})}
+							</TableBody>
+						</Table>
+					</div>
+				) : (
+					<></>
+				)}
+			</>
+		);
+	};
 
 	const buttonRef = useRef<HTMLButtonElement | null>(null);
 	const [values, setValues] = useState<Partial<z.infer<typeof formSchema>>>(
@@ -115,11 +189,10 @@ export function ParameterForm({
 			createFunction.mutate({
 				...parsedValues.data,
 			});
-		}
-		else {
+		} else {
 			updateFunction.mutate({
 				...parsedValues.data,
-				id: original_data.id,
+				id: originalData.id,
 			});
 		}
 		closeSheet();
@@ -136,9 +209,15 @@ export function ParameterForm({
 		}
 	};
 
+	if (originalData === null && mode !== "create") {
+		return <ViewAllDatas />;
+	}
 	return (
-		<AutoForm className="m-5"
-			_defaultValues={(original_data && mode === "update")?(original_data):{}}
+		<AutoForm
+			className="m-5"
+			_defaultValues={
+				originalData && mode === "update" ? originalData : {}
+			}
 			values={values}
 			onSubmit={(data) => {}}
 			onValuesChange={setValues}
@@ -170,8 +249,8 @@ export function ParameterForm({
 					}}
 					className="col-start-3 mb-2 me-2 cursor-pointer rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
 				>
-					{mode==="create" && "Create"}
-					{mode==="update" && "Update"}
+					{mode === "create" && "Create"}
+					{mode === "update" && "Update"}
 				</p>
 				<Dialog open={openDialog} onOpenChange={setOpenDialog}>
 					<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
@@ -182,14 +261,14 @@ export function ParameterForm({
 						{simpleTable(values)}
 						<DialogFooter>
 							<DialogClose>
-							<Button
-								onClick={() => {
-									submitForm();
-								}}
-								type="submit"
-							>
-								Save changes
-							</Button>
+								<Button
+									onClick={() => {
+										submitForm();
+									}}
+									type="submit"
+								>
+									Save changes
+								</Button>
 							</DialogClose>
 						</DialogFooter>
 					</DialogContent>
