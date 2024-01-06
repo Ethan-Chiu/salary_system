@@ -136,7 +136,7 @@ export function ParameterForm({
 
 	return (
 		<AutoForm className="m-5"
-			_defaultValues={original_data?(original_data):{}}
+			_defaultValues={(original_data && mode === "update")?(original_data):{}}
 			values={values}
 			onSubmit={(data) => {}}
 			onValuesChange={setValues}
@@ -153,6 +153,7 @@ export function ParameterForm({
 						variant={"outline"}
 						onClick={() => {
 							console.log("Cancel");
+							closeSheet();
 						}}
 					>
 						Cancel

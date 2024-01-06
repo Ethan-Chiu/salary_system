@@ -34,6 +34,7 @@ import { Label } from "~/components/ui/label";
 import { DropdownCopyAction } from "../components/dropdown_copy_action";
 import { AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
 import { LoadingSpinner } from "~/components/loading";
+import { TABLE_ATTENDANCE } from "~/pages/table_names";
 
 const rowSchema = z.object({
 	name: z.string(),
@@ -209,6 +210,7 @@ export function AttendanceTable({ index, globalFilter }: any) {
 			columns={columns}
 			data={attendanceMapper(data)}
 			filterColumnKey={filterKey}
+			table_name={TABLE_ATTENDANCE}
 		/>
 	);
 }

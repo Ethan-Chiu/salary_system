@@ -35,13 +35,15 @@ interface DataTableProps<TData> {
 	data: TData[];
 	filterColumnKey: keyof TData;
 	showTabs?: boolean;
+	table_name?: string;
 }
 
 export function DataTable<TData>({
 	columns,
 	data,
 	filterColumnKey,
-	showTabs
+	showTabs,
+	table_name,
 }: DataTableProps<TData>) {
 	const [rowSelection, setRowSelection] = React.useState({});
 	const [columnVisibility, setColumnVisibility] =
@@ -81,6 +83,7 @@ export function DataTable<TData>({
 					globalFilter=""
 					filterKey={filterColumnKey}
 					showTabs={showTabs}
+					table_name={table_name}
 				/>
 				<Separator />
 				<TabsContent value="now" asChild>
