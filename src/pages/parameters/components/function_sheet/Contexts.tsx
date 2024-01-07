@@ -16,6 +16,8 @@ export interface FunctionsObject {
 export const FunctionsContext = createContext<FunctionsObject | null>(null);
 
 export default function FunctionsProvider({ children }: PropsWithChildren<{}>) {
+
+	//#region <AttendanceSetting>
 	const getAttendanceSetting =
 		api.parameters.getCurrentAttendanceSetting.useQuery();
 	const updateAttendanceSetting =
@@ -36,7 +38,9 @@ export default function FunctionsProvider({ children }: PropsWithChildren<{}>) {
 				getAttendanceSetting.refetch();
 			},
 		});
+	//#endregion
 
+	//#region <BankSetting>
 	const getBankSetting = 
 		api.parameters.getCurrentBankSetting.useQuery();
 	const updateBankSetting = 
@@ -51,32 +55,88 @@ export default function FunctionsProvider({ children }: PropsWithChildren<{}>) {
 		api.parameters.deleteBankSetting.useMutation({
 			onSuccess: () => getBankSetting.refetch()
 		})
+	//#endregion
+
+	//#region <InsuranceSetting>
+	const getInsuranceRateSetting =
+		api.parameters.getCurrentInsuranceRateSetting.useQuery();
+	const updateInsuranceRateSetting =
+		api.parameters.updateInsuranceRateSetting.useMutation({
+			onSuccess: () => {
+				getInsuranceRateSetting.refetch();
+			},
+		});
+	const createInsuranceRateSetting =
+		api.parameters.createInsuranceRateSetting.useMutation({
+			onSuccess: () => {
+				getInsuranceRateSetting.refetch();
+			},
+		});
+	const deleteInsuranceRateSetting =
+		api.parameters.deleteInsuranceRateSetting.useMutation({
+			onSuccess: () => {
+				getInsuranceRateSetting.refetch();
+			},
+		});
+	//#endregion
+
+	//#region <BonusSetting>
+	const getBonusSetting =
+		api.parameters.getCurrentBonusSetting.useQuery();
+	const updateBonusSetting =
+		api.parameters.updateBonusSetting.useMutation({
+			onSuccess: () => {
+				getBonusSetting.refetch();
+			},
+		});
+	const createBonusSetting =
+		api.parameters.createBonusSetting.useMutation({
+			onSuccess: () => {
+				getBonusSetting.refetch();
+			},
+		});
+	const deleteBonusSetting =
+		api.parameters.deleteBonusSetting.useMutation({
+			onSuccess: () => {
+				getBonusSetting.refetch();
+			},
+		});
+	//#endregion
 
 	useEffect(() => {
 		// Refetch the data when the component mounts
 		getAttendanceSetting.refetch();
 		getBankSetting.refetch();
+		getInsuranceRateSetting.refetch();
+		getBonusSetting.refetch();
 	}, []);
 
 	const F: FunctionsObject = {
 		[TN.TABLE_ATTENDANCE]: {
 			queryFunction: getAttendanceSetting,
-			updateFunction: updateAttendanceSetting, // Use mutate for mutations
-			createFunction: createAttendanceSetting, // Use mutate for mutations
-            deleteFunction: deleteAttendanceSetting, // Use mutate for mutations
+			updateFunction: updateAttendanceSetting, 
+			createFunction: createAttendanceSetting, 
+            deleteFunction: deleteAttendanceSetting, 
 		},
 		[TN.TABLE_BANK_SETTING]: {
 			queryFunction: getBankSetting,
 			updateFunction: updateBankSetting,
 			createFunction: createBankSetting,
 			deleteFunction: deleteBankSetting,
+		},
+		[TN.TABLE_INSURANCE]: {
+			queryFunction: getInsuranceRateSetting,
+			updateFunction: updateInsuranceRateSetting, 
+			createFunction: createInsuranceRateSetting, 
+            deleteFunction: deleteInsuranceRateSetting, 
+		},
+		[TN.TABLE_BONUS_SETTING]: {
+			queryFunction: getBonusSetting,
+			updateFunction: updateBonusSetting, 
+			createFunction: createBonusSetting, 
+            deleteFunction: deleteBonusSetting, 
 		}
 	};
-
-	// Optional: Show a loading indicator while data is still loading
-	if (getAttendanceSetting.isLoading) {
-		return <div>Loading...</div>;
-	}
 
 	// Return the provider with the functions
 	return (

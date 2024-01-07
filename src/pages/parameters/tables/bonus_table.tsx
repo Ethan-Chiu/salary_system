@@ -8,9 +8,16 @@ import {
 	isDate,
 } from "~/pages/develop_parameters/utils/checkType";
 import { DataTable } from "../components/data_table";
-import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
+import {
+	c_CreateDateStr,
+	c_UpdateDateStr,
+	c_EndDateStr,
+	c_StartDateStr,
+} from "../constant";
 import { BonusSetting } from "~/server/database/entity/SALARY/bonus_setting";
 import { LoadingSpinner } from "~/components/loading";
+import { formatDate } from "~/pages/develop_parameters/utils/formatDate";
+import { TABLE_BONUS_SETTING } from "~/pages/table_names";
 
 export type RowItem = {
 	name: string;
@@ -24,20 +31,28 @@ const columns = [
 	columnHelper.accessor("name", {
 		header: ({ column }) => {
 			return (
-				<Button
-					variant="ghost"
-					onClick={() =>
-						column.toggleSorting(column.getIsSorted() === "asc")
-					}
-				>
-					Parameter
-					<ArrowUpDown className="ml-2 h-4 w-4" />
-				</Button>
+				<div className="flex justify-center">
+					<div className="pl-4 text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							Parameter
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
 			);
 		},
 		cell: ({ row }) => (
-			<div className="w-[400px] pl-4 lowercase">
-				{row.getValue("name")}
+			<div className="flex justify-center">
+				<div className="text-center font-medium">
+					{row.getValue("name")}
+				</div>
 			</div>
 		),
 	}),
@@ -57,7 +72,7 @@ const columns = [
 			}
 			return (
 				<div className="flex justify-center">
-					<div className="w-80 text-center font-medium">
+					<div className="text-center font-medium">
 						{formatted}
 					</div>
 				</div>
@@ -74,7 +89,7 @@ function bonusMapper(bonusData: BonusSetting): RowItem[] {
 		},
 		{
 			name: "獎金(發放)基準日",
-			value: bonusData.criterion_date,
+			value: formatDate("day", bonusData.criterion_date),
 		},
 		{
 			name: "獎金計算依據",
@@ -86,7 +101,11 @@ function bonusMapper(bonusData: BonusSetting): RowItem[] {
 		},
 		{
 			name: c_CreateDateStr,
-			value: bonusData.create_date,
+			value: formatDate("hour", bonusData.create_date),
+		},
+		{
+			name: c_UpdateDateStr,
+			value: formatDate("hour", bonusData.update_date),
 		},
 	];
 }
@@ -113,6 +132,7 @@ export function BonusTable({ index, globalFilter }: any) {
 			columns={columns}
 			data={bonusMapper(data)}
 			filterColumnKey={filterKey}
+			table_name={TABLE_BONUS_SETTING}
 		/>
 	);
 

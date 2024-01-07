@@ -93,13 +93,16 @@ export function ParameterForm({
 		isList ? null : queryFunction.data
 	);
 
+	console.log(originalData);
+
 	const ViewAllDatas = () => {
 		console.log(queryFunction.data);
 		let noIDData: any[] = queryFunction.data.map((item: any) => {
 			const { ["id"]: id, ...rest } = item;
 			return rest;
 		});
-		console.log(noIDData);
+		
+		console.log(mode);
 
 		return (
 			<>
@@ -136,7 +139,7 @@ export function ParameterForm({
 									return (
 										<TableRow key={data.id}>
 											<TableCell className="items-center">
-												{mode === "modify" ? (
+												{mode === "update" &&
 													<PenSquare
 														size={18}
 														className="cursor-pointer"
@@ -146,8 +149,8 @@ export function ParameterForm({
 																	.data[index]
 															);
 														}}
-													/>
-												) : (
+													/>}
+												{ mode === "delete" &&
 													<Trash2 
 														size={18}
 														className="cursor-pointer"
@@ -157,7 +160,7 @@ export function ParameterForm({
 															);
 														}}
 													/>
-												)}
+												}
 											</TableCell>
 											{Object.keys(data).map((key) => {
 												return (
