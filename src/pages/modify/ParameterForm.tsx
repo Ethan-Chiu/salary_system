@@ -91,7 +91,7 @@ export function ParameterForm({
 		return Object.fromEntries(
 			Object.entries(schema.shape).map(([key, value]) => {
 				if (value instanceof z.ZodDefault)
-					return [key, value._def.defaultValue()];
+					return [key, original_data[key]];
 				return [key, undefined];
 			})
 		);

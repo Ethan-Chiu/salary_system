@@ -89,7 +89,15 @@ function createOneKeySchema(key: string, config: any) {
 		}
 		if (type === "enum") {
 			if (config.subtype === "number") {
-				schema = z.enum(config.options).transform((val: string) => parseInt(val, 10));
+				// schema = z.preprocess((a) => {
+				// 	if (typeof a === "string") {
+				// 		return parseInt(a, 10)
+				// 	}
+				// 	else {
+				// 		return a
+				// 	}
+				// }, z.enum(config.options));
+				schema = z.enum(config.options).transform((v) => parseFloat(v));
 			}
 			else
 				schema = z.enum(config.options);
