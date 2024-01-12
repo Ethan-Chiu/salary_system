@@ -4,7 +4,6 @@ import {
 	ColumnFiltersState,
 	SortingState,
 	VisibilityState,
-	flexRender,
 	getCoreRowModel,
 	getFacetedRowModel,
 	getFacetedUniqueValues,
@@ -14,14 +13,7 @@ import {
 	useReactTable,
 } from "@tanstack/react-table";
 
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "~/components/ui/table";
+import { Table } from "~/components/ui/table";
 import { DataTableToolbar } from "./data_table_toolbar";
 import { DataTablePagination } from "./data_table_pagination";
 import { Separator } from "~/components/ui/separator";
@@ -51,6 +43,7 @@ export function DataTable<TData>({
 	const [columnFilters, setColumnFilters] =
 		React.useState<ColumnFiltersState>([]);
 	const [sorting, setSorting] = React.useState<SortingState>([]);
+	const [dataPerRow, setDataPerRow] = React.useState(1);
 
 	const table = useReactTable({
 		data,
@@ -90,17 +83,27 @@ export function DataTable<TData>({
 					<div className="flex min-h-0 w-full flex-grow flex-col">
 						{/* table header and body */}
 						<div className="min-h-0 w-full flex-grow">
-							<ScrollArea className="h-full scroll">
+							<ScrollArea className="scroll h-full">
 								<Table className="border-b-[1px]">
-									<DataTableDataHeader table={table} />
-									<DataTableDataBody table={table} />
+									<DataTableDataHeader
+										table={table}
+										dataPerRow={dataPerRow}
+									/>
+									<DataTableDataBody
+										table={table}
+										dataPerRow={dataPerRow}
+									/>
 								</Table>
-								<ScrollBar orientation="horizontal" hidden={true}/>
+								<ScrollBar
+									orientation="horizontal"
+									hidden={true}
+								/>
 							</ScrollArea>
 						</div>
 						{/* table pagination */}
 						<DataTablePagination
 							table={table}
+							setDataPerRow={setDataPerRow}
 							className="bg-secondary"
 						/>
 					</div>

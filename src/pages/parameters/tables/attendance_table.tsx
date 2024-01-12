@@ -96,13 +96,13 @@ const columns = [
 			);
 		},
 	}),
-	columnHelper.display({
-		id: "actions",
-		enableHiding: false,
-		cell: ({ row }) => {
-			return <CompDropdown row={row.original} />;
-		},
-	}),
+	// columnHelper.display({
+	// 	id: "actions",
+	// 	enableHiding: false,
+	// 	cell: ({ row }) => {
+	// 		return <CompDropdown row={row.original} />;
+	// 	},
+	// }),
 ];
 
 function attendanceMapper(attendanceData: AttendanceSetting): RowItem[] {
