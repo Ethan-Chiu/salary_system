@@ -2,9 +2,7 @@ import AutoForm, { AutoFormSubmit } from "~/components/ui/auto-form";
 import * as z from "zod";
 import { Button } from "~/components/ui/button";
 import {
-	isNumber,
 	isDate,
-	isString,
 } from "~/pages/develop_parameters/utils/checkType";
 import { useState, useRef } from "react";
 
@@ -30,12 +28,7 @@ import {
 	DialogClose,
 	DialogFooter,
 } from "~/components/ui/dialog";
-import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { PenSquare, Trash2 } from "lucide-react";
-
-import { SheetClose } from "~/components/ui/sheet";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
 
 import { useContext } from "react";
 import { FunctionsContext } from "./functions_context";
@@ -73,36 +66,38 @@ const simpleTable = (d: any) => {
 	);
 };
 
+interface ParameterFormProps {
+	table_name: string;
+	formSchema: any; // Replace 'any' with the specific type for formSchema
+	fieldConfig?: any; // Replace 'any' with the specific type for fieldConfig
+	mode: string;
+	closeSheet: () => void;
+}
+
 export function ParameterForm({
 	table_name,
 	formSchema,
 	fieldConfig,
 	mode,
 	closeSheet,
-	disabled,
-}: any) {
-	const functions: any = useContext(FunctionsContext);
+}: ParameterFormProps) {
+	const functions = useContext(FunctionsContext);
 	const queryFunction = functions![table_name]?.queryFunction;
 	const updateFunction = functions![table_name]?.updateFunction;
 	const createFunction = functions![table_name]?.createFunction;
 	const deleteFunction = functions![table_name]?.deleteFunction;
 	const isList = Array.isArray(queryFunction.data);
-	const onlyOne = (isList)?(queryFunction.data.length !== 1)?false:true:true;
+	const onlyOne = !(isList && queryFunction.data.length > 1)
 
 	const [originalData, setOriginalData] = useState(
 		isList ? null : queryFunction.data
 	);
 
-	console.log(originalData);
-
 	const ViewAllDatas = () => {
-		console.log(queryFunction.data);
-		let noIDData: any[] = queryFunction.data.map((item: any) => {
+		const noIDData: any[] = queryFunction.data.map((item: any) => {
 			const { ["id"]: id, ...rest } = item;
 			return rest;
 		});
-		
-		console.log(mode);
 
 		return (
 			<>
@@ -139,7 +134,7 @@ export function ParameterForm({
 									return (
 										<TableRow key={data.id}>
 											<TableCell className="items-center">
-												{mode === "update" &&
+												{mode === "update" && (
 													<PenSquare
 														size={18}
 														className="cursor-pointer"
@@ -149,18 +144,24 @@ export function ParameterForm({
 																	.data[index]
 															);
 														}}
-													/>}
-												{ mode === "delete" &&
-													<Trash2 
+													/>
+												)}
+												{mode === "delete" && (
+													<Trash2
 														size={18}
 														className="cursor-pointer"
 														onClick={() => {
 															deleteFunction.mutate(
-																{id: queryFunction.data[index].id}
+																{
+																	id: queryFunction
+																		.data[
+																		index
+																	].id,
+																}
 															);
 														}}
 													/>
-												}
+												)}
 											</TableCell>
 											{Object.keys(data).map((key) => {
 												return (
@@ -224,12 +225,17 @@ export function ParameterForm({
 		}
 	};
 
-	if(mode === "delete" && (onlyOne))	return <p>There's only one data left. Please create a new one before you continue to delete.</p>
+	if (mode === "delete" && onlyOne)
+		return (
+			<p>
+				There's only one data left. Please create a new one before you
+				continue to delete.
+			</p>
+		);
 
 	if (originalData === null && mode !== "create") {
 		return <ViewAllDatas />;
 	}
-
 
 	return (
 		<AutoForm
