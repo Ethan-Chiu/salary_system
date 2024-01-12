@@ -87,7 +87,7 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 				"w-full justify-start"
 			)}
 		>
-			<div className="flex ">
+			<div className="flex">
 				<props.navLinkEntry.icon className="h-4 w-4 flex-shrink-0" />
 				<div className="line-clamp-1 break-all ps-2">
 					{props.children}

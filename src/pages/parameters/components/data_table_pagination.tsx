@@ -54,7 +54,7 @@ export function DataTablePagination<TData>({
 						table.setPageSize(columnNum * Number(value));
 					}}
 				>
-					<SelectTrigger className="w-1/4">
+					<SelectTrigger className="w-36">
 						<SelectValue placeholder="Data Per Row" />
 					</SelectTrigger>
 					<SelectContent>
@@ -74,7 +74,7 @@ export function DataTablePagination<TData>({
 						table.setPageSize(rowNum * Number(value));
 					}}
 				>
-					<SelectTrigger className="w-1/4">
+					<SelectTrigger className="w-36">
 						<SelectValue placeholder="Data Per Row" />
 					</SelectTrigger>
 					<SelectContent>

@@ -22,6 +22,7 @@ import { Tabs, TabsContent } from "~/components/ui/tabs";
 import { DataTableDataHeader } from "./data_table_data_header";
 import { DataTableDataBody } from "./data_table_data_body";
 import CalendarView from "./calendar_view/calendar_view";
+import HistoryView from "./history_view/history_view";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
@@ -107,6 +108,11 @@ export function DataTable<TData>({
 							setDataPerRow={setDataPerRow}
 							className="bg-secondary"
 						/>
+					</div>
+				</TabsContent>
+				<TabsContent value="history" asChild className="m-0">
+					<div className="flex min-h-0 w-full flex-grow flex-col">
+						<HistoryView />
 					</div>
 				</TabsContent>
 				<TabsContent value="calendar" asChild className="m-0">
