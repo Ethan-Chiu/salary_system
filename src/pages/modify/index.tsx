@@ -1,16 +1,16 @@
 import { RootLayout } from "~/components/layout/root_layout";
-import { CardFunction, CardFunctionIcon, CardFunctionData } from "~/components/functions/card_function";
+import {
+	CardFunction,
+	CardFunctionIcon,
+} from "~/components/functions/card_function";
 import { motion } from "framer-motion";
 import { type NextPageWithLayout } from "../_app";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
-import { IconCoins, IconCreditCard } from "~/components/icons/svg_icons";
 import { Header } from "~/components/header";
 // import * as TABLE_NAMES from "../table_names";
-import { useState } from "react";
 import { usePathname } from "next/navigation";
-import Link from "next/link";
-import { useRouter } from 'next/router';
-import * as Icon from "~/components/icons/svg_icons"
+import { useRouter } from "next/router";
+import * as Icon from "~/components/icons/svg_icons";
 import { Translate } from "../../lib/utils/translation";
 
 export type TableData = {
@@ -20,10 +20,7 @@ export type TableData = {
 	navLink: string;
 };
 
-
-
 const Modify: NextPageWithLayout = () => {
-
 	const table_data: TableData[] = [
 		{
 			title: Translate("attendanceSetting"),
@@ -99,38 +96,36 @@ const Modify: NextPageWithLayout = () => {
 		},
 	];
 
-
-
 	const pathname = usePathname();
 	const router = useRouter();
 
 	function TableList() {
 		return (
 			<>
-			<motion.div
-				className="m-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3"
-				variants={container}
-				initial="hidden"
-				animate="visible"
-			>
-				{table_data.map((f_data: TableData, index: number) => (
+				<motion.div
+					className="m-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+					variants={container}
+					initial="hidden"
+					animate="visible"
+				>
+					{table_data.map((f_data: TableData, index: number) => (
 						<motion.div
 							onClick={() => router.push(f_data.navLink)}
 							key={f_data.title}
 							variants={stagger}
 							className="cursor-pointer"
 						>
-								<CardFunction
-									title={f_data.title}
-									subscript={f_data.subscript}
-								>
-									<CardFunctionIcon className="text-foreground">
-										{f_data.icon}
-									</CardFunctionIcon>
-								</CardFunction>
+							<CardFunction
+								title={f_data.title}
+								subscript={f_data.subscript}
+							>
+								<CardFunctionIcon className="text-foreground">
+									{f_data.icon}
+								</CardFunctionIcon>
+							</CardFunction>
 						</motion.div>
-				))}
-			</motion.div>
+					))}
+				</motion.div>
 			</>
 		);
 	}
@@ -152,8 +147,6 @@ Modify.getLayout = function getLayout(page: React.ReactElement) {
 };
 
 export default Modify;
-
-
 
 const container = {
 	hidden: {},
