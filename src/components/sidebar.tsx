@@ -121,7 +121,7 @@ const actionLinks: NavLinkEntry[] = [
 		title: "Parameters",
 		icon: SlidersHorizontal,
 		url: "/parameters",
-		collapsed: false,
+		collapsed: true,
 	},
 	{
 		title: "Modify",
