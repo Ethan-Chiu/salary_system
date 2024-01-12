@@ -4,7 +4,9 @@
 		"options": ["勞保", "健保", "勞災"]
 	},
 	"level_start": {
-		"type": "number"
+		"type": "enum",
+		"options": ["1", "2", "3"],
+		"subtype": "number"
 	},
 	"level_end": {
 		"type": "number"

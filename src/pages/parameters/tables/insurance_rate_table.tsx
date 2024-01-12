@@ -8,9 +8,12 @@ import {
 	isDate,
 } from "~/pages/develop_parameters/utils/checkType";
 import { DataTable } from "../components/data_table";
-import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
+import { c_CreateDateStr, c_EndDateStr, c_StartDateStr, c_UpdateDateStr } from "../constant";
 import { InsuranceRateSetting } from "~/server/database/entity/SALARY/insurance_rate_setting";
 import { LoadingSpinner } from "~/components/loading";
+import { TABLE_INSURANCE } from "~/pages/table_names";
+import {formatDate} from "~/pages/develop_parameters/utils/formatDate"
+
 
 export type RowItem = {
 	name: string;
@@ -24,6 +27,8 @@ const columns = [
 	columnHelper.accessor("name", {
 		header: ({ column }) => {
 			return (
+				<div className="pl-3 flex justify-center">
+					<div className="text-center font-medium">
 				<Button
 					variant="ghost"
 					onClick={() =>
@@ -33,10 +38,12 @@ const columns = [
 					Parameter
 					<ArrowUpDown className="ml-2 h-4 w-4" />
 				</Button>
+				</div>
+				</div>
 			);
 		},
 		cell: ({ row }) => (
-			<div className="w-[400px] pl-4 lowercase">
+			<div className="lowercase">
 				{row.getValue("name")}
 			</div>
 		),
@@ -57,7 +64,7 @@ const columns = [
 			}
 			return (
 				<div className="flex justify-center">
-					<div className="w-80 text-center font-medium">
+					<div className="text-center font-medium">
 						{formatted}
 					</div>
 				</div>
@@ -108,17 +115,24 @@ function insuranceRateMapper(
 		},
 		{
 			name: c_StartDateStr,
-			value: new Date(insuranceRateData.start_date),
+			value: formatDate("day", insuranceRateData.start_date),
 		},
 		{
 			name: c_EndDateStr,
 			value: insuranceRateData.end_date
-				? new Date(insuranceRateData.end_date)
-				: new Date(),
+				// ? new Date(insuranceRateData.end_date)
+				? formatDate("day", insuranceRateData.end_date)
+				: "",
 		},
 		{
 			name: c_CreateDateStr,
-			value: insuranceRateData.create_date,
+			value: formatDate("hour", insuranceRateData.create_date),
+			// value: insuranceRateData.create_date
+		},
+		{
+			name: c_UpdateDateStr,
+			value: formatDate("hour", insuranceRateData.update_date),
+			// value: insuranceRateData.create_date
 		},
 	];
 }
@@ -145,6 +159,7 @@ export function InsuranceRateTable({ index, globalFilter }: any) {
 			columns={columns}
 			data={insuranceRateMapper(data)}
 			filterColumnKey={filterKey}
+			table_name={TABLE_INSURANCE}
 		/>
 	);
 

@@ -96,6 +96,7 @@ const PageParameters: NextPageWithLayout = () => {
 	return (
 		<div className="flex h-screen flex-col">
 			<Header title="parameters" showOptions />
+		
 			<div className="m-4 min-h-0 flex-grow rounded-md border-2">
 				<ResizablePanelGroup direction="horizontal">
 					<ResizablePanel defaultSize={15} minSize={10}>

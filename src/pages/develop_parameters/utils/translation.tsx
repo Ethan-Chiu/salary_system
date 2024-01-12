@@ -116,4 +116,6 @@ export function Translate(word: string) {
 	if (word === "create") return "建立";
 	if (word === "update") return "更新";
 	if (word === "modify") return "修改";
+	if (word === "delete") return "刪除";
+	if (word === "form") return "表單";
 }

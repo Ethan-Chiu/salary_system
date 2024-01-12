@@ -31,8 +31,7 @@
     },
     "end_date": {
       "type": "date",
-      "optionalonly": ["create"],
-      "onlynullwhen": ["create"]
+      "optional": true
     }
 }
   

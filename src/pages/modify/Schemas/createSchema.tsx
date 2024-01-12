@@ -88,7 +88,19 @@ function createOneKeySchema(key: string, config: any) {
 			}, z.coerce.date(getRequiredError(key)));
 		}
 		if (type === "enum") {
-			schema = z.enum(config.options);
+			if (config.subtype === "number") {
+				// schema = z.preprocess((a) => {
+				// 	if (typeof a === "string") {
+				// 		return parseInt(a, 10)
+				// 	}
+				// 	else {
+				// 		return a
+				// 	}
+				// }, z.enum(config.options));
+				schema = z.enum(config.options).transform((v) => parseFloat(v));
+			}
+			else
+				schema = z.enum(config.options);
 		}
 	}
 

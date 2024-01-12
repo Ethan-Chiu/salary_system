@@ -16,6 +16,7 @@ import bonusSeniorityConfig from "./configurations/bonusSeniority.json"
 
 import levelConfig from "./configurations/level.json"
 import levelRangeConfig from "./configurations/levelRange.json"
+// import {levelRangeConfig} from "./configurations/levelRange"
 
 import performanceLevelConfig from "./configurations/performanceLevel.json"
 import trustMoneyConfig from "./configurations/trustMoney.json"

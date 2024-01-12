@@ -45,9 +45,8 @@ const Template = (props: any) => {
 								{queryFunction.data[0] &&
 									Object.keys(queryFunction.data[0]).map(
 										(key: string) => {
-											console.log(queryFunction.data);
 											return (
-												<TableHead className="whitespace-nowrap text-center">
+												<TableHead className="whitespace-nowrap text-center" key={key}>
 													{Translate(key)}
 												</TableHead>
 											);
@@ -68,7 +67,7 @@ const Template = (props: any) => {
 								(data: any, index: number) => {
 									return (
 										<TableRow key={data.id}>
-											<TableCell className="items-center">
+											<TableCell className="items-center" key={"TableCell" + data.id.toString()}>
 												<LucideIcons.PenSquare
 													size={18}
 													className="cursor-pointer"
@@ -81,7 +80,7 @@ const Template = (props: any) => {
 											</TableCell>
 											{Object.keys(data).map((key) => {
 												return (
-													<TableCell className="text-center font-medium">
+													<TableCell className="text-center font-medium" key={key}>
 														{data[key]}
 													</TableCell>
 												);
