@@ -5,7 +5,7 @@ import {
 	isNumber,
 	isDate,
 	isString,
-} from "~/pages/develop_parameters/utils/checkType";
+} from "~/lib/utils/checkType";
 import { useState, useRef } from "react";
 
 import {
@@ -18,7 +18,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
-import { Translate } from "~/pages/develop_parameters/utils/translation";
+import { Translate } from "~/lib/utils/translation";
 
 import {
 	Dialog,
@@ -38,7 +38,7 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 
 import { useContext } from "react";
-import { FunctionsContext } from "./Contexts";
+import { FunctionsContext } from "./functions_context";
 
 const simpleTable = (d: any) => {
 	return (

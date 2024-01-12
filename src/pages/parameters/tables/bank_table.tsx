@@ -24,7 +24,7 @@ const columns = [
 		header: ({ column }) => {
 			return (
 				<div className="flex justify-center">
-					<div className="text-center font-medium pl-4 lowercase">
+					<div className="text-center font-medium">
 						<Button
 							variant="ghost"
 							onClick={() =>
@@ -41,7 +41,7 @@ const columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="pl-4 lowercase">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
+			<div className="lowercase">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
 		),
 	}),
 	columnHelper.accessor("org_name", {

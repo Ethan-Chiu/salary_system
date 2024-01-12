@@ -26,7 +26,7 @@ import {
 	SettingItem,
 	createSettingItem,
 } from "./tables/parameter_table";
-import { Translate } from "./utils/translation";
+import { Translate } from "../../lib/utils/translation";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import Multiselect from "multiselect-react-dropdown";
 import * as TABLE_NAMES from "../table_names";
@@ -36,7 +36,7 @@ import { BonusDepartmentRow, BonusDepartmentTable } from "./tables/bonus_departm
 import { BonusPositionRow, BonusPositionTable } from "./tables/bonus_position";
 import { BonusSeniorityRow, BonusSeniorityTable } from "./tables/bonus_seniority";
 import { BonusPositionTypeRow, BonusPositionTypeTable} from "./tables/bonus_position_type";
-import { getSchema } from "../modify/Schemas/schemas";
+import { getSchema } from "../parameters/Schemas/schemas";
 import { LoadingSpinner } from "~/components/loading";
 
 

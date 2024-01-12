@@ -6,13 +6,13 @@ import {
 	isString,
 	isNumber,
 	isDate,
-} from "~/pages/develop_parameters/utils/checkType";
+} from "~/lib/utils/checkType";
 import { DataTable } from "../components/data_table";
 import { c_CreateDateStr, c_EndDateStr, c_StartDateStr, c_UpdateDateStr } from "../constant";
 import { InsuranceRateSetting } from "~/server/database/entity/SALARY/insurance_rate_setting";
 import { LoadingSpinner } from "~/components/loading";
 import { TABLE_INSURANCE } from "~/pages/table_names";
-import {formatDate} from "~/pages/develop_parameters/utils/formatDate"
+import {formatDate} from "~/lib/utils/formatDate"
 
 
 export type RowItem = {

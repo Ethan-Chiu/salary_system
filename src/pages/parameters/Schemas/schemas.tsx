@@ -1,6 +1,6 @@
 import * as z from "zod";
 import * as TABLE_NAMES from "../../table_names";
-import { Translate } from "~/pages/develop_parameters/utils/translation";
+import { Translate } from "~/lib/utils/translation";
 import { createSchema } from "./createSchema";
 
 // JSON Configs

@@ -6,6 +6,7 @@ import { DataTable } from "../components/data_table";
 import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
 import { BonusPosition } from "~/server/database/entity/SALARY/bonus_position";
 import { LoadingSpinner } from "~/components/loading";
+import { TABLE_BONUS_POSITION } from "~/pages/table_names";
 
 export type RowItem = {
 	position: number;
@@ -19,19 +20,25 @@ const columns = [
 	columnHelper.accessor("position", {
 		header: ({ column }) => {
 			return (
-				<Button
-					variant="ghost"
-					onClick={() =>
-						column.toggleSorting(column.getIsSorted() === "asc")
-					}
-				>
-					Position
-					<ArrowUpDown className="ml-2 h-4 w-4" />
-				</Button>
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							Position
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
 			);
 		},
 		cell: ({ row }) => (
-			<div className="w-[400px] pl-4 lowercase">
+			<div className="lowercase">
 				{row.getValue("position")}
 			</div>
 		),
@@ -41,7 +48,7 @@ const columns = [
 		cell: ({ row }) => {
 			return (
 				<div className="flex justify-center">
-					<div className="w-80 text-center font-medium">{`${row.original.multiplier}`}</div>
+					<div className="text-center font-medium">{`${row.original.multiplier}`}</div>
 				</div>
 			);
 		},
@@ -79,6 +86,7 @@ export function BonusPositionTable({ index, globalFilter }: any) {
 			columns={columns}
 			data={bonusPositionMapper(data)}
 			filterColumnKey={filterKey}
+			table_name={TABLE_BONUS_POSITION}
 		/>
 	);
 

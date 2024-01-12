@@ -19,7 +19,7 @@ import { OvertimeTable } from "../tables/overtime_table";
 import { PaysetTable } from "../tables/payset_table";
 import { ProgressBar } from "~/components/functions/progress_bar";
 import { Button } from "~/components/ui/button";
-import { Translate } from "~/pages/develop_parameters/utils/translation";
+import { Translate } from "~/lib/utils/translation";
 import ExcelViewer from "./ExcelViewer";
 import { LoadingSpinner } from "~/components/loading";
 

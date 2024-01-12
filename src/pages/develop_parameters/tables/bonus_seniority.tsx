@@ -67,7 +67,7 @@ import { DATA, createDATA } from "./datatype";
 import { once } from "events";
 import { now } from "sequelize/types/utils";
 import { string } from "zod";
-import { Translate } from "../utils/translation";
+import { Translate } from "../../../lib/utils/translation";
 
 export type BonusSeniorityRow = {
 	id: number | null;
