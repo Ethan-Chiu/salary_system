@@ -6,7 +6,7 @@ import {
 	isString,
 	isNumber,
 	isDate,
-} from "~/pages/develop_parameters/utils/checkType";
+} from "~/lib/utils/checkType";
 import { DataTable } from "../components/data_table";
 import {
 	c_CreateDateStr,
@@ -16,7 +16,7 @@ import {
 } from "../constant";
 import { BonusSetting } from "~/server/database/entity/SALARY/bonus_setting";
 import { LoadingSpinner } from "~/components/loading";
-import { formatDate } from "~/pages/develop_parameters/utils/formatDate";
+import { formatDate } from "~/lib/utils/formatDate";
 import { TABLE_BONUS_SETTING } from "~/pages/table_names";
 
 export type RowItem = {

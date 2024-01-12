@@ -11,7 +11,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useRouter } from 'next/router';
 import * as Icon from "~/components/icons/svg_icons"
-import { Translate } from "../develop_parameters/utils/translation";
+import { Translate } from "../../lib/utils/translation";
 
 export type TableData = {
 	title: string;

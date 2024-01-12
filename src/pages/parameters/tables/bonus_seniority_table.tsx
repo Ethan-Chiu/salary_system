@@ -11,7 +11,7 @@ import {
 	isString,
 	isNumber,
 	isDate,
-} from "~/pages/develop_parameters/utils/checkType";
+} from "~/lib/utils/checkType";
 import { DataTable } from "../components/data_table";
 import { AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
 import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";

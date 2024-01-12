@@ -6,7 +6,7 @@ import {
 	isString,
 	isNumber,
 	isDate,
-} from "~/pages/develop_parameters/utils/checkType";
+} from "~/lib/utils/checkType";
 import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,

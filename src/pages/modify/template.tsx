@@ -16,7 +16,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
-import { Translate } from "../develop_parameters/utils/translation";
+import { Translate } from "../../lib/utils/translation";
 import { getSchema } from "./Schemas/schemas";
 import { LoadingSpinner } from "~/components/loading";
 

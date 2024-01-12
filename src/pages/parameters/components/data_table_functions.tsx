@@ -23,9 +23,9 @@ import {
 
 import FunctionsProvider from "./function_sheet/functions_context"; // Correct import statement
 import { ParameterForm } from "./function_sheet/parameter_form";
-import { getSchema } from "~/pages/modify/Schemas/schemas";
+import { getSchema } from "../Schemas/schemas";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
-import { Translate } from "~/pages/develop_parameters/utils/translation";
+import { Translate } from "~/lib/utils/translation";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	table_name: string;

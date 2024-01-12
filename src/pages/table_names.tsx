@@ -1,4 +1,4 @@
-import { Translate } from "./develop_parameters/utils/translation";
+import { Translate } from "../lib/utils/translation";
 
 export const TABLE_ATTENDANCE = Translate("attendanceSetting");
 export const TABLE_BANK_SETTING = Translate("bankSetting");

@@ -5,7 +5,7 @@ import {
 	isNumber,
 	isDate,
 	isString,
-} from "~/pages/develop_parameters/utils/checkType";
+} from "~/lib/utils/checkType";
 import { useState, useRef } from "react";
 
 import {
@@ -18,7 +18,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
-import { Translate } from "~/pages/develop_parameters/utils/translation";
+import { Translate } from "~/lib/utils/translation";
 
 import {
 	Dialog,

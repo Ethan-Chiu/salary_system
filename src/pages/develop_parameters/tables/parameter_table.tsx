@@ -81,9 +81,9 @@ import { PerpageLayout } from "~/components/layout/perpage_layout";
 import { type ReactElement, useRef, useState, useEffect, useMemo } from "react";
 import { DATA, createDATA } from "./datatype";
 import { List } from "postcss/lib/list";
-import { isNumber, isDate, isString } from "../utils/checkType";
+import { isNumber, isDate, isString } from "../../../lib/utils/checkType";
 import { toast } from "~/components/ui/use-toast";
-import { Translate } from "../utils/translation";
+import { Translate } from "../../../lib/utils/translation";
 import { useRouter } from 'next/router';
 
 export type SettingItem = {

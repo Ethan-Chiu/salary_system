@@ -8,7 +8,7 @@ import { Header } from "~/components/header";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { UserPreferenceContext, UserPreferenceProvider } from "../settings/components/UserPreference";
 import { Button } from "~/components/ui/button";
-import { Translate } from "../develop_parameters/utils/translation";
+import { Translate } from "../../lib/utils/translation";
 
 
 const PageSettings: NextPageWithLayout = () => {

@@ -4,9 +4,9 @@ import {
 	isNumber,
 	isDate,
 	isString,
-} from "~/pages/develop_parameters/utils/checkType";
+} from "~/lib/utils/checkType";
 
-import { Translate } from "~/pages/develop_parameters/utils/translation";
+import { Translate } from "~/lib/utils/translation";
 
 function getTranslate(key: string) {
 	return Translate(key) ?? "Not found"
