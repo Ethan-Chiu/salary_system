@@ -51,7 +51,7 @@ const columns = [
 		header: ({ column }) => {
 			return (
 				<div className="flex justify-center">
-					<div className="text-center font-medium pl-4">
+					<div className="pl-4 text-center font-medium">
 						<Button
 							variant="ghost"
 							onClick={() =>
@@ -216,8 +216,6 @@ export function AttendanceTable({ index, globalFilter }: any) {
 }
 
 function CompDropdown({ row }: { row: RowItem }) {
-	const [showDialog, setShowDialog] = useState(false);
-
 	return (
 		<>
 			<DropdownMenu>
@@ -232,11 +230,7 @@ function CompDropdown({ row }: { row: RowItem }) {
 					<DropdownMenuSeparator />
 
 					<DropdownCopyAction value={row.value.toString()} />
-					<DropdownMenuItem
-						onClick={() => {
-							setShowDialog(true);
-						}}
-					>
+					<DropdownMenuItem onClick={() => {}}>
 						Update
 					</DropdownMenuItem>
 				</DropdownMenuContent>

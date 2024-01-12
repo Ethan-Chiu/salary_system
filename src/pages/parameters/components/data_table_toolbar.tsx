@@ -5,13 +5,15 @@ import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { LayoutGrid } from "lucide-react";
 import { DataTableFunctions } from "./data_table_functions";
 import FunctionsProvider from "./function_sheet/functions_context";
+import { useContext } from "react";
+import dataTableContext from "./context/data_table_context";
+import { getTableName } from "./context/data_table_enum";
 
 interface DataTableToolbarProps<TData> {
 	table: Table<TData>;
 	globalFilter: string;
 	filterKey: keyof TData;
 	showTabs?: boolean;
-	table_name?: string;
 }
 
 export function DataTableToolbar<TData>({
@@ -19,8 +21,10 @@ export function DataTableToolbar<TData>({
 	globalFilter,
 	filterKey,
 	showTabs,
-	table_name,
 }: DataTableToolbarProps<TData>) {
+
+	const { selectedTable } = useContext(dataTableContext);
+
 	return (
 		<div className="flex flex-row items-center justify-between space-x-2 px-2 py-2">
 			{/* search bar */}
@@ -57,9 +61,9 @@ export function DataTableToolbar<TData>({
 			)}
 			{/*  */}
 			<DataTableViewOptions table={table} />
-			{table_name && (
+			{selectedTable && (
 				<FunctionsProvider>
-					<DataTableFunctions table_name={table_name} />
+					<DataTableFunctions table_name={getTableName(selectedTable)} />
 				</FunctionsProvider>
 			)}
 		</div>
