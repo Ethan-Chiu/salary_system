@@ -7,7 +7,8 @@ import {
 	isNumber,
 	isDate,
 } from "~/lib/utils/checkType";
-import { DataTable } from "../components/data_table";
+import { DataTable as DataTableWithFunctions } from "../components/data_table";
+import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import {
 	c_CreateDateStr,
 	c_UpdateDateStr,
@@ -110,7 +111,7 @@ function bonusMapper(bonusData: BonusSetting): RowItem[] {
 	];
 }
 
-export function BonusTable({ index, globalFilter }: any) {
+export function BonusTable({ index, globalFilter, viewOnly }: any) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBonusSetting.useQuery();
 	const filterKey: RowItemKey = "name";
@@ -128,12 +129,22 @@ export function BonusTable({ index, globalFilter }: any) {
 	}
 
 	return (
-		<DataTable
-			columns={columns}
-			data={bonusMapper(data)}
-			filterColumnKey={filterKey}
-			table_name={TABLE_BONUS_SETTING}
-		/>
+		<>
+			{!viewOnly ? (
+				<DataTableWithFunctions
+					columns={columns}
+					data={bonusMapper(data)}
+					filterColumnKey={filterKey}
+					table_name={TABLE_BONUS_SETTING}
+				/>
+			) : (
+				<DataTableWithoutFunctions
+					columns={columns}
+					data={bonusMapper(data)}
+					filterColumnKey={filterKey}
+				/>
+			)}
+		</>
 	);
 
 	// useMemo(() => {

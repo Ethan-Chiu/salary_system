@@ -22,6 +22,7 @@ import { Button } from "~/components/ui/button";
 import { Translate } from "~/lib/utils/translation";
 import ExcelViewer from "./ExcelViewer";
 import { LoadingSpinner } from "~/components/loading";
+import { CheckParameters } from "./CheckParameters";
 
 const TabOptions = ["請假", "加班", "工作天數", "其他", "其他"];
 const progressBarLabels = ["確認資料", "確認參數", "匯出報表"];
@@ -142,10 +143,19 @@ function DataPage() {
 }
 
 function ParameterPage() {
+	const isFetch = true;
 	return (
-		<div className="flex grow items-center justify-center">
-			<LoadingSpinner />
-		</div>
+		<>
+			{isFetch ? (
+				<div className="grow">
+					<CheckParameters />
+				</div>
+			) : (
+				<div className="flex grow items-center justify-center">
+					<LoadingSpinner />
+				</div>
+			)}
+		</>
 	);
 }
 

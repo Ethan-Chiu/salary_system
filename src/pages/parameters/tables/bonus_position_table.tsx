@@ -2,7 +2,8 @@ import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import { DataTable } from "../components/data_table";
+import { DataTable as DataTableWithFunctions } from "../components/data_table";
+import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
 import { BonusPosition } from "~/server/database/entity/SALARY/bonus_position";
 import { LoadingSpinner } from "~/components/loading";
@@ -64,7 +65,7 @@ function bonusPositionMapper(bonusPositionData: BonusPosition[]): RowItem[] {
 	});
 }
 
-export function BonusPositionTable({ index, globalFilter }: any) {
+export function BonusPositionTable({ index, globalFilter, viewOnly }: any) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBonusPosition.useQuery();
 	const filterKey: RowItemKey = "position";
@@ -82,12 +83,22 @@ export function BonusPositionTable({ index, globalFilter }: any) {
 	}
 
 	return (
-		<DataTable
-			columns={columns}
-			data={bonusPositionMapper(data)}
-			filterColumnKey={filterKey}
-			table_name={TABLE_BONUS_POSITION}
-		/>
+		<>
+			{!viewOnly ? (
+				<DataTableWithFunctions
+					columns={columns}
+					data={bonusPositionMapper(data)}
+					filterColumnKey={filterKey}
+					table_name={TABLE_BONUS_POSITION}
+				/>
+			) : (
+				<DataTableWithoutFunctions
+					columns={columns}
+					data={bonusPositionMapper(data)}
+					filterColumnKey={filterKey}
+				/>
+			)}
+		</>
 	);
 
 	// useMemo(() => {

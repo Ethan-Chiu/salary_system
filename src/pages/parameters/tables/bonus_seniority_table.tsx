@@ -12,7 +12,8 @@ import {
 	isNumber,
 	isDate,
 } from "~/lib/utils/checkType";
-import { DataTable } from "../components/data_table";
+import { DataTable as DataTableWithFunctions } from "../components/data_table";
+import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
 import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
 import { BonusDepartment } from "~/server/database/entity/SALARY/bonus_department";
@@ -77,7 +78,7 @@ function bonusSeniorityMapper(bonusSeniorityData: BonusSeniority[]): RowItem[] {
 	});
 }
 
-export function BonusSeniorityTable({ index, globalFilter }: any) {
+export function BonusSeniorityTable({ index, globalFilter, viewOnly }: any) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBonusSeniority.useQuery();
 	const filterKey: RowItemKey = "seniority";
@@ -95,12 +96,22 @@ export function BonusSeniorityTable({ index, globalFilter }: any) {
 	}
 
 	return (
-		<DataTable
-			columns={columns}
-			data={bonusSeniorityMapper(data)}
-			filterColumnKey={filterKey}
-			table_name={TABLE_BONUS_SENIORITY}
-		/>
+		<>
+			{!viewOnly ? (
+				<DataTableWithFunctions
+					columns={columns}
+					data={bonusSeniorityMapper(data)}
+					filterColumnKey={filterKey}
+					table_name={TABLE_BONUS_SENIORITY}
+				/>
+			) : (
+				<DataTableWithoutFunctions
+					columns={columns}
+					data={bonusSeniorityMapper(data)}
+					filterColumnKey={filterKey}
+				/>
+			)}
+		</>
 	);
 
 	// useMemo(() => {
