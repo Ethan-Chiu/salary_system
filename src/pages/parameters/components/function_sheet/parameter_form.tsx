@@ -1,9 +1,7 @@
 import AutoForm, { AutoFormSubmit } from "~/components/ui/auto-form";
 import * as z from "zod";
 import { Button } from "~/components/ui/button";
-import {
-	isDate,
-} from "~/pages/develop_parameters/utils/checkType";
+import { isDate } from "~/lib/utils/checkType";
 import { useState, useRef } from "react";
 
 import {
@@ -16,7 +14,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
-import { Translate } from "~/pages/develop_parameters/utils/translation";
+import { Translate } from "~/lib/utils/translation";
 
 import {
 	Dialog,
@@ -33,7 +31,7 @@ import { PenSquare, Trash2 } from "lucide-react";
 import { useContext } from "react";
 import { FunctionsContext } from "./functions_context";
 
-const simpleTable = (d: any) => {
+function CompSimpleTable({ data }: { data: any }) {
 	return (
 		<Table>
 			<TableHeader>
@@ -47,16 +45,16 @@ const simpleTable = (d: any) => {
 				</TableRow>
 			</TableHeader>
 			<TableBody>
-				{Object.keys(d).map((key: string, index: number) => {
+				{Object.keys(data).map((key: string, index: number) => {
 					return (
 						<TableRow key={index.toString()}>
 							<TableCell className="text-center font-medium">
 								{Translate(key)}
 							</TableCell>
 							<TableCell className="text-center font-medium">
-								{isDate(d[key])
-									? d[key].toISOString().split("T")[0]
-									: d[key]}
+								{isDate(data[key])
+									? data[key].toISOString().split("T")[0]
+									: data[key]}
 							</TableCell>
 						</TableRow>
 					);
@@ -64,7 +62,7 @@ const simpleTable = (d: any) => {
 			</TableBody>
 		</Table>
 	);
-};
+}
 
 interface ParameterFormProps {
 	table_name: string;
@@ -87,7 +85,7 @@ export function ParameterForm({
 	const createFunction = functions![table_name]?.createFunction;
 	const deleteFunction = functions![table_name]?.deleteFunction;
 	const isList = Array.isArray(queryFunction.data);
-	const onlyOne = !(isList && queryFunction.data.length > 1)
+	const onlyOne = !(isList && queryFunction.data.length > 1);
 
 	const [originalData, setOriginalData] = useState(
 		isList ? null : queryFunction.data
@@ -283,7 +281,7 @@ export function ParameterForm({
 							<DialogTitle>Are you sure to update?</DialogTitle>
 							<DialogDescription></DialogDescription>
 						</DialogHeader>
-						{simpleTable(values)}
+						<CompSimpleTable data={values} />
 						<DialogFooter>
 							<DialogClose>
 								<Button

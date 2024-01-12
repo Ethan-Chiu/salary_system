@@ -2,7 +2,8 @@ import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import { DataTable } from "../components/data_table";
+import { DataTable as DataTableWithFunctions } from "../components/data_table";
+import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { BankSetting } from "~/server/database/entity/SALARY/bank_setting";
 import { LoadingSpinner } from "~/components/loading";
 import { TABLE_BANK_SETTING } from "~/pages/table_names";
@@ -24,7 +25,7 @@ const columns = [
 		header: ({ column }) => {
 			return (
 				<div className="flex justify-center">
-					<div className="text-center font-medium pl-4 lowercase">
+					<div className="text-center font-medium">
 						<Button
 							variant="ghost"
 							onClick={() =>
@@ -41,7 +42,7 @@ const columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="pl-4 lowercase">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
+			<div className="lowercase">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
 		),
 	}),
 	columnHelper.accessor("org_name", {
@@ -89,7 +90,7 @@ function bankSettingMapper(bankSettingData: BankSetting[]): RowItem[] {
 	});
 }
 
-export function BankTable({ index, globalFilter }: any) {
+export function BankTable({ index, globalFilter, viewOnly }: any) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBankSetting.useQuery();
 	const filterKey: RowItemKey = "bank_name";
@@ -107,11 +108,20 @@ export function BankTable({ index, globalFilter }: any) {
 	}
 
 	return (
-		<DataTable
-			columns={columns}
-			data={bankSettingMapper(data)}
-			filterColumnKey={filterKey}
-			table_name={TABLE_BANK_SETTING}
-		/>
+		<>
+			{!viewOnly ? (
+				<DataTableWithFunctions
+					columns={columns}
+					data={bankSettingMapper(data)}
+					filterColumnKey={filterKey}
+				/>
+			) : (
+				<DataTableWithoutFunctions
+					columns={columns}
+					data={bankSettingMapper(data)}
+					filterColumnKey={filterKey}
+				/>
+			)}
+		</>
 	);
 }

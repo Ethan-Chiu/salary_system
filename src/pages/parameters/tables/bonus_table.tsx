@@ -6,8 +6,9 @@ import {
 	isString,
 	isNumber,
 	isDate,
-} from "~/pages/develop_parameters/utils/checkType";
-import { DataTable } from "../components/data_table";
+} from "~/lib/utils/checkType";
+import { DataTable as DataTableWithFunctions } from "../components/data_table";
+import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import {
 	c_CreateDateStr,
 	c_UpdateDateStr,
@@ -16,7 +17,7 @@ import {
 } from "../constant";
 import { BonusSetting } from "~/server/database/entity/SALARY/bonus_setting";
 import { LoadingSpinner } from "~/components/loading";
-import { formatDate } from "~/pages/develop_parameters/utils/formatDate";
+import { formatDate } from "~/lib/utils/formatDate";
 import { TABLE_BONUS_SETTING } from "~/pages/table_names";
 
 export type RowItem = {
@@ -110,7 +111,7 @@ function bonusMapper(bonusData: BonusSetting): RowItem[] {
 	];
 }
 
-export function BonusTable({ index, globalFilter }: any) {
+export function BonusTable({ index, globalFilter, viewOnly }: any) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBonusSetting.useQuery();
 	const filterKey: RowItemKey = "name";
@@ -128,12 +129,21 @@ export function BonusTable({ index, globalFilter }: any) {
 	}
 
 	return (
-		<DataTable
-			columns={columns}
-			data={bonusMapper(data)}
-			filterColumnKey={filterKey}
-			table_name={TABLE_BONUS_SETTING}
-		/>
+		<>
+			{!viewOnly ? (
+				<DataTableWithFunctions
+					columns={columns}
+					data={bonusMapper(data)}
+					filterColumnKey={filterKey}
+				/>
+			) : (
+				<DataTableWithoutFunctions
+					columns={columns}
+					data={bonusMapper(data)}
+					filterColumnKey={filterKey}
+				/>
+			)}
+		</>
 	);
 
 	// useMemo(() => {

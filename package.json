@@ -46,7 +46,7 @@
 		"exceljs": "^4.4.0",
 		"framer-motion": "^10.16.1",
 		"jest-mock-extended": "^3.0.5",
-		"lucide-react": "^0.268.0",
+		"lucide-react": "^0.309.0",
 		"multiselect-react-dropdown": "^2.0.25",
 		"next": "^13.4.2",
 		"next-auth": "^4.22.4",

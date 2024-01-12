@@ -2,10 +2,12 @@ import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import { DataTable } from "../components/data_table";
+import { DataTable as DataTableWithFunctions } from "../components/data_table";
+import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
 import { BonusPositionType } from "~/server/database/entity/SALARY/bonus_position_type";
 import { LoadingSpinner } from "~/components/loading";
+import { TABLE_BONUS_POSITION_TYPE } from "~/pages/table_names";
 
 export type RowItem = {
 	position_type: string;
@@ -19,19 +21,25 @@ const columns = [
 	columnHelper.accessor("position_type", {
 		header: ({ column }) => {
 			return (
-				<Button
-					variant="ghost"
-					onClick={() =>
-						column.toggleSorting(column.getIsSorted() === "asc")
-					}
-				>
-					Position Type
-					<ArrowUpDown className="ml-2 h-4 w-4" />
-				</Button>
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							Position Type
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
 			);
 		},
 		cell: ({ row }) => (
-			<div className="w-[400px] pl-4 lowercase">
+			<div className="capitalize">
 				{row.getValue("position_type")}
 			</div>
 		),
@@ -41,7 +49,7 @@ const columns = [
 		cell: ({ row }) => {
 			return (
 				<div className="flex justify-center">
-					<div className="w-80 text-center font-medium">{`${row.original.multiplier}`}</div>
+					<div className="text-center font-medium">{`${row.original.multiplier}`}</div>
 				</div>
 			);
 		},
@@ -59,7 +67,7 @@ function bonusPositionTypeMapper(
 	});
 }
 
-export function BonusPositionTypeTable({ index, globalFilter }: any) {
+export function BonusPositionTypeTable({ index, globalFilter, viewOnly }: any) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBonusPositionType.useQuery();
 	const filterKey: RowItemKey = "position_type";
@@ -77,11 +85,21 @@ export function BonusPositionTypeTable({ index, globalFilter }: any) {
 	}
 
 	return (
-		<DataTable
-			columns={columns}
-			data={bonusPositionTypeMapper(data)}
-			filterColumnKey={filterKey}
-		/>
+		<>
+			{!viewOnly ? (
+				<DataTableWithFunctions
+					columns={columns}
+					data={bonusPositionTypeMapper(data)}
+					filterColumnKey={filterKey}
+				/>
+			) : (
+				<DataTableWithoutFunctions
+					columns={columns}
+					data={bonusPositionTypeMapper(data)}
+					filterColumnKey={filterKey}
+				/>
+			)}
+		</>
 	);
 
 	// useMemo(() => {

@@ -1,25 +1,18 @@
-import AutoForm, { AutoFormSubmit } from "~/components/ui/auto-form";
+import AutoForm from "~/components/ui/auto-form";
 import * as z from "zod";
 import { Button } from "~/components/ui/button";
-import {
-	isNumber,
-	isDate,
-	isString,
-} from "../develop_parameters/utils/checkType";
+import { isDate } from "../../lib/utils/checkType";
 import { useRouter } from "next/router";
 import { useState, useRef } from "react";
-
 import {
 	Table,
 	TableBody,
-	TableCaption,
 	TableCell,
-	TableFooter,
 	TableHead,
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
-import { Translate } from "../develop_parameters/utils/translation";
+import { Translate } from "../../lib/utils/translation";
 
 import {
 	Dialog,
@@ -27,14 +20,9 @@ import {
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 	DialogClose,
 	DialogFooter,
 } from "~/components/ui/dialog";
-
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-
 const simpleTable = (d: any) => {
 	return (
 		<Table>
@@ -103,8 +91,7 @@ export function ParameterForm({
 			createFunction({
 				...parsedValues.data,
 			});
-		}
-		else {
+		} else {
 			updateFunction({
 				...parsedValues.data,
 				id: original_data.id,
@@ -126,11 +113,9 @@ export function ParameterForm({
 
 	return (
 		<AutoForm
-			_defaultValues={original_data?(original_data):{}}
+			_defaultValues={original_data ? original_data : {}}
 			values={values}
-			onSubmit={(data) => {
-
-			}}
+			onSubmit={(data) => {}}
 			onValuesChange={setValues}
 			formSchema={formSchema}
 			fieldConfig={fieldConfig}
@@ -151,18 +136,23 @@ export function ParameterForm({
 						Cancel
 					</Button>
 				</div>
-				{mode==="update" && <Button
-					className="col-start-5"
-					variant={"destructive"}
-					onClick={() => {
-						console.log("delete data id = %d", original_data.id);
-						deleteFunction({ id: original_data.id });
-						returnPage(0);
-					}}
-					disabled={disabled}
-				>
-					Delete
-				</Button>}
+				{mode === "update" && (
+					<Button
+						className="col-start-5"
+						variant={"destructive"}
+						onClick={() => {
+							console.log(
+								"delete data id = %d",
+								original_data.id
+							);
+							deleteFunction({ id: original_data.id });
+							returnPage(0);
+						}}
+						disabled={disabled}
+					>
+						Delete
+					</Button>
+				)}
 				<p
 					onClick={() => {
 						console.log(values);
@@ -171,8 +161,8 @@ export function ParameterForm({
 					}}
 					className="col-start-6 mb-2 me-2 cursor-pointer rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
 				>
-					{mode==="create" && "Create"}
-					{mode==="update" && "Update"}
+					{mode === "create" && "Create"}
+					{mode === "update" && "Update"}
 				</p>
 				<Dialog open={openDialog} onOpenChange={setOpenDialog}>
 					<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">

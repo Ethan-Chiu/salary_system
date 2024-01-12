@@ -1,5 +1,5 @@
 import { LoadingSpinner } from "~/components/loading";
-import { DataTable } from "~/pages/parameters/components/data_table";
+import { DataTable } from "../components/data_table";
 import { Holiday } from "~/server/database/entity/UMEDIA/holiday";
 import { api } from "~/utils/api";
 
@@ -24,6 +24,6 @@ export function HolidayTable({ period, index, globalFilter }: any) {
 	}
 
 	return (
-		<DataTable columns={columns} data={data!} filterColumnKey={filterKey} showTabs={false}/>
+		<DataTable columns={columns} data={data!} filterColumnKey={filterKey}/>
 	);
 }

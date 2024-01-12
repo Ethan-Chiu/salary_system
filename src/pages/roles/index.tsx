@@ -34,6 +34,8 @@ import { type NextPageWithLayout } from "../_app";
 import { type ReactElement } from "react";
 import { Header } from "~/components/header";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
+import { useSession } from "next-auth/react";
+import { TeamMemberTable } from "./team_member_table";
 
 type EmployeeInfo = {
 	username: string;
@@ -48,22 +50,39 @@ type IdentityType = {
 };
 
 const PageRoles: NextPageWithLayout = () => {
+	return (
+		<>
+			{/* header */}
+			<Header title="roles" showOptions/>
+			<CurrentUserCard />
+			<div>
+				<TeamMemberTable/>
+			</div>
+		</>
+	);
+};
+
+const capitalizeFirstLetter = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
+function CurrentUserCard() {
+	const {data: session, status} = useSession();
+
 	const info: EmployeeInfo = {
-		username: "Ethan Chiu",
-		userEmail: "ethanchiu@gmail.com",
+		username: capitalizeFirstLetter(session?.user.emp_no ?? "Something went wrong"),
+		userEmail: session?.user.email ?? "Email not set yet",
 		description: "balabalabalabala balabalabala balabala",
 		avatarImgSource: "https://github.com/shadcn.png",
 	};
 
 	return (
 		<>
-			{/* header */}
-			<Header title="roles"/>
 			<Card className="m-4">
 				<CardHeader>
-					<CardTitle>Team Members</CardTitle>
+					<CardTitle>Administrator</CardTitle>
 					<CardDescription>
-						Invite your team members to collaborate.
+						Modify the access rights for the employees.
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="grid gap-6">
@@ -90,7 +109,7 @@ const PageRoles: NextPageWithLayout = () => {
 			</Card>
 		</>
 	);
-};
+}
 
 function CompRoleDropdown() {
 	const identitylist: IdentityType[] = [
@@ -188,7 +207,9 @@ function CompHoverCard({ info }: { info: EmployeeInfo }) {
 PageRoles.getLayout = function getLayout(page: ReactElement) {
 	return (
 		<RootLayout>
-			<PerpageLayoutNav pageTitle="roles">{page}</PerpageLayoutNav>
+			<PerpageLayoutNav pageTitle="roles">
+				{page}
+			</PerpageLayoutNav>
 		</RootLayout>
 	);
 };

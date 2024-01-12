@@ -2,11 +2,7 @@ import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import {
-	isString,
-	isNumber,
-	isDate,
-} from "~/pages/develop_parameters/utils/checkType";
+import { isString, isNumber, isDate } from "~/lib/utils/checkType";
 import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
@@ -26,7 +22,8 @@ import {
 	DialogTitle,
 	DialogClose,
 } from "~/components/ui/dialog";
-import { DataTable } from "../components/data_table";
+import { DataTable as DataTableWithFunctions } from "../components/data_table";
+import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
 import { useRef, useState } from "react";
 import { z } from "zod";
@@ -96,13 +93,13 @@ const columns = [
 			);
 		},
 	}),
-	columnHelper.display({
-		id: "actions",
-		enableHiding: false,
-		cell: ({ row }) => {
-			return <CompDropdown row={row.original} />;
-		},
-	}),
+	// columnHelper.display({
+	// 	id: "actions",
+	// 	enableHiding: false,
+	// 	cell: ({ row }) => {
+	// 		return <CompDropdown row={row.original} />;
+	// 	},
+	// }),
 ];
 
 function attendanceMapper(attendanceData: AttendanceSetting): RowItem[] {
@@ -188,7 +185,7 @@ function attendanceMapper(attendanceData: AttendanceSetting): RowItem[] {
 	];
 }
 
-export function AttendanceTable({ index, globalFilter }: any) {
+export function AttendanceTable({ index, globalFilter, viewOnly }: any) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentAttendanceSetting.useQuery();
 	const filterKey: RowItemKey = "name";
@@ -206,12 +203,21 @@ export function AttendanceTable({ index, globalFilter }: any) {
 	}
 
 	return (
-		<DataTable
-			columns={columns}
-			data={attendanceMapper(data)}
-			filterColumnKey={filterKey}
-			table_name={TABLE_ATTENDANCE}
-		/>
+		<>
+			{!viewOnly ? (
+				<DataTableWithFunctions
+					columns={columns}
+					data={attendanceMapper(data)}
+					filterColumnKey={filterKey}
+				/>
+			) : (
+				<DataTableWithoutFunctions
+					columns={columns}
+					data={attendanceMapper(data)}
+					filterColumnKey={filterKey}
+				/>
+			)}
+		</>
 	);
 }
 

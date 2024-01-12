@@ -6,7 +6,7 @@ import * as TABLE_NAMES from "../../table_names";
 import { useRouter } from "next/router";
 import Template from "../template";
 import { Button } from "~/components/ui/button";
-import { Translate } from "~/pages/develop_parameters/utils/translation";
+import { Translate } from "~/lib/utils/translation";
 
 const PageTitle = "Attendance Setting";
 

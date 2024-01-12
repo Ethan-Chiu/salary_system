@@ -2,10 +2,12 @@ import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import { DataTable } from "../components/data_table";
+import { DataTable as DataTableWithFunctions } from "../components/data_table";
+import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
 import { BonusDepartment } from "~/server/database/entity/SALARY/bonus_department";
 import { LoadingSpinner } from "~/components/loading";
+import { TABLE_BONUS_DEPARTMENT } from "~/pages/table_names";
 
 export type RowItem = {
 	department: string;
@@ -19,21 +21,25 @@ const columns = [
 	columnHelper.accessor("department", {
 		header: ({ column }) => {
 			return (
-				<Button
-					variant="ghost"
-					onClick={() =>
-						column.toggleSorting(column.getIsSorted() === "asc")
-					}
-				>
-					Department
-					<ArrowUpDown className="ml-2 h-4 w-4" />
-				</Button>
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							Department
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
 			);
 		},
 		cell: ({ row }) => (
-			<div className="w-[400px] pl-4 lowercase">
-				{row.getValue("department")}
-			</div>
+			<div className="lowercase">{row.getValue("department")}</div>
 		),
 	}),
 	columnHelper.accessor("multiplier", {
@@ -41,7 +47,7 @@ const columns = [
 		cell: ({ row }) => {
 			return (
 				<div className="flex justify-center">
-					<div className="w-80 text-center font-medium">{`${row.original.multiplier}`}</div>
+					<div className="text-center font-medium">{`${row.original.multiplier}`}</div>
 				</div>
 			);
 		},
@@ -59,7 +65,7 @@ function bonusDepartmentMapper(
 	});
 }
 
-export function BonusDepartmentTable({ index, globalFilter }: any) {
+export function BonusDepartmentTable({ index, globalFilter, viewOnly }: any) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBonusDepartment.useQuery();
 	const filterKey: RowItemKey = "department";
@@ -77,11 +83,21 @@ export function BonusDepartmentTable({ index, globalFilter }: any) {
 	}
 
 	return (
-		<DataTable
-			columns={columns}
-			data={bonusDepartmentMapper(data)}
-			filterColumnKey={filterKey}
-		/>
+		<>
+			{!viewOnly ? (
+				<DataTableWithFunctions
+					columns={columns}
+					data={bonusDepartmentMapper(data)}
+					filterColumnKey={filterKey}
+				/>
+			) : (
+				<DataTableWithoutFunctions
+					columns={columns}
+					data={bonusDepartmentMapper(data)}
+					filterColumnKey={filterKey}
+				/>
+			)}
+		</>
 	);
 
 	// useMemo(() => {

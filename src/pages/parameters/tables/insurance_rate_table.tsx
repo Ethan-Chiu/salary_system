@@ -6,13 +6,14 @@ import {
 	isString,
 	isNumber,
 	isDate,
-} from "~/pages/develop_parameters/utils/checkType";
-import { DataTable } from "../components/data_table";
+} from "~/lib/utils/checkType";
+import { DataTable as DataTableWithFunctions } from "../components/data_table";
+import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { c_CreateDateStr, c_EndDateStr, c_StartDateStr, c_UpdateDateStr } from "../constant";
 import { InsuranceRateSetting } from "~/server/database/entity/SALARY/insurance_rate_setting";
 import { LoadingSpinner } from "~/components/loading";
 import { TABLE_INSURANCE } from "~/pages/table_names";
-import {formatDate} from "~/pages/develop_parameters/utils/formatDate"
+import {formatDate} from "~/lib/utils/formatDate"
 
 
 export type RowItem = {
@@ -137,7 +138,7 @@ function insuranceRateMapper(
 	];
 }
 
-export function InsuranceRateTable({ index, globalFilter }: any) {
+export function InsuranceRateTable({ index, globalFilter, viewOnly }: any) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentInsuranceRateSetting.useQuery();
 	const filterKey: RowItemKey = "name";
@@ -155,15 +156,20 @@ export function InsuranceRateTable({ index, globalFilter }: any) {
 	}
 
 	return (
-		<DataTable
-			columns={columns}
-			data={insuranceRateMapper(data)}
-			filterColumnKey={filterKey}
-			table_name={TABLE_INSURANCE}
-		/>
+		<>
+			{!viewOnly ? (
+				<DataTableWithFunctions
+					columns={columns}
+					data={insuranceRateMapper(data)}
+					filterColumnKey={filterKey}
+				/>
+			) : (
+				<DataTableWithoutFunctions
+					columns={columns}
+					data={insuranceRateMapper(data)}
+					filterColumnKey={filterKey}
+				/>
+			)}
+		</>
 	);
-
-	// useMemo(() => {
-	// 	table.getColumn(filter_key)?.setFilterValue(globalFilter);
-	// }, [globalFilter]);
 }
