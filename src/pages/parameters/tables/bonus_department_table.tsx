@@ -2,7 +2,8 @@ import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import { DataTable } from "../components/data_table";
+import { DataTable as DataTableWithFunctions } from "../components/data_table";
+import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
 import { BonusDepartment } from "~/server/database/entity/SALARY/bonus_department";
 import { LoadingSpinner } from "~/components/loading";
@@ -64,7 +65,7 @@ function bonusDepartmentMapper(
 	});
 }
 
-export function BonusDepartmentTable({ index, globalFilter }: any) {
+export function BonusDepartmentTable({ index, globalFilter, viewOnly }: any) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBonusDepartment.useQuery();
 	const filterKey: RowItemKey = "department";
@@ -82,12 +83,22 @@ export function BonusDepartmentTable({ index, globalFilter }: any) {
 	}
 
 	return (
-		<DataTable
-			columns={columns}
-			data={bonusDepartmentMapper(data)}
-			filterColumnKey={filterKey}
-			table_name={TABLE_BONUS_DEPARTMENT}
-		/>
+		<>
+			{!viewOnly ? (
+				<DataTableWithFunctions
+					columns={columns}
+					data={bonusDepartmentMapper(data)}
+					filterColumnKey={filterKey}
+					table_name={TABLE_BONUS_DEPARTMENT}
+				/>
+			) : (
+				<DataTableWithoutFunctions
+					columns={columns}
+					data={bonusDepartmentMapper(data)}
+					filterColumnKey={filterKey}
+				/>
+			)}
+		</>
 	);
 
 	// useMemo(() => {
