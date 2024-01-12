@@ -8,6 +8,7 @@ import { Overtime } from "../database/entity/UMEDIA/overtime";
 import { Payset } from "../database/entity/UMEDIA/payset";
 import { BankSetting } from "../database/entity/SALARY/bank_setting";
 import { Holiday } from "../database/entity/UMEDIA/holiday";
+import { BaseResponseError } from "../api/error/BaseResponseError";
 
 export interface CombinedData {
     id: number | null;
@@ -34,14 +35,17 @@ export class ExcelService {
                 },
                 attributes: ['bank_name', 'org_name'],
             })
+            if(! attendanceSetting || ! bankSetting) {
+                throw new BaseResponseError("AttendanceSetting or BankSetting does not exist");
+            }
             const combinedData : CombinedData = {
-                id: attendanceSetting ? attendanceSetting.id : null,
-                start_date: attendanceSetting ? attendanceSetting.start_date : null,
-                end_date: attendanceSetting ? attendanceSetting.end_date : null,
-                bank_name: bankSetting ? bankSetting.bank_name : null,
-                org_name: bankSetting ? bankSetting.org_name : null,
+                id: attendanceSetting.id ,
+                start_date:  attendanceSetting.start_date ,
+                end_date: attendanceSetting.end_date,
+                bank_name: bankSetting.bank_name,
+                org_name: bankSetting.org_name,
               };
-            
+
               return combinedData;
         }));
         return sheetADatas;
