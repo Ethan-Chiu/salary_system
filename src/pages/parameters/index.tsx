@@ -30,8 +30,6 @@ import {
 	Users,
 } from "lucide-react";
 import { Separator } from "~/components/ui/separator";
-import FunctionsProvider from "./components/function_sheet/Contexts";
-import { TABLE_ATTENDANCE } from "../table_names";
 
 enum FilterMode {
 	Search,
