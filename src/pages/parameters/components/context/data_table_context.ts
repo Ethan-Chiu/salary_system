@@ -5,7 +5,7 @@ const dataTableContext = React.createContext<{
 	selectedTable: TableEnum | undefined;
 	setSelectedTable: (table: TableEnum) => void;
 }>({
-	selectedTable: "TableAttendance",
+	selectedTable: undefined,
 	setSelectedTable: (table: TableEnum) => {},
 });
 

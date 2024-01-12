@@ -10,9 +10,7 @@ interface DataTableContextProviderProps {}
 export default function DataTableContextProvider({
 	children,
 }: PropsWithChildren<DataTableContextProviderProps>) {
-	const [selectedTable, setSelectedTable] = useState<TableEnum | undefined>("TableAttendance");
-	
-	
+	const [selectedTable, setSelectedTable] = useState<TableEnum | undefined>(undefined);
 
 	return (
 		<dataTableContext.Provider
