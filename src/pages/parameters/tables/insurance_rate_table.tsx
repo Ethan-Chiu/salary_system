@@ -162,7 +162,6 @@ export function InsuranceRateTable({ index, globalFilter, viewOnly }: any) {
 					columns={columns}
 					data={insuranceRateMapper(data)}
 					filterColumnKey={filterKey}
-					table_name={TABLE_INSURANCE}
 				/>
 			) : (
 				<DataTableWithoutFunctions
@@ -173,8 +172,4 @@ export function InsuranceRateTable({ index, globalFilter, viewOnly }: any) {
 			)}
 		</>
 	);
-
-	// useMemo(() => {
-	// 	table.getColumn(filter_key)?.setFilterValue(globalFilter);
-	// }, [globalFilter]);
 }

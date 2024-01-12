@@ -114,7 +114,6 @@ export function BankTable({ index, globalFilter, viewOnly }: any) {
 					columns={columns}
 					data={bankSettingMapper(data)}
 					filterColumnKey={filterKey}
-					table_name={TABLE_BANK_SETTING}
 				/>
 			) : (
 				<DataTableWithoutFunctions

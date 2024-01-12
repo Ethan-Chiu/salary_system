@@ -89,7 +89,6 @@ export function BonusDepartmentTable({ index, globalFilter, viewOnly }: any) {
 					columns={columns}
 					data={bonusDepartmentMapper(data)}
 					filterColumnKey={filterKey}
-					table_name={TABLE_BONUS_DEPARTMENT}
 				/>
 			) : (
 				<DataTableWithoutFunctions

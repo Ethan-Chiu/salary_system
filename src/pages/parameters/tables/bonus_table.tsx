@@ -135,7 +135,6 @@ export function BonusTable({ index, globalFilter, viewOnly }: any) {
 					columns={columns}
 					data={bonusMapper(data)}
 					filterColumnKey={filterKey}
-					table_name={TABLE_BONUS_SETTING}
 				/>
 			) : (
 				<DataTableWithoutFunctions

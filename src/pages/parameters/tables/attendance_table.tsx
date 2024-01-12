@@ -197,7 +197,6 @@ export function AttendanceTable({ index, globalFilter, viewOnly }: any) {
 					columns={columns}
 					data={attendanceMapper(data)}
 					filterColumnKey={filterKey}
-					table_name={TABLE_ATTENDANCE}
 				/>
 			) : (
 				<DataTableWithoutFunctions
@@ -211,8 +210,6 @@ export function AttendanceTable({ index, globalFilter, viewOnly }: any) {
 }
 
 function CompDropdown({ row }: { row: RowItem }) {
-	const [showDialog, setShowDialog] = useState(false);
-
 	return (
 		<>
 			<DropdownMenu>
@@ -227,11 +224,7 @@ function CompDropdown({ row }: { row: RowItem }) {
 					<DropdownMenuSeparator />
 
 					<DropdownCopyAction value={row.value.toString()} />
-					<DropdownMenuItem
-						onClick={() => {
-							setShowDialog(true);
-						}}
-					>
+					<DropdownMenuItem onClick={() => {}}>
 						Update
 					</DropdownMenuItem>
 				</DropdownMenuContent>

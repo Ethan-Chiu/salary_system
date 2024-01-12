@@ -102,7 +102,6 @@ export function BonusSeniorityTable({ index, globalFilter, viewOnly }: any) {
 					columns={columns}
 					data={bonusSeniorityMapper(data)}
 					filterColumnKey={filterKey}
-					table_name={TABLE_BONUS_SENIORITY}
 				/>
 			) : (
 				<DataTableWithoutFunctions
