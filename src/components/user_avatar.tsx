@@ -29,11 +29,17 @@ import {
 } from "~/components/ui/dialog";
 
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+
+import { api } from "~/utils/api";
 
 export function UserAvatar() {
-	const username = "shadcn"
+
+	const { data: session, status } = useSession();
+
+	const username = session?.user.emp_no
 	const userEmail = "m@example.com"
+
 	return (
 		<Dialog>
 			<DropdownMenu>
@@ -44,14 +50,14 @@ export function UserAvatar() {
 					>
 						<Avatar className="h-8 w-8">
 							<AvatarImage src="" alt="@shadcn" />
-							<AvatarFallback>SC</AvatarFallback>
+							<AvatarFallback className="capitalize">{(username)?username[0]:"N/A"}</AvatarFallback>
 						</Avatar>
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent className="w-56" align="end" forceMount>
 					<DropdownMenuLabel className="font-normal">
 						<div className="flex flex-col space-y-1">
-							<p className="text-sm font-medium leading-none">
+							<p className="text-sm font-medium leading-none capitalize">
 								{username}
 							</p>
 							<p className="text-xs leading-none text-muted-foreground">

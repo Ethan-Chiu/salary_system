@@ -1,23 +1,25 @@
-export const TABLE_ATTENDANCE = "請假加班";
-export const TABLE_BANK_SETTING = "銀行";
-export const TABLE_INSURANCE = "勞健保費率";
+import { Translate } from "./develop_parameters/utils/translation";
+
+export const TABLE_ATTENDANCE = Translate("attendanceSetting");
+export const TABLE_BANK_SETTING = Translate("bankSetting");
+export const TABLE_INSURANCE = Translate("insuranceRateSetting");
 
 // bonus
-export const TABLE_BONUS_SETTING = "獎金";
-export const TABLE_BONUS_DEPARTMENT = "獎金部門";
-export const TABLE_BONUS_POSITION = "獎金職等";
-export const TABLE_BONUS_POSITION_TYPE = "獎金職級"
-export const TABLE_BONUS_SENIORITY = "獎金年資";
+export const TABLE_BONUS_SETTING = Translate("bonusSetting");
+export const TABLE_BONUS_DEPARTMENT = Translate("bonusDepartmentSetting");
+export const TABLE_BONUS_POSITION = Translate("bonusPositionSetting");
+export const TABLE_BONUS_POSITION_TYPE = Translate("bonusPositionTypeSetting");
+export const TABLE_BONUS_SENIORITY = Translate("bonusSenioritySetting");
 
 // level
-export const TABLE_LEVEL = "級距";
-export const TABLE_LEVEL_RANGE = "級距類別範圍";
+export const TABLE_LEVEL = Translate("level");
+export const TABLE_LEVEL_RANGE = Translate("levelRange");
 
 
-export const TABLE_PERFORMANCE_LEVEL = "績效等級比例";
-export const TABLE_TRUST_MONEY = "信託金";
+export const TABLE_PERFORMANCE_LEVEL = Translate("performanceLevel");
+export const TABLE_TRUST_MONEY = Translate("trustMoney");
 
-export const TABLE_BASIC_INFO = "基本資訊";
+export const TABLE_BASIC_INFO = Translate("basicInfo");
 // const BasicInfo = z.object({
 // 	payday: z.date(),
 // 	announcement: z.string(),

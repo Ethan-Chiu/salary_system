@@ -103,12 +103,108 @@ export default function FunctionsProvider({ children }: PropsWithChildren<{}>) {
 		});
 	//#endregion
 
+	//#region <BonusDepartment>
+	const getBonusDepartment =
+		api.parameters.getCurrentBonusDepartment.useQuery();
+	const updateBonusDepartment =
+		api.parameters.updateBonusDepartment.useMutation({
+			onSuccess: () => {
+				getBonusDepartment.refetch();
+			},
+		});
+	const createBonusDepartment =
+		api.parameters.createBonusDepartment.useMutation({
+			onSuccess: () => {
+				getBonusDepartment.refetch();
+			},
+		});
+	const deleteBonusDepartment =
+		api.parameters.deleteBonusDepartment.useMutation({
+			onSuccess: () => {
+				getBonusDepartment.refetch();
+			},
+		});
+	//#endregion
+
+	//#region <BonusPosition>
+	const getBonusPosition =
+		api.parameters.getCurrentBonusPosition.useQuery();
+	const updateBonusPosition =
+		api.parameters.updateBonusPosition.useMutation({
+			onSuccess: () => {
+				getBonusPosition.refetch();
+			},
+		});
+	const createBonusPosition =
+		api.parameters.createBonusPosition.useMutation({
+			onSuccess: () => {
+				getBonusPosition.refetch();
+			},
+		});
+	const deleteBonusPosition =
+		api.parameters.deleteBonusPosition.useMutation({
+			onSuccess: () => {
+				getBonusPosition.refetch();
+			},
+		});
+	//#endregion
+
+	//#region <BonusPositionType>
+	const getBonusPositionType =
+		api.parameters.getCurrentBonusPositionType.useQuery();
+	const updateBonusPositionType =
+		api.parameters.updateBonusPositionType.useMutation({
+			onSuccess: () => {
+				getBonusPositionType.refetch();
+			},
+		});
+	const createBonusPositionType =
+		api.parameters.createBonusPositionType.useMutation({
+			onSuccess: () => {
+				getBonusPositionType.refetch();
+			},
+		});
+	const deleteBonusPositionType =
+		api.parameters.deleteBonusPositionType.useMutation({
+			onSuccess: () => {
+				getBonusPositionType.refetch();
+			},
+		});
+	//#endregion
+
+	//#region <BonusSeniority>
+	const getBonusSeniority =
+		api.parameters.getCurrentBonusSeniority.useQuery();
+	const updateBonusSeniority =
+		api.parameters.updateBonusSeniority.useMutation({
+			onSuccess: () => {
+				getBonusSeniority.refetch();
+			},
+		});
+	const createBonusSeniority =
+		api.parameters.createBonusSeniority.useMutation({
+			onSuccess: () => {
+				getBonusSeniority.refetch();
+			},
+		});
+	const deleteBonusSeniority =
+		api.parameters.deleteBonusSeniority.useMutation({
+			onSuccess: () => {
+				getBonusSeniority.refetch();
+			},
+		});
+	//#endregion
+
 	useEffect(() => {
 		// Refetch the data when the component mounts
 		getAttendanceSetting.refetch();
 		getBankSetting.refetch();
 		getInsuranceRateSetting.refetch();
 		getBonusSetting.refetch();
+		getBonusDepartment.refetch();
+		getBonusPosition.refetch();
+		getBonusPositionType.refetch();
+		getBonusSeniority.refetch();
 	}, []);
 
 	const F: FunctionsObject = {
@@ -135,7 +231,31 @@ export default function FunctionsProvider({ children }: PropsWithChildren<{}>) {
 			updateFunction: updateBonusSetting, 
 			createFunction: createBonusSetting, 
             deleteFunction: deleteBonusSetting, 
-		}
+		},
+		[TN.TABLE_BONUS_DEPARTMENT]: {
+			queryFunction: getBonusDepartment,
+			updateFunction: updateBonusDepartment,
+			createFunction: createBonusDepartment,
+			deleteFunction: deleteBonusDepartment,
+		},
+		[TN.TABLE_BONUS_POSITION]: {
+			queryFunction: getBonusPosition,
+			updateFunction: updateBonusPosition,
+			createFunction: createBonusPosition,
+			deleteFunction: deleteBonusPosition,
+		},
+		[TN.TABLE_BONUS_POSITION_TYPE]: {
+			queryFunction: getBonusPositionType,
+			updateFunction: updateBonusPositionType,
+			createFunction: createBonusPositionType,
+			deleteFunction: deleteBonusPositionType,
+		},
+		[TN.TABLE_BONUS_SENIORITY]: {
+			queryFunction: getBonusSeniority,
+			updateFunction: updateBonusSeniority,
+			createFunction: createBonusSeniority,
+			deleteFunction: deleteBonusSeniority,
+		},
 	};
 
 	// Return the provider with the functions

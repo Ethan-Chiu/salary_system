@@ -19,6 +19,7 @@ import { BonusDepartment } from "~/server/database/entity/SALARY/bonus_departmen
 import { BonusPosition } from "~/server/database/entity/SALARY/bonus_position";
 import { BonusSeniority } from "~/server/database/entity/SALARY/bonus_seniority";
 import { LoadingSpinner } from "~/components/loading";
+import { TABLE_BONUS_SENIORITY } from "~/pages/table_names";
 
 export type RowItem = {
 	seniority: number;
@@ -32,19 +33,25 @@ const columns = [
 	columnHelper.accessor("seniority", {
 		header: ({ column }) => {
 			return (
-				<Button
-					variant="ghost"
-					onClick={() =>
-						column.toggleSorting(column.getIsSorted() === "asc")
-					}
-				>
-					Seniority
-					<ArrowUpDown className="ml-2 h-4 w-4" />
-				</Button>
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							Seniority
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
 			);
 		},
 		cell: ({ row }) => (
-			<div className="w-[400px] pl-4 lowercase">
+			<div className="lowercase">
 				{row.getValue("seniority")}
 			</div>
 		),
@@ -54,7 +61,7 @@ const columns = [
 		cell: ({ row }) => {
 			return (
 				<div className="flex justify-center">
-					<div className="w-80 text-center font-medium">{`${row.original.multiplier}`}</div>
+					<div className="text-center font-medium">{`${row.original.multiplier}`}</div>
 				</div>
 			);
 		},
@@ -92,6 +99,7 @@ export function BonusSeniorityTable({ index, globalFilter }: any) {
 			columns={columns}
 			data={bonusSeniorityMapper(data)}
 			filterColumnKey={filterKey}
+			table_name={TABLE_BONUS_SENIORITY}
 		/>
 	);
 
