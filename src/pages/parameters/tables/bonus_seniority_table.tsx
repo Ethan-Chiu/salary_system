@@ -10,7 +10,7 @@ import { ArrowUpDown } from "lucide-react";
 import {
 	isString,
 	isNumber,
-	isDate,
+	isDateType,
 } from "~/lib/utils/checkType";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";

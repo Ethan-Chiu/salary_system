@@ -2,7 +2,7 @@ import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { isString, isNumber, isDate } from "~/lib/utils/checkType";
+import { isString, isNumber, isDateType } from "~/lib/utils/checkType";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -68,7 +68,7 @@ export const columns = [
 			if (isNumber(value))
 				formatted = parseFloat(row.getValue("value")).toString();
 			else if (isString(value)) formatted = row.getValue("value");
-			else if (isDate(value)) {
+			else if (isDateType(value)) {
 				if (value) {
 					formatted =
 						(value as Date).toISOString().split("T")[0] ?? "";

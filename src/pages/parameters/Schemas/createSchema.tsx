@@ -2,7 +2,7 @@ import { randomInt } from "crypto";
 import * as z from "zod";
 import {
 	isNumber,
-	isDate,
+	isDateType,
 	isString,
 } from "~/lib/utils/checkType";
 
@@ -79,7 +79,7 @@ function createOneKeySchema(key: string, config: any) {
 				if (typeof a === "string") {
 					return (a === "") ? undefined : new Date(a);
 				}
-				else if (isDate(a)) {
+				else if (isDateType(a)) {
 					return a;
 				}
 				else if (a === undefined) {					

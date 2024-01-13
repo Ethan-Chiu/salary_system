@@ -81,7 +81,7 @@ import { PerpageLayout } from "~/components/layout/perpage_layout";
 import { type ReactElement, useRef, useState, useEffect, useMemo } from "react";
 import { DATA, createDATA } from "./datatype";
 import { List } from "postcss/lib/list";
-import { isNumber, isDate, isString } from "../../../lib/utils/checkType";
+import { isNumber, isDateType, isString } from "../../../lib/utils/checkType";
 import { toast } from "~/components/ui/use-toast";
 import { Translate } from "../../../lib/utils/translation";
 import { useRouter } from 'next/router';
@@ -160,7 +160,7 @@ export function ParameterTable({
 				if (isNumber(value))
 					formatted = parseFloat(row.getValue("value")).toString();
 				else if (isString(value)) formatted = row.getValue("value");
-				else if (isDate(value))
+				else if (isDateType(value))
 				{
 					if(value)
 					{	
@@ -456,7 +456,7 @@ function CreateDialog({
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	if(!schema)
-		schema = isDate(setting.value)?z.date():isString(setting.value)?z.string().max(10):z.number().min(0);
+		schema = isDateType(setting.value)?z.date():isString(setting.value)?z.string().max(10):z.number().min(0);
 	const [isValid, setIsValid] = useState(schema.safeParse(setting.value).success);
 	const updateIsValid = (x: string | number | Date) => {setIsValid(schema.safeParse(x).success);console.log("update")}
 	return (
@@ -669,7 +669,7 @@ function CreateAllDialog({
 									<Input
 										id={"value" + index.toString()}
 										type={
-											isDate(data.value)
+											isDateType(data.value)
 												? "date"
 												: isString(data.value)
 												? "value"

@@ -5,7 +5,7 @@ import { ArrowUpDown } from "lucide-react";
 import {
 	isString,
 	isNumber,
-	isDate,
+	isDateType,
 } from "~/lib/utils/checkType";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
@@ -65,7 +65,7 @@ const columns = [
 			if (isNumber(value))
 				formatted = parseFloat(row.getValue("value")).toString();
 			else if (isString(value)) formatted = row.getValue("value");
-			else if (isDate(value)) {
+			else if (isDateType(value)) {
 				if (value) {
 					formatted =
 						(value as Date).toISOString().split("T")[0] ?? "";

@@ -63,7 +63,7 @@ export function DataTableToolbar<TData>({
 			<DataTableViewOptions table={table} />
 			{selectedTable && (
 				<FunctionsProvider>
-					<DataTableFunctions table_name={getTableName(selectedTable)} />
+					<DataTableFunctions tableName={getTableName(selectedTable)} />
 				</FunctionsProvider>
 			)}
 		</div>

@@ -1,7 +1,7 @@
 import AutoForm from "~/components/ui/auto-form";
 import * as z from "zod";
 import { Button } from "~/components/ui/button";
-import { isDate } from "../../lib/utils/checkType";
+import { isDateType } from "../../lib/utils/checkType";
 import { useRouter } from "next/router";
 import { useState, useRef } from "react";
 import {
@@ -44,7 +44,7 @@ const simpleTable = (d: any) => {
 								{Translate(key)}
 							</TableCell>
 							<TableCell className="text-center font-medium">
-								{isDate(d[key])
+								{isDateType(d[key])
 									? d[key].toISOString().split("T")[0]
 									: d[key]}
 							</TableCell>

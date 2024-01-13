@@ -28,13 +28,13 @@ import { Button } from "~/components/ui/button";
 import { Translate } from "~/lib/utils/translation";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
-	table_name: string;
+	tableName: string;
 }
 
-type FunctionMode = "create" | "update" | "delete" | "none";
+export type FunctionMode = "create" | "update" | "delete" | "none";
 
 export function DataTableFunctions({
-	table_name,
+	tableName,
 	className,
 }: DataTableFunctionsProps) {
 	const [open, setOpen] = useState<boolean | undefined>(undefined);
@@ -66,7 +66,7 @@ export function DataTableFunctions({
 				<SheetContent className="w-[50%]">
 					<SheetHeader>
 						<SheetTitle>
-							{`${Translate(mode)!}${Translate("form")} (${table_name})`}
+							{`${Translate(mode)!}${Translate("form")} (${tableName})`}
 						</SheetTitle>
 						<SheetDescription>
 							{mode === "create"
@@ -76,8 +76,8 @@ export function DataTableFunctions({
 					</SheetHeader>
 					<ScrollArea className="h-[85%] w-full">
 						<ParameterForm
-							table_name={table_name}
-							formSchema={getSchema(table_name)!(mode)}
+							tableName={tableName}
+							formSchema={getSchema(tableName)!(mode)}
 							mode={mode}
 							closeSheet={() => setOpen(false)}
 						/>
