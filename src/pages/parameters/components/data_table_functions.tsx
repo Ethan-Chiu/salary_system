@@ -57,16 +57,30 @@ export function DataTableFunctions({
 					<DropdownMenuContent align="end" className="w-[120px]">
 						<DropdownMenuLabel>Functions</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						<CompTriggerItem mode={"update"} itemName="Update" icon={PenSquare}/>
-						<CompTriggerItem mode={"create"} itemName="Create" icon={Plus}/>
-						<CompTriggerItem mode={"delete"} itemName="Delete" icon={Trash2}/>
+						<CompTriggerItem
+							mode={"update"}
+							itemName="Update"
+							icon={PenSquare}
+						/>
+						<CompTriggerItem
+							mode={"create"}
+							itemName="Create"
+							icon={Plus}
+						/>
+						<CompTriggerItem
+							mode={"delete"}
+							itemName="Delete"
+							icon={Trash2}
+						/>
 					</DropdownMenuContent>
 				</DropdownMenu>
 				{/* Sheet */}
 				<SheetContent className="w-[50%]">
 					<SheetHeader>
 						<SheetTitle>
-							{`${Translate(mode)!}${Translate("form")} (${tableName})`}
+							{`${Translate(mode)!}${Translate(
+								"form"
+							)} (${tableName})`}
 						</SheetTitle>
 						<SheetDescription>
 							{mode === "create"
@@ -76,30 +90,35 @@ export function DataTableFunctions({
 					</SheetHeader>
 					<ScrollArea className="h-[85%] w-full">
 						<ParameterForm
-							tableName={tableName}
 							formSchema={getSchema(tableName)!(mode)}
 							mode={mode}
 							closeSheet={() => setOpen(false)}
 						/>
-						<ScrollBar orientation="horizontal" className="" />
+						<ScrollBar orientation="horizontal" />
 					</ScrollArea>
 				</SheetContent>
 			</Sheet>
 		</div>
 	);
 
-	function CompTriggerItem(props: {mode: FunctionMode, itemName: string, icon: LucideIcon}) {
-		return <SheetTrigger
-			className="w-full"
-			onClick={() => {
-				setMode(props.mode);
-				setOpen(undefined);
-			} }
-		>
-			<DropdownMenuItem className="cursor-pointer">
-				<props.icon className="mr-2 h-4 w-4" />
-				<span>{props.itemName}</span>
-			</DropdownMenuItem>
-		</SheetTrigger>;
+	function CompTriggerItem(props: {
+		mode: FunctionMode;
+		itemName: string;
+		icon: LucideIcon;
+	}) {
+		return (
+			<SheetTrigger
+				className="w-full"
+				onClick={() => {
+					setMode(props.mode);
+					setOpen(undefined);
+				}}
+			>
+				<DropdownMenuItem className="cursor-pointer">
+					<props.icon className="mr-2 h-4 w-4" />
+					<span>{props.itemName}</span>
+				</DropdownMenuItem>
+			</SheetTrigger>
+		);
 	}
 }

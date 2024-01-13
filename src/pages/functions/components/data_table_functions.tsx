@@ -21,7 +21,6 @@ import {
 	SheetTrigger,
 } from "~/components/ui/sheet";
 
-import FunctionsProvider from "./function_sheet/functions_context"; // Correct import statement
 import { ParameterForm } from "./function_sheet/parameter_form";
 import { getSchema } from "../Schemas/schemas";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";

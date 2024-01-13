@@ -1,256 +1,254 @@
 import React, { createContext, PropsWithChildren, useEffect } from "react";
 import * as TN from "~/pages/table_names";
 import { api } from "~/utils/api";
+import TableEnum from "../context/data_table_enum";
+import { ShowTableEnum } from "../../shown_tables";
+import { UseTRPCMutationResult, UseTRPCQueryResult } from "@trpc/react-query/shared";
+import { useQueryClient } from "@tanstack/react-query";
+import { getQueryKey } from "@trpc/react-query";
 
-export interface Functions {
-	queryFunction?: any;
-	updateFunction?: any;
-	createFunction?: any;
-	deleteFunction?: any;
+interface FunctionsApi {
+	queryFunction: (() => UseTRPCQueryResult<any, any>) | undefined;
+	updateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
+	createFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
+	deleteFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 }
 
-export interface FunctionsObject {
-	[key: string]: Functions;
+export const toolbarFunctionsContext = createContext<FunctionsApi>({
+	queryFunction: undefined,
+	updateFunction: undefined,
+	createFunction: undefined,
+	deleteFunction: undefined,
+});
+
+interface ToolbarFunctionsProviderProps {
+	selectedTable: ShowTableEnum;
 }
 
-export const FunctionsContext = createContext<FunctionsObject | null>(null);
-
-export default function FunctionsProvider({ children }: PropsWithChildren<{}>) {
+export default function ToolbarFunctionsProvider({
+	children,
+	selectedTable,
+}: PropsWithChildren<ToolbarFunctionsProviderProps>) {
+	const ctx = api.useContext();
 
 	//#region <AttendanceSetting>
-	const getAttendanceSetting =
+	const getAttendanceSetting = () =>
 		api.parameters.getCurrentAttendanceSetting.useQuery();
 	const updateAttendanceSetting =
 		api.parameters.updateAttendanceSetting.useMutation({
 			onSuccess: () => {
-				getAttendanceSetting.refetch();
+				ctx.parameters.getCurrentAttendanceSetting.invalidate();
 			},
 		});
 	const createAttendanceSetting =
 		api.parameters.createAttendanceSetting.useMutation({
 			onSuccess: () => {
-				getAttendanceSetting.refetch();
+				ctx.parameters.getCurrentAttendanceSetting.invalidate();
 			},
 		});
 	const deleteAttendanceSetting =
 		api.parameters.deleteAttendanceSetting.useMutation({
 			onSuccess: () => {
-				getAttendanceSetting.refetch();
+				ctx.parameters.getCurrentAttendanceSetting.invalidate();
 			},
 		});
 	//#endregion
 
 	//#region <BankSetting>
-	const getBankSetting = 
+	const getBankSetting = () =>
 		api.parameters.getCurrentBankSetting.useQuery();
-	const updateBankSetting = 
-		api.parameters.updateBankSetting.useMutation({
-			onSuccess: () => getBankSetting.refetch()
-		})
-	const createBankSetting = 
-		api.parameters.createBankSetting.useMutation({
-			onSuccess: () => getBankSetting.refetch()
-		})
-	const deleteBankSetting = 
-		api.parameters.deleteBankSetting.useMutation({
-			onSuccess: () => getBankSetting.refetch()
-		})
+	const updateBankSetting = api.parameters.updateBankSetting.useMutation({
+		onSuccess: () => {
+			ctx.parameters.getCurrentBankSetting.invalidate();
+		},
+	});
+	const createBankSetting = api.parameters.createBankSetting.useMutation({
+		onSuccess: () => {
+			ctx.parameters.getCurrentBankSetting.invalidate();
+		},
+	});
+	const deleteBankSetting = api.parameters.deleteBankSetting.useMutation({
+		onSuccess: () => {
+			ctx.parameters.getCurrentBankSetting.invalidate();
+		},
+	});
 	//#endregion
 
 	//#region <InsuranceSetting>
-	const getInsuranceRateSetting =
+	const getInsuranceRateSetting = () =>
 		api.parameters.getCurrentInsuranceRateSetting.useQuery();
 	const updateInsuranceRateSetting =
 		api.parameters.updateInsuranceRateSetting.useMutation({
 			onSuccess: () => {
-				getInsuranceRateSetting.refetch();
+				ctx.parameters.getCurrentInsuranceRateSetting.invalidate();
 			},
 		});
 	const createInsuranceRateSetting =
 		api.parameters.createInsuranceRateSetting.useMutation({
 			onSuccess: () => {
-				getInsuranceRateSetting.refetch();
+				ctx.parameters.getCurrentInsuranceRateSetting.invalidate();
 			},
 		});
 	const deleteInsuranceRateSetting =
 		api.parameters.deleteInsuranceRateSetting.useMutation({
 			onSuccess: () => {
-				getInsuranceRateSetting.refetch();
+				ctx.parameters.getCurrentInsuranceRateSetting.invalidate();
 			},
 		});
 	//#endregion
 
 	//#region <BonusSetting>
-	const getBonusSetting =
+	const getBonusSetting = () =>
 		api.parameters.getCurrentBonusSetting.useQuery();
-	const updateBonusSetting =
-		api.parameters.updateBonusSetting.useMutation({
-			onSuccess: () => {
-				getBonusSetting.refetch();
-			},
-		});
-	const createBonusSetting =
-		api.parameters.createBonusSetting.useMutation({
-			onSuccess: () => {
-				getBonusSetting.refetch();
-			},
-		});
-	const deleteBonusSetting =
-		api.parameters.deleteBonusSetting.useMutation({
-			onSuccess: () => {
-				getBonusSetting.refetch();
-			},
-		});
+	const updateBonusSetting = api.parameters.updateBonusSetting.useMutation({
+		onSuccess: () => {
+			ctx.parameters.getCurrentBonusSetting.invalidate();
+		},
+	});
+	const createBonusSetting = api.parameters.createBonusSetting.useMutation({
+		onSuccess: () => {
+			ctx.parameters.getCurrentBonusSetting.invalidate();
+		},
+	});
+	const deleteBonusSetting = api.parameters.deleteBonusSetting.useMutation({
+		onSuccess: () => {
+			ctx.parameters.getCurrentBonusSetting.invalidate();
+		},
+	});
 	//#endregion
 
 	//#region <BonusDepartment>
-	const getBonusDepartment =
+	const getBonusDepartment = () =>
 		api.parameters.getCurrentBonusDepartment.useQuery();
 	const updateBonusDepartment =
 		api.parameters.updateBonusDepartment.useMutation({
 			onSuccess: () => {
-				getBonusDepartment.refetch();
+				ctx.parameters.getCurrentBonusDepartment.invalidate();
 			},
 		});
 	const createBonusDepartment =
 		api.parameters.createBonusDepartment.useMutation({
 			onSuccess: () => {
-				getBonusDepartment.refetch();
+				ctx.parameters.getCurrentBonusDepartment.invalidate();
 			},
 		});
 	const deleteBonusDepartment =
 		api.parameters.deleteBonusDepartment.useMutation({
 			onSuccess: () => {
-				getBonusDepartment.refetch();
+				ctx.parameters.getCurrentBonusDepartment.invalidate();
 			},
 		});
 	//#endregion
 
 	//#region <BonusPosition>
-	const getBonusPosition =
+	const getBonusPosition = () =>
 		api.parameters.getCurrentBonusPosition.useQuery();
-	const updateBonusPosition =
-		api.parameters.updateBonusPosition.useMutation({
-			onSuccess: () => {
-				getBonusPosition.refetch();
-			},
-		});
-	const createBonusPosition =
-		api.parameters.createBonusPosition.useMutation({
-			onSuccess: () => {
-				getBonusPosition.refetch();
-			},
-		});
-	const deleteBonusPosition =
-		api.parameters.deleteBonusPosition.useMutation({
-			onSuccess: () => {
-				getBonusPosition.refetch();
-			},
-		});
+	const updateBonusPosition = api.parameters.updateBonusPosition.useMutation({
+		onSuccess: () => {
+			ctx.parameters.getCurrentBonusPosition.invalidate();
+		},
+	});
+	const createBonusPosition = api.parameters.createBonusPosition.useMutation({
+		onSuccess: () => {
+			ctx.parameters.getCurrentBonusPosition.invalidate();
+		},
+	});
+	const deleteBonusPosition = api.parameters.deleteBonusPosition.useMutation({
+		onSuccess: () => {
+			ctx.parameters.getCurrentBonusPosition.invalidate();
+		},
+	});
 	//#endregion
 
 	//#region <BonusPositionType>
-	const getBonusPositionType =
+	const getBonusPositionType = () =>
 		api.parameters.getCurrentBonusPositionType.useQuery();
 	const updateBonusPositionType =
 		api.parameters.updateBonusPositionType.useMutation({
 			onSuccess: () => {
-				getBonusPositionType.refetch();
+				ctx.parameters.getCurrentBonusPositionType.invalidate();
 			},
 		});
 	const createBonusPositionType =
 		api.parameters.createBonusPositionType.useMutation({
 			onSuccess: () => {
-				getBonusPositionType.refetch();
+				ctx.parameters.getCurrentBonusPositionType.invalidate();
 			},
 		});
 	const deleteBonusPositionType =
 		api.parameters.deleteBonusPositionType.useMutation({
 			onSuccess: () => {
-				getBonusPositionType.refetch();
+				ctx.parameters.getCurrentBonusPositionType.invalidate();
 			},
 		});
 	//#endregion
 
 	//#region <BonusSeniority>
-	const getBonusSeniority =
+	const getBonusSeniority = () =>
 		api.parameters.getCurrentBonusSeniority.useQuery();
 	const updateBonusSeniority =
 		api.parameters.updateBonusSeniority.useMutation({
 			onSuccess: () => {
-				getBonusSeniority.refetch();
+				ctx.parameters.getCurrentBonusSeniority.invalidate();
 			},
 		});
 	const createBonusSeniority =
 		api.parameters.createBonusSeniority.useMutation({
 			onSuccess: () => {
-				getBonusSeniority.refetch();
+				ctx.parameters.getCurrentBonusSeniority.invalidate();
 			},
 		});
 	const deleteBonusSeniority =
 		api.parameters.deleteBonusSeniority.useMutation({
 			onSuccess: () => {
-				getBonusSeniority.refetch();
+				ctx.parameters.getCurrentBonusSeniority.invalidate();
 			},
 		});
-	//#endregion
 
-	useEffect(() => {
-		// Refetch the data when the component mounts
-		getAttendanceSetting.refetch();
-		getBankSetting.refetch();
-		getInsuranceRateSetting.refetch();
-		getBonusSetting.refetch();
-		getBonusDepartment.refetch();
-		getBonusPosition.refetch();
-		getBonusPositionType.refetch();
-		getBonusSeniority.refetch();
-	}, []);
-
-	const F: FunctionsObject = {
-		[TN.TABLE_ATTENDANCE]: {
+	const functionsDictionary: Record<ShowTableEnum, FunctionsApi> = {
+		TableAttendance: {
 			queryFunction: getAttendanceSetting,
-			updateFunction: updateAttendanceSetting, 
-			createFunction: createAttendanceSetting, 
-            deleteFunction: deleteAttendanceSetting, 
+			updateFunction: updateAttendanceSetting,
+			createFunction: createAttendanceSetting,
+			deleteFunction: deleteAttendanceSetting,
 		},
-		[TN.TABLE_BANK_SETTING]: {
+		TableBankSetting: {
 			queryFunction: getBankSetting,
 			updateFunction: updateBankSetting,
 			createFunction: createBankSetting,
 			deleteFunction: deleteBankSetting,
 		},
-		[TN.TABLE_INSURANCE]: {
+		TableInsurance: {
 			queryFunction: getInsuranceRateSetting,
-			updateFunction: updateInsuranceRateSetting, 
-			createFunction: createInsuranceRateSetting, 
-            deleteFunction: deleteInsuranceRateSetting, 
+			updateFunction: updateInsuranceRateSetting,
+			createFunction: createInsuranceRateSetting,
+			deleteFunction: deleteInsuranceRateSetting,
 		},
-		[TN.TABLE_BONUS_SETTING]: {
+		TableBonusSetting: {
 			queryFunction: getBonusSetting,
-			updateFunction: updateBonusSetting, 
-			createFunction: createBonusSetting, 
-            deleteFunction: deleteBonusSetting, 
+			updateFunction: updateBonusSetting,
+			createFunction: createBonusSetting,
+			deleteFunction: deleteBonusSetting,
 		},
-		[TN.TABLE_BONUS_DEPARTMENT]: {
+		TableBonusDepartment: {
 			queryFunction: getBonusDepartment,
 			updateFunction: updateBonusDepartment,
 			createFunction: createBonusDepartment,
 			deleteFunction: deleteBonusDepartment,
 		},
-		[TN.TABLE_BONUS_POSITION]: {
+		TableBonusPosition: {
 			queryFunction: getBonusPosition,
 			updateFunction: updateBonusPosition,
 			createFunction: createBonusPosition,
 			deleteFunction: deleteBonusPosition,
 		},
-		[TN.TABLE_BONUS_POSITION_TYPE]: {
+		TableBonusPositionType: {
 			queryFunction: getBonusPositionType,
 			updateFunction: updateBonusPositionType,
 			createFunction: createBonusPositionType,
 			deleteFunction: deleteBonusPositionType,
 		},
-		[TN.TABLE_BONUS_SENIORITY]: {
+		TableBonusSeniority: {
 			queryFunction: getBonusSeniority,
 			updateFunction: updateBonusSeniority,
 			createFunction: createBonusSeniority,
@@ -260,8 +258,10 @@ export default function FunctionsProvider({ children }: PropsWithChildren<{}>) {
 
 	// Return the provider with the functions
 	return (
-		<FunctionsContext.Provider value={F}>
+		<toolbarFunctionsContext.Provider
+			value={functionsDictionary[selectedTable]}
+		>
 			{children}
-		</FunctionsContext.Provider>
+		</toolbarFunctionsContext.Provider>
 	);
 }

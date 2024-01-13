@@ -29,6 +29,7 @@ import dataTableContext from "./components/context/data_table_context";
 import TableEnum, { getTableName } from "./components/context/data_table_enum";
 import { Separator } from "~/components/ui/separator";
 import { ScrollArea } from "~/components/ui/scroll-area";
+import { ShowTableEnum, ShowTableEnumValues } from "./shown_tables";
 
 type TableComponentProps = {
 	index: number;
@@ -39,19 +40,6 @@ type TableComponent = {
 	component: React.ReactElement<TableComponentProps>;
 	icon: LucideIcon;
 };
-
-type ShowTableEnum = Extract<TableEnum, (typeof ShowTableEnumValues)[number]>;
-
-const ShowTableEnumValues = [
-	"TableAttendance",
-	"TableBankSetting",
-	"TableInsurance",
-	"TableBonusSetting",
-	"TableBonusDepartment",
-	"TableBonusPosition",
-	"TableBonusPositionType",
-	"TableBonusSeniority",
-] as const;
 
 function getTableComponent(table: ShowTableEnum): TableComponent {
 	switch (table) {

@@ -28,12 +28,12 @@ import {
 import { PenSquare, Trash2 } from "lucide-react";
 
 import { useContext } from "react";
-import { FunctionsContext } from "./functions_context";
+import { toolbarFunctionsContext } from "./functions_context";
 import { FunctionMode } from "../data_table_functions";
 import GeneralTable from "./general_table";
+import { LoadingSpinner } from "~/components/loading";
 
 interface ParameterFormProps {
-	tableName: string;
 	formSchema: any; // Replace 'any' with the specific type for formSchema
 	fieldConfig?: any; // Replace 'any' with the specific type for fieldConfig
 	mode: FunctionMode;
@@ -41,23 +41,24 @@ interface ParameterFormProps {
 }
 
 export function ParameterForm({
-	tableName,
 	formSchema,
 	fieldConfig,
 	mode,
 	closeSheet,
 }: ParameterFormProps) {
-	const functions = useContext(FunctionsContext);
-	const queryFunction = functions![tableName]?.queryFunction;
-	const updateFunction = functions![tableName]?.updateFunction;
-	const createFunction = functions![tableName]?.createFunction;
-	const deleteFunction = functions![tableName]?.deleteFunction;
+	const functions = useContext(toolbarFunctionsContext);
 
-	const isList = Array.isArray(queryFunction.data);
-	const onlyOne = !(isList && queryFunction.data.length > 1);
+	const queryFunction = functions.queryFunction!;
+	const updateFunction = functions.updateFunction!;
+	const createFunction = functions.createFunction!;
+	const deleteFunction = functions.deleteFunction!;
+	const { isLoading, isError, data, error } = queryFunction();
+
+	const isList = Array.isArray(data);
+	const onlyOne = !(isList && data.length > 1);
 
 	const [originalData, setOriginalData] = useState(
-		isList ? null : queryFunction.data
+		isList ? null : data
 	);
 
 	const [values, setValues] = useState<Partial<z.infer<typeof formSchema>>>(
@@ -97,6 +98,14 @@ export function ParameterForm({
 		}
 	};
 
+	if (isLoading) {
+		return <LoadingSpinner />; // TODO: Loading element with toast
+	}
+
+	if (isError) {
+		return <span>Error: {error.message}</span>; // TODO: Error element with toast
+	}
+
 	if (mode === "delete" && onlyOne) {
 		return (
 			<p>
@@ -107,7 +116,7 @@ export function ParameterForm({
 	}
 
 	if (originalData === null && mode !== "create") {
-		const noIDData: any[] = queryFunction.data.map((item: any) => {
+		const noIDData: any[] = data.map((item: any) => {
 			const { ["id"]: id, ...rest } = item;
 			return rest;
 		});
@@ -117,11 +126,11 @@ export function ParameterForm({
 				dataNoID={noIDData}
 				mode={mode}
 				onUpdate={(index: number) => {
-					setOriginalData(queryFunction.data[index]);
+					setOriginalData(data[index]);
 				}}
 				onDelete={(index: number) => {
 					deleteFunction.mutate({
-						id: queryFunction.data[index].id,
+						id: data[index].id,
 					});
 				}}
 			/>

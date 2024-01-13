@@ -4,7 +4,7 @@ import { Input } from "~/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { LayoutGrid } from "lucide-react";
 import { DataTableFunctions } from "./data_table_functions";
-import FunctionsProvider from "./function_sheet/functions_context";
+import ToolbarFunctionsProvider from "./function_sheet/functions_context";
 import { useContext } from "react";
 import dataTableContext from "./context/data_table_context";
 import { getTableName } from "./context/data_table_enum";
@@ -62,9 +62,9 @@ export function DataTableToolbar<TData>({
 			{/*  */}
 			<DataTableViewOptions table={table} />
 			{selectedTable && (
-				<FunctionsProvider>
+				<ToolbarFunctionsProvider selectedTable={selectedTable}>
 					<DataTableFunctions tableName={getTableName(selectedTable)} />
-				</FunctionsProvider>
+				</ToolbarFunctionsProvider>
 			)}
 		</div>
 	);

@@ -1,12 +1,12 @@
 import React from "react";
-import TableEnum from "./data_table_enum";
+import { ShowTableEnum } from "../../shown_tables";
 
 const dataTableContext = React.createContext<{
-	selectedTable: TableEnum | undefined;
-	setSelectedTable: (table: TableEnum) => void;
+	selectedTable: ShowTableEnum | undefined;
+	setSelectedTable: (table: ShowTableEnum) => void;
 }>({
 	selectedTable: undefined,
-	setSelectedTable: (table: TableEnum) => {},
+	setSelectedTable: (table: ShowTableEnum) => {},
 });
 
 export default dataTableContext;
