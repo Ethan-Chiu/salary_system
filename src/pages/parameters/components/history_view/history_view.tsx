@@ -8,14 +8,16 @@ import {
 } from "~/components/ui/resizable";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { cn } from "~/lib/utils";
+import { DataTable } from "~/pages/functions/components/data_table";
 import { api } from "~/utils/api";
-import { AttendanceTable } from "../../tables/attendance_table";
+import { attendanceMapper, columns } from "../../tables/attendance_table";
 
 export default function HistoryView() {
 	const { isLoading, isError, data, error } =
 		api.parameters.getAllAttendanceSetting.useQuery();
 
 	const [selectedId, setSelectedId] = useState<number>(0);
+	const filterKey = "name";
 
 	useEffect(() => {
 		if (!isLoading && data) {
@@ -37,7 +39,7 @@ export default function HistoryView() {
 
 	return (
 		<ResizablePanelGroup direction="horizontal">
-			<ResizablePanel defaultSize={30} minSize={15}>
+			<ResizablePanel defaultSize={20} minSize={15}>
 				<ScrollArea className="h-full">
 					{data
 						.sort((a, b) => {
@@ -85,7 +87,15 @@ export default function HistoryView() {
 			</ResizablePanel>
 			<ResizableHandle />
 			<ResizablePanel defaultSize={70}>
-				<AttendanceTable />
+				{data.filter((e) => e.id === selectedId).length > 0 ? (
+					<DataTable
+						columns={columns}
+						data={attendanceMapper(data.filter((e) => e.id === selectedId)[0]!)}
+						filterColumnKey={filterKey}
+					/>
+				) : (
+					<></>
+				)}
 			</ResizablePanel>
 		</ResizablePanelGroup>
 	);

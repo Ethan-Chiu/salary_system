@@ -5,29 +5,17 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { isString, isNumber, isDate } from "~/lib/utils/checkType";
 import {
 	DropdownMenu,
-	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { Input } from "~/components/ui/input";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogClose,
-} from "~/components/ui/dialog";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { z } from "zod";
-import { Label } from "~/components/ui/label";
 import { DropdownCopyAction } from "../components/dropdown_copy_action";
 import { AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
 import { LoadingSpinner } from "~/components/loading";
@@ -43,7 +31,7 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-const columns = [
+export const columns = [
 	columnHelper.accessor("name", {
 		header: ({ column }) => {
 			return (
@@ -102,7 +90,7 @@ const columns = [
 	// }),
 ];
 
-function attendanceMapper(attendanceData: AttendanceSetting): RowItem[] {
+export function attendanceMapper(attendanceData: AttendanceSetting): RowItem[] {
 	return [
 		{
 			name: "事假扣薪",
