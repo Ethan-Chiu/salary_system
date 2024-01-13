@@ -1,22 +1,16 @@
 import React from "react";
+import dayjs from "dayjs";
 
 const calendarContext = React.createContext({
 	monthIndex: 0,
 	setMonthIndex: (index: number) => {},
-	// smallCalendarMonth: 0,
-	// setSmallCalendarMonth: (index) => {},
-	// daySelected: null,
-	// setDaySelected: (day) => {},
+	mouseDownDate: dayjs(),
+	setMouseDownDate: (date: dayjs.Dayjs) => {},
+	mouseUpDate: dayjs(),
+	setMouseUpDate: (date: dayjs.Dayjs) => {},
 	// showEventModal: false,
 	// setShowEventModal: () => {},
-	// dispatchCalEvent: ({ type, payload }) => {},
 	// savedEvents: [],
-	// selectedEvent: null,
-	// setSelectedEvent: () => {},
-	// setLabels: () => {},
-	// labels: [],
-	// updateLabel: () => {},
-	// filteredEvents: [],
 });
 
 export default calendarContext;

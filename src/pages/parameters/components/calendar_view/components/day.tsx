@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import React, { useContext, useState, useEffect } from "react";
 import { type Dayjs } from "dayjs";
 import { cn } from "~/lib/utils";
+import calendarContext from "../context/calendar_context";
 
 interface DayViewProps {
 	day: Dayjs;
@@ -10,6 +11,9 @@ interface DayViewProps {
 
 export default function DayView({ day, rowIdx }: DayViewProps) {
 	const [dayEvents, setDayEvents] = useState([]);
+
+	const { mouseDownDate, setMouseDownDate, mouseUpDate, setMouseUpDate } = useContext(calendarContext);
+
 	//   const {
 	//     setDaySelected,
 	//     setShowEventModal,
@@ -25,8 +29,23 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 	//     setDayEvents(events);
 	//   }, [filteredEvents, day]);
 
+	const handleMouseDown = (event: React.MouseEvent) => {
+		event.preventDefault();
+        if (event.button === 0) {
+            console.log('Mouse button down');
+			setMouseDownDate(day);
+        }
+    };
+
+    const handleMouseUp = (event: React.MouseEvent) => {
+        if (event.button === 0) {
+            console.log('Mouse button up');
+			setMouseUpDate(day);
+        }
+    };
+
 	return (
-		<div className="flex flex-col border border-gray-200">
+		<div className="flex flex-col border border-gray-200 select-none">
 			<header className="flex flex-col items-center">
 				{rowIdx === 0 && (
 					<p className="mt-1 text-sm">
@@ -45,10 +64,8 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 			</header>
 			<div
 				className="flex-1 cursor-pointer"
-				onClick={() => {
-					//   setDaySelected(day);
-					//   setShowEventModal(true);
-				}}
+				onMouseDown={handleMouseDown}
+            	onMouseUp={handleMouseUp}
 			>
 				{dayEvents.map((evt, idx) => (
 					<div

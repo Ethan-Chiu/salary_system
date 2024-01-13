@@ -1,30 +1,11 @@
-import React, {
-	useState,
-	useEffect,
-	useReducer,
-	useMemo,
-	PropsWithChildren,
-} from "react";
+import React, { useState, PropsWithChildren, useReducer } from "react";
 import calendarContext from "./calendar_context";
 import dayjs from "dayjs";
+import { CalendarEvent, CalendarEventLevel } from "../utils/calendar_event";
 
-// function savedEventsReducer(state, { type, payload }) {
-// 	switch (type) {
-// 		case "push":
-// 			return [...state, payload];
-// 		case "update":
-// 			return state.map((evt) => (evt.id === payload.id ? payload : evt));
-// 		case "delete":
-// 			return state.filter((evt) => evt.id !== payload.id);
-// 		default:
-// 			throw new Error();
-// 	}
-// }
-// function initEvents() {
-// 	const storageEvents = localStorage.getItem("savedEvents");
-// 	const parsedEvents = storageEvents ? JSON.parse(storageEvents) : [];
-// 	return parsedEvents;
-// }
+type ActionType = {
+	type: "push";
+};
 
 interface CalendarContextProviderProps {}
 
@@ -32,83 +13,42 @@ export default function CalendarContextProvider({
 	children,
 }: PropsWithChildren<CalendarContextProviderProps>) {
 	const [monthIndex, setMonthIndex] = useState(dayjs().month());
-	// const [smallCalendarMonth, setSmallCalendarMonth] = useState(null);
-	// const [daySelected, setDaySelected] = useState(dayjs());
-	// const [showEventModal, setShowEventModal] = useState(false);
-	// const [selectedEvent, setSelectedEvent] = useState(null);
-	// const [labels, setLabels] = useState([]);
-	// const [savedEvents, dispatchCalEvent] = useReducer(
-	//   savedEventsReducer,
-	//   [],
-	//   initEvents
-	// );
+	const [mouseDownDate, setMouseDownDate] = useState(dayjs());
+	const [mouseUpDate, setMouseUpDate] = useState(dayjs());
 
-	// const filteredEvents = useMemo(() => {
-	//   return savedEvents.filter((evt) =>
-	//     labels
-	//       .filter((lbl) => lbl.checked)
-	//       .map((lbl) => lbl.label)
-	//       .includes(evt.label)
-	//   );
-	// }, [savedEvents, labels]);
+	const [eventList, dispatchEventList] = useReducer(savedEventsReducer, []);
+	const [showEventList, setShowEventList] = useState<CalendarEventLevel[]>(
+		[]
+	);
 
-	// useEffect(() => {
-	//   localStorage.setItem("savedEvents", JSON.stringify(savedEvents));
-	// }, [savedEvents]);
-
-	// useEffect(() => {
-	//   setLabels((prevLabels) => {
-	//     return [...new Set(savedEvents.map((evt) => evt.label))].map(
-	//       (label) => {
-	//         const currentLabel = prevLabels.find(
-	//           (lbl) => lbl.label === label
-	//         );
-	//         return {
-	//           label,
-	//           checked: currentLabel ? currentLabel.checked : true,
-	//         };
-	//       }
-	//     );
-	//   });
-	// }, [savedEvents]);
-
-	// useEffect(() => {
-	//   if (smallCalendarMonth !== null) {
-	//     setMonthIndex(smallCalendarMonth);
-	//   }
-	// }, [smallCalendarMonth]);
-
-	// useEffect(() => {
-	//   if (!showEventModal) {
-	//     setSelectedEvent(null);
-	//   }
-	// }, [showEventModal]);
-
-	// function updateLabel(label) {
-	//   setLabels(
-	//     labels.map((lbl) => (lbl.label === label.label ? label : lbl))
-	//   );
-	// }
+	function savedEventsReducer(state: CalendarEvent[], { type }: ActionType) {
+		switch (type) {
+			case "push":
+				return [
+					...state,
+					new CalendarEvent(
+						mouseDownDate.toDate(),
+						mouseUpDate.toDate()
+					),
+				];
+			default:
+				throw new Error();
+		}
+	}
 
 	return (
 		<calendarContext.Provider
 			value={{
 				monthIndex,
 				setMonthIndex,
-				//   smallCalendarMonth,
-				//   setSmallCalendarMonth,
-				//   daySelected,
-				//   setDaySelected,
+				mouseDownDate,
+				setMouseDownDate,
+				mouseUpDate,
+				setMouseUpDate,
+
 				//   showEventModal,
 				//   setShowEventModal,
-				//   dispatchCalEvent,
-				//   selectedEvent,
-				//   setSelectedEvent,
 				//   savedEvents,
-				//   setLabels,
-				//   labels,
-				//   updateLabel,
-				//   filteredEvents,
 			}}
 		>
 			{children}
