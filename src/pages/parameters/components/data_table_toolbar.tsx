@@ -1,13 +1,12 @@
 import { Table } from "@tanstack/react-table";
 import { DataTableViewOptions } from "./data_table_view_options";
 import { Input } from "~/components/ui/input";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { LayoutGrid } from "lucide-react";
-import { DataTableFunctions } from "./data_table_functions";
+import { TabsList, TabsTrigger } from "~/components/ui/tabs";
 import ToolbarFunctionsProvider from "./function_sheet/functions_context";
 import { useContext } from "react";
 import dataTableContext from "./context/data_table_context";
 import { getTableName } from "./context/data_table_enum";
+import { DataTableFunctions } from "./function_sheet/data_table_functions";
 
 interface DataTableToolbarProps<TData> {
 	table: Table<TData>;

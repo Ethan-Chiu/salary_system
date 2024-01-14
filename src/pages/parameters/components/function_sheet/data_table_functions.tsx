@@ -21,11 +21,11 @@ import {
 	SheetTrigger,
 } from "~/components/ui/sheet";
 
-import { ParameterForm } from "./function_sheet/parameter_form";
-import { getSchema } from "../Schemas/schemas";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Button } from "~/components/ui/button";
 import { Translate } from "~/lib/utils/translation";
+import { ParameterForm } from "./parameter_form";
+import { getSchema } from "../../schemas/get_schemas";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableName: string;

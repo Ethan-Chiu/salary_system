@@ -1,7 +1,6 @@
 import * as z from "zod";
 import * as TABLE_NAMES from "../../table_names";
 import { Translate } from "~/lib/utils/translation";
-import { createSchema } from "./createSchema";
 
 // JSON Configs
 import attendanceConfig from "./configurations/attendance.json"
@@ -20,6 +19,7 @@ import levelRangeConfig from "./configurations/levelRange.json"
 
 import performanceLevelConfig from "./configurations/performanceLevel.json"
 import trustMoneyConfig from "./configurations/trustMoney.json"
+import { createSchema } from "./create_schema";
 
 const attendanceSchema = (mode: string) => {
 	return createSchema(attendanceConfig, mode);

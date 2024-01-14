@@ -1,7 +1,7 @@
 import AutoForm, { AutoFormSubmit } from "~/components/ui/auto-form";
 import * as z from "zod";
 import { Button } from "~/components/ui/button";
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 import {
 	Table,
@@ -29,23 +29,24 @@ import { PenSquare, Trash2 } from "lucide-react";
 
 import { useContext } from "react";
 import { toolbarFunctionsContext } from "./functions_context";
-import { FunctionMode } from "../data_table_functions";
+import { FunctionMode } from "./data_table_functions";
 import GeneralTable from "./general_table";
 import { LoadingSpinner } from "~/components/loading";
+import { FieldConfig } from "~/components/ui/auto-form/types";
 
-interface ParameterFormProps {
-	formSchema: any; // Replace 'any' with the specific type for formSchema
-	fieldConfig?: any; // Replace 'any' with the specific type for fieldConfig
+interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
+	formSchema: SchemaType;
+	fieldConfig?: FieldConfig<z.infer<SchemaType>>;
 	mode: FunctionMode;
 	closeSheet: () => void;
 }
 
-export function ParameterForm({
+export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	formSchema,
 	fieldConfig,
 	mode,
 	closeSheet,
-}: ParameterFormProps) {
+}: ParameterFormProps<SchemaType>) {
 	const functions = useContext(toolbarFunctionsContext);
 
 	const queryFunction = functions.queryFunction!;
@@ -57,11 +58,9 @@ export function ParameterForm({
 	const isList = Array.isArray(data);
 	const onlyOne = !(isList && data.length > 1);
 
-	const [originalData, setOriginalData] = useState(
-		isList ? null : data
-	);
+	const [selectedData, setSelectedData] = useState(isList ? null : data);
 
-	const [values, setValues] = useState<Partial<z.infer<typeof formSchema>>>(
+	const [values, setValues] = useState<Partial<z.infer<z.AnyZodObject>>>(
 		getDefaults(formSchema)
 	);
 	const [openDialog, setOpenDialog] = useState(false);
@@ -78,15 +77,19 @@ export function ParameterForm({
 
 	function submitForm() {
 		const parsedValues = formSchema.safeParse(values);
-		if (mode === "create") {
-			createFunction.mutate({
-				...parsedValues.data,
-			});
+		if (parsedValues.success) {
+			if (mode === "create") {
+				createFunction.mutate({
+					...parsedValues.data,
+				});
+			} else if (mode === "update") {
+				updateFunction.mutate({
+					...parsedValues.data,
+					id: selectedData.id,
+				});
+			}
 		} else {
-			updateFunction.mutate({
-				...parsedValues.data,
-				id: originalData.id,
-			});
+			// TODO: Error element with toast
 		}
 		closeSheet();
 	}
@@ -115,7 +118,7 @@ export function ParameterForm({
 		);
 	}
 
-	if (originalData === null && mode !== "create") {
+	if (selectedData === null && mode !== "create") {
 		const noIDData: any[] = data.map((item: any) => {
 			const { ["id"]: id, ...rest } = item;
 			return rest;
@@ -126,7 +129,7 @@ export function ParameterForm({
 				dataNoID={noIDData}
 				mode={mode}
 				onUpdate={(index: number) => {
-					setOriginalData(data[index]);
+					setSelectedData(data[index]);
 				}}
 				onDelete={(index: number) => {
 					deleteFunction.mutate({
@@ -142,7 +145,7 @@ export function ParameterForm({
 			<AutoForm
 				className="m-5"
 				_defaultValues={
-					originalData && mode === "update" ? originalData : {}
+					selectedData && mode === "update" ? selectedData : {}
 				}
 				values={values}
 				onSubmit={handleSubmit}
@@ -157,7 +160,7 @@ export function ParameterForm({
 							variant={"outline"}
 							onClick={() => {
 								if (mode === "update") {
-									setOriginalData(null);
+									setSelectedData(null);
 								}
 								if (mode === "create") {
 									closeSheet();
