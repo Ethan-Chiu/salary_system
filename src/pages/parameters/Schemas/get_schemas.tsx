@@ -20,82 +20,95 @@ import levelRangeConfig from "./configurations/levelRange.json"
 import performanceLevelConfig from "./configurations/performanceLevel.json"
 import trustMoneyConfig from "./configurations/trustMoney.json"
 import { createSchema } from "./create_schema";
+import TableEnum from "../components/context/data_table_enum";
+import { attendanceSchema } from "./configurations/attendance_schema";
+import { bankSchema } from "./configurations/bank_schema";
+import { insuranceSchema } from "./configurations/insurance_schema";
+import { bonusSchema } from "./configurations/bonus_schema";
+import { bonusDepartmentSchema } from "./configurations/bonus_department_schema";
+import { bonusPositionSchema } from "./configurations/bonus_position_schema";
+import { bonusPositionTypeSchema } from "./configurations/bonus_position_type_schema";
+import { bonusSenioritySchema } from "./configurations/bonus_seniority_schema";
+import { levelSchema } from "./configurations/level_schema";
+import { levelRangeSchema } from "./configurations/level_range_schema";
+import { performanceLevelSchema } from "./configurations/performance_level_schema";
+import { trustMoneySchema } from "./configurations/trust_money_schema";
 
-const attendanceSchema = (mode: string) => {
-	return createSchema(attendanceConfig, mode);
-}
+// const attendanceSchema = (mode: string) => {
+// 	return createSchema(attendanceConfig, mode);
+// }
 
-const bankSchema = (mode: string) => {
-	return createSchema(bankConfig, mode);
-}
+// const bankSchema = (mode: string) => {
+// 	return createSchema(bankConfig, mode);
+// }
 
-const insuranceSchema = (mode: string) => {
-	return createSchema(insuranceConfig, mode);
-}
+// const insuranceSchema = (mode: string) => {
+// 	return createSchema(insuranceConfig, mode);
+// }
 
-const bonusSettingSchema = (mode: string) => {
-	return createSchema(bonusSettingConfig, mode);
-}
+// const bonusSettingSchema = (mode: string) => {
+// 	return createSchema(bonusSettingConfig, mode);
+// }
 
-const bonusDepartmentSchema = (mode: string) => {
-    return createSchema(bonusDepartmentConfig, mode);
-}
+// const bonusDepartmentSchema = (mode: string) => {
+//     return createSchema(bonusDepartmentConfig, mode);
+// }
 
-const bonusPositionSchema = (mode: string) => {
-    return createSchema(bonusPositionConfig, mode);
-}
+// const bonusPositionSchema = (mode: string) => {
+//     return createSchema(bonusPositionConfig, mode);
+// }
 
-const bonusPositionTypeSchema = (mode: string) => {
-    return createSchema(bonusPositionTypeConfig, mode);
-}
+// const bonusPositionTypeSchema = (mode: string) => {
+//     return createSchema(bonusPositionTypeConfig, mode);
+// }
 
-const bonusSenioritySchema = (mode: string) => {
-    return createSchema(bonusSeniorityConfig, mode);
-}
+// const bonusSenioritySchema = (mode: string) => {
+//     return createSchema(bonusSeniorityConfig, mode);
+// }
 
-const levelSchema = (mode: string) => {
-    return createSchema(levelConfig, mode);
-}
+// const levelSchema = (mode: string) => {
+//     return createSchema(levelConfig, mode);
+// }
 
-const levelRangeSchema = (mode: string) => {
-    return createSchema(levelRangeConfig, mode);
-}
+// const levelRangeSchema = (mode: string) => {
+//     return createSchema(levelRangeConfig, mode);
+// }
 
-const performanceLevelSchema = (mode: string) => {
-    return createSchema(performanceLevelConfig, mode);
-}
+// const performanceLevelSchema = (mode: string) => {
+//     return createSchema(performanceLevelConfig, mode);
+// }
 
-const trustMoneySchema = (mode: string) => {
-    return createSchema(trustMoneyConfig, mode);
-}
+// const trustMoneySchema = (mode: string) => {
+//     return createSchema(trustMoneyConfig, mode);
+// }
 
-export function getSchema(table_name: string) {
-    switch(table_name) {
-        case TABLE_NAMES.TABLE_ATTENDANCE:
+export function getSchema(table: TableEnum) {
+    switch(table) {
+        case "TableAttendance":
             return attendanceSchema;
-        case TABLE_NAMES.TABLE_BANK_SETTING:
+        case "TableBankSetting":
             return bankSchema;
-		case TABLE_NAMES.TABLE_INSURANCE:
+		case "TableInsurance":
 			return insuranceSchema;
         // bonus
-        case TABLE_NAMES.TABLE_BONUS_SETTING:
-            return bonusSettingSchema;
-        case TABLE_NAMES.TABLE_BONUS_DEPARTMENT:
+        case "TableBonusSetting":
+            return bonusSchema;
+        case "TableBonusDepartment":
             return bonusDepartmentSchema;
-        case TABLE_NAMES.TABLE_BONUS_POSITION:
+        case "TableBonusPosition":
             return bonusPositionSchema;
-        case TABLE_NAMES.TABLE_BONUS_POSITION_TYPE:
+        case "TableBonusPositionType":
             return bonusPositionTypeSchema;
-        case TABLE_NAMES.TABLE_BONUS_SENIORITY:
+        case "TableBonusSeniority":
             return bonusSenioritySchema;
         // level
-        case TABLE_NAMES.TABLE_LEVEL:
+        case "TableLevel":
             return levelSchema;
-        case TABLE_NAMES.TABLE_LEVEL_RANGE:
+        case "TableLevelRange":
             return levelRangeSchema;
-        case TABLE_NAMES.TABLE_PERFORMANCE_LEVEL:
+        case "TablePerformanceLevel":
             return performanceLevelSchema;
-        case TABLE_NAMES.TABLE_TRUST_MONEY:
+        case "TableTrustMoney":
             return trustMoneySchema;
         default:
             return null

@@ -6,7 +6,7 @@ import {
 	isString,
 	isNumber,
 	isDateType,
-} from "~/lib/utils/checkType";
+} from "~/lib/utils/check_type";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import {
@@ -18,7 +18,6 @@ import {
 import { BonusSetting } from "~/server/database/entity/SALARY/bonus_setting";
 import { LoadingSpinner } from "~/components/loading";
 import { formatDate } from "~/lib/utils/formatDate";
-import { TABLE_BONUS_SETTING } from "~/pages/table_names";
 
 export type RowItem = {
 	name: string;

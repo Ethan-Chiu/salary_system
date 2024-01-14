@@ -1,10 +1,8 @@
 import { randomInt } from "crypto";
 import * as z from "zod";
 import {
-	isNumber,
 	isDateType,
-	isString,
-} from "~/lib/utils/checkType";
+} from "~/lib/utils/check_type";
 
 import { Translate } from "~/lib/utils/translation";
 

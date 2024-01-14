@@ -1,26 +1,11 @@
 import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
-import {
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "~/components/ui/accordion";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import {
-	isString,
-	isNumber,
-	isDateType,
-} from "~/lib/utils/checkType";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
-import { AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
-import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
-import { BonusDepartment } from "~/server/database/entity/SALARY/bonus_department";
-import { BonusPosition } from "~/server/database/entity/SALARY/bonus_position";
 import { BonusSeniority } from "~/server/database/entity/SALARY/bonus_seniority";
 import { LoadingSpinner } from "~/components/loading";
-import { TABLE_BONUS_SENIORITY } from "~/pages/table_names";
 
 export type RowItem = {
 	seniority: number;
@@ -112,8 +97,4 @@ export function BonusSeniorityTable({ index, globalFilter, viewOnly }: any) {
 			)}
 		</>
 	);
-
-	// useMemo(() => {
-	// 	table.getColumn(filter_key)?.setFilterValue(globalFilter);
-	// }, [globalFilter]);
 }

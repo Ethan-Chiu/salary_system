@@ -6,13 +6,12 @@ import {
 	isString,
 	isNumber,
 	isDateType,
-} from "~/lib/utils/checkType";
+} from "~/lib/utils/check_type";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { c_CreateDateStr, c_EndDateStr, c_StartDateStr, c_UpdateDateStr } from "../constant";
 import { InsuranceRateSetting } from "~/server/database/entity/SALARY/insurance_rate_setting";
 import { LoadingSpinner } from "~/components/loading";
-import { TABLE_INSURANCE } from "~/pages/table_names";
 import {formatDate} from "~/lib/utils/formatDate"
 
 

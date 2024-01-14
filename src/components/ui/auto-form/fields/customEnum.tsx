@@ -1,4 +1,4 @@
-import { isNumber } from "~/lib/utils/checkType";
+import { isNumber } from "~/lib/utils/check_type";
 import { Check, ChevronDown } from "lucide-react";
 import {
 	FormControl,

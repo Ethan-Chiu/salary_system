@@ -5,7 +5,6 @@ import { TabsList, TabsTrigger } from "~/components/ui/tabs";
 import ToolbarFunctionsProvider from "./function_sheet/functions_context";
 import { useContext } from "react";
 import dataTableContext from "./context/data_table_context";
-import { getTableName } from "./context/data_table_enum";
 import { DataTableFunctions } from "./function_sheet/data_table_functions";
 
 interface DataTableToolbarProps<TData> {
@@ -62,7 +61,7 @@ export function DataTableToolbar<TData>({
 			<DataTableViewOptions table={table} />
 			{selectedTable && (
 				<ToolbarFunctionsProvider selectedTable={selectedTable}>
-					<DataTableFunctions tableName={getTableName(selectedTable)} />
+					<DataTableFunctions tableType={selectedTable} />
 				</ToolbarFunctionsProvider>
 			)}
 		</div>

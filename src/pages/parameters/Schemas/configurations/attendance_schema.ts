@@ -1,4 +1,4 @@
-const { z } = require("zod");
+import { z } from "zod";
 
 export const attendanceSchema = z.object({
 	personal_leave_dock: z.number().min(0).max(100),
@@ -17,6 +17,14 @@ export const attendanceSchema = z.object({
 	overtime_by_local_workers_3: z.number(),
 	local_worker_holiday: z.number(),
 	foreign_worker_holiday: z.number(),
-	start_date: z.date(),
+	start_date: z.preprocess((d) => {
+		if (d === "") {
+			return undefined;
+		} else if (d === undefined) {
+			return null;
+		} else {
+			return d;
+		}
+	}, z.coerce.date().optional().nullable()),
 	end_date: z.date().optional(),
 });

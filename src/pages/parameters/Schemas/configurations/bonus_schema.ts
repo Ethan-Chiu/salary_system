@@ -1,4 +1,4 @@
-const { z } = require("zod");
+import { z } from "zod";
 
 export const bonusSchema = z.object({
   fixed_multiplier: z.number(),

@@ -7,7 +7,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
-import { isDateType } from "~/lib/utils/checkType";
+import { isDateType } from "~/lib/utils/check_type";
 import { Translate } from "~/lib/utils/translation";
 
 export default function GeneralTable({ data }: { data: Record<string, any> }) {
