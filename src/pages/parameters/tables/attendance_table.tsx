@@ -2,7 +2,7 @@ import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { isString, isNumber, isDateType } from "~/lib/utils/checkType";
+import { isString, isNumber, isDateType } from "~/lib/utils/check_type";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -14,12 +14,10 @@ import {
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
-import { useState } from "react";
 import { z } from "zod";
 import { DropdownCopyAction } from "../components/dropdown_copy_action";
 import { AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
 import { LoadingSpinner } from "~/components/loading";
-import { TABLE_ATTENDANCE } from "~/pages/table_names";
 
 const rowSchema = z.object({
 	name: z.string(),

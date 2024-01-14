@@ -186,7 +186,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 					</DialogHeader>
 					<GeneralTable data={values} />
 					<DialogFooter>
-						<DialogClose>
+						<DialogClose asChild>
 							<Button
 								onClick={() => {
 									submitForm();

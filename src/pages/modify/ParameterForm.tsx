@@ -1,7 +1,7 @@
 import AutoForm from "~/components/ui/auto-form";
 import * as z from "zod";
 import { Button } from "~/components/ui/button";
-import { isDateType } from "../../lib/utils/checkType";
+import { isDateType } from "../../lib/utils/check_type";
 import { useRouter } from "next/router";
 import { useState, useRef } from "react";
 import {

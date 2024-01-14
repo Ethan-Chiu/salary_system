@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+const zc = z.coerce;
+
 export const levelSchema = z.object({
-  level: z.number() 
+  level: zc.number() 
 });
