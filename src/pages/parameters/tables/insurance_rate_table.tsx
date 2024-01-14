@@ -12,7 +12,7 @@ import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/compon
 import { c_CreateDateStr, c_EndDateStr, c_StartDateStr, c_UpdateDateStr } from "../constant";
 import { InsuranceRateSetting } from "~/server/database/entity/SALARY/insurance_rate_setting";
 import { LoadingSpinner } from "~/components/loading";
-import {formatDate} from "~/lib/utils/formatDate"
+import {formatDate} from "~/lib/utils/format_date"
 
 
 export type RowItem = {

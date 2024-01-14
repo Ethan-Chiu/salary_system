@@ -17,7 +17,7 @@ import {
 } from "../constant";
 import { BonusSetting } from "~/server/database/entity/SALARY/bonus_setting";
 import { LoadingSpinner } from "~/components/loading";
-import { formatDate } from "~/lib/utils/formatDate";
+import { formatDate } from "~/lib/utils/format_date";
 
 export type RowItem = {
 	name: string;
