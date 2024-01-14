@@ -29,24 +29,33 @@ export function DataTablePagination<TData>({
 	const [columnNum, setColumnNum] = React.useState(1);
 
 	return (
-		<div className={cn("flex items-center justify-between p-2", className)}>
-			{dataNum != 0 ? (
-				<div className="text-sm text-muted-foreground">
-					Showing{" "}
-					<span className="font-medium">
-						{pageIndex * pageSize + 1}
-					</span>{" "}
-					to{" "}
-					<span className="font-medium">
-						{Math.min((pageIndex + 1) * pageSize, dataNum)}
-					</span>{" "}
-					of <span className="font-medium">{dataNum}</span> results
-				</div>
-			) : (
-				<div className="text-sm text-muted-foreground">No results</div>
+		<div
+			className={cn(
+				"flex flex-wrap items-center justify-between gap-y-1 p-2",
+				className
 			)}
-
-			<div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
+		>
+			{/* Showing results */}
+			<div className="text-sm text-muted-foreground">
+				{dataNum != 0 ? (
+					<div className="min-w-[100px]">
+						Showing{" "}
+						<span className="font-medium">
+							{pageIndex * pageSize + 1}
+						</span>{" "}
+						to{" "}
+						<span className="font-medium">
+							{Math.min((pageIndex + 1) * pageSize, dataNum)}
+						</span>{" "}
+						of <span className="font-medium">{dataNum}</span>{" "}
+						results
+					</div>
+				) : (
+					<>No results</>
+				)}
+			</div>
+			{/* Select data layout */}
+			<div className="mx-2 flex flex-1 items-center justify-center text-sm text-muted-foreground">
 				<Select
 					defaultValue="10"
 					onValueChange={(value) => {
@@ -58,11 +67,16 @@ export function DataTablePagination<TData>({
 						<SelectValue placeholder="Data Per Row" />
 					</SelectTrigger>
 					<SelectContent>
-						{[...Array(10).keys()].map((value) => (
-							<SelectItem value={(value + 1).toString()}>
-								{value + 1} Rows
-							</SelectItem>
-						))}
+						{Array.from({ length: 10 }, (_, i) => i).map(
+							(value) => (
+								<SelectItem
+									key={value}
+									value={(value + 1).toString()}
+								>
+									{value + 1} Rows
+								</SelectItem>
+							)
+						)}
 					</SelectContent>
 				</Select>
 				<div className="w-2" />
@@ -75,43 +89,50 @@ export function DataTablePagination<TData>({
 					}}
 				>
 					<SelectTrigger className="w-36">
-						<SelectValue placeholder="Data Per Row" />
+						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
-						{[...Array(5).keys()].map((value) => (
-							<SelectItem value={(value + 1).toString()}>
+						{Array.from({ length: 5 }, (_, i) => i).map((value) => (
+							<SelectItem
+								key={value}
+								value={(value + 1).toString()}
+							>
 								{value + 1} Columns
 							</SelectItem>
 						))}
 					</SelectContent>
 				</Select>
 			</div>
-			<div className="flex items-center space-x-6 lg:space-x-8">
-				<div className="flex w-[100px] items-center justify-center text-sm font-medium">
-					Page {table.getState().pagination.pageIndex + 1} of{" "}
-					{table.getPageCount()}
-				</div>
-				<div className="flex items-center space-x-2">
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => table.previousPage()}
-						disabled={!table.getCanPreviousPage()}
-					>
-						<span className="sr-only">Go to previous page</span>
-						<ChevronLeftIcon className="h-4 w-4" />
-						Previous
-					</Button>
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => table.nextPage()}
-						disabled={!table.getCanNextPage()}
-					>
-						<span className="sr-only">Go to next page</span>
-						Next
-						<ChevronRightIcon className="h-4 w-4" />
-					</Button>
+			{/* Pagination */}
+			<div className="ml-2 flex flex-grow justify-end">
+				<div className=" flex items-center space-x-4">
+					<div className="flex w-[70px] items-center justify-center text-sm font-medium">
+						{`Page ${
+							table.getState().pagination.pageIndex + 1
+						} of ${table.getPageCount()}`}
+					</div>
+					<div className="flex items-center space-x-2">
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={() => table.previousPage()}
+							disabled={!table.getCanPreviousPage()}
+						>
+							<span className="sr-only">Go to previous page</span>
+							<ChevronLeftIcon className="h-4 w-4" />
+							Previous
+						</Button>
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={() => table.nextPage()}
+							disabled={!table.getCanNextPage()}
+						>
+							<span className="sr-only">Go to next page</span>
+							Next
+							<ChevronRightIcon className="h-4 w-4" />
+						</Button>
+					</div>
 				</div>
 			</div>
 		</div>
