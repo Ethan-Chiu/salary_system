@@ -6,9 +6,9 @@ import { ActionType } from "./calendar_context_provider";
 const calendarContext = React.createContext<{
 	monthIndex: number,
 	setMonthIndex: (index: number) => void,
-	mouseDownDate: dayjs.Dayjs,
+	mouseDownDate: dayjs.Dayjs | null,
 	setMouseDownDate: (date: dayjs.Dayjs) => void,
-	mouseUpDate: dayjs.Dayjs,
+	mouseUpDate: dayjs.Dayjs | null,
 	setMouseUpDate: (date: dayjs.Dayjs) => void,
 	openSheet: boolean, 
 	setOpenSheet: (open: boolean) => void,
