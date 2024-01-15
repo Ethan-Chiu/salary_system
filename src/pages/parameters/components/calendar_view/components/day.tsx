@@ -3,6 +3,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { type Dayjs } from "dayjs";
 import { cn } from "~/lib/utils";
 import calendarContext from "../context/calendar_context";
+import { CalendarEventLevel } from "../utils/calendar_event";
 
 interface DayViewProps {
 	day: Dayjs;
@@ -10,42 +11,53 @@ interface DayViewProps {
 }
 
 export default function DayView({ day, rowIdx }: DayViewProps) {
-	const [dayEvents, setDayEvents] = useState([]);
+	const [dayEvents, setDayEvents] = useState<CalendarEventLevel[]>([]);
 
-	const { mouseDownDate, setMouseDownDate, mouseUpDate, setMouseUpDate } = useContext(calendarContext);
+	const {
+		mouseDownDate,
+		setMouseDownDate,
+		mouseUpDate,
+		setMouseUpDate,
+		showEventList,
+		setOpenSheet,
+		dispatchEventList,
+	} = useContext(calendarContext);
 
-	//   const {
-	//     setDaySelected,
-	//     setShowEventModal,
-	//     filteredEvents,
-	//     setSelectedEvent,
-	//   } = useContext(GlobalContext);
-
-	//   useEffect(() => {
-	//     const events = filteredEvents.filter(
-	//       (evt) =>
-	//         dayjs(evt.day).format("DD-MM-YY") === day.format("DD-MM-YY")
-	//     );
-	//     setDayEvents(events);
-	//   }, [filteredEvents, day]);
+	useEffect(() => {
+		const events = showEventList.filter(
+			(evt) =>
+				dayjs(evt.getStartDate()) <= day &&
+				day <= dayjs(evt.getEndDate())
+		);
+		setDayEvents(events);
+	}, [showEventList, day]);
 
 	const handleMouseDown = (event: React.MouseEvent) => {
 		event.preventDefault();
-        if (event.button === 0) {
-            console.log('Mouse button down');
+		if (event.button === 0) {
+			console.log("Mouse button down");
 			setMouseDownDate(day);
-        }
-    };
+		}
+	};
 
-    const handleMouseUp = (event: React.MouseEvent) => {
-        if (event.button === 0) {
-            console.log('Mouse button up');
+	const handleMouseUp = (event: React.MouseEvent) => {
+		if (event.button === 0) {
+			console.log("Mouse button up");
 			setMouseUpDate(day);
-        }
-    };
+			dispatchEventList({ type: "push" });
+			setOpenSheet(true);
+		}
+	};
+
+	const handleMouseOver = (event: React.MouseEvent) => {
+		if (event.button === 0) {
+			console.log("Mouse button over");
+			setMouseUpDate(day);
+		}
+	};
 
 	return (
-		<div className="flex flex-col border border-gray-200 select-none">
+		<div className="relative flex select-none flex-col">
 			<header className="flex flex-col items-center">
 				{rowIdx === 0 && (
 					<p className="mt-1 text-sm">
@@ -62,18 +74,20 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 					{day.format("DD")}
 				</p>
 			</header>
+			<div className="absolute h-full w-full border border-gray-200" />
 			<div
-				className="flex-1 cursor-pointer"
+				className="z-10 flex-1 cursor-pointer"
 				onMouseDown={handleMouseDown}
-            	onMouseUp={handleMouseUp}
+				onMouseUp={handleMouseUp}
+				onMouseOver={handleMouseOver}
 			>
 				{dayEvents.map((evt, idx) => (
 					<div
 						key={idx}
-						// onClick={() => setSelectedEvent(evt)}
-						// className={`bg-${evt.label}-200 p-1 mr-3 text-gray-600 text-sm rounded mb-1 truncate`}
+						// onClick={() => setSelectedEvent(evt)}`
+						className=" mb-1 truncate bg-primary p-1 text-sm text-gray-600"
 					>
-						{/* {evt.title} */}
+						{evt.getLevel()}
 					</div>
 				))}
 			</div>

@@ -60,9 +60,10 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 
 	const [selectedData, setSelectedData] = useState(isList ? null : data);
 
-	const [values, setValues] = useState<Partial<z.infer<z.AnyZodObject>>>(
-		getDefaults(formSchema)
-	);
+	const [formValues, setFormValues] = useState<
+		Partial<z.infer<z.AnyZodObject>>
+	>(getDefaults(formSchema));
+	
 	const [openDialog, setOpenDialog] = useState(false);
 
 	function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
@@ -76,7 +77,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	}
 
 	function submitForm() {
-		const parsedValues = formSchema.safeParse(values);
+		const parsedValues = formSchema.safeParse(formValues);
 		if (parsedValues.success) {
 			if (mode === "create") {
 				createFunction.mutate({
@@ -95,7 +96,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	}
 
 	const handleSubmit = () => {
-		const parsedValues = formSchema.safeParse(values);
+		const parsedValues = formSchema.safeParse(formValues);
 		if (parsedValues.success) {
 			setOpenDialog(true);
 		}
@@ -118,7 +119,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 		);
 	}
 
-	if (selectedData === null && mode !== "create") {
+	if (mode !== "create" && selectedData === null) {
 		const noIDData: any[] = data.map((item: any) => {
 			const { ["id"]: id, ...rest } = item;
 			return rest;
@@ -144,12 +145,10 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 		<>
 			<AutoForm
 				className="m-5"
-				_defaultValues={
-					selectedData && mode === "update" ? selectedData : {}
-				}
-				values={values}
+				_defaultValues={mode === "create" ? {} : selectedData}
+				values={formValues}
+				onValuesChange={setFormValues}
 				onSubmit={handleSubmit}
-				onValuesChange={setValues}
 				formSchema={formSchema}
 				fieldConfig={fieldConfig}
 			>
@@ -160,7 +159,9 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 							variant={"outline"}
 							onClick={() => {
 								if (mode === "update") {
-									setSelectedData(null);
+									isList
+										? setSelectedData(null)
+										: closeSheet();
 								}
 								if (mode === "create") {
 									closeSheet();
@@ -184,15 +185,10 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 						<DialogTitle>Are you sure to update?</DialogTitle>
 						<DialogDescription></DialogDescription>
 					</DialogHeader>
-					<GeneralTable data={values} />
+					<GeneralTable data={formValues} />
 					<DialogFooter>
 						<DialogClose asChild>
-							<Button
-								onClick={() => {
-									submitForm();
-								}}
-								type="submit"
-							>
+							<Button onClick={submitForm} type="submit">
 								Save changes
 							</Button>
 						</DialogClose>
@@ -221,10 +217,8 @@ const CompViewAllDatas = ({
 					<Table>
 						<TableHeader>
 							<TableRow>
-								<TableHead className="whitespace-nowrap text-center">
-									{""}
-								</TableHead>
-								{dataNoID[0] &&
+								<TableHead className="whitespace-nowrap text-center"></TableHead>
+								{dataNoID[0] ? (
 									Object.keys(dataNoID[0]).map(
 										(key: string) => {
 											return (
@@ -233,8 +227,8 @@ const CompViewAllDatas = ({
 												</TableHead>
 											);
 										}
-									)}
-								{!dataNoID[0] && (
+									)
+								) : (
 									<TableCell
 										colSpan={5}
 										className="h-24 text-center"

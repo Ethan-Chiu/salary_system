@@ -1,9 +1,10 @@
-import React, { useState, PropsWithChildren, useReducer } from "react";
+import React, { useState, PropsWithChildren, useReducer, useEffect } from "react";
 import calendarContext from "./calendar_context";
 import dayjs from "dayjs";
 import { CalendarEvent, CalendarEventLevel } from "../utils/calendar_event";
+import { detectOverlaps } from "../utils/event_level";
 
-type ActionType = {
+export type ActionType = {
 	type: "push";
 };
 
@@ -16,10 +17,16 @@ export default function CalendarContextProvider({
 	const [mouseDownDate, setMouseDownDate] = useState(dayjs());
 	const [mouseUpDate, setMouseUpDate] = useState(dayjs());
 
+	const [openSheet, setOpenSheet] = useState<boolean>(false);
+
 	const [eventList, dispatchEventList] = useReducer(savedEventsReducer, []);
 	const [showEventList, setShowEventList] = useState<CalendarEventLevel[]>(
-		[]
+		[new CalendarEventLevel(new Date(new Date().setDate(-1)) , new Date(), 0)]
 	);
+
+	useEffect(() => {
+		setShowEventList(detectOverlaps(eventList));
+	}, [eventList]);
 
 	function savedEventsReducer(state: CalendarEvent[], { type }: ActionType) {
 		switch (type) {
@@ -45,7 +52,10 @@ export default function CalendarContextProvider({
 				setMouseDownDate,
 				mouseUpDate,
 				setMouseUpDate,
-
+				openSheet, 
+				setOpenSheet,
+				showEventList,
+				dispatchEventList
 				//   showEventModal,
 				//   setShowEventModal,
 				//   savedEvents,

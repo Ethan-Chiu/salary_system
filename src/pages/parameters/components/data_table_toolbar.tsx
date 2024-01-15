@@ -20,7 +20,6 @@ export function DataTableToolbar<TData>({
 	filterKey,
 	showTabs,
 }: DataTableToolbarProps<TData>) {
-
 	const { selectedTable } = useContext(dataTableContext);
 
 	return (
@@ -59,11 +58,10 @@ export function DataTableToolbar<TData>({
 			)}
 			{/*  */}
 			<DataTableViewOptions table={table} />
-			{selectedTable && (
-				<ToolbarFunctionsProvider selectedTable={selectedTable}>
-					<DataTableFunctions tableType={selectedTable} />
-				</ToolbarFunctionsProvider>
-			)}
+			{/* Toolbar functions */}
+			<ToolbarFunctionsProvider selectedTable={selectedTable}>
+				<DataTableFunctions tableType={selectedTable} />
+			</ToolbarFunctionsProvider>
 		</div>
 	);
 }
