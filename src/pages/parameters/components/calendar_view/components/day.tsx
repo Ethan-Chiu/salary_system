@@ -4,6 +4,7 @@ import { type Dayjs } from "dayjs";
 import { cn } from "~/lib/utils";
 import calendarContext from "../context/calendar_context";
 import { CalendarEventLevel } from "../utils/calendar_event";
+import { getMaxLevel } from "../utils/event_level";
 
 interface DayViewProps {
 	day: Dayjs;
@@ -81,15 +82,27 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 				onMouseUp={handleMouseUp}
 				onMouseOver={handleMouseOver}
 			>
-				{dayEvents.map((evt, idx) => (
-					<div
-						key={idx}
-						// onClick={() => setSelectedEvent(evt)}`
-						className=" mb-1 truncate bg-primary p-1 text-sm text-gray-600"
-					>
-						{evt.getLevel()}
-					</div>
-				))}
+				{Array.from(
+					{ length: getMaxLevel(dayEvents) + 1 },
+					(_, idx) => idx
+				).map((idx) => {
+					const evt = dayEvents.find(
+						(dayEvent) => dayEvent.getLevel() === idx
+					);
+
+					if (!evt) {
+						return <div key={idx} className="mb-1 h-6 p-1" />;
+					}
+					return (
+						<div
+							key={idx}
+							// onClick={() => setSelectedEvent(evt)}`
+							className="mb-1 h-6 truncate bg-primary text-sm text-gray-600"
+						>
+							{evt.getLevel()}
+						</div>
+					);
+				})}
 			</div>
 		</div>
 	);

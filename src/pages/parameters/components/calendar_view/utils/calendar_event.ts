@@ -31,8 +31,8 @@ export class CalendarEvent {
 
 	overlapsWith(otherEvent: CalendarEvent): boolean {
 		return (
-			this.startDate < otherEvent.getEndDate() &&
-			this.endDate > otherEvent.getStartDate()
+			this.startDate <= otherEvent.getEndDate() &&
+			this.endDate >= otherEvent.getStartDate()
 		);
 	}
 }
@@ -53,6 +53,3 @@ export class CalendarEventLevel extends CalendarEvent {
 		this.level = level;
 	}
 }
-
-// Example usage:
-// const event = new CalendarEvent(new Date('2024-01-01T09:00:00'), new Date('2024-01-01T12:00:00'));

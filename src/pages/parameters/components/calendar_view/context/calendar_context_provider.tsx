@@ -7,7 +7,7 @@ import React, {
 import calendarContext from "./calendar_context";
 import dayjs from "dayjs";
 import { CalendarEvent, CalendarEventLevel } from "../utils/calendar_event";
-import { detectOverlaps } from "../utils/event_level";
+import { getEventLevel } from "../utils/event_level";
 
 export type ActionType = {
 	type: "push";
@@ -49,7 +49,7 @@ export default function CalendarContextProvider({
 		if (currentEvent) {
 			showEvents = [...showEvents, currentEvent];
 		}
-		setShowEventList(detectOverlaps(showEvents));
+		setShowEventList(getEventLevel(showEvents));
 	}, [eventList, currentEvent]);
 
 	function savedEventsReducer(state: CalendarEvent[], { type }: ActionType) {
