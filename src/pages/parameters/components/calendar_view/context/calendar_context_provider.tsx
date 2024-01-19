@@ -60,7 +60,13 @@ export default function CalendarContextProvider({
 						return a.start_date > b.start_date ? -1 : 1;
 					}
 				})
-				.map((e) => new CalendarEvent(new Date(e.start_date), new Date(e.end_date ?? 8640000000000000)))
+				.map((e) => {
+					console.log()
+					return new CalendarEvent(
+						new Date(e.start_date),
+						new Date(e.end_date ?? 8630000000000000)
+					);
+				})
 		);
 	}, []);
 
@@ -79,14 +85,18 @@ export default function CalendarContextProvider({
 
 				const newState = [...state, currentEvent];
 
-				setMouseDownDate(null);
-				setMouseUpDate(null);
-				setCurrentEvent(null);
+				resetMouse();
 				return newState;
 			}
 			default:
 				throw new Error();
 		}
+	}
+
+	function resetMouse() {
+		setMouseDownDate(null);
+		setMouseUpDate(null);
+		setCurrentEvent(null);
 	}
 
 	return (
@@ -102,6 +112,7 @@ export default function CalendarContextProvider({
 				setOpenSheet,
 				showEventList,
 				setEventList,
+				resetMouse,
 				//   showEventModal,
 				//   setShowEventModal,
 				//   savedEvents,

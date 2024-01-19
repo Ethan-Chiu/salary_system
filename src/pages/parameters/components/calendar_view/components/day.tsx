@@ -28,7 +28,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 		const events = showEventList.filter(
 			(evt) =>
 				dayjs(evt.getStartDate()) <= day &&
-				day <= dayjs(evt.getEndDate())
+				day < dayjs(evt.getEndDate()).add(1, 'day')
 		);
 		setDayEvents(events);
 	}, [showEventList, day]);
