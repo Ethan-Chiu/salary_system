@@ -33,6 +33,8 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { DataTableDataHeader } from "~/components/data_table/data_table_data_header";
 
+import { api } from "~/utils/api";
+
 interface KVString {
 	[key: string]: string;
 }
@@ -150,7 +152,18 @@ function EmployeeDataChange({ previousTableData, newTableData, mode }: any) {
 }
 
 const PageCheckEHR: NextPageWithLayout = () => {
-	const changedEmployees = ["A", "B", "C", "D"]; // 員工編號 中文 英文 部門
+	// const changedEmployees = ["A", "B", "C", "D"]; // 員工編號 中文 英文 部門
+
+	let changedEmployees: Array<string> = [];
+	const getDiffDatas = api.employeeData.checkEmployeeData.useMutation({
+		onSuccess: () => {
+			changedEmployees = getDiffDatas.data!.map((data: any) => {
+				return data["emp_no"]
+			})
+		},
+	});
+
+
 	const [checkedEmployees, setCheckedEmployees] = useState<Array<string>>([]);
 	const [selectedEmployee, setSelectEmployee] = useState("");
 	const [finish, setFinish] = useState(false);
@@ -182,6 +195,8 @@ const PageCheckEHR: NextPageWithLayout = () => {
 	};
 
 	return (
+		<>
+		{(!getDiffDatas.isSuccess)?<></>:
 		<>
 			<div className="flex h-full flex-grow flex-col">
 				<Header title="Data Check" />
@@ -268,6 +283,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 					</Button>
 				</div>
 			</div>
+		</>}
 		</>
 	);
 };
