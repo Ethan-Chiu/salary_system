@@ -31,7 +31,7 @@ export function DataTablePagination<TData>({
 	return (
 		<div
 			className={cn(
-				"flex flex-wrap items-center justify-between gap-y-1 p-2",
+				"flex flex-wrap items-center justify-end gap-y-1 p-2",
 				className
 			)}
 		>
@@ -39,7 +39,6 @@ export function DataTablePagination<TData>({
 			<div className="text-sm text-muted-foreground">
 				{dataNum != 0 ? (
 					<div className="min-w-[100px]">
-						Showing{" "}
 						<span className="font-medium">
 							{pageIndex * pageSize + 1}
 						</span>{" "}
@@ -104,9 +103,9 @@ export function DataTablePagination<TData>({
 				</Select>
 			</div>
 			{/* Pagination */}
-			<div className="ml-2 flex flex-grow justify-end">
+			<div className="ml-2 flex justify-end">
 				<div className=" flex items-center space-x-4">
-					<div className="flex w-[70px] items-center justify-center text-sm font-medium">
+					<div className="flex w-24 items-center justify-center text-sm font-medium">
 						{`Page ${
 							table.getState().pagination.pageIndex + 1
 						} of ${table.getPageCount()}`}
