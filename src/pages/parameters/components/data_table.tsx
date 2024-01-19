@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
 	ColumnDef,
 	ColumnFiltersState,
@@ -23,6 +22,9 @@ import { DataTableDataHeader } from "../../../components/data_table/data_table_d
 import { DataTableDataBody } from "../../../components/data_table/data_table_data_body";
 import CalendarView from "./calendar_view/calendar_view";
 import HistoryView from "./history_view/history_view";
+import { useContext, useEffect, useState } from "react";
+import dataTableContext from "./context/data_table_context";
+import { TabsEnum } from "./context/tabs_enum";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
@@ -37,13 +39,15 @@ export function DataTable<TData>({
 	filterColumnKey,
 	showTabs,
 }: DataTableProps<TData>) {
-	const [rowSelection, setRowSelection] = React.useState({});
-	const [columnVisibility, setColumnVisibility] =
-		React.useState<VisibilityState>({});
-	const [columnFilters, setColumnFilters] =
-		React.useState<ColumnFiltersState>([]);
-	const [sorting, setSorting] = React.useState<SortingState>([]);
-	const [dataPerRow, setDataPerRow] = React.useState(1);
+	const { selectedTab, setSelectedTab, filterValue } = useContext(dataTableContext);
+
+	const [rowSelection, setRowSelection] = useState({});
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+		{}
+	);
+	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+	const [sorting, setSorting] = useState<SortingState>([]);
+	const [dataPerRow, setDataPerRow] = useState(1);
 
 	const table = useReactTable({
 		data,
@@ -67,14 +71,24 @@ export function DataTable<TData>({
 		getFacetedUniqueValues: getFacetedUniqueValues(),
 	});
 
+	useEffect(() => {
+		table
+			.getColumn(filterColumnKey.toString())
+			?.setFilterValue(filterValue);
+	}, [filterValue]);
+
 	return (
-		<Tabs defaultValue="now" className="h-full w-full">
+		<Tabs
+			defaultValue="now"
+			className="h-full w-full"
+			onValueChange={(tab) => {
+				setSelectedTab(TabsEnum.parse(tab));
+			}}
+		>
 			<div className="flex h-full flex-col">
 				{/* TODO: fix global filter*/}
 				<DataTableToolbar
 					table={table}
-					globalFilter=""
-					filterKey={filterColumnKey}
 					showTabs={showTabs}
 				/>
 				<Separator />
