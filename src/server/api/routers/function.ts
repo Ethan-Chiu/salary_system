@@ -2,6 +2,7 @@ import { container } from "tsyringe";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { EHRService } from "~/server/service/ehr_service";
+import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { ExcelService } from "~/server/service/excel_service";
 
 export const functionRouter = createTRPCRouter({
@@ -56,4 +57,12 @@ export const functionRouter = createTRPCRouter({
 		];
 		return Sheets;
 	}),
+
+	checkData: publicProcedure
+		.input(z.object({ func: z.string() }))
+		.query(async ({ input }) => {
+			const employeeDataService = container.resolve(EmployeeDataService);
+			const diffDatas = await employeeDataService.checkEmployeeData(input.func);
+			return diffDatas;
+		})
 });

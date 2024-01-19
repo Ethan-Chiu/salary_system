@@ -9,6 +9,9 @@ import { Payset } from "../database/entity/UMEDIA/payset";
 import { BankSetting } from "../database/entity/SALARY/bank_setting";
 import { Holiday } from "../database/entity/UMEDIA/holiday";
 import { BaseResponseError } from "../api/error/BaseResponseError";
+import { EmployeeData } from "../database/entity/SALARY/employee_data";
+import { EmployeePayment } from "../database/entity/SALARY/employee_payment";
+import { EHRService } from "./ehr_service";
 
 export interface CombinedData {
     id: number | null;
@@ -50,8 +53,37 @@ export class ExcelService {
         }));
         return sheetADatas;
     }
-    async getSheetB(): Promise<BankSetting[]> {
-        const bankSetting = await BankSetting.findAll();
-		return bankSetting;
-    }
+    // async getSheetB(emp_nos: number[], period_id: number): Promise<CombinedData[]> {
+    //     const ehrService = container.resolve(EHRService);
+    //     const overtime = await ehrService.getOvertime(period_id);
+
+
+    //     const sheetADatas = Promise.all(emp_nos.map(async (emp_no) => {
+    //         const employeePayment = await EmployeePayment.findOne({
+    //             where: {
+    //                 emp_no: emp_no,
+    //             },
+    //             attributes: ['base_salary', 'supervisor_bonus', 'performance_bonus', 'food_bonus', 'subsidy_bonus', 'l_i', 'h_i', 'job_bonus', 'shift_bonus'],
+    //         })
+    //         const employeeData = await EmployeeData.findOne({
+    //             where: {
+    //                 emp_no: emp_no,
+    //             },
+    //             attributes: ['dependents_count', 'h_i_dependents_count', ],
+    //         })
+    //         if(! employeePayment || ! employeeData) {
+    //             throw new BaseResponseError("AttendanceSetting or BankSetting does not exist");
+    //         }
+    //         const combinedData : CombinedData = {
+    //             id: attendanceSetting.id ,
+    //             start_date:  attendanceSetting.start_date ,
+    //             end_date: attendanceSetting.end_date,
+    //             bank_name: bankSetting.bank_name,
+    //             org_name: bankSetting.org_name,
+    //           };
+
+    //           return combinedData;
+    //     }));
+    //     return sheetADatas;
+    // }
 }

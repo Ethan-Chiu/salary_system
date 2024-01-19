@@ -256,3 +256,49 @@ export const createEmployeePaymentAPI = EmployeePayment.merge(DateAPI);
 export const createEmployeePaymentService = EmployeePayment.merge(DateService);
 export const updateEmployeePaymentAPI = EmployeePayment.merge(Id).merge(DateAPI).partial();
 export const updateEmployeePaymentService = EmployeePayment.merge(Id).merge(DateService).partial();
+
+const EmployeeData = z.object({
+  emp_no: z.string(),
+  emp_name: z.string(),
+  work_type: z.string(),
+  work_status: z.string(),
+  department: z.string(),
+  position: z.number(),
+  position_type: z.string(),
+  gender: z.string(),
+  group_insurance_type: z.string(),
+  performance_level: z.string(),
+  probationary_period_over: z.boolean(),
+  old_age_benefit: z.boolean(),
+  dependents_count: z.number(),
+  h_i_dependents_count: z.number(),
+  hire_date: z.date(),
+  entry_date: z.date().nullable(),
+  departure_date: z.date().nullable(),
+  identity_number: z.string(),
+  bonus_calculation: z.boolean(),
+  bonus_ratio: z.number(),
+  disability_level: z.string(),
+  labor_retirement_self_ratio: z.number(),
+  has_esot: z.boolean(),
+  tax_rate_category: z.string(),
+  nationality: z.string(),
+  registered_address: z.string(),
+  postal_code: z.string(),
+  mailing_address: z.string(),
+  email: z.string(),
+  bank_full_name: z.string(),
+  branch_full_name: z.string(),
+  securities_code: z.string(),
+  securities_account: z.string(),
+  birthdate: z.date(),
+  bank_account: z.string(),
+  english_name: z.string(),
+  indigenous_name: z.string().nullable(),
+  tax_identification_code: z.string(),
+});
+
+export const createEmployeeDataAPI = EmployeeData.merge(DateAPI);
+export const createEmployeeDataService = EmployeeData.merge(DateService);
+export const updateEmployeeDataAPI = EmployeeData.merge(Id).merge(DateAPI).partial();
+export const updateEmployeeDataService = EmployeeData.merge(Id).merge(DateService).partial();

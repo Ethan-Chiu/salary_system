@@ -25,7 +25,7 @@ export class EmployeeData extends Model<
     declare group_insurance_type: string;
     declare performance_level: string;
     declare probationary_period_over: boolean;
-    declare old_age_benifit: boolean;
+    declare old_age_benefit: boolean;
     declare dependents_count: number;
     declare h_i_dependents_count: number;
     declare hire_date: Date;
@@ -115,7 +115,7 @@ EmployeeData.init(
             type: DataTypes.BOOLEAN,
 			allowNull: false,
         },
-        old_age_benifit: {
+        old_age_benefit: {
             type: DataTypes.BOOLEAN,
 			allowNull: false,
         },
