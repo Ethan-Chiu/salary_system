@@ -38,13 +38,8 @@ export const employeeDataRouter = createTRPCRouter({
 			const employeeDataService = container.resolve(EmployeeDataService);
 			let newdata = await employeeDataService.createEmployeeData({
 				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
 			});
+			return newdata;
 		}),
 
 	updateEmployeeData: publicProcedure
@@ -53,12 +48,6 @@ export const employeeDataRouter = createTRPCRouter({
 			const employeeDataService = container.resolve(EmployeeDataService);
 			await employeeDataService.updateEmployeeData({
 				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
 			});
 		}),
 

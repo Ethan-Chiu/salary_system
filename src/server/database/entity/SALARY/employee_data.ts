@@ -28,9 +28,9 @@ export class EmployeeData extends Model<
     declare old_age_benefit: boolean;
     declare dependents_count: number;
     declare h_i_dependents_count: number;
-    declare hire_date: Date;
-    declare entry_date: Date | null;
-    declare departure_date: Date | null;
+    declare hire_date: string;
+    declare entry_date: string | null;
+    declare departure_date: string | null;
     declare identity_number: string;
     declare bonus_calculation: boolean;
     declare bonus_ratio: number;
@@ -47,7 +47,7 @@ export class EmployeeData extends Model<
     declare branch_full_name: string;
     declare securities_code: string;
     declare securities_account: string;
-    declare birthdate: Date;
+    declare birthdate: string;
     declare bank_account: string;
     declare english_name: string;
     declare indigenous_name: string | null;
@@ -128,15 +128,15 @@ EmployeeData.init(
 			allowNull: false,
         },
         hire_date: {
-			type: DataTypes.DATE,
+			type: DataTypes.STRING(32),
 			allowNull: false,
 		},
         entry_date: {
-			type: DataTypes.DATE,
+			type: DataTypes.STRING(32),
 			allowNull: true,
 		},
         departure_date:{
-            type: DataTypes.DATE,
+            type: DataTypes.STRING(32),
 			allowNull: true,
         },
         identity_number:{
@@ -204,7 +204,7 @@ EmployeeData.init(
 			allowNull: false,
         },
         birthdate: {
-			type: DataTypes.DATE,
+			type: DataTypes.STRING(32),
 			allowNull: false,
 		},
         bank_account: {

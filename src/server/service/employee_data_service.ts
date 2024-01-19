@@ -241,12 +241,21 @@ export class EmployeeDataService {
 			// const ehrService = container.resolve(EHRService);
 			// const employeeDataService = container.resolve(EmployeeDataService);
 			// const ehr_data = await ehrService.getEmployeeDataByEmpNo(old_data.emp_no);
-			this.updateEmployeeData({id:old_data.id, gender: 'female'});
-			const ehr_data = await this.getEmployeeDataById(old_data.id);
-			const excludedKeys = ['create_date', 'create_by'];
-        	const isDifferent = Object.keys(old_data).some((key) => !excludedKeys.includes(key) && (old_data as any)[key] !== (ehr_data as any)[key]);
+			await this.updateEmployeeData({id:old_data.id, gender: 'female'});
+			var ehr_data = await this.getEmployeeDataById(old_data.id);
+			const excludedKeys = ['create_date', 'create_by', 'update_date', 'update_by'];
+			// const dates = ['hire_date', 'entry_date', 'departure_date', 'birthdate'];
+        	const isDifferent = Object.keys(old_data.dataValues).some((key) => {
+				// console.log(key)
+				// console.log(typeof (old_data as any)[key])
+				// console.log((old_data as any)[key])
+				// console.log(typeof (ehr_data as any)[key])
+				// console.log((ehr_data as any)[key])
+				return !excludedKeys.includes(key) && (old_data as any)[key] !== (ehr_data as any)[key]
+			});
 
 			if (isDifferent) {
+				console.log('Diff')
 				const combinedData: CombinedData = {
 					old_data: old_data,
 					ehr_data: ehr_data,
@@ -265,3 +274,5 @@ export class EmployeeDataService {
 	
 	
 }
+
+

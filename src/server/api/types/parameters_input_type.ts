@@ -272,9 +272,9 @@ const EmployeeData = z.object({
   old_age_benefit: z.boolean(),
   dependents_count: z.number(),
   h_i_dependents_count: z.number(),
-  hire_date: z.date(),
-  entry_date: z.date().nullable(),
-  departure_date: z.date().nullable(),
+  hire_date: z.string(),
+  entry_date: z.string().nullable(),
+  departure_date: z.string().nullable(),
   identity_number: z.string(),
   bonus_calculation: z.boolean(),
   bonus_ratio: z.number(),
@@ -291,14 +291,14 @@ const EmployeeData = z.object({
   branch_full_name: z.string(),
   securities_code: z.string(),
   securities_account: z.string(),
-  birthdate: z.date(),
+  birthdate: z.string(),
   bank_account: z.string(),
   english_name: z.string(),
   indigenous_name: z.string().nullable(),
   tax_identification_code: z.string(),
 });
 
-export const createEmployeeDataAPI = EmployeeData.merge(DateAPI);
-export const createEmployeeDataService = EmployeeData.merge(DateService);
-export const updateEmployeeDataAPI = EmployeeData.merge(Id).merge(DateAPI).partial();
-export const updateEmployeeDataService = EmployeeData.merge(Id).merge(DateService).partial();
+export const createEmployeeDataAPI = EmployeeData;
+export const createEmployeeDataService = EmployeeData;
+export const updateEmployeeDataAPI = EmployeeData.merge(Id).partial();
+export const updateEmployeeDataService = EmployeeData.merge(Id).partial();
