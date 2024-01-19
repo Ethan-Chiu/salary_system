@@ -38,12 +38,12 @@ export function DataTableFunctions({
 	tableType,
 	className,
 }: DataTableFunctionsProps) {
-	const [open, setOpen] = useState<boolean | undefined>(undefined);
+	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
 
 	return (
 		<div className={cn(className, "flex h-full items-center")}>
-			<Sheet open={open}>
+			<Sheet open={open} onOpenChange={setOpen}>
 				{/* Dropdown */}
 				<DropdownMenu modal={false}>
 					<DropdownMenuTrigger asChild>
@@ -112,7 +112,7 @@ export function DataTableFunctions({
 				className="w-full"
 				onClick={() => {
 					setMode(props.mode);
-					setOpen(undefined);
+					setOpen(true);
 				}}
 			>
 				<DropdownMenuItem className="cursor-pointer">

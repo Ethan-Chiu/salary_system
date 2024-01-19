@@ -9,7 +9,7 @@ import {
 import { Input } from "../../input";
 import { AutoFormInputComponentProps } from "../types";
 
-export default function AutoFormDate({
+export default function AutoFormDateCustom({
 	label,
 	isRequired,
 	field,
@@ -36,7 +36,7 @@ export default function AutoFormDate({
 				<Input
 					type="date"
 					onChange={field.onChange}
-					defaultValue={convertDate(field.value)}
+					defaultValue={convertDate(fieldProps.defaultValue ?? field.value)}
 				/>
 				{/* <DatePicker
                     date={field.value}

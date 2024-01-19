@@ -72,7 +72,6 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 		if (event.button === 0) {
 			console.log("Mouse button up");
 			setMouseUpDate(day);
-			// dispatchEventList({ type: "push" });
 			setOpenSheet(true);
 		}
 	};
@@ -164,7 +163,6 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 						variant={"ghost"}
 						className="rounded-full p-3"
 						onClick={() => {
-							console.log(selectedEvent?.getData());
 							deleteFunction.mutate({
 								id: selectedEvent?.getData().id,
 							});
