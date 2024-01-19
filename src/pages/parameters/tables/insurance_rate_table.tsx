@@ -2,19 +2,18 @@ import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import {
-	isString,
-	isNumber,
-	isDate,
-} from "~/pages/develop_parameters/utils/checkType";
-import { DataTable } from "../components/data_table";
+import { isString, isNumber, isDateType } from "~/lib/utils/check_type";
+import { DataTable as DataTableWithFunctions } from "../components/data_table";
+import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import {
 	c_CreateDateStr,
 	c_EndDateStr,
 	c_StartDateStr,
+	c_UpdateDateStr,
 } from "../constant";
 import { InsuranceRateSetting } from "~/server/database/entity/SALARY/insurance_rate_setting";
 import { LoadingSpinner } from "~/components/loading";
+import { formatDate } from "~/lib/utils/format_date";
 
 export type RowItem = {
 	name: string;
@@ -24,23 +23,29 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-const columns = [
+export const insurance_rate_columns = [
 	columnHelper.accessor("name", {
 		header: ({ column }) => {
 			return (
-				<Button
-					variant="ghost"
-					onClick={() =>
-						column.toggleSorting(column.getIsSorted() === "asc")
-					}
-				>
-					Parameter
-					<ArrowUpDown className="ml-2 h-4 w-4" />
-				</Button>
+				<div className="flex justify-center pl-3">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							Parameter
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
 			);
 		},
 		cell: ({ row }) => (
-			<div className="pl-4 w-[400px] lowercase">{row.getValue("name")}</div>
+			<div className="lowercase">{row.getValue("name")}</div>
 		),
 	}),
 	columnHelper.accessor("value", {
@@ -51,79 +56,97 @@ const columns = [
 			if (isNumber(value))
 				formatted = parseFloat(row.getValue("value")).toString();
 			else if (isString(value)) formatted = row.getValue("value");
-			else if (isDate(value)) {
+			else if (isDateType(value)) {
 				if (value) {
 					formatted =
 						(value as Date).toISOString().split("T")[0] ?? "";
 				} else formatted = "";
 			}
-			return <div className="flex justify-center"><div className="w-80 text-center font-medium">{formatted}</div></div>;
+			return (
+				<div className="flex justify-center">
+					<div className="text-center font-medium">{formatted}</div>
+				</div>
+			);
 		},
 	}),
 ];
 
-function insuranceRateMapper(insuranceRateData: InsuranceRateSetting): RowItem[] {
+export function insuranceRateMapper(
+	insuranceRateData: InsuranceRateSetting[]
+): RowItem[] {
+	const data = insuranceRateData[0]!;
 	return [
 		{
 			name: "最低薪資率",
-			value: insuranceRateData.min_wage_rate,
+			value: data.min_wage_rate,
 		},
 		{
 			name: "勞保事故費率",
-			value: insuranceRateData.l_i_accident_rate,
+			value: data.l_i_accident_rate,
 		},
 		{
 			name: "勞保就業保險費率",
-			value: insuranceRateData.l_i_employment_premium_rate,
+			value: data.l_i_employment_premium_rate,
 		},
 		{
 			name: "勞保職業災害費率",
-			value: insuranceRateData.l_i_occupational_hazard_rate,
+			value: data.l_i_occupational_hazard_rate,
 		},
 		{
 			name: "勞保工資墊償基金提繳率",
-			value: insuranceRateData.l_i_wage_replacement_rate,
+			value: data.l_i_wage_replacement_rate,
 		},
 		{
 			name: "健保一般費率",
-			value: insuranceRateData.h_i_standard_rate,
+			value: data.h_i_standard_rate,
 		},
 		{
 			name: "健保平均眷口數",
-			value: insuranceRateData.h_i_avg_dependents_count,
+			value: data.h_i_avg_dependents_count,
 		},
 		{
 			name: "二代健保補充保費率",
-			value: insuranceRateData.v2_h_i_supp_premium_rate,
+			value: data.v2_h_i_supp_premium_rate,
 		},
 		{
 			name: "二代健保扣繳門檻單次",
-			value: insuranceRateData.v2_h_i_dock_tsx_thres,
+			value: data.v2_h_i_dock_tsx_thres,
 		},
 		{
 			name: c_StartDateStr,
-			value: new Date(insuranceRateData.start_date),
+			value: formatDate("day", data.start_date),
 		},
 		{
 			name: c_EndDateStr,
-			value: insuranceRateData.end_date
-				? new Date(insuranceRateData.end_date)
-				: new Date(),
+			value: data.end_date
+				? // ? new Date(insuranceRateData.end_date)
+				  formatDate("day", data.end_date)
+				: "",
 		},
 		{
 			name: c_CreateDateStr,
-			value: insuranceRateData.create_date,
+			value: formatDate("hour", data.create_date),
+			// value: insuranceRateData.create_date
+		},
+		{
+			name: c_UpdateDateStr,
+			value: formatDate("hour", data.update_date),
+			// value: insuranceRateData.create_date
 		},
 	];
 }
 
-export function InsuranceRateTable({ index, globalFilter }: any) {
+export function InsuranceRateTable({ index, globalFilter, viewOnly }: any) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentInsuranceRateSetting.useQuery();
 	const filterKey: RowItemKey = "name";
 
 	if (isLoading) {
-		return <LoadingSpinner />; // TODO: Loading element with toast
+		return (
+			<div className="flex grow items-center justify-center">
+				<LoadingSpinner />
+			</div>
+		); // TODO: Loading element with toast
 	}
 
 	if (isError) {
@@ -131,14 +154,20 @@ export function InsuranceRateTable({ index, globalFilter }: any) {
 	}
 
 	return (
-		<DataTable
-			columns={columns}
-			data={insuranceRateMapper(data)}
-			filterColumnKey={filterKey}
-		/>
+		<>
+			{!viewOnly ? (
+				<DataTableWithFunctions
+					columns={insurance_rate_columns}
+					data={insuranceRateMapper([data])}
+					filterColumnKey={filterKey}
+				/>
+			) : (
+				<DataTableWithoutFunctions
+					columns={insurance_rate_columns}
+					data={insuranceRateMapper([data])}
+					filterColumnKey={filterKey}
+				/>
+			)}
+		</>
 	);
-
-	// useMemo(() => {
-	// 	table.getColumn(filter_key)?.setFilterValue(globalFilter);
-	// }, [globalFilter]);
 }

@@ -2,9 +2,11 @@ import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import { DataTable } from "../components/data_table";
+import { DataTable as DataTableWithFunctions } from "../components/data_table";
+import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { BankSetting } from "~/server/database/entity/SALARY/bank_setting";
 import { LoadingSpinner } from "~/components/loading";
+import { TABLE_BANK_SETTING } from "~/pages/table_names";
 
 export type RowItem = {
 	bank_name: string;
@@ -18,23 +20,29 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-const columns = [
+export const bank_columns = [
 	columnHelper.accessor("bank_name", {
 		header: ({ column }) => {
 			return (
-				<Button
-					variant="ghost"
-					onClick={() =>
-						column.toggleSorting(column.getIsSorted() === "asc")
-					}
-				>
-					Bank
-					<ArrowUpDown className="ml-2 h-4 w-4" />
-				</Button>
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							Bank
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
 			);
 		},
 		cell: ({ row }) => (
-			<div className="w-[400px] pl-4 lowercase">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
+			<div className="lowercase">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
 		),
 	}),
 	columnHelper.accessor("org_name", {
@@ -69,7 +77,7 @@ const columns = [
 	}),
 ];
 
-function bankSettingMapper(bankSettingData: BankSetting[]): RowItem[] {
+export function bankSettingMapper(bankSettingData: BankSetting[]): RowItem[] {
 	return bankSettingData.map((d) => {
 		return {
 			bank_name: d.bank_name,
@@ -82,13 +90,17 @@ function bankSettingMapper(bankSettingData: BankSetting[]): RowItem[] {
 	});
 }
 
-export function BankTable({ index, globalFilter }: any) {
+export function BankTable({ index, globalFilter, viewOnly }: any) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBankSetting.useQuery();
 	const filterKey: RowItemKey = "bank_name";
 
 	if (isLoading) {
-		return <LoadingSpinner />; // TODO: Loading element with toast
+		return (
+			<div className="flex grow items-center justify-center">
+				<LoadingSpinner />
+			</div>
+		); // TODO: Loading element with toast
 	}
 
 	if (isError) {
@@ -96,10 +108,20 @@ export function BankTable({ index, globalFilter }: any) {
 	}
 
 	return (
-		<DataTable
-			columns={columns}
-			data={bankSettingMapper(data)}
-			filterColumnKey={filterKey}
-		/>
+		<>
+			{!viewOnly ? (
+				<DataTableWithFunctions
+					columns={bank_columns}
+					data={bankSettingMapper(data)}
+					filterColumnKey={filterKey}
+				/>
+			) : (
+				<DataTableWithoutFunctions
+					columns={bank_columns}
+					data={bankSettingMapper(data)}
+					filterColumnKey={filterKey}
+				/>
+			)}
+		</>
 	);
 }

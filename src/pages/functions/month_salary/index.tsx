@@ -18,20 +18,11 @@ import { HolidayTable } from "../tables/holiday_table";
 import { OvertimeTable } from "../tables/overtime_table";
 import { PaysetTable } from "../tables/payset_table";
 import { ProgressBar } from "~/components/functions/progress_bar";
-import {
-	CardFunction,
-	CardFunctionIcon,
-	CardFunctionData,
-} from "~/components/functions/card_function";
-import { IconCoins } from "~/components/icons/svg_icons";
 import { Button } from "~/components/ui/button";
-import { Translate } from "~/pages/develop_parameters/utils/translation";
-
-import ExcelJS from "exceljs";
-
-import { motion } from "framer-motion";
+import { Translate } from "~/lib/utils/translation";
 import ExcelViewer from "./ExcelViewer";
 import { LoadingSpinner } from "~/components/loading";
+import { CheckParameters } from "./CheckParameters";
 
 const TabOptions = ["請假", "加班", "工作天數", "其他", "其他"];
 const progressBarLabels = ["確認資料", "確認參數", "匯出報表"];
@@ -40,7 +31,7 @@ const MonthSalary: NextPageWithLayout = () => {
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const pageList = [<DataPage />, <ParameterPage />, <ExportPage />];
 	return (
-		<div className="flex min-h-full flex-col">
+		<div className="flex h-full flex-col p-4">
 			<Header title="functions" showOptions className="mb-4" />
 			<ProgressBar
 				labels={progressBarLabels}
@@ -49,8 +40,7 @@ const MonthSalary: NextPageWithLayout = () => {
 			<br />
 			{pageList[selectedIndex]}
 			<br />
-			<div className="grow" />
-			<div className="flex justify-between ">
+			<div className="flex justify-between">
 				<Button
 					onClick={() => setSelectedIndex(selectedIndex - 1)}
 					disabled={selectedIndex === 0}
@@ -97,7 +87,7 @@ function DataPage() {
 
 	if (getPeriod.isFetched)
 		return (
-			<>
+			<div className="grow">
 				<Select
 					onValueChange={(chosen) =>
 						setPeriod(
@@ -142,40 +132,35 @@ function DataPage() {
 						);
 					})}
 				</Tabs>
-			</>
+			</div>
 		);
 	else
 		return (
-			<>
-				<div style={loaderStyle}>
-					<LoadingSpinner />
-				</div>
-			</>
+			<div className="flex grow items-center justify-center">
+				<LoadingSpinner />
+			</div>
 		);
 }
 
 function ParameterPage() {
+	const isFetch = true;
 	return (
 		<>
-			<div style={loaderStyle}>
-				<LoadingSpinner />
-			</div>
+			{isFetch ? (
+				<div className="grow">
+					<CheckParameters />
+				</div>
+			) : (
+				<div className="flex grow items-center justify-center">
+					<LoadingSpinner />
+				</div>
+			)}
 		</>
 	);
 }
 
 function ExportPage() {
 	const getExcelA = api.function.getExcelA.useQuery();
-
-	function splitKeys(datas: any) {
-		let columns = Object.keys(datas[0]);
-		let rows = datas.map((data: any, index: number) => {
-			return Object.keys(data).map((key: string) => {
-				return data[key];
-			});
-		});
-		return [columns, rows];
-	}
 
 	function getExcelData(Alldatas: any) {
 		let excelData: any = [];
@@ -203,111 +188,17 @@ function ExportPage() {
 		return excelData;
 	}
 
-	const function_data: CardFunctionData[] = [
-		{
-			title: "Download Excel A",
-			iconPath: "./icons/coins.svg",
-			subscript: "下載 Excel A",
-		},
-	];
-
-	const handleExportExcel = async (datas: any, filename: string) => {
-		const workbook = new ExcelJS.Workbook();
-		// const worksheet = workbook.addWorksheet('Sheet 1');
-		// // Add data to the worksheet
-		// worksheet.addRow(['Name', 'Age', 'Country']);
-		// worksheet.addRow(['John Doe', 25, 'USA']);
-		// worksheet.addRow(['Jane Smith', 30, 'Canada']);
-		// worksheet.addRow(['Bob Johnson', 28, 'UK']);
-
-		if (datas) {
-			datas.map((sheet: any, index: number) => {
-				console.log(sheet.data);
-				const worksheet = workbook.addWorksheet(sheet.name);
-				try {
-					console.log(splitKeys(sheet.data));
-					let [columns, rows] = splitKeys(sheet.data);
-					worksheet.addRow(columns);
-					rows.map((row: any, i: number) => {
-						worksheet.addRow(row);
-					});
-					// const cell = worksheet.getCell('A1');
-					// 	cell.fill = {
-					// 	type: 'pattern',
-					// 	pattern: 'solid',
-					// 	fgColor: { argb: 'FFFF0000' } // 背景颜色为红色
-					// };
-				} catch {}
-			});
-		}
-
-		// Save the workbook to a file
-		const buffer = await workbook.xlsx.writeBuffer();
-		const blob = new Blob([buffer], {
-			type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-		});
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement("a");
-		a.href = url;
-		a.download = filename;
-		a.click();
-		URL.revokeObjectURL(url);
-	};
 	return (
 		<>
 			{getExcelA.isFetched ? (
-				<ExcelViewer sheets={getExcelData(getExcelA.data)} />
+				<div className="grow">
+					<ExcelViewer sheets={getExcelData(getExcelA.data)} />
+				</div>
 			) : (
-				<></>
+				<div className="flex grow items-center justify-center">
+					<LoadingSpinner />
+				</div>
 			)}
 		</>
-		// <motion.div
-		// 	className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
-		// 	variants={container}
-		// 	initial="hidden"
-		// 	animate="visible"
-		// >
-		// 	{function_data.map((f_data: CardFunctionData) => (
-		// 		<motion.div
-		// 			key={f_data.title}
-		// 			variants={stagger}
-		// 			className="cursor-pointer"
-		// 			onClick={() => handleExportExcel(getExcelA.data, 'exported_data.xlsx')}
-		// 		>
-		// 			{getExcelA?<CardFunction
-		// 				title={f_data.title}
-		// 				iconPath={f_data.iconPath}
-		// 				subscript={f_data.subscript}
-		// 			>
-		// 				<CardFunctionIcon className="text-foreground">
-		// 					<IconCoins />
-		// 				</CardFunctionIcon>
-		// 			</CardFunction>:<></>}
-
-		// 		</motion.div>
-		// 	))}
-		// </motion.div>
 	);
 }
-
-const loaderStyle = {
-	display: "flex",
-	justifyContent: "center",
-	alignItems: "center",
-	height: "70vh",
-};
-
-const container = {
-	hidden: {},
-	visible: {
-		transition: {
-			staggerChildren: 0.2,
-			delayChildren: 0.1,
-		},
-	},
-};
-
-const stagger = {
-	hidden: { opacity: 0, y: -100 },
-	visible: { opacity: 1, y: 0 },
-};
