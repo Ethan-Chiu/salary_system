@@ -54,7 +54,7 @@ export const bonus_department_columns = [
 	}),
 ];
 
-function bonusDepartmentMapper(
+export function bonusDepartmentMapper(
 	bonusDepartmentData: BonusDepartment[]
 ): RowItem[] {
 	return bonusDepartmentData.map((d) => {

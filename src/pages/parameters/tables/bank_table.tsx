@@ -77,7 +77,7 @@ export const bank_columns = [
 	}),
 ];
 
-function bankSettingMapper(bankSettingData: BankSetting[]): RowItem[] {
+export function bankSettingMapper(bankSettingData: BankSetting[]): RowItem[] {
 	return bankSettingData.map((d) => {
 		return {
 			bank_name: d.bank_name,

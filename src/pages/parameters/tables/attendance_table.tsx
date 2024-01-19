@@ -88,85 +88,86 @@ export const attendance_columns = [
 	// }),
 ];
 
-export function attendanceMapper(attendanceData: AttendanceSetting): RowItem[] {
+export function attendanceMapper(
+	attendanceData: AttendanceSetting[]
+): RowItem[] {
+	const data = attendanceData[0]!;
 	return [
 		{
 			name: "事假扣薪",
-			value: attendanceData.personal_leave_dock,
+			value: data.personal_leave_dock,
 		},
 		{
 			name: "病假扣薪",
-			value: attendanceData.sick_leave_dock,
+			value: data.sick_leave_dock,
 		},
 		{
 			name: "不休假代金比率",
-			value: attendanceData.rate_of_unpaid_leave,
+			value: data.rate_of_unpaid_leave,
 		},
 		{
 			name: "不休假-補休1",
-			value: attendanceData.unpaid_leave_compensatory_1,
+			value: data.unpaid_leave_compensatory_1,
 		},
 		{
 			name: "不休假-補休2",
-			value: attendanceData.unpaid_leave_compensatory_2,
+			value: data.unpaid_leave_compensatory_2,
 		},
 		{
 			name: "不休假-補休3",
-			value: attendanceData.unpaid_leave_compensatory_3,
+			value: data.unpaid_leave_compensatory_3,
 		},
 		{
 			name: "不休假-補休4",
-			value: attendanceData.unpaid_leave_compensatory_4,
+			value: data.unpaid_leave_compensatory_4,
 		},
 		{
 			name: "不休假-補休5",
-			value: attendanceData.unpaid_leave_compensatory_5,
+			value: data.unpaid_leave_compensatory_5,
 		},
 		{
 			name: "本勞加班1",
-			value: attendanceData.overtime_by_local_workers_1,
+			value: data.overtime_by_local_workers_1,
 		},
 		{
 			name: "本勞加班2",
-			value: attendanceData.overtime_by_local_workers_2,
+			value: data.overtime_by_local_workers_2,
 		},
 		{
 			name: "本勞加班3",
-			value: attendanceData.overtime_by_local_workers_3,
+			value: data.overtime_by_local_workers_3,
 		},
 		{
 			name: "本勞假日",
-			value: attendanceData.local_worker_holiday,
+			value: data.local_worker_holiday,
 		},
 		{
 			name: "外勞加班1",
-			value: attendanceData.overtime_by_foreign_workers_1,
+			value: data.overtime_by_foreign_workers_1,
 		},
 		{
 			name: "外勞加班2",
-			value: attendanceData.overtime_by_foreign_workers_2,
+			value: data.overtime_by_foreign_workers_2,
 		},
 		{
 			name: "外勞加班3",
-			value: attendanceData.overtime_by_foreign_workers_3,
+			value: data.overtime_by_foreign_workers_3,
 		},
 		{
 			name: "外勞假日",
-			value: attendanceData.foreign_worker_holiday,
+			value: data.foreign_worker_holiday,
 		},
 		{
 			name: c_StartDateStr,
-			value: new Date(attendanceData.start_date),
+			value: new Date(data.start_date),
 		},
 		{
 			name: c_EndDateStr,
-			value: attendanceData.end_date
-				? new Date(attendanceData.end_date)
-				: new Date(),
+			value: data.end_date ? new Date(data.end_date) : new Date(),
 		},
 		{
 			name: c_CreateDateStr,
-			value: attendanceData.create_date,
+			value: data.create_date,
 		},
 	];
 }
@@ -193,13 +194,13 @@ export function AttendanceTable({ index, globalFilter, viewOnly }: any) {
 			{!viewOnly ? (
 				<DataTableWithFunctions
 					columns={attendance_columns}
-					data={attendanceMapper(data)}
+					data={attendanceMapper([data])}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
 					columns={attendance_columns}
-					data={attendanceMapper(data)}
+					data={attendanceMapper([data])}
 					filterColumnKey={filterKey}
 				/>
 			)}
