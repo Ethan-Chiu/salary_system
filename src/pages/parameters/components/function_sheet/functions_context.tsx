@@ -41,18 +41,21 @@ export default function ToolbarFunctionsProvider({
 		api.parameters.updateAttendanceSetting.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentAttendanceSetting.invalidate();
+				ctx.parameters.getAllAttendanceSetting.invalidate();
 			},
 		});
 	const createAttendanceSetting =
 		api.parameters.createAttendanceSetting.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentAttendanceSetting.invalidate();
+				ctx.parameters.getAllAttendanceSetting.invalidate();
 			},
 		});
 	const deleteAttendanceSetting =
 		api.parameters.deleteAttendanceSetting.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentAttendanceSetting.invalidate();
+				ctx.parameters.getAllAttendanceSetting.invalidate();
 			},
 		});
 	//#endregion
@@ -63,16 +66,19 @@ export default function ToolbarFunctionsProvider({
 	const updateBankSetting = api.parameters.updateBankSetting.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentBankSetting.invalidate();
+			ctx.parameters.getAllBankSetting.invalidate();
 		},
 	});
 	const createBankSetting = api.parameters.createBankSetting.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentBankSetting.invalidate();
+			ctx.parameters.getAllBankSetting.invalidate();
 		},
 	});
 	const deleteBankSetting = api.parameters.deleteBankSetting.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentBankSetting.invalidate();
+			ctx.parameters.getAllBankSetting.invalidate();
 		},
 	});
 	//#endregion
@@ -84,18 +90,21 @@ export default function ToolbarFunctionsProvider({
 		api.parameters.updateInsuranceRateSetting.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentInsuranceRateSetting.invalidate();
+				ctx.parameters.getAllInsuranceRateSetting.invalidate();
 			},
 		});
 	const createInsuranceRateSetting =
 		api.parameters.createInsuranceRateSetting.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentInsuranceRateSetting.invalidate();
+				ctx.parameters.getAllInsuranceRateSetting.invalidate();
 			},
 		});
 	const deleteInsuranceRateSetting =
 		api.parameters.deleteInsuranceRateSetting.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentInsuranceRateSetting.invalidate();
+				ctx.parameters.getAllInsuranceRateSetting.invalidate();
 			},
 		});
 	//#endregion
@@ -106,16 +115,19 @@ export default function ToolbarFunctionsProvider({
 	const updateBonusSetting = api.parameters.updateBonusSetting.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentBonusSetting.invalidate();
+			ctx.parameters.getAllBonusSetting.invalidate();
 		},
 	});
 	const createBonusSetting = api.parameters.createBonusSetting.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentBonusSetting.invalidate();
+			ctx.parameters.getAllBonusSetting.invalidate();
 		},
 	});
 	const deleteBonusSetting = api.parameters.deleteBonusSetting.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentBonusSetting.invalidate();
+			ctx.parameters.getAllBonusSetting.invalidate();
 		},
 	});
 	//#endregion
@@ -127,18 +139,21 @@ export default function ToolbarFunctionsProvider({
 		api.parameters.updateBonusDepartment.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentBonusDepartment.invalidate();
+				ctx.parameters.getAllBonusDepartment.invalidate();
 			},
 		});
 	const createBonusDepartment =
 		api.parameters.createBonusDepartment.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentBonusDepartment.invalidate();
+				ctx.parameters.getAllBonusDepartment.invalidate();
 			},
 		});
 	const deleteBonusDepartment =
 		api.parameters.deleteBonusDepartment.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentBonusDepartment.invalidate();
+				ctx.parameters.getAllBonusDepartment.invalidate();
 			},
 		});
 	//#endregion
@@ -149,16 +164,19 @@ export default function ToolbarFunctionsProvider({
 	const updateBonusPosition = api.parameters.updateBonusPosition.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentBonusPosition.invalidate();
+			ctx.parameters.getAllBonusPosition.invalidate();
 		},
 	});
 	const createBonusPosition = api.parameters.createBonusPosition.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentBonusPosition.invalidate();
+			ctx.parameters.getAllBonusPosition.invalidate();
 		},
 	});
 	const deleteBonusPosition = api.parameters.deleteBonusPosition.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentBonusPosition.invalidate();
+			ctx.parameters.getAllBonusPosition.invalidate();
 		},
 	});
 	//#endregion
@@ -170,18 +188,21 @@ export default function ToolbarFunctionsProvider({
 		api.parameters.updateBonusPositionType.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentBonusPositionType.invalidate();
+				ctx.parameters.getAllBonusPositionType.invalidate();
 			},
 		});
 	const createBonusPositionType =
 		api.parameters.createBonusPositionType.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentBonusPositionType.invalidate();
+				ctx.parameters.getAllBonusPositionType.invalidate();
 			},
 		});
 	const deleteBonusPositionType =
 		api.parameters.deleteBonusPositionType.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentBonusPositionType.invalidate();
+				ctx.parameters.getAllBonusPositionType.invalidate();
 			},
 		});
 	//#endregion
@@ -193,18 +214,21 @@ export default function ToolbarFunctionsProvider({
 		api.parameters.updateBonusSeniority.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentBonusSeniority.invalidate();
+				ctx.parameters.getAllBonusSeniority.invalidate();
 			},
 		});
 	const createBonusSeniority =
 		api.parameters.createBonusSeniority.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentBonusSeniority.invalidate();
+				ctx.parameters.getAllBonusSeniority.invalidate();
 			},
 		});
 	const deleteBonusSeniority =
 		api.parameters.deleteBonusSeniority.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentBonusSeniority.invalidate();
+				ctx.parameters.getAllBonusSeniority.invalidate();
 			},
 		});
 

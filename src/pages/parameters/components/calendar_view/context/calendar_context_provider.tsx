@@ -73,7 +73,7 @@ export default function CalendarContextProvider({
 					return event;
 				})
 		);
-	}, []);
+	}, [data]);
 
 	useEffect(() => {
 		let showEvents = eventList;
