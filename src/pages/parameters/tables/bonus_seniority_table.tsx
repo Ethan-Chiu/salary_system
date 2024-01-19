@@ -15,7 +15,7 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-const columns = [
+export const bonus_seniority_columns = [
 	columnHelper.accessor("seniority", {
 		header: ({ column }) => {
 			return (
@@ -54,7 +54,7 @@ const columns = [
 	}),
 ];
 
-function bonusSeniorityMapper(bonusSeniorityData: BonusSeniority[]): RowItem[] {
+export function bonusSeniorityMapper(bonusSeniorityData: BonusSeniority[]): RowItem[] {
 	return bonusSeniorityData.map((d) => {
 		return {
 			seniority: d.seniority,
@@ -84,13 +84,13 @@ export function BonusSeniorityTable({ index, globalFilter, viewOnly }: any) {
 		<>
 			{!viewOnly ? (
 				<DataTableWithFunctions
-					columns={columns}
+					columns={bonus_seniority_columns}
 					data={bonusSeniorityMapper(data)}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
-					columns={columns}
+					columns={bonus_seniority_columns}
 					data={bonusSeniorityMapper(data)}
 					filterColumnKey={filterKey}
 				/>

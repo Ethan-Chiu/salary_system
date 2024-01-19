@@ -20,7 +20,7 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-const columns = [
+export const bank_columns = [
 	columnHelper.accessor("bank_name", {
 		header: ({ column }) => {
 			return (
@@ -77,7 +77,7 @@ const columns = [
 	}),
 ];
 
-function bankSettingMapper(bankSettingData: BankSetting[]): RowItem[] {
+export function bankSettingMapper(bankSettingData: BankSetting[]): RowItem[] {
 	return bankSettingData.map((d) => {
 		return {
 			bank_name: d.bank_name,
@@ -111,13 +111,13 @@ export function BankTable({ index, globalFilter, viewOnly }: any) {
 		<>
 			{!viewOnly ? (
 				<DataTableWithFunctions
-					columns={columns}
+					columns={bank_columns}
 					data={bankSettingMapper(data)}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
-					columns={columns}
+					columns={bank_columns}
 					data={bankSettingMapper(data)}
 					filterColumnKey={filterKey}
 				/>

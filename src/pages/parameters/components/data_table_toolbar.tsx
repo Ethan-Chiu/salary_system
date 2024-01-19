@@ -9,36 +9,31 @@ import { DataTableFunctions } from "./function_sheet/data_table_functions";
 
 interface DataTableToolbarProps<TData> {
 	table: Table<TData>;
-	globalFilter: string;
-	filterKey: keyof TData;
 	showTabs?: boolean;
 }
 
 export function DataTableToolbar<TData>({
 	table,
-	globalFilter,
-	filterKey,
 	showTabs,
 }: DataTableToolbarProps<TData>) {
-	const { selectedTable } = useContext(dataTableContext);
+	const { selectedTable, selectedTab, filterValue, setFilterValue } = useContext(dataTableContext);
 
 	return (
 		<div className="flex flex-row items-center justify-between space-x-2 px-2 py-2">
 			{/* search bar */}
 			<Input
-				disabled={globalFilter !== ""} // TODO: fix
 				placeholder="Filter setting..."
 				value={
-					globalFilter === ""
-						? (table
-								.getColumn(filterKey.toString())
-								?.getFilterValue() as string) ?? ""
-						: globalFilter
+					filterValue
+					// (table
+					// 	.getColumn(filterKey.toString())
+					// 	?.getFilterValue() as string) ?? ""
 				}
 				onChange={(event) => {
-					table
-						.getColumn(filterKey.toString())
-						?.setFilterValue(event.target.value);
+					setFilterValue(event.target.value)
+					// table
+					// 	.getColumn(filterKey.toString())
+					// 	?.setFilterValue(event.target.value);
 				}}
 				className="h-8 max-w-sm"
 			/>

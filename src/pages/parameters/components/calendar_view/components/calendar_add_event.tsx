@@ -15,13 +15,19 @@ import { getSchema } from "~/pages/parameters/schemas/get_schemas";
 import { Translate } from "~/lib/utils/translation";
 
 export default function CalendarAddEvent() {
-	const { openSheet, setOpenSheet } = useContext(calendarContext);
-    const { selectedTable } = useContext(dataTableContext)
+	const { openSheet, setOpenSheet, resetMouse } = useContext(calendarContext);
+	const { selectedTable } = useContext(dataTableContext);
 
-    const mode = "create";
+	const mode = "create";
 
 	return (
-		<Sheet open={openSheet}>
+		<Sheet
+			open={openSheet}
+			onOpenChange={(open: boolean) => {
+				setOpenSheet(open);
+				resetMouse();
+			}}
+		>
 			<SheetContent className="w-[50%]">
 				<SheetHeader>
 					<SheetTitle>
@@ -39,7 +45,10 @@ export default function CalendarAddEvent() {
 					<ParameterForm
 						formSchema={getSchema(selectedTable)!}
 						mode={mode}
-						closeSheet={() => setOpenSheet(false)}
+						closeSheet={() => {
+							setOpenSheet(false);
+							resetMouse();
+						}}
 					/>
 					<ScrollBar orientation="horizontal" />
 				</ScrollArea>

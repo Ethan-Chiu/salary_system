@@ -21,14 +21,14 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 		setMouseUpDate,
 		showEventList,
 		setOpenSheet,
-		dispatchEventList,
+		setEventList,
 	} = useContext(calendarContext);
 
 	useEffect(() => {
 		const events = showEventList.filter(
 			(evt) =>
 				dayjs(evt.getStartDate()) <= day &&
-				day <= dayjs(evt.getEndDate())
+				day < dayjs(evt.getEndDate()).add(1, "day")
 		);
 		setDayEvents(events);
 	}, [showEventList, day]);
@@ -45,7 +45,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 		if (event.button === 0) {
 			console.log("Mouse button up");
 			setMouseUpDate(day);
-			dispatchEventList({ type: "push" });
+			// dispatchEventList({ type: "push" });
 			setOpenSheet(true);
 		}
 	};
@@ -77,7 +77,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 			</header>
 			<div className="absolute h-full w-full border border-gray-200" />
 			<div
-				className="z-10 flex-1 cursor-pointer"
+				className="z-10 flex-grow cursor-pointer"
 				onMouseDown={handleMouseDown}
 				onMouseUp={handleMouseUp}
 				onMouseOver={handleMouseOver}
@@ -91,15 +91,28 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 					);
 
 					if (!evt) {
-						return <div key={idx} className="mb-1 h-6 p-1" />;
+						return <div key={idx} className="mb-1 h-4 p-1" />;
 					}
+
 					return (
 						<div
 							key={idx}
-							// onClick={() => setSelectedEvent(evt)}`
-							className="mb-1 h-6 truncate bg-primary text-sm text-gray-600"
+							// onClick={() => setSelectedEvent(evt)}
+							className={cn(
+								dayjs(evt.getStartDate()) <= day &&
+									day <
+										dayjs(evt.getStartDate()).add(
+											1,
+											"day"
+										) &&
+									"ml-4 rounded-s-md",
+								dayjs(evt.getEndDate()) <= day &&
+									day <
+										dayjs(evt.getEndDate()).add(1, "day") &&
+									"mr-4 rounded-e-md",
+								"mb-1 h-4 truncate bg-primary opacity-20 text-sm text-gray-600"
+							)}
 						>
-							{evt.getLevel()}
 						</div>
 					);
 				})}

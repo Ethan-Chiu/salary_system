@@ -2,11 +2,7 @@ import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import {
-	isString,
-	isNumber,
-	isDateType,
-} from "~/lib/utils/check_type";
+import { isString, isNumber, isDateType } from "~/lib/utils/check_type";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import {
@@ -27,7 +23,7 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-const columns = [
+export const bonus_columns = [
 	columnHelper.accessor("name", {
 		header: ({ column }) => {
 			return (
@@ -72,40 +68,39 @@ const columns = [
 			}
 			return (
 				<div className="flex justify-center">
-					<div className="text-center font-medium">
-						{formatted}
-					</div>
+					<div className="text-center font-medium">{formatted}</div>
 				</div>
 			);
 		},
 	}),
 ];
 
-function bonusMapper(bonusData: BonusSetting): RowItem[] {
+export function bonusMapper(bonusData: BonusSetting[]): RowItem[] {
+	const data = bonusData[0]!;
 	return [
 		{
 			name: "固定比率",
-			value: bonusData.fixed_multiplier,
+			value: data.fixed_multiplier,
 		},
 		{
 			name: "獎金(發放)基準日",
-			value: formatDate("day", bonusData.criterion_date),
+			value: formatDate("day", data.criterion_date),
 		},
 		{
 			name: "獎金計算依據",
-			value: bonusData.base_on,
+			value: data.base_on,
 		},
 		{
 			name: "類別",
-			value: bonusData.type,
+			value: data.type,
 		},
 		{
 			name: c_CreateDateStr,
-			value: formatDate("hour", bonusData.create_date),
+			value: formatDate("hour", data.create_date),
 		},
 		{
 			name: c_UpdateDateStr,
-			value: formatDate("hour", bonusData.update_date),
+			value: formatDate("hour", data.update_date),
 		},
 	];
 }
@@ -131,14 +126,14 @@ export function BonusTable({ index, globalFilter, viewOnly }: any) {
 		<>
 			{!viewOnly ? (
 				<DataTableWithFunctions
-					columns={columns}
-					data={bonusMapper(data)}
+					columns={bonus_columns}
+					data={bonusMapper([data])}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
-					columns={columns}
-					data={bonusMapper(data)}
+					columns={bonus_columns}
+					data={bonusMapper([data])}
 					filterColumnKey={filterKey}
 				/>
 			)}

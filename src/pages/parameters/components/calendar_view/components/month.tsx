@@ -8,7 +8,7 @@ interface MonthViewProps {
 
 export default function MonthView({ month }: MonthViewProps): JSX.Element {
 	return (
-		<div className="grid flex-1 grid-cols-7 grid-rows-5">
+		<div className="relative h-full w-full grid grid-cols-7 grid-rows-5">
 			{month.map((row, i) => (
 				<React.Fragment key={i}>
 					{row.map((day, idx) => (
