@@ -1,5 +1,5 @@
 import { Table } from "@tanstack/react-table";
-import { DataTableViewOptions } from "./data_table_view_options";
+import { DataTableViewOptions } from "../../../components/data_table/data_table_view_options";
 import { Input } from "~/components/ui/input";
 import { TabsList, TabsTrigger } from "~/components/ui/tabs";
 import ToolbarFunctionsProvider from "./function_sheet/functions_context";

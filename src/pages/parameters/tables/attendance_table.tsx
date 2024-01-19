@@ -15,7 +15,7 @@ import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
 import { z } from "zod";
-import { DropdownCopyAction } from "../components/dropdown_copy_action";
+import { DropdownCopyAction } from "../../../components/data_table/dropdown_copy_action";
 import { AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
 import { LoadingSpinner } from "~/components/loading";
 
