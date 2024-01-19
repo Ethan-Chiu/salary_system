@@ -14,13 +14,15 @@ import ApiFunctionsProvider, {
 import dataTableContext from "../context/data_table_context";
 import { getTableColumn, getTableMapper } from "../../tables/table_columns";
 import { DataTable } from "./data_table";
+import { is_date_available } from "~/server/service/helper_function";
+import { Badge } from "~/components/ui/badge";
 
 export default function HistoryView() {
-	const { selectedTable } = useContext(dataTableContext);
+	const { selectedTableType } = useContext(dataTableContext);
 
 	return (
 		<>
-			<ApiFunctionsProvider selectedTable={selectedTable}>
+			<ApiFunctionsProvider selectedTableType={selectedTableType}>
 				<CompHistoryView />
 			</ApiFunctionsProvider>
 		</>
@@ -28,7 +30,7 @@ export default function HistoryView() {
 }
 
 function CompHistoryView() {
-	const { selectedTable } = useContext(dataTableContext);
+	const { selectedTableType } = useContext(dataTableContext);
 
 	const queryFunctions = useContext(apiFunctionsContext);
 	const queryFunction = queryFunctions.queryFunction!;
@@ -58,7 +60,7 @@ function CompHistoryView() {
 
 	return (
 		<ResizablePanelGroup direction="horizontal">
-			<ResizablePanel defaultSize={20} minSize={15}>
+			<ResizablePanel defaultSize={25} minSize={15}>
 				<ScrollArea className="h-full">
 					{data
 						.sort((a, b) => {
@@ -74,8 +76,12 @@ function CompHistoryView() {
 							<div
 								key={e.id}
 								className={cn(
-									"m-2 flex flex-col rounded-md border p-1 hover:bg-muted",
-									e.id === selectedId && "bg-muted"
+									" relative m-2 flex flex-col rounded-md border p-1 hover:bg-muted",
+									e.id === selectedId && "bg-muted",
+									is_date_available(
+										e.start_date,
+										e.end_date
+									) && "border-blue-500"
 								)}
 								onClick={() => setSelectedId(e.id)}
 							>
@@ -100,16 +106,24 @@ function CompHistoryView() {
 										update by {e.update_by}
 									</div>
 								</div>
+								{is_date_available(
+									e.start_date,
+									e.end_date
+								) && (
+									<div className="absolute -bottom-3 right-2">
+										<Badge>Current</Badge>
+									</div>
+								)}
 							</div>
 						))}
 				</ScrollArea>
 			</ResizablePanel>
 			<ResizableHandle />
-			<ResizablePanel defaultSize={70}>
+			<ResizablePanel defaultSize={75}>
 				{data.filter((e) => e.id === selectedId).length > 0 ? (
 					<DataTable
-						columns={getTableColumn(selectedTable)}
-						data={getTableMapper(selectedTable)(
+						columns={getTableColumn(selectedTableType)}
+						data={getTableMapper(selectedTableType)(
 							data.filter((e) => e.id === selectedId)
 						)}
 						filterColumnKey={filterKey}

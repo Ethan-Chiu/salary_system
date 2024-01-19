@@ -3,6 +3,22 @@ import { ChevronDownIcon } from "@radix-ui/react-icons";
 import { RootLayout } from "~/components/layout/root_layout";
 
 import {
+	ContextMenu,
+	ContextMenuCheckboxItem,
+	ContextMenuContent,
+	ContextMenuItem,
+	ContextMenuLabel,
+	ContextMenuRadioGroup,
+	ContextMenuRadioItem,
+	ContextMenuSeparator,
+	ContextMenuShortcut,
+	ContextMenuSub,
+	ContextMenuSubContent,
+	ContextMenuSubTrigger,
+	ContextMenuTrigger,
+} from "~/components/ui/context-menu";
+
+import {
 	Select,
 	SelectContent,
 	SelectGroup,
@@ -67,7 +83,6 @@ const identitylist: IdentityType[] = [
 	},
 ];
 
-
 type EmployeeInfo = {
 	emp_no: string;
 	username: string;
@@ -87,9 +102,9 @@ function CompRoleDropdown() {
 		{
 			emp_no: "B09901060",
 			username: "Pony",
-			role: "Viewer",
+			role: "Developer",
 			userEmail: "Test1",
-			description: "balabalabalabala balabalabala balabala",
+			description: "xiejrt",
 			avatarImgSource: "https://github.com/shadcn.png",
 		},
 		{
@@ -116,9 +131,28 @@ function CompRoleDropdown() {
 			description: "balabalabalabala balabalabala balabala",
 			avatarImgSource: "https://github.com/shadcn.png",
 		},
+		{
+			emp_no: "B09901052",
+			username: "Max",
+			role: "Viewer",
+			userEmail: "Test4",
+			description: "balabalabalabala balabalabala balabala",
+			avatarImgSource: "https://github.com/shadcn.png",
+		},
+		{
+			emp_no: "B09901052",
+			username: "Max",
+			role: "Viewer",
+			userEmail: "Test4",
+			description: "balabalabalabala balabalabala balabala",
+			avatarImgSource: "https://github.com/shadcn.png",
+		},
 	];
 
-	const getUserInfo = (info: EmployeeInfo, side: "top" | "bottom" | "left" | "right") => {
+	const getUserInfo = (
+		info: EmployeeInfo,
+		side: "top" | "bottom" | "left" | "right"
+	) => {
 		return (
 			<HoverCard>
 				<HoverCardTrigger asChild>
@@ -160,15 +194,17 @@ function CompRoleDropdown() {
 						</Avatar>
 						<div className="space-y-1">
 							<h4 className="text-sm font-semibold">
-								{info.username}
+								{info.username + " (" + info.role + ")"}
 							</h4>
-							<p className="text-sm">{info.role}</p>
-							{/* <div className="flex items-center pt-2">
+							<p className="text-sm">
+								{info.description}
+							</p>
+							<div className="flex items-center pt-2">
 								<CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
 								<span className="text-xs text-muted-foreground">
 									Joined December 2021
 								</span>
-							</div> */}
+							</div>
 						</div>
 					</div>
 				</HoverCardContent>
@@ -176,43 +212,120 @@ function CompRoleDropdown() {
 		);
 	};
 
+	const [commandInputValue, setCommandInputValue] = useState("");
+
 	return (
 		<>
-			<Button
-				variant={"outline"}
-				onClick={() => setOpen(true)}
-				className="item-center m-5 w-[90%]"
-			>
-				Modify
-			</Button>
-			<CommandDialog open={open} onOpenChange={setOpen}>
-				<CommandInput placeholder="Type a command or search..." />
-				<CommandList>
-					<CommandEmpty>No results found.</CommandEmpty>
-					<CommandGroup heading="Employees">
-						<CommandItem value="-" className="hidden" />
-						{data.map((emp: EmployeeInfo, index: number) => {
-							return (
-								<CommandItem
-									key={emp.emp_no + index.toString()}
-									className={
-										"teamaspace-y-1 flex cursor-pointer flex-col items-start px-4 py-2"
-									}
-								>
-									{getUserInfo(emp, "right")}
-								</CommandItem>
-							);
-						})}
-					</CommandGroup>
-				</CommandList>
-			</CommandDialog>
+			<div className="m-10 border">
+				<Command
+					filter={(value, search) => {
+						value = value.toLowerCase();
+						search = search.toLowerCase();
+						console.log("value " + value)
+						console.log("search "+ search)
+						if (value.includes(search)) return 1;
+						return 0;
+					}}
+					
+				>
+					<CommandInput
+						placeholder="Search an employee"
+						// onValueChange={(val) => {
+						// 	if (val.length < commandInputValue.length)
+						// 		setCommandInputValue("");
+						// 	else setCommandInputValue(val);
+						// }}
+						// value={commandInputValue}
+					/>
+					<CommandList>
+						<CommandEmpty>No results found.</CommandEmpty>
+						<CommandGroup heading="Employees">
+							<CommandItem value="-" className="hidden" />
+							{data.map((emp: EmployeeInfo, index: number) => {
+								return (
+									<ContextMenu>
+										<ContextMenuTrigger>
+											<CommandItem
+												key={
+													emp.emp_no +
+													index.toString()
+												}
+												className={
+													"teamaspace-y-1 flex cursor-pointer flex-col items-start px-4 py-2"
+												}
+											>
+												{getUserInfo(emp, "bottom")}
+											</CommandItem>
+										</ContextMenuTrigger>
+										<ContextMenuContent className="w-64">
+											<ContextMenuItem inset>
+												Back
+											</ContextMenuItem>
+											<ContextMenuItem inset disabled>
+												Forward
+											</ContextMenuItem>
+											<ContextMenuItem inset>
+												Reload
+											</ContextMenuItem>
+											<ContextMenuSub>
+												<ContextMenuSubTrigger inset>
+													More Tools
+												</ContextMenuSubTrigger>
+												<ContextMenuSubContent className="w-48">
+													<ContextMenuItem>
+														Save Page As...
+														<ContextMenuShortcut>
+															⇧⌘S
+														</ContextMenuShortcut>
+													</ContextMenuItem>
+													<ContextMenuItem>
+														Create Shortcut...
+													</ContextMenuItem>
+													<ContextMenuItem>
+														Name Window...
+													</ContextMenuItem>
+													<ContextMenuSeparator />
+													<ContextMenuItem>
+														Developer Tools
+													</ContextMenuItem>
+												</ContextMenuSubContent>
+											</ContextMenuSub>
+											<ContextMenuSeparator />
+											<ContextMenuCheckboxItem checked>
+												Show Bookmarks Bar
+												<ContextMenuShortcut>
+													⌘⇧B
+												</ContextMenuShortcut>
+											</ContextMenuCheckboxItem>
+											<ContextMenuCheckboxItem>
+												Show Full URLs
+											</ContextMenuCheckboxItem>
+											<ContextMenuSeparator />
+											<ContextMenuRadioGroup value="pedro">
+												<ContextMenuLabel inset>
+													People
+												</ContextMenuLabel>
+												<ContextMenuSeparator />
+												<ContextMenuRadioItem value="pedro">
+													Pedro Duarte
+												</ContextMenuRadioItem>
+												<ContextMenuRadioItem value="colm">
+													Colm Tuite
+												</ContextMenuRadioItem>
+											</ContextMenuRadioGroup>
+										</ContextMenuContent>
+									</ContextMenu>
+								);
+							})}
+						</CommandGroup>
+					</CommandList>
+				</Command>
+			</div>
 		</>
 	);
 }
 
-
 export function SelectRole() {
-	
 	return (
 		<Select>
 			<SelectTrigger className="">

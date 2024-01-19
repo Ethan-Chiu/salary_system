@@ -18,6 +18,20 @@ export function get_date_string(date: Date): string {
 	return localISOTime.split("T")[0]!;
 }
 
+export function is_date_available(
+	start_date: string | null,
+	end_date: string | null
+): boolean {
+	const today = new Date();
+	if (end_date && end_date < get_date_string(today)) {
+		return false;
+	}
+	if (start_date && start_date > get_date_string(today)) {
+		return false;
+	}
+	return true;
+}
+
 export function select_value(newData: any, oldData: any) {
 	return newData !== undefined ? newData : oldData;
 }

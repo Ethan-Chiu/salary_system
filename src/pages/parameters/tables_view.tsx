@@ -111,7 +111,7 @@ function CompTablesSelector() {
 		ShowTableEnumValues[0]
 	);
 
-	const { setSelectedTable } = useContext(dataTableContext);
+	const { setSelectedTableType } = useContext(dataTableContext);
 
 	const tableComponentMap: Record<ShowTableEnum, TableComponent> =
 		ShowTableEnumValues.reduce((map, table) => {
@@ -120,7 +120,7 @@ function CompTablesSelector() {
 		}, {} as Record<ShowTableEnum, TableComponent>);
 
 	useEffect(() => {
-		setSelectedTable(selectedTag);
+		setSelectedTableType(selectedTag);
 	}, [selectedTag]);
 
 	return (
@@ -160,16 +160,16 @@ function CompTablesSelector() {
 }
 
 function CompTableView() {
-	const { selectedTable } = useContext(dataTableContext);
+	const { selectedTableType } = useContext(dataTableContext);
 
 	return (
 		<>
-			{ShowTableEnumValues.filter((table) => table === selectedTable).map(
-				(selectedTable) => {
+			{ShowTableEnumValues.filter((table) => table === selectedTableType).map(
+				(selectedTableType) => {
 					return (
-						<div key={selectedTable} className="flex h-full">
+						<div key={selectedTableType} className="flex h-full">
 							{React.cloneElement<TableComponentProps>(
-								getTableComponent(selectedTable).component,
+								getTableComponent(selectedTableType).component,
 								{}
 							)}
 						</div>

@@ -25,9 +25,9 @@ import {
 } from "./insurance_rate_table";
 
 export function getTableColumn(
-	selectedTable: ShowTableEnum
+	selectedTableType: ShowTableEnum
 ): ColumnDef<any, any>[] {
-	switch (selectedTable) {
+	switch (selectedTableType) {
 		case "TableAttendance":
 			return attendance_columns;
 		case "TableBankSetting":
@@ -47,8 +47,8 @@ export function getTableColumn(
 	}
 }
 
-export function getTableMapper(selectedTable: ShowTableEnum) {
-	switch (selectedTable) {
+export function getTableMapper(selectedTableType: ShowTableEnum) {
+	switch (selectedTableType) {
 		case "TableAttendance":
 			return attendanceMapper;
 		case "TableBankSetting":

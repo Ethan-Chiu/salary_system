@@ -39,7 +39,7 @@ export function DataTable<TData>({
 	filterColumnKey,
 	showTabs,
 }: DataTableProps<TData>) {
-	const { selectedTab, setSelectedTab, filterValue } = useContext(dataTableContext);
+	const { setSelectedTab, setSelectedTable } = useContext(dataTableContext);
 
 	const [rowSelection, setRowSelection] = useState({});
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
@@ -72,10 +72,8 @@ export function DataTable<TData>({
 	});
 
 	useEffect(() => {
-		table
-			.getColumn(filterColumnKey.toString())
-			?.setFilterValue(filterValue);
-	}, [filterValue]);
+		setSelectedTable(table);
+	}, [table]);
 
 	return (
 		<Tabs
@@ -88,7 +86,7 @@ export function DataTable<TData>({
 			<div className="flex h-full flex-col">
 				{/* TODO: fix global filter*/}
 				<DataTableToolbar
-					table={table}
+					filterColumnKey={filterColumnKey}
 					showTabs={showTabs}
 				/>
 				<Separator />
