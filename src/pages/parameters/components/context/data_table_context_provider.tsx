@@ -1,29 +1,29 @@
-import React, {
-	useState,
-	PropsWithChildren,
-} from "react";
+import React, { useState, PropsWithChildren } from "react";
 import dataTableContext from "./data_table_context";
 import { ShowTableEnum, ShowTableEnumValues } from "../../shown_tables";
 import { TabsEnumType } from "./tabs_enum";
+import { Table } from "@tanstack/react-table";
 
 interface DataTableContextProviderProps {}
 
 export default function DataTableContextProvider({
 	children,
 }: PropsWithChildren<DataTableContextProviderProps>) {
-	const [selectedTable, setSelectedTable] = useState<ShowTableEnum>(ShowTableEnumValues[0]);
+	const [selectedTableType, setSelectedTableType] = useState<ShowTableEnum>(
+		ShowTableEnumValues[0]
+	);
 	const [selectedTab, setSelectedTab] = useState<TabsEnumType>("now");
-	const [filterValue, setFilterValue] = useState<string>("");
+	const [selectedTable, setSelectedTable] = useState<Table<any> | null>(null);
 
 	return (
 		<dataTableContext.Provider
 			value={{
-				selectedTable,
-				setSelectedTable,
+				selectedTableType: selectedTableType,
+				setSelectedTableType: setSelectedTableType,
 				selectedTab,
-				setSelectedTab,	
-				filterValue,
-				setFilterValue,
+				setSelectedTab,
+				selectedTable: selectedTable,
+				setSelectedTable: setSelectedTable,
 			}}
 		>
 			{children}

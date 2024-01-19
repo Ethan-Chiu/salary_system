@@ -6,18 +6,22 @@ import calendarContext from "./context/calendar_context";
 import CalendarHeader from "./components/calendar_header";
 import CalendarAddEvent from "./components/calendar_add_event";
 import dataTableContext from "../context/data_table_context";
-import ToolbarFunctionsProvider, { toolbarFunctionsContext } from "../function_sheet/functions_context";
+import ToolbarFunctionsProvider, {
+	toolbarFunctionsContext,
+} from "../function_sheet/functions_context";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import ApiFunctionsProvider, { apiFunctionsContext } from "../context/api_context_provider";
+import ApiFunctionsProvider, {
+	apiFunctionsContext,
+} from "../context/api_context_provider";
 import { LoadingSpinner } from "~/components/loading";
 
 export default function CalendarView() {
-	const { selectedTable } = useContext(dataTableContext);
+	const { selectedTableType } = useContext(dataTableContext);
 
 	return (
 		<>
-			<ApiFunctionsProvider selectedTable={selectedTable}>
-				<ToolbarFunctionsProvider selectedTable={selectedTable}>
+			<ApiFunctionsProvider selectedTableType={selectedTableType}>
+				<ToolbarFunctionsProvider selectedTableType={selectedTableType}>
 					<CompCalendarContent />
 				</ToolbarFunctionsProvider>
 			</ApiFunctionsProvider>
@@ -26,7 +30,6 @@ export default function CalendarView() {
 }
 
 function CompCalendarContent() {
-
 	const queryFunctions = useContext(apiFunctionsContext);
 	const queryFunction = queryFunctions.queryFunction!;
 

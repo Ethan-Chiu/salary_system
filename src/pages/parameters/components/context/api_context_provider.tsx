@@ -12,33 +12,30 @@ export const apiFunctionsContext = createContext<QueryFunctionsApi>({
 });
 
 interface ApiFunctionsProviderProps {
-	selectedTable: ShowTableEnum;
+	selectedTableType: ShowTableEnum;
 }
 
 export default function ApiFunctionsProvider({
 	children,
-	selectedTable,
+	selectedTableType,
 }: PropsWithChildren<ApiFunctionsProviderProps>) {
-
 	const getAttendanceSetting = () =>
 		api.parameters.getAllAttendanceSetting.useQuery();
 
-	const getBankSetting = () =>
-		api.parameters.getAllBankSetting.useQuery();
+	const getBankSetting = () => api.parameters.getAllBankSetting.useQuery();
 
 	const getInsuranceRateSetting = () =>
 		api.parameters.getAllInsuranceRateSetting.useQuery();
 
-	const getBonusSetting = () =>
-		api.parameters.getAllBonusSetting.useQuery();
+	const getBonusSetting = () => api.parameters.getAllBonusSetting.useQuery();
 
 	const getBonusDepartment = () =>
 		api.parameters.getAllBonusDepartment.useQuery();
 
-    const getBonusPosition = () =>
+	const getBonusPosition = () =>
 		api.parameters.getAllBonusPosition.useQuery();
-	
-    const getBonusPositionType = () =>
+
+	const getBonusPositionType = () =>
 		api.parameters.getAllBonusPositionType.useQuery();
 
 	const getBonusSeniority = () =>
@@ -74,7 +71,7 @@ export default function ApiFunctionsProvider({
 	// Return the provider with the functions
 	return (
 		<apiFunctionsContext.Provider
-			value={functionsDictionary[selectedTable]}
+			value={functionsDictionary[selectedTableType]}
 		>
 			{children}
 		</apiFunctionsContext.Provider>

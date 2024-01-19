@@ -1,21 +1,22 @@
 import React from "react";
 import { ShowTableEnum, ShowTableEnumValues } from "../../shown_tables";
 import { TabsEnumType } from "./tabs_enum";
+import { Table } from "@tanstack/react-table";
 
 const dataTableContext = React.createContext<{
-	selectedTable: ShowTableEnum;
-	setSelectedTable: (table: ShowTableEnum) => void;
-	selectedTab: TabsEnumType,
-	setSelectedTab: (table: TabsEnumType) => void,
-	filterValue: string,
-	setFilterValue: (value: string) => void
+	selectedTableType: ShowTableEnum;
+	setSelectedTableType: (table: ShowTableEnum) => void;
+	selectedTab: TabsEnumType;
+	setSelectedTab: (table: TabsEnumType) => void;
+	selectedTable: Table<any> | null;
+	setSelectedTable: (table: Table<any>) => void;
 }>({
-	selectedTable: ShowTableEnumValues[0],
-	setSelectedTable: (table: ShowTableEnum) => {},
+	selectedTableType: ShowTableEnumValues[0],
+	setSelectedTableType: (table: ShowTableEnum) => {},
 	selectedTab: "now",
 	setSelectedTab: (tab: TabsEnumType) => {},
-	filterValue: "",
-	setFilterValue: (value: string) => {},
+	selectedTable: null,
+	setSelectedTable: (value: Table<any>) => {},
 });
 
 export default dataTableContext;

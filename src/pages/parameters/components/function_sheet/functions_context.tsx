@@ -3,7 +3,10 @@ import * as TN from "~/pages/table_names";
 import { api } from "~/utils/api";
 import TableEnum from "../context/data_table_enum";
 import { ShowTableEnum } from "../../shown_tables";
-import { UseTRPCMutationResult, UseTRPCQueryResult } from "@trpc/react-query/shared";
+import {
+	UseTRPCMutationResult,
+	UseTRPCQueryResult,
+} from "@trpc/react-query/shared";
 import { useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
 
@@ -22,12 +25,12 @@ export const toolbarFunctionsContext = createContext<FunctionsApi>({
 });
 
 interface ToolbarFunctionsProviderProps {
-	selectedTable: ShowTableEnum;
+	selectedTableType: ShowTableEnum;
 }
 
 export default function ToolbarFunctionsProvider({
 	children,
-	selectedTable,
+	selectedTableType,
 }: PropsWithChildren<ToolbarFunctionsProviderProps>) {
 	const ctx = api.useContext();
 
@@ -259,7 +262,7 @@ export default function ToolbarFunctionsProvider({
 	// Return the provider with the functions
 	return (
 		<toolbarFunctionsContext.Provider
-			value={functionsDictionary[selectedTable]}
+			value={functionsDictionary[selectedTableType]}
 		>
 			{children}
 		</toolbarFunctionsContext.Provider>

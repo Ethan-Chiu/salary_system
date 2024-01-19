@@ -20,6 +20,8 @@ import { Tabs, TabsContent } from "~/components/ui/tabs";
 import { DataTableDataHeader } from "~/components/data_table/data_table_data_header";
 import { DataTableDataBody } from "~/components/data_table/data_table_data_body";
 import { DataTablePagination } from "~/components/data_table/data_table_pagination";
+import { useContext, useEffect } from "react";
+import dataTableContext from "../context/data_table_context";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
@@ -39,6 +41,9 @@ export function DataTable<TData>({
 		React.useState<ColumnFiltersState>([]);
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [dataPerRow, setDataPerRow] = React.useState(1);
+
+	const { selectedTab, setSelectedTab, selectedTable, setSelectedTable } =
+		useContext(dataTableContext);
 
 	const table = useReactTable({
 		data,
@@ -61,6 +66,10 @@ export function DataTable<TData>({
 		getFacetedRowModel: getFacetedRowModel(),
 		getFacetedUniqueValues: getFacetedUniqueValues(),
 	});
+
+	useEffect(() => {
+		setSelectedTable(table);
+	}, [table]);
 
 	return (
 		<Tabs defaultValue="now" className="h-full w-full">

@@ -16,7 +16,7 @@ import { Translate } from "~/lib/utils/translation";
 
 export default function CalendarAddEvent() {
 	const { openSheet, setOpenSheet, resetMouse } = useContext(calendarContext);
-	const { selectedTable } = useContext(dataTableContext);
+	const { selectedTableType } = useContext(dataTableContext);
 
 	const mode = "create";
 
@@ -33,7 +33,7 @@ export default function CalendarAddEvent() {
 					<SheetTitle>
 						{`${Translate(mode)!}${Translate(
 							"form"
-						)} (${getTableName(selectedTable)})`}
+						)} (${getTableName(selectedTableType)})`}
 					</SheetTitle>
 					<SheetDescription>
 						{mode === "create"
@@ -43,7 +43,7 @@ export default function CalendarAddEvent() {
 				</SheetHeader>
 				<ScrollArea className="h-[85%] w-full">
 					<ParameterForm
-						formSchema={getSchema(selectedTable)!}
+						formSchema={getSchema(selectedTableType)!}
 						mode={mode}
 						closeSheet={() => {
 							setOpenSheet(false);
