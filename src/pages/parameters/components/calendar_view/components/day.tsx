@@ -28,7 +28,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 		const events = showEventList.filter(
 			(evt) =>
 				dayjs(evt.getStartDate()) <= day &&
-				day < dayjs(evt.getEndDate()).add(1, 'day')
+				day < dayjs(evt.getEndDate()).add(1, "day")
 		);
 		setDayEvents(events);
 	}, [showEventList, day]);
@@ -91,15 +91,28 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 					);
 
 					if (!evt) {
-						return <div key={idx} className="mb-1 h-6 p-1" />;
+						return <div key={idx} className="mb-1 h-4 p-1" />;
 					}
+
 					return (
 						<div
 							key={idx}
-							// onClick={() => setSelectedEvent(evt)}`
-							className="mb-1 h-6 truncate bg-primary text-sm text-gray-600"
+							// onClick={() => setSelectedEvent(evt)}
+							className={cn(
+								dayjs(evt.getStartDate()) <= day &&
+									day <
+										dayjs(evt.getStartDate()).add(
+											1,
+											"day"
+										) &&
+									"ml-4 rounded-s-md",
+								dayjs(evt.getEndDate()) <= day &&
+									day <
+										dayjs(evt.getEndDate()).add(1, "day") &&
+									"mr-4 rounded-e-md",
+								"mb-1 h-4 truncate bg-primary opacity-20 text-sm text-gray-600"
+							)}
 						>
-							{evt.getLevel()}
 						</div>
 					);
 				})}
