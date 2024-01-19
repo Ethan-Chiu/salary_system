@@ -1,10 +1,29 @@
 import dayjs from "dayjs";
-import React, { useContext, useState, useEffect } from "react";
+import React, {
+	useContext,
+	useState,
+	useEffect,
+	MouseEventHandler,
+} from "react";
 import { type Dayjs } from "dayjs";
 import { cn } from "~/lib/utils";
 import calendarContext from "../context/calendar_context";
-import { CalendarEventLevel } from "../utils/calendar_event";
+import { CalendarEvent, CalendarEventLevel } from "../utils/calendar_event";
 import { getMaxLevel } from "../utils/event_level";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "~/components/ui/popover";
+import { Label } from "~/components/ui/label";
+import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
+import {
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger,
+} from "~/components/ui/hover-card";
+import { Pen, Trash2 } from "lucide-react";
 
 interface DayViewProps {
 	day: Dayjs;
@@ -21,6 +40,8 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 		setMouseUpDate,
 		showEventList,
 		setOpenSheet,
+		selectedEvent,
+		setSelectedEvent,
 		setEventList,
 	} = useContext(calendarContext);
 
@@ -58,65 +79,121 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 	};
 
 	return (
-		<div className="relative flex select-none flex-col">
-			<header className="flex flex-col items-center">
-				{rowIdx === 0 && (
-					<p className="mt-1 text-sm">
-						{day.format("ddd").toUpperCase()}
-					</p>
-				)}
-				<p
-					className={cn(
-						"my-1 p-1 text-center text-sm",
-						day.format("DD-MM-YY") === dayjs().format("DD-MM-YY") &&
-							"w-7 rounded-full bg-primary text-white"
+		<HoverCard>
+			<div className="relative flex select-none flex-col">
+				<header className="flex flex-col items-center">
+					{rowIdx === 0 && (
+						<p className="mt-1 text-sm">
+							{day.format("ddd").toUpperCase()}
+						</p>
 					)}
+					<p
+						className={cn(
+							"my-1 p-1 text-center text-sm",
+							day.format("DD-MM-YY") ===
+								dayjs().format("DD-MM-YY") &&
+								"w-7 rounded-full bg-primary text-white"
+						)}
+					>
+						{day.format("DD")}
+					</p>
+				</header>
+				<div className="absolute h-full w-full border border-gray-200" />
+				<div
+					className="z-10 flex-grow cursor-pointer"
+					onMouseDown={handleMouseDown}
+					onMouseUp={handleMouseUp}
+					onMouseOver={handleMouseOver}
 				>
-					{day.format("DD")}
-				</p>
-			</header>
-			<div className="absolute h-full w-full border border-gray-200" />
-			<div
-				className="z-10 flex-grow cursor-pointer"
-				onMouseDown={handleMouseDown}
-				onMouseUp={handleMouseUp}
-				onMouseOver={handleMouseOver}
-			>
-				{Array.from(
-					{ length: getMaxLevel(dayEvents) + 1 },
-					(_, idx) => idx
-				).map((idx) => {
-					const evt = dayEvents.find(
-						(dayEvent) => dayEvent.getLevel() === idx
-					);
+					{Array.from(
+						{ length: getMaxLevel(dayEvents) + 1 },
+						(_, idx) => idx
+					).map((idx) => {
+						const evt = dayEvents.find(
+							(dayEvent) => dayEvent.getLevel() === idx
+						);
 
-					if (!evt) {
-						return <div key={idx} className="mb-1 h-4 p-1" />;
-					}
+						if (!evt) {
+							return <div key={idx} className="mb-1 h-4 p-1" />;
+						}
 
-					return (
-						<div
-							key={idx}
-							// onClick={() => setSelectedEvent(evt)}
-							className={cn(
-								dayjs(evt.getStartDate()) <= day &&
-									day <
-										dayjs(evt.getStartDate()).add(
-											1,
-											"day"
-										) &&
-									"ml-4 rounded-s-md",
-								dayjs(evt.getEndDate()) <= day &&
-									day <
-										dayjs(evt.getEndDate()).add(1, "day") &&
-									"mr-4 rounded-e-md",
-								"mb-1 h-4 truncate bg-primary opacity-20 text-sm text-gray-600"
-							)}
-						>
-						</div>
-					);
-				})}
+						if (selectedEvent && evt.equals(selectedEvent)) {
+							return (
+								<HoverCardTrigger>
+									<CompEvent
+										key={idx}
+										day={day}
+										event={evt}
+										selected={true}
+										onClick={() => {
+											setSelectedEvent(evt);
+										}}
+									/>
+								</HoverCardTrigger>
+							);
+						}
+
+						return (
+							<CompEvent
+								key={idx}
+								day={day}
+								event={evt}
+								selected={false}
+								onClick={() => {
+									setSelectedEvent(evt);
+								}}
+							/>
+						);
+					})}
+				</div>
 			</div>
-		</div>
+			<HoverCardContent className="mx-3 w-32 py-1 px-2 rounded-full " side="top">
+				<div className="flex flex-row justify-evenly">
+					<Button variant={"ghost"} className="p-3 rounded-full">
+						<Trash2 className="w-4 h-4" />
+					</Button>
+					<Button variant={"ghost"} className="p-3 rounded-full">
+						<Pen className="w-4 h-4"/>
+					</Button>
+				</div>
+			</HoverCardContent>
+		</HoverCard>
+	);
+}
+
+function CompEvent({
+	event,
+	selected,
+	day,
+	onClick,
+}: {
+	event: CalendarEvent;
+	selected: boolean;
+	day: Dayjs;
+	onClick: MouseEventHandler;
+}) {
+	return (
+		<div
+			onClick={onClick}
+			onMouseDown={(e) => {
+				e.stopPropagation();
+			}}
+			onMouseUp={(e) => {
+				e.stopPropagation();
+			}}
+			onMouseOver={(e) => {
+				e.stopPropagation();
+			}}
+			className={cn(
+				"z-20 mb-1 h-4 truncate bg-primary text-sm text-gray-600 opacity-20",
+				selected && "opacity-90",
+				dayjs(event.getStartDate()) <= day &&
+					day < dayjs(event.getStartDate()).add(1, "day") &&
+					"ml-4 rounded-s-md",
+				dayjs(event.getEndDate()) <= day &&
+					day < dayjs(event.getEndDate()).add(1, "day") &&
+					"mr-4 rounded-e-md"
+			)}
+		></div>
 	);
 }

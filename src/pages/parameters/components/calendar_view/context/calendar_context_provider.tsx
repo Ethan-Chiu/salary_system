@@ -38,6 +38,10 @@ export default function CalendarContextProvider({
 		[]
 	);
 
+	const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
+		null
+	);
+
 	useEffect(() => {
 		if (mouseDownDate && mouseUpDate) {
 			setCurrentEvent(
@@ -112,6 +116,8 @@ export default function CalendarContextProvider({
 				setOpenSheet,
 				showEventList,
 				setEventList,
+				selectedEvent,
+				setSelectedEvent,
 				resetMouse,
 				//   showEventModal,
 				//   setShowEventModal,

@@ -14,6 +14,8 @@ const calendarContext = React.createContext<{
 	setOpenSheet: (open: boolean) => void,
 	showEventList: CalendarEventLevel[],
 	setEventList: (event: CalendarEvent[]) => void,
+	selectedEvent: CalendarEvent | null,
+	setSelectedEvent: (event: CalendarEvent) => void,
 	resetMouse: () => void
 	// dispatchEventList: React.Dispatch<ActionType>,
 }>({
@@ -27,6 +29,8 @@ const calendarContext = React.createContext<{
 	setOpenSheet: (open: boolean) => {},
 	showEventList: [],
 	setEventList: (events: CalendarEvent[]) => {},
+	selectedEvent: null,
+	setSelectedEvent: (event: CalendarEvent) => {},
 	resetMouse: () => {},
 	// dispatchEventList: () => {},
 	// showEventModal: false,

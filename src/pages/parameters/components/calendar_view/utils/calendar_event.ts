@@ -35,6 +35,13 @@ export class CalendarEvent {
 			this.endDate >= otherEvent.getStartDate()
 		);
 	}
+
+	equals(otherEvent: CalendarEvent): boolean {
+        return (
+            this.startDate.getTime() === otherEvent.getStartDate().getTime() &&
+            this.endDate.getTime() === otherEvent.getEndDate().getTime()
+        );
+    }
 }
 
 export class CalendarEventLevel extends CalendarEvent {
