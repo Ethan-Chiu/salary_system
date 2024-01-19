@@ -16,9 +16,9 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
-import { Translate } from "../develop_parameters/utils/translation";
-import { getSchema } from "./Schemas/schemas";
+import { Translate } from "../../lib/utils/translation";
 import { LoadingSpinner } from "~/components/loading";
+import { getSchema } from "../parameters/Schemas/schemas";
 
 const Template = (props: any) => {
 	const router = useRouter();
@@ -48,7 +48,10 @@ const Template = (props: any) => {
 									Object.keys(queryFunction.data[0]).map(
 										(key: string) => {
 											return (
-												<TableHead className="whitespace-nowrap text-center">
+												<TableHead
+													className="whitespace-nowrap text-center"
+													key={key}
+												>
 													{Translate(key)}
 												</TableHead>
 											);
@@ -69,7 +72,13 @@ const Template = (props: any) => {
 								(data: any, index: number) => {
 									return (
 										<TableRow key={data.id}>
-											<TableCell className="items-center">
+											<TableCell
+												className="items-center"
+												key={
+													"TableCell" +
+													data.id.toString()
+												}
+											>
 												<LucideIcons.PenSquare
 													size={18}
 													className="cursor-pointer"
@@ -82,7 +91,10 @@ const Template = (props: any) => {
 											</TableCell>
 											{Object.keys(data).map((key) => {
 												return (
-													<TableCell className="text-center font-medium">
+													<TableCell
+														className="text-center font-medium"
+														key={key}
+													>
 														{data[key]}
 													</TableCell>
 												);
