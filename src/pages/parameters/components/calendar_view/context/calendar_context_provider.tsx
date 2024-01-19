@@ -64,12 +64,13 @@ export default function CalendarContextProvider({
 						return a.start_date > b.start_date ? -1 : 1;
 					}
 				})
-				.map((e) => {
-					console.log()
-					return new CalendarEvent(
-						new Date(e.start_date),
-						new Date(e.end_date ?? 8630000000000000)
+				.map((dataItem) => {
+					const event = new CalendarEvent(
+						new Date(dataItem.start_date),
+						new Date(dataItem.end_date ?? 8630000000000000),
+						dataItem
 					);
+					return event;
 				})
 		);
 	}, []);

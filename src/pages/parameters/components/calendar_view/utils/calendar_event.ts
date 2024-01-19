@@ -1,10 +1,12 @@
 export class CalendarEvent {
 	private startDate: Date;
 	private endDate: Date;
+	private data: any;
 
-	constructor(startDate: Date, endDate: Date) {
+	constructor(startDate: Date, endDate: Date, data: any = null) {
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.data = data;
 	}
 
 	getStartDate(): Date {
@@ -23,10 +25,12 @@ export class CalendarEvent {
 		this.endDate = endDate;
 	}
 
-	getDurationInHours(): number {
-		const durationInMilliseconds =
-			this.endDate.getTime() - this.startDate.getTime();
-		return durationInMilliseconds / (1000 * 60 * 60); // Convert milliseconds to hours
+	getData(): any {
+		return this.data;
+	}
+
+	setData(data: any): void {
+		this.data = data;
 	}
 
 	overlapsWith(otherEvent: CalendarEvent): boolean {
@@ -42,13 +46,17 @@ export class CalendarEvent {
             this.endDate.getTime() === otherEvent.getEndDate().getTime()
         );
     }
+
+	toCalendarEventLevel(level: number): CalendarEventLevel {
+		return new CalendarEventLevel(this.startDate, this.endDate, level, this.data);
+	}
 }
 
 export class CalendarEventLevel extends CalendarEvent {
 	private level: number;
 
-	constructor(startDate: Date, endDate: Date, level: number) {
-		super(startDate, endDate);
+	constructor(startDate: Date, endDate: Date, level: number, data: any = null) {
+		super(startDate, endDate, data);
 		this.level = level;
 	}
 

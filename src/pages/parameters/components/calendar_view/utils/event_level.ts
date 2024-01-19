@@ -2,14 +2,7 @@ import { CalendarEvent, CalendarEventLevel } from "./calendar_event";
 
 export function getEventLevel(events: CalendarEvent[]): CalendarEventLevel[] {
 	const sortedEvents = events
-		.map(
-			(event) =>
-				new CalendarEventLevel(
-					event.getStartDate(),
-					event.getEndDate(),
-					0
-				)
-		)
+		.map((event) => event.toCalendarEventLevel(0))
 		.sort(
 			(a, b) => a.getStartDate().getTime() - b.getStartDate().getTime()
 		);
@@ -34,19 +27,19 @@ export function getEventLevel(events: CalendarEvent[]): CalendarEventLevel[] {
 				}
 			}
 		}
-        currentLevel++;
-        currentLevelLastEvent = null;
+		currentLevel++;
+		currentLevelLastEvent = null;
 	}
 
 	return sortedEvents;
 }
 
 export function getMaxLevel(events: CalendarEventLevel[]): number {
-    let maxLevel = -1;
-    for (const event of events) {
-        if (event.getLevel() > maxLevel) {
-            maxLevel = event.getLevel();
-        }
-    }
-    return maxLevel;
+	let maxLevel = -1;
+	for (const event of events) {
+		if (event.getLevel() > maxLevel) {
+			maxLevel = event.getLevel();
+		}
+	}
+	return maxLevel;
 }

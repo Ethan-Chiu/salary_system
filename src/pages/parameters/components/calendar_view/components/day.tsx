@@ -24,6 +24,7 @@ import {
 	HoverCardTrigger,
 } from "~/components/ui/hover-card";
 import { Pen, Trash2 } from "lucide-react";
+import { toolbarFunctionsContext } from "../../function_sheet/functions_context";
 
 interface DayViewProps {
 	day: Dayjs;
@@ -31,8 +32,6 @@ interface DayViewProps {
 }
 
 export default function DayView({ day, rowIdx }: DayViewProps) {
-	const [dayEvents, setDayEvents] = useState<CalendarEventLevel[]>([]);
-
 	const {
 		mouseDownDate,
 		setMouseDownDate,
@@ -44,6 +43,13 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 		setSelectedEvent,
 		setEventList,
 	} = useContext(calendarContext);
+
+	const mutateFunctions = useContext(toolbarFunctionsContext);
+	const updateFunction = mutateFunctions.updateFunction!;
+	const createFunction = mutateFunctions.createFunction!;
+	const deleteFunction = mutateFunctions.deleteFunction!;
+
+	const [dayEvents, setDayEvents] = useState<CalendarEventLevel[]>([]);
 
 	useEffect(() => {
 		const events = showEventList.filter(
@@ -119,9 +125,8 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 
 						if (selectedEvent && evt.equals(selectedEvent)) {
 							return (
-								<HoverCardTrigger>
+								<HoverCardTrigger key={idx}>
 									<CompEvent
-										key={idx}
 										day={day}
 										event={evt}
 										selected={true}
@@ -147,13 +152,25 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 					})}
 				</div>
 			</div>
-			<HoverCardContent className="mx-3 w-32 py-1 px-2 rounded-full " side="top">
+			<HoverCardContent
+				className="mx-3 w-32 rounded-full px-2 py-1 "
+				side="top"
+			>
 				<div className="flex flex-row justify-evenly">
-					<Button variant={"ghost"} className="p-3 rounded-full">
-						<Trash2 className="w-4 h-4" />
+					<Button variant={"ghost"} className="rounded-full p-3">
+						<Pen className="h-4 w-4" />
 					</Button>
-					<Button variant={"ghost"} className="p-3 rounded-full">
-						<Pen className="w-4 h-4"/>
+					<Button
+						variant={"ghost"}
+						className="rounded-full p-3"
+						onClick={() => {
+							console.log(selectedEvent?.getData());
+							deleteFunction.mutate({
+								id: selectedEvent?.getData().id,
+							});
+						}}
+					>
+						<Trash2 className="h-4 w-4" />
 					</Button>
 				</div>
 			</HoverCardContent>
