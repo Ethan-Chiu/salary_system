@@ -15,12 +15,12 @@ import {
 
 import { Table } from "~/components/ui/table";
 import { DataTableToolbar } from "./data_table_toolbar";
-import { DataTablePagination } from "./data_table_pagination";
+import { DataTablePagination } from "../../../components/data_table/data_table_pagination";
 import { Separator } from "~/components/ui/separator";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Tabs, TabsContent } from "~/components/ui/tabs";
-import { DataTableDataHeader } from "./data_table_data_header";
-import { DataTableDataBody } from "./data_table_data_body";
+import { DataTableDataHeader } from "../../../components/data_table/data_table_data_header";
+import { DataTableDataBody } from "../../../components/data_table/data_table_data_body";
 import CalendarView from "./calendar_view/calendar_view";
 import HistoryView from "./history_view/history_view";
 
@@ -29,7 +29,6 @@ interface DataTableProps<TData> {
 	data: TData[];
 	filterColumnKey: keyof TData;
 	showTabs?: boolean;
-	table_name?: string;
 }
 
 export function DataTable<TData>({
@@ -37,7 +36,6 @@ export function DataTable<TData>({
 	data,
 	filterColumnKey,
 	showTabs,
-	table_name,
 }: DataTableProps<TData>) {
 	const [rowSelection, setRowSelection] = React.useState({});
 	const [columnVisibility, setColumnVisibility] =
@@ -78,7 +76,6 @@ export function DataTable<TData>({
 					globalFilter=""
 					filterKey={filterColumnKey}
 					showTabs={showTabs}
-					table_name={table_name}
 				/>
 				<Separator />
 				<TabsContent value="now" asChild>

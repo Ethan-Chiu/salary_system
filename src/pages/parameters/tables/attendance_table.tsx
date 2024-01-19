@@ -2,36 +2,22 @@ import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { isString, isNumber, isDate } from "~/lib/utils/checkType";
+import { isString, isNumber, isDateType } from "~/lib/utils/check_type";
 import {
 	DropdownMenu,
-	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { Input } from "~/components/ui/input";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogClose,
-} from "~/components/ui/dialog";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
-import { useRef, useState } from "react";
 import { z } from "zod";
-import { Label } from "~/components/ui/label";
-import { DropdownCopyAction } from "../components/dropdown_copy_action";
+import { DropdownCopyAction } from "../../../components/data_table/dropdown_copy_action";
 import { AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
 import { LoadingSpinner } from "~/components/loading";
-import { TABLE_ATTENDANCE } from "~/pages/table_names";
 
 const rowSchema = z.object({
 	name: z.string(),
@@ -43,7 +29,7 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-const columns = [
+export const columns = [
 	columnHelper.accessor("name", {
 		header: ({ column }) => {
 			return (
@@ -80,7 +66,7 @@ const columns = [
 			if (isNumber(value))
 				formatted = parseFloat(row.getValue("value")).toString();
 			else if (isString(value)) formatted = row.getValue("value");
-			else if (isDate(value)) {
+			else if (isDateType(value)) {
 				if (value) {
 					formatted =
 						(value as Date).toISOString().split("T")[0] ?? "";
@@ -102,7 +88,7 @@ const columns = [
 	// }),
 ];
 
-function attendanceMapper(attendanceData: AttendanceSetting): RowItem[] {
+export function attendanceMapper(attendanceData: AttendanceSetting): RowItem[] {
 	return [
 		{
 			name: "事假扣薪",
@@ -209,7 +195,6 @@ export function AttendanceTable({ index, globalFilter, viewOnly }: any) {
 					columns={columns}
 					data={attendanceMapper(data)}
 					filterColumnKey={filterKey}
-					table_name={TABLE_ATTENDANCE}
 				/>
 			) : (
 				<DataTableWithoutFunctions
@@ -223,8 +208,6 @@ export function AttendanceTable({ index, globalFilter, viewOnly }: any) {
 }
 
 function CompDropdown({ row }: { row: RowItem }) {
-	const [showDialog, setShowDialog] = useState(false);
-
 	return (
 		<>
 			<DropdownMenu>
@@ -239,11 +222,7 @@ function CompDropdown({ row }: { row: RowItem }) {
 					<DropdownMenuSeparator />
 
 					<DropdownCopyAction value={row.value.toString()} />
-					<DropdownMenuItem
-						onClick={() => {
-							setShowDialog(true);
-						}}
-					>
+					<DropdownMenuItem onClick={() => {}}>
 						Update
 					</DropdownMenuItem>
 				</DropdownMenuContent>

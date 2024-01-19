@@ -1,22 +1,33 @@
 import React from "react";
+import dayjs from "dayjs";
+import { CalendarEventLevel } from "../utils/calendar_event";
+import { ActionType } from "./calendar_context_provider";
 
-const calendarContext = React.createContext({
+const calendarContext = React.createContext<{
+	monthIndex: number,
+	setMonthIndex: (index: number) => void,
+	mouseDownDate: dayjs.Dayjs | null,
+	setMouseDownDate: (date: dayjs.Dayjs) => void,
+	mouseUpDate: dayjs.Dayjs | null,
+	setMouseUpDate: (date: dayjs.Dayjs) => void,
+	openSheet: boolean, 
+	setOpenSheet: (open: boolean) => void,
+	showEventList: CalendarEventLevel[],
+	dispatchEventList: React.Dispatch<ActionType>,
+}>({
 	monthIndex: 0,
 	setMonthIndex: (index: number) => {},
-	// smallCalendarMonth: 0,
-	// setSmallCalendarMonth: (index) => {},
-	// daySelected: null,
-	// setDaySelected: (day) => {},
+	mouseDownDate: dayjs(),
+	setMouseDownDate: (date: dayjs.Dayjs) => {},
+	mouseUpDate: dayjs(),
+	setMouseUpDate: (date: dayjs.Dayjs) => {},
+	openSheet: false, 
+	setOpenSheet: (open: boolean) => {},
+	showEventList: [],
+	dispatchEventList: () => {},
 	// showEventModal: false,
 	// setShowEventModal: () => {},
-	// dispatchCalEvent: ({ type, payload }) => {},
 	// savedEvents: [],
-	// selectedEvent: null,
-	// setSelectedEvent: () => {},
-	// setLabels: () => {},
-	// labels: [],
-	// updateLabel: () => {},
-	// filteredEvents: [],
 });
 
 export default calendarContext;

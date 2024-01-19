@@ -1,9 +1,6 @@
 import { Table } from "@tanstack/react-table";
-import { DataTableViewOptions } from "./data_table_view_options";
+import { DataTableViewOptions } from "~/components/data_table/data_table_view_options";
 import { Input } from "~/components/ui/input";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { LayoutGrid } from "lucide-react";
-import { DataTableFunctions } from "./data_table_functions";
 
 interface DataTableToolbarProps<TData> {
 	table: Table<TData>;

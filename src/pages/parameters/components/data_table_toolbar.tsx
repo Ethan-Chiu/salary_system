@@ -1,17 +1,17 @@
 import { Table } from "@tanstack/react-table";
-import { DataTableViewOptions } from "./data_table_view_options";
+import { DataTableViewOptions } from "../../../components/data_table/data_table_view_options";
 import { Input } from "~/components/ui/input";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { LayoutGrid } from "lucide-react";
-import { DataTableFunctions } from "./data_table_functions";
-import FunctionsProvider from "./function_sheet/functions_context";
+import { TabsList, TabsTrigger } from "~/components/ui/tabs";
+import ToolbarFunctionsProvider from "./function_sheet/functions_context";
+import { useContext } from "react";
+import dataTableContext from "./context/data_table_context";
+import { DataTableFunctions } from "./function_sheet/data_table_functions";
 
 interface DataTableToolbarProps<TData> {
 	table: Table<TData>;
 	globalFilter: string;
 	filterKey: keyof TData;
 	showTabs?: boolean;
-	table_name?: string;
 }
 
 export function DataTableToolbar<TData>({
@@ -19,8 +19,9 @@ export function DataTableToolbar<TData>({
 	globalFilter,
 	filterKey,
 	showTabs,
-	table_name,
 }: DataTableToolbarProps<TData>) {
+	const { selectedTable } = useContext(dataTableContext);
+
 	return (
 		<div className="flex flex-row items-center justify-between space-x-2 px-2 py-2">
 			{/* search bar */}
@@ -57,11 +58,10 @@ export function DataTableToolbar<TData>({
 			)}
 			{/*  */}
 			<DataTableViewOptions table={table} />
-			{table_name && (
-				<FunctionsProvider>
-					<DataTableFunctions table_name={table_name} />
-				</FunctionsProvider>
-			)}
+			{/* Toolbar functions */}
+			<ToolbarFunctionsProvider selectedTable={selectedTable}>
+				<DataTableFunctions tableType={selectedTable} />
+			</ToolbarFunctionsProvider>
 		</div>
 	);
 }

@@ -1,12 +1,7 @@
 import AutoForm, { AutoFormSubmit } from "~/components/ui/auto-form";
 import * as z from "zod";
 import { Button } from "~/components/ui/button";
-import {
-	isNumber,
-	isDate,
-	isString,
-} from "~/lib/utils/checkType";
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 import {
 	Table,
@@ -30,162 +25,45 @@ import {
 	DialogClose,
 	DialogFooter,
 } from "~/components/ui/dialog";
-import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { PenSquare, Trash2 } from "lucide-react";
 
-import { SheetClose } from "~/components/ui/sheet";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-
 import { useContext } from "react";
-import { FunctionsContext } from "./functions_context";
+import { toolbarFunctionsContext } from "./functions_context";
+import { FunctionMode } from "./data_table_functions";
+import GeneralTable from "./general_table";
+import { LoadingSpinner } from "~/components/loading";
+import { FieldConfig } from "~/components/ui/auto-form/types";
 
-const simpleTable = (d: any) => {
-	return (
-		<Table>
-			<TableHeader>
-				<TableRow>
-					<TableHead className="whitespace-nowrap text-center">
-						{"Key"}
-					</TableHead>
-					<TableHead className="whitespace-nowrap text-center">
-						{"Value"}
-					</TableHead>
-				</TableRow>
-			</TableHeader>
-			<TableBody>
-				{Object.keys(d).map((key: string, index: number) => {
-					return (
-						<TableRow key={index.toString()}>
-							<TableCell className="text-center font-medium">
-								{Translate(key)}
-							</TableCell>
-							<TableCell className="text-center font-medium">
-								{isDate(d[key])
-									? d[key].toISOString().split("T")[0]
-									: d[key]}
-							</TableCell>
-						</TableRow>
-					);
-				})}
-			</TableBody>
-		</Table>
-	);
-};
+interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
+	formSchema: SchemaType;
+	fieldConfig?: FieldConfig<z.infer<SchemaType>>;
+	mode: FunctionMode;
+	closeSheet: () => void;
+}
 
-export function ParameterForm({
-	table_name,
+export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	formSchema,
 	fieldConfig,
 	mode,
 	closeSheet,
-	disabled,
-}: any) {
-	const functions: any = useContext(FunctionsContext);
-	const queryFunction = functions![table_name]?.queryFunction;
-	const updateFunction = functions![table_name]?.updateFunction;
-	const createFunction = functions![table_name]?.createFunction;
-	const deleteFunction = functions![table_name]?.deleteFunction;
-	const isList = Array.isArray(queryFunction.data);
-	const onlyOne = (isList)?(queryFunction.data.length !== 1)?false:true:true;
+}: ParameterFormProps<SchemaType>) {
+	const functions = useContext(toolbarFunctionsContext);
 
-	const [originalData, setOriginalData] = useState(
-		isList ? null : queryFunction.data
-	);
+	const queryFunction = functions.queryFunction!;
+	const updateFunction = functions.updateFunction!;
+	const createFunction = functions.createFunction!;
+	const deleteFunction = functions.deleteFunction!;
+	const { isLoading, isError, data, error } = queryFunction();
 
-	console.log(originalData);
+	const isList = Array.isArray(data);
+	const onlyOne = !(isList && data.length > 1);
 
-	const ViewAllDatas = () => {
-		console.log(queryFunction.data);
-		let noIDData: any[] = queryFunction.data.map((item: any) => {
-			const { ["id"]: id, ...rest } = item;
-			return rest;
-		});
-		
-		console.log(mode);
+	const [selectedData, setSelectedData] = useState(isList ? null : data);
 
-		return (
-			<>
-				{noIDData ? (
-					<div className="m-4">
-						<Table>
-							<TableHeader>
-								<TableRow>
-									<TableHead className="whitespace-nowrap text-center">
-										{""}
-									</TableHead>
-									{noIDData[0] &&
-										Object.keys(noIDData[0]).map(
-											(key: string) => {
-												return (
-													<TableHead className="whitespace-nowrap text-center">
-														{Translate(key)}
-													</TableHead>
-												);
-											}
-										)}
-									{!noIDData[0] && (
-										<TableCell
-											colSpan={5}
-											className="h-24 text-center"
-										>
-											No results.
-										</TableCell>
-									)}
-								</TableRow>
-							</TableHeader>
-							<TableBody>
-								{noIDData?.map((data: any, index: number) => {
-									return (
-										<TableRow key={data.id}>
-											<TableCell className="items-center">
-												{mode === "update" &&
-													<PenSquare
-														size={18}
-														className="cursor-pointer"
-														onClick={() => {
-															setOriginalData(
-																queryFunction
-																	.data[index]
-															);
-														}}
-													/>}
-												{ mode === "delete" &&
-													<Trash2 
-														size={18}
-														className="cursor-pointer"
-														onClick={() => {
-															deleteFunction.mutate(
-																{id: queryFunction.data[index].id}
-															);
-														}}
-													/>
-												}
-											</TableCell>
-											{Object.keys(data).map((key) => {
-												return (
-													<TableCell className="text-center font-medium">
-														{data[key]}
-													</TableCell>
-												);
-											})}
-										</TableRow>
-									);
-								})}
-							</TableBody>
-						</Table>
-					</div>
-				) : (
-					<></>
-				)}
-			</>
-		);
-	};
-
-	const buttonRef = useRef<HTMLButtonElement | null>(null);
-	const [values, setValues] = useState<Partial<z.infer<typeof formSchema>>>(
-		getDefaults(formSchema)
-	);
+	const [formValues, setFormValues] = useState<
+		Partial<z.infer<z.AnyZodObject>>
+	>(getDefaults(formSchema));
+	
 	const [openDialog, setOpenDialog] = useState(false);
 
 	function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
@@ -199,100 +77,205 @@ export function ParameterForm({
 	}
 
 	function submitForm() {
-		const parsedValues = formSchema.safeParse(values);
-		if (mode === "create") {
-			createFunction.mutate({
-				...parsedValues.data,
-			});
+		const parsedValues = formSchema.safeParse(formValues);
+		if (parsedValues.success) {
+			if (mode === "create") {
+				createFunction.mutate({
+					...parsedValues.data,
+				});
+			} else if (mode === "update") {
+				updateFunction.mutate({
+					...parsedValues.data,
+					id: selectedData.id,
+				});
+			}
 		} else {
-			updateFunction.mutate({
-				...parsedValues.data,
-				id: originalData.id,
-			});
+			// TODO: Error element with toast
 		}
 		closeSheet();
 	}
 
 	const handleSubmit = () => {
-		// Trigger button click programmatically
-		if (buttonRef.current) {
-			buttonRef.current.click();
-		}
-		const parsedValues = formSchema.safeParse(values);
+		const parsedValues = formSchema.safeParse(formValues);
 		if (parsedValues.success) {
 			setOpenDialog(true);
 		}
 	};
 
-	if(mode === "delete" && (onlyOne))	return <p>There's only one data left. Please create a new one before you continue to delete.</p>
-
-	if (originalData === null && mode !== "create") {
-		return <ViewAllDatas />;
+	if (isLoading) {
+		return <LoadingSpinner />; // TODO: Loading element with toast
 	}
 
+	if (isError) {
+		return <span>Error: {error.message}</span>; // TODO: Error element with toast
+	}
+
+	if (mode === "delete" && onlyOne) {
+		return (
+			<p>
+				There's only one data left. Please create a new one before you
+				continue to delete.
+			</p>
+		);
+	}
+
+	if (mode !== "create" && selectedData === null) {
+		const noIDData: any[] = data.map((item: any) => {
+			const { ["id"]: id, ...rest } = item;
+			return rest;
+		});
+
+		return (
+			<CompViewAllDatas
+				dataNoID={noIDData}
+				mode={mode}
+				onUpdate={(index: number) => {
+					setSelectedData(data[index]);
+				}}
+				onDelete={(index: number) => {
+					deleteFunction.mutate({
+						id: data[index].id,
+					});
+				}}
+			/>
+		);
+	}
 
 	return (
-		<AutoForm
-			className="m-5"
-			_defaultValues={
-				originalData && mode === "update" ? originalData : {}
-			}
-			values={values}
-			onSubmit={(data) => {}}
-			onValuesChange={setValues}
-			formSchema={formSchema}
-			fieldConfig={fieldConfig}
-		>
-			<Button className="hidden" ref={buttonRef}>
-				Submit
-			</Button>
-
-			<div className="grid grid-cols-3 gap-3">
+		<>
+			<AutoForm
+				className="m-5"
+				_defaultValues={mode === "create" ? {} : selectedData}
+				values={formValues}
+				onValuesChange={setFormValues}
+				onSubmit={handleSubmit}
+				formSchema={formSchema}
+				fieldConfig={fieldConfig}
+			>
 				<div>
-					<Button
-						variant={"outline"}
-						onClick={() => {
-							console.log("Cancel");
-							closeSheet();
-						}}
-					>
-						Cancel
-					</Button>
-				</div>
+					<div className="my-16 flex justify-between">
+						<Button
+							type="button"
+							variant={"outline"}
+							onClick={() => {
+								if (mode === "update") {
+									isList
+										? setSelectedData(null)
+										: closeSheet();
+								}
+								if (mode === "create") {
+									closeSheet();
+								}
+							}}
+						>
+							Cancel
+						</Button>
 
-				<p
-					onClick={() => {
-						console.log(values);
-						handleSubmit();
-						// setOpenDialog(true);
-					}}
-					className="col-start-3 mb-2 me-2 cursor-pointer rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-				>
-					{mode === "create" && "Create"}
-					{mode === "update" && "Update"}
-				</p>
-				<Dialog open={openDialog} onOpenChange={setOpenDialog}>
-					<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
-						<DialogHeader>
-							<DialogTitle>Are you sure to update?</DialogTitle>
-							<DialogDescription></DialogDescription>
-						</DialogHeader>
-						{simpleTable(values)}
-						<DialogFooter>
-							<DialogClose>
-								<Button
-									onClick={() => {
-										submitForm();
-									}}
-									type="submit"
-								>
-									Save changes
-								</Button>
-							</DialogClose>
-						</DialogFooter>
-					</DialogContent>
-				</Dialog>
-			</div>
-		</AutoForm>
+						<Button type="submit">
+							{mode === "create" && "Create"}
+							{mode === "update" && "Update"}
+						</Button>
+					</div>
+				</div>
+			</AutoForm>
+			{/* Submit change dialog */}
+			<Dialog open={openDialog} onOpenChange={setOpenDialog}>
+				<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
+					<DialogHeader>
+						<DialogTitle>Are you sure to update?</DialogTitle>
+						<DialogDescription></DialogDescription>
+					</DialogHeader>
+					<GeneralTable data={formValues} />
+					<DialogFooter>
+						<DialogClose asChild>
+							<Button onClick={submitForm} type="submit">
+								Save changes
+							</Button>
+						</DialogClose>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+		</>
 	);
 }
+
+const CompViewAllDatas = ({
+	dataNoID,
+	mode,
+	onUpdate,
+	onDelete,
+}: {
+	dataNoID: any[];
+	mode: FunctionMode;
+	onUpdate: Function;
+	onDelete: Function;
+}) => {
+	return (
+		<>
+			{dataNoID && (
+				<div className="m-4">
+					<Table>
+						<TableHeader>
+							<TableRow>
+								<TableHead className="whitespace-nowrap text-center"></TableHead>
+								{dataNoID[0] ? (
+									Object.keys(dataNoID[0]).map(
+										(key: string) => {
+											return (
+												<TableHead className="whitespace-nowrap text-center">
+													{Translate(key)}
+												</TableHead>
+											);
+										}
+									)
+								) : (
+									<TableCell
+										colSpan={5}
+										className="h-24 text-center"
+									>
+										No results.
+									</TableCell>
+								)}
+							</TableRow>
+						</TableHeader>
+						<TableBody>
+							{dataNoID?.map((data: any, index: number) => {
+								return (
+									<TableRow key={data.id}>
+										<TableCell className="items-center">
+											{mode === "update" && (
+												<PenSquare
+													size={18}
+													className="cursor-pointer"
+													onClick={() => {
+														onUpdate(index);
+													}}
+												/>
+											)}
+											{mode === "delete" && (
+												<Trash2
+													size={18}
+													className="cursor-pointer"
+													onClick={() => {
+														onDelete(index);
+													}}
+												/>
+											)}
+										</TableCell>
+										{Object.keys(data).map((key) => {
+											return (
+												<TableCell className="text-center font-medium">
+													{data[key]}
+												</TableCell>
+											);
+										})}
+									</TableRow>
+								);
+							})}
+						</TableBody>
+					</Table>
+				</div>
+			)}
+		</>
+	);
+};

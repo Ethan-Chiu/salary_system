@@ -19,9 +19,9 @@ import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Tabs, TabsContent } from "~/components/ui/tabs";
 
 import { DataTableToolbar } from "./data_table_toolbar";
-import { DataTablePagination } from "./data_table_pagination";
-import { DataTableDataHeader } from "./data_table_data_header";
-import { DataTableDataBody } from "./data_table_data_body";
+import { DataTableDataHeader } from "~/components/data_table/data_table_data_header";
+import { DataTableDataBody } from "~/components/data_table/data_table_data_body";
+import { DataTablePagination } from "~/components/data_table/data_table_pagination";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];

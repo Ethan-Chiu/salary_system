@@ -89,7 +89,6 @@ export function BonusPositionTable({ index, globalFilter, viewOnly }: any) {
 					columns={columns}
 					data={bonusPositionMapper(data)}
 					filterColumnKey={filterKey}
-					table_name={TABLE_BONUS_POSITION}
 				/>
 			) : (
 				<DataTableWithoutFunctions

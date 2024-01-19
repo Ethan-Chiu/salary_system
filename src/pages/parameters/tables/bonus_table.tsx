@@ -5,8 +5,8 @@ import { ArrowUpDown } from "lucide-react";
 import {
 	isString,
 	isNumber,
-	isDate,
-} from "~/lib/utils/checkType";
+	isDateType,
+} from "~/lib/utils/check_type";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import {
@@ -17,8 +17,7 @@ import {
 } from "../constant";
 import { BonusSetting } from "~/server/database/entity/SALARY/bonus_setting";
 import { LoadingSpinner } from "~/components/loading";
-import { formatDate } from "~/lib/utils/formatDate";
-import { TABLE_BONUS_SETTING } from "~/pages/table_names";
+import { formatDate } from "~/lib/utils/format_date";
 
 export type RowItem = {
 	name: string;
@@ -65,7 +64,7 @@ const columns = [
 			if (isNumber(value))
 				formatted = parseFloat(row.getValue("value")).toString();
 			else if (isString(value)) formatted = row.getValue("value");
-			else if (isDate(value)) {
+			else if (isDateType(value)) {
 				if (value) {
 					formatted =
 						(value as Date).toISOString().split("T")[0] ?? "";
@@ -135,7 +134,6 @@ export function BonusTable({ index, globalFilter, viewOnly }: any) {
 					columns={columns}
 					data={bonusMapper(data)}
 					filterColumnKey={filterKey}
-					table_name={TABLE_BONUS_SETTING}
 				/>
 			) : (
 				<DataTableWithoutFunctions
