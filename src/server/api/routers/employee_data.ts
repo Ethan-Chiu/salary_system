@@ -60,7 +60,7 @@ export const employeeDataRouter = createTRPCRouter({
 
 	checkEmployeeData: publicProcedure
 		.input(z.object({ func: z.string() }))
-		.mutation(async ({ input }) => {
+		.query(async ({ input }) => {
 			const employeeDataService = container.resolve(EmployeeDataService);
 			let diffDatas = await employeeDataService.checkEmployeeData(
 				input.func

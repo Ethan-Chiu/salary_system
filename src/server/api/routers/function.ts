@@ -57,12 +57,4 @@ export const functionRouter = createTRPCRouter({
 		];
 		return Sheets;
 	}),
-
-	checkData: publicProcedure
-		.input(z.object({ func: z.string() }))
-		.query(async ({ input }) => {
-			const employeeDataService = container.resolve(EmployeeDataService);
-			const diffDatas = await employeeDataService.checkEmployeeData(input.func);
-			return diffDatas;
-		})
 });
