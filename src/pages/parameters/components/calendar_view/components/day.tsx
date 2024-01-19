@@ -21,7 +21,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 		setMouseUpDate,
 		showEventList,
 		setOpenSheet,
-		dispatchEventList,
+		setEventList,
 	} = useContext(calendarContext);
 
 	useEffect(() => {
@@ -45,7 +45,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 		if (event.button === 0) {
 			console.log("Mouse button up");
 			setMouseUpDate(day);
-			dispatchEventList({ type: "push" });
+			// dispatchEventList({ type: "push" });
 			setOpenSheet(true);
 		}
 	};
@@ -77,7 +77,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 			</header>
 			<div className="absolute h-full w-full border border-gray-200" />
 			<div
-				className="z-10 flex-1 cursor-pointer"
+				className="z-10 flex-grow cursor-pointer"
 				onMouseDown={handleMouseDown}
 				onMouseUp={handleMouseUp}
 				onMouseOver={handleMouseOver}

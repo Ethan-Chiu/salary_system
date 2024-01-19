@@ -222,7 +222,7 @@ const CompViewAllDatas = ({
 									Object.keys(dataNoID[0]).map(
 										(key: string) => {
 											return (
-												<TableHead className="whitespace-nowrap text-center">
+												<TableHead key={key} className="whitespace-nowrap text-center">
 													{Translate(key)}
 												</TableHead>
 											);
