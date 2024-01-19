@@ -54,7 +54,7 @@ export const bonus_seniority_columns = [
 	}),
 ];
 
-function bonusSeniorityMapper(bonusSeniorityData: BonusSeniority[]): RowItem[] {
+export function bonusSeniorityMapper(bonusSeniorityData: BonusSeniority[]): RowItem[] {
 	return bonusSeniorityData.map((d) => {
 		return {
 			seniority: d.seniority,

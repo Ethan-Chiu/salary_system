@@ -56,7 +56,7 @@ export const bonus_position_type_columns = [
 	}),
 ];
 
-function bonusPositionTypeMapper(
+export function bonusPositionTypeMapper(
 	bonusPositionTypeData: BonusPositionType[]
 ): RowItem[] {
 	return bonusPositionTypeData.map((d) => {

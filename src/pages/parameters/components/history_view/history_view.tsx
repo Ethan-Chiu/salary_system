@@ -1,5 +1,5 @@
 import { ArrowRightCircle, GitCommitVertical } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { LoadingSpinner } from "~/components/loading";
 import {
 	ResizableHandle,
@@ -8,13 +8,32 @@ import {
 } from "~/components/ui/resizable";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { cn } from "~/lib/utils";
-import { DataTable } from "~/pages/functions/components/data_table";
-import { api } from "~/utils/api";
-import { attendanceMapper, columns } from "../../tables/attendance_table";
+import ApiFunctionsProvider, {
+	apiFunctionsContext,
+} from "../context/api_context_provider";
+import dataTableContext from "../context/data_table_context";
+import { getTableColumn, getTableMapper } from "../../tables/table_columns";
+import { DataTable } from "./data_table";
 
 export default function HistoryView() {
-	const { isLoading, isError, data, error } =
-		api.parameters.getAllAttendanceSetting.useQuery();
+	const { selectedTable } = useContext(dataTableContext);
+
+	return (
+		<>
+			<ApiFunctionsProvider selectedTable={selectedTable}>
+				<CompHistoryView />
+			</ApiFunctionsProvider>
+		</>
+	);
+}
+
+function CompHistoryView() {
+	const { selectedTable } = useContext(dataTableContext);
+
+	const queryFunctions = useContext(apiFunctionsContext);
+	const queryFunction = queryFunctions.queryFunction!;
+
+	const { isLoading, isError, data, error } = queryFunction();
 
 	const [selectedId, setSelectedId] = useState<number>(0);
 	const filterKey = "name";
@@ -62,14 +81,14 @@ export default function HistoryView() {
 							>
 								<div className="m-1 flex flex-wrap items-center justify-center">
 									<div className="flex-1 whitespace-nowrap text-center">
-										{e.start_date}
+										{e.start_date ?? "current"}
 									</div>
 									<ArrowRightCircle
 										size={18}
 										className="mx-2 flex-shrink-0"
 									/>
 									<div className="flex-1 whitespace-nowrap text-center">
-										{e.end_date}
+										{e.end_date ?? "current"}
 									</div>
 								</div>
 								<div className="m-1 flex text-sm">
@@ -89,8 +108,10 @@ export default function HistoryView() {
 			<ResizablePanel defaultSize={70}>
 				{data.filter((e) => e.id === selectedId).length > 0 ? (
 					<DataTable
-						columns={columns}
-						data={attendanceMapper(data.filter((e) => e.id === selectedId)[0]!)}
+						columns={getTableColumn(selectedTable)}
+						data={getTableMapper(selectedTable)(
+							data.filter((e) => e.id === selectedId)
+						)}
 						filterColumnKey={filterKey}
 					/>
 				) : (
