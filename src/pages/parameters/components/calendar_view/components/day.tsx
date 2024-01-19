@@ -10,13 +10,6 @@ import { cn } from "~/lib/utils";
 import calendarContext from "../context/calendar_context";
 import { CalendarEvent, CalendarEventLevel } from "../utils/calendar_event";
 import { getMaxLevel } from "../utils/event_level";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "~/components/ui/popover";
-import { Label } from "~/components/ui/label";
-import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import {
 	HoverCard,
@@ -42,6 +35,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 		selectedEvent,
 		setSelectedEvent,
 		setEventList,
+		resetMouse,
 	} = useContext(calendarContext);
 
 	const mutateFunctions = useContext(toolbarFunctionsContext);
@@ -64,22 +58,30 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 		event.preventDefault();
 		if (event.button === 0) {
 			console.log("Mouse button down");
-			setMouseDownDate(day);
+			if (!mouseDownDate) {
+				setMouseDownDate(day);
+			}
 		}
 	};
 
 	const handleMouseUp = (event: React.MouseEvent) => {
+		event.preventDefault();
 		if (event.button === 0) {
 			console.log("Mouse button up");
-			setMouseUpDate(day);
-			setOpenSheet(true);
+			if (mouseDownDate) {
+				setMouseUpDate(day);
+				setOpenSheet(true);
+			}
 		}
 	};
 
 	const handleMouseOver = (event: React.MouseEvent) => {
+		event.preventDefault();
 		if (event.button === 0) {
 			console.log("Mouse button over");
-			setMouseUpDate(day);
+			if (mouseDownDate) {
+				setMouseUpDate(day);
+			}
 		}
 	};
 
@@ -129,8 +131,10 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 										day={day}
 										event={evt}
 										selected={true}
-										onClick={() => {
-											setSelectedEvent(evt);
+										onMouseDown={(e) => {
+											if (!mouseUpDate) {
+												setSelectedEvent(evt);
+											}
 										}}
 									/>
 								</HoverCardTrigger>
@@ -143,8 +147,10 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 								day={day}
 								event={evt}
 								selected={false}
-								onClick={() => {
-									setSelectedEvent(evt);
+								onMouseDown={(e) => {
+									if (!mouseUpDate) {
+										setSelectedEvent(evt);
+									}
 								}}
 							/>
 						);
@@ -180,23 +186,17 @@ function CompEvent({
 	event,
 	selected,
 	day,
-	onClick,
+	onMouseDown,
 }: {
 	event: CalendarEvent;
 	selected: boolean;
 	day: Dayjs;
-	onClick: MouseEventHandler;
+	onMouseDown: MouseEventHandler;
 }) {
 	return (
 		<div
-			onClick={onClick}
 			onMouseDown={(e) => {
-				e.stopPropagation();
-			}}
-			onMouseUp={(e) => {
-				e.stopPropagation();
-			}}
-			onMouseOver={(e) => {
+				onMouseDown(e);
 				e.stopPropagation();
 			}}
 			className={cn(
