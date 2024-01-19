@@ -17,7 +17,7 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-const columns = [
+export const bonus_position_type_columns = [
 	columnHelper.accessor("position_type", {
 		header: ({ column }) => {
 			return (
@@ -88,13 +88,13 @@ export function BonusPositionTypeTable({ index, globalFilter, viewOnly }: any) {
 		<>
 			{!viewOnly ? (
 				<DataTableWithFunctions
-					columns={columns}
+					columns={bonus_position_type_columns}
 					data={bonusPositionTypeMapper(data)}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
-					columns={columns}
+					columns={bonus_position_type_columns}
 					data={bonusPositionTypeMapper(data)}
 					filterColumnKey={filterKey}
 				/>

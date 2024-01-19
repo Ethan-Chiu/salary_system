@@ -23,7 +23,7 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-const columns = [
+export const insurance_rate_columns = [
 	columnHelper.accessor("name", {
 		header: ({ column }) => {
 			return (
@@ -158,13 +158,13 @@ export function InsuranceRateTable({ index, globalFilter, viewOnly }: any) {
 		<>
 			{!viewOnly ? (
 				<DataTableWithFunctions
-					columns={columns}
+					columns={insurance_rate_columns}
 					data={insuranceRateMapper(data)}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
-					columns={columns}
+					columns={insurance_rate_columns}
 					data={insuranceRateMapper(data)}
 					filterColumnKey={filterKey}
 				/>

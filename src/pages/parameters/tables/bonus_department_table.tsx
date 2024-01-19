@@ -17,7 +17,7 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-const columns = [
+export const bonus_department_columns = [
 	columnHelper.accessor("department", {
 		header: ({ column }) => {
 			return (
@@ -86,13 +86,13 @@ export function BonusDepartmentTable({ index, globalFilter, viewOnly }: any) {
 		<>
 			{!viewOnly ? (
 				<DataTableWithFunctions
-					columns={columns}
+					columns={bonus_department_columns}
 					data={bonusDepartmentMapper(data)}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
-					columns={columns}
+					columns={bonus_department_columns}
 					data={bonusDepartmentMapper(data)}
 					filterColumnKey={filterKey}
 				/>

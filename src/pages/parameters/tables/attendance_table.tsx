@@ -29,7 +29,7 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-export const columns = [
+export const attendance_columns = [
 	columnHelper.accessor("name", {
 		header: ({ column }) => {
 			return (
@@ -192,13 +192,13 @@ export function AttendanceTable({ index, globalFilter, viewOnly }: any) {
 		<>
 			{!viewOnly ? (
 				<DataTableWithFunctions
-					columns={columns}
+					columns={attendance_columns}
 					data={attendanceMapper(data)}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
-					columns={columns}
+					columns={attendance_columns}
 					data={attendanceMapper(data)}
 					filterColumnKey={filterKey}
 				/>
