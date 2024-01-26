@@ -9,6 +9,7 @@ import { EHRService } from "./ehr_service";
 export interface CombinedData {
    old_data: EmployeeData
    ehr_data: EmployeeData | null
+   excluded_keys: string[]
   }
 
 @injectable()
@@ -260,6 +261,7 @@ export class EmployeeDataService {
 				const combinedData: CombinedData = {
 					old_data: old_data,
 					ehr_data: ehr_data,
+					excluded_keys: excludedKeys,
 				};
 				return combinedData;
 			}
