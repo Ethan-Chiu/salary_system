@@ -1,6 +1,6 @@
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { MixerHorizontalIcon } from "@radix-ui/react-icons";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Button } from "~/components/ui/button";
 
 import {
@@ -19,11 +19,15 @@ interface DataTableViewOptionsProps<TData>
 export function DataTableViewOptions<TData>({
 	className,
 }: DataTableViewOptionsProps<TData>) {
-	const { selectedTableType, selectedTable } = useContext(dataTableContext);
+	const { selectedTable } = useContext(dataTableContext);
 
 	if (!selectedTable) {
 		return <div />;
 	}
+
+	useEffect(() => {
+		selectedTable.resetColumnVisibility();
+	}, [selectedTable]);
 
 	return (
 		<div className={cn(className)}>
@@ -54,9 +58,9 @@ export function DataTableViewOptions<TData>({
 									key={column.id}
 									className="capitalize"
 									checked={column.getIsVisible()}
-									onCheckedChange={(value) =>
-										column.toggleVisibility(!!value)
-									}
+									onCheckedChange={(value) => {
+										column.toggleVisibility(value);
+									}}
 								>
 									{column.id}
 								</DropdownMenuCheckboxItem>

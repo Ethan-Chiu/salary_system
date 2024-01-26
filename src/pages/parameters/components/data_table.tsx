@@ -39,7 +39,8 @@ export function DataTable<TData>({
 	filterColumnKey,
 	showTabs,
 }: DataTableProps<TData>) {
-	const { setSelectedTab, setSelectedTable } = useContext(dataTableContext);
+	const { selectedTab, setSelectedTab, setSelectedTable } =
+		useContext(dataTableContext);
 
 	const [rowSelection, setRowSelection] = useState({});
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
@@ -73,7 +74,7 @@ export function DataTable<TData>({
 
 	useEffect(() => {
 		setSelectedTable(table);
-	}, [table]);
+	}, [selectedTab]);
 
 	return (
 		<Tabs

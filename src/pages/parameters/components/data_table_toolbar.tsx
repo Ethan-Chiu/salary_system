@@ -2,7 +2,7 @@ import { DataTableViewOptions } from "../../../components/data_table/data_table_
 import { Input } from "~/components/ui/input";
 import { TabsList, TabsTrigger } from "~/components/ui/tabs";
 import ToolbarFunctionsProvider from "./function_sheet/functions_context";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import dataTableContext from "./context/data_table_context";
 import { DataTableFunctions } from "./function_sheet/data_table_functions";
 import { LoadingSpinner } from "~/components/loading";
@@ -16,7 +16,19 @@ export function DataTableToolbar<TData>({
 	filterColumnKey,
 	showTabs,
 }: DataTableToolbarProps<TData>) {
-	const { selectedTableType, selectedTable } = useContext(dataTableContext);
+	const { selectedTab, selectedTableType, selectedTable } =
+		useContext(dataTableContext);
+
+	const [filterValue, setFilterValue] = useState("");
+
+	useEffect(() => {
+		if (selectedTable) {
+			setFilterValue("");
+			selectedTable
+				.getColumn(filterColumnKey.toString())
+				?.setFilterValue("");
+		}
+	}, [selectedTab, selectedTable]);
 
 	if (!selectedTable) {
 		return (
@@ -31,15 +43,12 @@ export function DataTableToolbar<TData>({
 			{/* search bar */}
 			<Input
 				placeholder="Filter setting..."
-				value={
-					(selectedTable!
-						.getColumn(filterColumnKey.toString())
-						?.getFilterValue() as string) ?? ""
-				}
+				value={filterValue}
 				onChange={(event) => {
 					selectedTable!
 						.getColumn(filterColumnKey.toString())
 						?.setFilterValue(event.target.value);
+					setFilterValue(event.target.value);
 				}}
 				className="h-8 max-w-sm"
 			/>
@@ -58,7 +67,7 @@ export function DataTableToolbar<TData>({
 				</TabsList>
 			)}
 			{/*  */}
-			<DataTableViewOptions />
+			{/* <DataTableViewOptions /> */}
 			{/* Toolbar functions */}
 			<ToolbarFunctionsProvider selectedTableType={selectedTableType}>
 				<DataTableFunctions tableType={selectedTableType} />

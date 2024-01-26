@@ -110,7 +110,7 @@ function CompHistoryView() {
 									e.start_date,
 									e.end_date
 								) && (
-									<div className="absolute -bottom-3 right-2">
+									<div className="absolute -bottom-3 right-2 z-10">
 										<Badge>Current</Badge>
 									</div>
 								)}

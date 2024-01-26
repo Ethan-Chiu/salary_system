@@ -18,12 +18,12 @@ export default function DataTableContextProvider({
 	return (
 		<dataTableContext.Provider
 			value={{
-				selectedTableType: selectedTableType,
-				setSelectedTableType: setSelectedTableType,
+				selectedTableType,
+				setSelectedTableType,
 				selectedTab,
 				setSelectedTab,
-				selectedTable: selectedTable,
-				setSelectedTable: setSelectedTable,
+				selectedTable,
+				setSelectedTable,
 			}}
 		>
 			{children}
