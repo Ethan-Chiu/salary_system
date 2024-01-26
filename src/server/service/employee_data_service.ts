@@ -4,12 +4,15 @@ import { z } from "zod";
 import { createEmployeeDataService, updateEmployeeDataService } from "../api/types/parameters_input_type";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { select_value } from "./helper_function";
+import { IncomingMessage } from "http";
+import { Op } from "sequelize";
 import { EHRService } from "./ehr_service";
 
 export interface CombinedData {
-   old_data: EmployeeData
-   ehr_data: EmployeeData | null
-   excluded_keys: string[]
+	key: string
+   	db_value: any
+   	ehr_value: any
+	is_different: boolean
   }
 
 @injectable()
@@ -52,6 +55,8 @@ export class EmployeeDataService {
 		securities_account,
 		birthdate,
         bank_account,
+		//new foreign bank account
+		//new 久任獎金
 		english_name,
 		indigenous_name,
 		tax_identification_code,
@@ -227,52 +232,79 @@ export class EmployeeDataService {
 		}
 	}
 
-	async checkEmployeeData(func: string): Promise<CombinedData[] | undefined> {
-		var old_datas = [];
-	
+	// async getPayEmployeeNumbers(func: string): Promise<string[] > {
+	// 	var emp_nos: string[] = [];
+	// 	var ehr_datas: EmployeeData[] = [];
+	// 	const pay_work_status = ["一般人員", "當月離職人員"];
+	// 	if (func == "month_pay") {
+	// 		pay_emps = await EmployeeData.findAll({
+	// 			where: {
+	// 				work_status: {
+	// 					[Op.in]: pay_work_status,
+	// 				}
+	// 			},
+	// 			attributes: ["emp_no"]
+	// 		});
+	// 	}
+	// 	emp_nos = ehr_datas.map((ehr_data) => ehr_data.emp_no);
+	// 	return emp_nos
+	// }
+
+	async checkEmployeeData(func: string): Promise<CombinedData[][] | undefined> {
+		var db_datas = [];
+		// const emp_nos = await this.getPayEmployeeNumbers(func);
 		if (func == "month_salary") {
-			old_datas = await EmployeeData.findAll({
+			db_datas = await EmployeeData.findAll({
+				// where: {
+				// 	emp_no: {
+				// 		[Op.in]: emp_nos,
+				// 	}
+				// }
 			});
 		} else {
-			old_datas = await EmployeeData.findAll({
+			db_datas = await EmployeeData.findAll({
 			});
 		}
 		
-		const diffDatas = await Promise.all(old_datas.map(async (old_data) => {
+		const changedDatas = await Promise.all(db_datas.map(async (db_data) => {
 			// const ehrService = container.resolve(EHRService);
 			// const employeeDataService = container.resolve(EmployeeDataService);
-			// const ehr_data = await ehrService.getEmployeeDataByEmpNo(old_data.emp_no);
-			// await this.updateEmployeeData({id:old_data.id, gender: "female"});
-			await this.updateEmployeeData({id:old_data.id, has_esot: !old_data.has_esot});
-			var ehr_data = await this.getEmployeeDataById(old_data.id);
+			// const ehr_data = await ehrService.getEmployeeDataByEmpNo(db_data.emp_no);
+			// await this.updateEmployeeData({id:db_data.id, gender: "female"});
+			await this.updateEmployeeData({id:db_data.id, has_esot: !db_data.has_esot});
+			var ehr_data = await this.getEmployeeDataById(db_data.id);
 			const excludedKeys = ['create_date', 'create_by', 'update_date', 'update_by'];
 			// const dates = ['hire_date', 'entry_date', 'departure_date', 'birthdate'];
-        	const isDifferent = Object.keys(old_data.dataValues).some((key) => {
+			const keys = Object.keys(db_data.dataValues);
+        	const combinedDatas  = await Promise.all(keys.map(async (key) => {
 				console.log(key)
-				console.log(typeof (old_data as any)[key])
-				console.log((old_data as any)[key])
+				console.log(typeof (db_data as any)[key])
+				console.log((db_data as any)[key])
 				console.log(typeof (ehr_data as any)[key])
 				console.log((ehr_data as any)[key])
-				return !excludedKeys.includes(key) && (old_data as any)[key] !== (ehr_data as any)[key]
-			});
-
-			if (isDifferent) {
-				console.log('Diff')
+				const db_value = (db_data as any)[key]
+				const ehr_value = (ehr_data as any)[key]
+				const is_different = !excludedKeys.includes(key) && db_value !== ehr_value;
 				const combinedData: CombinedData = {
-					old_data: old_data,
-					ehr_data: ehr_data,
-					excluded_keys: excludedKeys,
-				};
-				return combinedData;
+					key: key,
+					db_value: db_value,
+					ehr_value: ehr_value,
+					is_different: is_different,	
+				}
+				return combinedData
+			}));
+
+			if (combinedDatas.some(async (combinedData) => await combinedData.is_different === true)) {
+				console.log('Diff')
+				return combinedDatas;
 			}
-	
-			return undefined; // Explicitly return undefined for the cases where old_data is equal to ehrData
+			return undefined; // Explicitly return undefined for the cases where db_data is equal to ehrData
 		}));
 	
 		// Filter out the undefined values
-		const filteredDiffDatas = diffDatas.filter((data): data is CombinedData => data !== undefined);
+		const filteredChangeDatas = changedDatas.filter((data): data is CombinedData[] => data !== undefined);
 	
-		return filteredDiffDatas;
+		return filteredChangeDatas;
 	}
 	
 	
