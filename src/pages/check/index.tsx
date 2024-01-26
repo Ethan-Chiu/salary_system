@@ -1,33 +1,14 @@
-import { RootLayout } from "~/components/layout/root_layout";
 import { type NextPageWithLayout } from "../_app";
-import { type ReactElement, useState, useEffect, Fragment } from "react";
+import { RootLayout } from "~/components/layout/root_layout";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
+import { type ReactElement, useState, useEffect} from "react";
+import { api } from "~/utils/api";
+import { CombinedData } from "~/server/service/employee_data_service";
+
 import { Button } from "~/components/ui/button";
-import { ScrollArea } from "~/components/ui/scroll-area";
 import { Separator } from "~/components/ui/separator";
 import { Header } from "~/components/header";
 import { Label } from "~/components/ui/label";
-import { api } from "~/utils/api";
-import { Paintbrush } from "lucide-react";
-import * as SelectPrimitive from "@radix-ui/react-select";
-
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "~/components/ui/select";
-
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableFooter,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "~/components/ui/table";
 
 import {
 	Command,
@@ -36,7 +17,6 @@ import {
 	CommandInput,
 	CommandItem,
 } from "~/components/ui/command";
-
 import {
 	Popover,
 	PopoverContent,
@@ -45,100 +25,12 @@ import {
 
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "~/lib/utils";
-
-import { displayData } from "./utils/display";
 import { SelectModeComponent } from "./components/Selects";
 import { AllDoneDialog } from "./components/AllDoneDialog";
-import { CombinedData } from "~/server/service/employee_data_service";
+import { EmployeeDataChange } from "./components/EmpDataTable";
 
 interface EMP {
 	emp_no: string;
-}
-
-interface EmpTableParameters {
-	empData: Array<CombinedData>,
-	mode: string,
-	diffColor: string
-}
-
-function EmployeeDataChange({
-	empData,
-	mode,
-	diffColor,
-}: EmpTableParameters) {
-	const [diffKeys, setDiffKeys] = useState<string[]>([]);
-	useEffect(() => {
-		let dk: Array<string> = [];
-		empData.map((d: CombinedData) => {
-			if(d.is_different) dk.push(d.key)
-		})
-		setDiffKeys(dk);
-	}, []);
-
-	const isDiff = (checkKey: string): boolean => {
-		return diffKeys.includes(checkKey);
-	};
-
-	function EmpTableContent() {
-		if (!diffColor) diffColor = "red";
-		const colorClassName = "text-red-500";
-		return (
-			<>
-				<ScrollArea className="h-full overflow-y-auto border text-center">
-					<Table>
-						<TableHeader className="bg-secondary">
-							<TableRow className="sticky top-0 bg-secondary hover:bg-secondary">
-								<TableHead className="w-1/3 text-center">
-									Key
-								</TableHead>
-								<TableHead className="w-1/3 text-center">
-									Old Value
-								</TableHead>
-								<TableHead className="w-1/3 text-center">
-									New Value
-								</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{empData.map(
-								(d: CombinedData, index: number) => {
-									let diff = isDiff(d.key);
-									return mode === "Changed" && !diff ? (
-										<Fragment key={d.key}></Fragment>
-									) : (
-										<TableRow key={d.key}>
-											<TableCell className="font-medium">
-												{d.key}
-											</TableCell>
-											<TableCell
-												className={`font-medium ${
-													diff && colorClassName
-												}`}
-											>
-												{displayData(
-													d.db_value
-												)}
-											</TableCell>
-											<TableCell
-												className={`font-medium ${
-													diff && colorClassName
-												}`}
-											>
-												{displayData(d.ehr_value)}
-											</TableCell>
-										</TableRow>
-									);
-								}
-							)}
-						</TableBody>
-						<TableFooter></TableFooter>
-					</Table>
-				</ScrollArea>
-			</>
-		);
-	}
-
-	return <EmpTableContent />;
 }
 
 const PageCheckEHR: NextPageWithLayout = () => {
@@ -265,7 +157,6 @@ const PageCheckEHR: NextPageWithLayout = () => {
 								(d: Array<CombinedData>) => (
 									<CommandItem
 										key={getKeyFromData(d, "emp_no")}
-										// value={d.old_data.emp_no}
 										value={generateLongString(
 											getKeyFromData(d, "emp_no")
 										)}
