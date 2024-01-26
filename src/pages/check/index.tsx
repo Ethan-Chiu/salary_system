@@ -47,7 +47,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 	const getKeyFromData = (
 		data: Array<CombinedData>,
 		query: string,
-		from?: string
+		from?: undefined | "ehr"
 	): any => {
 		if(data === undefined)	return null;
 		return !from
