@@ -29,10 +29,6 @@ import { SelectModeComponent } from "./components/Selects";
 import { AllDoneDialog } from "./components/AllDoneDialog";
 import { EmployeeDataChange } from "./components/EmpDataTable";
 
-interface EMP {
-	emp_no: string;
-}
-
 const PageCheckEHR: NextPageWithLayout = () => {
 	const getDiffDatas = api.employeeData.checkEmployeeData.useQuery({
 		func: "",
@@ -81,8 +77,6 @@ const PageCheckEHR: NextPageWithLayout = () => {
 		return getDiffDatas.data![IDX]!;
 	};
 
-	
-
 	const getKeyData = (emp_no: string, query: string) => {
 		return getKeyFromData(getEmpData(emp_no), query);
 	};
@@ -109,7 +103,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 		console.log("confirm");
 	};
 
-	function SelectedEmpDepartment({ emp_no }: EMP) {
+	function SelectedEmpDepartment({ emp_no }: {emp_no: string}) {
 		return <Label>部門：{getKeyData(emp_no, "department")}</Label>;
 	}
 
