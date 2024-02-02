@@ -8,6 +8,7 @@ import dataTableContext from "./context/data_table_context";
 import { TabsEnum } from "./context/tabs_enum";
 import CompHistoryView from "./history_view/history_view";
 import CurrentView from "./current_view/current_view";
+import { hasCalendarTabs } from "./data_table_tabs_config";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
@@ -22,12 +23,17 @@ export function DataTable<TData>({
 	filterColumnKey,
 	showTabs,
 }: DataTableProps<TData>) {
-	const { selectedTab, setSelectedTab, selectedTable } =
+	const { selectedTab, setSelectedTab, selectedTable, selectedTableType } =
 		useContext(dataTableContext);
 
 	return (
 		<Tabs
-			defaultValue={TabsEnum.Enum.current}
+			defaultValue={
+				selectedTab === TabsEnum.Enum.calendar &&
+				!hasCalendarTabs(selectedTableType)
+					? TabsEnum.Enum.current
+					: selectedTab
+			}
 			className="h-full w-full"
 			onValueChange={(tab) => {
 				setSelectedTab(TabsEnum.parse(tab));
@@ -44,12 +50,20 @@ export function DataTable<TData>({
 						<CurrentView columns={columns} data={data} />
 					</div>
 				</TabsContent>
-				<TabsContent value={TabsEnum.Enum.history} asChild className="m-0">
+				<TabsContent
+					value={TabsEnum.Enum.history}
+					asChild
+					className="m-0"
+				>
 					<div className="flex min-h-0 w-full flex-grow flex-col">
 						<CompHistoryView />
 					</div>
 				</TabsContent>
-				<TabsContent value={TabsEnum.Enum.calendar} asChild className="m-0">
+				<TabsContent
+					value={TabsEnum.Enum.calendar}
+					asChild
+					className="m-0"
+				>
 					<div className="flex min-h-0 w-full flex-grow flex-col">
 						<CalendarView />
 					</div>

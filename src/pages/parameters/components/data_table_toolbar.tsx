@@ -9,6 +9,7 @@ import { LoadingSpinner } from "~/components/loading";
 import { Table } from "@tanstack/react-table";
 import { TabsEnum } from "./context/tabs_enum";
 import { CalendarToolbarFunctions } from "./calendar_view/components/calendar_toolbar_functions";
+import { hasCalendarTabs } from "./data_table_tabs_config";
 
 interface DataTableToolbarProps<TData> {
 	filterColumnKey: keyof TData;
@@ -63,7 +64,7 @@ export function DataTableToolbar<TData>({
 					<TabsTrigger value={TabsEnum.Enum.history} className="h-6">
 						History
 					</TabsTrigger>
-					<TabsTrigger value={TabsEnum.Enum.calendar} className="h-6">
+					<TabsTrigger disabled={!hasCalendarTabs(selectedTableType)} value={TabsEnum.Enum.calendar} className="h-6">
 						Calendar
 					</TabsTrigger>
 				</TabsList>
