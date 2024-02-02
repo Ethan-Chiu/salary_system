@@ -1,6 +1,6 @@
 import { ShowTableEnum } from "../shown_tables";
 
-export function hasCalendarTabs(tableType: ShowTableEnum): boolean {
+export function hasHistory(tableType: ShowTableEnum): boolean {
     switch (tableType) {
         // case "TableAttendance":
         // case "TableBankSetting": 

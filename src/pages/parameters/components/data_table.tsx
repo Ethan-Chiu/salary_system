@@ -8,7 +8,7 @@ import dataTableContext from "./context/data_table_context";
 import { TabsEnum } from "./context/tabs_enum";
 import CompHistoryView from "./history_view/history_view";
 import CurrentView from "./current_view/current_view";
-import { hasCalendarTabs } from "./data_table_tabs_config";
+import { hasHistory } from "./data_table_tabs_config";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
@@ -29,8 +29,8 @@ export function DataTable<TData>({
 	return (
 		<Tabs
 			defaultValue={
-				selectedTab === TabsEnum.Enum.calendar &&
-				!hasCalendarTabs(selectedTableType)
+				selectedTab !== TabsEnum.Enum.current &&
+				!hasHistory(selectedTableType)
 					? TabsEnum.Enum.current
 					: selectedTab
 			}
