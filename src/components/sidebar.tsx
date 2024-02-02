@@ -125,12 +125,6 @@ const actionLinks: NavLinkEntry[] = [
 		collapsed: true,
 	},
 	{
-		title: "Modify",
-		icon: CalendarRange,
-		url: "/modify",
-		collapsed: false,
-	},
-	{
 		title: "Synchronize",
 		icon: CheckSquare,
 		url: "/check",
