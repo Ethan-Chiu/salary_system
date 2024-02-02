@@ -7,7 +7,6 @@ export function isValidDateString(input: string): string | undefined {
 
 	// Check if the string matches the yyyy-mm-ddThh:mm:ss.xxxZ format
 	const isoDateTimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
-	const dateFormatRegex = /^[A-Za-z]{3} [A-Za-z]{3} \d{2} \d{4} \d{2}:\d{2}:\d{2} GMT[+-]\d{4} \(GMT[+-]\d{2}:\d{2}\)$/;
 
 	if (yyyy_mm_ddRegex.test(input)) return "day";
 	if (isoDateTimeRegex.test(input)) return "hour";

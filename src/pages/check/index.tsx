@@ -29,10 +29,6 @@ import { SelectModeComponent } from "./components/Selects";
 import { AllDoneDialog } from "./components/AllDoneDialog";
 import { EmployeeDataChange } from "./components/EmpDataTable";
 
-interface EMP {
-	emp_no: string;
-}
-
 const PageCheckEHR: NextPageWithLayout = () => {
 	const getDiffDatas = api.employeeData.checkEmployeeData.useQuery({
 		func: "",
@@ -47,7 +43,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 	const getKeyFromData = (
 		data: Array<CombinedData>,
 		query: string,
-		from?: string
+		from?: undefined | "ehr"
 	): any => {
 		if (data === undefined) return null;
 		return !from
@@ -102,10 +98,10 @@ const PageCheckEHR: NextPageWithLayout = () => {
 	};
 
 	const handleAllDone = () => {
-		console.log("confirm");
+		console.log("confirm and call update function from api");
 	};
 
-	function SelectedEmpDepartment({ emp_no }: EMP) {
+	function SelectedEmpDepartment({ emp_no }: {emp_no: string}) {
 		return <Label>部門：{getKeyData(emp_no, "department")}</Label>;
 	}
 
@@ -221,8 +217,6 @@ const PageCheckEHR: NextPageWithLayout = () => {
 
 	function isFinished() {
 		return (
-			(checkedEmployees.length == getDataLength() - 1 &&
-				!checkedEmployees.includes(selectedEmployee)) ||
 			checkedEmployees.length == getDataLength()
 		);
 	}
