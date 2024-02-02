@@ -1,6 +1,7 @@
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { MixerHorizontalIcon } from "@radix-ui/react-icons";
-import { useContext, useEffect } from "react";
+import { Table } from "@tanstack/react-table";
+import { useContext } from "react";
 import { Button } from "~/components/ui/button";
 
 import {
@@ -14,20 +15,18 @@ import { cn } from "~/lib/utils";
 import dataTableContext from "~/pages/parameters/components/context/data_table_context";
 
 interface DataTableViewOptionsProps<TData>
-	extends React.HTMLAttributes<HTMLDivElement> {}
+	extends React.HTMLAttributes<HTMLDivElement> {
+	table: Table<TData>;
+}
 
 export function DataTableViewOptions<TData>({
+	table,
 	className,
 }: DataTableViewOptionsProps<TData>) {
-	const { selectedTable } = useContext(dataTableContext);
 
-	if (!selectedTable) {
+	if (!table) {
 		return <div />;
 	}
-
-	useEffect(() => {
-		selectedTable.resetColumnVisibility();
-	}, [selectedTable]);
 
 	return (
 		<div className={cn(className)}>
@@ -45,7 +44,7 @@ export function DataTableViewOptions<TData>({
 				<DropdownMenuContent align="end" className="w-[150px]">
 					<DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
 					<DropdownMenuSeparator />
-					{selectedTable!
+					{table!
 						.getAllColumns()
 						.filter(
 							(column) =>

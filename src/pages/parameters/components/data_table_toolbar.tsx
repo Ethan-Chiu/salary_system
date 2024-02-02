@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import dataTableContext from "./context/data_table_context";
 import { DataTableFunctions } from "./function_sheet/data_table_functions";
 import { LoadingSpinner } from "~/components/loading";
+import { Table } from "@tanstack/react-table";
 
 interface DataTableToolbarProps<TData> {
 	filterColumnKey: keyof TData;
@@ -18,19 +19,18 @@ export function DataTableToolbar<TData>({
 }: DataTableToolbarProps<TData>) {
 	const { selectedTab, selectedTableType, selectedTable } =
 		useContext(dataTableContext);
+	const table = selectedTable?.table;
 
 	const [filterValue, setFilterValue] = useState("");
 
 	useEffect(() => {
-		if (selectedTable) {
+		if (table) {
 			setFilterValue("");
-			selectedTable
-				.getColumn(filterColumnKey.toString())
-				?.setFilterValue("");
+			table.getColumn(filterColumnKey.toString())?.setFilterValue("");
 		}
 	}, [selectedTab, selectedTable]);
 
-	if (!selectedTable) {
+	if (!table) {
 		return (
 			<div className="flex grow items-center justify-center">
 				<LoadingSpinner />
@@ -45,7 +45,7 @@ export function DataTableToolbar<TData>({
 				placeholder="Filter setting..."
 				value={filterValue}
 				onChange={(event) => {
-					selectedTable!
+					table
 						.getColumn(filterColumnKey.toString())
 						?.setFilterValue(event.target.value);
 					setFilterValue(event.target.value);
@@ -67,7 +67,7 @@ export function DataTableToolbar<TData>({
 				</TabsList>
 			)}
 			{/*  */}
-			{/* <DataTableViewOptions /> */}
+			<DataTableViewOptions table={table} />
 			{/* Toolbar functions */}
 			<ToolbarFunctionsProvider selectedTableType={selectedTableType}>
 				<DataTableFunctions tableType={selectedTableType} />

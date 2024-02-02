@@ -6,6 +6,11 @@ import { Table } from "@tanstack/react-table";
 
 interface DataTableContextProviderProps {}
 
+export type TableWithKey = {
+	table: Table<any>;
+	key: string;
+}
+
 export default function DataTableContextProvider({
 	children,
 }: PropsWithChildren<DataTableContextProviderProps>) {
@@ -13,7 +18,7 @@ export default function DataTableContextProvider({
 		ShowTableEnumValues[0]
 	);
 	const [selectedTab, setSelectedTab] = useState<TabsEnumType>("now");
-	const [selectedTable, setSelectedTable] = useState<Table<any> | null>(null);
+	const [selectedTable, setSelectedTable] = useState<TableWithKey | null>(null);
 
 	return (
 		<dataTableContext.Provider
