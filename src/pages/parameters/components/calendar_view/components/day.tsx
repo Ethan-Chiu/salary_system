@@ -26,6 +26,7 @@ interface DayViewProps {
 
 export default function DayView({ day, rowIdx }: DayViewProps) {
 	const {
+		monthIndex,
 		mouseDownDate,
 		setMouseDownDate,
 		mouseUpDate,
@@ -87,13 +88,16 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 
 	return (
 		<HoverCard>
-			<div className="relative flex select-none flex-col">
+			<div className={cn("relative flex select-none flex-col", day.month() !== monthIndex%12 && "bg-secondary")}>
+				{/* header */}
 				<header className="flex flex-col items-center">
+					{/* day of the week */}
 					{rowIdx === 0 && (
 						<p className="mt-1 text-sm">
 							{day.format("ddd").toUpperCase()}
 						</p>
 					)}
+					{/* date */}
 					<p
 						className={cn(
 							"my-1 p-1 text-center text-sm",
@@ -112,6 +116,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 					onMouseUp={handleMouseUp}
 					onMouseOver={handleMouseOver}
 				>
+					{/* events */}
 					{Array.from(
 						{ length: getMaxLevel(dayEvents) + 1 },
 						(_, idx) => idx
@@ -124,6 +129,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 							return <div key={idx} className="mb-1 h-4 p-1" />;
 						}
 
+						// selected event
 						if (selectedEvent && evt.equals(selectedEvent)) {
 							return (
 								<HoverCardTrigger key={idx}>
@@ -141,6 +147,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 							);
 						}
 
+						// unselected event
 						return (
 							<CompEvent
 								key={idx}
