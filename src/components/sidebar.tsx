@@ -12,7 +12,7 @@ import {
 	Settings,
 	ShieldCheck,
 	SlidersHorizontal,
-	CheckSquare
+	CheckSquare,
 } from "lucide-react";
 
 import {
@@ -59,10 +59,9 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 						}}
 						className={cn(
 							buttonVariants({ variant: "ghost" }),
-							props.currentPath === props.navLinkEntry.url
-								? "bg-muted hover:bg-muted"
-								: "",
-							"w-full justify-start"
+							props.currentPath === props.navLinkEntry.url &&
+								"bg-muted hover:bg-muted",
+							"w-full justify-center items-center"
 						)}
 					>
 						<props.navLinkEntry.icon className="h-4 w-4" />
@@ -82,13 +81,12 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 			}}
 			className={cn(
 				buttonVariants({ variant: "ghost" }),
-				props.currentPath === props.navLinkEntry.url
-					? "bg-muted hover:bg-muted"
-					: "",
+				props.currentPath === props.navLinkEntry.url &&
+					"bg-muted hover:bg-muted",
 				"w-full justify-start"
 			)}
 		>
-			<div className="flex">
+			<div className="flex items-center">
 				<props.navLinkEntry.icon className="h-4 w-4 flex-shrink-0" />
 				<div className="line-clamp-1 break-all ps-2">
 					{props.children}
@@ -129,7 +127,7 @@ const actionLinks: NavLinkEntry[] = [
 		icon: CheckSquare,
 		url: "/check",
 		collapsed: false,
-	}	
+	},
 ];
 
 const settingLinks: NavLinkEntry[] = [

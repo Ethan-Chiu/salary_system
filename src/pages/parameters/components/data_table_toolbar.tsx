@@ -61,10 +61,18 @@ export function DataTableToolbar<TData>({
 					<TabsTrigger value={TabsEnum.Enum.current} className="h-6">
 						Current
 					</TabsTrigger>
-					<TabsTrigger disabled={!hasHistory(selectedTableType)} value={TabsEnum.Enum.history} className="h-6">
+					<TabsTrigger
+						disabled={!hasHistory(selectedTableType)}
+						value={TabsEnum.Enum.history}
+						className="h-6"
+					>
 						History
 					</TabsTrigger>
-					<TabsTrigger disabled={!hasHistory(selectedTableType)} value={TabsEnum.Enum.calendar} className="h-6">
+					<TabsTrigger
+						disabled={!hasHistory(selectedTableType)}
+						value={TabsEnum.Enum.calendar}
+						className="h-6"
+					>
 						Calendar
 					</TabsTrigger>
 				</TabsList>
@@ -72,14 +80,18 @@ export function DataTableToolbar<TData>({
 			{/*  */}
 			<DataTableViewOptions table={table} />
 			{/* Toolbar functions */}
-			<ToolbarFunctionsProvider selectedTableType={selectedTableType}>
-				{selectedTab === TabsEnum.Enum.current && (
-					<DataTableFunctions tableType={selectedTableType} />
-				)}
-				{selectedTab === TabsEnum.Enum.calendar && (
-					<CalendarToolbarFunctions tableType={selectedTableType} />
-				)}
-			</ToolbarFunctionsProvider>
+			<div className="w-12">
+				<ToolbarFunctionsProvider selectedTableType={selectedTableType}>
+					{selectedTab === TabsEnum.Enum.current && (
+						<DataTableFunctions tableType={selectedTableType} />
+					)}
+					{selectedTab === TabsEnum.Enum.calendar && (
+						<CalendarToolbarFunctions
+							tableType={selectedTableType}
+						/>
+					)}
+				</ToolbarFunctionsProvider>
+			</div>
 		</div>
 	);
 }
