@@ -58,6 +58,19 @@ export const employeeDataRouter = createTRPCRouter({
 			await employeeDataService.deleteEmployeeData(input.id);
 		}),
 
+	getPaidEmployees: publicProcedure
+		.input(z.object({ func: z.string() }))
+		.query(async ({ input }) => {
+			const employeeDataService = container.resolve(EmployeeDataService);
+			let paidEmployees = await employeeDataService.getPaidEmployees(
+				input.func
+			);
+			if (paidEmployees == null) {
+				throw new BaseResponseError("paidEmployees does not exist");
+			}
+			return paidEmployees;
+		}),
+
 	checkEmployeeData: publicProcedure
 		.input(z.object({ func: z.string() }))
 		.query(async ({ input }) => {

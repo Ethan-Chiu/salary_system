@@ -8,12 +8,23 @@ import { IncomingMessage } from "http";
 import { Op } from "sequelize";
 import { EHRService } from "./ehr_service";
 
+
 export interface CombinedData {
 	key: string
    	db_value: any
    	ehr_value: any
 	is_different: boolean
   }
+export interface PaidEmployee {
+	emp_no: string
+	name: string
+	english_name: string 
+	department: string
+	work_status: string
+	departure_date: string | null
+	check: boolean
+}
+
 
 @injectable()
 export class EmployeeDataService {
@@ -232,23 +243,45 @@ export class EmployeeDataService {
 		}
 	}
 
-	// async getPayEmployeeNumbers(func: string): Promise<string[] > {
-	// 	var emp_nos: string[] = [];
-	// 	var ehr_datas: EmployeeData[] = [];
-	// 	const pay_work_status = ["一般人員", "當月離職人員"];
-	// 	if (func == "month_pay") {
-	// 		pay_emps = await EmployeeData.findAll({
-	// 			where: {
-	// 				work_status: {
-	// 					[Op.in]: pay_work_status,
-	// 				}
-	// 			},
-	// 			attributes: ["emp_no"]
-	// 		});
-	// 	}
-	// 	emp_nos = ehr_datas.map((ehr_data) => ehr_data.emp_no);
-	// 	return emp_nos
-	// }
+	async getPaidEmployees(func: string): Promise<PaidEmployee[]> {
+		var paid_emps: PaidEmployee[] = [];
+		const pay_work_status = ["一般人員", "當月離職人員"];
+		if (func == "month_pay") {
+			const all_emps = await EmployeeData.findAll({
+				attributes: [ "emp_name", "english_name", "department","emp_no", "work_status", "departure_date"],
+			});
+			console.log('check all emps')
+			console.log(all_emps)
+			paid_emps = await Promise.all(all_emps.map((emp) => {
+				var work_check = true
+				var departure_check = false
+				if (!pay_work_status.includes(emp.work_status)) {
+					work_check = false
+				}
+				if (emp.work_status != "當月離職人員" && emp.departure_date == null) {
+					departure_check = true
+				}
+				else if (emp.work_status == "當月離職人員" && emp.departure_date != null) {
+					const current_month = new Date().getMonth();
+					const leaving_month = new Date(emp.departure_date).getMonth();
+					if (current_month == leaving_month+1) {
+						departure_check = true
+					}
+				}
+				const paid_emp : PaidEmployee = {
+					emp_no: emp.emp_no,
+					name: emp.emp_name,
+					english_name: emp.english_name,
+					department: emp.department,
+					work_status: emp.work_status,
+					departure_date: emp.departure_date,
+					check: work_check && departure_check
+				}
+				return paid_emp
+			}))
+		}
+		return paid_emps
+	}
 
 	async checkEmployeeData(func: string): Promise<CombinedData[][] | undefined> {
 		var db_datas = [];
@@ -310,4 +343,8 @@ export class EmployeeDataService {
 	
 }
 
+
+function moment() {
+	throw new Error("Function not implemented.");
+}
 

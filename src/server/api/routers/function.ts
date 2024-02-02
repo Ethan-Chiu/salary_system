@@ -44,15 +44,10 @@ export const functionRouter = createTRPCRouter({
 		.query(async ({input}) => {
 		const excelService = container.resolve(ExcelService);
 		const SheetA = await excelService.getSheetA(input.ids);
-		const SheetB = await excelService.getSheetB();
 		const Sheets = [
 			{
 				name: "SheetA",
 				data: SheetA,
-			},
-			{
-				name: "SheetB",
-				data: SheetB,
 			},
 		];
 		return Sheets;
