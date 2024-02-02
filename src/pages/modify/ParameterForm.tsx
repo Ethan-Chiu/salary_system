@@ -129,7 +129,6 @@ export function ParameterForm({
 					<Button
 						variant={"outline"}
 						onClick={() => {
-							console.log("Cancel");
 							returnPage(0);
 						}}
 					>
@@ -141,10 +140,6 @@ export function ParameterForm({
 						className="col-start-5"
 						variant={"destructive"}
 						onClick={() => {
-							console.log(
-								"delete data id = %d",
-								original_data.id
-							);
 							deleteFunction({ id: original_data.id });
 							returnPage(0);
 						}}
@@ -155,7 +150,6 @@ export function ParameterForm({
 				)}
 				<p
 					onClick={() => {
-						console.log(values);
 						handleSubmit();
 						// setOpenDialog(true);
 					}}

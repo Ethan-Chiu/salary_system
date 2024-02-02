@@ -5,6 +5,7 @@ import { debugRouter } from "./routers/debug";
 import { seedRouter } from "./routers/seed";
 import { accessRouter } from "./routers/access";
 import { functionRouter } from "./routers/function";
+import { employeeDataRouter } from "./routers/employee_data";
 
 /**
  * This is the primary router for your server.
@@ -18,6 +19,7 @@ export const appRouter = createTRPCRouter({
 	seed: seedRouter,
 	access: accessRouter,
 	function: functionRouter,
+	employeeData : employeeDataRouter,
 });
 
 // export type definition of API

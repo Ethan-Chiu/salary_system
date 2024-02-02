@@ -12,8 +12,6 @@ import { InsuranceRateSetting } from "~/server/database/entity/SALARY/insurance_
 export const seedRouter = createTRPCRouter({
 	seed: publicProcedure
 		.query(async () => {
-            
-            console.log("bank setting seed")
             try {
                 await dataSource.manager
                     .createQueryBuilder()

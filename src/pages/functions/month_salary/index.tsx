@@ -3,33 +3,49 @@ import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { Header } from "~/components/header";
 import { NextPageWithLayout } from "../../_app";
 import { api } from "~/utils/api";
-import {
-	Select,
-	SelectValue,
-	SelectTrigger,
-	SelectItem,
-	SelectGroup,
-	SelectContent,
-	SelectLabel,
-} from "~/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { useState } from "react";
-import { HolidayTable } from "../tables/holiday_table";
-import { OvertimeTable } from "../tables/overtime_table";
-import { PaysetTable } from "../tables/payset_table";
 import { ProgressBar } from "~/components/functions/progress_bar";
-import { Button } from "~/components/ui/button";
 import { Translate } from "~/lib/utils/translation";
 import ExcelViewer from "./ExcelViewer";
 import { LoadingSpinner } from "~/components/loading";
-import { CheckParameters } from "./CheckParameters";
+import { ParameterPage } from "./parameters_page";
+import { DataPage } from "./data_page";
+import { EmployeePage } from "./employee_page";
+import { SyncPage } from "./sync_page";
+import { Button } from "~/components/ui/button";
 
-const TabOptions = ["請假", "加班", "工作天數", "其他", "其他"];
-const progressBarLabels = ["確認資料", "確認參數", "匯出報表"];
+export const progressBarLabels = [
+	"確認員工",
+	"同步員工資料",
+	"確認資料",
+	"確認參數",
+	"匯出報表",
+];
 
 const MonthSalary: NextPageWithLayout = () => {
 	const [selectedIndex, setSelectedIndex] = useState(0);
-	const pageList = [<DataPage />, <ParameterPage />, <ExportPage />];
+	const pageList = [
+		<EmployeePage
+			selectedIndex={selectedIndex}
+			setSelectedIndex={setSelectedIndex}
+		/>,
+		<SyncPage
+			selectedIndex={selectedIndex}
+			setSelectedIndex={setSelectedIndex}
+		/>,
+		<DataPage
+			selectedIndex={selectedIndex}
+			setSelectedIndex={setSelectedIndex}
+		/>,
+		<ParameterPage
+			selectedIndex={selectedIndex}
+			setSelectedIndex={setSelectedIndex}
+		/>,
+		<ExportPage
+			selectedIndex={selectedIndex}
+			setSelectedIndex={setSelectedIndex}
+		/>,
+	];
 	return (
 		<div className="flex h-full flex-col p-4">
 			<Header title="functions" showOptions className="mb-4" />
@@ -37,23 +53,7 @@ const MonthSalary: NextPageWithLayout = () => {
 				labels={progressBarLabels}
 				selectedIndex={selectedIndex}
 			/>
-			<br />
 			{pageList[selectedIndex]}
-			<br />
-			<div className="flex justify-between">
-				<Button
-					onClick={() => setSelectedIndex(selectedIndex - 1)}
-					disabled={selectedIndex === 0}
-				>
-					{Translate("previous_step")}
-				</Button>
-				<Button
-					onClick={() => setSelectedIndex(selectedIndex + 1)}
-					disabled={selectedIndex === progressBarLabels.length - 1}
-				>
-					{Translate("next_step")}
-				</Button>
-			</div>
 		</div>
 	);
 };
@@ -68,98 +68,13 @@ MonthSalary.getLayout = function getLayout(page: React.ReactElement) {
 
 export default MonthSalary;
 
-function DataPage() {
-	const getPeriod = api.function.getPeriod.useQuery();
-	const [period, setPeriod] = useState(-1);
-
-	function getTable(table_name: string) {
-		switch (table_name) {
-			case "請假":
-				return <HolidayTable period={period} />;
-			case "加班":
-				return <OvertimeTable period={period} />;
-			case "工作天數":
-				return <PaysetTable period={period} />;
-			default:
-				return <p>No implement</p>;
-		}
-	}
-
-	if (getPeriod.isFetched)
-		return (
-			<div className="grow">
-				<Select
-					onValueChange={(chosen) =>
-						setPeriod(
-							getPeriod.data!.find(
-								(item) => item.period_name === chosen
-							)?.period_id || -1
-						)
-					}
-				>
-					<SelectTrigger className="w-[180px]">
-						<SelectValue placeholder="Select a period" />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectGroup>
-							<SelectLabel>Period</SelectLabel>
-							{getPeriod.data!.map((period_info) => {
-								return (
-									<SelectItem value={period_info.period_name}>
-										{period_info.period_name}
-									</SelectItem>
-								);
-							})}
-						</SelectGroup>
-					</SelectContent>
-				</Select>
-				<br />
-				<Tabs defaultValue={TabOptions[0]} className="w-full">
-					<TabsList className={"grid w-full grid-cols-5"}>
-						{TabOptions.map((option) => {
-							return (
-								<TabsTrigger value={option}>
-									{option}
-								</TabsTrigger>
-							);
-						})}
-					</TabsList>
-					{TabOptions.map((option) => {
-						return (
-							<TabsContent value={option}>
-								{period > 0 ? getTable(option) : <></>}
-							</TabsContent>
-						);
-					})}
-				</Tabs>
-			</div>
-		);
-	else
-		return (
-			<div className="flex grow items-center justify-center">
-				<LoadingSpinner />
-			</div>
-		);
-}
-
-function ParameterPage() {
-	const isFetch = true;
-	return (
-		<>
-			{isFetch ? (
-				<div className="grow">
-					<CheckParameters />
-				</div>
-			) : (
-				<div className="flex grow items-center justify-center">
-					<LoadingSpinner />
-				</div>
-			)}
-		</>
-	);
-}
-
-function ExportPage() {
+function ExportPage({
+	selectedIndex,
+	setSelectedIndex,
+}: {
+	selectedIndex: number;
+	setSelectedIndex: (index: number) => void;
+}) {
 	const getExcelA = api.function.getExcelA.useQuery();
 
 	function getExcelData(Alldatas: any) {
@@ -191,9 +106,27 @@ function ExportPage() {
 	return (
 		<>
 			{getExcelA.isFetched ? (
-				<div className="grow">
-					<ExcelViewer sheets={getExcelData(getExcelA.data)} />
-				</div>
+				<>
+					<div className="grow">
+						<ExcelViewer sheets={getExcelData(getExcelA.data)} />
+					</div>
+					<div className="flex justify-between">
+						<Button
+							onClick={() => setSelectedIndex(selectedIndex - 1)}
+							disabled={selectedIndex === 0}
+						>
+							{Translate("previous_step")}
+						</Button>
+						<Button
+							onClick={() => setSelectedIndex(selectedIndex + 1)}
+							disabled={
+								selectedIndex === progressBarLabels.length - 1
+							}
+						>
+							{Translate("next_step")}
+						</Button>
+					</div>
+				</>
 			) : (
 				<div className="flex grow items-center justify-center">
 					<LoadingSpinner />

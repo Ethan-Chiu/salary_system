@@ -31,7 +31,12 @@ export class EmployeePayment extends Model<
     declare labor_retirement: number;
     declare occupational_injury: number;
     declare start_date: string;
-    declare end_date: string;
+    declare end_date: string | null;
+	declare dir_sup_comp : number;
+	declare food_bonus : number;
+	declare moon_fes_bonus : number;
+	declare dragonboat_fes_bonus : number;
+	declare performance_bonus : number;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -137,6 +142,26 @@ EmployeePayment.init(
 			type: DataTypes.STRING(128),
 			allowNull: false,
 		},
+		dir_sup_comp : {
+			type: DataTypes.INTEGER.UNSIGNED,
+			allowNull: false,
+		},
+		food_bonus : {
+			type: DataTypes.INTEGER.UNSIGNED,
+			allowNull: false,
+		},
+		moon_fes_bonus : {
+			type: DataTypes.INTEGER.UNSIGNED,
+			allowNull: false,
+		},
+		dragonboat_fes_bonus : {
+			type: DataTypes.INTEGER.UNSIGNED,
+			allowNull: false,
+		},
+		performance_bonus : {
+			type: DataTypes.INTEGER.UNSIGNED,
+			allowNull: false,
+		}
 	},
 	{
 		sequelize,

@@ -8,6 +8,7 @@ import { ProfileForm } from "./components/profile";
 import { AppearanceForm } from "./components/appearance";
 import { Header } from "~/components/header";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
+import { changePasswordForm } from "./components/changePassword";
 
 const PageSettings: NextPageWithLayout = () => {
 	return (
@@ -58,6 +59,7 @@ const PageSettings: NextPageWithLayout = () => {
 								</p>
 							</div>
 						</div>
+						{changePasswordForm("card")}
 						<Separator className="my-4" />
 					</TabsContent>
 					<TabsContent
