@@ -1,13 +1,7 @@
-import { type NextPageWithLayout } from "../_app";
-import { RootLayout } from "~/components/layout/root_layout";
-import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
-import { type ReactElement, useState, useEffect } from "react";
+import { useState } from "react";
 import { api } from "~/utils/api";
 import { CombinedData } from "~/server/service/employee_data_service";
-
 import { Button } from "~/components/ui/button";
-import { Separator } from "~/components/ui/separator";
-import { Header } from "~/components/header";
 import { Label } from "~/components/ui/label";
 
 import {
@@ -25,15 +19,21 @@ import {
 
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "~/lib/utils";
-import { SelectModeComponent } from "./components/Selects";
-import { AllDoneDialog } from "./components/AllDoneDialog";
-import { EmployeeDataChange } from "./components/EmpDataTable";
+import { SelectModeComponent } from "~/pages/check/components/Selects";
+import { EmployeeDataChange } from "~/pages/check/components/EmpDataTable";
+import { AllDoneDialog } from "~/pages/check/components/AllDoneDialog";
+import { Translate } from "~/lib/utils/translation";
 
 interface EMP {
 	emp_no: string;
 }
-
-const PageCheckEHR: NextPageWithLayout = () => {
+export function SyncPage({
+	selectedIndex,
+	setSelectedIndex,
+}: {
+	selectedIndex: number;
+	setSelectedIndex: (index: number) => void;
+}) {
 	const getDiffDatas = api.employeeData.checkEmployeeData.useQuery({
 		func: "",
 	});
@@ -102,6 +102,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 	};
 
 	const handleAllDone = () => {
+		setSelectedIndex(selectedIndex + 1);
 		console.log("confirm");
 	};
 
@@ -239,8 +240,6 @@ const PageCheckEHR: NextPageWithLayout = () => {
 		return (
 			<>
 				<div className="flex h-full flex-grow flex-col">
-					<Header title="Data Check" />
-					<Separator />
 					<div className="min-h-0 grow p-4">
 						<div className="mb-4 flex min-h-0 items-center">
 							<SelectEmpComponent />
@@ -265,23 +264,28 @@ const PageCheckEHR: NextPageWithLayout = () => {
 								diffColor={diffColor}
 							/>
 						</div>
+					</div>
+					<div className="flex justify-between">
+						<Button
+							key="PreviousButton"
+							onClick={() => setSelectedIndex(selectedIndex - 1)}
+						>
+							{Translate("previous_step")}
+						</Button>
+						{!isFinished() && (
+							<Button
+								key="ConfirmButton"
+								onClick={() => handleConfirmChange()}
+							>
+								{Translate("next_step")}
+							</Button>
+						)}
 
-						<div className="mt-4 flex justify-end">
-							{!isFinished() && (
-								<Button
-									key="ConfirmButton"
-									onClick={() => handleConfirmChange()}
-								>
-									{"Confirm Change"}
-								</Button>
-							)}
-
-							{isFinished() && (
-								<AllDoneDialog
-									confirmFunction={() => handleAllDone()}
-								/>
-							)}
-						</div>
+						{isFinished() && (
+							<AllDoneDialog
+								confirmFunction={() => handleAllDone()}
+							/>
+						)}
 					</div>
 				</div>
 			</>
@@ -289,7 +293,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 	}
 
 	return (
-		<>
+		<div className="grow">
 			{!getDiffDatas.isFetched ? (
 				<FetchingPage />
 			) : (getDiffDatas.data ?? []).length == 0 ? (
@@ -297,16 +301,6 @@ const PageCheckEHR: NextPageWithLayout = () => {
 			) : (
 				<MainPage />
 			)}
-		</>
+		</div>
 	);
-};
-
-PageCheckEHR.getLayout = function getLayout(page: ReactElement) {
-	return (
-		<RootLayout>
-			<PerpageLayoutNav pageTitle="check">{page}</PerpageLayoutNav>
-		</RootLayout>
-	);
-};
-
-export default PageCheckEHR;
+}
