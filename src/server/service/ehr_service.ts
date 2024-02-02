@@ -6,6 +6,7 @@ import { Period } from "../database/entity/UMEDIA/period";
 import { Holiday } from "../database/entity/UMEDIA/holiday";
 import { Overtime } from "../database/entity/UMEDIA/overtime";
 import { Payset } from "../database/entity/UMEDIA/payset";
+import { EmployeeData } from "../database/entity/SALARY/employee_data";
 
 @injectable()
 export class EHRService {
@@ -60,6 +61,19 @@ export class EHRService {
 		return paysetList;
 	}
 
+	//fake
+	async getEmployeeDataByEmpNo(emp_no: string): Promise<any> {
+		const dbConnection = container.resolve(Database).connection;
+		const dataList = await dbConnection.query(
+			this.GET_EMPLOYEE_DATA_QUERY(emp_no),
+			{
+				type: QueryTypes.SELECT,
+			}
+		);
+		const employeeData: Payset[] = dataList.map(Payset.fromDB);
+		return employeeData;
+	}
+
 	private GET_PERIOD_QUERY(): string {
 		return `SELECT "PERIOD_ID", "PERIOD_NAME", "START_DATE", "END_DATE", "STATUS", "ISSUE_DATE" FROM "U_HR_PERIOD" WHERE "U_HR_PERIOD"."STATUS" = 'OPEN'`;
 	}
@@ -74,5 +88,9 @@ export class EHRService {
 
 	private GET_PAYSET_QUERY(period_id: number): string {
 		return `SELECT * FROM "U_HR_PAYSET_V" WHERE "U_HR_PAYSET_V"."PERIOD_ID" = '${period_id}'`;
+	}
+
+	private GET_EMPLOYEE_DATA_QUERY(emp_no: string): string {
+		return `SELECT * FROM "U_HR_PAYSET_V" WHERE "U_HR_PAYSET_V"."EMP_NO" = '${emp_no}'`;
 	}
 }

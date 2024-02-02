@@ -31,12 +31,9 @@ function createOneKeySchema(key: string, config: any) {
 		}
 		if (type === "date") {
 			schema = z.preprocess((d) => {
-				if(d === "") {
+				if(d === "" || d === undefined) {
 					return (config.onlynull)?null:undefined;
 				} 
-				else if(d === undefined) {
-					return null;
-				}
 				else {
 					return d;
 				}
@@ -73,6 +70,24 @@ function createOneKeySchema(key: string, config: any) {
 			// z.coerce.number(getRequiredError(key))
 		}
 		if (type === "date") {
+<<<<<<< HEAD:src/pages/modify/Schemas/createSchema.tsx
+			if(config.onlynull)
+				schema = z.coerce.date().optional().transform((a) => a??null).nullable()
+			else
+				schema = z.coerce.date(getRequiredError(key))
+			// schema = z.preprocess((a) => {
+			// 	if (typeof a === "string") {
+			// 		console.log(a);
+			// 		return (a === "") ? ((config.onlynull)?null:undefined) : new Date(a);
+			// 	}
+			// 	else if (isDate(a)) {
+			// 		return a;
+			// 	}
+			// 	else if (a === undefined) {					
+			// 		return null;
+			// 	}
+			// }, z.coerce.date(getRequiredError(key)));
+=======
 			schema = z.preprocess((a) => {
 				if (typeof a === "string") {
 					return (a === "") ? undefined : new Date(a);
@@ -84,6 +99,7 @@ function createOneKeySchema(key: string, config: any) {
 					return null;
 				}
 			}, z.coerce.date(getRequiredError(key)));
+>>>>>>> develop:src/pages/parameters/Schemas/create_schema.tsx
 		}
 		if (type === "enum") {
 			if (config.subtype === "number") {

@@ -216,3 +216,89 @@ export const createTrustMoneyAPI = TrustMoney;
 export const createTrustMoneyService = TrustMoney;
 export const updateTrustMoneyAPI = TrustMoney.merge(Id).partial();
 export const updateTrustMoneyService = TrustMoney.merge(Id).partial();
+
+const EmployeeAccount = z.object({
+	emp_no: z.string(),
+	bank_account: z.string(),
+	ratio: z.number(),
+});
+
+export const createEmployeeAccountAPI = EmployeeAccount;
+export const createEmployeeAccountService = EmployeeAccount;
+export const updateEmployeeAccountAPI = EmployeeAccount.merge(Id).partial();
+export const updateEmployeeAccountService = EmployeeAccount.merge(Id).partial();
+
+const EmployeePayment = z.object({
+	emp_no: z.string(),
+	base_salary: z.number(),
+	supervisor_bonus: z.number(),
+	job_bonus: z.number(),
+	subsidy_bonus: z.number(),
+	shift_bonus: z.number(),
+	professional_cert_bonus: z.number(),
+	labor_retirement_self: z.number(),
+	emp_trust_reserve: z.number(),
+	org_trust_reserve: z.number(),
+	emp_special_trust_incent: z.number(),
+	org_special_trust_incent: z.number(),
+	l_i: z.number(),
+	h_i: z.number(),
+	labor_retirement: z.number(),
+	occupational_injury: z.number(),
+	dir_sup_comp: z.number(),
+	food_bonus: z.number(),
+	moon_fes_bonus: z.number(),
+	dragonboat_fes_bonus: z.number(),
+	performance_bonus: z.number(),
+});
+
+export const createEmployeePaymentAPI = EmployeePayment.merge(DateAPI);
+export const createEmployeePaymentService = EmployeePayment.merge(DateService);
+export const updateEmployeePaymentAPI = EmployeePayment.merge(Id).merge(DateAPI).partial();
+export const updateEmployeePaymentService = EmployeePayment.merge(Id).merge(DateService).partial();
+
+const EmployeeData = z.object({
+  emp_no: z.string(),
+  emp_name: z.string(),
+  work_type: z.string(),
+  work_status: z.string(),
+  department: z.string(),
+  position: z.number(),
+  position_type: z.string(),
+  gender: z.string(),
+  group_insurance_type: z.string(),
+  performance_level: z.string(),
+  probationary_period_over: z.boolean(),
+  old_age_benefit: z.boolean(),
+  dependents_count: z.number(),
+  h_i_dependents_count: z.number(),
+  hire_date: z.string(),
+  entry_date: z.string().nullable(),
+  departure_date: z.string().nullable(),
+  identity_number: z.string(),
+  bonus_calculation: z.boolean(),
+  bonus_ratio: z.number(),
+  disability_level: z.string(),
+  labor_retirement_self_ratio: z.number(),
+  has_esot: z.boolean(),
+  tax_rate_category: z.string(),
+  nationality: z.string(),
+  registered_address: z.string(),
+  postal_code: z.string(),
+  mailing_address: z.string(),
+  email: z.string(),
+  bank_full_name: z.string(),
+  branch_full_name: z.string(),
+  securities_code: z.string(),
+  securities_account: z.string(),
+  birthdate: z.string(),
+  bank_account: z.string(),
+  english_name: z.string(),
+  indigenous_name: z.string().nullable(),
+  tax_identification_code: z.string(),
+});
+
+export const createEmployeeDataAPI = EmployeeData;
+export const createEmployeeDataService = EmployeeData;
+export const updateEmployeeDataAPI = EmployeeData.merge(Id).partial();
+export const updateEmployeeDataService = EmployeeData.merge(Id).partial();

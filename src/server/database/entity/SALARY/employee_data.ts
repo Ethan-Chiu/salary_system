@@ -25,14 +25,15 @@ export class EmployeeData extends Model<
     declare group_insurance_type: string;
     declare performance_level: string;
     declare probationary_period_over: boolean;
-    declare old_age_benifit: boolean;
+    declare old_age_benefit: boolean;
     declare dependents_count: number;
     declare h_i_dependents_count: number;
-    declare hire_date: Date;
-    declare entry_date: Date | null;
-    declare departure_date: Date | null;
+    declare hire_date: string;
+    declare entry_date: string | null;
+    declare departure_date: string | null;
     declare identity_number: string;
     declare bonus_calculation: boolean;
+    declare bonus_ratio: number;
     declare disability_level: string;
     declare labor_retirement_self_ratio: number;
     declare has_esot: boolean;
@@ -46,7 +47,7 @@ export class EmployeeData extends Model<
     declare branch_full_name: string;
     declare securities_code: string;
     declare securities_account: string;
-    declare birthdate: Date;
+    declare birthdate: string;
     declare bank_account: string;
     declare english_name: string;
     declare indigenous_name: string | null;
@@ -114,7 +115,7 @@ EmployeeData.init(
             type: DataTypes.BOOLEAN,
 			allowNull: false,
         },
-        old_age_benifit: {
+        old_age_benefit: {
             type: DataTypes.BOOLEAN,
 			allowNull: false,
         },
@@ -127,15 +128,15 @@ EmployeeData.init(
 			allowNull: false,
         },
         hire_date: {
-			type: DataTypes.DATE,
+			type: DataTypes.STRING(32),
 			allowNull: false,
 		},
         entry_date: {
-			type: DataTypes.DATE,
+			type: DataTypes.STRING(32),
 			allowNull: true,
 		},
         departure_date:{
-            type: DataTypes.DATE,
+            type: DataTypes.STRING(32),
 			allowNull: true,
         },
         identity_number:{
@@ -145,6 +146,10 @@ EmployeeData.init(
         bonus_calculation: {
             type: DataTypes.BOOLEAN,
 			allowNull: false,
+        },
+        bonus_ratio:{
+            type: DataTypes.FLOAT,
+            allowNull: false,
         },
         disability_level:{
             type: DataTypes.STRING(32),
@@ -199,7 +204,7 @@ EmployeeData.init(
 			allowNull: false,
         },
         birthdate: {
-			type: DataTypes.DATE,
+			type: DataTypes.STRING(32),
 			allowNull: false,
 		},
         bank_account: {

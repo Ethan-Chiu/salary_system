@@ -18,7 +18,8 @@
       "type": "string"
     },
     "start_date": {
-      "type": "date"
+      "type": "date",
+      "optional": true
     },
     "end_date": {
         "type": "date",

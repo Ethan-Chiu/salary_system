@@ -196,9 +196,7 @@ function CompRoleDropdown() {
 							<h4 className="text-sm font-semibold">
 								{info.username + " (" + info.role + ")"}
 							</h4>
-							<p className="text-sm">
-								{info.description}
-							</p>
+							<p className="text-sm">{info.description}</p>
 							<div className="flex items-center pt-2">
 								<CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
 								<span className="text-xs text-muted-foreground">
@@ -221,12 +219,9 @@ function CompRoleDropdown() {
 					filter={(value, search) => {
 						value = value.toLowerCase();
 						search = search.toLowerCase();
-						console.log("value " + value)
-						console.log("search "+ search)
 						if (value.includes(search)) return 1;
 						return 0;
 					}}
-					
 				>
 					<CommandInput
 						placeholder="Search an employee"

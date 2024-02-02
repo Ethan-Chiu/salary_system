@@ -2,6 +2,7 @@ import { container } from "tsyringe";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { EHRService } from "~/server/service/ehr_service";
+import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { ExcelService } from "~/server/service/excel_service";
 
 export const functionRouter = createTRPCRouter({
@@ -38,18 +39,15 @@ export const functionRouter = createTRPCRouter({
 
 			return payset;
 		}),
-	getExcelA: publicProcedure.query(async () => {
+	getExcelA: publicProcedure
+		.input(z.object({ ids: z.array(z.number()) }))
+		.query(async ({input}) => {
 		const excelService = container.resolve(ExcelService);
-		const SheetA = await excelService.getSheetA();
-		const SheetB = await excelService.getSheetB();
+		const SheetA = await excelService.getSheetA(input.ids);
 		const Sheets = [
 			{
 				name: "SheetA",
 				data: SheetA,
-			},
-			{
-				name: "SheetB",
-				data: SheetB,
 			},
 		];
 		return Sheets;

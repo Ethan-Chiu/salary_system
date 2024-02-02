@@ -3,3 +3,8 @@ export const isString = (parameter: any) => (Object.prototype.toString.call(para
 export function isDateType(parameter: any): parameter is Date {
     return Object.prototype.toString.call(parameter) === "[object Date]"
 }
+
+export function isDateString(input: string): boolean {
+    const date = new Date(input);
+    return !isNaN(date.getTime());
+}

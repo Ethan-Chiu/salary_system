@@ -36,6 +36,8 @@ const Template = (props: any) => {
 		return (
 			<>
 				{queryFunction.data ? (
+					<div className="m-4" >
+					<div className="hover:overflow-auto">
 					<Table>
 						<TableHeader>
 							<TableRow>
@@ -103,6 +105,8 @@ const Template = (props: any) => {
 							)}
 						</TableBody>
 					</Table>
+					</div>
+					</div>
 				) : (
 					<></>
 				)}

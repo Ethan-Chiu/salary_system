@@ -12,6 +12,7 @@ import {
 	Settings,
 	ShieldCheck,
 	SlidersHorizontal,
+	CheckSquare
 } from "lucide-react";
 
 import {
@@ -129,6 +130,12 @@ const actionLinks: NavLinkEntry[] = [
 		url: "/modify",
 		collapsed: false,
 	},
+	{
+		title: "Synchronize",
+		icon: CheckSquare,
+		url: "/check",
+		collapsed: false,
+	}	
 ];
 
 const settingLinks: NavLinkEntry[] = [
