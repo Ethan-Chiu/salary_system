@@ -5,8 +5,9 @@ async function fetchData() {
 		const levelsData: any = await api.parameters.getCurrentLevel.useQuery();
 
 		if (levelsData.isFetched && levelsData.data) {
-			const levels = levelsData.data.map((ld: any) => ld.level.toString());
-            console.log(levels);
+			const levels = levelsData.data.map((ld: any) =>
+				ld.level.toString()
+			);
 			return {
 				type: {
 					type: "enum",
@@ -22,7 +23,7 @@ async function fetchData() {
 			};
 		} else {
 			// If data is not yet fetched or is undefined, wait for a short time and then retry
-            console.log("Retry")
+			console.log("Retry");
 			await new Promise((resolve) => setTimeout(resolve, 1000));
 			return fetchData();
 		}

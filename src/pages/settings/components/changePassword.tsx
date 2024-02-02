@@ -36,7 +36,6 @@ const formComponent = (mode?: string) => {
 
 	async function checkPassword(data: any) {
 		try {
-			console.log(data);
 			await api_login.mutateAsync({
 				emp_no: session?.user.emp_no!,
 				password: data.old_pw,
@@ -64,7 +63,6 @@ const formComponent = (mode?: string) => {
 
 	async function handleSubmit(data: any) {
 		const status: string = await checkPassword(data);
-		console.log(status);
 		if (status === "Success") {
 			await callAPI(data.new_pw);
 			toast({
@@ -86,8 +84,8 @@ const formComponent = (mode?: string) => {
 					onSubmit={(data) => {
 						handleSubmit(data);
 					}}
-                    values={values}
-                    onValuesChange={setValues}
+					values={values}
+					onValuesChange={setValues}
 					fieldConfig={{
 						old_pw: {
 							inputProps: {
@@ -110,7 +108,7 @@ const formComponent = (mode?: string) => {
 					}}
 				>
 					{/* <AutoFormSubmit>Confirm</AutoFormSubmit> */}
-                    <Button>Confirm</Button>
+					<Button>Confirm</Button>
 				</AutoForm>
 			</>
 		);
@@ -126,20 +124,14 @@ const formComponent = (mode?: string) => {
 						Automatically generate a form from a Zod schema.
 					</CardDescription> */}
 					</CardHeader>
-                    
-					<CardContent>
-                        {getForm()}
-                    </CardContent>
+
+					<CardContent>{getForm()}</CardContent>
 				</Card>
 				<Toaster />
 			</div>
 		);
 
-	return (
-		<>
-			{getForm()}
-		</>
-	);
+	return <>{getForm()}</>;
 };
 
 export const changePasswordForm = (mode?: string) => {

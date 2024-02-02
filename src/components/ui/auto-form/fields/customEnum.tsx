@@ -41,7 +41,6 @@ export default function AutoFormEnum({
 					value={field.value}
 					defaultValue={""}
 					onChange={(e) => {
-						console.log(e.target.value);
 						field.onChange(e);
 					}}
 					className="hidden"

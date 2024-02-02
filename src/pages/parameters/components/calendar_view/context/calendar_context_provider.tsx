@@ -61,7 +61,6 @@ export default function CalendarContextProvider({
 					}
 				})
 				.map((e) => {
-					console.log()
 					return new CalendarEvent(
 						new Date(e.start_date),
 						new Date(e.end_date ?? 8630000000000000)
