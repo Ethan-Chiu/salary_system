@@ -8,6 +8,7 @@ import { DataTableFunctions } from "./function_sheet/data_table_functions";
 import { LoadingSpinner } from "~/components/loading";
 import { Table } from "@tanstack/react-table";
 import { TabsEnum } from "./context/tabs_enum";
+import { CalendarToolbarFunctions } from "./calendar_view/components/calendar_toolbar_functions";
 
 interface DataTableToolbarProps<TData> {
 	filterColumnKey: keyof TData;
@@ -70,12 +71,14 @@ export function DataTableToolbar<TData>({
 			{/*  */}
 			<DataTableViewOptions table={table} />
 			{/* Toolbar functions */}
-			{(selectedTab === TabsEnum.Enum.current ||
-				selectedTab === TabsEnum.Enum.calendar) && (
-				<ToolbarFunctionsProvider selectedTableType={selectedTableType}>
+			<ToolbarFunctionsProvider selectedTableType={selectedTableType}>
+				{selectedTab === TabsEnum.Enum.current && (
 					<DataTableFunctions tableType={selectedTableType} />
-				</ToolbarFunctionsProvider>
-			)}
+				)}
+				{selectedTab === TabsEnum.Enum.calendar && (
+					<CalendarToolbarFunctions tableType={selectedTableType} />
+				)}
+			</ToolbarFunctionsProvider>
 		</div>
 	);
 }
