@@ -31,6 +31,7 @@ export default function CalendarContextProvider({
 		null
 	);
 	const [openSheet, setOpenSheet] = useState<boolean>(false);
+	const [updateSheet, setUpdateSheet] = useState<boolean>(false);
 
 	// const [eventList, dispatchEventList] = useReducer(savedEventsReducer, []);
 	const [eventList, setEventList] = useState<CalendarEvent[]>([]);
@@ -115,14 +116,13 @@ export default function CalendarContextProvider({
 				setMouseUpDate,
 				openSheet,
 				setOpenSheet,
+				updateSheet,
+				setUpdateSheet,
 				showEventList,
 				setEventList,
 				selectedEvent,
 				setSelectedEvent,
 				resetMouse,
-				//   showEventModal,
-				//   setShowEventModal,
-				//   savedEvents,
 			}}
 		>
 			{children}

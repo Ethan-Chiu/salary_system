@@ -14,6 +14,7 @@ import ApiFunctionsProvider, {
 	apiFunctionsContext,
 } from "../context/api_context_provider";
 import { LoadingSpinner } from "~/components/loading";
+import CalendarUpdateEvent from "./components/calendar_update_event";
 
 export default function CalendarView() {
 	const { selectedTableType } = useContext(dataTableContext);
@@ -73,6 +74,7 @@ function CompCalendarView() {
 					{/* </ScrollArea> */}
 				</div>
 				<CalendarAddEvent />
+				<CalendarUpdateEvent />
 			</div>
 		</>
 	);

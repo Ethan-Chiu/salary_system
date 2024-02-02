@@ -63,7 +63,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	const [formValues, setFormValues] = useState<
 		Partial<z.infer<z.AnyZodObject>>
 	>(getDefaults(formSchema));
-	
+
 	const [openDialog, setOpenDialog] = useState(false);
 
 	function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
@@ -119,6 +119,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 		);
 	}
 
+	// Select one entry
 	if (mode !== "create" && selectedData === null) {
 		const noIDData: any[] = data.map((item: any) => {
 			const { ["id"]: id, ...rest } = item;
@@ -141,6 +142,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 		);
 	}
 
+	// Create or update an entry
 	return (
 		<>
 			<AutoForm
@@ -222,7 +224,10 @@ const CompViewAllDatas = ({
 									Object.keys(dataNoID[0]).map(
 										(key: string) => {
 											return (
-												<TableHead key={key} className="whitespace-nowrap text-center">
+												<TableHead
+													key={key}
+													className="whitespace-nowrap text-center"
+												>
 													{Translate(key)}
 												</TableHead>
 											);
