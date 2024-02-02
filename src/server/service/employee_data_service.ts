@@ -277,11 +277,11 @@ export class EmployeeDataService {
 			// const dates = ['hire_date', 'entry_date', 'departure_date', 'birthdate'];
 			const keys = Object.keys(db_data.dataValues);
         	const combinedDatas  = await Promise.all(keys.map(async (key) => {
-				console.log(key)
-				console.log(typeof (db_data as any)[key])
-				console.log((db_data as any)[key])
-				console.log(typeof (ehr_data as any)[key])
-				console.log((ehr_data as any)[key])
+				// console.log(key)
+				// console.log(typeof (db_data as any)[key])
+				// console.log((db_data as any)[key])
+				// console.log(typeof (ehr_data as any)[key])
+				// console.log((ehr_data as any)[key])
 				const db_value = (db_data as any)[key]
 				const ehr_value = (ehr_data as any)[key]
 				const is_different = !excludedKeys.includes(key) && db_value !== ehr_value;
@@ -295,7 +295,7 @@ export class EmployeeDataService {
 			}));
 
 			if (combinedDatas.some(async (combinedData) => await combinedData.is_different === true)) {
-				console.log('Diff')
+				// console.log('Diff')
 				return combinedDatas;
 			}
 			return undefined; // Explicitly return undefined for the cases where db_data is equal to ehrData

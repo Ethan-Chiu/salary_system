@@ -100,7 +100,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 	};
 
 	const handleAllDone = () => {
-		console.log("confirm");
+		console.log("confirm and call update function from api");
 	};
 
 	function SelectedEmpDepartment({ emp_no }: {emp_no: string}) {
@@ -136,8 +136,6 @@ const PageCheckEHR: NextPageWithLayout = () => {
 				<PopoverContent className="w-[200px] p-0">
 					<Command
 						filter={(value, search) => {
-							console.log(value);
-							console.log(search);
 							return value.toUpperCase().includes(search) ||
 								value.toLowerCase().includes(search)
 								? 1
@@ -208,8 +206,6 @@ const PageCheckEHR: NextPageWithLayout = () => {
 
 	function isFinished() {
 		return (
-			(checkedEmployees.length == getDataLength() - 1 &&
-				!checkedEmployees.includes(selectedEmployee)) ||
 			checkedEmployees.length == getDataLength()
 		);
 	}
@@ -223,7 +219,6 @@ const PageCheckEHR: NextPageWithLayout = () => {
 	}
 
 	function MainPage() {
-		console.log(getEmpData(selectedEmployee))
 		return (
 			<>
 				<div className="flex h-full flex-grow flex-col">

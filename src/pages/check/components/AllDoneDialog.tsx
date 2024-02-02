@@ -23,7 +23,7 @@ export function AllDoneDialog({confirmFunction}: DialogInput) {
     const [check, setCheck] = useState(false);
 	return (
 		<Dialog>
-			<DialogTrigger asChild>
+			<DialogTrigger  asChild>
 				<Button>All Done</Button>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[425px]">
