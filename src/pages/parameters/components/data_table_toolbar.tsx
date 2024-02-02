@@ -7,6 +7,7 @@ import dataTableContext from "./context/data_table_context";
 import { DataTableFunctions } from "./function_sheet/data_table_functions";
 import { LoadingSpinner } from "~/components/loading";
 import { Table } from "@tanstack/react-table";
+import { TabsEnum } from "./context/tabs_enum";
 
 interface DataTableToolbarProps<TData> {
 	filterColumnKey: keyof TData;
@@ -55,13 +56,13 @@ export function DataTableToolbar<TData>({
 			{/* tabs */}
 			{showTabs !== false && (
 				<TabsList className="grid h-8 w-96 grid-cols-3">
-					<TabsTrigger value="now" className="h-6">
-						Now
+					<TabsTrigger value={TabsEnum.Enum.current} className="h-6">
+						Current
 					</TabsTrigger>
-					<TabsTrigger value="history" className="h-6">
+					<TabsTrigger value={TabsEnum.Enum.history} className="h-6">
 						History
 					</TabsTrigger>
-					<TabsTrigger value="calendar" className="h-6">
+					<TabsTrigger value={TabsEnum.Enum.calendar} className="h-6">
 						Calendar
 					</TabsTrigger>
 				</TabsList>
@@ -69,9 +70,12 @@ export function DataTableToolbar<TData>({
 			{/*  */}
 			<DataTableViewOptions table={table} />
 			{/* Toolbar functions */}
-			<ToolbarFunctionsProvider selectedTableType={selectedTableType}>
-				<DataTableFunctions tableType={selectedTableType} />
-			</ToolbarFunctionsProvider>
+			{(selectedTab === TabsEnum.Enum.current ||
+				selectedTab === TabsEnum.Enum.calendar) && (
+				<ToolbarFunctionsProvider selectedTableType={selectedTableType}>
+					<DataTableFunctions tableType={selectedTableType} />
+				</ToolbarFunctionsProvider>
+			)}
 		</div>
 	);
 }

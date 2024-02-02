@@ -1,6 +1,6 @@
 import React from "react";
 import { ShowTableEnum, ShowTableEnumValues } from "../../shown_tables";
-import { TabsEnumType } from "./tabs_enum";
+import { TabsEnum, TabsEnumType } from "./tabs_enum";
 import { Table } from "@tanstack/react-table";
 import { TableWithKey } from "./data_table_context_provider";
 
@@ -14,7 +14,7 @@ const dataTableContext = React.createContext<{
 }>({
 	selectedTableType: ShowTableEnumValues[0],
 	setSelectedTableType: (table: ShowTableEnum) => {},
-	selectedTab: "now",
+	selectedTab: TabsEnum.Enum.current,
 	setSelectedTab: (tab: TabsEnumType) => {},
 	selectedTable: null,
 	setSelectedTable: (value: TableWithKey | null) => {},
