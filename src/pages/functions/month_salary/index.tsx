@@ -1,3 +1,12 @@
+import {
+	Select,
+	SelectValue,
+	SelectTrigger,
+	SelectItem,
+	SelectGroup,
+	SelectContent,
+	SelectLabel,
+} from "~/components/ui/select";
 import { RootLayout } from "~/components/layout/root_layout";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { Header } from "~/components/header";
@@ -24,20 +33,28 @@ export const progressBarLabels = [
 
 const MonthSalary: NextPageWithLayout = () => {
 	const [selectedIndex, setSelectedIndex] = useState(0);
+	const getPeriod = api.function.getPeriod.useQuery();
+	const [period, setPeriod] = useState(-1);
+
 	const pageList = [
 		<EmployeePage
+			period={period}
+			func={"month_salary"}
 			selectedIndex={selectedIndex}
 			setSelectedIndex={setSelectedIndex}
 		/>,
 		<SyncPage
+			period={period}
 			selectedIndex={selectedIndex}
 			setSelectedIndex={setSelectedIndex}
 		/>,
 		<DataPage
+			period={period}
 			selectedIndex={selectedIndex}
 			setSelectedIndex={setSelectedIndex}
 		/>,
 		<ParameterPage
+			period={period}
 			selectedIndex={selectedIndex}
 			setSelectedIndex={setSelectedIndex}
 		/>,
@@ -53,6 +70,39 @@ const MonthSalary: NextPageWithLayout = () => {
 				labels={progressBarLabels}
 				selectedIndex={selectedIndex}
 			/>
+			{getPeriod.isFetched ? (
+				<div className="py-4">
+					<Select
+						onValueChange={(chosen) =>
+							setPeriod(
+								getPeriod.data!.find(
+									(item) => item.period_name === chosen
+								)?.period_id || -1
+							)
+						}
+					>
+						<SelectTrigger className="w-[180px]">
+							<SelectValue placeholder="Select a period" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectGroup>
+								<SelectLabel>Period</SelectLabel>
+								{getPeriod.data!.map((period_info) => {
+									return (
+										<SelectItem
+											value={period_info.period_name}
+										>
+											{period_info.period_name}
+										</SelectItem>
+									);
+								})}
+							</SelectGroup>
+						</SelectContent>
+					</Select>
+				</div>
+			) : (
+				<></>
+			)}
 			{pageList[selectedIndex]}
 		</div>
 	);

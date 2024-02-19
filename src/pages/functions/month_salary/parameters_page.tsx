@@ -42,9 +42,11 @@ type TableComponent = {
 };
 
 export function ParameterPage({
+	period,
 	selectedIndex,
 	setSelectedIndex,
 }: {
+	period: number;
 	selectedIndex: number;
 	setSelectedIndex: (index: number) => void;
 }) {
@@ -95,8 +97,8 @@ export function ParameterPage({
 
 	return (
 		<>
-			<div className="flex h-screen flex-col">
-				<div className="m-4 min-h-0 flex-grow rounded-md border-2">
+			<div className="flex h-full flex-col">
+				<div className="h-0 grow rounded-md border">
 					<ResizablePanelGroup direction="horizontal">
 						<ResizablePanel defaultSize={15} minSize={10}>
 							<div className="flex h-[48px] items-center justify-center text-lg">
@@ -120,7 +122,7 @@ export function ParameterPage({
 											size={18}
 											className="ml-1 mr-2 flex-shrink-0 cursor-pointer"
 										/>
-										<div className="m-1 line-clamp-1">
+										<div className="m-1 line-clamp-1 break-all">
 											{table.tag}
 										</div>
 									</div>
@@ -148,7 +150,7 @@ export function ParameterPage({
 					</ResizablePanelGroup>
 				</div>
 			</div>
-			<div className="flex justify-between">
+			<div className="mt-4 flex justify-between">
 				<Button
 					onClick={() => setSelectedIndex(selectedIndex - 1)}
 					disabled={selectedIndex === 0}

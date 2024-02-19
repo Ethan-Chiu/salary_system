@@ -28,9 +28,11 @@ interface EMP {
 	emp_no: string;
 }
 export function SyncPage({
+	period,
 	selectedIndex,
 	setSelectedIndex,
 }: {
+	period: number;
 	selectedIndex: number;
 	setSelectedIndex: (index: number) => void;
 }) {
@@ -240,32 +242,27 @@ export function SyncPage({
 		return (
 			<>
 				<div className="flex h-full flex-grow flex-col">
-					<div className="min-h-0 grow p-4">
-						<div className="mb-4 flex min-h-0 items-center">
-							<SelectEmpComponent />
-							<div className="ml-4">
-								<SelectedEmpDepartment
-									emp_no={selectedEmployee}
-								/>
-							</div>
-							<div className="ml-auto"></div>
-							<div className="ml-2">
-								<SelectModeComponent
-									mode={mode}
-									setMode={setMode}
-								/>
-							</div>
+					<div className="mb-4 flex items-center">
+						<SelectEmpComponent />
+						<div className="ml-4">
+							<SelectedEmpDepartment emp_no={selectedEmployee} />
 						</div>
-
-						<div className="h-[60vh] min-h-0 w-full flex-grow">
-							<EmployeeDataChange
-								empData={getEmpData(selectedEmployee)}
+						<div className="ml-auto"></div>
+						<div className="ml-2">
+							<SelectModeComponent
 								mode={mode}
-								diffColor={diffColor}
+								setMode={setMode}
 							/>
 						</div>
 					</div>
-					<div className="flex justify-between">
+					<div className="h-0 w-full flex-grow">
+						<EmployeeDataChange
+							empData={getEmpData(selectedEmployee)}
+							mode={mode}
+							diffColor={diffColor}
+						/>
+					</div>
+					<div className="mt-4 flex justify-between">
 						<Button
 							key="PreviousButton"
 							onClick={() => setSelectedIndex(selectedIndex - 1)}

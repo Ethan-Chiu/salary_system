@@ -65,45 +65,37 @@ export function DataTable<TData>({
 	});
 
 	return (
-		<Tabs defaultValue="now" className="h-full w-full">
-			<div className="flex h-full flex-col">
-				{/* TODO: fix global filter*/}
-				<DataTableToolbar
-					table={table}
-					globalFilter=""
-					filterKey={filterColumnKey}
-				/>
-				<Separator />
-				<TabsContent value="now" asChild>
-					<div className="flex min-h-0 w-full flex-grow flex-col">
-						{/* table header and body */}
-						<div className="min-h-0 w-full flex-grow">
-							<ScrollArea className="scroll h-full">
-								<Table className="border-b-[1px]">
-									<DataTableDataHeader
-										table={table}
-										dataPerRow={dataPerRow}
-									/>
-									<DataTableDataBody
-										table={table}
-										dataPerRow={dataPerRow}
-									/>
-								</Table>
-								<ScrollBar
-									orientation="horizontal"
-									hidden={true}
-								/>
-							</ScrollArea>
-						</div>
-						{/* table pagination */}
-						<DataTablePagination
+		<Tabs
+			defaultValue="now"
+			className="flex h-full w-full flex-col rounded-md border"
+		>
+			{/* TODO: fix global filter*/}
+			<DataTableToolbar
+				table={table}
+				globalFilter=""
+				filterKey={filterColumnKey}
+			/>
+			<Separator />
+			<TabsContent value="now" className="h-0 grow" asChild>
+				<ScrollArea>
+					<Table className="border-b-[1px]">
+						<DataTableDataHeader
 							table={table}
-							setDataPerRow={setDataPerRow}
-							className="bg-secondary"
+							dataPerRow={dataPerRow}
 						/>
-					</div>
-				</TabsContent>
-			</div>
+						<DataTableDataBody
+							table={table}
+							dataPerRow={dataPerRow}
+						/>
+					</Table>
+					<ScrollBar orientation="horizontal" hidden={true} />
+				</ScrollArea>
+			</TabsContent>
+			<DataTablePagination
+				table={table}
+				setDataPerRow={setDataPerRow}
+				className="bg-secondary"
+			/>
 		</Tabs>
 	);
 }

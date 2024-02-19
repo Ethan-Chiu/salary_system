@@ -329,7 +329,7 @@ export class EmployeeDataService {
 	async getPaidEmployees(func: string): Promise<PaidEmployee[]> {
 		var paid_emps: PaidEmployee[] = [];
 		const pay_work_status = ["一般人員", "當月離職人員"];
-		if (func == "month_pay") {
+		if (func == "month_salary") {
 			const all_emps = await EmployeeData.findAll({
 				attributes: [ "emp_name", "english_name", "department","emp_no", "work_status", "departure_date"],
 			});
