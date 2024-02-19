@@ -22,7 +22,6 @@ export interface CombinedData {
 export interface PaidEmployee {
 	emp_no: string
 	name: string
-	english_name: string 
 	department: string
 	work_status: string
 	quit_date: string | null
@@ -215,7 +214,7 @@ export class EmployeeDataService {
 		const pay_work_status = ["一般人員", "當月離職人員_破月", "當月離職人員_全月"];
 		if (func == "month_salary") {
 			var salary_emps = await EmployeeData.findAll({
-				attributes: [ "emp_name", "english_name", "u_dep","emp_no", "work_status", "quit_date"],
+				attributes: [ "emp_name", "u_dep","emp_no", "work_status", "quit_date"],
 			});
 			var ehr_emps = await ehrService.getEmp(period);
 			// Step 1: Create a dictionary for ehr_emps
@@ -304,7 +303,6 @@ export class EmployeeDataService {
 				const paid_emp : PaidEmployee = {
 					emp_no: emp.emp_no,
 					name: emp.emp_name,
-					english_name: emp.english_name,
 					department: emp.department,
 					work_status: emp.work_status,
 					quit_date: emp.quit_date,
