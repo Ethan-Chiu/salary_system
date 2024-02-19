@@ -24,8 +24,8 @@ export class EmployeeData extends Model<
     declare work_status: string;
     declare accesible: boolean | null;
     declare sex_type: string;
-    declare dependents: number;
-    declare healthcare: number;
+    declare dependents: number | null;
+    declare healthcare: number | null;
     declare registration_date: string;
     declare quit_date: string | null;
     declare licens_id: string | null;

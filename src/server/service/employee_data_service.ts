@@ -211,7 +211,7 @@ export class EmployeeDataService {
 	async getCandPaidEmployees(func: string, period:number): Promise<PaidEmployee[]> {
 		var paid_emps: PaidEmployee[] = [];
 		const ehrService = container.resolve(EHRService);
-		const pay_work_status = ["一般人員", "當月離職人員_破月", "當月離職人員_全月"];
+		const pay_work_status = ["一般員工", "當月離職人員_破月", "當月離職人員_全月"];
 		if (func == "month_salary") {
 			var salary_emps = await EmployeeData.findAll({
 				attributes: [ "emp_name", "u_dep","emp_no", "work_status", "quit_date"],
@@ -263,10 +263,10 @@ export class EmployeeDataService {
 			var msg=''
 			paid_emps = await Promise.all(all_emps.map(async (emp) => {
 				switch (emp.work_type) {
-					case "一般人員":
+					case "一般員工":
 						if (emp.quit_date != null) {
 							if( await this.checkQuitDate(period, emp.quit_date) !='future'){
-								msg = '一般人員卻有不合理離職日期('+emp.quit_date+')';
+								msg = '一般員工卻有不合理離職日期('+emp.quit_date+')';
 							}
 						}
 						break;
@@ -348,11 +348,16 @@ export class EmployeeDataService {
 				const keys = Object.keys(db_data.dataValues);
 				const combinedDatas = await Promise.all(
 					keys.map(async (key) => {
+						console.log("key :" + key)
+						
 						const db_value = (db_data as any)[key];
+						console.log("db_value :" + db_value)
 						const ehr_value = (ehr_datas as any)[key];
+						console.log("ehr_value :" + ehr_value)
 						const is_different =
 							!excludedKeys.includes(key) &&
 							db_value !== ehr_value;
+						console.log("is_different :" + is_different)
 						const combinedData: CombinedData = {
 							key: key,
 							db_value: db_value,
@@ -385,7 +390,7 @@ export class EmployeeDataService {
 	//stage3
 	async getPaidEmps(func: string) : Promise<EmployeeData[]> {
 		// if (func == "month") {
-			const paid_status=["一般人員","當月離職人員_全月","當月離職人員_破月"]
+			const paid_status=["一般員工","當月離職人員_全月","當月離職人員_破月"]
 			const paid_emps = await EmployeeData.findAll({
 				where: {
 					work_status: {
