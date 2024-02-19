@@ -72,9 +72,9 @@ export function DataTable<TData>({
 
 	return (
 		<div className="flex h-full flex-col">
-			<div className="flex min-h-0 w-full flex-grow flex-col">
+			<div className="flex h-0 w-full flex-grow flex-col">
 				{/* table header and body */}
-				<div className="min-h-0 w-full flex-grow">
+				<div className="h-0 w-full flex-grow">
 					<ScrollArea className="scroll h-full">
 						<Table className="border-b-[1px]">
 							<DataTableDataHeader

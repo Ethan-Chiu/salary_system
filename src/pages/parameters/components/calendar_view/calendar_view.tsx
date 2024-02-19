@@ -68,7 +68,7 @@ function CompCalendarView() {
 		<>
 			<div className="flex h-full flex-col">
 				<CalendarHeader />
-				<div className="flex min-h-0 flex-grow">
+				<div className="flex h-0 flex-grow">
 					{/* <ScrollArea className="w-full"> */}
 					<MonthView month={currenMonth} />
 					{/* </ScrollArea> */}

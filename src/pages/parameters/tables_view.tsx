@@ -124,38 +124,40 @@ function CompTablesSelector() {
 	}, [selectedTag]);
 
 	return (
-		<>
+		<div className="flex h-full flex-col">
 			<div className="flex h-[48px] items-center justify-center text-lg">
 				<div>Tables</div>
 			</div>
 			<Separator />
-			<ScrollArea className="h-full">
-				{ShowTableEnumValues.map((table) => {
-					const tableComponent = tableComponentMap[table];
+			<div className="h-0 grow">
+				<ScrollArea className="h-full">
+					{ShowTableEnumValues.map((table) => {
+						const tableComponent = tableComponentMap[table];
 
-					return (
-						<div
-							key={table}
-							className={cn(
-								"m-2 flex items-center rounded-md border p-1 hover:bg-muted",
-								table === selectedTag && "bg-muted"
-							)}
-							onClick={() => {
-								setSelectedTag(table);
-							}}
-						>
-							<tableComponent.icon
-								size={18}
-								className="ml-1 mr-2 flex-shrink-0 cursor-pointer"
-							/>
-							<div className="m-1 line-clamp-1 break-all">
-								{getTableName(table)}
+						return (
+							<div
+								key={table}
+								className={cn(
+									"m-2 flex items-center rounded-md border p-1 hover:bg-muted",
+									table === selectedTag && "bg-muted"
+								)}
+								onClick={() => {
+									setSelectedTag(table);
+								}}
+							>
+								<tableComponent.icon
+									size={18}
+									className="ml-1 mr-2 flex-shrink-0 cursor-pointer"
+								/>
+								<div className="m-1 line-clamp-1 break-all">
+									{getTableName(table)}
+								</div>
 							</div>
-						</div>
-					);
-				})}
-			</ScrollArea>
-		</>
+						);
+					})}
+				</ScrollArea>
+			</div>
+		</div>
 	);
 }
 

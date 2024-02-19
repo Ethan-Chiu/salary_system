@@ -46,7 +46,7 @@ export function DataTable<TData>({
 				/>
 				<Separator />
 				<TabsContent value={TabsEnum.Enum.current} asChild>
-					<div className="flex min-h-0 w-full flex-grow flex-col">
+					<div className="flex h-0 w-full flex-grow flex-col">
 						<CurrentView columns={columns} data={data} />
 					</div>
 				</TabsContent>
@@ -55,7 +55,7 @@ export function DataTable<TData>({
 					asChild
 					className="m-0"
 				>
-					<div className="flex min-h-0 w-full flex-grow flex-col">
+					<div className="flex h-0 w-full flex-grow flex-col">
 						<CompHistoryView />
 					</div>
 				</TabsContent>
@@ -64,7 +64,7 @@ export function DataTable<TData>({
 					asChild
 					className="m-0"
 				>
-					<div className="flex min-h-0 w-full flex-grow flex-col">
+					<div className="flex h-0 w-full flex-grow flex-col">
 						<CalendarView />
 					</div>
 				</TabsContent>

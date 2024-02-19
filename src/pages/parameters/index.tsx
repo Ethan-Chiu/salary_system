@@ -10,7 +10,7 @@ const PageParameters: NextPageWithLayout = () => {
 		<div className="flex h-screen flex-col">
 			<Header title="parameters" showOptions />
 
-			<div className="m-4 min-h-0 flex-grow rounded-md border-2">
+			<div className="m-4 h-0 grow rounded-md border-2">
 				<TablesView />
 			</div>
 		</div>

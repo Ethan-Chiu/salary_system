@@ -67,7 +67,7 @@ export default function CurrentView<TData>({
 	return (
 		<>
 			{/* table header and body */}
-			<div className="min-h-0 w-full flex-grow">
+			<div className="h-0 w-full flex-grow">
 				<ScrollArea className="scroll h-full">
 					<Table className="border-b-[1px]">
 						<DataTableDataHeader
