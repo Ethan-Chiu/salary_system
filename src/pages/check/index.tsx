@@ -29,6 +29,7 @@ import { SelectModeComponent } from "./components/Selects";
 import { AllDoneDialog } from "./components/AllDoneDialog";
 import {
 	DifferentKeys,
+	Status,
 	UpdateTable,
 	UpdateTableDialog,
 } from "./components/UpdateTable";
@@ -55,9 +56,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 			: data.find((cd: CombinedData) => cd.key === query)?.ehr_value;
 	};
 
-	interface Status {
-		[key: string]: "initial" | "checked" | "ignored";
-	}
+	
 	const [empStatus, setEmpStatus] = useState<Status>({});
 	if (getDiffDatas.isFetched && Object.keys(empStatus).length === 0) {
 		let tmp: any = {};
@@ -344,6 +343,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 						<div className="mt-2 flex items-center justify-between">
 							<UpdateTableDialog
 								data={getChangedDatas()}
+								status={empStatus}
 								updateFunction={() => console.log("test")}
 							/>
 
