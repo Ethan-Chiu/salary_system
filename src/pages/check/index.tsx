@@ -27,15 +27,19 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { SelectModeComponent } from "./components/Selects";
 import { AllDoneDialog } from "./components/AllDoneDialog";
+import {
+	DifferentKeys,
+	UpdateTable,
+	UpdateTableDialog,
+} from "./components/UpdateTable";
 import { EmployeeDataChange } from "./components/EmpDataTable";
+
 
 const PageCheckEHR: NextPageWithLayout = () => {
 	const getDiffDatas = api.employeeData.checkEmployeeData.useQuery({
 		func: "",
 	});
-	const getDataLength = () => getDiffDatas.data!.length;
 
-	const [checkedEmployees, setCheckedEmployees] = useState<Array<string>>([]);
 	const [selectedEmployee, setSelectedEmployee] = useState("");
 	const [diffColor, setDiffColor] = useState("red");
 	const [mode, setMode] = useState("Changed");
@@ -51,18 +55,34 @@ const PageCheckEHR: NextPageWithLayout = () => {
 			: data.find((cd: CombinedData) => cd.key === query)?.ehr_value;
 	};
 
-	if (getDiffDatas.isFetched) {
+	interface Status {
+		[key: string]: "initial" | "checked" | "ignored";
+	}
+	const [empStatus, setEmpStatus] = useState<Status>({});
+	if (getDiffDatas.isFetched && Object.keys(empStatus).length === 0) {
+		let tmp: any = {};
+		getDiffDatas.data?.map((cd: Array<CombinedData>) => {
+			tmp[getKeyFromData(cd, "emp_no")] = "initial";
+		});
+		setEmpStatus(tmp);
+	}
+
+	if (getDiffDatas.isFetched && empStatus !== null) {
 		if ((getDiffDatas.data ?? []).length > 0) {
 			if (selectedEmployee === "") next(); // set Default
 		}
 	}
 
 	function check(newCheckedEmp: string) {
-		setCheckedEmployees((prevCheckedEmployees) => {
-			if (prevCheckedEmployees.includes(newCheckedEmp))
-				return prevCheckedEmployees;
-			return [...prevCheckedEmployees, newCheckedEmp];
-		});
+		let tmp = empStatus;
+		tmp[newCheckedEmp] = "checked";
+		setEmpStatus(tmp);
+	}
+
+	function ignore(newIgnoredEmp: string) {
+		let tmp = empStatus;
+		tmp[newIgnoredEmp] = "ignored";
+		setEmpStatus(tmp);
 	}
 
 	const getEmpData = (emp_no: string) => {
@@ -79,29 +99,86 @@ const PageCheckEHR: NextPageWithLayout = () => {
 		return getKeyFromData(getEmpData(emp_no), query);
 	};
 
+	function getChangedDatas() {
+		let checkedData = Object.keys(empStatus)
+			// .filter((key: string) => empStatus[key] === "checked")
+			.map((emp_no: string) => {
+				return getEmpData(emp_no);
+			});
+		let filterData: Array<DifferentKeys> = checkedData.map(
+			(data: Array<CombinedData>) => {
+				let newConstructedData: DifferentKeys = {
+					emp_no: getKeyFromData(data, "emp_no"),
+					emp_name: getKeyFromData(data, "emp_name"),
+					diffKeys: data.filter(
+						(cd: CombinedData) => cd.is_different === true
+					),
+				};
+				return newConstructedData;
+			}
+		);
+
+		// for test
+		filterData[0]?.diffKeys.push({
+			key: "test",
+			db_value: "123",
+			ehr_value: 234,
+			is_different: true,
+		});
+		filterData[0]?.diffKeys.push({
+			key: "test",
+			db_value: "123",
+			ehr_value: 234,
+			is_different: true,
+		});
+		filterData[0]?.diffKeys.push({
+			key: "test",
+			db_value: "123",
+			ehr_value: 234,
+			is_different: true,
+		});
+		filterData[1]?.diffKeys.push({
+			key: "test",
+			db_value: "123",
+			ehr_value: 234,
+			is_different: true,
+		});
+		filterData[1]?.diffKeys.push({
+			key: "test",
+			db_value: "123",
+			ehr_value: 234,
+			is_different: true,
+		});
+		// end for test
+		filterData.push(filterData[0]!);
+
+		return filterData;
+	}
+
 	function next() {
-		let nextEmpData = getDiffDatas.data!.filter(
+		let notSeenDatas = getDiffDatas.data!.filter(
 			(data: Array<CombinedData>) =>
-				!checkedEmployees.includes(
-					data.find((cd: CombinedData) => {
-						cd.key === "emp_no";
-					})?.db_value
-				) && getKeyFromData(data, "emp_no") !== selectedEmployee
-		)[0]!;
-		let nextEmp = getKeyFromData(nextEmpData, "emp_no");
+				empStatus[getKeyFromData(data, "emp_no")] === "initial" &&
+				getKeyFromData(data, "emp_no") !== selectedEmployee
+		);
+		let nextEmp =
+			notSeenDatas.length > 0
+				? getKeyFromData(notSeenDatas[0]!, "emp_no")
+				: selectedEmployee;
 		setSelectedEmployee(nextEmp);
 	}
 
-	const handleConfirmChange = () => {
+	const handleConfirm = () => {
 		check(selectedEmployee);
 		next();
 	};
 
-	const handleAllDone = () => {
-		console.log("confirm and call update function from api");
+	const handleIgnore = () => {
+		ignore(selectedEmployee);
+		next();
 	};
 
-	function SelectedEmpDepartment({ emp_no }: {emp_no: string}) {
+	function SelectedEmpDepartment({ emp_no }: { emp_no: string }) {
 		return <Label>部門：{getKeyData(emp_no, "department")}</Label>;
 	}
 
@@ -116,6 +193,36 @@ const PageCheckEHR: NextPageWithLayout = () => {
 				" " +
 				getKeyData(emp_no, "english_name")
 			);
+		}
+
+		function SelectListEmp({ d }: { d: Array<CombinedData> }) {
+			return (
+				<>
+					<b className="mr-1">{getKeyFromData(d, "emp_no")}</b>
+					<p className="mr-1">
+						{getKeyFromData(d, "emp_name") +
+							" " +
+							getKeyFromData(d, "english_name") +
+							" "}
+					</p>
+				</>
+			);
+		}
+
+		function getStatus(d: Array<CombinedData>) {
+			return empStatus[getKeyFromData(d, "emp_no")];
+		}
+
+		function isInitial(d: Array<CombinedData>) {
+			return getStatus(d) === "initial";
+		}
+
+		function isIgnored(d: Array<CombinedData>) {
+			return getStatus(d) === "ignored";
+		}
+
+		function isChecked(d: Array<CombinedData>) {
+			return getStatus(d) === "checked";
 		}
 
 		return (
@@ -175,34 +282,14 @@ const PageCheckEHR: NextPageWithLayout = () => {
 										{
 											<div
 												className={`flex items-center ${
-													!checkedEmployees.includes(
-														getKeyFromData(
-															d,
-															"emp_no"
-														)
-													)
+													isInitial(d)
+														? "text-blue-400"
+														: isIgnored(d)
 														? "text-red-400"
 														: ""
 												}`}
 											>
-												<b className="mr-1">
-													{getKeyFromData(
-														d,
-														"emp_no"
-													)}
-												</b>
-												<p className="mr-1">
-													{getKeyFromData(
-														d,
-														"emp_name"
-													) +
-														" " +
-														getKeyFromData(
-															d,
-															"english_name"
-														) +
-														" "}
-												</p>
+												<SelectListEmp d={d} />
 											</div>
 										}
 									</CommandItem>
@@ -212,12 +299,6 @@ const PageCheckEHR: NextPageWithLayout = () => {
 					</Command>
 				</PopoverContent>
 			</Popover>
-		);
-	}
-
-	function isFinished() {
-		return (
-			checkedEmployees.length == getDataLength()
 		);
 	}
 
@@ -260,22 +341,30 @@ const PageCheckEHR: NextPageWithLayout = () => {
 							/>
 						</div>
 
-						<div className="mt-4 flex justify-end">
-							{!isFinished() && (
+						<div className="mt-2 flex items-center justify-between">
+							<UpdateTableDialog
+								data={getChangedDatas()}
+								updateFunction={() => console.log("test")}
+							/>
+
+							<div className="flex">
+								<Button
+									key="IgnoreButton"
+									variant={"destructive"}
+									onClick={() => handleIgnore()}
+								>
+									{"Ignore"}
+								</Button>
 								<Button
 									key="ConfirmButton"
-									onClick={() => handleConfirmChange()}
+									onClick={() => handleConfirm()}
+									className="ml-4"
 								>
-									{"Confirm Change"}
+									{"Confirm"}
 								</Button>
-							)}
-
-							{isFinished() && (
-								<AllDoneDialog
-									confirmFunction={() => handleAllDone()}
-								/>
-							)}
+							</div>
 						</div>
+						{/* <Button onClick={() => console.log(empStatus)}></Button> */}
 					</div>
 				</div>
 			</>
