@@ -213,9 +213,9 @@ export class EmployeeDataService {
 		var paid_emps: PaidEmployee[] = [];
 		const ehrService = container.resolve(EHRService);
 		const pay_work_status = ["一般人員", "當月離職人員_破月", "當月離職人員_全月"];
-		if (func == "month_pay") {
+		if (func == "month_salary") {
 			var salary_emps = await EmployeeData.findAll({
-				attributes: [ "emp_name", "english_name", "u_dep","emp_no", "work_status", "departure_date"],
+				attributes: [ "emp_name", "english_name", "u_dep","emp_no", "work_status", "quit_date"],
 			});
 			var ehr_emps = await ehrService.getEmp(period);
 			// Step 1: Create a dictionary for ehr_emps
@@ -263,8 +263,6 @@ export class EmployeeDataService {
 			console.log('check all emps')
 			var msg=''
 			paid_emps = await Promise.all(all_emps.map(async (emp) => {
-				// var work_check = true //由工作型態判斷要發薪的人員
-				// var quit_check = false //由離職日期判斷要發薪的人員
 				switch (emp.work_type) {
 					case "一般人員":
 						if (emp.quit_date != null) {
@@ -309,7 +307,7 @@ export class EmployeeDataService {
 					english_name: emp.english_name,
 					department: emp.department,
 					work_status: emp.work_status,
-					quit_date: emp.departure_date,
+					quit_date: emp.quit_date,
 					bug: (msg!='')?msg:undefined
 				}
 				return paid_emp
@@ -341,11 +339,6 @@ export class EmployeeDataService {
 
 		const changedDatas = await Promise.all(
 			db_datas.map(async (db_data) => {
-				await this.updateEmployeeData({
-					id: db_data.id,
-					// has_esot: !db_data.has_esot,
-				});
-
 				var ehr_datas = await ehrService.getEmp(period);
 				const excludedKeys = [
 					"create_date",
@@ -353,7 +346,7 @@ export class EmployeeDataService {
 					"update_date",
 					"update_by",
 				];
-				// const dates = ['hire_date', 'entry_date', 'departure_date', 'birthdate'];
+				// const dates = ['hire_date', 'entry_date', 'quit_date', 'birthdate'];
 				const keys = Object.keys(db_data.dataValues);
 				const combinedDatas = await Promise.all(
 					keys.map(async (key) => {
@@ -404,6 +397,5 @@ export class EmployeeDataService {
 			})
 			return paid_emps
 		// }
-		// return paid_emps
 	}
 }
