@@ -7,6 +7,9 @@ import { Holiday } from "../database/entity/UMEDIA/holiday";
 import { Overtime } from "../database/entity/UMEDIA/overtime";
 import { Payset } from "../database/entity/UMEDIA/payset";
 import { EmployeeData } from "../database/entity/SALARY/employee_data";
+import { Emp } from "../database/entity/UMEDIA/emp";
+import { BaseResponseError } from "../api/error/BaseResponseError";
+import { PeriodObject } from "./employee_data_service";
 
 @injectable()
 export class EHRService {
@@ -61,17 +64,40 @@ export class EHRService {
 		return paysetList;
 	}
 
-	//fake
-	async getEmployeeDataByEmpNo(emp_no: string): Promise<any> {
+	async getEmp(period_id: number): Promise<EmployeeData[]> {
 		const dbConnection = container.resolve(Database).connection;
-		const dataList = await dbConnection.query(
-			this.GET_EMPLOYEE_DATA_QUERY(emp_no),
+		var dataList = await dbConnection.query(
+			this.GET_EMP_QUERY(period_id),
 			{
 				type: QueryTypes.SELECT,
 			}
 		);
-		const employeeData: Payset[] = dataList.map(Payset.fromDB);
-		return employeeData;
+		function dropColumns(objects: any[], columnsToRemove: any[]) {
+			return objects.map(obj => {
+			  const modifiedObject = { ...obj };
+			  columnsToRemove.forEach(column => delete modifiedObject[column]);
+			  return modifiedObject;
+			});
+		  }
+		  
+		// Specify the columns you want to drop
+		const columnsToRemove = ['PERIOD_ID', 'CHANGED_FLAG', 'CHANGE_DATE', 'CHANGE_MEMO'];
+		dataList = dropColumns(dataList, columnsToRemove);
+		const empList: EmployeeData[] = dataList.map(obj => obj as EmployeeData);
+		return empList;
+	}
+	async getPeriodObject(period_id: number): Promise<PeriodObject> {
+		const dbConnection = container.resolve(Database).connection;
+		const dataList = await dbConnection.query(
+			this.GET_PERIOD_NAME_QUERY(period_id),
+			{
+				type: QueryTypes.SELECT,
+			}
+		);
+		if (dataList.length === 0) {
+			throw new BaseResponseError("Period Not Found");
+		}
+		return dataList[0]! as PeriodObject;	
 	}
 
 	private GET_PERIOD_QUERY(): string {
@@ -90,7 +116,11 @@ export class EHRService {
 		return `SELECT * FROM "U_HR_PAYSET_V" WHERE "U_HR_PAYSET_V"."PERIOD_ID" = '${period_id}'`;
 	}
 
-	private GET_EMPLOYEE_DATA_QUERY(emp_no: string): string {
-		return `SELECT * FROM "U_HR_PAYSET_V" WHERE "U_HR_PAYSET_V"."EMP_NO" = '${emp_no}'`;
+	private GET_EMP_QUERY(period_id: number): string {
+		return `SELECT * FROM "U_HR_PAYDRAFT_EMP" WHERE "U_HR_PAYDRAFT_EMP"."PERIOD_ID" = '${period_id}'`;
+	}
+
+	private GET_PERIOD_NAME_QUERY(period_id: number): string {
+		return `SELECT "PERIOD_NAME", "START_DATE", "END_DATE" FROM "U_HR_PERIOD" WHERE "U_HR_PERIOD"."PERIOD_ID" = '${period_id}'`;
 	}
 }
