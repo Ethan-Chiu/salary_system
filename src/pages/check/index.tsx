@@ -37,8 +37,13 @@ import { EmployeeDataChange } from "./components/EmpDataTable";
 
 
 const PageCheckEHR: NextPageWithLayout = () => {
+	return <SyncPage period={113}/>
+};
+
+function SyncPage({period}: {period: number}) {
 	const getDiffDatas = api.employeeData.checkEmployeeData.useQuery({
-		func: "",
+		func: "month_salary",
+		period: period
 	});
 
 	const [selectedEmployee, setSelectedEmployee] = useState("");
@@ -178,7 +183,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 	};
 
 	function SelectedEmpDepartment({ emp_no }: { emp_no: string }) {
-		return <Label>部門：{getKeyData(emp_no, "department")}</Label>;
+		return <Label>部門：{getKeyData(emp_no, "u_dep")}</Label>;
 	}
 
 	function SelectEmpComponent() {
@@ -231,7 +236,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 						variant="outline"
 						role="combobox"
 						aria-expanded={open}
-						className="w-[200px] justify-between"
+						className="w-[250px] justify-between"
 					>
 						{selectedEmployee !== ""
 							? generateLongString(selectedEmployee)
@@ -239,7 +244,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 						<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 					</Button>
 				</PopoverTrigger>
-				<PopoverContent className="w-[200px] p-0">
+				<PopoverContent className="w-[250px] p-0">
 					<Command
 						filter={(value, search) => {
 							return value.toUpperCase().includes(search) ||
@@ -373,6 +378,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 
 	return (
 		<>
+		<></>
 			{!getDiffDatas.isFetched ? (
 				<FetchingPage />
 			) : (getDiffDatas.data ?? []).length == 0 ? (
@@ -382,7 +388,8 @@ const PageCheckEHR: NextPageWithLayout = () => {
 			)}
 		</>
 	);
-};
+	// return <Button onClick = {() => console.log(getDiffDatas.data)}> test </Button>
+}
 
 PageCheckEHR.getLayout = function getLayout(page: ReactElement) {
 	return (
