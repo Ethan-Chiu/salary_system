@@ -392,17 +392,18 @@ export class EmployeeDataService {
 		return filteredChangeDatas;
 	}
 	//stage3
-	async getPaidEmps(func: string) {
-		if (func == "month") {
+	async getPaidEmps(func: string) : Promise<EmployeeData[]> {
+		// if (func == "month") {
 			const paid_status=["一般人員","當月離職人員_全月","當月離職人員_破月"]
-		const paid_emps = await EmployeeData.findAll({
-			where: {
-				work_status: {
-					[Op.in]: paid_status
-				}
-			},
-		})
-		return paid_emps;
-		}
+			const paid_emps = await EmployeeData.findAll({
+				where: {
+					work_status: {
+						[Op.in]: paid_status
+					}
+				},
+			})
+			return paid_emps
+		// }
+		// return paid_emps
 	}
 }
