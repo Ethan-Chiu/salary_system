@@ -15,7 +15,7 @@ import { SyncPage } from "./sync_page";
 import { Button } from "~/components/ui/button";
 
 export const progressBarLabels = [
-	"確認員工",
+	"薪資發放名單檢核",
 	"同步員工資料",
 	"確認資料",
 	"確認參數",
