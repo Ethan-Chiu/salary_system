@@ -26,12 +26,14 @@ interface DayViewProps {
 
 export default function DayView({ day, rowIdx }: DayViewProps) {
 	const {
+		monthIndex,
 		mouseDownDate,
 		setMouseDownDate,
 		mouseUpDate,
 		setMouseUpDate,
 		showEventList,
 		setOpenSheet,
+		setUpdateSheet,
 		selectedEvent,
 		setSelectedEvent,
 		setEventList,
@@ -87,13 +89,21 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 
 	return (
 		<HoverCard>
-			<div className="relative flex select-none flex-col">
+			<div
+				className={cn(
+					"relative flex select-none flex-col",
+					day.month() !== monthIndex % 12 && "bg-secondary"
+				)}
+			>
+				{/* header */}
 				<header className="flex flex-col items-center">
+					{/* day of the week */}
 					{rowIdx === 0 && (
 						<p className="mt-1 text-sm">
 							{day.format("ddd").toUpperCase()}
 						</p>
 					)}
+					{/* date */}
 					<p
 						className={cn(
 							"my-1 p-1 text-center text-sm",
@@ -106,12 +116,14 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 					</p>
 				</header>
 				<div className="absolute h-full w-full border border-gray-200" />
+				{/* event container */}
 				<div
 					className="z-10 flex-grow cursor-pointer"
 					onMouseDown={handleMouseDown}
 					onMouseUp={handleMouseUp}
 					onMouseOver={handleMouseOver}
 				>
+					{/* events */}
 					{Array.from(
 						{ length: getMaxLevel(dayEvents) + 1 },
 						(_, idx) => idx
@@ -124,6 +136,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 							return <div key={idx} className="mb-1 h-4 p-1" />;
 						}
 
+						// selected event
 						if (selectedEvent && evt.equals(selectedEvent)) {
 							return (
 								<HoverCardTrigger key={idx}>
@@ -141,6 +154,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 							);
 						}
 
+						// unselected event
 						return (
 							<CompEvent
 								key={idx}
@@ -157,12 +171,25 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 					})}
 				</div>
 			</div>
+			{/* event container end*/}
+			<CompHoverContent />
+		</HoverCard>
+	);
+
+	function CompHoverContent() {
+		return (
 			<HoverCardContent
 				className="mx-3 w-32 rounded-full px-2 py-1 "
 				side="top"
 			>
 				<div className="flex flex-row justify-evenly">
-					<Button variant={"ghost"} className="rounded-full p-3">
+					<Button
+						variant={"ghost"}
+						className="rounded-full p-3"
+						onClick={() => {
+							setUpdateSheet(true);
+						}}
+					>
 						<Pen className="h-4 w-4" />
 					</Button>
 					<Button
@@ -178,8 +205,8 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 					</Button>
 				</div>
 			</HoverCardContent>
-		</HoverCard>
-	);
+		);
+	}
 }
 
 function CompEvent({

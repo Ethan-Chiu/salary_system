@@ -81,7 +81,7 @@ function CompHistoryView() {
 									is_date_available(
 										e.start_date,
 										e.end_date
-									) && "border-blue-500"
+									) && "border-blue-500 mb-3"
 								)}
 								onClick={() => setSelectedId(e.id)}
 							>

@@ -43,7 +43,8 @@ export class CalendarEvent {
 	equals(otherEvent: CalendarEvent): boolean {
         return (
             this.startDate.getTime() === otherEvent.getStartDate().getTime() &&
-            this.endDate.getTime() === otherEvent.getEndDate().getTime()
+            this.endDate.getTime() === otherEvent.getEndDate().getTime() &&
+			this.data === otherEvent.getData()
         );
     }
 

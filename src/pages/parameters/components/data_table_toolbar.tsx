@@ -6,6 +6,10 @@ import { useContext, useEffect, useState } from "react";
 import dataTableContext from "./context/data_table_context";
 import { DataTableFunctions } from "./function_sheet/data_table_functions";
 import { LoadingSpinner } from "~/components/loading";
+import { Table } from "@tanstack/react-table";
+import { TabsEnum } from "./context/tabs_enum";
+import { CalendarToolbarFunctions } from "./calendar_view/components/calendar_toolbar_functions";
+import { hasHistory } from "./data_table_tabs_config";
 
 interface DataTableToolbarProps<TData> {
 	filterColumnKey: keyof TData;
@@ -18,19 +22,18 @@ export function DataTableToolbar<TData>({
 }: DataTableToolbarProps<TData>) {
 	const { selectedTab, selectedTableType, selectedTable } =
 		useContext(dataTableContext);
+	const table = selectedTable?.table;
 
 	const [filterValue, setFilterValue] = useState("");
 
 	useEffect(() => {
-		if (selectedTable) {
+		if (table) {
 			setFilterValue("");
-			selectedTable
-				.getColumn(filterColumnKey.toString())
-				?.setFilterValue("");
+			table.getColumn(filterColumnKey.toString())?.setFilterValue("");
 		}
 	}, [selectedTab, selectedTable]);
 
-	if (!selectedTable) {
+	if (!table) {
 		return (
 			<div className="flex grow items-center justify-center">
 				<LoadingSpinner />
@@ -45,7 +48,7 @@ export function DataTableToolbar<TData>({
 				placeholder="Filter setting..."
 				value={filterValue}
 				onChange={(event) => {
-					selectedTable!
+					table
 						.getColumn(filterColumnKey.toString())
 						?.setFilterValue(event.target.value);
 					setFilterValue(event.target.value);
@@ -55,23 +58,40 @@ export function DataTableToolbar<TData>({
 			{/* tabs */}
 			{showTabs !== false && (
 				<TabsList className="grid h-8 w-96 grid-cols-3">
-					<TabsTrigger value="now" className="h-6">
-						Now
+					<TabsTrigger value={TabsEnum.Enum.current} className="h-6">
+						Current
 					</TabsTrigger>
-					<TabsTrigger value="history" className="h-6">
+					<TabsTrigger
+						disabled={!hasHistory(selectedTableType)}
+						value={TabsEnum.Enum.history}
+						className="h-6"
+					>
 						History
 					</TabsTrigger>
-					<TabsTrigger value="calendar" className="h-6">
+					<TabsTrigger
+						disabled={!hasHistory(selectedTableType)}
+						value={TabsEnum.Enum.calendar}
+						className="h-6"
+					>
 						Calendar
 					</TabsTrigger>
 				</TabsList>
 			)}
 			{/*  */}
-			{/* <DataTableViewOptions /> */}
+			<DataTableViewOptions table={table} />
 			{/* Toolbar functions */}
-			<ToolbarFunctionsProvider selectedTableType={selectedTableType}>
-				<DataTableFunctions tableType={selectedTableType} />
-			</ToolbarFunctionsProvider>
+			<div className="w-12">
+				<ToolbarFunctionsProvider selectedTableType={selectedTableType}>
+					{selectedTab === TabsEnum.Enum.current && (
+						<DataTableFunctions tableType={selectedTableType} />
+					)}
+					{selectedTab === TabsEnum.Enum.calendar && (
+						<CalendarToolbarFunctions
+							tableType={selectedTableType}
+						/>
+					)}
+				</ToolbarFunctionsProvider>
+			</div>
 		</div>
 	);
 }
