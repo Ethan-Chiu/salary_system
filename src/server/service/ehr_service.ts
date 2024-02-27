@@ -40,7 +40,9 @@ export class EHRService {
 				type: QueryTypes.SELECT,
 			}
 		);
-		const overtimeList: Overtime[] = dataList.map((o) => Overtime.fromDB(o));
+		const overtimeList: Overtime[] = dataList.map((o) =>
+			Overtime.fromDB(o)
+		);
 
 		return overtimeList;
 	}

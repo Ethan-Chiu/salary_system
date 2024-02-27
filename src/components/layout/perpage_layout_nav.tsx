@@ -7,7 +7,7 @@ import {
 	ResizablePanelGroup,
 } from "../ui/resizable";
 import { cn } from "~/lib/utils";
-import { ImperativePanelHandle } from "react-resizable-panels";
+import { type ImperativePanelHandle } from "react-resizable-panels";
 
 type PerpageLayoutProp = {
 	pageTitle: string;
