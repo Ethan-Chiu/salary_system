@@ -1,5 +1,4 @@
 import {
-	CreditCard,
 	LogOut,
 	Settings,
 	User,
@@ -30,8 +29,6 @@ import {
 
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
-
-import { api } from "~/utils/api";
 
 export function UserAvatar() {
 
@@ -114,5 +111,5 @@ export function UserAvatar() {
 }
 
 function LogoutFunction() {
-	signOut();
+	void signOut();
 }

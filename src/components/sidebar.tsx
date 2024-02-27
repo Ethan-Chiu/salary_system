@@ -5,10 +5,9 @@ import Link from "next/link";
 import type { PropsWithChildren } from "react";
 import { api } from "~/utils/api";
 import {
-	CalendarRange,
 	GanttChartSquare,
 	LayoutGrid,
-	LucideIcon,
+	type LucideIcon,
 	Settings,
 	ShieldCheck,
 	SlidersHorizontal,
