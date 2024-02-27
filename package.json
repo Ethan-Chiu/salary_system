@@ -63,6 +63,7 @@
 		"react-spinners": "^0.13.8",
 		"reflect-metadata": "^0.1.13",
 		"sequelize": "^6.33.0",
+		"sequelize-typescript": "^2.1.6",
 		"superjson": "^1.13.1",
 		"tailwind-merge": "^1.14.0",
 		"tailwindcss-animate": "^1.0.6",

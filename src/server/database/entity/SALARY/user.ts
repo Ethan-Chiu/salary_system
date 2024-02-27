@@ -1,25 +1,24 @@
 import {
-	Association,
 	DataTypes,
-	HasManyAddAssociationMixin,
-	HasManyCountAssociationsMixin,
-	HasManyCreateAssociationMixin,
-	HasManyGetAssociationsMixin,
-	HasManyHasAssociationMixin,
-	HasManySetAssociationsMixin,
-	HasManyAddAssociationsMixin,
-	HasManyHasAssociationsMixin,
-	HasManyRemoveAssociationMixin,
-	HasManyRemoveAssociationsMixin,
 	Model,
-	ModelDefined,
-	Optional,
-	Sequelize,
-	InferAttributes,
-	InferCreationAttributes,
-	CreationOptional,
-	NonAttribute,
-	ForeignKey,
+	type InferAttributes,
+	type InferCreationAttributes,
+	type CreationOptional,
+	/* Association, */
+	/* HasManyAddAssociationMixin, */
+	/* HasManyCountAssociationsMixin, */
+	/* HasManyCreateAssociationMixin, */
+	/* HasManyGetAssociationsMixin, */
+	/* HasManyHasAssociationMixin, */
+	/* HasManySetAssociationsMixin, */
+	/* HasManyAddAssociationsMixin, */
+	/* HasManyHasAssociationsMixin, */
+	/* HasManyRemoveAssociationMixin, */
+	/* HasManyRemoveAssociationsMixin, */
+	/* ModelDefined, */
+	/* Optional, */
+	/* NonAttribute, */
+	/* ForeignKey, */
 } from "sequelize";
 import { container } from "tsyringe";
 import { Database } from "../../client";

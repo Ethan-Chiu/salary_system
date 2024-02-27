@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { NextRequestWithAuth, withAuth } from "next-auth/middleware";
+import { type NextRequestWithAuth, withAuth } from "next-auth/middleware";
 import {
-	AccessiblePagesType,
+	type AccessiblePagesType,
 	accessiblePages,
 } from "./server/api/types/access_page_type";
 import { BaseResponseError } from "./server/api/error/BaseResponseError";
+import { z } from "zod";
 
 function guardRoute(
 	request: NextRequestWithAuth,
@@ -13,7 +14,9 @@ function guardRoute(
 ): NextResponse | null {
 	if (request.nextUrl.pathname.startsWith(route)) {
 		if (access) {
-			return NextResponse.rewrite(new URL(request.nextUrl.pathname, request.url));
+			return NextResponse.rewrite(
+				new URL(request.nextUrl.pathname, request.url)
+			);
 		}
 		console.log(`You cannot view ${route} page`);
 		return NextResponse.redirect(new URL("/", request.url));
@@ -23,13 +26,24 @@ function guardRoute(
 
 export default withAuth(
 	async function middleware(request: NextRequestWithAuth) {
-		const token = request.nextauth.token;
+		/* const token = request.nextauth.token; */
 		// console.log("request token", token);
 
 		const res = await fetch(
 			process.env.NEXTAUTH_URL + "/api/trpc/access.accessByRole",
 			{ method: "GET", headers: request.headers }
 		);
+
+		/* const ResponseSchema = z.object({ */
+		/*   result: z.object({ */
+		/*     data: z.object({ */
+		/*       json: z */
+		/*         .object(AccessiblePagesType) // Use your imported type directly */
+		/*         .nullable(), // Make json property nullable */
+		/*       }), */
+		/*     }), */
+		/* }); */
+
 		const data: { result: { data: { json: AccessiblePagesType } } } =
 			await res.json();
 		// console.log("Data", data)
@@ -44,9 +58,9 @@ export default withAuth(
 		const accessible = parseAccessible.data;
 
 		const guarded =
-			guardRoute(request, "/functions", accessible.actions) ||
-			guardRoute(request, "/parameters", accessible.actions) ||
-			guardRoute(request, "/roles", accessible.roles) ||
+			guardRoute(request, "/functions", accessible.actions) ??
+			guardRoute(request, "/parameters", accessible.actions) ??
+			guardRoute(request, "/roles", accessible.roles) ??
 			guardRoute(request, "/settings", accessible.settings);
 		if (guarded !== null) {
 			return guarded;
