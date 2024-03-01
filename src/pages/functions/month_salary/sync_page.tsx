@@ -181,16 +181,15 @@ export function SyncPage({
 										/>
 										{
 											<div
-												className={`flex items-center ${
-													!checkedEmployees.includes(
-														getKeyFromData(
-															d,
-															"emp_no"
-														)
+												className={`flex items-center ${!checkedEmployees.includes(
+													getKeyFromData(
+														d,
+														"emp_no"
 													)
-														? "text-red-400"
-														: ""
-												}`}
+												)
+													? "text-red-400"
+													: ""
+													}`}
 											>
 												<b className="mr-1">
 													{getKeyFromData(
@@ -235,57 +234,79 @@ export function SyncPage({
 	}
 
 	function AllDonePage() {
-		return <p>System Data is updated with EHR</p>;
+		return <div className="flex h-full flex-grow flex-col">
+			<p>System Data is updated with EHR</p>
+			<div className="mt-4 flex justify-between">
+				<Button
+					key="PreviousButton"
+					onClick={() => setSelectedIndex(selectedIndex - 1)}
+				>
+					{Translate("previous_step")}
+				</Button>
+				{!isFinished() && (
+					<Button
+						key="ConfirmButton"
+						onClick={() => handleConfirmChange()}
+					>
+						{Translate("next_step")}
+					</Button>
+				)}
+
+				{isFinished() && (
+					<AllDoneDialog
+						confirmFunction={() => handleAllDone()}
+					/>
+				)}
+			</div>
+		</div>
 	}
 
 	function MainPage() {
 		return (
-			<>
-				<div className="flex h-full flex-grow flex-col">
-					<div className="mb-4 flex items-center">
-						<SelectEmpComponent />
-						<div className="ml-4">
-							<SelectedEmpDepartment emp_no={selectedEmployee} />
-						</div>
-						<div className="ml-auto"></div>
-						<div className="ml-2">
-							<SelectModeComponent
-								mode={mode}
-								setMode={setMode}
-							/>
-						</div>
+			<div className="flex h-full flex-grow flex-col">
+				<div className="mb-4 flex items-center">
+					<SelectEmpComponent />
+					<div className="ml-4">
+						<SelectedEmpDepartment emp_no={selectedEmployee} />
 					</div>
-					<div className="h-0 w-full flex-grow">
-						<EmployeeDataChange
-							empData={getEmpData(selectedEmployee)}
+					<div className="ml-auto"></div>
+					<div className="ml-2">
+						<SelectModeComponent
 							mode={mode}
-							diffColor={diffColor}
+							setMode={setMode}
 						/>
 					</div>
-					<div className="mt-4 flex justify-between">
-						<Button
-							key="PreviousButton"
-							onClick={() => setSelectedIndex(selectedIndex - 1)}
-						>
-							{Translate("previous_step")}
-						</Button>
-						{!isFinished() && (
-							<Button
-								key="ConfirmButton"
-								onClick={() => handleConfirmChange()}
-							>
-								{Translate("next_step")}
-							</Button>
-						)}
-
-						{isFinished() && (
-							<AllDoneDialog
-								confirmFunction={() => handleAllDone()}
-							/>
-						)}
-					</div>
 				</div>
-			</>
+				<div className="h-0 w-full flex-grow">
+					<EmployeeDataChange
+						empData={getEmpData(selectedEmployee)}
+						mode={mode}
+						diffColor={diffColor}
+					/>
+				</div>
+				<div className="mt-4 flex justify-between">
+					<Button
+						key="PreviousButton"
+						onClick={() => setSelectedIndex(selectedIndex - 1)}
+					>
+						{Translate("previous_step")}
+					</Button>
+					{!isFinished() && (
+						<Button
+							key="ConfirmButton"
+							onClick={() => handleConfirmChange()}
+						>
+							{Translate("next_step")}
+						</Button>
+					)}
+
+					{isFinished() && (
+						<AllDoneDialog
+							confirmFunction={() => handleAllDone()}
+						/>
+					)}
+				</div>
+			</div>
 		);
 	}
 

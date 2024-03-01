@@ -33,7 +33,6 @@ export const progressBarLabels = [
 
 const MonthSalary: NextPageWithLayout = () => {
 	const [selectedIndex, setSelectedIndex] = useState(0);
-	const getPeriod = api.function.getPeriod.useQuery();
 	const [period, setPeriod] = useState(-1);
 
 	const pageList = [
@@ -70,39 +69,7 @@ const MonthSalary: NextPageWithLayout = () => {
 				labels={progressBarLabels}
 				selectedIndex={selectedIndex}
 			/>
-			{getPeriod.isFetched ? (
-				<div className="py-4">
-					<Select
-						onValueChange={(chosen) =>
-							setPeriod(
-								getPeriod.data!.find(
-									(item) => item.period_name === chosen
-								)?.period_id || -1
-							)
-						}
-					>
-						<SelectTrigger className="w-[180px]">
-							<SelectValue placeholder="Select a period" />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectGroup>
-								<SelectLabel>Period</SelectLabel>
-								{getPeriod.data!.map((period_info) => {
-									return (
-										<SelectItem
-											value={period_info.period_name}
-										>
-											{period_info.period_name}
-										</SelectItem>
-									);
-								})}
-							</SelectGroup>
-						</SelectContent>
-					</Select>
-				</div>
-			) : (
-				<></>
-			)}
+			<div className="h-4" />
 			{pageList[selectedIndex]}
 		</div>
 	);
