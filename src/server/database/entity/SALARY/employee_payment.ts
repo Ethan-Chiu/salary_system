@@ -14,29 +14,20 @@ export class EmployeePayment extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-    declare emp_no: string;
-    declare base_salary: number;
-    declare supervisor_bonus: number;
-    declare job_bonus: number;
-    declare subsidy_bonus: number;
-    declare shift_bonus: number;
-    declare professional_cert_bonus: number;
-    declare labor_retirement_self: number;
-    declare emp_trust_reserve: number;
-    declare org_trust_reserve: number;
-    declare emp_special_trust_incent: number;
-    declare org_special_trust_incent: number;
-    declare l_i: number;
-    declare h_i: number;
-    declare labor_retirement: number;
-    declare occupational_injury: number;
-    declare start_date: string;
-    declare end_date: string | null;
-	declare dir_sup_comp : number;
-	declare food_bonus : number;
-	declare moon_fes_bonus : number;
-	declare dragonboat_fes_bonus : number;
-	declare performance_bonus : number;
+	declare emp_no: string;
+	declare base_salary: number;
+	declare food_bonus: number;
+	declare supervisor_comp: number;
+	declare job_comp: number;
+	declare subsidy_comp: number;
+	declare professional_cert_comp: number;
+	declare labor_retirement_self: number;
+	declare l_i: number;
+	declare h_i: number;
+	declare labor_retirement: number;
+	declare occupational_injury: number;
+	declare start_date: string;
+	declare end_date: string | null;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -56,79 +47,63 @@ EmployeePayment.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-        emp_no: {
-            type: DataTypes.STRING(32),
+		emp_no: {
+			type: DataTypes.STRING(32),
 			allowNull: false,
-        },
-        base_salary: {
-            type: DataTypes.INTEGER.UNSIGNED,
+		},
+		base_salary: {
+			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
-        },
-        supervisor_bonus: {
-            type: DataTypes.INTEGER.UNSIGNED,
+		},
+		food_bonus: {
+			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
-        },
-		job_bonus: {
+		},
+		supervisor_comp: {
+			type: DataTypes.INTEGER.UNSIGNED,
+			allowNull: false,
+		},
+		job_comp: {
 			type: DataTypes.STRING(128),
 			allowNull: false,
 		},
-        subsidy_bonus: {
-            type: DataTypes.INTEGER.UNSIGNED,
+		subsidy_comp: {
+			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
-        },
-        shift_bonus: {
-            type: DataTypes.INTEGER.UNSIGNED,
+		},
+		professional_cert_comp: {
+			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
-        },
-        professional_cert_bonus: {
-            type: DataTypes.INTEGER.UNSIGNED,
+		},
+		labor_retirement_self: {
+			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
-        },
-        labor_retirement_self: {
-            type: DataTypes.INTEGER.UNSIGNED,
+		},
+		l_i: {
+			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
-        },
-        emp_trust_reserve: {
-            type: DataTypes.INTEGER.UNSIGNED,
+		},
+		h_i: {
+			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
-        },
-        org_trust_reserve: {
-            type: DataTypes.INTEGER.UNSIGNED,
+		},
+		labor_retirement: {
+			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
-        },
-        emp_special_trust_incent: {
-            type: DataTypes.INTEGER.UNSIGNED,
+		},
+		occupational_injury: {
+			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
-        },
-        org_special_trust_incent: {
-            type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
-        },
-        l_i: {
-            type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
-        },
-        h_i: {
-            type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
-        },
-        labor_retirement: {
-            type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
-        },
-        occupational_injury: {
-            type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
-        },
-        start_date: {
+		},
+		start_date: {
 			type: DataTypes.STRING(128),
 			allowNull: false,
 		},
-        end_date: {
+		end_date: {
 			type: DataTypes.STRING(128),
 			allowNull: true,
 		},
-        create_date: {
+		create_date: {
 			type: DataTypes.DATE,
 		},
 		create_by: {
@@ -142,26 +117,6 @@ EmployeePayment.init(
 			type: DataTypes.STRING(128),
 			allowNull: false,
 		},
-		dir_sup_comp : {
-			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
-		},
-		food_bonus : {
-			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
-		},
-		moon_fes_bonus : {
-			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
-		},
-		dragonboat_fes_bonus : {
-			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
-		},
-		performance_bonus : {
-			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
-		}
 	},
 	{
 		sequelize,
