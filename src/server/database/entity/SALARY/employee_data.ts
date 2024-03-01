@@ -90,11 +90,11 @@ EmployeeData.init(
         },
         dependents: {
             type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
+			allowNull: true,
         },
         healthcare: {
             type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
+			allowNull: true,
         },
         registration_date: {
 			type: DataTypes.STRING(32),
