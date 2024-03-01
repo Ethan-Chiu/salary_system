@@ -315,6 +315,7 @@ function SyncPage({period}: {period: number}) {
 	}
 
 	function MainPage() {
+		
 		return (
 			<>
 				<div className="flex h-full flex-grow flex-col">
