@@ -247,7 +247,7 @@ function SyncPage({period}: {period: number}) {
 						<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 					</Button>
 				</PopoverTrigger>
-				<PopoverContent className="w-[350px] p-0 h-[300px]">
+				<PopoverContent className="w-[350px] p-0">
 					<Command
 						filter={(value, search) => {
 							return value.toUpperCase().includes(search) ||
@@ -257,7 +257,7 @@ function SyncPage({period}: {period: number}) {
 						}}
 					>
 						<CommandInput placeholder="Search Employee..." />
-						<ScrollArea className="h-[300px]">
+						<ScrollArea className="h-[50vh]">
 						<CommandEmpty>No Employee found.</CommandEmpty>
 						<CommandGroup>
 							{getDiffDatas.data!.map(
