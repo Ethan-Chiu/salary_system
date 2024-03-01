@@ -71,7 +71,7 @@ export default function CalendarUpdateEvent<
 		if (parsedValues.success) {
 			updateFunction.mutate({
 				...parsedValues.data,
-				id: selectedEvent?.getData().id,
+				id: selectedEvent?.getData()?.id,
 			});
 		} else {
 			// TODO: Error element with toast
