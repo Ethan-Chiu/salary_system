@@ -16,7 +16,7 @@ import { Button } from "~/components/ui/button";
 
 export const progressBarLabels = [
 	"薪資發放名單檢核",
-	"同步員工資料",
+	// "同步員工資料",
 	"確認資料",
 	"確認參數",
 	"匯出報表",
@@ -29,10 +29,10 @@ const MonthSalary: NextPageWithLayout = () => {
 			selectedIndex={selectedIndex}
 			setSelectedIndex={setSelectedIndex}
 		/>,
-		<SyncPage
-			selectedIndex={selectedIndex}
-			setSelectedIndex={setSelectedIndex}
-		/>,
+		// <SyncPage
+		// 	selectedIndex={selectedIndex}
+		// 	setSelectedIndex={setSelectedIndex}
+		// />,
 		<DataPage
 			selectedIndex={selectedIndex}
 			setSelectedIndex={setSelectedIndex}

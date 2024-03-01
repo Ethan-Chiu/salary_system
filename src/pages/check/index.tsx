@@ -34,6 +34,7 @@ import {
 	UpdateTableDialog,
 } from "./components/UpdateTable";
 import { EmployeeDataChange } from "./components/EmpDataTable";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
 
 const PageCheckEHR: NextPageWithLayout = () => {
@@ -204,10 +205,12 @@ function SyncPage({period}: {period: number}) {
 				<>
 					<b className="mr-1">{getKeyFromData(d, "emp_no")}</b>
 					<p className="mr-1">
-						{getKeyFromData(d, "emp_name") +
+						{
+							getKeyFromData(d, "emp_name") +
 							" " +
 							getKeyFromData(d, "english_name") +
-							" "}
+							" " + (isInitial(d)?"(尚未確認)":isIgnored(d)?"(暫不修改)":isChecked(d)?"(確認更改)":"(未知狀態)")
+						}
 					</p>
 				</>
 			);
@@ -236,7 +239,7 @@ function SyncPage({period}: {period: number}) {
 						variant="outline"
 						role="combobox"
 						aria-expanded={open}
-						className="w-[250px] justify-between"
+						className="w-[350px] justify-between"
 					>
 						{selectedEmployee !== ""
 							? generateLongString(selectedEmployee)
@@ -244,7 +247,7 @@ function SyncPage({period}: {period: number}) {
 						<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 					</Button>
 				</PopoverTrigger>
-				<PopoverContent className="w-[250px] p-0">
+				<PopoverContent className="w-[350px] p-0 h-[300px]">
 					<Command
 						filter={(value, search) => {
 							return value.toUpperCase().includes(search) ||
@@ -254,6 +257,7 @@ function SyncPage({period}: {period: number}) {
 						}}
 					>
 						<CommandInput placeholder="Search Employee..." />
+						<ScrollArea className="h-[300px]">
 						<CommandEmpty>No Employee found.</CommandEmpty>
 						<CommandGroup>
 							{getDiffDatas.data!.map(
@@ -287,10 +291,10 @@ function SyncPage({period}: {period: number}) {
 											<div
 												className={`flex items-center ${
 													isInitial(d)
-														? "text-blue-400"
-														: isIgnored(d)
 														? "text-red-400"
-														: ""
+														: isIgnored(d)
+														? ""
+														: "text-green-400"
 												}`}
 											>
 												<SelectListEmp d={d} />
@@ -300,7 +304,8 @@ function SyncPage({period}: {period: number}) {
 								)
 							)}
 						</CommandGroup>
-					</Command>
+						</ScrollArea>
+					</Command>				
 				</PopoverContent>
 			</Popover>
 		);
@@ -315,6 +320,7 @@ function SyncPage({period}: {period: number}) {
 	}
 
 	function MainPage() {
+		
 		return (
 			<>
 				<div className="flex h-full flex-grow flex-col">
