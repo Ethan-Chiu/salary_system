@@ -3,7 +3,7 @@ import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { Header } from "~/components/header";
 import { NextPageWithLayout } from "../../_app";
 import { api } from "~/utils/api";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { ProgressBar } from "~/components/functions/progress_bar";
 import { Translate } from "~/lib/utils/translation";
 import ExcelViewer from "./ExcelViewer";
@@ -13,6 +13,7 @@ import { DataPage } from "./data_page";
 import { EmployeePage } from "./employee_page";
 import { SyncPage } from "./sync_page";
 import { Button } from "~/components/ui/button";
+import periodContext from "~/components/context/period_context";
 
 export const progressBarLabels = [
 	"確認員工",
@@ -24,27 +25,27 @@ export const progressBarLabels = [
 
 const MonthSalary: NextPageWithLayout = () => {
 	const [selectedIndex, setSelectedIndex] = useState(0);
-	const [period, setPeriod] = useState(-1);
+	const { selectedPeriod } = useContext(periodContext);
 
 	const pageList = [
 		<EmployeePage
-			period={period}
+			period={selectedPeriod!.period_id}
 			func={"month_salary"}
 			selectedIndex={selectedIndex}
 			setSelectedIndex={setSelectedIndex}
 		/>,
 		<SyncPage
-			period={period}
+			period={selectedPeriod!.period_id}
 			selectedIndex={selectedIndex}
 			setSelectedIndex={setSelectedIndex}
 		/>,
 		<DataPage
-			period={period}
+			period={selectedPeriod!.period_id}
 			selectedIndex={selectedIndex}
 			setSelectedIndex={setSelectedIndex}
 		/>,
 		<ParameterPage
-			period={period}
+			period={selectedPeriod!.period_id}
 			selectedIndex={selectedIndex}
 			setSelectedIndex={setSelectedIndex}
 		/>,

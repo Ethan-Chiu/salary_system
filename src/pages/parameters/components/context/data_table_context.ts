@@ -1,8 +1,7 @@
 import React from "react";
-import { ShowTableEnum, ShowTableEnumValues } from "../../shown_tables";
-import { TabsEnum, TabsEnumType } from "./tabs_enum";
-import { Table } from "@tanstack/react-table";
-import { TableWithKey } from "./data_table_context_provider";
+import { type ShowTableEnum, ShowTableEnumValues } from "../../shown_tables";
+import { TabsEnum, type TabsEnumType } from "./tabs_enum";
+import { type TableWithKey } from "./data_table_context_provider";
 
 const dataTableContext = React.createContext<{
 	selectedTableType: ShowTableEnum;
@@ -13,11 +12,11 @@ const dataTableContext = React.createContext<{
 	setSelectedTable: (table: TableWithKey | null) => void;
 }>({
 	selectedTableType: ShowTableEnumValues[0],
-	setSelectedTableType: (table: ShowTableEnum) => {},
+	setSelectedTableType: (_: ShowTableEnum) => undefined,
 	selectedTab: TabsEnum.Enum.current,
-	setSelectedTab: (tab: TabsEnumType) => {},
+	setSelectedTab: (_: TabsEnumType) => undefined,
 	selectedTable: null,
-	setSelectedTable: (value: TableWithKey | null) => {},
+	setSelectedTable: (_: TableWithKey | null) => undefined,
 });
 
 export default dataTableContext;

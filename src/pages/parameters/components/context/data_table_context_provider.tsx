@@ -1,15 +1,15 @@
-import React, { useState, PropsWithChildren } from "react";
+import React, { useState, type PropsWithChildren } from "react";
 import dataTableContext from "./data_table_context";
-import { ShowTableEnum, ShowTableEnumValues } from "../../shown_tables";
-import { TabsEnum, TabsEnumType } from "./tabs_enum";
-import { Table } from "@tanstack/react-table";
+import { type ShowTableEnum, ShowTableEnumValues } from "../../shown_tables";
+import { TabsEnum, type TabsEnumType } from "./tabs_enum";
+import { type Table } from "@tanstack/react-table";
 
 interface DataTableContextProviderProps {}
 
 export type TableWithKey = {
 	table: Table<any>;
 	key: string;
-}
+};
 
 export default function DataTableContextProvider({
 	children,
@@ -17,8 +17,12 @@ export default function DataTableContextProvider({
 	const [selectedTableType, setSelectedTableType] = useState<ShowTableEnum>(
 		ShowTableEnumValues[0]
 	);
-	const [selectedTab, setSelectedTab] = useState<TabsEnumType>(TabsEnum.Enum.current);
-	const [selectedTable, setSelectedTable] = useState<TableWithKey | null>(null);
+	const [selectedTab, setSelectedTab] = useState<TabsEnumType>(
+		TabsEnum.Enum.current
+	);
+	const [selectedTable, setSelectedTable] = useState<TableWithKey | null>(
+		null
+	);
 
 	return (
 		<dataTableContext.Provider

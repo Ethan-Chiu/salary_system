@@ -39,7 +39,7 @@ export function SyncPage({
 	const getDiffDatas = api.employeeData.checkEmployeeData.useQuery({
 		func: "",
 	});
-	const getDataLength = () => getDiffDatas.data!.length;
+	const getDataLength = () => (getDiffDatas.data ?? []).length
 
 	const [checkedEmployees, setCheckedEmployees] = useState<Array<string>>([]);
 	const [selectedEmployee, setSelectedEmployee] = useState("");
@@ -235,7 +235,9 @@ export function SyncPage({
 
 	function AllDonePage() {
 		return <div className="flex h-full flex-grow flex-col">
-			<p>System Data is updated with EHR</p>
+			<div className="h-0 w-full flex-grow">
+				System Data is updated with EHR
+			</div>
 			<div className="mt-4 flex justify-between">
 				<Button
 					key="PreviousButton"

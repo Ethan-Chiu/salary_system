@@ -2,7 +2,7 @@ import { cn } from "~/lib/utils";
 import { Button, buttonVariants } from "~/components/ui/button";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useState, type PropsWithChildren } from "react";
+import { useContext, type PropsWithChildren } from "react";
 import { api } from "~/utils/api";
 import {
 	GanttChartSquare,
@@ -25,6 +25,7 @@ import { Separator } from "~/components/ui/separator";
 import { Dialog, DialogClose, DialogContent } from "./ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select";
+import periodContext from "./context/period_context";
 
 export type Playlist = (typeof playlists)[number];
 
@@ -107,6 +108,9 @@ type SelectItemProp = {
 };
 
 function CompSelectItemWrap(props: PropsWithChildren<SelectItemProp>) {
+
+	const { selectedPeriod } = useContext(periodContext);
+
 	return props.collapsed ? (
 		<TooltipProvider>
 			<Tooltip>
@@ -132,11 +136,13 @@ function CompSelectItemWrap(props: PropsWithChildren<SelectItemProp>) {
 				buttonVariants({ variant: "ghost" }),
 				"w-full justify-start"
 			)}>
-				<div className="flex items-center">
+				<div className="flex items-center w-full">
 					<props.selectItemEntry.icon className="h-4 w-4 flex-shrink-0" />
-					<div className="line-clamp-1 break-all ps-2">
-						{props.children}
+					<div className="flex justify-between line-clamp-1 break-all ps-2 w-full">
+						<div>{props.children}</div>
+						<div>{selectedPeriod?.period_name ?? "未選擇"}</div>
 					</div>
+
 				</div>
 			</DialogTrigger>
 			<DialogContent>
@@ -148,19 +154,19 @@ function CompSelectItemWrap(props: PropsWithChildren<SelectItemProp>) {
 
 function PeriodSelector() {
 	const getPeriod = api.function.getPeriod.useQuery();
-	const [period, setPeriod] = useState(-1);
-
+	const { selectedPeriod, setSelectedPeriod } = useContext(periodContext);
+	
 	return (
 		<div className="flex justify-center">
 			{getPeriod.isFetched ? (
 				<div className="py-4">
 					<Select
-						defaultValue={""}
+						defaultValue={selectedPeriod?.period_name}
 						onValueChange={(chosen) =>
-							setPeriod(
+							setSelectedPeriod(
 								getPeriod.data!.find(
 									(item) => item.period_name === chosen
-								)?.period_id || -1
+								)!
 							)
 						}
 					>
@@ -267,9 +273,7 @@ export function Sidebar({
 	expandFunction,
 }: SidebarProp) {
 	const pathname = usePathname();
-
-	const { isLoading, isError, data, error } =
-		api.access.accessByRole.useQuery();
+	const { isLoading, data } = api.access.accessByRole.useQuery(); // isError, error
 
 	if (isLoading) {
 		return <></>;

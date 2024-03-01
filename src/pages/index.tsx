@@ -4,7 +4,7 @@ import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import Router from "next/router";
 
-const PageHome: NextPageWithLayout = async () => {
+const PageHome: NextPageWithLayout = () => {
 	const { data: session, status } = useSession();
 
 	const { data, refetch } = api.access.accessByRole.useQuery(undefined, {
@@ -16,19 +16,19 @@ const PageHome: NextPageWithLayout = async () => {
 	}
 
 	if (status === "unauthenticated") {
-		await Router.push("/login");
+		void Router.push("/login");
 	}
 
 	if (status === "authenticated") {
 		console.log("session", session);
-		await refetch();
+		void refetch();
 	}
 
 	if (data && status === "authenticated") {
 		if (data?.actions) {
-			await Router.push("/functions");
+			void Router.push("/functions");
 		} else {
-			await Router.push("/settings");
+			void Router.push("/settings");
 		}
 	}
 

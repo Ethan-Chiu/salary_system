@@ -8,6 +8,7 @@ import {
 } from "../ui/resizable";
 import { cn } from "~/lib/utils";
 import { type ImperativePanelHandle } from "react-resizable-panels";
+import PeriodContextProvider from "../context/period_context_provider";
 
 type PerpageLayoutProp = {
 	pageTitle: string;
@@ -33,58 +34,62 @@ export const PerpageLayoutNav = (
 				/>
 			</Head>
 			<main className="min-h-screen bg-background">
-				<ResizablePanelGroup
-					direction="horizontal"
-					onLayout={(sizes: number[]) => {
-						document.cookie = `react-resizable-panels:layout=${JSON.stringify(
-							sizes
-						)}`;
-					}}
-					className="min-h-screen items-stretch"
-				>
-					<ResizablePanel
-						ref={ref}
-						defaultSize={265}
-						collapsedSize={3}
-						collapsible={true}
-						minSize={10}
-						maxSize={20}
-						onExpand={() => {
-							setIsCollapsed(false);
-							document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
-								false
+				<PeriodContextProvider>
+					<ResizablePanelGroup
+						direction="horizontal"
+						onLayout={(sizes: number[]) => {
+							document.cookie = `react-resizable-panels:layout=${JSON.stringify(
+								sizes
 							)}`;
 						}}
-						onCollapse={() => {
-							setIsCollapsed(true);
-							document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
-								true
-							)}`;
-						}}
-						className={cn(
-							isCollapsed &&
-								"min-w-[50px] transition-all duration-300 ease-in-out"
-						)}
+						className="min-h-screen items-stretch"
 					>
-						<Sidebar
-							isCollapsed={isCollapsed}
-							collapseFunction={() => ref.current?.collapse()}
-							expandFunction={() => ref.current?.expand()}
-							className="hidden lg:block lg:border-border"
-						/>
-					</ResizablePanel>
-					<ResizableHandle />
-					<ResizablePanel
-						defaultSize={440}
-						minSize={30}
-						className={cn(
-							isCollapsed &&
-								"transition-all duration-300 ease-in-out"
-						)}
-					>
-						<div className="h-full w-full">{props.children}</div>
-					</ResizablePanel>
-				</ResizablePanelGroup>
+						<ResizablePanel
+							ref={ref}
+							defaultSize={265}
+							collapsedSize={3}
+							collapsible={true}
+							minSize={10}
+							maxSize={20}
+							onExpand={() => {
+								setIsCollapsed(false);
+								document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
+									false
+								)}`;
+							}}
+							onCollapse={() => {
+								setIsCollapsed(true);
+								document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
+									true
+								)}`;
+							}}
+							className={cn(
+								isCollapsed &&
+									"min-w-[50px] transition-all duration-300 ease-in-out"
+							)}
+						>
+							<Sidebar
+								isCollapsed={isCollapsed}
+								collapseFunction={() => ref.current?.collapse()}
+								expandFunction={() => ref.current?.expand()}
+								className="hidden lg:block lg:border-border"
+							/>
+						</ResizablePanel>
+						<ResizableHandle />
+						<ResizablePanel
+							defaultSize={440}
+							minSize={30}
+							className={cn(
+								isCollapsed &&
+									"transition-all duration-300 ease-in-out"
+							)}
+						>
+							<div className="h-full w-full">
+								{props.children}
+							</div>
+						</ResizablePanel>
+					</ResizablePanelGroup>
+				</PeriodContextProvider>
 			</main>
 		</>
 	);
