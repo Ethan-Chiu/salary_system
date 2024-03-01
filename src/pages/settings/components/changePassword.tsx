@@ -10,8 +10,6 @@ import {
 import { Button } from "~/components/ui/button";
 import * as z from "zod";
 import { signOut, useSession } from "next-auth/react";
-import { Toast } from "~/components/ui/toast";
-import { Toaster } from "~/components/ui/toaster";
 import { useToast } from "~/components/ui/use-toast";
 
 import { api } from "~/utils/api";
@@ -127,7 +125,6 @@ const formComponent = (mode?: string) => {
 
 					<CardContent>{getForm()}</CardContent>
 				</Card>
-				<Toaster />
 			</div>
 		);
 
