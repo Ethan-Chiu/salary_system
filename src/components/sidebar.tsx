@@ -2,7 +2,7 @@ import { cn } from "~/lib/utils";
 import { buttonVariants } from "~/components/ui/button";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import type { PropsWithChildren } from "react";
+import { useContext, type PropsWithChildren } from "react";
 import { api } from "~/utils/api";
 import {
 	GanttChartSquare,
@@ -21,6 +21,7 @@ import {
 	TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { Separator } from "~/components/ui/separator";
+import periodContext from "./context/period_context";
 
 export type Playlist = (typeof playlists)[number];
 
@@ -60,7 +61,7 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 							buttonVariants({ variant: "ghost" }),
 							props.currentPath === props.navLinkEntry.url &&
 								"bg-muted hover:bg-muted",
-							"w-full justify-center items-center"
+							"w-full items-center justify-center"
 						)}
 					>
 						<props.navLinkEntry.icon className="h-4 w-4" />
@@ -158,13 +159,15 @@ export function Sidebar({
 	expandFunction,
 }: SidebarProp) {
 	const pathname = usePathname();
+	const { selectedPeriod } = useContext(periodContext);
 
-	const { isLoading, isError, data, error } =
-		api.access.accessByRole.useQuery();
+	const { isLoading, data } = api.access.accessByRole.useQuery(); // isError, error
 
 	if (isLoading) {
 		return <></>;
 	}
+
+	console.log("selectedPeriod", selectedPeriod);
 
 	return (
 		<div className={cn("pb-12", className)}>
