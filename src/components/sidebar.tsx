@@ -12,6 +12,7 @@ import {
 	ShieldCheck,
 	SlidersHorizontal,
 	CheckSquare,
+	CalendarRange,
 } from "lucide-react";
 
 import {

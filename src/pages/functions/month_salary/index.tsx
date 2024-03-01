@@ -1,12 +1,3 @@
-import {
-	Select,
-	SelectValue,
-	SelectTrigger,
-	SelectItem,
-	SelectGroup,
-	SelectContent,
-	SelectLabel,
-} from "~/components/ui/select";
 import { RootLayout } from "~/components/layout/root_layout";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { Header } from "~/components/header";
