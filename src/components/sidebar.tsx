@@ -1,5 +1,5 @@
 import { cn } from "~/lib/utils";
-import { Button, buttonVariants } from "~/components/ui/button";
+import { buttonVariants } from "~/components/ui/button";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useContext, type PropsWithChildren } from "react";
@@ -13,6 +13,7 @@ import {
 	SlidersHorizontal,
 	CheckSquare,
 	CalendarRange,
+	Contact,
 } from "lucide-react";
 
 import {
@@ -22,7 +23,7 @@ import {
 	TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { Separator } from "~/components/ui/separator";
-import { Dialog, DialogClose, DialogContent } from "./ui/dialog";
+import { Dialog, DialogContent } from "./ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select";
 import periodContext from "./context/period_context";
@@ -138,11 +139,10 @@ function CompSelectItemWrap(props: PropsWithChildren<SelectItemProp>) {
 			)}>
 				<div className="flex items-center w-full">
 					<props.selectItemEntry.icon className="h-4 w-4 flex-shrink-0" />
-					<div className="flex justify-between line-clamp-1 break-all ps-2 w-full">
-						<div>{props.children}</div>
-						<div>{selectedPeriod?.period_name ?? "未選擇"}</div>
+					<div className="flex justify-between ps-2 w-full">
+						<div className="line-clamp-1 break-all">{props.children}</div>
+						<div className="line-clamp-1 break-all">{selectedPeriod?.period_name ?? "未選擇"}</div>
 					</div>
-
 				</div>
 			</DialogTrigger>
 			<DialogContent>
@@ -155,7 +155,7 @@ function CompSelectItemWrap(props: PropsWithChildren<SelectItemProp>) {
 function PeriodSelector() {
 	const getPeriod = api.function.getPeriod.useQuery();
 	const { selectedPeriod, setSelectedPeriod } = useContext(periodContext);
-	
+
 	return (
 		<div className="flex justify-center">
 			{getPeriod.isFetched ? (
@@ -231,16 +231,22 @@ const actionLinks: NavLinkEntry[] = [
 		collapsed: false,
 	},
 	{
-		title: "Parameters",
-		icon: SlidersHorizontal,
-		url: "/parameters",
-		collapsed: true,
-	},
-	{
 		title: "Synchronize",
 		icon: CheckSquare,
 		url: "/check",
 		collapsed: false,
+	},
+	{
+		title: "Employees",
+		icon: Contact,
+		url: "/employees",
+		collapsed: true,
+	},
+	{
+		title: "Parameters",
+		icon: SlidersHorizontal,
+		url: "/parameters",
+		collapsed: true,
 	},
 ];
 
