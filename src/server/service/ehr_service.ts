@@ -6,18 +6,15 @@ import { Period } from "../database/entity/UMEDIA/period";
 import { Holiday } from "../database/entity/UMEDIA/holiday";
 import { Overtime } from "../database/entity/UMEDIA/overtime";
 import { Payset } from "../database/entity/UMEDIA/payset";
-import { EmployeeData } from "../database/entity/SALARY/employee_data";
 
 @injectable()
 export class EHRService {
-	constructor() {}
-
 	async getPeriod(): Promise<Period[]> {
 		const dbConnection = container.resolve(Database).connection;
 		const dataList = await dbConnection.query(this.GET_PERIOD_QUERY(), {
 			type: QueryTypes.SELECT,
 		});
-		const periodList: Period[] = dataList.map(Period.fromDB);
+		const periodList: Period[] = dataList.map((o) => Period.fromDB(o));
 
 		return periodList;
 	}
@@ -30,7 +27,7 @@ export class EHRService {
 				type: QueryTypes.SELECT,
 			}
 		);
-		const holidayList: Holiday[] = dataList.map(Holiday.fromDB);
+		const holidayList: Holiday[] = dataList.map((o) => Holiday.fromDB(o));
 
 		return holidayList;
 	}
@@ -43,7 +40,9 @@ export class EHRService {
 				type: QueryTypes.SELECT,
 			}
 		);
-		const overtimeList: Overtime[] = dataList.map(Overtime.fromDB);
+		const overtimeList: Overtime[] = dataList.map((o) =>
+			Overtime.fromDB(o)
+		);
 
 		return overtimeList;
 	}
@@ -56,7 +55,7 @@ export class EHRService {
 				type: QueryTypes.SELECT,
 			}
 		);
-		const paysetList: Payset[] = dataList.map(Payset.fromDB);
+		const paysetList: Payset[] = dataList.map((o) => Payset.fromDB(o));
 
 		return paysetList;
 	}
@@ -70,7 +69,7 @@ export class EHRService {
 				type: QueryTypes.SELECT,
 			}
 		);
-		const employeeData: Payset[] = dataList.map(Payset.fromDB);
+		const employeeData: Payset[] = dataList.map((o) => Payset.fromDB(o));
 		return employeeData;
 	}
 

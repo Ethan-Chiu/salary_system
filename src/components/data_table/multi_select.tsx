@@ -1,22 +1,9 @@
 import * as React from "react";
-import { cn } from "~/lib/utils";
-
-import { Check, X, ChevronsUpDown } from "lucide-react";
-import { Button } from "~/components/ui/button";
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-} from "~/components/ui/command";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "~/components/ui/popover";
+import { X } from "lucide-react";
+import { Command, CommandGroup, CommandItem } from "~/components/ui/command";
 import { Badge } from "~/components/ui/badge";
 import { Command as CommandPrimitive } from "cmdk";
+import { cn } from "~/lib/utils";
 
 export type OptionType = {
 	label: string;
@@ -33,21 +20,23 @@ export function MultiSelect({
 	options,
 	onChange,
 	className,
-	...props
 }: MultiSelectProps) {
 	const inputRef = React.useRef<HTMLInputElement>(null);
 	const [open, setOpen] = React.useState(false);
 	const [selected, setSelected] = React.useState<OptionType[]>([]);
 	const [inputValue, setInputValue] = React.useState("");
 
-	const handleUnselect = React.useCallback((opt: OptionType) => {
-		setSelected((prev) => {
-			const newSelected = prev.filter((s) => s.value !== opt.value);
-			const values = newSelected.map((opt) => opt.value);
-			onChange(values);
-			return newSelected;
-		});
-	}, []);
+	const handleUnselect = React.useCallback(
+		(opt: OptionType) => {
+			setSelected((prev) => {
+				const newSelected = prev.filter((s) => s.value !== opt.value);
+				const values = newSelected.map((opt) => opt.value);
+				onChange(values);
+				return newSelected;
+			});
+		},
+		[onChange]
+	);
 
 	const handleKeyDown = React.useCallback(
 		(e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -70,15 +59,17 @@ export function MultiSelect({
 				}
 			}
 		},
-		[]
+		[onChange]
 	);
 
-	const selectables = options.filter((opt) => !selected.some((sel) => sel.value === opt.value));
+	const selectables = options.filter(
+		(opt) => !selected.some((sel) => sel.value === opt.value)
+	);
 
 	return (
 		<Command
 			onKeyDown={handleKeyDown}
-			className="overflow-visible bg-transparent"
+			className={cn("overflow-visible bg-transparent", className)}
 		>
 			<div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
 				<div className="flex flex-wrap gap-1">
@@ -128,7 +119,7 @@ export function MultiSelect({
 											e.preventDefault();
 											e.stopPropagation();
 										}}
-										onSelect={(value) => {
+										onSelect={(_) => {
 											setInputValue("");
 											setSelected((prev) => {
 												const newSelected = [

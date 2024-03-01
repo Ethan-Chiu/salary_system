@@ -1,9 +1,7 @@
-import { Table } from "@tanstack/react-table";
+import { type Table } from "@tanstack/react-table";
 import {
 	TableBody,
 	TableCell,
-	TableHead,
-	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
 import { flexRender } from "@tanstack/react-table";
@@ -18,7 +16,7 @@ export function DataTableDataBody<TData>({
 	dataPerRow,
 }: DataTableDataBodyProps<TData>) {
 	const rows = table.getRowModel().rows;
-	let groupedRows = [];
+	const groupedRows = [];
 	for (let i = 0; i < rows.length; i += dataPerRow) {
 		groupedRows.push(rows.slice(i, i + dataPerRow));
 	}

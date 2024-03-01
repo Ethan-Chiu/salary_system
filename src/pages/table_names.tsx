@@ -15,7 +15,6 @@ export const TABLE_BONUS_SENIORITY = Translate("bonusSenioritySetting");
 export const TABLE_LEVEL = Translate("level");
 export const TABLE_LEVEL_RANGE = Translate("levelRange");
 
-
 export const TABLE_PERFORMANCE_LEVEL = Translate("performanceLevel");
 export const TABLE_TRUST_MONEY = Translate("trustMoney");
 

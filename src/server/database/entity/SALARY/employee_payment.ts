@@ -1,9 +1,9 @@
 import {
 	DataTypes,
 	Model,
-	InferAttributes,
-	InferCreationAttributes,
-	CreationOptional,
+	type InferAttributes,
+	type InferCreationAttributes,
+	type CreationOptional,
 } from "sequelize";
 import { container } from "tsyringe";
 import { Database } from "../../client";

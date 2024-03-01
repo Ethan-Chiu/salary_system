@@ -1,14 +1,10 @@
 import { RootLayout } from "~/components/layout/root_layout";
 import { type NextPageWithLayout } from "./_app";
-import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
-import { IconCoins } from "~/components/icons/svg_icons";
-import { Header } from "~/components/header";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import Router from "next/router";
-import { RolesEnumType } from "~/server/api/types/role_type";
 
-const PageHome: NextPageWithLayout = () => {
+const PageHome: NextPageWithLayout = async () => {
 	const { data: session, status } = useSession();
 
 	const { data, refetch } = api.access.accessByRole.useQuery(undefined, {
@@ -20,19 +16,19 @@ const PageHome: NextPageWithLayout = () => {
 	}
 
 	if (status === "unauthenticated") {
-		Router.push("/login");
+		await Router.push("/login");
 	}
 
 	if (status === "authenticated") {
 		console.log("session", session);
-		refetch();
+		await refetch();
 	}
 
 	if (data && status === "authenticated") {
 		if (data?.actions) {
-			Router.push("/functions");
+			await Router.push("/functions");
 		} else {
-			Router.push("/settings");
+			await Router.push("/settings");
 		}
 	}
 
