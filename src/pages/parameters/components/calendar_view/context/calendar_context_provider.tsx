@@ -3,42 +3,44 @@ import React, {
 	type PropsWithChildren,
 	useEffect,
 } from "react";
-import calendarContext from "./calendar_context";
+import calendarContext, { type CalendarEventLevelWithID, type CalendarEventWithID } from "./calendar_context";
 import dayjs from "dayjs";
-import { CalendarEvent, type CalendarEventLevel } from "../utils/calendar_event";
+import { CalendarEvent } from "../utils/calendar_event";
 import { getEventLevel } from "../utils/event_level";
 
-export type ActionType = {
-	type: "push";
-};
-
-interface CalendarContextProviderProps {
-	data: any[];
+interface RecordData {
+  id: number; 
+  start_date: Date;
+  end_date: Date;
 }
 
-export default function CalendarContextProvider({
+interface CalendarContextProviderProps<T extends RecordData> {
+	data: T[];
+}
+
+export default function CalendarContextProvider<T extends RecordData>({
 	data,
 	children,
-}: PropsWithChildren<CalendarContextProviderProps>) {
+}: PropsWithChildren<CalendarContextProviderProps<T>>) {
 	const [monthIndex, setMonthIndex] = useState(dayjs().month());
 	const [mouseDownDate, setMouseDownDate] = useState<dayjs.Dayjs | null>(
 		null
 	);
 	const [mouseUpDate, setMouseUpDate] = useState<dayjs.Dayjs | null>(null);
 
-	const [currentEvent, setCurrentEvent] = useState<CalendarEvent | null>(
+	const [currentEvent, setCurrentEvent] = useState<CalendarEventWithID | null>(
 		null
 	);
 	const [openSheet, setOpenSheet] = useState<boolean>(false);
 	const [updateSheet, setUpdateSheet] = useState<boolean>(false);
 
 	// const [eventList, dispatchEventList] = useReducer(savedEventsReducer, []);
-	const [eventList, setEventList] = useState<CalendarEvent[]>([]);
-	const [showEventList, setShowEventList] = useState<CalendarEventLevel[]>(
+	const [eventList, setEventList] = useState<CalendarEventWithID[]>([]);
+	const [showEventList, setShowEventList] = useState<CalendarEventLevelWithID[]>(
 		[]
 	);
 
-	const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
+	const [selectedEvent, setSelectedEvent] = useState<CalendarEventWithID | null>(
 		null
 	);
 

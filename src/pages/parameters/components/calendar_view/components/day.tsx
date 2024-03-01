@@ -7,8 +7,7 @@ import React, {
 } from "react";
 import { type Dayjs } from "dayjs";
 import { cn } from "~/lib/utils";
-import calendarContext from "../context/calendar_context";
-import { type CalendarEvent, type CalendarEventLevel } from "../utils/calendar_event";
+import calendarContext, { type CalendarEventLevelWithID, type CalendarEventWithID } from "../context/calendar_context";
 import { getMaxLevel } from "../utils/event_level";
 import { Button } from "~/components/ui/button";
 import {
@@ -43,7 +42,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 	/* const createFunction = mutateFunctions.createFunction!; */
 	const deleteFunction = mutateFunctions.deleteFunction!;
 
-	const [dayEvents, setDayEvents] = useState<CalendarEventLevel[]>([]);
+	const [dayEvents, setDayEvents] = useState<CalendarEventLevelWithID[]>([]);
 
 	useEffect(() => {
 		const events = showEventList.filter(
@@ -195,7 +194,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 						className="rounded-full p-3"
 						onClick={() => {
 							deleteFunction.mutate({
-								id: selectedEvent?.getData().id,
+								id: selectedEvent?.getData()?.id,
 							});
 						}}
 					>
@@ -213,7 +212,7 @@ function CompEvent({
 	day,
 	onMouseDown,
 }: {
-	event: CalendarEvent;
+	event: CalendarEventWithID;
 	selected: boolean;
 	day: Dayjs;
 	onMouseDown: MouseEventHandler;

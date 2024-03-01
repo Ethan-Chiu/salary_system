@@ -1,4 +1,4 @@
-import TableEnum from "../components/context/data_table_enum";
+import { type TableEnum } from "../components/context/data_table_enum";
 import { attendanceSchema } from "./configurations/attendance_schema";
 import { bankSchema } from "./configurations/bank_schema";
 import { insuranceSchema } from "./configurations/insurance_schema";

@@ -2,7 +2,6 @@ import { parametersRouter } from "~/server/api/routers/parameters";
 import { createTRPCRouter } from "~/server/api/trpc";
 import { loginRouter } from "./routers/login";
 import { debugRouter } from "./routers/debug";
-import { seedRouter } from "./routers/seed";
 import { accessRouter } from "./routers/access";
 import { functionRouter } from "./routers/function";
 import { employeeDataRouter } from "./routers/employee_data";
@@ -16,7 +15,6 @@ export const appRouter = createTRPCRouter({
 	debug: debugRouter,
 	parameters: parametersRouter,
 	login: loginRouter,
-	seed: seedRouter,
 	access: accessRouter,
 	function: functionRouter,
 	employeeData : employeeDataRouter,

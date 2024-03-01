@@ -1,9 +1,6 @@
 import { container } from "tsyringe";
-import { z } from "zod";
 import {
 	createTRPCRouter,
-	publicProcedure,
-	protectedProcedure,
 	userProcedure,
 } from "~/server/api/trpc";
 import { accessiblePages } from "../types/access_page_type";

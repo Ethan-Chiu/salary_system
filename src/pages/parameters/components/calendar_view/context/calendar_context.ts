@@ -5,6 +5,13 @@ import {
 	type CalendarEventLevel,
 } from "../utils/calendar_event";
 
+interface HasID {
+	id: number;
+}
+
+export type CalendarEventWithID = CalendarEvent<HasID>;
+export type CalendarEventLevelWithID = CalendarEventLevel<HasID>;
+
 const calendarContext = React.createContext<{
 	monthIndex: number;
 	setMonthIndex: (index: number) => void;
@@ -16,10 +23,10 @@ const calendarContext = React.createContext<{
 	setOpenSheet: (open: boolean) => void;
 	updateSheet: boolean;
 	setUpdateSheet: (open: boolean) => void;
-	showEventList: CalendarEventLevel[];
-	setEventList: (event: CalendarEvent[]) => void;
-	selectedEvent: CalendarEvent | null;
-	setSelectedEvent: (event: CalendarEvent) => void;
+	showEventList: CalendarEventLevelWithID[];
+	setEventList: (event: CalendarEventWithID[]) => void;
+	selectedEvent: CalendarEventWithID | null;
+	setSelectedEvent: (event: CalendarEventWithID) => void;
 	resetMouse: () => void;
 	// dispatchEventList: React.Dispatch<ActionType>,
 }>({
@@ -37,9 +44,9 @@ const calendarContext = React.createContext<{
 	setUpdateSheet: (_: boolean) => undefined,
 	// event list that will be shown
 	showEventList: [],
-	setEventList: (_: CalendarEvent[]) => undefined,
+	setEventList: (_: CalendarEvent<HasID>[]) => undefined,
 	selectedEvent: null,
-	setSelectedEvent: (_: CalendarEvent) => undefined,
+	setSelectedEvent: (_: CalendarEvent<HasID>) => undefined,
 	resetMouse: () => undefined,
 });
 

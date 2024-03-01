@@ -22,21 +22,20 @@ export const debugRouter = createTRPCRouter({
 		.query(async ({ input }) => {
 			const database = container.resolve(Database).connection;
 
-
 			try {
 				if (input.force) {
-					const data = await database.sync({ force: true });
+					await database.sync({ force: true });
 				} else if (input.alter) {
-					const data = await database.sync({ alter: true });
+					await database.sync({ alter: true });
 				}
-				const data = await database.sync();
+				await database.sync();
 
 				return {
 					msg: "All models were synchronized successfully.",
 				};
 			} catch (e) {
 				return {
-					msg: `error ${e}`,
+					msg: `error ${(e as Error).message}`,
 				};
 			}
 		}),
@@ -47,13 +46,17 @@ export const debugRouter = createTRPCRouter({
 			await database.authenticate();
 			return { msg: "Connection has been established successfully." };
 		} catch (error) {
-			return { msg: `Unable to connect to the database: ${error}` };
+			return {
+				msg: `Unable to connect to the database: ${
+					(error as Error).message
+				}`,
+			};
 		}
 	}),
-	protect: protectedProcedure.query(async ({ ctx }) => {
+	protect: protectedProcedure.query(({ ctx }) => {
 		return ctx;
 	}),
-	resolveUser: userProcedure.query(async ({ ctx }) => {
+	resolveUser: userProcedure.query(({ ctx }) => {
 		return ctx;
 	}),
 	createAccessSetting: publicProcedure

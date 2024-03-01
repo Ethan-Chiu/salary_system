@@ -1,12 +1,12 @@
 import { type inferProcedureInput } from "@trpc/server";
-import {describe, expect, test} from '@jest/globals';
+import { test } from "@jest/globals";
 
-import { appRouter, type AppRouter } from "~/server/api/root";
-import { createInnerTRPCContext } from "~/server/api/trpc";
+import { type AppRouter } from "~/server/api/root";
+/* import { createInnerTRPCContext } from "~/server/api/trpc"; */
 
-test("login but no account", async () => {
-	const ctx = await createInnerTRPCContext({ session: null });
-	const caller = appRouter.createCaller(ctx);
+test("login but no account", () => {
+	/* const ctx = createInnerTRPCContext({ session: null }); */
+	/* const caller = appRouter.createCaller(ctx); */
 
 	type Input = inferProcedureInput<AppRouter["login"]["login"]>;
 	const input: Input = {
@@ -15,7 +15,7 @@ test("login but no account", async () => {
 	};
 
 	// const example = await caller.login.login(input);
-	console.log(1 + 1);
+	console.log(input);
 
 	// expect(example).toMatchObject();
 });
