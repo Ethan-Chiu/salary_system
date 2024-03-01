@@ -16,54 +16,36 @@ export class EmployeePaymentService {
 	async createEmployeePayment({
 		emp_no,
 		base_salary,
-		supervisor_bonus,
-		job_bonus,
-		subsidy_bonus,
-		shift_bonus,
-		professional_cert_bonus,
+		food_bonus,
+		supervisor_comp,
+		job_comp,
+		subsidy_comp,
+		professional_cert_comp,
 		labor_retirement_self,
-		emp_trust_reserve,
-		org_trust_reserve,
-		emp_special_trust_incent,
-		org_special_trust_incent,
 		l_i,
 		h_i,
 		labor_retirement,
 		occupational_injury,
 		start_date,
 		end_date,
-		dir_sup_comp,
-		food_bonus,
-		moon_fes_bonus,
-		dragonboat_fes_bonus,
-		performance_bonus,
 	}: z.infer<typeof createEmployeePaymentService>): Promise<EmployeePayment> {
 		const current_date_string = get_date_string(new Date());
 		check_date(start_date, end_date, current_date_string);
 		const newData = await EmployeePayment.create({
 			emp_no: emp_no,
 			base_salary: base_salary,
-			supervisor_bonus: supervisor_bonus,
-			job_bonus: job_bonus,
-			subsidy_bonus: subsidy_bonus,
-			shift_bonus: shift_bonus,
-			professional_cert_bonus: professional_cert_bonus,
+			food_bonus: food_bonus,
+			supervisor_comp: supervisor_comp,
+			job_comp: job_comp,
+			subsidy_comp: subsidy_comp,
+			professional_cert_comp: professional_cert_comp,
 			labor_retirement_self: labor_retirement_self,
-			emp_trust_reserve: emp_trust_reserve,
-			org_trust_reserve: org_trust_reserve,
-			emp_special_trust_incent: emp_special_trust_incent,
-			org_special_trust_incent: org_special_trust_incent,
 			l_i: l_i,
 			h_i: h_i,
 			labor_retirement: labor_retirement,
 			occupational_injury: occupational_injury,
 			start_date: start_date ?? current_date_string,
 			end_date: end_date,
-			dir_sup_comp: dir_sup_comp,
-			food_bonus: food_bonus,
-			moon_fes_bonus: moon_fes_bonus,
-			dragonboat_fes_bonus: dragonboat_fes_bonus,
-			performance_bonus: performance_bonus,
 			create_by: "system",
 			update_by: "system",
 		});
@@ -127,27 +109,18 @@ export class EmployeePaymentService {
 		id,
 		emp_no,
 		base_salary,
-		supervisor_bonus,
-		job_bonus,
-		subsidy_bonus,
-		shift_bonus,
-		professional_cert_bonus,
+		food_bonus,
+		supervisor_comp,
+		job_comp,
+		subsidy_comp,
+		professional_cert_comp,
 		labor_retirement_self,
-		emp_trust_reserve,
-		org_trust_reserve,
-		emp_special_trust_incent,
-		org_special_trust_incent,
 		l_i,
 		h_i,
 		labor_retirement,
 		occupational_injury,
 		start_date,
 		end_date,
-		dir_sup_comp: dir_sup_comp,
-		food_bonus: food_bonus,
-		moon_fes_bonus: moon_fes_bonus,
-		dragonboat_fes_bonus: dragonboat_fes_bonus,
-		performance_bonus: performance_bonus,
 	}: z.infer<typeof updateEmployeePaymentService>): Promise<void> {
 		const employeePayment = await this.getEmployeePaymentById(id!);
 		if (employeePayment == null) {
@@ -160,42 +133,26 @@ export class EmployeePaymentService {
 					base_salary,
 					employeePayment.base_salary
 				),
-				supervisor_bonus: select_value(
-					supervisor_bonus,
-					employeePayment.supervisor_bonus
+				food_bonus: select_value(
+					food_bonus,
+					employeePayment.food_bonus
 				),
-				job_bonus: select_value(job_bonus, employeePayment.job_bonus),
-				subsidy_bonus: select_value(
-					subsidy_bonus,
-					employeePayment.subsidy_bonus
+				supervisor_comp: select_value(
+					supervisor_comp,
+					employeePayment.supervisor_comp
 				),
-				shift_bonus: select_value(
-					shift_bonus,
-					employeePayment.shift_bonus
+				job_comp: select_value(job_comp, employeePayment.job_comp),
+				subsidy_comp: select_value(
+					subsidy_comp,
+					employeePayment.subsidy_comp
 				),
-				professional_cert_bonus: select_value(
-					professional_cert_bonus,
-					employeePayment.professional_cert_bonus
+				professional_cert_comp: select_value(
+					professional_cert_comp,
+					employeePayment.professional_cert_comp
 				),
 				labor_retirement_self: select_value(
 					labor_retirement_self,
 					employeePayment.labor_retirement_self
-				),
-				emp_trust_reserve: select_value(
-					emp_trust_reserve,
-					employeePayment.emp_trust_reserve
-				),
-				org_trust_reserve: select_value(
-					org_trust_reserve,
-					employeePayment.org_trust_reserve
-				),
-				emp_special_trust_incent: select_value(
-					emp_special_trust_incent,
-					employeePayment.emp_special_trust_incent
-				),
-				org_special_trust_incent: select_value(
-					org_special_trust_incent,
-					employeePayment.org_special_trust_incent
 				),
 				l_i: select_value(l_i, employeePayment.l_i),
 				h_i: select_value(h_i, employeePayment.h_i),
@@ -212,26 +169,6 @@ export class EmployeePaymentService {
 					employeePayment.start_date
 				),
 				end_date: select_value(end_date, employeePayment.end_date),
-				dir_sup_comp: select_value(
-					dir_sup_comp,
-					employeePayment.dir_sup_comp
-				),
-				food_bonus: select_value(
-					food_bonus,
-					employeePayment.food_bonus
-				),
-				moon_fes_bonus: select_value(
-					moon_fes_bonus,
-					employeePayment.moon_fes_bonus
-				),
-				dragonboat_fes_bonus: select_value(
-					dragonboat_fes_bonus,
-					employeePayment.dragonboat_fes_bonus
-				),
-				performance_bonus: select_value(
-					performance_bonus,
-					employeePayment.performance_bonus
-				),
 				update_by: "system",
 			},
 			{ where: { id: id } }
