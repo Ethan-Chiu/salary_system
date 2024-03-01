@@ -1,37 +1,32 @@
-import { container, injectable } from "tsyringe";
+import { injectable } from "tsyringe";
 import { EmployeeData } from "../database/entity/SALARY/employee_data";
-import { z } from "zod";
+import { type z } from "zod";
 import {
-	createEmployeeDataService,
-	updateEmployeeDataService,
+	type createEmployeeDataService,
+	type updateEmployeeDataService,
 } from "../api/types/parameters_input_type";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { select_value } from "./helper_function";
-import { IncomingMessage } from "http";
-import { Op } from "sequelize";
-import { EHRService } from "./ehr_service";
-
 
 export interface CombinedData {
-	key: string
-   	db_value: any
-   	ehr_value: any
-	is_different: boolean
-  }
-export interface PaidEmployee {
-	emp_no: string
-	name: string
-	english_name: string 
-	department: string
-	work_status: string
-	departure_date: string | null
-	check: boolean
+	key: string;
+	db_value: any;
+	ehr_value: any;
+	is_different: boolean;
 }
-
+export interface PaidEmployee {
+	emp_no: string;
+	name: string;
+	english_name: string;
+	department: string;
+	work_status: string;
+	departure_date: string | null;
+	check: boolean;
+}
 
 @injectable()
 export class EmployeeDataService {
-	constructor() {}
+	/* constructor() {} */
 
 	async createEmployeeData({
 		emp_no,
@@ -75,8 +70,6 @@ export class EmployeeDataService {
 		indigenous_name,
 		tax_identification_code,
 	}: z.infer<typeof createEmployeeDataService>): Promise<EmployeeData> {
-		const now = new Date();
-
 		const newData = await EmployeeData.create({
 			emp_no: emp_no,
 			emp_name: emp_name,
@@ -132,7 +125,6 @@ export class EmployeeDataService {
 	}
 
 	async getCurrentEmployeeData(): Promise<EmployeeData[]> {
-		const now = Date();
 		const employeeData = await EmployeeData.findAll({});
 		return employeeData;
 	}
@@ -327,49 +319,65 @@ export class EmployeeDataService {
 	}
 
 	async getPaidEmployees(func: string): Promise<PaidEmployee[]> {
-		var paid_emps: PaidEmployee[] = [];
+		let paid_emps: PaidEmployee[] = [];
 		const pay_work_status = ["一般人員", "當月離職人員"];
 		if (func == "month_salary") {
 			const all_emps = await EmployeeData.findAll({
-				attributes: [ "emp_name", "english_name", "department","emp_no", "work_status", "departure_date"],
+				attributes: [
+					"emp_name",
+					"english_name",
+					"department",
+					"emp_no",
+					"work_status",
+					"departure_date",
+				],
 			});
-			console.log('check all emps')
-			console.log(all_emps)
-			paid_emps = await Promise.all(all_emps.map((emp) => {
-				var work_check = true
-				var departure_check = false
-				if (!pay_work_status.includes(emp.work_status)) {
-					work_check = false
-				}
-				if (emp.work_status != "當月離職人員" && emp.departure_date == null) {
-					departure_check = true
-				}
-				else if (emp.work_status == "當月離職人員" && emp.departure_date != null) {
-					const current_month = new Date().getMonth();
-					const leaving_month = new Date(emp.departure_date).getMonth();
-					if (current_month == leaving_month+1) {
-						departure_check = true
+			console.log("check all emps");
+			console.log(all_emps);
+			paid_emps = await Promise.all(
+				all_emps.map((emp) => {
+					let work_check = true;
+					let departure_check = false;
+					if (!pay_work_status.includes(emp.work_status)) {
+						work_check = false;
 					}
-				}
-				const paid_emp : PaidEmployee = {
-					emp_no: emp.emp_no,
-					name: emp.emp_name,
-					english_name: emp.english_name,
-					department: emp.department,
-					work_status: emp.work_status,
-					departure_date: emp.departure_date,
-					check: work_check && departure_check
-				}
-				return paid_emp
-			}))
+					if (
+						emp.work_status != "當月離職人員" &&
+						emp.departure_date == null
+					) {
+						departure_check = true;
+					} else if (
+						emp.work_status == "當月離職人員" &&
+						emp.departure_date != null
+					) {
+						const current_month = new Date().getMonth();
+						const leaving_month = new Date(
+							emp.departure_date
+						).getMonth();
+						if (current_month == leaving_month + 1) {
+							departure_check = true;
+						}
+					}
+					const paid_emp: PaidEmployee = {
+						emp_no: emp.emp_no,
+						name: emp.emp_name,
+						english_name: emp.english_name,
+						department: emp.department,
+						work_status: emp.work_status,
+						departure_date: emp.departure_date,
+						check: work_check && departure_check,
+					};
+					return paid_emp;
+				})
+			);
 		}
-		return paid_emps
+		return paid_emps;
 	}
 
 	async checkEmployeeData(
 		func: string
 	): Promise<CombinedData[][] | undefined> {
-		var db_datas = [];
+		let db_datas = [];
 		// const emp_nos = await this.getPayEmployeeNumbers(func);
 		if (func == "month_salary") {
 			db_datas = await EmployeeData.findAll({
@@ -393,7 +401,7 @@ export class EmployeeDataService {
 					id: db_data.id,
 					has_esot: !db_data.has_esot,
 				});
-				var ehr_data = await this.getEmployeeDataById(db_data.id);
+				const ehr_data = await this.getEmployeeDataById(db_data.id);
 				const excludedKeys = [
 					"create_date",
 					"create_by",
@@ -403,7 +411,7 @@ export class EmployeeDataService {
 				// const dates = ['hire_date', 'entry_date', 'departure_date', 'birthdate'];
 				const keys = Object.keys(db_data.dataValues);
 				const combinedDatas = await Promise.all(
-					keys.map(async (key) => {
+					keys.map((key) => {
 						const db_value = (db_data as any)[key];
 						const ehr_value = (ehr_data as any)[key];
 						const is_different =
@@ -421,8 +429,7 @@ export class EmployeeDataService {
 
 				if (
 					combinedDatas.some(
-						async (combinedData) =>
-							(await combinedData.is_different) === true
+						(combinedData) => combinedData.is_different === true
 					)
 				) {
 					return combinedDatas;

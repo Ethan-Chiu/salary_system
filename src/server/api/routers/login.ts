@@ -1,9 +1,5 @@
 import { z } from "zod";
-import {
-	createTRPCRouter,
-	publicProcedure,
-	protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import * as bcrypt from "bcrypt";
 import { UserService } from "~/server/service/user_service";
 import { container } from "tsyringe";

@@ -47,7 +47,7 @@ export const parametersRouter = createTRPCRouter({
 		.input(createBankSettingAPI)
 		.mutation(async ({ input }) => {
 			const bankService = container.resolve(BankSettingService);
-			let newdata = await bankService.createBankSetting({
+			const newdata = await bankService.createBankSetting({
 				...input,
 				start_date: input.start_date
 					? get_date_string(input.start_date)
@@ -61,7 +61,7 @@ export const parametersRouter = createTRPCRouter({
 
 	getCurrentBankSetting: publicProcedure.query(async () => {
 		const bankService = container.resolve(BankSettingService);
-		let bankSetting = await bankService.getCurrentBankSetting();
+		const bankSetting = await bankService.getCurrentBankSetting();
 		if (bankSetting.length == 0) {
 			throw new BaseResponseError("BankSetting does not exist");
 		}
@@ -70,7 +70,7 @@ export const parametersRouter = createTRPCRouter({
 
 	getAllBankSetting: publicProcedure.query(async () => {
 		const bankService = container.resolve(BankSettingService);
-		let bankSetting = await bankService.getAllBankSetting();
+		const bankSetting = await bankService.getAllBankSetting();
 		if (bankSetting.length == 0) {
 			throw new BaseResponseError("BankSetting does not exist");
 		}
@@ -81,7 +81,7 @@ export const parametersRouter = createTRPCRouter({
 		.input(updateBankSettingAPI)
 		.mutation(async ({ input }) => {
 			const bankService = container.resolve(BankSettingService);
-			let newdata = await bankService.updateBankSetting({
+			const newdata = await bankService.updateBankSetting({
 				...input,
 				start_date: input.start_date
 					? get_date_string(input.start_date)
@@ -103,7 +103,7 @@ export const parametersRouter = createTRPCRouter({
 
 	getCurrentAttendanceSetting: publicProcedure.query(async () => {
 		const attendanceService = container.resolve(AttendanceSettingService);
-		let attendanceSetting =
+		const attendanceSetting =
 			await attendanceService.getCurrentAttendanceSetting();
 		if (attendanceSetting == null) {
 			throw new BaseResponseError("AttendanceSetting does not exist");
@@ -113,7 +113,7 @@ export const parametersRouter = createTRPCRouter({
 
 	getAllAttendanceSetting: publicProcedure.query(async () => {
 		const attendanceService = container.resolve(AttendanceSettingService);
-		let attendanceSetting =
+		const attendanceSetting =
 			await attendanceService.getAllAttendanceSetting();
 		if (attendanceSetting.length == 0) {
 			throw new BaseResponseError("AttendanceSetting does not exist");
@@ -127,7 +127,7 @@ export const parametersRouter = createTRPCRouter({
 			const attendanceService = container.resolve(
 				AttendanceSettingService
 			);
-			let newdata = await attendanceService.createAttendanceSetting({
+			const newdata = await attendanceService.createAttendanceSetting({
 				...input,
 				start_date: input.start_date
 					? get_date_string(input.start_date)
@@ -172,7 +172,7 @@ export const parametersRouter = createTRPCRouter({
 		const insuranceRateService = container.resolve(
 			InsuranceRateSettingService
 		);
-		let insuranceRateSetting =
+		const insuranceRateSetting =
 			await insuranceRateService.getCurrentInsuranceRateSetting();
 		if (insuranceRateSetting == null) {
 			throw new BaseResponseError("InsuranceRateSetting does not exist");
@@ -184,7 +184,7 @@ export const parametersRouter = createTRPCRouter({
 		const insuranceRateService = container.resolve(
 			InsuranceRateSettingService
 		);
-		let insuranceRateSetting =
+		const insuranceRateSetting =
 			await insuranceRateService.getAllInsuranceRateSetting();
 		if (insuranceRateSetting.length == 0) {
 			throw new BaseResponseError("InsuranceRateSetting does not exist");
@@ -198,8 +198,8 @@ export const parametersRouter = createTRPCRouter({
 			const insuranceRateService = container.resolve(
 				InsuranceRateSettingService
 			);
-			let newdata = await insuranceRateService.createInsuranceRateSetting(
-				{
+			const newdata =
+				await insuranceRateService.createInsuranceRateSetting({
 					...input,
 					start_date: input.start_date
 						? get_date_string(input.start_date)
@@ -207,8 +207,7 @@ export const parametersRouter = createTRPCRouter({
 					end_date: input.end_date
 						? get_date_string(input.end_date)
 						: null,
-				}
-			);
+				});
 			await insuranceRateService.rescheduleInsuranceRateSetting();
 			return newdata;
 		}),
@@ -247,7 +246,7 @@ export const parametersRouter = createTRPCRouter({
 			const bonusDepartmentService = container.resolve(
 				BonusDepartmentService
 			);
-			let newdata = await bonusDepartmentService.createBonusDepartment(
+			const newdata = await bonusDepartmentService.createBonusDepartment(
 				input
 			);
 			return newdata;
@@ -257,7 +256,7 @@ export const parametersRouter = createTRPCRouter({
 		const bonusDepartmentService = container.resolve(
 			BonusDepartmentService
 		);
-		let bonusDepartment =
+		const bonusDepartment =
 			await bonusDepartmentService.getCurrentBonusDepartment();
 		if (bonusDepartment == null) {
 			throw new BaseResponseError("BonusDepartment does not exist");
@@ -269,7 +268,7 @@ export const parametersRouter = createTRPCRouter({
 		const bonusDepartmentService = container.resolve(
 			BonusDepartmentService
 		);
-		let bonusDepartment =
+		const bonusDepartment =
 			await bonusDepartmentService.getAllBonusDepartment();
 		if (bonusDepartment == null) {
 			throw new BaseResponseError("BonusDepartment does not exist");
@@ -283,7 +282,7 @@ export const parametersRouter = createTRPCRouter({
 			const bonusDepartmentService = container.resolve(
 				BonusDepartmentService
 			);
-			let newdata = await bonusDepartmentService.updateBonusDepartment(
+			const newdata = await bonusDepartmentService.updateBonusDepartment(
 				input
 			);
 			return newdata;
@@ -304,13 +303,15 @@ export const parametersRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const bonusPositionService =
 				container.resolve(BonusPositionService);
-			let newdata = await bonusPositionService.createBonusPosition(input);
+			const newdata = await bonusPositionService.createBonusPosition(
+				input
+			);
 			return newdata;
 		}),
 
 	getCurrentBonusPosition: publicProcedure.query(async () => {
 		const bonusPositionService = container.resolve(BonusPositionService);
-		let bonusPosition =
+		const bonusPosition =
 			await bonusPositionService.getCurrentBonusPosition();
 		if (bonusPosition == null) {
 			throw new BaseResponseError("BonusPosition does not exist");
@@ -320,7 +321,7 @@ export const parametersRouter = createTRPCRouter({
 
 	getAllBonusPosition: publicProcedure.query(async () => {
 		const bonusPositionService = container.resolve(BonusPositionService);
-		let bonusPosition = await bonusPositionService.getAllBonusPosition();
+		const bonusPosition = await bonusPositionService.getAllBonusPosition();
 		if (bonusPosition == null) {
 			throw new BaseResponseError("BonusPosition does not exist");
 		}
@@ -332,7 +333,9 @@ export const parametersRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const bonusPositionService =
 				container.resolve(BonusPositionService);
-			let newdata = await bonusPositionService.updateBonusPosition(input);
+			const newdata = await bonusPositionService.updateBonusPosition(
+				input
+			);
 			return newdata;
 		}),
 
@@ -351,7 +354,7 @@ export const parametersRouter = createTRPCRouter({
 			const bonusPositionTypeService = container.resolve(
 				BonusPositionTypeService
 			);
-			let newdata =
+			const newdata =
 				await bonusPositionTypeService.createBonusPositionType(input);
 			return newdata;
 		}),
@@ -360,7 +363,7 @@ export const parametersRouter = createTRPCRouter({
 		const bonusPositionTypeService = container.resolve(
 			BonusPositionTypeService
 		);
-		let bonusPositionType =
+		const bonusPositionType =
 			await bonusPositionTypeService.getCurrentBonusPositionType();
 		if (bonusPositionType == null) {
 			throw new BaseResponseError("BonusPositionType does not exist");
@@ -372,7 +375,7 @@ export const parametersRouter = createTRPCRouter({
 		const bonusPositionTypeService = container.resolve(
 			BonusPositionTypeService
 		);
-		let bonusPositionType =
+		const bonusPositionType =
 			await bonusPositionTypeService.getAllBonusPositionType();
 		if (bonusPositionType == null) {
 			throw new BaseResponseError("BonusPositionType does not exist");
@@ -386,7 +389,7 @@ export const parametersRouter = createTRPCRouter({
 			const bonusPositionTypeService = container.resolve(
 				BonusPositionTypeService
 			);
-			let newdata =
+			const newdata =
 				await bonusPositionTypeService.updateBonusPositionType(input);
 			return newdata;
 		}),
@@ -407,7 +410,7 @@ export const parametersRouter = createTRPCRouter({
 			const bonusSeniorityService = container.resolve(
 				BonusSeniorityService
 			);
-			let newdata = await bonusSeniorityService.createBonusSeniority(
+			const newdata = await bonusSeniorityService.createBonusSeniority(
 				input
 			);
 			return newdata;
@@ -415,7 +418,7 @@ export const parametersRouter = createTRPCRouter({
 
 	getCurrentBonusSeniority: publicProcedure.query(async () => {
 		const bonusSeniorityService = container.resolve(BonusSeniorityService);
-		let bonusSeniority =
+		const bonusSeniority =
 			await bonusSeniorityService.getCurrentBonusSeniority();
 		if (bonusSeniority == null) {
 			throw new BaseResponseError("BonusSeniority does not exist");
@@ -425,7 +428,8 @@ export const parametersRouter = createTRPCRouter({
 
 	getAllBonusSeniority: publicProcedure.query(async () => {
 		const bonusSeniorityService = container.resolve(BonusSeniorityService);
-		let bonusSeniority = await bonusSeniorityService.getAllBonusSeniority();
+		const bonusSeniority =
+			await bonusSeniorityService.getAllBonusSeniority();
 		if (bonusSeniority == null) {
 			throw new BaseResponseError("BonusSeniority does not exist");
 		}
@@ -438,7 +442,7 @@ export const parametersRouter = createTRPCRouter({
 			const bonusSeniorityService = container.resolve(
 				BonusSeniorityService
 			);
-			let newdata = await bonusSeniorityService.updateBonusSeniority(
+			const newdata = await bonusSeniorityService.updateBonusSeniority(
 				input
 			);
 			return newdata;
@@ -458,13 +462,13 @@ export const parametersRouter = createTRPCRouter({
 		.input(createBonusSettingAPI)
 		.mutation(async ({ input }) => {
 			const bonusSettingService = container.resolve(BonusSettingService);
-			let newdata = await bonusSettingService.createBonusSetting(input);
+			const newdata = await bonusSettingService.createBonusSetting(input);
 			return newdata;
 		}),
 
 	getCurrentBonusSetting: publicProcedure.query(async () => {
 		const bonusSettingService = container.resolve(BonusSettingService);
-		let bonusSetting = await bonusSettingService.getCurrentBonusSetting();
+		const bonusSetting = await bonusSettingService.getCurrentBonusSetting();
 		if (bonusSetting == null) {
 			throw new BaseResponseError("BonusSetting does not exist");
 		}
@@ -473,7 +477,7 @@ export const parametersRouter = createTRPCRouter({
 
 	getAllBonusSetting: publicProcedure.query(async () => {
 		const bonusSettingService = container.resolve(BonusSettingService);
-		let bonusSetting = await bonusSettingService.getAllBonusSetting();
+		const bonusSetting = await bonusSettingService.getAllBonusSetting();
 		if (bonusSetting == null) {
 			throw new BaseResponseError("BonusSetting does not exist");
 		}
@@ -484,7 +488,7 @@ export const parametersRouter = createTRPCRouter({
 		.input(updateBonusSettingAPI)
 		.mutation(async ({ input }) => {
 			const bonusSettingService = container.resolve(BonusSettingService);
-			let newdata = await bonusSettingService.updateBonusSetting(input);
+			const newdata = await bonusSettingService.updateBonusSetting(input);
 			return newdata;
 		}),
 
@@ -500,13 +504,13 @@ export const parametersRouter = createTRPCRouter({
 		.input(createLevelRangeAPI)
 		.mutation(async ({ input }) => {
 			const levelRangeService = container.resolve(LevelRangeService);
-			let newdata = await levelRangeService.createLevelRange(input);
+			const newdata = await levelRangeService.createLevelRange(input);
 			return newdata;
 		}),
 
 	getCurrentLevelRange: publicProcedure.query(async () => {
 		const levelRangeService = container.resolve(LevelRangeService);
-		let levelRange = await levelRangeService.getCurrentLevelRange();
+		const levelRange = await levelRangeService.getCurrentLevelRange();
 		if (levelRange == null) {
 			throw new BaseResponseError("LevelRange does not exist");
 		}
@@ -515,7 +519,7 @@ export const parametersRouter = createTRPCRouter({
 
 	getAllLevelRange: publicProcedure.query(async () => {
 		const levelRangeService = container.resolve(LevelRangeService);
-		let levelRange = await levelRangeService.getAllLevelRange();
+		const levelRange = await levelRangeService.getAllLevelRange();
 		if (levelRange == null) {
 			throw new BaseResponseError("LevelRange does not exist");
 		}
@@ -526,7 +530,7 @@ export const parametersRouter = createTRPCRouter({
 		.input(updateLevelRangeAPI)
 		.mutation(async ({ input }) => {
 			const levelRangeService = container.resolve(LevelRangeService);
-			let newdata = await levelRangeService.updateLevelRange(input);
+			const newdata = await levelRangeService.updateLevelRange(input);
 			return newdata;
 		}),
 
@@ -542,13 +546,13 @@ export const parametersRouter = createTRPCRouter({
 		.input(createLevelAPI)
 		.mutation(async ({ input }) => {
 			const levelService = container.resolve(LevelService);
-			let newdata = await levelService.createLevel(input);
+			const newdata = await levelService.createLevel(input);
 			return newdata;
 		}),
 
 	getCurrentLevel: publicProcedure.query(async () => {
 		const levelService = container.resolve(LevelService);
-		let level = await levelService.getCurrentLevel();
+		const level = await levelService.getCurrentLevel();
 		if (level == null) {
 			throw new BaseResponseError("Level does not exist");
 		}
@@ -557,7 +561,7 @@ export const parametersRouter = createTRPCRouter({
 
 	getAllLevel: publicProcedure.query(async () => {
 		const levelService = container.resolve(LevelService);
-		let level = await levelService.getAllLevel();
+		const level = await levelService.getAllLevel();
 		if (level == null) {
 			throw new BaseResponseError("Level does not exist");
 		}
@@ -568,7 +572,7 @@ export const parametersRouter = createTRPCRouter({
 		.input(updateLevelAPI)
 		.mutation(async ({ input }) => {
 			const levelService = container.resolve(LevelService);
-			let newdata = await levelService.updateLevel(input);
+			const newdata = await levelService.updateLevel(input);
 			return newdata;
 		}),
 
@@ -586,9 +590,8 @@ export const parametersRouter = createTRPCRouter({
 			const performanceLevelService = container.resolve(
 				PerformanceLevelService
 			);
-			let newdata = await performanceLevelService.createPerformanceLevel(
-				input
-			);
+			const newdata =
+				await performanceLevelService.createPerformanceLevel(input);
 			return newdata;
 		}),
 
@@ -596,7 +599,7 @@ export const parametersRouter = createTRPCRouter({
 		const performanceLevelService = container.resolve(
 			PerformanceLevelService
 		);
-		let performanceLevel =
+		const performanceLevel =
 			await performanceLevelService.getCurrentPerformanceLevel();
 		if (performanceLevel == null) {
 			throw new BaseResponseError("PerformanceLevel does not exist");
@@ -608,7 +611,7 @@ export const parametersRouter = createTRPCRouter({
 		const performanceLevelService = container.resolve(
 			PerformanceLevelService
 		);
-		let performanceLevel =
+		const performanceLevel =
 			await performanceLevelService.getAllPerformanceLevel();
 		if (performanceLevel == null) {
 			throw new BaseResponseError("LevelRange does not exist");
@@ -622,9 +625,8 @@ export const parametersRouter = createTRPCRouter({
 			const performanceLevelService = container.resolve(
 				PerformanceLevelService
 			);
-			let newdata = await performanceLevelService.updatePerformanceLevel(
-				input
-			);
+			const newdata =
+				await performanceLevelService.updatePerformanceLevel(input);
 			return newdata;
 		}),
 
@@ -642,13 +644,13 @@ export const parametersRouter = createTRPCRouter({
 		.input(createTrustMoneyAPI)
 		.mutation(async ({ input }) => {
 			const trustMoneyService = container.resolve(TrustMoneyService);
-			let newdata = await trustMoneyService.createTrustMoney(input);
+			const newdata = await trustMoneyService.createTrustMoney(input);
 			return newdata;
 		}),
 
 	getCurrentTrustMoney: publicProcedure.query(async () => {
 		const trustMoneyService = container.resolve(TrustMoneyService);
-		let trustMoney = await trustMoneyService.getCurrentTrustMoney();
+		const trustMoney = await trustMoneyService.getCurrentTrustMoney();
 		if (trustMoney == null) {
 			throw new BaseResponseError("TrustMoney does not exist");
 		}
@@ -657,7 +659,7 @@ export const parametersRouter = createTRPCRouter({
 
 	getAllTrustMoney: publicProcedure.query(async () => {
 		const trustMoneyService = container.resolve(TrustMoneyService);
-		let trustMoney = await trustMoneyService.getAllTrustMoney();
+		const trustMoney = await trustMoneyService.getAllTrustMoney();
 		if (trustMoney == null) {
 			throw new BaseResponseError("TrustMoney does not exist");
 		}
@@ -668,7 +670,7 @@ export const parametersRouter = createTRPCRouter({
 		.input(updateTrustMoneyAPI)
 		.mutation(async ({ input }) => {
 			const trustMoneyService = container.resolve(TrustMoneyService);
-			let newdata = await trustMoneyService.updateTrustMoney(input);
+			const newdata = await trustMoneyService.updateTrustMoney(input);
 			return newdata;
 		}),
 
