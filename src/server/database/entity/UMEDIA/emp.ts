@@ -1,5 +1,6 @@
 export class Emp {
 	// id can be undefined during creation when using `autoIncrement`
+      declare change_flag?: string;
 	declare emp_no?: string;
 	declare emp_name?: string;
     declare position?: number;
@@ -18,6 +19,7 @@ export class Emp {
     declare nbanknumber?: string;
 
 	constructor(
+        change_flag: string,
         emp_no: string,
         emp_name: string,
         position: number,
@@ -35,6 +37,7 @@ export class Emp {
         licens_id: string,
         nbanknumber: string
 	) {
+        this.change_flag = change_flag;
         this.emp_no = emp_no;
         this.emp_name = emp_name;
         this.position = position;
@@ -55,6 +58,7 @@ export class Emp {
 
 	static fromDB(data: any): Emp {
 		const {
+            CHANGE_FLAG,
             EMP_NO,
             EMP_NAME,
             POSITION,
@@ -72,8 +76,13 @@ export class Emp {
             LICENSE_ID,
             NBANKNUMBER
 		} = data;
-
-		return new Emp(
+            
+            // Format the date string from yy-mm-ddThh:mm:ss to yyyy-mm-dd
+            const FORMAT_REGISTRATION_DATE = REGISTRATION_DATE.toISOString().split("T")[0]
+            const FORMAT_QUIT_DATE = (QUIT_DATE) ? QUIT_DATE.toISOString().split("T")[0] : null;
+		
+            return new Emp(
+            CHANGE_FLAG,
             EMP_NO,
             EMP_NAME,
             POSITION,
@@ -86,8 +95,8 @@ export class Emp {
             SEX_TYPE,
             DEPENDENTS,
             HEALTHCARE,
-            REGISTRATION_DATE,
-            QUIT_DATE,
+            FORMAT_REGISTRATION_DATE,
+            FORMAT_QUIT_DATE,
             LICENSE_ID,
             NBANKNUMBER
 		);
