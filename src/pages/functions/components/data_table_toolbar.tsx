@@ -1,4 +1,4 @@
-import { Table } from "@tanstack/react-table";
+import { type Table } from "@tanstack/react-table";
 import { DataTableViewOptions } from "~/components/data_table/data_table_view_options";
 import { Input } from "~/components/ui/input";
 

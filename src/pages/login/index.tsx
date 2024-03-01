@@ -2,7 +2,6 @@ import { Button } from "~/components/ui/button";
 import {
 	Card,
 	CardContent,
-	CardDescription,
 	CardFooter,
 	CardHeader,
 	CardTitle,
@@ -68,10 +67,10 @@ export default function Login() {
 				});
 			}
 			else {
-				router.push('/');
+				void router.push('/');
 			}
 		},
-		[]
+		[router]
 	);
 
 	return (
@@ -80,7 +79,7 @@ export default function Login() {
 				{!forgetPwd ? (
 					<Card className="w-[400px]">
 						<Form {...form}>
-							<form onSubmit={form.handleSubmit(onSubmit)}>
+							<form onSubmit={void form.handleSubmit(onSubmit)}>
 								<CardHeader>
 									<div className="justify-center">
 										<CardTitle>Login</CardTitle>
