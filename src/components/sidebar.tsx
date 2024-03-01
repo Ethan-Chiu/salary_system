@@ -1,5 +1,5 @@
 import { cn } from "~/lib/utils";
-import { buttonVariants } from "~/components/ui/button";
+import { Button, buttonVariants } from "~/components/ui/button";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useContext, type PropsWithChildren } from "react";
@@ -12,6 +12,7 @@ import {
 	ShieldCheck,
 	SlidersHorizontal,
 	CheckSquare,
+	CalendarRange,
 } from "lucide-react";
 
 import {
@@ -21,6 +22,9 @@ import {
 	TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { Separator } from "~/components/ui/separator";
+import { Dialog, DialogClose, DialogContent } from "./ui/dialog";
+import { DialogTrigger } from "@radix-ui/react-dialog";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select";
 import periodContext from "./context/period_context";
 
 export type Playlist = (typeof playlists)[number];
@@ -60,8 +64,8 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 						className={cn(
 							buttonVariants({ variant: "ghost" }),
 							props.currentPath === props.navLinkEntry.url &&
-								"bg-muted hover:bg-muted",
-							"w-full items-center justify-center"
+							"bg-muted hover:bg-muted",
+							"w-full justify-center items-center"
 						)}
 					>
 						<props.navLinkEntry.icon className="h-4 w-4" />
@@ -82,7 +86,7 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 			className={cn(
 				buttonVariants({ variant: "ghost" }),
 				props.currentPath === props.navLinkEntry.url &&
-					"bg-muted hover:bg-muted",
+				"bg-muted hover:bg-muted",
 				"w-full justify-start"
 			)}
 		>
@@ -93,6 +97,102 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 				</div>
 			</div>
 		</Link>
+	);
+}
+
+type SelectItemProp = {
+	selectItemEntry: SelectItemEntry;
+	collapsed: boolean;
+	collapseFunction: () => void;
+	expandFunction: () => void;
+};
+
+function CompSelectItemWrap(props: PropsWithChildren<SelectItemProp>) {
+
+	const { selectedPeriod } = useContext(periodContext);
+
+	return props.collapsed ? (
+		<TooltipProvider>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<Dialog>
+						<DialogTrigger className={cn(
+							buttonVariants({ variant: "ghost" }),
+							"w-full justify-start"
+						)}>
+							<props.selectItemEntry.icon className="h-4 w-4" />
+							<TooltipContent>{props.children}</TooltipContent>
+						</DialogTrigger>
+						<DialogContent>
+							{props.selectItemEntry.popUpPage}
+						</DialogContent>
+					</Dialog>
+				</TooltipTrigger>
+			</Tooltip>
+		</TooltipProvider>
+	) : (
+		<Dialog>
+			<DialogTrigger className={cn(
+				buttonVariants({ variant: "ghost" }),
+				"w-full justify-start"
+			)}>
+				<div className="flex items-center w-full">
+					<props.selectItemEntry.icon className="h-4 w-4 flex-shrink-0" />
+					<div className="flex justify-between line-clamp-1 break-all ps-2 w-full">
+						<div>{props.children}</div>
+						<div>{selectedPeriod?.period_name ?? "未選擇"}</div>
+					</div>
+
+				</div>
+			</DialogTrigger>
+			<DialogContent>
+				{props.selectItemEntry.popUpPage}
+			</DialogContent>
+		</Dialog>
+	);
+}
+
+function PeriodSelector() {
+	const getPeriod = api.function.getPeriod.useQuery();
+	const { selectedPeriod, setSelectedPeriod } = useContext(periodContext);
+	
+	return (
+		<div className="flex justify-center">
+			{getPeriod.isFetched ? (
+				<div className="py-4">
+					<Select
+						defaultValue={selectedPeriod?.period_name}
+						onValueChange={(chosen) =>
+							setSelectedPeriod(
+								getPeriod.data!.find(
+									(item) => item.period_name === chosen
+								)!
+							)
+						}
+					>
+						<SelectTrigger className="w-[180px]">
+							<SelectValue placeholder="Select a period" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectGroup>
+								<SelectLabel>Period</SelectLabel>
+								{getPeriod.data!.map((period_info) => {
+									return (
+										<SelectItem
+											value={period_info.period_name}
+										>
+											{period_info.period_name}
+										</SelectItem>
+									);
+								})}
+							</SelectGroup>
+						</SelectContent>
+					</Select>
+				</div>
+			) : (
+				<></>
+			)}
+		</div>
 	);
 }
 
@@ -108,6 +208,20 @@ type NavLinkEntry = {
 	url: string;
 	collapsed: boolean;
 };
+
+type SelectItemEntry = {
+	title: string;
+	icon: LucideIcon;
+	popUpPage: React.ReactElement;
+};
+
+const selectItems: SelectItemEntry[] = [
+	{
+		title: "Period",
+		icon: CalendarRange,
+		popUpPage: <PeriodSelector />,
+	},
+];
 
 const actionLinks: NavLinkEntry[] = [
 	{
@@ -159,19 +273,36 @@ export function Sidebar({
 	expandFunction,
 }: SidebarProp) {
 	const pathname = usePathname();
-	const { selectedPeriod } = useContext(periodContext);
-
 	const { isLoading, data } = api.access.accessByRole.useQuery(); // isError, error
 
 	if (isLoading) {
 		return <></>;
 	}
 
-	console.log("selectedPeriod", selectedPeriod);
-
 	return (
 		<div className={cn("pb-12", className)}>
 			<div className="space-y-2 py-4">
+				<div className={cn("py-2", !isCollapsed && "px-3")}>
+					{!isCollapsed && (
+						<div className="mb-2 line-clamp-1 break-all px-4 text-lg font-semibold tracking-tight">
+							Select
+						</div>
+					)}
+					<div className="space-y-1">
+						{selectItems.map((item) => (
+							<CompSelectItemWrap
+								key={item.title}
+								selectItemEntry={item}
+								collapsed={isCollapsed}
+								collapseFunction={collapseFunction}
+								expandFunction={expandFunction}
+							>
+								{item.title}
+							</CompSelectItemWrap>
+						))}
+					</div>
+				</div>
+				{isCollapsed && <Separator />}
 				{data?.actions && (
 					<div className={cn("py-2", !isCollapsed && "px-3")}>
 						{!isCollapsed && (
