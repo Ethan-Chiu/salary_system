@@ -10,41 +10,51 @@ import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { IconCoins } from "~/components/icons/svg_icons";
 import { Header } from "~/components/header";
 import { useRouter } from "next/router";
+import { useContext } from "react";
+import periodContext from "~/components/context/period_context";
+import { useToast } from "~/components/ui/use-toast";
+import { ToastAction } from "@radix-ui/react-toast";
 
-const function_data: CardFunctionData[] = [
+type FunctionLinkData = (CardFunctionData & {url: string | null});
+
+const function_data: FunctionLinkData[] = [
 	{
 		title: "月薪",
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
+    url: "/functions/month_salary",
 	},
 	{
 		title: "15日外勞獎金",
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
+    url: "/functions/month_salary",
 	},
 	{
 		title: "持股信託",
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
+    url: null,
 	},
 	{
 		title: "季獎金",
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
+    url: null,
 	},
 	{
 		title: "員工分紅",
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
+    url: null,
 	},
 ];
 
-let routerMap = new Map();
-routerMap.set("月薪", "/functions/month_salary");
-routerMap.set("15日外勞獎金", "/functions/month_salary");
-
 const PageHome: NextPageWithLayout = () => {
 	const router = useRouter();
+  const { selectedPeriod } = useContext(periodContext);
+	const { toast } = useToast();
+
 	return (
 		<>
 			<Header title="functions" showOptions className="mb-4" />
@@ -54,12 +64,24 @@ const PageHome: NextPageWithLayout = () => {
 				initial="hidden"
 				animate="visible"
 			>
-				{function_data.map((f_data: CardFunctionData) => (
+				{function_data.map((f_data: FunctionLinkData) => (
 					<motion.div
 						key={f_data.title}
 						variants={stagger}
 						className="cursor-pointer"
-						onClick={() => router.push(routerMap.get(f_data.title))}
+						onClick={() => {
+              if (!selectedPeriod) {
+                toast({
+                  title: "No period selected",
+                  description: "Please select a period",
+                  action: (
+                    <ToastAction altText="Go to select period">Select</ToastAction>
+                  ),
+                });
+              } else {
+                void router.push(f_data.url ?? "/functions")
+              }
+            }}
 					>
 						<CardFunction
 							title={f_data.title}
