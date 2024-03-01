@@ -1,12 +1,11 @@
 import React, {
 	useState,
-	PropsWithChildren,
-	useReducer,
+	type PropsWithChildren,
 	useEffect,
 } from "react";
 import calendarContext from "./calendar_context";
 import dayjs from "dayjs";
-import { CalendarEvent, CalendarEventLevel } from "../utils/calendar_event";
+import { CalendarEvent, type CalendarEventLevel } from "../utils/calendar_event";
 import { getEventLevel } from "../utils/event_level";
 
 export type ActionType = {
@@ -83,21 +82,6 @@ export default function CalendarContextProvider({
 		}
 		setShowEventList(getEventLevel(showEvents));
 	}, [eventList, currentEvent]);
-
-	function savedEventsReducer(state: CalendarEvent[], { type }: ActionType) {
-		switch (type) {
-			case "push": {
-				if (currentEvent === null) return state;
-
-				const newState = [...state, currentEvent];
-
-				resetMouse();
-				return newState;
-			}
-			default:
-				throw new Error();
-		}
-	}
 
 	function resetMouse() {
 		setMouseDownDate(null);

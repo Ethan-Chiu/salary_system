@@ -1,6 +1,6 @@
 import { cn } from "~/lib/utils";
-import { useContext, useState } from "react";
-import { LucideIcon, PenSquare, Plus, PlusSquare, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { type LucideIcon, Plus, PlusSquare } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
 	DropdownMenu,
@@ -11,13 +11,11 @@ import {
 } from "~/components/ui/dropdown-menu";
 
 import { Button } from "~/components/ui/button";
-import TableEnum, { getTableName } from "../../context/data_table_enum";
+import { getTableName, type TableEnum } from "../../context/data_table_enum";
 import {
 	Sheet,
-	SheetClose,
 	SheetContent,
 	SheetDescription,
-	SheetFooter,
 	SheetHeader,
 	SheetTitle,
 	SheetTrigger,

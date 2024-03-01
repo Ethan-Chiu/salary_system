@@ -1,4 +1,4 @@
-import TableEnum from "./components/context/data_table_enum";
+import { type TableEnum } from "./components/context/data_table_enum";
 
 export type ShowTableEnum = Extract<TableEnum, (typeof ShowTableEnumValues)[number]>;
 

@@ -3,12 +3,12 @@ import React, {
 	useContext,
 	useState,
 	useEffect,
-	MouseEventHandler,
+	type MouseEventHandler,
 } from "react";
 import { type Dayjs } from "dayjs";
 import { cn } from "~/lib/utils";
 import calendarContext from "../context/calendar_context";
-import { CalendarEvent, CalendarEventLevel } from "../utils/calendar_event";
+import { type CalendarEvent, type CalendarEventLevel } from "../utils/calendar_event";
 import { getMaxLevel } from "../utils/event_level";
 import { Button } from "~/components/ui/button";
 import {
@@ -36,13 +36,11 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 		setUpdateSheet,
 		selectedEvent,
 		setSelectedEvent,
-		setEventList,
-		resetMouse,
 	} = useContext(calendarContext);
 
 	const mutateFunctions = useContext(toolbarFunctionsContext);
-	const updateFunction = mutateFunctions.updateFunction!;
-	const createFunction = mutateFunctions.createFunction!;
+	/* const updateFunction = mutateFunctions.updateFunction!; */
+	/* const createFunction = mutateFunctions.createFunction!; */
 	const deleteFunction = mutateFunctions.deleteFunction!;
 
 	const [dayEvents, setDayEvents] = useState<CalendarEventLevel[]>([]);
@@ -144,7 +142,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 										day={day}
 										event={evt}
 										selected={true}
-										onMouseDown={(e) => {
+										onMouseDown={(_) => {
 											if (!mouseUpDate) {
 												setSelectedEvent(evt);
 											}
@@ -161,7 +159,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 								day={day}
 								event={evt}
 								selected={false}
-								onMouseDown={(e) => {
+								onMouseDown={(_) => {
 									if (!mouseUpDate) {
 										setSelectedEvent(evt);
 									}

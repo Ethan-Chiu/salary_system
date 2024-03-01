@@ -1,10 +1,11 @@
-import React, { createContext, PropsWithChildren, useEffect } from "react";
+import React, { createContext, type PropsWithChildren } from "react";
 import { api } from "~/utils/api";
-import { ShowTableEnum } from "../../shown_tables";
-import { UseTRPCQueryResult } from "@trpc/react-query/shared";
+import { type ShowTableEnum } from "../../shown_tables";
+import { type UseTRPCQueryResult } from "@trpc/react-query/shared";
+import { type TRPCClientErrorLike } from "@trpc/client";
 
 interface QueryFunctionsApi {
-	queryFunction: (() => UseTRPCQueryResult<any[], any>) | undefined;
+	queryFunction: (() => UseTRPCQueryResult<any[], TRPCClientErrorLike<any>>) | undefined;
 }
 
 export const apiFunctionsContext = createContext<QueryFunctionsApi>({

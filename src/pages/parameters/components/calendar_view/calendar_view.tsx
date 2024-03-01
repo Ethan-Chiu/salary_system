@@ -6,10 +6,7 @@ import calendarContext from "./context/calendar_context";
 import CalendarHeader from "./components/calendar_header";
 import CalendarAddEvent from "./components/calendar_add_event";
 import dataTableContext from "../context/data_table_context";
-import ToolbarFunctionsProvider, {
-	toolbarFunctionsContext,
-} from "../function_sheet/functions_context";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
+import ToolbarFunctionsProvider from "../function_sheet/functions_context";
 import ApiFunctionsProvider, {
 	apiFunctionsContext,
 } from "../context/api_context_provider";
@@ -34,10 +31,10 @@ function CompCalendarContent() {
 	const queryFunctions = useContext(apiFunctionsContext);
 	const queryFunction = queryFunctions.queryFunction!;
 
-	const mutateFunctions = useContext(toolbarFunctionsContext);
-	const updateFunction = mutateFunctions.updateFunction!;
-	const createFunction = mutateFunctions.createFunction!;
-	const deleteFunction = mutateFunctions.deleteFunction!;
+	/* const mutateFunctions = useContext(toolbarFunctionsContext); */
+	/* const updateFunction = mutateFunctions.updateFunction!; */
+	/* const createFunction = mutateFunctions.createFunction!; */
+	/* const deleteFunction = mutateFunctions.deleteFunction!; */
 
 	const { isLoading, isError, data, error } = queryFunction();
 

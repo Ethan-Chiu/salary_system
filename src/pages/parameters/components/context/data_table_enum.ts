@@ -14,7 +14,7 @@ export const TableEnumValues = [
     "TableBasicInfo"
 ] as const;
 
-type TableEnum = typeof TableEnumValues[number];
+export type TableEnum = typeof TableEnumValues[number];
 
 export function getTableName(table: TableEnum) {
     switch (table) {
@@ -34,4 +34,3 @@ export function getTableName(table: TableEnum) {
     }
 }
 
-export default TableEnum

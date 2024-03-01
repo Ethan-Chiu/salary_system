@@ -8,7 +8,6 @@ import {
 	SheetTitle,
 } from "~/components/ui/sheet";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
-import { ParameterForm } from "../../function_sheet/parameter_form";
 import dataTableContext from "../../context/data_table_context";
 import { getTableName } from "../../context/data_table_enum";
 import { getSchema } from "~/pages/parameters/schemas/get_schemas";
@@ -19,7 +18,6 @@ import {
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 	DialogClose,
 	DialogFooter,
 } from "~/components/ui/dialog";
@@ -27,7 +25,6 @@ import { Button } from "~/components/ui/button";
 import AutoForm from "~/components/ui/auto-form";
 import GeneralTable from "../../function_sheet/general_table";
 import { z } from "zod";
-import { FieldConfig } from "~/components/ui/auto-form/types";
 import { toolbarFunctionsContext } from "../../function_sheet/functions_context";
 
 interface CalendarUpdateEventProps<SchemaType extends z.AnyZodObject> {}
@@ -52,7 +49,7 @@ export default function CalendarUpdateEvent<
 
 	function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
 		return Object.fromEntries(
-			Object.entries(schema.shape).map(([key, value]) => {
+			Object.entries(schema.shape as Record<string, any>).map(([key, value]) => {
 				if (value instanceof z.ZodDefault)
 					return [key, value._def.defaultValue()];
 				return [key, undefined];
