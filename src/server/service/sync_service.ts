@@ -356,8 +356,8 @@ export class SyncService {
     }
 	//stage3
 	async getPaidEmps(func: string) : Promise<EmployeeData[]> {
-		// if (func == "month") {
-			const paid_status=["一般員工","當月離職人員_全月","當月離職人員_破月"]
+		if (func == "month") {
+			const paid_status=["一般員工","當月離職人員_全月","當月離職人員_破月","當月新進人員全月","當月新進人員破月"];
 			const paid_emps = await EmployeeData.findAll({
 				where: {
 					work_status: {
@@ -366,6 +366,10 @@ export class SyncService {
 				},
 			})
 			return paid_emps
-		// }
+		}
+        else {
+            const paid_emps = await EmployeeData.findAll({})
+            return paid_emps
+        }
 	}
 }
