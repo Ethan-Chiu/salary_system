@@ -34,7 +34,7 @@ export const syncRouter = createTRPCRouter({
 		}),
     synchronize: publicProcedure
         .input(z.object({ period: z.number(), emp_nos: z.string().array() }))
-        .query(async ({ input }) => {
+        .mutation(async ({ input }) => {
             const syncService = container.resolve(SyncService);
             let updatedDatas = await syncService.synchronize(
                 input.period,
@@ -42,7 +42,7 @@ export const syncRouter = createTRPCRouter({
             );
             return updatedDatas;
         }),
-        
+
 	getPaidEmployees: publicProcedure
 		.input(z.object({ func: z.string()}))
 		.query(async ({ input }) => {
