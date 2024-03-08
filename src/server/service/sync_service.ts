@@ -248,7 +248,7 @@ export class SyncService {
 		});
         salary_datas.forEach(emp => {
             salaryDict[emp.emp_no!] = emp;
-        })
+        });
 		const changedDatas = await Promise.all(
 			cand_emp_nos.map(async (cand_emp_no: string) => {
                 const excludedKeys = [
@@ -326,9 +326,11 @@ export class SyncService {
 		);
 		return filteredChangeDatas;
 	}
-    async syncronize(period:number, emp_nos: string[]) {
+    async synchronize(period:number, emp_nos: string[]) {
         const ehrService = container.resolve(EHRService);
         const ehr_datas = await ehrService.getEmp(period);
+        const salary_datas = await EmployeeData.findAll({where: {emp_no: { [Op.in]: emp_nos}}});
+        const salary_emp_nos = salary_datas.map((emp) => emp.emp_no);
         interface EHRDictType {
             [key: string]: any;
         };
@@ -336,17 +338,21 @@ export class SyncService {
         ehr_datas.forEach(emp => {
             ehrDict[emp.emp_no!] = emp;
         });
-        const changeDatas = await Promise.all(
+        const updatedDatas = await Promise.all(
             emp_nos.map(async (emp_no: string) => {
-                const changeData = await this.empToEmployee(ehrDict[emp_no])
-                return changeData
+                const updatedData = await this.empToEmployee(ehrDict[emp_no])
+                return updatedData
             })
         );
         const employee_data_service = container.resolve(EmployeeDataService);
-        changeDatas.map(async (changeData) => {
-            await employee_data_service.updateEmployeeDataByEmpNO(changeData)
+        updatedDatas.map(async (updatedData) => {
+            if (!(updatedData.emp_no in salary_emp_nos)) {
+                await employee_data_service.createEmployeeData(updatedData)
+            }
+            else 
+                await employee_data_service.updateEmployeeDataByEmpNO(updatedData)
         })
-        return changeDatas
+        return updatedDatas
     }
 	//stage3
 	async getPaidEmps(func: string) : Promise<EmployeeData[]> {
