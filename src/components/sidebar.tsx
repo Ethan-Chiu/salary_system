@@ -13,6 +13,7 @@ import {
 	SlidersHorizontal,
 	CheckSquare,
 	CalendarRange,
+	Contact,
 } from "lucide-react";
 
 import {
@@ -138,11 +139,10 @@ function CompSelectItemWrap(props: PropsWithChildren<SelectItemProp>) {
 			)}>
 				<div className="flex items-center w-full">
 					<props.selectItemEntry.icon className="h-4 w-4 flex-shrink-0" />
-					<div className="flex justify-between line-clamp-1 break-all ps-2 w-full">
-						<div>{props.children}</div>
-						<div>{selectedPeriod?.period_name ?? "未選擇"}</div>
+					<div className="flex justify-between ps-2 w-full">
+						<div className="line-clamp-1 break-all">{props.children}</div>
+						<div className="line-clamp-1 break-all">{selectedPeriod?.period_name ?? "未選擇"}</div>
 					</div>
-
 				</div>
 			</DialogTrigger>
 			<DialogContent>
@@ -189,16 +189,22 @@ const actionLinks: NavLinkEntry[] = [
 		collapsed: false,
 	},
 	{
-		title: "Parameters",
-		icon: SlidersHorizontal,
-		url: "/parameters",
-		collapsed: true,
-	},
-	{
 		title: "Synchronize",
 		icon: CheckSquare,
 		url: "/check",
 		collapsed: false,
+	},
+	{
+		title: "Employees",
+		icon: Contact,
+		url: "/employees",
+		collapsed: true,
+	},
+	{
+		title: "Parameters",
+		icon: SlidersHorizontal,
+		url: "/parameters",
+		collapsed: true,
 	},
 ];
 
