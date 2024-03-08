@@ -22,7 +22,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "~/components/ui/dialog";
-import { Input } from "~/components/ui/input";
 
 import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
@@ -31,6 +30,7 @@ import { Checkbox } from "~/components/ui/checkbox";
 import { CombinedData } from "~/server/service/employee_data_service";
 import { displayData } from "../utils/display";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { useRouter } from 'next/router';
 
 export interface Status {
 	[key: string]: "initial" | "checked" | "ignored";
@@ -45,13 +45,14 @@ export interface DifferentKeys {
 interface UpdateTableDialogProps {
 	data: DifferentKeys[];
 	status: Status;
-	updateFunction: () => void;
+	updateFunction: (updateList: Array<string>) => void;
 }
 
 interface UpdateTableProps {
 	data: DifferentKeys[];
 	status: Status;
 	showDetails: boolean;
+	updateFunction: (updateList: Array<string>) => void;
 }
 
 export function UpdateTableDialog({
@@ -63,7 +64,9 @@ export function UpdateTableDialog({
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button onClick={updateFunction}>Update</Button>
+				<Button onClick={() => {
+					console.log("Show update table dialog")
+				}}>Update</Button>
 			</DialogTrigger>
 			<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[60%]">
 				<DialogHeader className="flex items-center">
@@ -78,17 +81,16 @@ export function UpdateTableDialog({
 						<Label htmlFor="showDetails">Show Details</Label>
 					</div>
 				</DialogHeader>
-				<UpdateTable data={data} status={status} showDetails={showDetails} />
+				<UpdateTable data={data} status={status} showDetails={showDetails} updateFunction={updateFunction}/>
 			</DialogContent>
 		</Dialog>
 	);
 }
 
-export function UpdateTable({ data, status, showDetails }: UpdateTableProps) {
-	const [toUpdate, setToUpdate] = useState({});
+export function UpdateTable({ data, status, showDetails, updateFunction}: UpdateTableProps) {
 	const initialCheckedData: Record<string, boolean> = {};
 	const [checkedData, setCheckedData] = useState<Record<string, boolean>>(initialCheckedData);
-
+	const router = useRouter();
 
 	useEffect(() => {
 		let tmpDir: any = {};
@@ -118,8 +120,16 @@ export function UpdateTable({ data, status, showDetails }: UpdateTableProps) {
 		setCheckedData(tmpDir);
 	}
 
-	function updateFunction() {
-		console.log(checkedData);
+	function handleUpdate() {
+		let toUpdate: Array<string> = [];
+		Object.keys(checkedData).map((key) => {
+			if (checkedData[key] === true) {
+				toUpdate.push(key);
+			}
+		});
+		updateFunction(toUpdate);
+		alert("Call API success! Reloading the page");
+		router.reload();
 	}
 
 	return (
@@ -201,7 +211,7 @@ export function UpdateTable({ data, status, showDetails }: UpdateTableProps) {
 											</CustomTableCell>
 											<CustomTableCell className="border text-center">
 												{displayData(
-													d.diffKeys[0]!.db_value
+													d.diffKeys[0]!.salary_value
 												)}
 											</CustomTableCell>
 											<CustomTableCell className="border text-center">
@@ -230,7 +240,7 @@ export function UpdateTable({ data, status, showDetails }: UpdateTableProps) {
 																	</CustomTableCell>
 																	<CustomTableCell className="border text-center">
 																		{displayData(
-																			cd.db_value
+																			cd.salary_value
 																		)}
 																	</CustomTableCell>
 																	<CustomTableCell className="border text-center">
@@ -253,7 +263,7 @@ export function UpdateTable({ data, status, showDetails }: UpdateTableProps) {
 				</TableBody>
 			</Table>
 			<DialogClose>
-					<Button type="submit" onClick={updateFunction}>Update</Button>
+					<Button type="submit" onClick={handleUpdate}>Update</Button>
 			</DialogClose>
 		</>
 	);

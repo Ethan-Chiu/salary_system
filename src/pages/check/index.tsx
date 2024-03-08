@@ -46,6 +46,11 @@ function SyncPage({period}: {period: number}) {
 		func: "month_salary",
 		period: period
 	});
+	const synchronizeAPI = api.sync.synchronize.useMutation({
+		onSuccess: () => {
+			console.log("Call synchronize API");
+		},
+	});
 
 	const [selectedEmployee, setSelectedEmployee] = useState("");
 	const [diffColor, setDiffColor] = useState("red");
@@ -64,7 +69,7 @@ function SyncPage({period}: {period: number}) {
 
 	
 	const [empStatus, setEmpStatus] = useState<Status>({});
-	if (getDiffDatas.isFetched && Object.keys(empStatus).length === 0) {
+	if (getDiffDatas.isFetched && Object.keys(empStatus).length === 0 && (getDiffDatas.data ?? []).length>0) {
 		let tmp: any = {};
 		getDiffDatas.data?.map((cd: Array<CombinedData>) => {
 			tmp[getKeyFromData(cd, "emp_no", "ehr")] = "initial";
@@ -118,8 +123,8 @@ function SyncPage({period}: {period: number}) {
 		let filterData: Array<DifferentKeys> = checkedData.map(
 			(data: Array<CombinedData>) => {
 				let newConstructedData: DifferentKeys = {
-					emp_no: getKeyFromData(data, "emp_no"),
-					emp_name: getKeyFromData(data, "emp_name"),
+					emp_no: getKeyFromData(data, "emp_no", "ehr"),
+					emp_name: getKeyFromData(data, "emp_name") ?? getKeyFromData(data, "emp_name", "ehr"),
 					diffKeys: data.filter(
 						(cd: CombinedData) => cd.is_different === true
 					),
@@ -154,6 +159,13 @@ function SyncPage({period}: {period: number}) {
 		ignore(selectedEmployee);
 		next();
 	};
+
+	const handleUpdate = (updateList: string[]) => {
+		synchronizeAPI.mutate({
+			period: period,
+			emp_nos: updateList
+		});
+	}
 
 	function SelectedEmpDepartment({ emp_no }: { emp_no: string }) {
 		return <Label>部門：{getKeyData(emp_no, "u_dep")}</Label>;
@@ -291,7 +303,19 @@ function SyncPage({period}: {period: number}) {
 	}
 
 	function AllDonePage() {
-		return <p>System Data is updated with EHR</p>;
+		function ImageComponent() {
+			const imageUrl = 'https://memeprod.sgp1.digitaloceanspaces.com/user-template/b3a4babd59ebb46530a7f7cca856d848.png';
+		  
+			return (
+			  <div>
+				<img src={imageUrl} alt="Description of the image" />
+			  </div>
+			);
+		}
+		return <>
+			<p>System Data is updated with EHR</p>
+			<ImageComponent/>
+		</>;
 	}
 
 	function MainPage() {
@@ -330,7 +354,7 @@ function SyncPage({period}: {period: number}) {
 							<UpdateTableDialog
 								data={getChangedDatas()}
 								status={empStatus}
-								updateFunction={() => console.log("test")}
+								updateFunction={handleUpdate}
 							/>
 
 							<div className="flex">
@@ -365,7 +389,9 @@ function SyncPage({period}: {period: number}) {
 			) : (getDiffDatas.data ?? []).length == 0 ? (
 				<AllDonePage />
 			) : (
-				<MainPage />
+				<>
+					<MainPage />
+				</>
 			)}
 		</>
 	);
