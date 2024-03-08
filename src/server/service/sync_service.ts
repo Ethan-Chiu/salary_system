@@ -99,8 +99,8 @@ export class SyncService {
                 return pay_work_status.includes(emp.work_status!)
             })
 			var ehr_emps = await ehrService.getEmp(period);
-			console.log("ehr_emps:");
-			console.log(ehr_emps);
+			// console.log("ehr_emps:");
+			// console.log(ehr_emps);
 			// Step 1: Create a dictionary for ehr_emps
 			interface EHRDictType {
 				[key: string]: any;
@@ -123,18 +123,18 @@ export class SyncService {
 			var newEmps: Array<Emp> = [];
 			ehr_emps.map(emp => {
 				Object.keys(emp).map((key) => {
-					console.log(key);
-					console.log((emp as any)[key]);
+					// console.log(key);
+					// console.log((emp as any)[key]);
 				})
 				if(emp.change_flag == '當月新進')
 					newEmps.push(emp);
-				else
-					console.log(emp.change_flag);
+				// else
+				// 	console.log(emp.change_flag);
 			});
             const newEmployees = await Promise.all(newEmps.map(async (emp) => await this.empToEmployee(emp)));
 			// newEmployees = newEmployees.filter((emp: Emp) => emp !== undefined); 
-			console.log("newEmployees:");
-			console.log(newEmployees);
+			// console.log("newEmployees:");
+			// console.log(newEmployees);
             // const empDataService = container.resolve(EmployeeDataService);
 			// newEmployees.map(emp => {
 			// 	empDataService.createEmployeeData({
@@ -160,8 +160,8 @@ export class SyncService {
 			const all_emps = updatedSalaryEmps.concat(newEmployees);
 
 			// Output or use all_emps as needed
-			console.log('check all emps:')
-			console.log(all_emps);
+			// console.log('check all emps:')
+			// console.log(all_emps);
 			var msg=''
 			cand_paid_emps = await Promise.all(all_emps.map(async (emp) => {
 				switch (emp.work_type) {

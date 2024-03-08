@@ -42,7 +42,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 };
 
 function SyncPage({period}: {period: number}) {
-	const getDiffDatas = api.employeeData.checkEmployeeData.useQuery({
+	const getDiffDatas = api.sync.checkEmployeeData.useQuery({
 		func: "month_salary",
 		period: period
 	});
@@ -58,7 +58,7 @@ function SyncPage({period}: {period: number}) {
 	): any => {
 		if (data === undefined) return null;
 		return !from
-			? data.find((cd: CombinedData) => cd.key === query)?.db_value
+			? data.find((cd: CombinedData) => cd.key === query)?.salary_value
 			: data.find((cd: CombinedData) => cd.key === query)?.ehr_value;
 	};
 
@@ -94,7 +94,7 @@ function SyncPage({period}: {period: number}) {
 		let IDX = -1;
 		getDiffDatas.data!.map((data: Array<CombinedData>, index: number) => {
 			data.map((d: CombinedData) => {
-				if (d.key === "emp_no" && d.db_value === emp_no) IDX = index;
+				if (d.key === "emp_no" && d.ehr_value === emp_no) IDX = index;
 			});
 		});
 		return getDiffDatas.data![IDX]!;
@@ -123,39 +123,39 @@ function SyncPage({period}: {period: number}) {
 			}
 		);
 
-		// for test
-		filterData[0]?.diffKeys.push({
-			key: "test",
-			db_value: "123",
-			ehr_value: 234,
-			is_different: true,
-		});
-		filterData[0]?.diffKeys.push({
-			key: "test",
-			db_value: "123",
-			ehr_value: 234,
-			is_different: true,
-		});
-		filterData[0]?.diffKeys.push({
-			key: "test",
-			db_value: "123",
-			ehr_value: 234,
-			is_different: true,
-		});
-		filterData[1]?.diffKeys.push({
-			key: "test",
-			db_value: "123",
-			ehr_value: 234,
-			is_different: true,
-		});
-		filterData[1]?.diffKeys.push({
-			key: "test",
-			db_value: "123",
-			ehr_value: 234,
-			is_different: true,
-		});
-		// end for test
-		filterData.push(filterData[0]!);
+		// // for test
+		// filterData[0]?.diffKeys.push({
+		// 	key: "test",
+		// 	salary_value: "123",
+		// 	ehr_value: 234,
+		// 	is_different: true,
+		// });
+		// filterData[0]?.diffKeys.push({
+		// 	key: "test",
+		// 	salary_value: "123",
+		// 	ehr_value: 234,
+		// 	is_different: true,
+		// });
+		// filterData[0]?.diffKeys.push({
+		// 	key: "test",
+		// 	salary_value: "123",
+		// 	ehr_value: 234,
+		// 	is_different: true,
+		// });
+		// filterData[1]?.diffKeys.push({
+		// 	key: "test",
+		// 	salary_value: "123",
+		// 	ehr_value: 234,
+		// 	is_different: true,
+		// });
+		// filterData[1]?.diffKeys.push({
+		// 	key: "test",
+		// 	salary_value: "123",
+		// 	ehr_value: 234,
+		// 	is_different: true,
+		// });
+		// // end for test
+		// filterData.push(filterData[0]!);
 
 		return filterData;
 	}
