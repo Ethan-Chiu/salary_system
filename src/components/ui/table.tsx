@@ -64,6 +64,7 @@ const TableRow = React.forwardRef<
 ));
 TableRow.displayName = "TableRow";
 
+
 const TableHead = React.forwardRef<
 	HTMLTableCellElement,
 	React.ThHTMLAttributes<HTMLTableCellElement>
@@ -106,6 +107,39 @@ const TableCaption = React.forwardRef<
 ));
 TableCaption.displayName = "TableCaption";
 
+
+// custom design
+const CustomTableRow = React.forwardRef<
+	HTMLTableRowElement,
+	React.HTMLAttributes<HTMLTableRowElement>
+>(({ className, ...props }, ref) => (
+	<tr
+		ref={ref}
+		className={cn(
+			"border-b transition-colors data-[state=selected]:bg-muted",
+			className
+		)}
+		{...props}
+	/>
+));
+CustomTableRow.displayName = "CustomTableRow";
+
+const CustomTableCell = React.forwardRef<
+	HTMLTableCellElement,
+	React.TdHTMLAttributes<HTMLTableCellElement>
+>(({ className, ...props }, ref) => (
+	<td
+		ref={ref}
+		className={cn(
+			"p-4 align-middle [&:has([role=checkbox])]:pr-0",
+			className
+		)}
+		{...props}
+	/>
+));
+CustomTableCell.displayName = "TableCell";
+
+
 export {
 	Table,
 	TableHeader,
@@ -115,4 +149,6 @@ export {
 	TableRow,
 	TableCell,
 	TableCaption,
+	CustomTableRow,
+	CustomTableCell
 };

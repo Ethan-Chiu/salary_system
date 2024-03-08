@@ -8,6 +8,7 @@ import { BaseResponseError } from "../error/BaseResponseError";
 import {
 	createEmployeeDataAPI,
 	updateEmployeeDataAPI,
+	updateEmployeeDataByEmpNOAPI,
 } from "../types/parameters_input_type";
 import { z } from "zod";
 
@@ -36,6 +37,14 @@ export const employeeDataRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const employeeDataService = container.resolve(EmployeeDataService);
 			await employeeDataService.updateEmployeeData({
+				...input,
+			});
+		}),
+	updateEmployeeDataByEmpNO: publicProcedure
+		.input(updateEmployeeDataByEmpNOAPI)
+		.mutation(async ({ input }) => {
+			const employeeDataService = container.resolve(EmployeeDataService);
+			await employeeDataService.updateEmployeeDataByEmpNO({
 				...input,
 			});
 		}),

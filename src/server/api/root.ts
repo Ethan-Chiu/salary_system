@@ -2,6 +2,7 @@ import { parametersRouter } from "~/server/api/routers/parameters";
 import { createTRPCRouter } from "~/server/api/trpc";
 import { loginRouter } from "./routers/login";
 import { debugRouter } from "./routers/debug";
+import { syncRouter } from "./routers/sync";
 import { accessRouter } from "./routers/access";
 import { functionRouter } from "./routers/function";
 import { employeeDataRouter } from "./routers/employee_data";
@@ -22,6 +23,7 @@ export const appRouter = createTRPCRouter({
 	employeeData: employeeDataRouter,
 	employeePayment: employeePaymentRouter,
 	employeeTrust: employeeTrustRouter,
+	sync: syncRouter,
 });
 
 // export type definition of API

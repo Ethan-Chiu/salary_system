@@ -1,18 +1,32 @@
 import { LoadingSpinner } from "~/components/loading";
-import { DataTable } from "../components/data_table";
+import { DataTable } from "../components/data_table_update";
 import { api } from "~/utils/api";
-import { EmployeeTrust } from "~/server/database/entity/SALARY/employee_trust";
 
-const columns = Object.keys(new EmployeeTrust()).map((key) => {
+const columns = [
+    "emp_no",
+    "base_salary",
+    "food_bonus",
+    "supervisor_comp",
+    "job_comp",
+    "subsidy_comp",
+    "professional_cert_comp",
+    "labor_retirement_self",
+    "l_i",
+    "h_i",
+    "labor_retirement",
+    "occupational_injury",
+    "start_date",
+    "end_date"
+].map((key) => {
     return {
         accessorKey: key,
         header: key,
     };
 });
 
-export function EmployeeTrustTable({ index, globalFilter }: any) {
+export function EmployeePaymentTable({ index, globalFilter }: any) {
     const { isLoading, isError, data, error } =
-        api.employeeTrust.getCurrentEmployeeTrust.useQuery();
+        api.employeePayment.getCurrentEmployeePayment.useQuery();
     const filterKey = "emp_no";
 
     if (isLoading) {

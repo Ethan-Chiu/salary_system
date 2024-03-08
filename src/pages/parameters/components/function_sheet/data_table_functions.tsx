@@ -25,8 +25,9 @@ import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Button } from "~/components/ui/button";
 import { Translate } from "~/lib/utils/translation";
 import { ParameterForm } from "./parameter_form";
+import { TableEnum, getTableName } from "../context/data_table_enum";
 import { getSchema } from "../../schemas/get_schemas";
-import TableEnum, { getTableName } from "../context/data_table_enum";
+
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
