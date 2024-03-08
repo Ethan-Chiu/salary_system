@@ -71,9 +71,7 @@ export function DataTable<TData>({
 		>
 			{/* TODO: fix global filter*/}
 			<DataTableToolbar
-				table={table}
-				globalFilter=""
-				filterKey={filterColumnKey}
+				filterColumnKey={filterColumnKey}
 			/>
 			<Separator />
 			<TabsContent value="now" className="h-0 grow" asChild>

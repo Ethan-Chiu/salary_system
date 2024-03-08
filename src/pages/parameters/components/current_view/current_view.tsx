@@ -5,10 +5,10 @@ import { Table } from "~/components/ui/table";
 import { DataTableDataHeader } from "~/components/data_table/data_table_data_header";
 import { DataTableDataBody } from "~/components/data_table/data_table_data_body";
 import {
-	ColumnDef,
-	ColumnFiltersState,
-	SortingState,
-	VisibilityState,
+	type ColumnDef,
+	type ColumnFiltersState,
+	type SortingState,
+	type VisibilityState,
 	getCoreRowModel,
 	getFacetedRowModel,
 	getFacetedUniqueValues,
@@ -27,8 +27,7 @@ export default function CurrentView<TData>({
 	columns,
 	data,
 }: DataTableProps<TData>) {
-	const { selectedTab, setSelectedTab, selectedTable, setSelectedTable } =
-		useContext(dataTableContext);
+	const { setSelectedTable } = useContext(dataTableContext);
 
 	const [rowSelection, setRowSelection] = useState({});
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
@@ -62,7 +61,7 @@ export default function CurrentView<TData>({
 
 	useEffect(() => {
 		setSelectedTable({ table: table, key: Math.random().toString() });
-	}, [columnVisibility]);
+	}, [columnVisibility, table, setSelectedTable]);
 
 	return (
 		<>
