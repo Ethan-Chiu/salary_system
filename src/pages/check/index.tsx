@@ -42,7 +42,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 };
 
 function SyncPage({period}: {period: number}) {
-	const getDiffDatas = api.employeeData.checkEmployeeData.useQuery({
+	const getDiffDatas = api.sync.checkEmployeeData.useQuery({
 		func: "month_salary",
 		period: period
 	});
@@ -58,7 +58,7 @@ function SyncPage({period}: {period: number}) {
 	): any => {
 		if (data === undefined) return null;
 		return !from
-			? data.find((cd: CombinedData) => cd.key === query)?.db_value
+			? data.find((cd: CombinedData) => cd.key === query)?.salary_value
 			: data.find((cd: CombinedData) => cd.key === query)?.ehr_value;
 	};
 
@@ -67,7 +67,7 @@ function SyncPage({period}: {period: number}) {
 	if (getDiffDatas.isFetched && Object.keys(empStatus).length === 0) {
 		let tmp: any = {};
 		getDiffDatas.data?.map((cd: Array<CombinedData>) => {
-			tmp[getKeyFromData(cd, "emp_no")] = "initial";
+			tmp[getKeyFromData(cd, "emp_no", "ehr")] = "initial";
 		});
 		setEmpStatus(tmp);
 	}
@@ -94,14 +94,16 @@ function SyncPage({period}: {period: number}) {
 		let IDX = -1;
 		getDiffDatas.data!.map((data: Array<CombinedData>, index: number) => {
 			data.map((d: CombinedData) => {
-				if (d.key === "emp_no" && d.db_value === emp_no) IDX = index;
+				if (d.key === "emp_no" && d.ehr_value === emp_no) IDX = index;
 			});
 		});
 		return getDiffDatas.data![IDX]!;
 	};
 
 	const getKeyData = (emp_no: string, query: string) => {
-		return getKeyFromData(getEmpData(emp_no), query);
+		let query_empData = getEmpData(emp_no);
+		let query_result = getKeyFromData(query_empData, query) ?? getKeyFromData(query_empData, query, "ehr");
+		return query_result;
 	};
 
 	function getChangedDatas() {
@@ -110,6 +112,9 @@ function SyncPage({period}: {period: number}) {
 			.map((emp_no: string) => {
 				return getEmpData(emp_no);
 			});
+		console.log(checkedData);
+		console.log(empStatus);
+		console.log(getDiffDatas.data);
 		let filterData: Array<DifferentKeys> = checkedData.map(
 			(data: Array<CombinedData>) => {
 				let newConstructedData: DifferentKeys = {
@@ -123,53 +128,20 @@ function SyncPage({period}: {period: number}) {
 			}
 		);
 
-		// for test
-		filterData[0]?.diffKeys.push({
-			key: "test",
-			db_value: "123",
-			ehr_value: 234,
-			is_different: true,
-		});
-		filterData[0]?.diffKeys.push({
-			key: "test",
-			db_value: "123",
-			ehr_value: 234,
-			is_different: true,
-		});
-		filterData[0]?.diffKeys.push({
-			key: "test",
-			db_value: "123",
-			ehr_value: 234,
-			is_different: true,
-		});
-		filterData[1]?.diffKeys.push({
-			key: "test",
-			db_value: "123",
-			ehr_value: 234,
-			is_different: true,
-		});
-		filterData[1]?.diffKeys.push({
-			key: "test",
-			db_value: "123",
-			ehr_value: 234,
-			is_different: true,
-		});
-		// end for test
-		filterData.push(filterData[0]!);
-
 		return filterData;
 	}
 
 	function next() {
 		let notSeenDatas = getDiffDatas.data!.filter(
 			(data: Array<CombinedData>) =>
-				empStatus[getKeyFromData(data, "emp_no")] === "initial" &&
-				getKeyFromData(data, "emp_no") !== selectedEmployee
+				empStatus[getKeyFromData(data, "emp_no", "ehr")] === "initial" &&
+				getKeyFromData(data, "emp_no", "ehr") !== selectedEmployee
 		);
 		let nextEmp =
 			notSeenDatas.length > 0
-				? getKeyFromData(notSeenDatas[0]!, "emp_no")
+				? getKeyFromData(notSeenDatas[0]!, "emp_no", "ehr")
 				: selectedEmployee;
+		console.log(nextEmp)
 		setSelectedEmployee(nextEmp);
 	}
 
@@ -201,14 +173,17 @@ function SyncPage({period}: {period: number}) {
 		}
 
 		function SelectListEmp({ d }: { d: Array<CombinedData> }) {
+			let emp_no = getKeyFromData(d, "emp_no") ?? getKeyFromData(d, "emp_no", "ehr");
+			let emp_name = getKeyFromData(d, "emp_name") ?? getKeyFromData(d, "emp_name", "ehr");
+			let english_name = getKeyFromData(d, "english_name") ?? getKeyFromData(d, "english_name", "ehr");
 			return (
 				<>
-					<b className="mr-1">{getKeyFromData(d, "emp_no")}</b>
+					<b className="mr-1">{emp_no}</b>
 					<p className="mr-1">
 						{
-							getKeyFromData(d, "emp_name") +
+							emp_name +
 							" " +
-							getKeyFromData(d, "english_name") +
+							english_name +
 							" " + (isInitial(d)?"(尚未確認)":isIgnored(d)?"(暫不修改)":isChecked(d)?"(確認更改)":"(未知狀態)")
 						}
 					</p>
@@ -217,7 +192,7 @@ function SyncPage({period}: {period: number}) {
 		}
 
 		function getStatus(d: Array<CombinedData>) {
-			return empStatus[getKeyFromData(d, "emp_no")];
+			return empStatus[getKeyFromData(d, "emp_no") ?? getKeyFromData(d, "emp_no", "ehr")];
 		}
 
 		function isInitial(d: Array<CombinedData>) {
@@ -247,7 +222,7 @@ function SyncPage({period}: {period: number}) {
 						<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 					</Button>
 				</PopoverTrigger>
-				<PopoverContent className="w-[350px] p-0 h-[300px]">
+				<PopoverContent className="w-[350px] p-0">
 					<Command
 						filter={(value, search) => {
 							return value.toUpperCase().includes(search) ||
@@ -257,15 +232,15 @@ function SyncPage({period}: {period: number}) {
 						}}
 					>
 						<CommandInput placeholder="Search Employee..." />
-						<ScrollArea className="h-[300px]">
+						<ScrollArea className="h-[50vh]">
 						<CommandEmpty>No Employee found.</CommandEmpty>
 						<CommandGroup>
 							{getDiffDatas.data!.map(
 								(d: Array<CombinedData>) => (
 									<CommandItem
-										key={getKeyFromData(d, "emp_no")}
+										key={getKeyFromData(d, "emp_no") ?? getKeyFromData(d, "emp_no", "ehr")}
 										value={generateLongString(
-											getKeyFromData(d, "emp_no")
+											getKeyFromData(d, "emp_no") ?? getKeyFromData(d, "emp_no", "ehr")
 										)}
 										onSelect={(currentValue) => {
 											setSelectedEmployee(

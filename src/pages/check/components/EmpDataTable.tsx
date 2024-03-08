@@ -76,7 +76,7 @@ export function EmployeeDataChange({
 												}`}
 											>
 												{displayData(
-													d.db_value
+													d.salary_value
 												)}
 											</TableCell>
 											<TableCell
