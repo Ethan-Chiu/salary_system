@@ -3,6 +3,7 @@ import { EmployeeData } from "../database/entity/SALARY/employee_data";
 import { Op } from "sequelize";
 import { EHRService } from "./ehr_service";
 import { Emp } from "../database/entity/UMEDIA/emp";
+import { EmployeeDataService } from "./employee_data_service";
 
 
 
@@ -66,7 +67,7 @@ export class SyncService {
 			return 'past'
 	}
 	async empToEmployee(ehr_data:Emp) {
-        var salary_data = new EmployeeData();
+        let salary_data = new EmployeeData();
 		salary_data.emp_no = ehr_data.emp_no!;
 		salary_data.emp_name = ehr_data.emp_name!;
 		salary_data.position = ehr_data.position!;
@@ -75,7 +76,7 @@ export class SyncService {
 		salary_data.u_dep = ehr_data.u_dep!;
 		salary_data.work_type = ehr_data.work_type!;
 		salary_data.work_status = ehr_data.work_status!;
-		salary_data.accesible = ehr_data.accesible!;
+		salary_data.accessible = ehr_data.accessible!;
 		salary_data.sex_type = ehr_data.sex_type!;
 		salary_data.dependents = ehr_data.dependents!;
 		salary_data.healthcare = ehr_data.healthcare!;
@@ -88,17 +89,17 @@ export class SyncService {
 
 	//stage1
 	async getCandPaidEmployees(func: string, period:number): Promise<PaidEmployee[]> {
-		var cand_paid_emps: PaidEmployee[] = [];
+		let cand_paid_emps: PaidEmployee[] = [];
 		const ehrService = container.resolve(EHRService);
 		const pay_work_status = ["一般員工", "當月離職人員_破月", "當月離職人員_全月"];
 		if (func == "month_salary") {
-			var salary_emps = await EmployeeData.findAll({
+			let salary_emps = await EmployeeData.findAll({
 				attributes: [ "emp_name", "u_dep","emp_no", "work_status", "quit_date"],
 			});
             salary_emps = salary_emps.filter((emp) => {
                 return pay_work_status.includes(emp.work_status!)
             })
-			var ehr_emps = await ehrService.getEmp(period);
+			let ehr_emps = await ehrService.getEmp(period);
 			console.log("ehr_emps:");
 			console.log(ehr_emps);
 			// Step 1: Create a dictionary for ehr_emps
@@ -120,21 +121,21 @@ export class SyncService {
 
 			// Step 3: Filter ehr_emps to get only the new employees
 			// const newEmployees = ehr_emps.filter(emp => emp.work_status == '當月新進人員全月' || emp.work_status == '當月新進人員破月');
-			var newEmps: Array<Emp> = [];
+			let newEmps: Array<Emp> = [];
 			ehr_emps.map(emp => {
 				Object.keys(emp).map((key) => {
-					console.log(key);
-					console.log((emp as any)[key]);
+					//console.log(key);
+					//console.log((emp as any)[key]);
 				})
 				if(emp.change_flag == '當月新進')
 					newEmps.push(emp);
-				else
-					console.log(emp.change_flag);
+				// else
+					//console.log(emp.change_flag);
 			});
             const newEmployees = await Promise.all(newEmps.map(async (emp) => await this.empToEmployee(emp)));
 			// newEmployees = newEmployees.filter((emp: Emp) => emp !== undefined); 
-			console.log("newEmployees:");
-			console.log(newEmployees);
+			//console.log("newEmployees:");
+			//console.log(newEmployees);
             // const empDataService = container.resolve(EmployeeDataService);
 			// newEmployees.map(emp => {
 			// 	empDataService.createEmployeeData({
@@ -160,9 +161,9 @@ export class SyncService {
 			const all_emps = updatedSalaryEmps.concat(newEmployees);
 
 			// Output or use all_emps as needed
-			console.log('check all emps:')
-			console.log(all_emps);
-			var msg=''
+			//console.log('check all emps:')
+			//console.log(all_emps);
+			let msg=''
 			cand_paid_emps = await Promise.all(all_emps.map(async (emp) => {
 				switch (emp.work_type) {
 					case "一般員工":
@@ -221,7 +222,7 @@ export class SyncService {
 		period: number,
 	): Promise<CombinedData[][] | undefined> {
 		const ehrService = container.resolve(EHRService);
-		var salary_datas = [];
+		let salary_datas = [];
 
 		const cand_paid_emps = await this.getCandPaidEmployees(func, period);
 		const cand_emp_nos = cand_paid_emps.map((emp) => emp.emp_no);
@@ -325,6 +326,28 @@ export class SyncService {
 		);
 		return filteredChangeDatas;
 	}
+    async syncronize(period:number, emp_nos: string[]) {
+        const ehrService = container.resolve(EHRService);
+        const ehr_datas = await ehrService.getEmp(period);
+        interface EHRDictType {
+            [key: string]: any;
+        };
+        const ehrDict: EHRDictType = {};
+        ehr_datas.forEach(emp => {
+            ehrDict[emp.emp_no!] = emp;
+        });
+        const changeDatas = await Promise.all(
+            emp_nos.map(async (emp_no: string) => {
+                const changeData = await this.empToEmployee(ehrDict[emp_no])
+                return changeData
+            })
+        );
+        const employee_data_service = container.resolve(EmployeeDataService);
+        changeDatas.map(async (changeData) => {
+            await employee_data_service.updateEmployeeDataByEmpNO(changeData)
+        })
+        return changeDatas
+    }
 	//stage3
 	async getPaidEmps(func: string) : Promise<EmployeeData[]> {
 		// if (func == "month") {

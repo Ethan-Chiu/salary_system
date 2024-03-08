@@ -266,7 +266,7 @@ const EmployeeData = z.object({
 	u_dep: z.string(),
 	work_type: z.string(),
 	work_status: z.string(),
-	accesible: z.boolean().nullable(),
+	accessible: z.string().nullable(),
 	sex_type: z.string(),
 	dependents: z.number().nullable(),
 	healthcare: z.number().nullable(),
@@ -279,4 +279,6 @@ const EmployeeData = z.object({
 export const createEmployeeDataAPI = EmployeeData;
 export const createEmployeeDataService = EmployeeData;
 export const updateEmployeeDataAPI = EmployeeData.merge(Id).partial();
+export const updateEmployeeDataByEmpNOAPI = EmployeeData.partial();
 export const updateEmployeeDataService = EmployeeData.merge(Id).partial();
+export const updateEmployeeDataByEmpNOService = EmployeeData.partial();

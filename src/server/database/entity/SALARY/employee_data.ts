@@ -22,7 +22,7 @@ export class EmployeeData extends Model<
     declare u_dep: string;
     declare work_type: string;
     declare work_status: string;
-    declare accesible: boolean | null;
+    declare accessible: string | null;
     declare sex_type: string;
     declare dependents: number | null;
     declare healthcare: number | null;
@@ -65,8 +65,8 @@ EmployeeData.init(
             type: DataTypes.STRING(32),
 			allowNull: false,
         },
-        accesible: {
-            type: DataTypes.BOOLEAN,
+        accessible: {
+            type: DataTypes.STRING,
         },
         u_dep: {
             type: DataTypes.STRING(32),

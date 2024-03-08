@@ -1,22 +1,22 @@
 export class Emp {
 	// id can be undefined during creation when using `autoIncrement`
-      declare change_flag?: string;
-	declare emp_no?: string;
-	declare emp_name?: string;
-    declare position?: number;
-    declare position_type?: string;
-    declare ginsurance_type?: string;
-    declare u_dep?: string;
-    declare work_type?: string;
-    declare work_status?: string;
-    declare accesible?: boolean | null;
-    declare sex_type?: string;
-    declare dependents?: number;
-    declare healthcare?: number;
-    declare registration_date?: string;
-    declare quit_date?: string;
-    declare licens_id?: string;
-    declare nbanknumber?: string;
+      declare change_flag: string;
+	declare emp_no: string;
+	declare emp_name: string;
+    declare position: number;
+    declare position_type: string;
+    declare ginsurance_type: string;
+    declare u_dep: string;
+    declare work_type: string;
+    declare work_status: string;
+    declare accessible: string | null;
+    declare sex_type: string;
+    declare dependents: number | null;
+    declare healthcare: number | null;
+    declare registration_date: string;
+    declare quit_date: string | null;
+    declare licens_id: string | null;
+    declare nbanknumber: string | null;
 
 	constructor(
         change_flag: string,
@@ -28,14 +28,14 @@ export class Emp {
         u_dep: string,
         work_type: string,
         work_status: string,
-        accesible: boolean | null,
+        accesible: string | null,
         sex_type: string,
-        dependents: number,
-        healthcare: number,
+        dependents: number | null,
+        healthcare: number | null,
         registration_date: string,
-        quit_date: string,
-        licens_id: string,
-        nbanknumber: string
+        quit_date: string | null,
+        licens_id: string | null,
+        nbanknumber: string | null
 	) {
         this.change_flag = change_flag;
         this.emp_no = emp_no;
@@ -46,7 +46,7 @@ export class Emp {
         this.u_dep = u_dep;
         this.work_type = work_type;
         this.work_status = work_status;
-        this.accesible = accesible;
+        this.accessible = accesible;
         this.sex_type = sex_type;
         this.dependents = dependents;
         this.healthcare = healthcare;
@@ -67,13 +67,13 @@ export class Emp {
             U_DEP,
             WORK_TYPE,
             WORK_STATUS,
-            ACCESIBLE,
+            ACCESSIBLE,
             SEX_TYPE,
             DEPENDENTS,
             HEALTHCARE,
             REGISTRATION_DATE,
             QUIT_DATE,
-            LICENSE_ID,
+            LICENS_ID,
             NBANKNUMBER
 		} = data;
             
@@ -91,13 +91,13 @@ export class Emp {
             U_DEP,
             WORK_TYPE,
             WORK_STATUS,
-            ACCESIBLE,
+            ACCESSIBLE,
             SEX_TYPE,
             DEPENDENTS,
             HEALTHCARE,
             FORMAT_REGISTRATION_DATE,
             FORMAT_QUIT_DATE,
-            LICENSE_ID,
+            LICENS_ID,
             NBANKNUMBER
 		);
 	}
