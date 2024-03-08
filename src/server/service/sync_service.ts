@@ -177,8 +177,6 @@ export class SyncService {
 						break;
 					case "當月離職人員破月":
 						if (emp.quit_date == null) {
-                            console.log(emp.emp_no)
-                            console.log(emp.quit_date)
 							msg = '當月離職人員卻沒有離職日期'
 						}
 						else {
@@ -206,10 +204,11 @@ export class SyncService {
 								msg = '離職人員卻有不合理離職日期('+emp.quit_date+')';
 							}
 						}
+						break;
                     default:
                         if (emp.quit_date != null) {
 							if( await this.checkQuitDate(period, emp.quit_date) !='future'){
-								msg = '一般員工卻有不合理離職日期('+emp.quit_date+')';
+								msg = '有不合理離職日期('+emp.quit_date+')';
 							}
 						}
 						break;
