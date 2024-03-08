@@ -79,7 +79,7 @@ export default function Login() {
 				{!forgetPwd ? (
 					<Card className="w-[400px]">
 						<Form {...form}>
-							<form onSubmit={void form.handleSubmit(onSubmit)}>
+							<form onSubmit={(event) => void form.handleSubmit(onSubmit)(event)}>
 								<CardHeader>
 									<div className="justify-center">
 										<CardTitle>Login</CardTitle>

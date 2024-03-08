@@ -1,5 +1,5 @@
 import { cn } from "~/lib/utils";
-import { Button, buttonVariants } from "~/components/ui/button";
+import { buttonVariants } from "~/components/ui/button";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useContext, type PropsWithChildren } from "react";
@@ -22,10 +22,10 @@ import {
 	TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { Separator } from "~/components/ui/separator";
-import { Dialog, DialogClose, DialogContent } from "./ui/dialog";
+import { Dialog, DialogContent } from "./ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select";
 import periodContext from "./context/period_context";
+import PeriodSelector from "./period_selector";
 
 export type Playlist = (typeof playlists)[number];
 
@@ -152,50 +152,6 @@ function CompSelectItemWrap(props: PropsWithChildren<SelectItemProp>) {
 	);
 }
 
-function PeriodSelector() {
-	const getPeriod = api.function.getPeriod.useQuery();
-	const { selectedPeriod, setSelectedPeriod } = useContext(periodContext);
-	
-	return (
-		<div className="flex justify-center">
-			{getPeriod.isFetched ? (
-				<div className="py-4">
-					<Select
-						defaultValue={selectedPeriod?.period_name}
-						onValueChange={(chosen) =>
-							setSelectedPeriod(
-								getPeriod.data!.find(
-									(item) => item.period_name === chosen
-								)!
-							)
-						}
-					>
-						<SelectTrigger className="w-[180px]">
-							<SelectValue placeholder="Select a period" />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectGroup>
-								<SelectLabel>Period</SelectLabel>
-								{getPeriod.data!.map((period_info) => {
-									return (
-										<SelectItem
-											value={period_info.period_name}
-										>
-											{period_info.period_name}
-										</SelectItem>
-									);
-								})}
-							</SelectGroup>
-						</SelectContent>
-					</Select>
-				</div>
-			) : (
-				<></>
-			)}
-		</div>
-	);
-}
-
 interface SidebarProp extends React.HTMLAttributes<HTMLDivElement> {
 	isCollapsed: boolean;
 	collapseFunction: () => void;
@@ -214,6 +170,8 @@ type SelectItemEntry = {
 	icon: LucideIcon;
 	popUpPage: React.ReactElement;
 };
+
+// Nav link configurations
 
 const selectItems: SelectItemEntry[] = [
 	{

@@ -10,54 +10,62 @@ import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { IconCoins } from "~/components/icons/svg_icons";
 import { Header } from "~/components/header";
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import periodContext from "~/components/context/period_context";
 import { useToast } from "~/components/ui/use-toast";
 import { ToastAction } from "@radix-ui/react-toast";
+import PeriodSelector from "~/components/period_selector";
+import { Dialog, DialogContent } from "~/components/ui/dialog";
 
-type FunctionLinkData = (CardFunctionData & {url: string | null});
+type FunctionLinkData = CardFunctionData & { url: string | null };
 
 const function_data: FunctionLinkData[] = [
 	{
 		title: "月薪",
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
-    url: "/functions/month_salary",
+		url: "/functions/month_salary",
 	},
 	{
 		title: "15日外勞獎金",
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
-    url: "/functions/month_salary",
+		url: "/functions/month_salary",
 	},
 	{
 		title: "持股信託",
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
-    url: null,
+		url: null,
 	},
 	{
 		title: "季獎金",
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
-    url: null,
+		url: null,
 	},
 	{
 		title: "員工分紅",
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
-    url: null,
+		url: null,
 	},
 ];
 
 const PageHome: NextPageWithLayout = () => {
 	const router = useRouter();
-  const { selectedPeriod } = useContext(periodContext);
+	const { selectedPeriod } = useContext(periodContext);
 	const { toast } = useToast();
+	const [open, setOpen] = useState(false);
 
 	return (
 		<>
 			<Header title="functions" showOptions className="mb-4" />
+			<Dialog open={open} onOpenChange={setOpen}>
+				<DialogContent>
+					<PeriodSelector />
+				</DialogContent>
+			</Dialog>
 			<motion.div
 				className="m-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3"
 				variants={container}
@@ -70,18 +78,25 @@ const PageHome: NextPageWithLayout = () => {
 						variants={stagger}
 						className="cursor-pointer"
 						onClick={() => {
-              if (!selectedPeriod) {
-                toast({
-                  title: "No period selected",
-                  description: "Please select a period",
-                  action: (
-                    <ToastAction altText="Go to select period">Select</ToastAction>
-                  ),
-                });
-              } else {
-                void router.push(f_data.url ?? "/functions")
-              }
-            }}
+							if (!selectedPeriod) {
+								toast({
+									title: "No period selected",
+									description: "Please select a period",
+									action: (
+										<ToastAction
+											altText="Go to select period"
+											onClick={() => {
+												setOpen(true);
+											}}
+										>
+											Select
+										</ToastAction>
+									),
+								});
+							} else {
+								void router.push(f_data.url ?? "/functions");
+							}
+						}}
 					>
 						<CardFunction
 							title={f_data.title}
