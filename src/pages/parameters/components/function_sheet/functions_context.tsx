@@ -1,14 +1,10 @@
 import React, { createContext, PropsWithChildren, useEffect } from "react";
-import * as TN from "~/pages/table_names";
 import { api } from "~/utils/api";
-import TableEnum from "../context/data_table_enum";
 import { ShowTableEnum } from "../../shown_tables";
 import {
 	UseTRPCMutationResult,
 	UseTRPCQueryResult,
 } from "@trpc/react-query/shared";
-import { useQueryClient } from "@tanstack/react-query";
-import { getQueryKey } from "@trpc/react-query";
 
 interface FunctionsApi {
 	queryFunction: (() => UseTRPCQueryResult<any, any>) | undefined;
@@ -231,6 +227,10 @@ export default function ToolbarFunctionsProvider({
 				ctx.parameters.getAllBonusSeniority.invalidate();
 			},
 		});
+
+	//#region
+
+	//#endregion
 
 	const functionsDictionary: Record<ShowTableEnum, FunctionsApi> = {
 		TableAttendance: {

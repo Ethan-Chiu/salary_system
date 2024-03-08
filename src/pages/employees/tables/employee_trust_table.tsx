@@ -1,16 +1,23 @@
 import { LoadingSpinner } from "~/components/loading";
-import { DataTable } from "../components/data_table";
+import { DataTable } from "../components/data_table_update";
 import { api } from "~/utils/api";
-import { EmployeeData } from "~/server/database/entity/SALARY/employee_data";
 
-const columns = Object.keys(new EmployeeData()).map((key) => {
+const columns = [
+    "emp_no",
+    "emp_trust_reserve",
+    "org_trust_reserve",
+    "emp_special_trust_incent",
+    "org_special_trust_incent",
+    "start_date",
+    "end_date",
+].map((key) => {
     return {
         accessorKey: key,
         header: key,
     };
 });
 
-export function EmployeeDataTable({ index, globalFilter }: any) {
+export function EmployeeTrustTable({ index, globalFilter }: any) {
     const { isLoading, isError, data, error } =
         api.employeeTrust.getCurrentEmployeeTrust.useQuery();
     const filterKey = "emp_no";
@@ -22,6 +29,8 @@ export function EmployeeDataTable({ index, globalFilter }: any) {
     if (isError) {
         return <span>Error: {error.message}</span>; // TODO: Error element with toast
     }
+
+    console.log(data!);
 
     return (
         <DataTable columns={columns} data={data!} filterColumnKey={filterKey} />

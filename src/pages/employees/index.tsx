@@ -6,6 +6,8 @@ import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { ReactElement } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { EmployeeDataTable } from "./tables/employee_data_table";
+import { EmployeePaymentTable } from "./tables/employee_payment_table";
+import { EmployeeTrustTable } from "./tables/employee_trust_table";
 
 const TabOptions = ["基本檔案", "薪資檔案", "持股信託"];
 
@@ -14,19 +16,18 @@ const PageEmployees: NextPageWithLayout = () => {
     function getTable(table_name: string) {
         switch (table_name) {
             case "基本檔案":
-                // return <EmployeeDataTable />;
-                return <p>No implement</p>;
+                return <EmployeeDataTable />;
             case "薪資檔案":
-                return <p>No implement</p>;
+                return <EmployeePaymentTable />;
             case "持股信託":
-                return <p>No implement</p>;
+                return <EmployeeTrustTable />;
             default:
                 return <p>No implement</p>;
         }
     }
 
     return (
-        <>
+        <div className="flex flex-col h-full w-full">
             <Header title="employees" showOptions className="mb-4" />
             <div className="h-0 grow m-4">
                 <Tabs
@@ -53,7 +54,7 @@ const PageEmployees: NextPageWithLayout = () => {
                     </div>
                 </Tabs>
             </div>
-        </>
+        </div>
     );
 };
 

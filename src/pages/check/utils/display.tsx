@@ -14,7 +14,9 @@ export function isValidDateString(input: string): string | undefined {
 	return undefined;
 }
 
-export const displayData = (data: string | number | Date) => {
+export const displayData = (data: string | number | Date | undefined | null) => {
+	// if (data === undefined)	return "Undefined";
+	// if (data === null)	return "Null"
 	if (typeof data === "boolean") return data ? "True" : "False";
 	if (typeof data === "number") return data;
 
