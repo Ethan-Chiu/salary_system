@@ -191,7 +191,7 @@ const actionLinks: NavLinkEntry[] = [
 	{
 		title: "Synchronize",
 		icon: CheckSquare,
-		url: "/check",
+		url: "/synchronize",
 		collapsed: false,
 	},
 	{

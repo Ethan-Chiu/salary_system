@@ -30,6 +30,7 @@ import { LoadingSpinner } from "~/components/loading";
 import { FieldConfig } from "~/components/ui/auto-form/types";
 import { employeeToolbarFunctionsContext } from "./employee_functions_context";
 import GeneralTable from "~/pages/parameters/components/function_sheet/general_table";
+import { Input } from "~/components/ui/input";
 
 interface EmployeeFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
@@ -209,8 +210,12 @@ const CompViewAllDatas = ({
 	onUpdate: Function;
 	onDelete: Function;
 }) => {
+
+	const [filterValue, setFilterValue] = useState<string>("");
+
 	return (
 		<>
+			<Input className="w-1/10 m-2" placeholder={"請輸入搜尋關鍵字"} onChange={e => setFilterValue(e.target.value)}></Input>
 			{dataNoID && (
 				<div className="m-4">
 					<Table>
@@ -241,7 +246,9 @@ const CompViewAllDatas = ({
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{dataNoID?.map((data: any, index: number) => {
+							{dataNoID?.filter((data: any) => {
+								return Object.values(data).some((value: any) => value ? value.toString().includes(filterValue) : false)
+							}).map((data: any, index: number) => {
 								return (
 									<TableRow key={data.id}>
 										<TableCell className="items-center">
