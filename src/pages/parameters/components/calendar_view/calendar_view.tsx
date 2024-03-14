@@ -6,7 +6,7 @@ import calendarContext from "./context/calendar_context";
 import CalendarHeader from "./components/calendar_header";
 import CalendarAddEvent from "./components/calendar_add_event";
 import dataTableContext from "../context/data_table_context";
-import ToolbarFunctionsProvider from "../function_sheet/functions_context";
+import ParameterToolbarFunctionsProvider from "../function_sheet/parameter_functions_context";
 import ApiFunctionsProvider, {
 	apiFunctionsContext,
 } from "../context/api_context_provider";
@@ -19,9 +19,9 @@ export default function CalendarView() {
 	return (
 		<>
 			<ApiFunctionsProvider selectedTableType={selectedTableType}>
-				<ToolbarFunctionsProvider selectedTableType={selectedTableType}>
+				<ParameterToolbarFunctionsProvider selectedTableType={selectedTableType}>
 					<CompCalendarContent />
-				</ToolbarFunctionsProvider>
+				</ParameterToolbarFunctionsProvider>
 			</ApiFunctionsProvider>
 		</>
 	);

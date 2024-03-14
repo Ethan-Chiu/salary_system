@@ -26,10 +26,10 @@ import {
 } from "lucide-react";
 import DataTableContextProvider from "./components/context/data_table_context_provider";
 import dataTableContext from "./components/context/data_table_context";
-import TableEnum, { getTableName } from "./components/context/data_table_enum";
+import { getTableName } from "./components/context/data_table_enum";
 import { Separator } from "~/components/ui/separator";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import { ShowTableEnum, ShowTableEnumValues } from "./shown_tables";
+import { ParameterTableEnum, ParameterTableEnumValues } from "./parameter_tables";
 
 type TableComponentProps = {
 	index: number;
@@ -41,7 +41,7 @@ type TableComponent = {
 	icon: LucideIcon;
 };
 
-function getTableComponent(table: ShowTableEnum): TableComponent {
+function getTableComponent(table: ParameterTableEnum): TableComponent {
 	switch (table) {
 		case "TableAttendance":
 			return {
@@ -107,17 +107,17 @@ export default function TablesView() {
 }
 
 function CompTablesSelector() {
-	const [selectedTag, setSelectedTag] = useState<ShowTableEnum>(
-		ShowTableEnumValues[0]
+	const [selectedTag, setSelectedTag] = useState<ParameterTableEnum>(
+		ParameterTableEnumValues[0]
 	);
 
 	const { setSelectedTableType } = useContext(dataTableContext);
 
-	const tableComponentMap: Record<ShowTableEnum, TableComponent> =
-		ShowTableEnumValues.reduce((map, table) => {
+	const tableComponentMap: Record<ParameterTableEnum, TableComponent> =
+		ParameterTableEnumValues.reduce((map, table) => {
 			map[table] = getTableComponent(table);
 			return map;
-		}, {} as Record<ShowTableEnum, TableComponent>);
+		}, {} as Record<ParameterTableEnum, TableComponent>);
 
 	useEffect(() => {
 		setSelectedTableType(selectedTag);
@@ -131,7 +131,7 @@ function CompTablesSelector() {
 			<Separator />
 			<div className="h-0 grow">
 				<ScrollArea className="h-full">
-					{ShowTableEnumValues.map((table) => {
+					{ParameterTableEnumValues.map((table) => {
 						const tableComponent = tableComponentMap[table];
 
 						return (
@@ -166,7 +166,7 @@ function CompTableView() {
 
 	return (
 		<>
-			{ShowTableEnumValues.filter((table) => table === selectedTableType).map(
+			{ParameterTableEnumValues.filter((table) => table === selectedTableType).map(
 				(selectedTableType) => {
 					return (
 						<div key={selectedTableType} className="flex h-full">

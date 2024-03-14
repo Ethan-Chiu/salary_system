@@ -1,12 +1,11 @@
 import { DataTableViewOptions } from "../../../components/data_table/data_table_view_options";
 import { Input } from "~/components/ui/input";
 import { TabsList, TabsTrigger } from "~/components/ui/tabs";
-import ToolbarFunctionsProvider from "./function_sheet/functions_context";
+import ParameterToolbarFunctionsProvider from "./function_sheet/parameter_functions_context";
 import { useContext, useEffect, useState } from "react";
 import dataTableContext from "./context/data_table_context";
 import { DataTableFunctions } from "./function_sheet/data_table_functions";
 import { LoadingSpinner } from "~/components/loading";
-import { Table } from "@tanstack/react-table";
 import { TabsEnum } from "./context/tabs_enum";
 import { CalendarToolbarFunctions } from "./calendar_view/components/calendar_toolbar_functions";
 import { hasHistory } from "./data_table_tabs_config";
@@ -81,7 +80,7 @@ export function DataTableToolbar<TData>({
 			<DataTableViewOptions table={table} />
 			{/* Toolbar functions */}
 			<div className="w-12">
-				<ToolbarFunctionsProvider selectedTableType={selectedTableType}>
+				<ParameterToolbarFunctionsProvider selectedTableType={selectedTableType}>
 					{selectedTab === TabsEnum.Enum.current && (
 						<DataTableFunctions tableType={selectedTableType} />
 					)}
@@ -90,7 +89,7 @@ export function DataTableToolbar<TData>({
 							tableType={selectedTableType}
 						/>
 					)}
-				</ToolbarFunctionsProvider>
+				</ParameterToolbarFunctionsProvider>
 			</div>
 		</div>
 	);

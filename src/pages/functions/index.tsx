@@ -54,7 +54,7 @@ const function_data: FunctionLinkData[] = [
 
 const PageHome: NextPageWithLayout = () => {
 	const router = useRouter();
-	const { selectedPeriod } = useContext(periodContext);
+	const { selectedPeriod, selectedPayDate } = useContext(periodContext);
 	const { toast } = useToast();
 	const [open, setOpen] = useState(false);
 
@@ -78,13 +78,13 @@ const PageHome: NextPageWithLayout = () => {
 						variants={stagger}
 						className="cursor-pointer"
 						onClick={() => {
-							if (!selectedPeriod) {
+							if (!selectedPeriod || !selectedPayDate) {
 								toast({
-									title: "No period selected",
-									description: "Please select a period",
+									title: "period or payDate not selected",
+									description: "Please select a period and paydate",
 									action: (
 										<ToastAction
-											altText="Go to select period"
+											altText="Go to select period and paydate"
 											onClick={() => {
 												setOpen(true);
 											}}

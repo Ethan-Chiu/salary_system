@@ -1,6 +1,6 @@
 import React, { createContext, type PropsWithChildren } from "react";
 import { api } from "~/utils/api";
-import { type ShowTableEnum } from "../../shown_tables";
+import { type ParameterTableEnum } from "../../parameter_tables";
 import { type UseTRPCQueryResult } from "@trpc/react-query/shared";
 import { type TRPCClientErrorLike } from "@trpc/client";
 
@@ -13,7 +13,7 @@ export const apiFunctionsContext = createContext<QueryFunctionsApi>({
 });
 
 interface ApiFunctionsProviderProps {
-	selectedTableType: ShowTableEnum;
+	selectedTableType: ParameterTableEnum;
 }
 
 export default function ApiFunctionsProvider({
@@ -42,7 +42,7 @@ export default function ApiFunctionsProvider({
 	const getBonusSeniority = () =>
 		api.parameters.getAllBonusSeniority.useQuery();
 
-	const functionsDictionary: Record<ShowTableEnum, QueryFunctionsApi> = {
+	const functionsDictionary: Record<ParameterTableEnum, QueryFunctionsApi> = {
 		TableAttendance: {
 			queryFunction: getAttendanceSetting,
 		},

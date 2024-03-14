@@ -1,6 +1,6 @@
-import { ShowTableEnum } from "../shown_tables";
+import { ParameterTableEnum } from "../parameter_tables";
 
-export function hasHistory(tableType: ShowTableEnum): boolean {
+export function hasHistory(tableType: ParameterTableEnum): boolean {
     switch (tableType) {
         // case "TableAttendance":
         // case "TableBankSetting": 

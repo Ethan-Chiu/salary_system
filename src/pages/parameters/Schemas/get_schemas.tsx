@@ -11,6 +11,8 @@ import { levelSchema } from "./configurations/level_schema";
 import { levelRangeSchema } from "./configurations/level_range_schema";
 import { performanceLevelSchema } from "./configurations/performance_level_schema";
 import { trustMoneySchema } from "./configurations/trust_money_schema";
+import { employeePaymentSchema } from "./configurations/employee_payment_schema";
+import { employeeTrustSchema } from "./configurations/employee_trust_schema";
 
 export function getSchema(table: TableEnum) {
 	switch (table) {
@@ -40,6 +42,10 @@ export function getSchema(table: TableEnum) {
 			return performanceLevelSchema;
 		case "TableTrustMoney":
 			return trustMoneySchema;
+		case "TableEmployeePayment":
+			return employeePaymentSchema;
+		case "TableEmployeeTrust":
+			return employeeTrustSchema;
 		default:
 			throw Error("Table not found");
 	}

@@ -1,6 +1,6 @@
-import React, { createContext, PropsWithChildren, useEffect } from "react";
+import React, { createContext, PropsWithChildren } from "react";
 import { api } from "~/utils/api";
-import { ShowTableEnum } from "../../shown_tables";
+import { ParameterTableEnum } from "../../parameter_tables";
 import {
 	UseTRPCMutationResult,
 	UseTRPCQueryResult,
@@ -13,7 +13,7 @@ interface FunctionsApi {
 	deleteFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 }
 
-export const toolbarFunctionsContext = createContext<FunctionsApi>({
+export const parameterToolbarFunctionsContext = createContext<FunctionsApi>({
 	queryFunction: undefined,
 	updateFunction: undefined,
 	createFunction: undefined,
@@ -21,10 +21,10 @@ export const toolbarFunctionsContext = createContext<FunctionsApi>({
 });
 
 interface ToolbarFunctionsProviderProps {
-	selectedTableType: ShowTableEnum;
+	selectedTableType: ParameterTableEnum;
 }
 
-export default function ToolbarFunctionsProvider({
+export default function ParameterToolbarFunctionsProvider({
 	children,
 	selectedTableType,
 }: PropsWithChildren<ToolbarFunctionsProviderProps>) {
@@ -228,11 +228,7 @@ export default function ToolbarFunctionsProvider({
 			},
 		});
 
-	//#region
-
-	//#endregion
-
-	const functionsDictionary: Record<ShowTableEnum, FunctionsApi> = {
+	const functionsDictionary: Record<ParameterTableEnum, FunctionsApi> = {
 		TableAttendance: {
 			queryFunction: getAttendanceSetting,
 			updateFunction: updateAttendanceSetting,
@@ -285,10 +281,10 @@ export default function ToolbarFunctionsProvider({
 
 	// Return the provider with the functions
 	return (
-		<toolbarFunctionsContext.Provider
+		<parameterToolbarFunctionsContext.Provider
 			value={functionsDictionary[selectedTableType]}
 		>
 			{children}
-		</toolbarFunctionsContext.Provider>
+		</parameterToolbarFunctionsContext.Provider>
 	);
 }
