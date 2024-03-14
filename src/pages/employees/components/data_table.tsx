@@ -12,16 +12,11 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-
-import { Table } from "~/components/ui/table";
 import { Separator } from "~/components/ui/separator";
-import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
-import { Tabs, TabsContent } from "~/components/ui/tabs";
 
-import { DataTableToolbar } from "./data_table_toolbar";
-import { DataTableDataHeader } from "~/components/data_table/data_table_data_header";
-import { DataTableDataBody } from "~/components/data_table/data_table_data_body";
 import { DataTablePagination } from "~/components/data_table/data_table_pagination";
+import { DataTableStandardBody } from "~/components/data_table/default/data_table_standard_body";
+import { DataTableStandardToolbar } from "~/components/data_table/default/data_table_standard_toolbar";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
@@ -65,37 +60,18 @@ export function DataTable<TData>({
 	});
 
 	return (
-		<Tabs
-			defaultValue="now"
-			className="flex h-full w-full flex-col rounded-md border"
-		>
-			{/* TODO: fix global filter*/}
-			<DataTableToolbar
+		<>
+			<DataTableStandardToolbar
 				table={table}
-				globalFilter=""
-				filterKey={filterColumnKey}
+				filterColumnKey={filterColumnKey}
 			/>
 			<Separator />
-			<TabsContent value="now" className="h-0 grow" asChild>
-				<ScrollArea>
-					<Table className="border-b-[1px]">
-						<DataTableDataHeader
-							table={table}
-							dataPerRow={dataPerRow}
-						/>
-						<DataTableDataBody
-							table={table}
-							dataPerRow={dataPerRow}
-						/>
-					</Table>
-					<ScrollBar orientation="horizontal" hidden={true} />
-				</ScrollArea>
-			</TabsContent>
+			<DataTableStandardBody table={table} dataPerRow={dataPerRow} />
 			<DataTablePagination
 				table={table}
 				setDataPerRow={setDataPerRow}
 				className="bg-secondary"
 			/>
-		</Tabs>
+		</>
 	);
 }

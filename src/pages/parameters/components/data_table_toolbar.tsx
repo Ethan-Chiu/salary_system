@@ -1,4 +1,4 @@
-import { DataTableViewOptions } from "../../../components/data_table/data_table_view_options";
+import { DataTableViewOptions } from "../../../components/data_table/toolbar/data_table_view_options";
 import { TabsList, TabsTrigger } from "~/components/ui/tabs";
 import ToolbarFunctionsProvider from "./function_sheet/functions_context";
 import { useContext } from "react";
@@ -34,7 +34,7 @@ export function DataTableToolbar<TData>({
 	return (
 		<div className="flex flex-row items-center justify-between space-x-2 px-2 py-2">
 			{/* search bar */}
-      <ToolbarFilter table={table} filterColumnKey={filterColumnKey} />
+    	<ToolbarFilter table={table} filterColumnKey={filterColumnKey} />
 			{/* tabs */}
 			{showTabs !== false && (
 				<TabsList className="grid h-8 w-96 grid-cols-3">
