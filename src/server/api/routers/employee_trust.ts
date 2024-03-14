@@ -65,13 +65,4 @@ export const employeeTrustRouter = createTRPCRouter({
 			const employeeTrustService = container.resolve(EmployeeTrustService);
 			await employeeTrustService.deleteEmployeeTrust(input.id);
 		}),
-
-	getEmployeeTrustLevel: publicProcedure.query(async () => {
-		return {
-			"emp_trust_reserve": 1000,
-			"org_trust_reserve": 1000,
-			"emp_special_trust_incent": 1000,
-			"org_special_trust_incent": 1000,
-		}
-	}),
 });
