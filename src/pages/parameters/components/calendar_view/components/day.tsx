@@ -16,7 +16,7 @@ import {
 	HoverCardTrigger,
 } from "~/components/ui/hover-card";
 import { Pen, Trash2 } from "lucide-react";
-import { toolbarFunctionsContext } from "../../function_sheet/functions_context";
+import { parameterToolbarFunctionsContext } from "../../function_sheet/parameter_functions_context";
 
 interface DayViewProps {
 	day: Dayjs;
@@ -37,7 +37,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 		setSelectedEvent,
 	} = useContext(calendarContext);
 
-	const mutateFunctions = useContext(toolbarFunctionsContext);
+	const mutateFunctions = useContext(parameterToolbarFunctionsContext);
 	/* const updateFunction = mutateFunctions.updateFunction!; */
 	/* const createFunction = mutateFunctions.createFunction!; */
 	const deleteFunction = mutateFunctions.deleteFunction!;

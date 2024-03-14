@@ -1,9 +1,9 @@
-import { ColumnDef } from "@tanstack/react-table";
+import { type ColumnDef } from "@tanstack/react-table";
 import { DataTableToolbar } from "./data_table_toolbar";
 import { Separator } from "~/components/ui/separator";
 import { Tabs, TabsContent } from "~/components/ui/tabs";
 import CalendarView from "./calendar_view/calendar_view";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import dataTableContext from "./context/data_table_context";
 import { TabsEnum } from "./context/tabs_enum";
 import CompHistoryView from "./history_view/history_view";
@@ -13,17 +13,17 @@ import { hasHistory } from "./data_table_tabs_config";
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
 	data: TData[];
-	filterColumnKey: keyof TData;
+	filterColumnKey?: keyof TData;
 	showTabs?: boolean;
 }
 
 export function DataTable<TData>({
 	columns,
 	data,
-	filterColumnKey,
+	/* filterColumnKey, */
 	showTabs,
 }: DataTableProps<TData>) {
-	const { selectedTab, setSelectedTab, selectedTable, selectedTableType } =
+	const { selectedTab, setSelectedTab, selectedTableType } =
 		useContext(dataTableContext);
 
 	return (
@@ -41,7 +41,7 @@ export function DataTable<TData>({
 		>
 			<div className="flex h-full flex-col">
 				<DataTableToolbar
-					filterColumnKey={filterColumnKey}
+					/* filterColumnKey={filterColumnKey} */
 					showTabs={showTabs}
 				/>
 				<Separator />

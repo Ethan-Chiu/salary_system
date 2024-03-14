@@ -1,8 +1,8 @@
 import {
-	ColumnDef,
-	ColumnFiltersState,
-	SortingState,
-	VisibilityState,
+	type ColumnDef,
+	type ColumnFiltersState,
+	type SortingState,
+	type VisibilityState,
 	getCoreRowModel,
 	getFacetedRowModel,
 	getFacetedUniqueValues,
@@ -19,7 +19,6 @@ import dataTableContext from "../context/data_table_context";
 import { DataTableDataHeader } from "~/components/data_table/data_table_data_header";
 import { DataTableDataBody } from "~/components/data_table/data_table_data_body";
 import { DataTablePagination } from "~/components/data_table/data_table_pagination";
-import { randomUUID } from "crypto";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
@@ -31,8 +30,6 @@ interface DataTableProps<TData> {
 export function DataTable<TData>({
 	columns,
 	data,
-	filterColumnKey,
-	showTabs,
 }: DataTableProps<TData>) {
 	const { setSelectedTable } = useContext(dataTableContext);
 
@@ -68,7 +65,7 @@ export function DataTable<TData>({
 
 	useEffect(() => {
 		setSelectedTable({table: table, key: Math.random().toString()});
-	}, [columnVisibility]);
+	}, [columnVisibility, table, setSelectedTable]);
 
 	return (
 		<div className="flex h-full flex-col">
