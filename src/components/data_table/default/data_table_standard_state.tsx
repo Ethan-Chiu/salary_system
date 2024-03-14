@@ -21,15 +21,17 @@ interface DataTableStandardStateProps<TData, P> {
 	columns: ColumnDef<TData, any>[];
 	data: TData[];
 	WrappedComponent: ComponentType<WithTableProps<Table<TData>, P>>;
+	onUpdate?: (table: Table<TData>) => void;
 	props: P;
 }
 
 export function withDataTableStandardState<TData, P>({
 	columns,
-	data,	
+	data,
 	WrappedComponent,
+	onUpdate,
 	props,
-} : DataTableStandardStateProps<TData, P>) {
+}: DataTableStandardStateProps<TData, P>) {
 	const [rowSelection, setRowSelection] = useState({});
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
 		{}
@@ -59,12 +61,9 @@ export function withDataTableStandardState<TData, P>({
 		getFacetedUniqueValues: getFacetedUniqueValues(),
 	});
 
-	const { setSelectedTable } = useContext(dataTableContext);
-
 	useEffect(() => {
-		setSelectedTable({ table: table, key: Math.random().toString() });
-	}, [table.getState().columnVisibility, table, setSelectedTable]);
-
+		onUpdate && onUpdate(table);
+	}, [columnVisibility, table]);
 
 	return <WrappedComponent {...props} table={table} />;
 }
