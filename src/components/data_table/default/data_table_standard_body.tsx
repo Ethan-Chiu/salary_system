@@ -15,7 +15,7 @@ export function DataTableStandardBody<TData>({
     className,
 }: DataTableSrandardBodyProps<TData>) {
     return (
-        <ScrollArea>
+        <ScrollArea className="h-full">
         <Table className={cn("border-b-[1px]", className)}>
             <DataTableDataHeader
                 table={table}
