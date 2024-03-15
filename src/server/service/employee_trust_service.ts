@@ -50,7 +50,8 @@ export class EmployeeTrustService {
 
     async getCurrentEmployeeTrust(period_id: number): Promise<EmployeeTrust[]> {
         const ehr_service = container.resolve(EHRService);
-        const current_date_string = (await ehr_service.getPeriodObject(period_id)).END_DATE;
+        const period = await ehr_service.getPeriodById(period_id);
+		const current_date_string = period.end_date ?? period.issue_date;
         const employeeTrust = await EmployeeTrust.findAll({
             where: {
                 start_date: {

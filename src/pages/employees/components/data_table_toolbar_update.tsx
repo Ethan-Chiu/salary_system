@@ -5,6 +5,7 @@ import EmployeeToolbarFunctionsProvider from "./function_sheet/employee_function
 import { DataTableFunctions } from "./function_sheet/data_table_functions";
 import { useContext } from "react";
 import dataTableContext from "./context/data_table_context";
+import periodContext from "~/components/context/period_context";
 
 interface DataTableToolbarProps<TData> {
 	table: Table<TData>;
@@ -20,6 +21,7 @@ export function DataTableToolbar<TData>({
 	filterKey,
 }: DataTableToolbarProps<TData>) {
 	const { selectedTableType } = useContext(dataTableContext);
+	const { selectedPeriod } = useContext(periodContext)
 
 	return (
 		<div className="flex flex-row items-center justify-between space-x-2 px-2 py-2">
@@ -45,9 +47,11 @@ export function DataTableToolbar<TData>({
 			<div className="flex">
 				<DataTableViewOptions table={table} />
 				<div className="w-12 ml-2">
-					<EmployeeToolbarFunctionsProvider tableType={selectedTableType}>
-						<DataTableFunctions tableType={selectedTableType} />
-					</EmployeeToolbarFunctionsProvider>
+					{selectedPeriod &&
+						<EmployeeToolbarFunctionsProvider tableType={selectedTableType} period_id={selectedPeriod.period_id}>
+							<DataTableFunctions tableType={selectedTableType} />
+						</EmployeeToolbarFunctionsProvider>
+					}
 				</div>
 			</div>
 		</div>

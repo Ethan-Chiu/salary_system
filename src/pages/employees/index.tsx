@@ -9,19 +9,21 @@ import { EmployeePaymentTable } from "./tables/employee_payment_table";
 import { EmployeeTrustTable } from "./tables/employee_trust_table";
 import DataTableContextProvider from "./components/context/data_table_context_provider";
 import dataTableContext from "./components/context/data_table_context";
+import periodContext from "~/components/context/period_context";
 
 const TabOptions = ["基本檔案", "薪資檔案", "持股信託"];
 
 const PageEmployeesContent = () => {
     const { setSelectedTableType } = useContext(dataTableContext);
+    const { selectedPeriod } = useContext(periodContext);
     function getTable(table_name: string) {
         switch (table_name) {
             case TabOptions[0]:
                 return <EmployeeDataTable />;
             case TabOptions[1]:
-                return <EmployeePaymentTable />;
+                return selectedPeriod ? <EmployeePaymentTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>;
             case TabOptions[2]:
-                return <EmployeeTrustTable />;
+                return selectedPeriod ? <EmployeeTrustTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>;
             default:
                 return <p>No implement</p>;
         }

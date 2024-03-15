@@ -1,4 +1,4 @@
-import React, { createContext, PropsWithChildren } from "react";
+import React, { createContext, PropsWithChildren, useContext } from "react";
 import { api } from "~/utils/api";
 import {
 	UseTRPCMutationResult,
@@ -22,17 +22,19 @@ export const employeeToolbarFunctionsContext = createContext<FunctionsApi>({
 
 interface ToolbarFunctionsProviderProps {
 	tableType: EmployeeTableEnum;
+	period_id: number;
 }
 
 export default function EmployeeToolbarFunctionsProvider({
 	children,
 	tableType,
+	period_id,
 }: PropsWithChildren<ToolbarFunctionsProviderProps>) {
 	const ctx = api.useContext();
 
 	//#region <EmployeePayment>
 	const getEmployeePayment = () =>
-		api.employeePayment.getCurrentEmployeePayment.useQuery();
+		api.employeePayment.getCurrentEmployeePayment.useQuery({ period_id });
 	const updateEmployeePayment =
 		api.employeePayment.updateEmployeePayment.useMutation({
 			onSuccess: () => {
@@ -58,7 +60,7 @@ export default function EmployeeToolbarFunctionsProvider({
 
 	//#region <EmployeeTrust>
 	const getEmployeeTrust = () =>
-		api.employeeTrust.getCurrentEmployeeTrust.useQuery();
+		api.employeeTrust.getCurrentEmployeeTrust.useQuery({ period_id });
 	const updateEmployeeTrust = api.employeeTrust.updateEmployeeTrust.useMutation({
 		onSuccess: () => {
 			ctx.employeeTrust.getCurrentEmployeeTrust.invalidate();

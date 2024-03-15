@@ -1,10 +1,11 @@
-import React, { createContext, PropsWithChildren } from "react";
+import React, { createContext, PropsWithChildren, useContext } from "react";
 import { api } from "~/utils/api";
 import { ParameterTableEnum } from "../../parameter_tables";
 import {
 	UseTRPCMutationResult,
 	UseTRPCQueryResult,
 } from "@trpc/react-query/shared";
+import periodContext from "~/components/context/period_context";
 
 interface FunctionsApi {
 	queryFunction: (() => UseTRPCQueryResult<any, any>) | undefined;
@@ -22,17 +23,19 @@ export const parameterToolbarFunctionsContext = createContext<FunctionsApi>({
 
 interface ToolbarFunctionsProviderProps {
 	selectedTableType: ParameterTableEnum;
+	period_id: number;
 }
 
 export default function ParameterToolbarFunctionsProvider({
 	children,
 	selectedTableType,
+	period_id,
 }: PropsWithChildren<ToolbarFunctionsProviderProps>) {
 	const ctx = api.useContext();
 
 	//#region <AttendanceSetting>
 	const getAttendanceSetting = () =>
-		api.parameters.getCurrentAttendanceSetting.useQuery();
+		api.parameters.getCurrentAttendanceSetting.useQuery({ period_id });
 	const updateAttendanceSetting =
 		api.parameters.updateAttendanceSetting.useMutation({
 			onSuccess: () => {
@@ -58,7 +61,7 @@ export default function ParameterToolbarFunctionsProvider({
 
 	//#region <BankSetting>
 	const getBankSetting = () =>
-		api.parameters.getCurrentBankSetting.useQuery();
+		api.parameters.getCurrentBankSetting.useQuery({ period_id });
 	const updateBankSetting = api.parameters.updateBankSetting.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentBankSetting.invalidate();
@@ -81,7 +84,7 @@ export default function ParameterToolbarFunctionsProvider({
 
 	//#region <InsuranceSetting>
 	const getInsuranceRateSetting = () =>
-		api.parameters.getCurrentInsuranceRateSetting.useQuery();
+		api.parameters.getCurrentInsuranceRateSetting.useQuery({ period_id });
 	const updateInsuranceRateSetting =
 		api.parameters.updateInsuranceRateSetting.useMutation({
 			onSuccess: () => {

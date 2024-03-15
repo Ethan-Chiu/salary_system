@@ -21,9 +21,10 @@ import { parameterToolbarFunctionsContext } from "../../function_sheet/parameter
 interface DayViewProps {
 	day: Dayjs;
 	rowIdx: number;
+	target_date: string;
 }
 
-export default function DayView({ day, rowIdx }: DayViewProps) {
+export default function DayView({ day, rowIdx, target_date }: DayViewProps) {
 	const {
 		monthIndex,
 		mouseDownDate,
@@ -105,7 +106,7 @@ export default function DayView({ day, rowIdx }: DayViewProps) {
 						className={cn(
 							"my-1 p-1 text-center text-sm",
 							day.format("DD-MM-YY") ===
-								dayjs().format("DD-MM-YY") &&
+								dayjs(target_date).format("DD-MM-YY") &&
 								"w-7 rounded-full bg-primary text-white"
 						)}
 					>

@@ -9,6 +9,7 @@ import { TabsEnum } from "./context/tabs_enum";
 import { CalendarToolbarFunctions } from "./calendar_view/components/calendar_toolbar_functions";
 import { hasHistory } from "./data_table_tabs_config";
 import { ToolbarFilter } from "~/components/data_table/toolbar/toolbar_filter";
+import periodContext from "~/components/context/period_context";
 
 interface DataTableToolbarProps<TData> {
 	filterColumnKey?: keyof TData;
@@ -21,6 +22,7 @@ export function DataTableToolbar<TData>({
 }: DataTableToolbarProps<TData>) {
 	const { selectedTab, selectedTableType, selectedTable } =
 		useContext(dataTableContext);
+	const { selectedPeriod } = useContext(periodContext);
 	const table = selectedTable?.table;
 
 	if (!table) {
@@ -61,16 +63,18 @@ export function DataTableToolbar<TData>({
 			<DataTableViewOptions table={table} />
 			{/* Toolbar functions */}
 			<div className="w-12">
-				<ParameterToolbarFunctionsProvider selectedTableType={selectedTableType}>
-					{selectedTab === TabsEnum.Enum.current && (
-						<DataTableFunctions tableType={selectedTableType} />
-					)}
-					{selectedTab === TabsEnum.Enum.calendar && (
-						<CalendarToolbarFunctions
-							tableType={selectedTableType}
-						/>
-					)}
-				</ParameterToolbarFunctionsProvider>
+				{selectedPeriod &&
+					<ParameterToolbarFunctionsProvider selectedTableType={selectedTableType} period_id={selectedPeriod.period_id}>
+						{selectedTab === TabsEnum.Enum.current && (
+							<DataTableFunctions tableType={selectedTableType} />
+						)}
+						{selectedTab === TabsEnum.Enum.calendar && (
+							<CalendarToolbarFunctions
+								tableType={selectedTableType}
+							/>
+						)}
+					</ParameterToolbarFunctionsProvider>
+				}
 			</div>
 		</div>
 	);

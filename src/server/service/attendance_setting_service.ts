@@ -12,7 +12,7 @@ import { EHRService } from "./ehr_service";
 
 @injectable()
 export class AttendanceSettingService {
-	constructor() {}
+	constructor() { }
 
 	async createAttendanceSetting({
 		personal_leave_dock,
@@ -65,7 +65,8 @@ export class AttendanceSettingService {
 
 	async getCurrentAttendanceSetting(period_id: number): Promise<AttendanceSetting | null> {
 		const ehr_service = container.resolve(EHRService);
-		const current_date_string = (await ehr_service.getPeriodObject(period_id)).END_DATE;
+		const period = await ehr_service.getPeriodById(period_id);
+		const current_date_string = period.end_date ?? period.issue_date;
 		const attendanceSettingList = await AttendanceSetting.findAll({
 			where: {
 				start_date: {
