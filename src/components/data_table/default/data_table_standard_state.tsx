@@ -12,15 +12,26 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import { ComponentType, FC, useState } from "react";
+import { ComponentType, useContext, useEffect, useState } from "react";
+import dataTableContext from "~/pages/parameters/components/context/data_table_context";
 
 type WithTableProps<TableT, P> = { table: TableT } & P;
 
-export function withDataTableStandardState<TData, P>(
-	columns: ColumnDef<TData, any>[],
-	data: TData[],
-	WrappedComponent: ComponentType<WithTableProps<Table<TData>, P>>
-): FC<P> {
+interface DataTableStandardStateProps<TData, P> {
+	columns: ColumnDef<TData, any>[];
+	data: TData[];
+	WrappedComponent: ComponentType<WithTableProps<Table<TData>, P>>;
+	onUpdate?: (table: Table<TData>) => void;
+	props: P;
+}
+
+export function withDataTableStandardState<TData, P>({
+	columns,
+	data,
+	WrappedComponent,
+	onUpdate,
+	props,
+}: DataTableStandardStateProps<TData, P>) {
 	const [rowSelection, setRowSelection] = useState({});
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
 		{}
@@ -50,7 +61,9 @@ export function withDataTableStandardState<TData, P>(
 		getFacetedUniqueValues: getFacetedUniqueValues(),
 	});
 
-	return function WithTableState(props: P) {
-		return <WrappedComponent {...props} table={table} />;
-	};
+	useEffect(() => {
+		onUpdate && onUpdate(table);
+	}, [columnVisibility, table]);
+
+	return <WrappedComponent {...props} table={table} />;
 }
