@@ -59,9 +59,11 @@ export const parametersRouter = createTRPCRouter({
 			return newdata;
 		}),
 
-	getCurrentBankSetting: publicProcedure.query(async () => {
+	getCurrentBankSetting: publicProcedure
+		.input(z.object({ period_id: z.number() }))	
+		.query(async ({ input }) => {
 		const bankService = container.resolve(BankSettingService);
-		const bankSetting = await bankService.getCurrentBankSetting();
+		const bankSetting = await bankService.getCurrentBankSetting(input.period_id);
 		if (bankSetting.length == 0) {
 			throw new BaseResponseError("BankSetting does not exist");
 		}
@@ -101,10 +103,12 @@ export const parametersRouter = createTRPCRouter({
 			await bankService.deleteBankSetting(input.id);
 		}),
 
-	getCurrentAttendanceSetting: publicProcedure.query(async () => {
+	getCurrentAttendanceSetting: publicProcedure
+		.input(z.object({ period_id: z.number() }))
+		.query(async ({ input }) => {
 		const attendanceService = container.resolve(AttendanceSettingService);
 		const attendanceSetting =
-			await attendanceService.getCurrentAttendanceSetting();
+			await attendanceService.getCurrentAttendanceSetting(input.period_id);
 		if (attendanceSetting == null) {
 			throw new BaseResponseError("AttendanceSetting does not exist");
 		}
@@ -168,12 +172,14 @@ export const parametersRouter = createTRPCRouter({
 			await attendanceService.rescheduleAttendanceSetting();
 		}),
 
-	getCurrentInsuranceRateSetting: publicProcedure.query(async () => {
+	getCurrentInsuranceRateSetting: publicProcedure
+		.input(z.object({ period_id: z.number() }))
+		.query(async ({ input }) => {
 		const insuranceRateService = container.resolve(
 			InsuranceRateSettingService
 		);
 		const insuranceRateSetting =
-			await insuranceRateService.getCurrentInsuranceRateSetting();
+			await insuranceRateService.getCurrentInsuranceRateSetting(input.period_id);
 		if (insuranceRateSetting == null) {
 			throw new BaseResponseError("InsuranceRateSetting does not exist");
 		}
