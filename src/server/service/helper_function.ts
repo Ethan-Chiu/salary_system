@@ -1,4 +1,6 @@
+import { useContext } from "react";
 import { BaseResponseError } from "../api/error/BaseResponseError";
+import periodContext from "~/components/context/period_context";
 
 export function check_date(
 	start_date: string | null,
@@ -22,11 +24,16 @@ export function is_date_available(
 	start_date: string | null,
 	end_date: string | null
 ): boolean {
-	const today = new Date();
-	if (end_date && end_date < get_date_string(today)) {
+	const { selectedPeriod } = useContext(periodContext)
+	if (!selectedPeriod) {
 		return false;
 	}
-	if (start_date && start_date > get_date_string(today)) {
+	const targetDate = selectedPeriod.end_date ?? selectedPeriod.issue_date
+
+	if (end_date && end_date < targetDate) {
+		return false;
+	}
+	if (start_date && start_date > targetDate) {
 		return false;
 	}
 	return true;

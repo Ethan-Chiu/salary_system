@@ -10,9 +10,11 @@ import { EmployeeTrustService } from "~/server/service/employee_trust_service";
 import { get_date_string } from "~/server/service/helper_function";
 
 export const employeeTrustRouter = createTRPCRouter({
-	getCurrentEmployeeTrust: publicProcedure.query(async () => {
+	getCurrentEmployeeTrust: publicProcedure
+		.input(z.object({ period_id: z.number() }))
+		.query(async ({ input }) => {
 		const employeeTrustService = container.resolve(EmployeeTrustService);
-		const employeeTrust = await employeeTrustService.getCurrentEmployeeTrust();
+		const employeeTrust = await employeeTrustService.getCurrentEmployeeTrust(input.period_id);
 		if (employeeTrust == null) {
 			throw new BaseResponseError("EmployeeTrust does not exist");
 		}

@@ -16,45 +16,22 @@ import { useToast } from "~/components/ui/use-toast";
 import { ToastAction } from "@radix-ui/react-toast";
 import PeriodSelector from "~/components/period_selector";
 import { Dialog, DialogContent } from "~/components/ui/dialog";
+import PeriodContextProvider from "~/components/context/period_context_provider";
 
 type FunctionLinkData = CardFunctionData & { url: string | null };
 
 const function_data: FunctionLinkData[] = [
 	{
-		title: "月薪",
+		title: "薪資異動檔",
 		iconPath: "./icons/coins.svg",
-		subscript: "some notes",
-		url: "/functions/month_salary",
-	},
-	{
-		title: "15日外勞獎金",
-		iconPath: "./icons/coins.svg",
-		subscript: "some notes",
-		url: "/functions/month_salary",
-	},
-	{
-		title: "持股信託",
-		iconPath: "./icons/coins.svg",
-		subscript: "some notes",
-		url: null,
-	},
-	{
-		title: "季獎金",
-		iconPath: "./icons/coins.svg",
-		subscript: "some notes",
-		url: null,
-	},
-	{
-		title: "員工分紅",
-		iconPath: "./icons/coins.svg",
-		subscript: "some notes",
-		url: null,
+		subscript: "salary report",
+		url: "/report/salary",
 	},
 ];
 
-const PageHome: NextPageWithLayout = () => {
+const ReportHomePage: NextPageWithLayout = () => {
 	const router = useRouter();
-	const { selectedPeriod, selectedPayDate } = useContext(periodContext);
+	const { selectedPeriod } = useContext(periodContext);
 	const { toast } = useToast();
 	const [open, setOpen] = useState(false);
 
@@ -78,13 +55,13 @@ const PageHome: NextPageWithLayout = () => {
 						variants={stagger}
 						className="cursor-pointer"
 						onClick={() => {
-							if (!selectedPeriod || !selectedPayDate) {
+							if (!selectedPeriod) {
 								toast({
-									title: "period or payDate not selected",
-									description: "Please select a period and paydate",
+									title: "No period selected",
+									description: "Please select a period",
 									action: (
 										<ToastAction
-											altText="Go to select period and paydate"
+											altText="Go to select period"
 											onClick={() => {
 												setOpen(true);
 											}}
@@ -114,15 +91,15 @@ const PageHome: NextPageWithLayout = () => {
 	);
 };
 
-PageHome.getLayout = function getLayout(page: React.ReactElement) {
+ReportHomePage.getLayout = function getLayout(page: React.ReactElement) {
 	return (
 		<RootLayout>
-			<PerpageLayoutNav pageTitle="functions">{page}</PerpageLayoutNav>
+			<PerpageLayoutNav pageTitle="reports">{page}</PerpageLayoutNav>
 		</RootLayout>
 	);
 };
 
-export default PageHome;
+export default ReportHomePage;
 
 const container = {
 	hidden: {},

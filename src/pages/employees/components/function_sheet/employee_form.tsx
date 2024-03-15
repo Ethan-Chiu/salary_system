@@ -25,26 +25,27 @@ import {
 import { PenSquare, Trash2 } from "lucide-react";
 
 import { useContext } from "react";
-import { parameterToolbarFunctionsContext } from "./parameter_functions_context";
 import { FunctionMode } from "./data_table_functions";
-import GeneralTable from "./general_table";
 import { LoadingSpinner } from "~/components/loading";
 import { FieldConfig } from "~/components/ui/auto-form/types";
+import { employeeToolbarFunctionsContext } from "./employee_functions_context";
+import GeneralTable from "~/pages/parameters/components/function_sheet/general_table";
+import { Input } from "~/components/ui/input";
 
-interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
+interface EmployeeFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
 	fieldConfig?: FieldConfig<z.infer<SchemaType>>;
 	mode: FunctionMode;
 	closeSheet: () => void;
 }
 
-export function ParameterForm<SchemaType extends z.AnyZodObject>({
+export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 	formSchema,
 	fieldConfig,
 	mode,
 	closeSheet,
-}: ParameterFormProps<SchemaType>) {
-	const functions = useContext(parameterToolbarFunctionsContext);
+}: EmployeeFormProps<SchemaType>) {
+	const functions = useContext(employeeToolbarFunctionsContext);
 
 	const queryFunction = functions.queryFunction!;
 	const updateFunction = functions.updateFunction!;
@@ -209,8 +210,12 @@ const CompViewAllDatas = ({
 	onUpdate: Function;
 	onDelete: Function;
 }) => {
+
+	const [filterValue, setFilterValue] = useState<string>("");
+
 	return (
 		<>
+			<Input className="w-1/10 m-2" placeholder={"請輸入搜尋關鍵字"} onChange={e => setFilterValue(e.target.value)}></Input>
 			{dataNoID && (
 				<div className="m-4">
 					<Table>
@@ -241,7 +246,9 @@ const CompViewAllDatas = ({
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{dataNoID?.map((data: any, index: number) => {
+							{dataNoID?.filter((data: any) => {
+								return Object.values(data).some((value: any) => value ? value.toString().includes(filterValue) : false)
+							}).map((data: any, index: number) => {
 								return (
 									<TableRow key={data.id}>
 										<TableCell className="items-center">

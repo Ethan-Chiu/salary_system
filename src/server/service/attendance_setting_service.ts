@@ -1,4 +1,4 @@
-import { injectable } from "tsyringe";
+import { container, injectable } from "tsyringe";
 import { AttendanceSetting } from "../database/entity/SALARY/attendance_setting";
 import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
@@ -8,6 +8,7 @@ import {
 	createAttendanceSettingService,
 	updateAttendanceSettingService,
 } from "../api/types/parameters_input_type";
+import { EHRService } from "./ehr_service";
 
 @injectable()
 export class AttendanceSettingService {
@@ -62,8 +63,9 @@ export class AttendanceSettingService {
 		return newData;
 	}
 
-	async getCurrentAttendanceSetting(): Promise<AttendanceSetting | null> {
-		const current_date_string = get_date_string(new Date());
+	async getCurrentAttendanceSetting(period_id: number): Promise<AttendanceSetting | null> {
+		const ehr_service = container.resolve(EHRService);
+		const current_date_string = (await ehr_service.getPeriodObject(period_id)).END_DATE;
 		const attendanceSettingList = await AttendanceSetting.findAll({
 			where: {
 				start_date: {

@@ -11,7 +11,9 @@ export const TableEnumValues = [
     "TableLevelRange",
     "TablePerformanceLevel",
     "TableTrustMoney",
-    "TableBasicInfo"
+    "TableBasicInfo",
+    "TableEmployeePayment",
+    "TableEmployeeTrust",
 ] as const;
 
 export type TableEnum = typeof TableEnumValues[number];
@@ -31,6 +33,8 @@ export function getTableName(table: TableEnum) {
         case "TablePerformanceLevel": return "績效等級比例";
         case "TableTrustMoney": return "信託金";
         case "TableBasicInfo": return "基本資訊";
+        case "TableEmployeePayment": return "員工薪資";
+        case "TableEmployeeTrust": return "員工信託";
     }
 }
 

@@ -21,9 +21,9 @@ import {
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Button } from "~/components/ui/button";
 import { Translate } from "~/lib/utils/translation";
-import { ParameterForm } from "./parameter_form";
-import { TableEnum, getTableName } from "../context/data_table_enum";
-import { getSchema } from "../../schemas/get_schemas";
+import { TableEnum, getTableName } from "~/pages/parameters/components/context/data_table_enum";
+import { EmployeeForm } from "./employee_form";
+import { getSchema } from "~/pages/parameters/schemas/get_schemas";
 
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -88,7 +88,7 @@ export function DataTableFunctions({
 						</SheetDescription>
 					</SheetHeader>
 					<ScrollArea className="h-[85%] w-full">
-						<ParameterForm
+						<EmployeeForm
 							formSchema={getSchema(tableType)!}
 							mode={mode}
 							closeSheet={() => setOpen(false)}

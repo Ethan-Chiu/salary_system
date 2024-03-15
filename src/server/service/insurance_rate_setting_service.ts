@@ -1,4 +1,4 @@
-import { injectable } from "tsyringe";
+import { container, injectable } from "tsyringe";
 import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
@@ -8,6 +8,7 @@ import {
 } from "../api/types/parameters_input_type";
 import { InsuranceRateSetting } from "../database/entity/SALARY/insurance_rate_setting";
 import { check_date, get_date_string, select_value } from "./helper_function";
+import { EHRService } from "./ehr_service";
 
 @injectable()
 export class InsuranceRateSettingService {
@@ -48,8 +49,9 @@ export class InsuranceRateSettingService {
 		return newData;
 	}
 
-	async getCurrentInsuranceRateSetting(): Promise<InsuranceRateSetting | null> {
-		const current_date_string = get_date_string(new Date());
+	async getCurrentInsuranceRateSetting(period_id: number): Promise<InsuranceRateSetting | null> {
+		const ehr_service = container.resolve(EHRService);
+		const current_date_string = (await ehr_service.getPeriodObject(period_id)).END_DATE;
 		const insuranceRateSettingList = await InsuranceRateSetting.findAll({
 			where: {
 				start_date: {
