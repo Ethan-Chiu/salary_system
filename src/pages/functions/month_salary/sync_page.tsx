@@ -19,9 +19,9 @@ import {
 
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "~/lib/utils";
-import { SelectModeComponent } from "~/pages/check/components/Selects";
-import { EmployeeDataChange } from "~/pages/check/components/EmpDataTable";
-import { AllDoneDialog } from "~/pages/check/components/AllDoneDialog";
+import { SelectModeComponent } from "~/pages/synchronize/components/Selects";
+import { EmployeeDataChange } from "~/pages/synchronize/components/EmpDataTable";
+import { AllDoneDialog } from "~/pages/synchronize/components/AllDoneDialog";
 import { Translate } from "~/lib/utils/translation";
 
 interface EMP {

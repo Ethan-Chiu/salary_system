@@ -1,7 +1,7 @@
 import { type NextPageWithLayout } from "../_app";
 import { RootLayout } from "~/components/layout/root_layout";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
-import { type ReactElement, useState, useEffect } from "react";
+import { type ReactElement, useState } from "react";
 import { api } from "~/utils/api";
 import { CombinedData } from "~/server/service/employee_data_service";
 
@@ -26,11 +26,9 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { SelectModeComponent } from "./components/Selects";
-import { AllDoneDialog } from "./components/AllDoneDialog";
 import {
 	DifferentKeys,
 	Status,
-	UpdateTable,
 	UpdateTableDialog,
 } from "./components/UpdateTable";
 import { EmployeeDataChange } from "./components/EmpDataTable";
@@ -38,10 +36,10 @@ import { ScrollArea } from "~/components/ui/scroll-area";
 
 
 const PageCheckEHR: NextPageWithLayout = () => {
-	return <SyncPage period={113}/>
+	return <SyncPage period={113} />
 };
 
-function SyncPage({period}: {period: number}) {
+function SyncPage({ period }: { period: number }) {
 	const getDiffDatas = api.sync.checkEmployeeData.useQuery({
 		func: "month_salary",
 		period: period
@@ -67,9 +65,9 @@ function SyncPage({period}: {period: number}) {
 			: data.find((cd: CombinedData) => cd.key === query)?.ehr_value;
 	};
 
-	
+
 	const [empStatus, setEmpStatus] = useState<Status>({});
-	if (getDiffDatas.isFetched && Object.keys(empStatus).length === 0 && (getDiffDatas.data ?? []).length>0) {
+	if (getDiffDatas.isFetched && Object.keys(empStatus).length === 0 && (getDiffDatas.data ?? []).length > 0) {
 		let tmp: any = {};
 		getDiffDatas.data?.map((cd: Array<CombinedData>) => {
 			tmp[getKeyFromData(cd, "emp_no", "ehr")] = "initial";
@@ -196,7 +194,7 @@ function SyncPage({period}: {period: number}) {
 							emp_name +
 							" " +
 							english_name +
-							" " + (isInitial(d)?"(尚未確認)":isIgnored(d)?"(暫不修改)":isChecked(d)?"(確認更改)":"(未知狀態)")
+							" " + (isInitial(d) ? "(尚未確認)" : isIgnored(d) ? "(暫不修改)" : isChecked(d) ? "(確認更改)" : "(未知狀態)")
 						}
 					</p>
 				</>
@@ -245,54 +243,53 @@ function SyncPage({period}: {period: number}) {
 					>
 						<CommandInput placeholder="Search Employee..." />
 						<ScrollArea className="h-[50vh]">
-						<CommandEmpty>No Employee found.</CommandEmpty>
-						<CommandGroup>
-							{getDiffDatas.data!.map(
-								(d: Array<CombinedData>) => (
-									<CommandItem
-										key={getKeyFromData(d, "emp_no") ?? getKeyFromData(d, "emp_no", "ehr")}
-										value={generateLongString(
-											getKeyFromData(d, "emp_no") ?? getKeyFromData(d, "emp_no", "ehr")
-										)}
-										onSelect={(currentValue) => {
-											setSelectedEmployee(
-												(
-													currentValue.split(
-														" "
-													)[0] ?? ""
-												).toUpperCase()
-											);
-											setOpen(false);
-										}}
-									>
-										<Check
-											className={cn(
-												"mr-2 h-4 w-4",
-												selectedEmployee ===
-													getKeyFromData(d, "emp_no")
-													? "opacity-100"
-													: "opacity-0"
+							<CommandEmpty>No Employee found.</CommandEmpty>
+							<CommandGroup>
+								{getDiffDatas.data!.map(
+									(d: Array<CombinedData>) => (
+										<CommandItem
+											key={getKeyFromData(d, "emp_no") ?? getKeyFromData(d, "emp_no", "ehr")}
+											value={generateLongString(
+												getKeyFromData(d, "emp_no") ?? getKeyFromData(d, "emp_no", "ehr")
 											)}
-										/>
-										{
-											<div
-												className={`flex items-center ${
-													isInitial(d)
+											onSelect={(currentValue) => {
+												setSelectedEmployee(
+													(
+														currentValue.split(
+															" "
+														)[0] ?? ""
+													).toUpperCase()
+												);
+												setOpen(false);
+											}}
+										>
+											<Check
+												className={cn(
+													"mr-2 h-4 w-4",
+													selectedEmployee ===
+														getKeyFromData(d, "emp_no")
+														? "opacity-100"
+														: "opacity-0"
+												)}
+											/>
+											{
+												<div
+													className={`flex items-center ${isInitial(d)
 														? "text-red-400"
 														: isIgnored(d)
-														? ""
-														: "text-green-400"
-												}`}
-											>
-												<SelectListEmp d={d} />
-											</div>
-										}
-									</CommandItem>
-								)
-							)}
-						</CommandGroup>
+															? ""
+															: "text-green-400"
+														}`}
+												>
+													<SelectListEmp d={d} />
+												</div>
+											}
+										</CommandItem>
+									)
+								)}
+							</CommandGroup>
 						</ScrollArea>
-					</Command>				
+					</Command>
 				</PopoverContent>
 			</Popover>
 		);
@@ -305,28 +302,28 @@ function SyncPage({period}: {period: number}) {
 	function AllDonePage() {
 		function ImageComponent() {
 			const imageUrl = 'https://memeprod.sgp1.digitaloceanspaces.com/user-template/b3a4babd59ebb46530a7f7cca856d848.png';
-		  
+
 			return (
-			  <div>
-				<img src={imageUrl} alt="Description of the image" />
-			  </div>
+				<div>
+					<img src={imageUrl} alt="Description of the image" />
+				</div>
 			);
 		}
 		return <>
 			<p>System Data is updated with EHR</p>
-			<ImageComponent/>
+			<ImageComponent />
 		</>;
 	}
 
 	function MainPage() {
-		
+
 		return (
 			<>
-				<div className="flex h-full flex-grow flex-col">
+				<div className="flex flex-col h-full grow">
 					<Header title="Data Check" />
 					<Separator />
-					<div className="min-h-0 grow p-4">
-						<div className="mb-4 flex min-h-0 items-center">
+					<div className="flex flex-col grow p-4">
+						<div className="mb-4 flex items-center">
 							<SelectEmpComponent />
 							<div className="ml-4">
 								<SelectedEmpDepartment
@@ -342,7 +339,7 @@ function SyncPage({period}: {period: number}) {
 							</div>
 						</div>
 
-						<div className="h-[60vh] min-h-0 w-full flex-grow">
+						<div className="w-full h-0 grow">
 							<EmployeeDataChange
 								empData={getEmpData(selectedEmployee)}
 								mode={mode}
@@ -383,7 +380,7 @@ function SyncPage({period}: {period: number}) {
 
 	return (
 		<>
-		<></>
+			<></>
 			{!getDiffDatas.isFetched ? (
 				<FetchingPage />
 			) : (getDiffDatas.data ?? []).length == 0 ? (

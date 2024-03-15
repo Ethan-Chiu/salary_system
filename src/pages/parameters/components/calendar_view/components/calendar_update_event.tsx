@@ -25,7 +25,7 @@ import { Button } from "~/components/ui/button";
 import AutoForm from "~/components/ui/auto-form";
 import GeneralTable from "../../function_sheet/general_table";
 import { z } from "zod";
-import { toolbarFunctionsContext } from "../../function_sheet/functions_context";
+import { parameterToolbarFunctionsContext } from "../../function_sheet/parameter_functions_context";
 
 interface CalendarUpdateEventProps<SchemaType extends z.AnyZodObject> {}
 
@@ -35,7 +35,7 @@ export default function CalendarUpdateEvent<
 	const { updateSheet, setUpdateSheet, resetMouse, selectedEvent } =
 		useContext(calendarContext);
 
-	const mutateFunctions = useContext(toolbarFunctionsContext);
+	const mutateFunctions = useContext(parameterToolbarFunctionsContext);
 	const updateFunction = mutateFunctions.updateFunction!;
 
 	const { selectedTableType } = useContext(dataTableContext);

@@ -1,8 +1,8 @@
 import { type TableEnum } from "./components/context/data_table_enum";
 
-export type ShowTableEnum = Extract<TableEnum, (typeof ShowTableEnumValues)[number]>;
+export type ParameterTableEnum = Extract<TableEnum, (typeof ParameterTableEnumValues)[number]>;
 
-export  const ShowTableEnumValues = [
+export  const ParameterTableEnumValues = [
 	"TableAttendance",
 	"TableBankSetting",
 	"TableInsurance",

@@ -25,8 +25,8 @@ const MonthSalary: NextPageWithLayout = () => {
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const { selectedPeriod } = useContext(periodContext);
 
-  // TODO
-  const periodId = selectedPeriod?.period_id ?? 115;
+  	// TODO
+  	const periodId = selectedPeriod?.period_id ?? 115;
 
 	const { isLoading, isError, data, error } =
 		api.sync.getCandEmployees.useQuery({
