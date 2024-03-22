@@ -13,7 +13,6 @@ import ApiFunctionsProvider, {
 import { LoadingSpinner } from "~/components/loading";
 import CalendarUpdateEvent from "./components/calendar_update_event";
 import periodContext from "~/components/context/period_context";
-import { Period } from "~/server/database/entity/UMEDIA/period";
 
 export default function CalendarView() {
 	const { selectedTableType } = useContext(dataTableContext);
@@ -24,7 +23,7 @@ export default function CalendarView() {
 			<ApiFunctionsProvider selectedTableType={selectedTableType}>
 				{selectedPeriod ?
 					<ParameterToolbarFunctionsProvider selectedTableType={selectedTableType} period_id={selectedPeriod.period_id}>
-						<CompCalendarContent target_date={selectedPeriod.end_date ?? selectedPeriod.issue_date} />
+						<CompCalendarContent target_date={selectedPeriod.end_date} />
 					</ParameterToolbarFunctionsProvider> :
 					<p>Please select period first</p>
 				}
