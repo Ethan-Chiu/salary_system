@@ -66,7 +66,7 @@ export class AttendanceSettingService {
 	async getCurrentAttendanceSetting(period_id: number): Promise<AttendanceSetting | null> {
 		const ehr_service = container.resolve(EHRService);
 		const period = await ehr_service.getPeriodById(period_id);
-		const current_date_string = period.end_date ?? period.issue_date;
+		const current_date_string = period.end_date;
 		const attendanceSettingList = await AttendanceSetting.findAll({
 			where: {
 				start_date: {

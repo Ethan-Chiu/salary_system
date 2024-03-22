@@ -65,7 +65,7 @@ export class EmployeePaymentService {
 	async getCurrentEmployeePayment(period_id: number): Promise<EmployeePayment[]> {
 		const ehr_service = container.resolve(EHRService);
 		const period = await ehr_service.getPeriodById(period_id);
-		const current_date_string = period.end_date ?? period.issue_date;
+		const current_date_string = period.end_date;
 		const employeePayment = await EmployeePayment.findAll({
 			where: {
 				start_date: {
@@ -85,7 +85,7 @@ export class EmployeePaymentService {
 	async getCurrentEmployeePaymentById(id: number, period_id: number): Promise<EmployeePayment[]> {
 		const ehr_service = container.resolve(EHRService);
 		const period = await ehr_service.getPeriodById(period_id);
-		const current_date_string = period.end_date ?? period.issue_date;
+		const current_date_string = period.end_date;
 		const employeePayment = await EmployeePayment.findAll({
 			where: {
 				id: id,
@@ -106,7 +106,7 @@ export class EmployeePaymentService {
 	async getCurrentEmployeePaymentByEmpNo(emp_no: string, period_id: number): Promise<EmployeePayment | null> {
 		const ehr_service = container.resolve(EHRService);
 		const period = await ehr_service.getPeriodById(period_id);
-		const current_date_string = period.end_date ?? period.issue_date;
+		const current_date_string = period.end_date;
 		const employeePayment = await EmployeePayment.findOne({
 			where: {
 				emp_no: emp_no,
