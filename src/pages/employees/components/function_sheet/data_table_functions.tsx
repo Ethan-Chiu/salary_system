@@ -1,6 +1,6 @@
 import { cn } from "~/lib/utils";
 import { useState } from "react";
-import { LucideIcon, PenSquare, Plus, PlusSquare, Trash2 } from "lucide-react";
+import { LucideIcon, PenSquare, Plus, PlusSquare, RefreshCcw, Trash2 } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
 	DropdownMenu,
@@ -30,7 +30,7 @@ interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
 }
 
-export type FunctionMode = "create" | "update" | "delete" | "none";
+export type FunctionMode = "create" | "update" | "delete" | "auto calculate" | "none";
 
 export function DataTableFunctions({
 	tableType,
@@ -53,7 +53,7 @@ export function DataTableFunctions({
 							<PlusSquare className="cursor-pointer stroke-[1.5]" />
 						</Button>
 					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end" className="w-[120px]">
+					<DropdownMenuContent align="end" className="w-[150px]">
 						<DropdownMenuLabel>Functions</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<CompTriggerItem
@@ -70,6 +70,11 @@ export function DataTableFunctions({
 							mode={"delete"}
 							itemName="Delete"
 							icon={Trash2}
+						/>
+						<CompTriggerItem
+							mode={"auto calculate"}
+							itemName="Auto Calculate"
+							icon={RefreshCcw}
 						/>
 					</DropdownMenuContent>
 				</DropdownMenu>

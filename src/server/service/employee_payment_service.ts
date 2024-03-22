@@ -102,6 +102,27 @@ export class EmployeePaymentService {
 		});
 		return employeePayment;
 	}
+
+	async getCurrentEmployeePaymentByEmpNo(emp_no: string, period_id: number): Promise<EmployeePayment | null> {
+		const ehr_service = container.resolve(EHRService);
+		const period = await ehr_service.getPeriodById(period_id);
+		const current_date_string = period.end_date ?? period.issue_date;
+		const employeePayment = await EmployeePayment.findOne({
+			where: {
+				emp_no: emp_no,
+				start_date: {
+					[Op.lte]: current_date_string,
+				},
+				end_date: {
+					[Op.or]: [
+						{ [Op.gte]: current_date_string },
+						{ [Op.eq]: null },
+					],
+				},
+			},
+		});
+		return employeePayment;
+	}
 	async getAllEmployeePayment(): Promise<EmployeePayment[]> {
 		const employeePayment = await EmployeePayment.findAll();
 		return employeePayment;
@@ -187,5 +208,27 @@ export class EmployeePaymentService {
 		if (destroyedRows != 1) {
 			throw new BaseResponseError("Delete error");
 		}
+	}
+
+	async autoCalculateEmployeePayment(period_id: number, emp_no_list: string[]): Promise<void> {
+		emp_no_list.forEach(async (emp_no: string) => {
+			const employeePayment = await this.getCurrentEmployeePaymentByEmpNo(emp_no, period_id);
+			if (employeePayment == null) {
+				throw new BaseResponseError("Employee Payment does not exist");
+			}
+			const affectedCount = await EmployeePayment.update(
+				{
+					l_i: 1000,
+					h_i: 1000,
+					labor_retirement: 1000,
+					occupational_injury: 1000,
+					update_by: "system",
+				},
+				{ where: { emp_no: emp_no } }
+			);
+			if (affectedCount[0] != 1) {
+				throw new BaseResponseError("Update error");
+			}
+		})
 	}
 }

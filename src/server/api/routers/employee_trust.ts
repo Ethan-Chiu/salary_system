@@ -13,13 +13,13 @@ export const employeeTrustRouter = createTRPCRouter({
 	getCurrentEmployeeTrust: publicProcedure
 		.input(z.object({ period_id: z.number() }))
 		.query(async ({ input }) => {
-		const employeeTrustService = container.resolve(EmployeeTrustService);
-		const employeeTrust = await employeeTrustService.getCurrentEmployeeTrust(input.period_id);
-		if (employeeTrust == null) {
-			throw new BaseResponseError("EmployeeTrust does not exist");
-		}
-		return employeeTrust;
-	}),
+			const employeeTrustService = container.resolve(EmployeeTrustService);
+			const employeeTrust = await employeeTrustService.getCurrentEmployeeTrust(input.period_id);
+			if (employeeTrust == null) {
+				throw new BaseResponseError("EmployeeTrust does not exist");
+			}
+			return employeeTrust;
+		}),
 
 	getAllEmployeeTrust: publicProcedure.query(async () => {
 		const employeeTrustService = container.resolve(EmployeeTrustService);
@@ -66,5 +66,12 @@ export const employeeTrustRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const employeeTrustService = container.resolve(EmployeeTrustService);
 			await employeeTrustService.deleteEmployeeTrust(input.id);
+		}),
+
+	autoCalculateEmployeeTrust: publicProcedure
+		.input(z.object({ period_id: z.number(), emp_no_list: z.string().array() }))
+		.mutation(async ({ input }) => {
+			const employeeTrustService = container.resolve(EmployeeTrustService);
+			await employeeTrustService.autoCalculateEmployeeTrust(input.period_id, input.emp_no_list);
 		}),
 });

@@ -11,6 +11,7 @@ interface FunctionsApi {
 	updateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	createFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	deleteFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
+	autoCalculateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 }
 
 export const employeeToolbarFunctionsContext = createContext<FunctionsApi>({
@@ -18,6 +19,7 @@ export const employeeToolbarFunctionsContext = createContext<FunctionsApi>({
 	updateFunction: undefined,
 	createFunction: undefined,
 	deleteFunction: undefined,
+	autoCalculateFunction: undefined,
 });
 
 interface ToolbarFunctionsProviderProps {
@@ -56,6 +58,13 @@ export default function EmployeeToolbarFunctionsProvider({
 				ctx.employeePayment.getAllEmployeePayment.invalidate();
 			},
 		});
+	const autoCalculateEmployeePayment =
+		api.employeePayment.autoCalculateEmployeePayment.useMutation({
+			onSuccess: () => {
+				ctx.employeePayment.getCurrentEmployeePayment.invalidate();
+				ctx.employeePayment.getAllEmployeePayment.invalidate();
+			},
+		});
 	//#endregion
 
 	//#region <EmployeeTrust>
@@ -79,6 +88,13 @@ export default function EmployeeToolbarFunctionsProvider({
 			ctx.employeeTrust.getAllEmployeeTrust.invalidate();
 		},
 	});
+	const autoCalculateEmployeeTrust =
+		api.employeeTrust.autoCalculateEmployeeTrust.useMutation({
+			onSuccess: () => {
+				ctx.employeeTrust.getCurrentEmployeeTrust.invalidate();
+				ctx.employeeTrust.getAllEmployeeTrust.invalidate();
+			},
+		});
 	//#endregion
 
 	const functionsDictionary: Record<EmployeeTableEnum, FunctionsApi> = {
@@ -87,12 +103,14 @@ export default function EmployeeToolbarFunctionsProvider({
 			updateFunction: updateEmployeePayment,
 			createFunction: createEmployeePayment,
 			deleteFunction: deleteEmployeePayment,
+			autoCalculateFunction: autoCalculateEmployeePayment,
 		},
 		TableEmployeeTrust: {
 			queryFunction: getEmployeeTrust,
 			updateFunction: updateEmployeeTrust,
 			createFunction: createEmployeeTrust,
 			deleteFunction: deleteEmployeeTrust,
+			autoCalculateFunction: autoCalculateEmployeeTrust,
 		},
 	};
 

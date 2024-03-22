@@ -220,12 +220,12 @@ export class SyncService {
 		let salary_datas = [];
 
 		const cand_paid_emps = await this.getCandPaidEmployees(func, period);
-		const cand_emp_nos = cand_paid_emps.map((emp) => emp.emp_no);
+		const cand_emp_no_list = cand_paid_emps.map((emp) => emp.emp_no);
 		if (func == "month_salary") {
 			salary_datas = await EmployeeData.findAll({
 				where: {
 					emp_no: {
-						[Op.in]: cand_emp_nos,
+						[Op.in]: cand_emp_no_list,
 					}
 				}
 			});
@@ -245,7 +245,7 @@ export class SyncService {
 			salaryDict[emp.emp_no!] = emp;
 		});
 		const changedDatas = await Promise.all(
-			cand_emp_nos.map(async (cand_emp_no: string) => {
+			cand_emp_no_list.map(async (cand_emp_no: string) => {
 				const excludedKeys = [
 					"id",
 					"create_date",
@@ -321,11 +321,11 @@ export class SyncService {
 		);
 		return filteredChangeDatas;
 	}
-	async synchronize(period: number, emp_nos: string[]) {
+	async synchronize(period: number, emp_no_list: string[]) {
 		const ehrService = container.resolve(EHRService);
 		const ehr_datas = await ehrService.getEmp(period);
-		const salary_datas = await EmployeeData.findAll({ where: { emp_no: { [Op.in]: emp_nos } } });
-		const salary_emp_nos = salary_datas.map((emp) => emp.emp_no);
+		const salary_datas = await EmployeeData.findAll({ where: { emp_no: { [Op.in]: emp_no_list } } });
+		const salary_emp_no_list = salary_datas.map((emp) => emp.emp_no);
 		interface EHRDictType {
 			[key: string]: any;
 		};
@@ -334,14 +334,14 @@ export class SyncService {
 			ehrDict[emp.emp_no!] = emp;
 		});
 		const updatedDatas = await Promise.all(
-			emp_nos.map(async (emp_no: string) => {
+			emp_no_list.map(async (emp_no: string) => {
 				const updatedData = await this.empToEmployee(ehrDict[emp_no])
 				return updatedData
 			})
 		);
 		const employee_data_service = container.resolve(EmployeeDataService);
 		updatedDatas.map(async (updatedData) => {
-			if (!(updatedData.emp_no in salary_emp_nos)) {
+			if (!(updatedData.emp_no in salary_emp_no_list)) {
 				await employee_data_service.createEmployeeData(updatedData)
 			}
 			else

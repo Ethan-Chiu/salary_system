@@ -89,6 +89,27 @@ export class EmployeeTrustService {
         return employeeTrust;
     }
 
+    async getCurrentEmployeeTrustByEmpNo(emp_no: string, period_id: number): Promise<EmployeeTrust | null> {
+		const ehr_service = container.resolve(EHRService);
+		const period = await ehr_service.getPeriodById(period_id);
+		const current_date_string = period.end_date ?? period.issue_date;
+		const employeeTrust = await EmployeeTrust.findOne({
+			where: {
+				emp_no: emp_no,
+				start_date: {
+					[Op.lte]: current_date_string,
+				},
+				end_date: {
+					[Op.or]: [
+						{ [Op.gte]: current_date_string },
+						{ [Op.eq]: null },
+					],
+				},
+			},
+		});
+		return employeeTrust;
+    }
+
     async getAllEmployeeTrust(): Promise<EmployeeTrust[]> {
         const employeeTrust = await EmployeeTrust.findAll();
         return employeeTrust;
@@ -146,4 +167,26 @@ export class EmployeeTrustService {
             throw new BaseResponseError("Delete error");
         }
     }
+
+    async autoCalculateEmployeeTrust(period_id: number, emp_no_list: string[]): Promise<void> {
+		emp_no_list.forEach(async (emp_no: string) => {
+			const employeeTrust = await this.getCurrentEmployeeTrustByEmpNo(emp_no, period_id);
+			if (employeeTrust == null) {
+				throw new BaseResponseError("Employee Trust does not exist");
+			}
+			const affectedCount = await EmployeeTrust.update(
+				{
+					emp_trust_reserve: 1000,
+					org_trust_reserve: 1000,
+					emp_special_trust_incent: 1000,
+					org_special_trust_incent: 1000,
+					update_by: "system",
+				},
+				{ where: { emp_no: emp_no } }
+			);
+			if (affectedCount[0] != 1) {
+				throw new BaseResponseError("Update error");
+			}
+		})
+	}
 }
