@@ -217,7 +217,7 @@ export class EmployeeDataService {
 			{ where: { emp_no: emp_no } }
 		);
 		if (affectedCount[0] != 1) {
-			throw new BaseResponseError("Update error");
+			throw new BaseResponseError("Update error" );
 		}
 	}
 
