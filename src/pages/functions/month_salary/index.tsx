@@ -12,10 +12,9 @@ import { EmployeePage } from "./employee_page";
 import periodContext from "~/components/context/period_context";
 import { SyncPage } from "./sync_page";
 import ExportPage from "./export";
-import { useToast } from "~/components/ui/use-toast";
-import { ToastAction } from "~/components/ui/toast";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { buttonVariants } from "~/components/ui/button";
+import { cn } from "~/lib/utils";
 
 export const progressBarLabels = [
 	"同步員工資料",
@@ -26,23 +25,28 @@ export const progressBarLabels = [
 ];
 
 const MonthSalary: NextPageWithLayout = () => {
-	const { toast } = useToast();
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const { selectedPeriod } = useContext(periodContext);
 
 	const periodId = selectedPeriod?.period_id;
+
 	if (!periodId) {
-		toast({
-			title: "Period or Pay Date not selected",
-			description: "Please select a period and paydate",
-      duration: 4000,
-			action: (
-				<ToastAction altText="Go back">
-					<Link href="/functions">Go back</Link>
-				</ToastAction>
-			),
-		});
-		return <></>;
+		return (
+			<div className="flex h-full flex-col items-center justify-center p-4">
+				<div className="my-6 font-bold ">
+					Please select a period and paydate{" "}
+				</div>
+				<Link
+					className={cn(
+						buttonVariants({ variant: "outline" }),
+						"w-40"
+					)}
+					href="/functions"
+				>
+					Go back
+				</Link>
+			</div>
+		);
 	}
 
 	const { isLoading, isError, data, error } =
@@ -51,11 +55,15 @@ const MonthSalary: NextPageWithLayout = () => {
 			period: periodId,
 		});
 
+
+
+	if (isError) {
+		return <span>Error: {error.message}</span>; // TODO: Error element with toast
+	}
+
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast
 	}
-
-	console.log("data", data);
 
 	const pageList: ReactElement[] = [
 		<SyncPage
@@ -89,6 +97,7 @@ const MonthSalary: NextPageWithLayout = () => {
 			setSelectedIndex={setSelectedIndex}
 		/>,
 	];
+
 	return (
 		<div className="flex h-full flex-col p-4">
 			<Header title="functions" showOptions className="mb-4" />
