@@ -4,6 +4,7 @@ import { Op } from "sequelize";
 import { EHRService } from "./ehr_service";
 import { Emp } from "../database/entity/UMEDIA/emp";
 import { EmployeeDataService } from "./employee_data_service";
+import { EmployeePaymentService } from "./employee_payment_service";
 
 export interface CombinedData {
 	key: string;
@@ -388,9 +389,27 @@ export class SyncService {
 			})
 		);
 		const employee_data_service = container.resolve(EmployeeDataService);
+		const employee_payment_service = container.resolve(EmployeePaymentService);
 		updatedDatas.map(async (updatedData) => {
-			if (!(updatedData.emp_no in salary_emp_no_list)) {
+			if (!(salary_emp_no_list.includes(updatedData.emp_no))) {
 				await employee_data_service.createEmployeeData(updatedData)
+				let payment_input = {
+					emp_no: updatedData.emp_no,
+					base_salary: 0,
+					food_bonus: 0,
+					supervisor_comp: 0,
+					job_comp: 0,
+					subsidy_comp: 0,
+					professional_cert_comp: 0,
+					labor_retirement_self: 0,
+					l_i: 0,
+					h_i: 0,
+					labor_retirement: 0,
+					occupational_injury: 0,
+					start_date: updatedData.registration_date,
+					end_date: null,
+				}
+				await employee_payment_service.createEmployeePayment(payment_input)
 			}
 			else
 				await employee_data_service.updateEmployeeDataByEmpNO(updatedData)
