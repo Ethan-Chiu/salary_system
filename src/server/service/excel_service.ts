@@ -53,12 +53,12 @@ export class ExcelService {
         }));
         return sheetADatas;
     }
-    // async getSheetB(emp_nos: number[], period_id: number): Promise<CombinedData[]> {
+    // async getSheetB(emp_no_list: number[], period_id: number): Promise<CombinedData[]> {
     //     const ehrService = container.resolve(EHRService);
     //     const overtime = await ehrService.getOvertime(period_id);
 
 
-    //     const sheetADatas = Promise.all(emp_nos.map(async (emp_no) => {
+    //     const sheetADatas = Promise.all(emp_no_list.map(async (emp_no) => {
     //         const employeePayment = await EmployeePayment.findOne({
     //             where: {
     //                 emp_no: emp_no,

@@ -31,6 +31,8 @@ import { FieldConfig } from "~/components/ui/auto-form/types";
 import { employeeToolbarFunctionsContext } from "./employee_functions_context";
 import GeneralTable from "~/pages/parameters/components/function_sheet/general_table";
 import { Input } from "~/components/ui/input";
+import { Checkbox } from "~/components/ui/checkbox";
+import periodContext from "~/components/context/period_context";
 
 interface EmployeeFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
@@ -46,11 +48,13 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 	closeSheet,
 }: EmployeeFormProps<SchemaType>) {
 	const functions = useContext(employeeToolbarFunctionsContext);
+	const { selectedPeriod } = useContext(periodContext)
 
 	const queryFunction = functions.queryFunction!;
 	const updateFunction = functions.updateFunction!;
 	const createFunction = functions.createFunction!;
 	const deleteFunction = functions.deleteFunction!;
+	const autoCalculateFunction = functions.autoCalculateFunction!;
 	const { isLoading, isError, data, error } = queryFunction();
 
 	const isList = Array.isArray(data);
@@ -136,6 +140,12 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 						id: data[index].id,
 					});
 				}}
+				onAutoCalculate={(selectedEmpNoList: string[]) => {
+					autoCalculateFunction.mutate({
+						period_id: selectedPeriod!.period_id,
+						emp_no_list: selectedEmpNoList,
+					});
+				}}
 			/>
 		);
 	}
@@ -204,26 +214,35 @@ const CompViewAllDatas = ({
 	mode,
 	onUpdate,
 	onDelete,
+	onAutoCalculate,
 }: {
 	dataNoID: any[];
 	mode: FunctionMode;
 	onUpdate: Function;
 	onDelete: Function;
+	onAutoCalculate: Function;
 }) => {
 
 	const [filterValue, setFilterValue] = useState<string>("");
+	const [selectedEmpNoList, setSelectedEmpNoList] = useState<string[]>(dataNoID.map(e => e.emp_no));
+	const filteredData = dataNoID?.filter((data: any) => {
+		return Object.values(data).some((value: any) => value ? value.toString().includes(filterValue) : false)
+	})
 
 	return (
 		<>
-			<Input className="w-1/10 m-2" placeholder={"請輸入搜尋關鍵字"} onChange={e => setFilterValue(e.target.value)}></Input>
-			{dataNoID && (
+			<div className="flex justify-between items-center w-[45vw]">
+				<Input className="w-1/10 m-2" placeholder={"請輸入搜尋關鍵字"} onChange={e => setFilterValue(e.target.value)}></Input>
+				{mode == "auto calculate" && <Button onClick={() => onAutoCalculate(selectedEmpNoList)}>{Translate("auto calculate")}</Button>}
+			</div>
+			{filteredData && (
 				<div className="m-4">
 					<Table>
 						<TableHeader>
 							<TableRow>
 								<TableHead className="whitespace-nowrap text-center"></TableHead>
-								{dataNoID[0] ? (
-									Object.keys(dataNoID[0]).map(
+								{filteredData[0] ? (
+									Object.keys(filteredData[0]).map(
 										(key: string) => {
 											return (
 												<TableHead
@@ -246,9 +265,7 @@ const CompViewAllDatas = ({
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{dataNoID?.filter((data: any) => {
-								return Object.values(data).some((value: any) => value ? value.toString().includes(filterValue) : false)
-							}).map((data: any, index: number) => {
+							{filteredData.map((data: any, index: number) => {
 								return (
 									<TableRow key={data.id}>
 										<TableCell className="items-center">
@@ -267,6 +284,20 @@ const CompViewAllDatas = ({
 													className="cursor-pointer"
 													onClick={() => {
 														onDelete(index);
+													}}
+												/>
+											)}
+											{mode === "auto calculate" && (
+												<Checkbox
+													className="cursor-pointer"
+													checked={selectedEmpNoList.includes(data.emp_no)}
+													onCheckedChange={(checked) => {
+														if (checked) {
+															setSelectedEmpNoList([...selectedEmpNoList, data.emp_no])
+														}
+														else {
+															setSelectedEmpNoList(selectedEmpNoList.filter((empNo) => empNo !== data.emp_no))
+														}
 													}}
 												/>
 											)}

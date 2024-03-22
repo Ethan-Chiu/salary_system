@@ -11,15 +11,15 @@ import { get_date_string } from "~/server/service/helper_function";
 
 export const employeePaymentRouter = createTRPCRouter({
 	getCurrentEmployeePayment: publicProcedure
-		.input(z.object({period_id:z.number()}))
-		.query(async ({input}) => {
-		const employeePaymentService = container.resolve(EmployeePaymentService);
-		const employeePayment = await employeePaymentService.getCurrentEmployeePayment(input.period_id);
-		if (employeePayment == null) {
-			throw new BaseResponseError("EmployeePayment does not exist");
-		}
-		return employeePayment;
-	}),
+		.input(z.object({ period_id: z.number() }))
+		.query(async ({ input }) => {
+			const employeePaymentService = container.resolve(EmployeePaymentService);
+			const employeePayment = await employeePaymentService.getCurrentEmployeePayment(input.period_id);
+			if (employeePayment == null) {
+				throw new BaseResponseError("EmployeePayment does not exist");
+			}
+			return employeePayment;
+		}),
 
 	getAllEmployeePayment: publicProcedure.query(async () => {
 		const employeePaymentService = container.resolve(EmployeePaymentService);
@@ -66,5 +66,12 @@ export const employeePaymentRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const employeePaymentService = container.resolve(EmployeePaymentService);
 			await employeePaymentService.deleteEmployeePayment(input.id);
+		}),
+
+	autoCalculateEmployeePayment: publicProcedure
+		.input(z.object({ period_id: z.number(), emp_no_list: z.string().array() }))
+		.mutation(async ({ input }) => {
+			const employeePaymentService = container.resolve(EmployeePaymentService);
+			await employeePaymentService.autoCalculateEmployeePayment(input.period_id, input.emp_no_list);
 		}),
 });
