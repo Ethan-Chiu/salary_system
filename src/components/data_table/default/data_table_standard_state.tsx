@@ -1,9 +1,9 @@
 import {
-	ColumnDef,
-	ColumnFiltersState,
-	SortingState,
-	Table,
-	VisibilityState,
+	type ColumnDef,
+	type ColumnFiltersState,
+	type SortingState,
+	type Table,
+	type VisibilityState,
 	getCoreRowModel,
 	getFacetedRowModel,
 	getFacetedUniqueValues,
@@ -12,8 +12,7 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import { ComponentType, useContext, useEffect, useState } from "react";
-import dataTableContext from "~/pages/parameters/components/context/data_table_context";
+import { type ComponentType, useEffect, useState } from "react";
 
 type WithTableProps<TableT, P> = { table: TableT } & P;
 
@@ -25,7 +24,7 @@ interface DataTableStandardStateProps<TData, P> {
 	props: P;
 }
 
-export function withDataTableStandardState<TData, P>({
+export function WithDataTableStandardState<TData, P>({
 	columns,
 	data,
 	WrappedComponent,
@@ -63,7 +62,7 @@ export function withDataTableStandardState<TData, P>({
 
 	useEffect(() => {
 		onUpdate && onUpdate(table);
-	}, [columnVisibility, table]);
+	}, [columnVisibility, table, onUpdate]);
 
 	return <WrappedComponent {...props} table={table} />;
 }

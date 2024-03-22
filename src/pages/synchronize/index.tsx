@@ -161,7 +161,7 @@ function SyncPage({ period }: { period: number }) {
 	const handleUpdate = (updateList: string[]) => {
 		synchronizeAPI.mutate({
 			period: period,
-			emp_nos: updateList
+			emp_no_list: updateList
 		});
 	}
 

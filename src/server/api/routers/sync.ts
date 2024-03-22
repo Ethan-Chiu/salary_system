@@ -33,12 +33,12 @@ export const syncRouter = createTRPCRouter({
 			return diffDatas;
 		}),
     synchronize: publicProcedure
-        .input(z.object({ period: z.number(), emp_nos: z.string().array() }))
+        .input(z.object({ period: z.number(), emp_no_list: z.string().array() }))
         .mutation(async ({ input }) => {
             const syncService = container.resolve(SyncService);
             let updatedDatas = await syncService.synchronize(
                 input.period,
-                input.emp_nos
+                input.emp_no_list
             );
             return updatedDatas;
         }),
