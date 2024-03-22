@@ -1,4 +1,4 @@
-import { Table } from "@tanstack/react-table";
+import { type Table } from "@tanstack/react-table";
 import { DataTableToolbarWrapper } from "../toolbar/data_table_toolbar_wrapper";
 import { DataTableViewOptions } from "../toolbar/data_table_view_options";
 import { ToolbarFilter } from "../toolbar/toolbar_filter";
