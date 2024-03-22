@@ -1,4 +1,4 @@
-import { injectable } from "tsyringe";
+import { container, injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { check_date, get_date_string, select_value } from "./helper_function";
 import { type z } from "zod";
@@ -8,6 +8,7 @@ import {
 } from "../api/types/parameters_input_type";
 import { Op } from "sequelize";
 import { EmployeeTrust } from "../database/entity/SALARY/employee_trust";
+import { EHRService } from "./ehr_service";
 
 @injectable()
 export class EmployeeTrustService {
@@ -47,8 +48,10 @@ export class EmployeeTrustService {
         return employeeTrust;
     }
 
-    async getCurrentEmployeeTrust(): Promise<EmployeeTrust[]> {
-        const current_date_string = get_date_string(new Date());
+    async getCurrentEmployeeTrust(period_id: number): Promise<EmployeeTrust[]> {
+        const ehr_service = container.resolve(EHRService);
+        const period = await ehr_service.getPeriodById(period_id);
+		const current_date_string = period.end_date ?? period.issue_date;
         const employeeTrust = await EmployeeTrust.findAll({
             where: {
                 start_date: {

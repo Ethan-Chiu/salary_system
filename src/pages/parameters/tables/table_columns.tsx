@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ShowTableEnum } from "../shown_tables";
+import { ParameterTableEnum } from "../parameter_tables";
 import { attendanceMapper, attendance_columns } from "./attendance_table";
 import { bankSettingMapper, bank_columns } from "./bank_table";
 import {
@@ -25,7 +25,7 @@ import {
 } from "./insurance_rate_table";
 
 export function getTableColumn(
-	selectedTableType: ShowTableEnum
+	selectedTableType: ParameterTableEnum
 ): ColumnDef<any, any>[] {
 	switch (selectedTableType) {
 		case "TableAttendance":
@@ -47,7 +47,7 @@ export function getTableColumn(
 	}
 }
 
-export function getTableMapper(selectedTableType: ShowTableEnum) {
+export function getTableMapper(selectedTableType: ParameterTableEnum) {
 	switch (selectedTableType) {
 		case "TableAttendance":
 			return attendanceMapper;

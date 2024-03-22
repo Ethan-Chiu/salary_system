@@ -4,7 +4,6 @@ import { LucideIcon, PenSquare, Plus, PlusSquare, Trash2 } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
 	DropdownMenu,
-	DropdownMenuCheckboxItem,
 	DropdownMenuItem,
 	DropdownMenuContent,
 	DropdownMenuLabel,
@@ -12,10 +11,8 @@ import {
 } from "~/components/ui/dropdown-menu";
 import {
 	Sheet,
-	SheetClose,
 	SheetContent,
 	SheetDescription,
-	SheetFooter,
 	SheetHeader,
 	SheetTitle,
 	SheetTrigger,

@@ -1,3 +1,4 @@
+import { DoubleArrowRightIcon } from "@radix-ui/react-icons";
 import React from "react";
 
 function ProgressBar({
@@ -12,35 +13,15 @@ function ProgressBar({
 			{labels.map((label, index) => (
 				<>
 					<Step
-						key={index}
+						key={label}
 						number={index + 1}
 						selectedIndex={selectedIndex + 1}
 						label={label}
 					/>
-					{index == labels.length - 1 ? <></> : <DoubleArrow />}
+					{index == labels.length - 1 ? <></> : <DoubleArrowRightIcon />}
 				</>
 			))}
 		</ol>
-	);
-}
-
-function DoubleArrow() {
-	return (
-		<svg
-			className="ms-2 h-3 w-3 rtl:rotate-180 sm:ms-4"
-			aria-hidden="true"
-			xmlns="http://www.w3.org/2000/svg"
-			fill="none"
-			viewBox="0 0 12 10"
-		>
-			<path
-				stroke="currentColor"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width="2"
-				d="m7 9 4-4-4-4M1 9l4-4-4-4"
-			/>
-		</svg>
 	);
 }
 

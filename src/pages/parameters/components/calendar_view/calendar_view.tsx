@@ -6,28 +6,34 @@ import calendarContext from "./context/calendar_context";
 import CalendarHeader from "./components/calendar_header";
 import CalendarAddEvent from "./components/calendar_add_event";
 import dataTableContext from "../context/data_table_context";
-import ToolbarFunctionsProvider from "../function_sheet/functions_context";
+import ParameterToolbarFunctionsProvider from "../function_sheet/parameter_functions_context";
 import ApiFunctionsProvider, {
 	apiFunctionsContext,
 } from "../context/api_context_provider";
 import { LoadingSpinner } from "~/components/loading";
 import CalendarUpdateEvent from "./components/calendar_update_event";
+import periodContext from "~/components/context/period_context";
+import { Period } from "~/server/database/entity/UMEDIA/period";
 
 export default function CalendarView() {
 	const { selectedTableType } = useContext(dataTableContext);
+	const { selectedPeriod } = useContext(periodContext);
 
 	return (
 		<>
 			<ApiFunctionsProvider selectedTableType={selectedTableType}>
-				<ToolbarFunctionsProvider selectedTableType={selectedTableType}>
-					<CompCalendarContent />
-				</ToolbarFunctionsProvider>
+				{selectedPeriod ?
+					<ParameterToolbarFunctionsProvider selectedTableType={selectedTableType} period_id={selectedPeriod.period_id}>
+						<CompCalendarContent target_date={selectedPeriod.end_date ?? selectedPeriod.issue_date} />
+					</ParameterToolbarFunctionsProvider> :
+					<p>Please select period first</p>
+				}
 			</ApiFunctionsProvider>
 		</>
 	);
 }
 
-function CompCalendarContent() {
+function CompCalendarContent({ target_date }: { target_date: string }) {
 	const queryFunctions = useContext(apiFunctionsContext);
 	const queryFunction = queryFunctions.queryFunction!;
 
@@ -47,27 +53,27 @@ function CompCalendarContent() {
 	}
 
 	return (
-		<CalendarContextProvider data={data}>
-			<CompCalendarView />
+		<CalendarContextProvider data={data} target_date={target_date}>
+			<CompCalendarView target_date={target_date} />
 		</CalendarContextProvider>
 	);
 }
 
-function CompCalendarView() {
-	const [currenMonth, setCurrentMonth] = useState(getDayInMonth(null));
+function CompCalendarView({ target_date }: { target_date: string }) {
+	const [currenMonth, setCurrentMonth] = useState(getDayInMonth(target_date, null));
 	const { monthIndex } = useContext(calendarContext);
 
 	useEffect(() => {
-		setCurrentMonth(getDayInMonth(monthIndex));
+		setCurrentMonth(getDayInMonth(target_date, monthIndex));
 	}, [monthIndex]);
 
 	return (
 		<>
 			<div className="flex h-full flex-col">
-				<CalendarHeader />
+				<CalendarHeader target_date={target_date} />
 				<div className="flex h-0 flex-grow">
 					{/* <ScrollArea className="w-full"> */}
-					<MonthView month={currenMonth} />
+					<MonthView month={currenMonth} target_date={target_date} />
 					{/* </ScrollArea> */}
 				</div>
 				<CalendarAddEvent />

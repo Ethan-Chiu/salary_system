@@ -1,4 +1,4 @@
-import AutoForm, { AutoFormSubmit } from "~/components/ui/auto-form";
+import AutoForm from "~/components/ui/auto-form";
 import * as z from "zod";
 import { Button } from "~/components/ui/button";
 import { useState } from "react";
@@ -6,9 +6,7 @@ import { useState } from "react";
 import {
 	Table,
 	TableBody,
-	TableCaption,
 	TableCell,
-	TableFooter,
 	TableHead,
 	TableHeader,
 	TableRow,
@@ -21,14 +19,13 @@ import {
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 	DialogClose,
 	DialogFooter,
 } from "~/components/ui/dialog";
 import { PenSquare, Trash2 } from "lucide-react";
 
 import { useContext } from "react";
-import { toolbarFunctionsContext } from "./functions_context";
+import { parameterToolbarFunctionsContext } from "./parameter_functions_context";
 import { FunctionMode } from "./data_table_functions";
 import GeneralTable from "./general_table";
 import { LoadingSpinner } from "~/components/loading";
@@ -47,7 +44,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	mode,
 	closeSheet,
 }: ParameterFormProps<SchemaType>) {
-	const functions = useContext(toolbarFunctionsContext);
+	const functions = useContext(parameterToolbarFunctionsContext);
 
 	const queryFunction = functions.queryFunction!;
 	const updateFunction = functions.updateFunction!;
@@ -155,7 +152,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 				fieldConfig={fieldConfig}
 			>
 				<div>
-					<div className="my-16 flex justify-between">
+					<div className="flex justify-between">
 						<Button
 							type="button"
 							variant={"outline"}

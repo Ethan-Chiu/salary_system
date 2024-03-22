@@ -1,10 +1,11 @@
-import React, { createContext, PropsWithChildren, useEffect } from "react";
+import React, { createContext, PropsWithChildren, useContext } from "react";
 import { api } from "~/utils/api";
-import { ShowTableEnum } from "../../shown_tables";
+import { ParameterTableEnum } from "../../parameter_tables";
 import {
 	UseTRPCMutationResult,
 	UseTRPCQueryResult,
 } from "@trpc/react-query/shared";
+import periodContext from "~/components/context/period_context";
 
 interface FunctionsApi {
 	queryFunction: (() => UseTRPCQueryResult<any, any>) | undefined;
@@ -13,7 +14,7 @@ interface FunctionsApi {
 	deleteFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 }
 
-export const toolbarFunctionsContext = createContext<FunctionsApi>({
+export const parameterToolbarFunctionsContext = createContext<FunctionsApi>({
 	queryFunction: undefined,
 	updateFunction: undefined,
 	createFunction: undefined,
@@ -21,18 +22,20 @@ export const toolbarFunctionsContext = createContext<FunctionsApi>({
 });
 
 interface ToolbarFunctionsProviderProps {
-	selectedTableType: ShowTableEnum;
+	selectedTableType: ParameterTableEnum;
+	period_id: number;
 }
 
-export default function ToolbarFunctionsProvider({
+export default function ParameterToolbarFunctionsProvider({
 	children,
 	selectedTableType,
+	period_id,
 }: PropsWithChildren<ToolbarFunctionsProviderProps>) {
 	const ctx = api.useContext();
 
 	//#region <AttendanceSetting>
 	const getAttendanceSetting = () =>
-		api.parameters.getCurrentAttendanceSetting.useQuery();
+		api.parameters.getCurrentAttendanceSetting.useQuery({ period_id });
 	const updateAttendanceSetting =
 		api.parameters.updateAttendanceSetting.useMutation({
 			onSuccess: () => {
@@ -58,7 +61,7 @@ export default function ToolbarFunctionsProvider({
 
 	//#region <BankSetting>
 	const getBankSetting = () =>
-		api.parameters.getCurrentBankSetting.useQuery();
+		api.parameters.getCurrentBankSetting.useQuery({ period_id });
 	const updateBankSetting = api.parameters.updateBankSetting.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentBankSetting.invalidate();
@@ -81,7 +84,7 @@ export default function ToolbarFunctionsProvider({
 
 	//#region <InsuranceSetting>
 	const getInsuranceRateSetting = () =>
-		api.parameters.getCurrentInsuranceRateSetting.useQuery();
+		api.parameters.getCurrentInsuranceRateSetting.useQuery({ period_id });
 	const updateInsuranceRateSetting =
 		api.parameters.updateInsuranceRateSetting.useMutation({
 			onSuccess: () => {
@@ -228,11 +231,7 @@ export default function ToolbarFunctionsProvider({
 			},
 		});
 
-	//#region
-
-	//#endregion
-
-	const functionsDictionary: Record<ShowTableEnum, FunctionsApi> = {
+	const functionsDictionary: Record<ParameterTableEnum, FunctionsApi> = {
 		TableAttendance: {
 			queryFunction: getAttendanceSetting,
 			updateFunction: updateAttendanceSetting,
@@ -285,10 +284,10 @@ export default function ToolbarFunctionsProvider({
 
 	// Return the provider with the functions
 	return (
-		<toolbarFunctionsContext.Provider
+		<parameterToolbarFunctionsContext.Provider
 			value={functionsDictionary[selectedTableType]}
 		>
 			{children}
-		</toolbarFunctionsContext.Provider>
+		</parameterToolbarFunctionsContext.Provider>
 	);
 }

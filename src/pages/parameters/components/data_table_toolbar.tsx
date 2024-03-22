@@ -1,18 +1,18 @@
-import { DataTableViewOptions } from "../../../components/data_table/data_table_view_options";
-import { Input } from "~/components/ui/input";
+import { DataTableViewOptions } from "../../../components/data_table/toolbar/data_table_view_options";
 import { TabsList, TabsTrigger } from "~/components/ui/tabs";
-import ToolbarFunctionsProvider from "./function_sheet/functions_context";
-import { useContext, useEffect, useState } from "react";
+import ParameterToolbarFunctionsProvider from "./function_sheet/parameter_functions_context";
+import { useContext } from "react";
 import dataTableContext from "./context/data_table_context";
 import { DataTableFunctions } from "./function_sheet/data_table_functions";
 import { LoadingSpinner } from "~/components/loading";
-import { Table } from "@tanstack/react-table";
 import { TabsEnum } from "./context/tabs_enum";
 import { CalendarToolbarFunctions } from "./calendar_view/components/calendar_toolbar_functions";
 import { hasHistory } from "./data_table_tabs_config";
+import { ToolbarFilter } from "~/components/data_table/toolbar/toolbar_filter";
+import periodContext from "~/components/context/period_context";
 
 interface DataTableToolbarProps<TData> {
-	filterColumnKey: keyof TData;
+	filterColumnKey?: keyof TData;
 	showTabs?: boolean;
 }
 
@@ -22,16 +22,8 @@ export function DataTableToolbar<TData>({
 }: DataTableToolbarProps<TData>) {
 	const { selectedTab, selectedTableType, selectedTable } =
 		useContext(dataTableContext);
+	const { selectedPeriod } = useContext(periodContext);
 	const table = selectedTable?.table;
-
-	const [filterValue, setFilterValue] = useState("");
-
-	useEffect(() => {
-		if (table) {
-			setFilterValue("");
-			table.getColumn(filterColumnKey.toString())?.setFilterValue("");
-		}
-	}, [selectedTab, selectedTable]);
 
 	if (!table) {
 		return (
@@ -44,17 +36,7 @@ export function DataTableToolbar<TData>({
 	return (
 		<div className="flex flex-row items-center justify-between space-x-2 px-2 py-2">
 			{/* search bar */}
-			<Input
-				placeholder="Filter setting..."
-				value={filterValue}
-				onChange={(event) => {
-					table
-						.getColumn(filterColumnKey.toString())
-						?.setFilterValue(event.target.value);
-					setFilterValue(event.target.value);
-				}}
-				className="h-8 max-w-sm"
-			/>
+			<ToolbarFilter table={table} filterColumnKey={filterColumnKey} />
 			{/* tabs */}
 			{showTabs !== false && (
 				<TabsList className="grid h-8 w-96 grid-cols-3">
@@ -81,16 +63,18 @@ export function DataTableToolbar<TData>({
 			<DataTableViewOptions table={table} />
 			{/* Toolbar functions */}
 			<div className="w-12">
-				<ToolbarFunctionsProvider selectedTableType={selectedTableType}>
-					{selectedTab === TabsEnum.Enum.current && (
-						<DataTableFunctions tableType={selectedTableType} />
-					)}
-					{selectedTab === TabsEnum.Enum.calendar && (
-						<CalendarToolbarFunctions
-							tableType={selectedTableType}
-						/>
-					)}
-				</ToolbarFunctionsProvider>
+				{selectedPeriod &&
+					<ParameterToolbarFunctionsProvider selectedTableType={selectedTableType} period_id={selectedPeriod.period_id}>
+						{selectedTab === TabsEnum.Enum.current && (
+							<DataTableFunctions tableType={selectedTableType} />
+						)}
+						{selectedTab === TabsEnum.Enum.calendar && (
+							<CalendarToolbarFunctions
+								tableType={selectedTableType}
+							/>
+						)}
+					</ParameterToolbarFunctionsProvider>
+				}
 			</div>
 		</div>
 	);

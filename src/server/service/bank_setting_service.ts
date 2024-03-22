@@ -1,4 +1,4 @@
-import { injectable } from "tsyringe";
+import { container, injectable } from "tsyringe";
 import { BankSetting } from "../database/entity/SALARY/bank_setting";
 import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
@@ -8,6 +8,7 @@ import {
 	createBankSettingService,
 	updateBankSettingService,
 } from "../api/types/parameters_input_type";
+import { EHRService } from "./ehr_service";
 
 @injectable()
 export class BankSettingService {
@@ -45,8 +46,10 @@ export class BankSettingService {
 		return bankSetting;
 	}
 
-	async getCurrentBankSetting(): Promise<BankSetting[]> {
-		const current_date_string = get_date_string(new Date());
+	async getCurrentBankSetting(period_id: number): Promise<BankSetting[]> {
+		const ehr_service = container.resolve(EHRService);
+		const period = await ehr_service.getPeriodById(period_id);
+		const current_date_string = period.end_date ?? period.issue_date;
 		const bankSetting = await BankSetting.findAll({
 			where: {
 				start_date: {

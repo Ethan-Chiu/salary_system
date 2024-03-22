@@ -10,9 +10,11 @@ import { EmployeePaymentService } from "~/server/service/employee_payment_servic
 import { get_date_string } from "~/server/service/helper_function";
 
 export const employeePaymentRouter = createTRPCRouter({
-	getCurrentEmployeePayment: publicProcedure.query(async () => {
+	getCurrentEmployeePayment: publicProcedure
+		.input(z.object({period_id:z.number()}))
+		.query(async ({input}) => {
 		const employeePaymentService = container.resolve(EmployeePaymentService);
-		const employeePayment = await employeePaymentService.getCurrentEmployeePayment();
+		const employeePayment = await employeePaymentService.getCurrentEmployeePayment(input.period_id);
 		if (employeePayment == null) {
 			throw new BaseResponseError("EmployeePayment does not exist");
 		}

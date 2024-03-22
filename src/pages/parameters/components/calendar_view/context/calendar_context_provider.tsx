@@ -9,20 +9,22 @@ import { CalendarEvent } from "../utils/calendar_event";
 import { getEventLevel } from "../utils/event_level";
 
 interface RecordData {
-  id: number; 
-  start_date: Date;
-  end_date: Date;
+	id: number;
+	start_date: Date;
+	end_date: Date;
 }
 
 interface CalendarContextProviderProps<T extends RecordData> {
 	data: T[];
+	target_date: string;
 }
 
 export default function CalendarContextProvider<T extends RecordData>({
 	data,
+	target_date,
 	children,
 }: PropsWithChildren<CalendarContextProviderProps<T>>) {
-	const [monthIndex, setMonthIndex] = useState(dayjs().month());
+	const [monthIndex, setMonthIndex] = useState(dayjs(target_date).month());
 	const [mouseDownDate, setMouseDownDate] = useState<dayjs.Dayjs | null>(
 		null
 	);

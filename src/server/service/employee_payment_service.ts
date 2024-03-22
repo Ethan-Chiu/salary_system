@@ -1,4 +1,4 @@
-import { injectable } from "tsyringe";
+import { container, injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { check_date, get_date_string, select_value } from "./helper_function";
 import { type z } from "zod";
@@ -8,6 +8,7 @@ import {
 } from "../api/types/parameters_input_type";
 import { EmployeePayment } from "../database/entity/SALARY/employee_payment";
 import { Op } from "sequelize";
+import { EHRService } from "./ehr_service";
 
 @injectable()
 export class EmployeePaymentService {
@@ -61,8 +62,10 @@ export class EmployeePaymentService {
 		return employeePayment;
 	}
 
-	async getCurrentEmployeePayment(): Promise<EmployeePayment[]> {
-		const current_date_string = get_date_string(new Date());
+	async getCurrentEmployeePayment(period_id: number): Promise<EmployeePayment[]> {
+		const ehr_service = container.resolve(EHRService);
+		const period = await ehr_service.getPeriodById(period_id);
+		const current_date_string = period.end_date ?? period.issue_date;
 		const employeePayment = await EmployeePayment.findAll({
 			where: {
 				start_date: {
@@ -79,11 +82,11 @@ export class EmployeePaymentService {
 		return employeePayment;
 	}
 
-	async getCurrentEmployeePaymentById(
-		id: number
-	): Promise<EmployeePayment | null> {
-		const current_date_string = get_date_string(new Date());
-		const employeePayment = await EmployeePayment.findOne({
+	async getCurrentEmployeePaymentById(id: number, period_id: number): Promise<EmployeePayment[]> {
+		const ehr_service = container.resolve(EHRService);
+		const period = await ehr_service.getPeriodById(period_id);
+		const current_date_string = period.end_date ?? period.issue_date;
+		const employeePayment = await EmployeePayment.findAll({
 			where: {
 				id: id,
 				start_date: {
@@ -99,7 +102,6 @@ export class EmployeePaymentService {
 		});
 		return employeePayment;
 	}
-
 	async getAllEmployeePayment(): Promise<EmployeePayment[]> {
 		const employeePayment = await EmployeePayment.findAll();
 		return employeePayment;

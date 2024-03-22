@@ -1,6 +1,8 @@
 import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table_update";
 import { api } from "~/utils/api";
+import { useContext } from "react";
+import periodContext from "~/components/context/period_context";
 
 const columns = [
     "emp_no",
@@ -24,9 +26,9 @@ const columns = [
     };
 });
 
-export function EmployeePaymentTable({ index, globalFilter }: any) {
+export function EmployeePaymentTable({ index, globalFilter, period_id }: any) {
     const { isLoading, isError, data, error } =
-        api.employeePayment.getCurrentEmployeePayment.useQuery();
+        api.employeePayment.getCurrentEmployeePayment.useQuery({ period_id });
     const filterKey = "emp_no";
 
     if (isLoading) {

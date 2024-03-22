@@ -8,7 +8,6 @@ import { Overtime } from "../database/entity/UMEDIA/overtime";
 import { Payset } from "../database/entity/UMEDIA/payset";
 import { Emp } from "../database/entity/UMEDIA/emp";
 import { BaseResponseError } from "../api/error/BaseResponseError";
-import { PeriodObject } from "./employee_data_service";
 
 @injectable()
 export class EHRService {
@@ -85,10 +84,10 @@ export class EHRService {
 		const empList: Emp[] = dataList.map(Emp.fromDB);
 		return empList;
 	}
-	async getPeriodObject(period_id: number): Promise<PeriodObject> {
+	async getPeriodById(period_id: number): Promise<Period> {
 		const dbConnection = container.resolve(Database).connection;
 		const dataList = await dbConnection.query(
-			this.GET_PERIOD_NAME_QUERY(period_id),
+			this.GET_PERIOD_BY_ID_QUERY(period_id),
 			{
 				type: QueryTypes.SELECT,
 			}
@@ -96,7 +95,7 @@ export class EHRService {
 		if (dataList.length === 0) {
 			throw new BaseResponseError("Period Not Found");
 		}
-		return dataList[0]! as PeriodObject;
+		return Period.fromDB(dataList[0]!);
 	}
 
 	private GET_PERIOD_QUERY(): string {
@@ -119,7 +118,7 @@ export class EHRService {
 		return `SELECT * FROM "U_HR_PAYDRAFT_EMP" WHERE "U_HR_PAYDRAFT_EMP"."PERIOD_ID" = '${period_id}'`;
 	}
 
-	private GET_PERIOD_NAME_QUERY(period_id: number): string {
-		return `SELECT "PERIOD_NAME", "START_DATE", "END_DATE" FROM "U_HR_PERIOD" WHERE "U_HR_PERIOD"."PERIOD_ID" = '${period_id}'`;
+	private GET_PERIOD_BY_ID_QUERY(period_id: number): string {
+		return `SELECT "PERIOD_ID", "PERIOD_NAME", "START_DATE", "END_DATE", "STATUS", "ISSUE_DATE" FROM "U_HR_PERIOD" WHERE "U_HR_PERIOD"."PERIOD_ID" = '${period_id}'`;
 	}
 }

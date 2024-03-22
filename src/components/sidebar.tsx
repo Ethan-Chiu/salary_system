@@ -110,7 +110,7 @@ type SelectItemProp = {
 
 function CompSelectItemWrap(props: PropsWithChildren<SelectItemProp>) {
 
-	const { selectedPeriod } = useContext(periodContext);
+	const { selectedPeriod, selectedPayDate } = useContext(periodContext);
 
 	return props.collapsed ? (
 		<TooltipProvider>
@@ -141,7 +141,7 @@ function CompSelectItemWrap(props: PropsWithChildren<SelectItemProp>) {
 					<props.selectItemEntry.icon className="h-4 w-4 flex-shrink-0" />
 					<div className="flex justify-between ps-2 w-full">
 						<div className="line-clamp-1 break-all">{props.children}</div>
-						<div className="line-clamp-1 break-all">{selectedPeriod?.period_name ?? "未選擇"}</div>
+						<div className="line-clamp-1 break-all">{selectedPeriod?.period_name && selectedPayDate ? selectedPayDate : "未設定完畢"}</div>
 					</div>
 				</div>
 			</DialogTrigger>
@@ -191,7 +191,7 @@ const actionLinks: NavLinkEntry[] = [
 	{
 		title: "Synchronize",
 		icon: CheckSquare,
-		url: "/check",
+		url: "/synchronize",
 		collapsed: false,
 	},
 	{

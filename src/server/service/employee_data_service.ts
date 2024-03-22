@@ -23,11 +23,6 @@ export interface PaidEmployee {
 	quit_date: string | null
 	bug?: string
 }
-export interface PeriodObject {
-	PERIOD_NAME: string;
-	START_DATE: string;
-	END_DATE: string;
-}
 
 @injectable()
 export class EmployeeDataService {

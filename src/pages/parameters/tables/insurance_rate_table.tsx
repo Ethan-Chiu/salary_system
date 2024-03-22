@@ -120,7 +120,7 @@ export function insuranceRateMapper(
 			name: c_EndDateStr,
 			value: data.end_date
 				? // ? new Date(insuranceRateData.end_date)
-				  formatDate("day", data.end_date)
+				formatDate("day", data.end_date)
 				: "",
 		},
 		{
@@ -136,9 +136,9 @@ export function insuranceRateMapper(
 	];
 }
 
-export function InsuranceRateTable({ index, globalFilter, viewOnly }: any) {
+export function InsuranceRateTable({ index, globalFilter, period_id, viewOnly }: any) {
 	const { isLoading, isError, data, error } =
-		api.parameters.getCurrentInsuranceRateSetting.useQuery();
+		api.parameters.getCurrentInsuranceRateSetting.useQuery({ period_id });
 	const filterKey: RowItemKey = "name";
 
 	if (isLoading) {

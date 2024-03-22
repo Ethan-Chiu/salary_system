@@ -26,10 +26,12 @@ import {
 } from "lucide-react";
 import DataTableContextProvider from "./components/context/data_table_context_provider";
 import dataTableContext from "./components/context/data_table_context";
-import TableEnum, { getTableName } from "./components/context/data_table_enum";
+import { getTableName } from "./components/context/data_table_enum";
 import { Separator } from "~/components/ui/separator";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import { ShowTableEnum, ShowTableEnumValues } from "./shown_tables";
+import { ParameterTableEnum, ParameterTableEnumValues } from "./parameter_tables";
+import periodContext from "~/components/context/period_context";
+import { Period } from "~/server/database/entity/UMEDIA/period";
 
 type TableComponentProps = {
 	index: number;
@@ -41,46 +43,46 @@ type TableComponent = {
 	icon: LucideIcon;
 };
 
-function getTableComponent(table: ShowTableEnum): TableComponent {
+function getTableComponent(table: ParameterTableEnum, selectedPeriod: Period | null): TableComponent {
 	switch (table) {
 		case "TableAttendance":
 			return {
-				component: <AttendanceTable />,
+				component: selectedPeriod ? <AttendanceTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
 				icon: Clock,
 			};
 		case "TableBankSetting":
 			return {
-				component: <BankTable />,
+				component: selectedPeriod ? <BankTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
 				icon: CreditCard,
 			};
 		case "TableInsurance":
 			return {
-				component: <InsuranceRateTable />,
+				component: selectedPeriod ? <InsuranceRateTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
 				icon: ActivitySquare,
 			};
 		case "TableBonusSetting":
 			return {
-				component: <BonusTable />,
+				component: selectedPeriod ? <BonusTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
 				icon: CircleDollarSign,
 			};
 		case "TableBonusDepartment":
 			return {
-				component: <BonusDepartmentTable />,
+				component: selectedPeriod ? <BonusDepartmentTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
 				icon: Users,
 			};
 		case "TableBonusPosition":
 			return {
-				component: <BonusPositionTable />,
+				component: selectedPeriod ? <BonusPositionTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
 				icon: Briefcase,
 			};
 		case "TableBonusPositionType":
 			return {
-				component: <BonusPositionTypeTable />,
+				component: selectedPeriod ? <BonusPositionTypeTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
 				icon: Key,
 			};
 		case "TableBonusSeniority":
 			return {
-				component: <BonusSeniorityTable />,
+				component: selectedPeriod ? <BonusSeniorityTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
 				icon: Cake,
 			};
 		default:
@@ -107,17 +109,18 @@ export default function TablesView() {
 }
 
 function CompTablesSelector() {
-	const [selectedTag, setSelectedTag] = useState<ShowTableEnum>(
-		ShowTableEnumValues[0]
+	const [selectedTag, setSelectedTag] = useState<ParameterTableEnum>(
+		ParameterTableEnumValues[0]
 	);
 
 	const { setSelectedTableType } = useContext(dataTableContext);
+	const { selectedPeriod } = useContext(periodContext);
 
-	const tableComponentMap: Record<ShowTableEnum, TableComponent> =
-		ShowTableEnumValues.reduce((map, table) => {
-			map[table] = getTableComponent(table);
+	const tableComponentMap: Record<ParameterTableEnum, TableComponent> =
+		ParameterTableEnumValues.reduce((map, table) => {
+			map[table] = getTableComponent(table, selectedPeriod);
 			return map;
-		}, {} as Record<ShowTableEnum, TableComponent>);
+		}, {} as Record<ParameterTableEnum, TableComponent>);
 
 	useEffect(() => {
 		setSelectedTableType(selectedTag);
@@ -131,7 +134,7 @@ function CompTablesSelector() {
 			<Separator />
 			<div className="h-0 grow">
 				<ScrollArea className="h-full">
-					{ShowTableEnumValues.map((table) => {
+					{ParameterTableEnumValues.map((table) => {
 						const tableComponent = tableComponentMap[table];
 
 						return (
@@ -163,15 +166,16 @@ function CompTablesSelector() {
 
 function CompTableView() {
 	const { selectedTableType } = useContext(dataTableContext);
+	const { selectedPeriod } = useContext(periodContext);
 
 	return (
 		<>
-			{ShowTableEnumValues.filter((table) => table === selectedTableType).map(
+			{ParameterTableEnumValues.filter((table) => table === selectedTableType).map(
 				(selectedTableType) => {
 					return (
 						<div key={selectedTableType} className="flex h-full">
 							{React.cloneElement<TableComponentProps>(
-								getTableComponent(selectedTableType).component,
+								getTableComponent(selectedTableType, selectedPeriod).component,
 								{}
 							)}
 						</div>

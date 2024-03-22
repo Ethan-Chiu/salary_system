@@ -1,28 +1,42 @@
-import { useRouter } from "next/router";
 import { NextPageWithLayout } from "../_app";
 import { Header } from "~/components/header";
 import { RootLayout } from "~/components/layout/root_layout";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
-import { ReactElement } from "react";
+import { ReactElement, useContext } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { EmployeeDataTable } from "./tables/employee_data_table";
 import { EmployeePaymentTable } from "./tables/employee_payment_table";
 import { EmployeeTrustTable } from "./tables/employee_trust_table";
+import DataTableContextProvider from "./components/context/data_table_context_provider";
+import dataTableContext from "./components/context/data_table_context";
+import periodContext from "~/components/context/period_context";
 
 const TabOptions = ["基本檔案", "薪資檔案", "持股信託"];
 
-const PageEmployees: NextPageWithLayout = () => {
-    const router = useRouter();
+const PageEmployeesContent = () => {
+    const { setSelectedTableType } = useContext(dataTableContext);
+    const { selectedPeriod } = useContext(periodContext);
     function getTable(table_name: string) {
         switch (table_name) {
-            case "基本檔案":
+            case TabOptions[0]:
                 return <EmployeeDataTable />;
-            case "薪資檔案":
-                return <EmployeePaymentTable />;
-            case "持股信託":
-                return <EmployeeTrustTable />;
+            case TabOptions[1]:
+                return selectedPeriod ? <EmployeePaymentTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>;
+            case TabOptions[2]:
+                return selectedPeriod ? <EmployeeTrustTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>;
             default:
                 return <p>No implement</p>;
+        }
+    }
+
+    function getTypeByOption(options: string) {
+        switch (options) {
+            case TabOptions[1]:
+                return "TableEmployeePayment";
+            case TabOptions[2]:
+                return "TableEmployeeTrust";
+            default:
+                return "TableEmployeePayment";
         }
     }
 
@@ -37,7 +51,9 @@ const PageEmployees: NextPageWithLayout = () => {
                     <TabsList className={"grid w-full grid-cols-3"}>
                         {TabOptions.map((option) => {
                             return (
-                                <TabsTrigger value={option}>
+                                <TabsTrigger key={option} value={option} onClick={() =>
+                                    setSelectedTableType(getTypeByOption(option))
+                                }>
                                     {option}
                                 </TabsTrigger>
                             );
@@ -46,7 +62,7 @@ const PageEmployees: NextPageWithLayout = () => {
                     <div className="h-0 grow mt-2">
                         {TabOptions.map((option) => {
                             return (
-                                <TabsContent value={option} className="h-full">
+                                <TabsContent key={option} value={option} className="h-full">
                                     {getTable(option)}
                                 </TabsContent>
                             );
@@ -58,10 +74,18 @@ const PageEmployees: NextPageWithLayout = () => {
     );
 };
 
+const PageEmployees: NextPageWithLayout = () => {
+    return (
+        <DataTableContextProvider>
+            <PageEmployeesContent />
+        </DataTableContextProvider>
+    )
+}
+
 PageEmployees.getLayout = function getLayout(page: ReactElement) {
     return (
         <RootLayout>
-            <PerpageLayoutNav pageTitle="check">{page}</PerpageLayoutNav>
+            <PerpageLayoutNav pageTitle="employees">{page}</PerpageLayoutNav>
         </RootLayout>
     );
 };
