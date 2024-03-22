@@ -156,9 +156,9 @@ export class SyncService {
 						: salaryEmp;
 				})
 			);
-			let msg = "";
 			cand_paid_emps = await Promise.all(
 				updated_all_emps.map(async (emp) => {
+					let msg = "";
 					switch (emp.work_status) {
 						case "一般員工":
 							if (emp.quit_date != null) {
@@ -227,6 +227,7 @@ export class SyncService {
 							}
 							break;
 						default:
+							console.log("emp.work_status: " + emp.work_status);
 							if (emp.quit_date != null) {
 								if (
 									(await this.checkQuitDate(
@@ -271,8 +272,8 @@ export class SyncService {
 				where: {
 					emp_no: {
 						[Op.in]: cand_emp_no_list,
-					}
-				}
+					},
+				},
 			});
 		} else {
 			salary_datas = await EmployeeData.findAll({});
@@ -373,7 +374,9 @@ export class SyncService {
 	async synchronize(period: number, emp_no_list: string[]) {
 		const ehrService = container.resolve(EHRService);
 		const ehr_datas = await ehrService.getEmp(period);
-		const salary_datas = await EmployeeData.findAll({ where: { emp_no: { [Op.in]: emp_no_list } } });
+		const salary_datas = await EmployeeData.findAll({
+			where: { emp_no: { [Op.in]: emp_no_list } },
+		});
 		const salary_emp_no_list = salary_datas.map((emp) => emp.emp_no);
 		interface EHRDictType {
 			[key: string]: any;
@@ -384,15 +387,17 @@ export class SyncService {
 		});
 		const updatedDatas = await Promise.all(
 			emp_no_list.map(async (emp_no: string) => {
-				const updatedData = await this.empToEmployee(ehrDict[emp_no])
-				return updatedData
+				const updatedData = await this.empToEmployee(ehrDict[emp_no]);
+				return updatedData;
 			})
 		);
 		const employee_data_service = container.resolve(EmployeeDataService);
-		const employee_payment_service = container.resolve(EmployeePaymentService);
+		const employee_payment_service = container.resolve(
+			EmployeePaymentService
+		);
 		updatedDatas.map(async (updatedData) => {
-			if (!(salary_emp_no_list.includes(updatedData.emp_no))) {
-				await employee_data_service.createEmployeeData(updatedData)
+			if (!salary_emp_no_list.includes(updatedData.emp_no)) {
+				await employee_data_service.createEmployeeData(updatedData);
 				let payment_input = {
 					emp_no: updatedData.emp_no,
 					base_salary: 0,
@@ -408,13 +413,16 @@ export class SyncService {
 					occupational_injury: 0,
 					start_date: updatedData.registration_date,
 					end_date: null,
-				}
-				await employee_payment_service.createEmployeePayment(payment_input)
-			}
-			else
-				await employee_data_service.updateEmployeeDataByEmpNO(updatedData)
-		})
-		return updatedDatas
+				};
+				await employee_payment_service.createEmployeePayment(
+					payment_input
+				);
+			} else
+				await employee_data_service.updateEmployeeDataByEmpNO(
+					updatedData
+				);
+		});
+		return updatedDatas;
 	}
 	//stage3
 	async getPaidEmps(func: string): Promise<EmployeeData[]> {
