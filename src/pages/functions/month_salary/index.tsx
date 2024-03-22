@@ -3,7 +3,7 @@ import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { Header } from "~/components/header";
 import { type NextPageWithLayout } from "../../_app";
 import { api } from "~/utils/api";
-import { useContext, useState } from "react";
+import { type ReactElement, useContext, useState } from "react";
 import { ProgressBar } from "~/components/functions/progress_bar";
 import { LoadingSpinner } from "~/components/loading";
 import { ParameterPage } from "./parameters_page";
@@ -12,6 +12,10 @@ import { EmployeePage } from "./employee_page";
 import periodContext from "~/components/context/period_context";
 import { SyncPage } from "./sync_page";
 import ExportPage from "./export";
+import { useToast } from "~/components/ui/use-toast";
+import { ToastAction } from "~/components/ui/toast";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 export const progressBarLabels = [
 	"同步員工資料",
@@ -22,11 +26,24 @@ export const progressBarLabels = [
 ];
 
 const MonthSalary: NextPageWithLayout = () => {
+	const { toast } = useToast();
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const { selectedPeriod } = useContext(periodContext);
 
-  	// TODO
-  	const periodId = selectedPeriod?.period_id ?? 115;
+	const periodId = selectedPeriod?.period_id;
+	if (!periodId) {
+		toast({
+			title: "Period or Pay Date not selected",
+			description: "Please select a period and paydate",
+      duration: 4000,
+			action: (
+				<ToastAction altText="Go back">
+					<Link href="/functions">Go back</Link>
+				</ToastAction>
+			),
+		});
+		return <></>;
+	}
 
 	const { isLoading, isError, data, error } =
 		api.sync.getCandEmployees.useQuery({
@@ -40,7 +57,7 @@ const MonthSalary: NextPageWithLayout = () => {
 
 	console.log("data", data);
 
-	const pageList = [
+	const pageList: ReactElement[] = [
 		<SyncPage
 			key="sync"
 			period={periodId}
@@ -55,19 +72,19 @@ const MonthSalary: NextPageWithLayout = () => {
 			setSelectedIndex={setSelectedIndex}
 		/>,
 		<DataPage
-      key="data"
+			key="data"
 			period={periodId}
 			selectedIndex={selectedIndex}
 			setSelectedIndex={setSelectedIndex}
 		/>,
 		<ParameterPage
-      key="parameter"
+			key="parameter"
 			period={periodId}
 			selectedIndex={selectedIndex}
 			setSelectedIndex={setSelectedIndex}
 		/>,
 		<ExportPage
-      key="export"
+			key="export"
 			selectedIndex={selectedIndex}
 			setSelectedIndex={setSelectedIndex}
 		/>,
@@ -80,7 +97,7 @@ const MonthSalary: NextPageWithLayout = () => {
 				selectedIndex={selectedIndex}
 			/>
 			<div className="h-4" />
-			{/* {pageList[selectedIndex]} */}
+			{pageList[selectedIndex]}
 		</div>
 	);
 };
@@ -94,4 +111,3 @@ MonthSalary.getLayout = function getLayout(page: React.ReactElement) {
 };
 
 export default MonthSalary;
-
