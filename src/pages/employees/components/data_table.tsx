@@ -1,22 +1,11 @@
 import * as React from "react";
-import {
-	type ColumnDef,
-	type ColumnFiltersState,
-	type SortingState,
-	type VisibilityState,
-	getCoreRowModel,
-	getFacetedRowModel,
-	getFacetedUniqueValues,
-	getFilteredRowModel,
-	getPaginationRowModel,
-	getSortedRowModel,
-	useReactTable,
-} from "@tanstack/react-table";
+import { type ColumnDef, type Table } from "@tanstack/react-table";
 import { Separator } from "~/components/ui/separator";
 
 import { DataTablePagination } from "~/components/data_table/data_table_pagination";
 import { DataTableStandardBody } from "~/components/data_table/default/data_table_standard_body";
 import { DataTableStandardToolbar } from "~/components/data_table/default/data_table_standard_toolbar";
+import { WithDataTableStandardState } from "~/components/data_table/default/data_table_standard_state";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
@@ -29,49 +18,38 @@ export function DataTable<TData>({
 	data,
 	filterColumnKey,
 }: DataTableProps<TData>) {
-	const [rowSelection, setRowSelection] = React.useState({});
-	const [columnVisibility, setColumnVisibility] =
-		React.useState<VisibilityState>({});
-	const [columnFilters, setColumnFilters] =
-		React.useState<ColumnFiltersState>([]);
-	const [sorting, setSorting] = React.useState<SortingState>([]);
+	return WithDataTableStandardState({
+		columns: columns,
+		data,
+		props: { filterColumnKey },
+		WrappedComponent: DataTableContent,
+	});
+}
+
+function DataTableContent<TData>({
+	table,
+	filterColumnKey,
+}: {
+	table: Table<TData>;
+	filterColumnKey: keyof TData;
+}) {
 	const [dataPerRow, setDataPerRow] = React.useState(1);
 
-	const table = useReactTable({
-		data,
-		columns,
-		state: {
-			sorting,
-			columnVisibility,
-			rowSelection,
-			columnFilters,
-		},
-		enableRowSelection: true,
-		onRowSelectionChange: setRowSelection,
-		onSortingChange: setSorting,
-		onColumnFiltersChange: setColumnFilters,
-		onColumnVisibilityChange: setColumnVisibility,
-		getCoreRowModel: getCoreRowModel(),
-		getFilteredRowModel: getFilteredRowModel(),
-		getPaginationRowModel: getPaginationRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-		getFacetedRowModel: getFacetedRowModel(),
-		getFacetedUniqueValues: getFacetedUniqueValues(),
-	});
-
 	return (
-		<>
+		<div className="flex h-full w-full flex-col rounded-md border">
 			<DataTableStandardToolbar
 				table={table}
 				filterColumnKey={filterColumnKey}
 			/>
 			<Separator />
-			<DataTableStandardBody table={table} dataPerRow={dataPerRow} />
+			<div className="h-0 flex-grow">
+				<DataTableStandardBody table={table} dataPerRow={dataPerRow} />
+			</div>
 			<DataTablePagination
 				table={table}
 				setDataPerRow={setDataPerRow}
 				className="bg-secondary"
 			/>
-		</>
+		</div>
 	);
 }
