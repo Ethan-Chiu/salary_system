@@ -42,6 +42,19 @@ export class TrustMoneyService {
 		return trustMoney;
 	}
 
+	async getTrustMoneyByPosition(
+		position: number,
+		position_type: string
+	): Promise<TrustMoney | null> {
+		const trustMoney = await TrustMoney.findOne({
+			where: {
+				position: position,
+				position_type: position_type,
+			},
+		});
+		return trustMoney;
+	}
+
 	async getCurrentTrustMoney(): Promise<TrustMoney[]> {
 		const trustMoney = await this.getAllTrustMoney();
 		return trustMoney;
@@ -93,7 +106,7 @@ export class TrustMoneyService {
 			},
 			{ where: { id: id } }
 		);
-		if (affectedCount[0] != 1) {
+		if (affectedCount[0] == 0) {
 			throw new BaseResponseError("Update error");
 		}
 	}

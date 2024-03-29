@@ -21,6 +21,7 @@ import {
 	DialogTitle,
 	DialogClose,
 	DialogFooter,
+	DialogTrigger,
 } from "~/components/ui/dialog";
 import { PenSquare, Trash2 } from "lucide-react";
 
@@ -234,16 +235,42 @@ const CompViewAllDatas = ({
 
 	return (
 		<>
-			<div className="flex w-[45vw] items-center justify-between">
+			<div className="flex h-10 items-center justify-between">
 				<Input
-					className="w-1/10 m-2"
+					className="w-1/10 absolute left-4 top-4"
 					placeholder={"請輸入搜尋關鍵字"}
 					onChange={(e) => setFilterValue(e.target.value)}
 				></Input>
 				{mode == "auto calculate" && (
-					<Button onClick={() => onAutoCalculate(selectedEmpNoList)}>
-						{Translate("auto calculate")}
-					</Button>
+					<Dialog>
+						<DialogTrigger asChild>
+							<Button className="absolute right-4 top-4">
+								{Translate("auto calculate")}
+							</Button>
+						</DialogTrigger>
+						<DialogContent>
+							<DialogHeader>
+								<DialogTitle>
+									Confirm Auto Calculate
+								</DialogTitle>
+								<DialogDescription>
+									Please make sure all the data is correct
+									before you click confirm.
+								</DialogDescription>
+							</DialogHeader>
+							<DialogFooter>
+								<DialogClose>
+									<Button
+										onClick={() =>
+											onAutoCalculate(selectedEmpNoList)
+										}
+									>
+										{Translate("confirm")}
+									</Button>
+								</DialogClose>
+							</DialogFooter>
+						</DialogContent>
+					</Dialog>
 				)}
 			</div>
 			{filteredData && (
@@ -251,7 +278,28 @@ const CompViewAllDatas = ({
 					<Table>
 						<TableHeader>
 							<TableRow>
-								<TableHead className="whitespace-nowrap text-center"></TableHead>
+								{mode == "auto calculate" && (
+									<TableHead className="whitespace-nowrap text-center">
+										<Checkbox
+											className="cursor-pointer"
+											checked={
+												selectedEmpNoList.length ===
+												dataNoID.length
+											}
+											onCheckedChange={(checked) => {
+												if (checked) {
+													setSelectedEmpNoList(
+														dataNoID.map(
+															(e) => e.emp_no
+														)
+													);
+												} else {
+													setSelectedEmpNoList([]);
+												}
+											}}
+										/>
+									</TableHead>
+								)}
 								{filteredData[0] ? (
 									Object.keys(filteredData[0]).map(
 										(key: string) => {

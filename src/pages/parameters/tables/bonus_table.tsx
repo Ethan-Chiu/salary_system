@@ -171,13 +171,28 @@ export function BonusTable({ index, globalFilter, viewOnly }: any) {
 
 export function EmptyTable({ err_msg }: { err_msg: string }) {
 	const selectedTableType = "TableBonusSetting";
+	const [alertOpen, setAlertOpen] = useState(true);
 	return (
-		<div>
-			<EmptyCreate
-				formSchema={getSchema(selectedTableType)}
-				onClose={() => {}}
-				selectedTableType={selectedTableType}
-			/>
-		</div>
+		<>
+			<div className="flex grow items-center justify-center">
+				<div className="text-center">
+					<p>{err_msg}</p>
+					<Button
+						variant={"ghost"}
+						onClick={() => setAlertOpen(true)}
+					>
+						Create
+					</Button>
+				</div>
+				<EmptyCreate
+					formSchema={getSchema(selectedTableType)}
+					onClose={() => {}}
+					selectedTableType={selectedTableType}
+					err_msg={err_msg}
+					alertOpen={alertOpen}
+					setAlertOpen={setAlertOpen}
+				/>
+			</div>
+		</>
 	);
 }

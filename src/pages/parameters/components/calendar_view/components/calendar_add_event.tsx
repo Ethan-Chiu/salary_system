@@ -53,15 +53,22 @@ export default function CalendarAddEvent() {
 						fieldConfig={{
 							start_date: {
 								inputProps: {
-									defaultValue:
-										mouseDownDate?.toDate() ?? undefined,
+									defaultValue: mouseDownDate
+										? new Date(
+												mouseDownDate.format(
+													"YYYY-MM-DD"
+												)
+										  )
+										: undefined,
 								},
 							},
 							end_date: {
 								inputProps: {
-									defaultValue:
-										(mouseUpDate?.toDate() as any) ??
-										undefined,
+									defaultValue: mouseUpDate
+										? (new Date(
+												mouseUpDate.format("YYYY-MM-DD")
+										  ) as any)
+										: undefined,
 								},
 							},
 						}}

@@ -77,7 +77,7 @@ export class EmployeeDataService {
 		});
 		return employeeData;
 	}
-	async getEmployeeDataByEmpNO(emp_no: string): Promise<EmployeeData | null> {
+	async getEmployeeDataByEmpNo(emp_no: string): Promise<EmployeeData | null> {
 		const employeeData = await EmployeeData.findOne({
 			where: {
 				emp_no: emp_no,
@@ -157,7 +157,7 @@ export class EmployeeDataService {
 			},
 			{ where: { id: id } }
 		);
-		if (affectedCount[0] != 1) {
+		if (affectedCount[0] == 0) {
 			throw new BaseResponseError("Update error");
 		}
 	}
@@ -180,7 +180,7 @@ export class EmployeeDataService {
 		licens_id: licens_id,
 		nbanknumber: nbanknumber,
 	}: z.infer<typeof updateEmployeeDataByEmpNOService>): Promise<void> {
-		const employeeData = await this.getEmployeeDataByEmpNO(emp_no!);
+		const employeeData = await this.getEmployeeDataByEmpNo(emp_no!);
 		if (employeeData == null) {
 			throw new BaseResponseError("Employee account does not exist");
 		}
@@ -222,7 +222,7 @@ export class EmployeeDataService {
 			},
 			{ where: { emp_no: emp_no } }
 		);
-		if (affectedCount[0] != 1) {
+		if (affectedCount[0] == 0) {
 			throw new BaseResponseError("Update error");
 		}
 	}

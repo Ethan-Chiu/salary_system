@@ -132,6 +132,7 @@ export function Translate(word: string) {
 		if (word === "update") return "更新";
 		if (word === "modify") return "修改";
 		if (word === "delete") return "刪除";
+		if (word === "confirm") return "確認";
 		if (word === "auto calculate") return "自動計算";
 		if (word === "form") return "表單";
 

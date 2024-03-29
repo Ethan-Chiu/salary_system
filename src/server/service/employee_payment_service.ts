@@ -9,11 +9,11 @@ import {
 import { EmployeePayment } from "../database/entity/SALARY/employee_payment";
 import { Op } from "sequelize";
 import { EHRService } from "./ehr_service";
+import { LevelRangeService } from "./level_range_service";
+import { LevelService } from "./level_service";
 
 @injectable()
 export class EmployeePaymentService {
-	/* constructor() {} */
-
 	async createEmployeePayment({
 		emp_no,
 		base_salary,
@@ -204,7 +204,7 @@ export class EmployeePaymentService {
 			},
 			{ where: { id: id } }
 		);
-		if (affectedCount[0] != 1) {
+		if (affectedCount[0] == 0) {
 			throw new BaseResponseError("Update error");
 		}
 	}
@@ -222,6 +222,9 @@ export class EmployeePaymentService {
 		period_id: number,
 		emp_no_list: string[]
 	): Promise<void> {
+		const levelRangeService = container.resolve(LevelRangeService);
+		const leveService = container.resolve(LevelService);
+
 		emp_no_list.forEach(async (emp_no: string) => {
 			const employeePayment = await this.getCurrentEmployeePaymentByEmpNo(
 				emp_no,
@@ -230,17 +233,37 @@ export class EmployeePaymentService {
 			if (employeePayment == null) {
 				throw new BaseResponseError("Employee Payment does not exist");
 			}
+			const levelRangeList = await levelRangeService.getAllLevelRange();
+			const salary =
+				employeePayment.base_salary + employeePayment.food_bonus;
+			let result = [];
+			for (const levelRange of levelRangeList) {
+				const level = await leveService.getLevelBySalary(
+					salary,
+					levelRange.level_start,
+					levelRange.level_end
+				);
+				result.push({
+					type: levelRange.type,
+					level: level.level,
+				});
+			}
+
 			const affectedCount = await EmployeePayment.update(
 				{
-					l_i: 1000,
-					h_i: 1000,
-					labor_retirement: 1000,
-					occupational_injury: 1000,
+					l_i: result.find((r) => r.type === "l_i")?.level ?? 0,
+					h_i: result.find((r) => r.type === "h_i")?.level ?? 0,
+					labor_retirement:
+						result.find((r) => r.type === "labor_retirement")
+							?.level ?? 0,
+					occupational_injury:
+						result.find((r) => r.type === "occupational_injury")
+							?.level ?? 0,
 					update_by: "system",
 				},
 				{ where: { emp_no: emp_no } }
 			);
-			if (affectedCount[0] != 1) {
+			if (affectedCount[0] == 0) {
 				throw new BaseResponseError("Update error");
 			}
 		});

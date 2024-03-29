@@ -163,7 +163,7 @@ function CustomSelect({ options, onSelect, defaultValue }: CustomSelectProps) {
 			</div>
 
 			{isDropdownOpen && (
-				<div className="absolute left-0 z-10 mt-2 w-full rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+				<div className="absolute left-0 z-10 mt-2 max-h-24 w-full overflow-y-auto rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
 					<div
 						className="py-1"
 						role="menu"

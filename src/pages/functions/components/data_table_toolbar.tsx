@@ -21,7 +21,4 @@ export function DataTableToolbar<TData>({
 			</div>
 		); // TODO: Loading element with toast
 	}
-	return (
-		
-	);
 }
