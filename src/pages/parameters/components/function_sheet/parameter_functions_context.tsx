@@ -231,6 +231,26 @@ export default function ParameterToolbarFunctionsProvider({
 			},
 		});
 
+	const getLevel = () => api.parameters.getCurrentLevel.useQuery();
+	const updateLevel = api.parameters.updateLevel.useMutation({
+		onSuccess: () => {
+			ctx.parameters.getCurrentLevel.invalidate();
+			ctx.parameters.getAllLevel.invalidate();
+		},
+	});
+	const createLevel = api.parameters.createLevel.useMutation({
+		onSuccess: () => {
+			ctx.parameters.getCurrentLevel.invalidate();
+			ctx.parameters.getAllLevel.invalidate();
+		},
+	});
+	const deleteLevel = api.parameters.deleteLevel.useMutation({
+		onSuccess: () => {
+			ctx.parameters.getCurrentLevel.invalidate();
+			ctx.parameters.getAllLevel.invalidate();
+		},
+	});
+
 	const functionsDictionary: Record<ParameterTableEnum, FunctionsApi> = {
 		TableAttendance: {
 			queryFunction: getAttendanceSetting,
@@ -279,6 +299,12 @@ export default function ParameterToolbarFunctionsProvider({
 			updateFunction: updateBonusSeniority,
 			createFunction: createBonusSeniority,
 			deleteFunction: deleteBonusSeniority,
+		},
+		TableLevel: {
+			queryFunction: getLevel,
+			updateFunction: updateLevel,
+			createFunction: createLevel,
+			deleteFunction: deleteLevel
 		},
 	};
 
