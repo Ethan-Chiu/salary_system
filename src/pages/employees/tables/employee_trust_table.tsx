@@ -22,7 +22,6 @@ export function EmployeeTrustTable({ period_id }: any) {
 		api.employeeTrust.getCurrentEmployeeTrust.useQuery({
 			period_id: period_id,
 		});
-	const filterKey = "emp_no";
 
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast
@@ -32,7 +31,5 @@ export function EmployeeTrustTable({ period_id }: any) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-	return (
-		<DataTable columns={columns} data={data} filterColumnKey={filterKey} />
-	);
+	return <DataTable columns={columns} data={data} />;
 }

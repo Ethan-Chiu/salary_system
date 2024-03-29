@@ -21,7 +21,7 @@ export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
 		props: {},
 		WrappedComponent: HistoryViewContent,
 		onUpdate: (table) => {
-			setSelectedTable({ table: table, key: Math.random().toString() });
+			setSelectedTable({ table: table });
 		},
 	});
 }

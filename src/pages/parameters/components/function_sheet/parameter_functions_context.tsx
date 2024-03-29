@@ -250,6 +250,48 @@ export default function ParameterToolbarFunctionsProvider({
 			ctx.parameters.getAllLevel.invalidate();
 		},
 	});
+	const getLevelRange = () => api.parameters.getCurrentLevelRange.useQuery();
+	const updateLevelRange = api.parameters.updateLevelRange.useMutation({
+		onSuccess: () => {
+			ctx.parameters.getCurrentLevelRange.invalidate();
+			ctx.parameters.getAllLevelRange.invalidate();
+		},
+	});
+	const createLevelRange = api.parameters.createLevelRange.useMutation({
+		onSuccess: () => {
+			ctx.parameters.getCurrentLevelRange.invalidate();
+			ctx.parameters.getAllLevelRange.invalidate();
+		},
+	});
+	const deleteLevelRange = api.parameters.deleteLevelRange.useMutation({
+		onSuccess: () => {
+			ctx.parameters.getCurrentLevelRange.invalidate();
+			ctx.parameters.getAllLevelRange.invalidate();
+		},
+	});
+	const getPerformanceLevel = () =>
+		api.parameters.getCurrentPerformanceLevel.useQuery();
+	const updatePerformanceLevel =
+		api.parameters.updatePerformanceLevel.useMutation({
+			onSuccess: () => {
+				ctx.parameters.getCurrentPerformanceLevel.invalidate();
+				ctx.parameters.getAllPerformanceLevel.invalidate();
+			},
+		});
+	const createPerformanceLevel =
+		api.parameters.createPerformanceLevel.useMutation({
+			onSuccess: () => {
+				ctx.parameters.getCurrentPerformanceLevel.invalidate();
+				ctx.parameters.getAllPerformanceLevel.invalidate();
+			},
+		});
+	const deletePerformanceLevel =
+		api.parameters.deletePerformanceLevel.useMutation({
+			onSuccess: () => {
+				ctx.parameters.getCurrentPerformanceLevel.invalidate();
+				ctx.parameters.getAllPerformanceLevel.invalidate();
+			},
+		});
 
 	const functionsDictionary: Record<ParameterTableEnum, FunctionsApi> = {
 		TableAttendance: {
@@ -305,6 +347,18 @@ export default function ParameterToolbarFunctionsProvider({
 			updateFunction: updateLevel,
 			createFunction: createLevel,
 			deleteFunction: deleteLevel,
+		},
+		TableLevelRange: {
+			queryFunction: getLevelRange,
+			updateFunction: updateLevelRange,
+			createFunction: createLevelRange,
+			deleteFunction: deleteLevelRange,
+		},
+		TablePerformanceLevel: {
+			queryFunction: getPerformanceLevel,
+			updateFunction: updatePerformanceLevel,
+			createFunction: createPerformanceLevel,
+			deleteFunction: deletePerformanceLevel,
 		},
 	};
 
