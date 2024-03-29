@@ -45,7 +45,7 @@ export function DataPage({
 							);
 						})}
 					</TabsList>
-					<div className="h-0 grow mt-2">
+					<div className="mt-2 h-0 grow">
 						{TabOptions.map((option) => {
 							return (
 								<TabsContent value={option} className="h-full">

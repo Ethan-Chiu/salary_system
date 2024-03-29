@@ -1,14 +1,26 @@
 import { useContext } from "react";
 import { api } from "~/utils/api";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select";
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
+} from "./ui/select";
 import periodContext from "./context/period_context";
 import { Input } from "./ui/input";
 import { SessionStorage } from "~/utils/session_storage";
 
-
 export default function PeriodSelector() {
 	const getPeriod = api.function.getPeriod.useQuery();
-	const { selectedPeriod, setSelectedPeriod, selectedPayDate, setSelectedPayDate } = useContext(periodContext);
+	const {
+		selectedPeriod,
+		setSelectedPeriod,
+		selectedPayDate,
+		setSelectedPayDate,
+	} = useContext(periodContext);
 
 	return (
 		<div className="flex flex-col items-center">
@@ -22,9 +34,11 @@ export default function PeriodSelector() {
 								onValueChange={(chosen) => {
 									const targetPeriod = getPeriod.data!.find(
 										(item) => item.period_name === chosen
-									)!
-									setSelectedPeriod(targetPeriod)
-									SessionStorage.setSelectedPeriod(targetPeriod)
+									)!;
+									setSelectedPeriod(targetPeriod);
+									SessionStorage.setSelectedPeriod(
+										targetPeriod
+									);
 								}}
 							>
 								<SelectTrigger className="w-full">
@@ -36,8 +50,12 @@ export default function PeriodSelector() {
 										{getPeriod.data!.map((period_info) => {
 											return (
 												<SelectItem
-													key={period_info.period_name}
-													value={period_info.period_name}
+													key={
+														period_info.period_name
+													}
+													value={
+														period_info.period_name
+													}
 												>
 													{period_info.period_name}
 												</SelectItem>
@@ -55,8 +73,10 @@ export default function PeriodSelector() {
 								type="Date"
 								defaultValue={selectedPayDate ?? undefined}
 								onChange={(e) => {
-									setSelectedPayDate(e.target.value)
-									SessionStorage.setSelectedPayDate(e.target.value)
+									setSelectedPayDate(e.target.value);
+									SessionStorage.setSelectedPayDate(
+										e.target.value
+									);
 								}}
 							></Input>
 						</div>
@@ -64,10 +84,7 @@ export default function PeriodSelector() {
 				</>
 			) : (
 				<></>
-			)
-			}
-		</div >
+			)}
+		</div>
 	);
 }
-
-

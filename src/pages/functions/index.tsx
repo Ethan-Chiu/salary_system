@@ -81,7 +81,8 @@ const PageHome: NextPageWithLayout = () => {
 							if (!selectedPeriod || !selectedPayDate) {
 								toast({
 									title: "period or payDate not selected",
-									description: "Please select a period and paydate",
+									description:
+										"Please select a period and paydate",
 									action: (
 										<ToastAction
 											altText="Go to select period and paydate"

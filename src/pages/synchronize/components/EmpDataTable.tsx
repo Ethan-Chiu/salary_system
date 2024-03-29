@@ -16,9 +16,9 @@ import {
 } from "~/components/ui/table";
 
 interface EmpTableParameters {
-	empData: Array<CombinedData>,
-	mode: string,
-	diffColor: string
+	empData: Array<CombinedData>;
+	mode: string;
+	diffColor: string;
 }
 
 export function EmployeeDataChange({
@@ -30,8 +30,8 @@ export function EmployeeDataChange({
 	useEffect(() => {
 		let dk: Array<string> = [];
 		empData.map((d: CombinedData) => {
-			if(d.is_different) dk.push(d.key)
-		})
+			if (d.is_different) dk.push(d.key);
+		});
 		setDiffKeys(dk);
 	}, []);
 
@@ -60,36 +60,32 @@ export function EmployeeDataChange({
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{empData.map(
-								(d: CombinedData, index: number) => {
-									let diff = isDiff(d.key);
-									return mode === "Changed" && !diff ? (
-										<Fragment key={d.key}></Fragment>
-									) : (
-										<TableRow key={d.key}>
-											<TableCell className="font-medium">
-												{d.key}
-											</TableCell>
-											<TableCell
-												className={`font-medium ${
-													diff && colorClassName
-												}`}
-											>
-												{displayData(
-													d.salary_value
-												)}
-											</TableCell>
-											<TableCell
-												className={`font-medium ${
-													diff && colorClassName
-												}`}
-											>
-												{displayData(d.ehr_value)}
-											</TableCell>
-										</TableRow>
-									);
-								}
-							)}
+							{empData.map((d: CombinedData, index: number) => {
+								let diff = isDiff(d.key);
+								return mode === "Changed" && !diff ? (
+									<Fragment key={d.key}></Fragment>
+								) : (
+									<TableRow key={d.key}>
+										<TableCell className="font-medium">
+											{d.key}
+										</TableCell>
+										<TableCell
+											className={`font-medium ${
+												diff && colorClassName
+											}`}
+										>
+											{displayData(d.salary_value)}
+										</TableCell>
+										<TableCell
+											className={`font-medium ${
+												diff && colorClassName
+											}`}
+										>
+											{displayData(d.ehr_value)}
+										</TableCell>
+									</TableRow>
+								);
+							})}
 						</TableBody>
 						<TableFooter></TableFooter>
 					</Table>

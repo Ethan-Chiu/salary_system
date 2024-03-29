@@ -25,4 +25,3 @@ export function DataTableStandardBody<TData>({
 		</ScrollArea>
 	);
 }
-

@@ -37,9 +37,7 @@ export const bonus_seniority_columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="lowercase">
-				{row.getValue("seniority")}
-			</div>
+			<div className="lowercase">{row.getValue("seniority")}</div>
 		),
 	}),
 	columnHelper.accessor("multiplier", {
@@ -54,7 +52,9 @@ export const bonus_seniority_columns = [
 	}),
 ];
 
-export function bonusSeniorityMapper(bonusSeniorityData: BonusSeniority[]): RowItem[] {
+export function bonusSeniorityMapper(
+	bonusSeniorityData: BonusSeniority[]
+): RowItem[] {
 	return bonusSeniorityData.map((d) => {
 		return {
 			seniority: d.seniority,

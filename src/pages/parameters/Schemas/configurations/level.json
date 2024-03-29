@@ -1,6 +1,5 @@
 {
-    "level": {
-      "type": "number"
-    }
+	"level": {
+		"type": "number"
+	}
 }
-  

@@ -49,7 +49,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 	closeSheet,
 }: EmployeeFormProps<SchemaType>) {
 	const functions = useContext(employeeToolbarFunctionsContext);
-	const { selectedPeriod } = useContext(periodContext)
+	const { selectedPeriod } = useContext(periodContext);
 
 	const queryFunction = functions.queryFunction!;
 	const updateFunction = functions.updateFunction!;
@@ -223,55 +223,83 @@ const CompViewAllDatas = ({
 	onDelete: Function;
 	onAutoCalculate: Function;
 }) => {
-
 	const [filterValue, setFilterValue] = useState<string>("");
-	const [selectedEmpNoList, setSelectedEmpNoList] = useState<string[]>(dataNoID.map(e => e.emp_no));
+	const [selectedEmpNoList, setSelectedEmpNoList] = useState<string[]>(
+		dataNoID.map((e) => e.emp_no)
+	);
 	const filteredData = dataNoID?.filter((data: any) => {
-		return Object.values(data).some((value: any) => value ? value.toString().includes(filterValue) : false)
-	})
+		return Object.values(data).some((value: any) =>
+			value ? value.toString().includes(filterValue) : false
+		);
+	});
 
 	return (
 		<>
-			<div className="flex justify-between items-center h-10">
-				<Input className="w-1/10 absolute left-4 top-4" placeholder={"請輸入搜尋關鍵字"} onChange={e => setFilterValue(e.target.value)}></Input>
-				{mode == "auto calculate" &&
+			<div className="flex h-10 items-center justify-between">
+				<Input
+					className="w-1/10 absolute left-4 top-4"
+					placeholder={"請輸入搜尋關鍵字"}
+					onChange={(e) => setFilterValue(e.target.value)}
+				></Input>
+				{mode == "auto calculate" && (
 					<Dialog>
 						<DialogTrigger asChild>
-							<Button className="absolute right-4 top-4" >{Translate("auto calculate")}</Button>
+							<Button className="absolute right-4 top-4">
+								{Translate("auto calculate")}
+							</Button>
 						</DialogTrigger>
 						<DialogContent>
 							<DialogHeader>
-								<DialogTitle>Confirm Auto Calculate</DialogTitle>
+								<DialogTitle>
+									Confirm Auto Calculate
+								</DialogTitle>
 								<DialogDescription>
-									Please make sure all the data is correct before you click confirm.
+									Please make sure all the data is correct
+									before you click confirm.
 								</DialogDescription>
 							</DialogHeader>
 							<DialogFooter>
 								<DialogClose>
-									<Button onClick={() => onAutoCalculate(selectedEmpNoList)}>{Translate("confirm")}</Button>
+									<Button
+										onClick={() =>
+											onAutoCalculate(selectedEmpNoList)
+										}
+									>
+										{Translate("confirm")}
+									</Button>
 								</DialogClose>
 							</DialogFooter>
 						</DialogContent>
-					</Dialog>}
+					</Dialog>
+				)}
 			</div>
 			{filteredData && (
 				<div className="m-4">
 					<Table>
 						<TableHeader>
 							<TableRow>
-								{mode == "auto calculate" && <TableHead className="whitespace-nowrap text-center">
-									<Checkbox
-										className="cursor-pointer"
-										checked={selectedEmpNoList.length === dataNoID.length}
-										onCheckedChange={(checked) => {
-											if (checked) {
-												setSelectedEmpNoList(dataNoID.map(e => e.emp_no))
+								{mode == "auto calculate" && (
+									<TableHead className="whitespace-nowrap text-center">
+										<Checkbox
+											className="cursor-pointer"
+											checked={
+												selectedEmpNoList.length ===
+												dataNoID.length
 											}
-											else {
-												setSelectedEmpNoList([])
-											}
-										}}
-									/></TableHead>}
+											onCheckedChange={(checked) => {
+												if (checked) {
+													setSelectedEmpNoList(
+														dataNoID.map(
+															(e) => e.emp_no
+														)
+													);
+												} else {
+													setSelectedEmpNoList([]);
+												}
+											}}
+										/>
+									</TableHead>
+								)}
 								{filteredData[0] ? (
 									Object.keys(filteredData[0]).map(
 										(key: string) => {
@@ -321,13 +349,27 @@ const CompViewAllDatas = ({
 											{mode === "auto calculate" && (
 												<Checkbox
 													className="cursor-pointer"
-													checked={selectedEmpNoList.includes(data.emp_no)}
-													onCheckedChange={(checked) => {
+													checked={selectedEmpNoList.includes(
+														data.emp_no
+													)}
+													onCheckedChange={(
+														checked
+													) => {
 														if (checked) {
-															setSelectedEmpNoList([...selectedEmpNoList, data.emp_no])
-														}
-														else {
-															setSelectedEmpNoList(selectedEmpNoList.filter((empNo) => empNo !== data.emp_no))
+															setSelectedEmpNoList(
+																[
+																	...selectedEmpNoList,
+																	data.emp_no,
+																]
+															);
+														} else {
+															setSelectedEmpNoList(
+																selectedEmpNoList.filter(
+																	(empNo) =>
+																		empNo !==
+																		data.emp_no
+																)
+															);
 														}
 													}}
 												/>

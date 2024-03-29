@@ -2,18 +2,18 @@ import { AutoFormInputComponentProps } from "../types";
 import AutoFormInput from "./input";
 
 export default function AutoFormNumber({
-  fieldProps,
-  isRequired,
-  ...props
+	fieldProps,
+	isRequired,
+	...props
 }: AutoFormInputComponentProps) {
-  return (
-    <AutoFormInput
-      fieldProps={{
-        type: "number",
-        ...fieldProps,
-      }}
-      isRequired={isRequired}
-      {...props}
-    />
-  );
+	return (
+		<AutoFormInput
+			fieldProps={{
+				type: "number",
+				...fieldProps,
+			}}
+			isRequired={isRequired}
+			{...props}
+		/>
+	);
 }

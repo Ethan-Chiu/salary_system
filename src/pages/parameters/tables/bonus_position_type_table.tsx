@@ -39,9 +39,7 @@ export const bonus_position_type_columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="capitalize">
-				{row.getValue("position_type")}
-			</div>
+			<div className="capitalize">{row.getValue("position_type")}</div>
 		),
 	}),
 	columnHelper.accessor("multiplier", {

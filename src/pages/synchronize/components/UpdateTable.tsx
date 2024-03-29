@@ -30,7 +30,7 @@ import { Checkbox } from "~/components/ui/checkbox";
 import { CombinedData } from "~/server/service/employee_data_service";
 import { displayData } from "../utils/display";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 export interface Status {
 	[key: string]: "initial" | "checked" | "ignored";
@@ -64,58 +64,80 @@ export function UpdateTableDialog({
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button onClick={() => {
-					console.log("Show update table dialog")
-				}}>Update</Button>
+				<Button
+					onClick={() => {
+						console.log("Show update table dialog");
+					}}
+				>
+					Update
+				</Button>
 			</DialogTrigger>
 			<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[60%]">
 				<DialogHeader className="flex items-center">
 					<div className="mr-auto">
 						<DialogTitle>Changed Data</DialogTitle>
 						<DialogDescription>
-							Check the checked data and press the update button to confirm the changes.
+							Check the checked data and press the update button
+							to confirm the changes.
 						</DialogDescription>
 					</div>
 					<div className="ml-auto flex items-center space-x-2">
-						<Switch id="showDetails" checked={showDetails} onCheckedChange={setShowDetails}/>
+						<Switch
+							id="showDetails"
+							checked={showDetails}
+							onCheckedChange={setShowDetails}
+						/>
 						<Label htmlFor="showDetails">Show Details</Label>
 					</div>
 				</DialogHeader>
-				<UpdateTable data={data} status={status} showDetails={showDetails} updateFunction={updateFunction}/>
+				<UpdateTable
+					data={data}
+					status={status}
+					showDetails={showDetails}
+					updateFunction={updateFunction}
+				/>
 			</DialogContent>
 		</Dialog>
 	);
 }
 
-export function UpdateTable({ data, status, showDetails, updateFunction}: UpdateTableProps) {
+export function UpdateTable({
+	data,
+	status,
+	showDetails,
+	updateFunction,
+}: UpdateTableProps) {
 	const initialCheckedData: Record<string, boolean> = {};
-	const [checkedData, setCheckedData] = useState<Record<string, boolean>>(initialCheckedData);
+	const [checkedData, setCheckedData] =
+		useState<Record<string, boolean>>(initialCheckedData);
 	const router = useRouter();
 
 	useEffect(() => {
 		let tmpDir: any = {};
 		data.map((d: DifferentKeys) => {
-			tmpDir[d.emp_no] = (status[d.emp_no] == "checked");
+			tmpDir[d.emp_no] = status[d.emp_no] == "checked";
 		});
 		setCheckedData(tmpDir);
 	}, []);
 
 	function checkEmp(emp_no: string) {
-		return function(b: boolean) {
-		  setCheckedData(prevState => {
-			return {
-			  ...prevState,
-			  [emp_no]: b
-			};
-		  });
-		}
+		return function (b: boolean) {
+			setCheckedData((prevState) => {
+				return {
+					...prevState,
+					[emp_no]: b,
+				};
+			});
+		};
 	}
 
 	function AllClick() {
-		const AllClicked = Object.values(checkedData).every(value => value === true);
+		const AllClicked = Object.values(checkedData).every(
+			(value) => value === true
+		);
 		let tmpDir: any = {};
 		data.map((d: DifferentKeys) => {
-			tmpDir[d.emp_no] = (AllClicked)?false:true;
+			tmpDir[d.emp_no] = AllClicked ? false : true;
 		});
 		setCheckedData(tmpDir);
 	}
@@ -184,7 +206,7 @@ export function UpdateTable({ data, status, showDetails, updateFunction}: Update
 										className="border text-center"
 									>
 										<Checkbox
-											checked = {checkedData[d.emp_no]}
+											checked={checkedData[d.emp_no]}
 											onCheckedChange={checkEmp(d.emp_no)}
 											className="mr-5"
 										/>
@@ -263,7 +285,9 @@ export function UpdateTable({ data, status, showDetails, updateFunction}: Update
 				</TableBody>
 			</Table>
 			<DialogClose>
-					<Button type="submit" onClick={handleUpdate}>Update</Button>
+				<Button type="submit" onClick={handleUpdate}>
+					Update
+				</Button>
 			</DialogClose>
 		</>
 	);

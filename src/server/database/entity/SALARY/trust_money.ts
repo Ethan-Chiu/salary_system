@@ -14,12 +14,12 @@ export class TrustMoney extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-    declare position: number;
-    declare position_type: string;
-    declare emp_trust_reserve_limit: number | null;
-    declare org_trust_reserve_limit: number;
-    declare emp_special_trust_incent_limit: number | null;
-    declare org_special_trust_incent_limit: number;
+	declare position: number;
+	declare position_type: string;
+	declare emp_trust_reserve_limit: number | null;
+	declare org_trust_reserve_limit: number;
+	declare emp_special_trust_incent_limit: number | null;
+	declare org_special_trust_incent_limit: number;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -39,31 +39,31 @@ TrustMoney.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-       position: {
-            type: DataTypes.INTEGER.UNSIGNED,
+		position: {
+			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
-        },
-        position_type: {
-            type: DataTypes.STRING(2),
+		},
+		position_type: {
+			type: DataTypes.STRING(2),
 			unique: false,
 			allowNull: false,
-        },
-        emp_trust_reserve_limit: {
-            type: DataTypes.INTEGER.UNSIGNED,
-            allowNull: true,
-        },
-        org_trust_reserve_limit: {
-            type: DataTypes.INTEGER.UNSIGNED,
-            allowNull: false,
-        },
-        emp_special_trust_incent_limit: {
-            type: DataTypes.INTEGER.UNSIGNED,
-            allowNull: true,
-        },
-        org_special_trust_incent_limit: {
-            type: DataTypes.INTEGER.UNSIGNED,
-            allowNull: false,
-        },
+		},
+		emp_trust_reserve_limit: {
+			type: DataTypes.INTEGER.UNSIGNED,
+			allowNull: true,
+		},
+		org_trust_reserve_limit: {
+			type: DataTypes.INTEGER.UNSIGNED,
+			allowNull: false,
+		},
+		emp_special_trust_incent_limit: {
+			type: DataTypes.INTEGER.UNSIGNED,
+			allowNull: true,
+		},
+		org_special_trust_incent_limit: {
+			type: DataTypes.INTEGER.UNSIGNED,
+			allowNull: false,
+		},
 		create_date: {
 			type: DataTypes.DATE,
 		},
@@ -82,7 +82,7 @@ TrustMoney.init(
 	{
 		sequelize,
 		tableName: "U_TRUST_MONEY",
-		createdAt: 'create_date',
-		updatedAt: 'update_date',
+		createdAt: "create_date",
+		updatedAt: "update_date",
 	}
 );

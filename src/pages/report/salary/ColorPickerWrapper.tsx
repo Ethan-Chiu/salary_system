@@ -23,28 +23,32 @@ function floatToHexColor({ r, g, b }: ColorRGB) {
 	return `#${hexR}${hexG}${hexB}`;
 }
 
-
 interface ColorPickerWrapperProps {
-    initialColor: string;
-    setFinalColor: (newColor: string) => void;
+	initialColor: string;
+	setFinalColor: (newColor: string) => void;
 }
 
-
-export function ColorPickerWrapper({ initialColor, setFinalColor }: ColorPickerWrapperProps) {
-    const [color, setColor] = useState(initialColor);
-    return (
-        <div className="flex flex-col items-center">
-            <ColorPicker
-                // defaultValue={color}
-                // value={color}
-                onChange={(c) => {
-                    setColor(floatToHexColor({ r: c.r, g: c.g, b: c.b }));
-                }}
-            />
-            <Button variant="outline" className="w-full" onClick={() => setFinalColor(color)}>
-                Confirm
-            </Button>
-        </div>
-    );
+export function ColorPickerWrapper({
+	initialColor,
+	setFinalColor,
+}: ColorPickerWrapperProps) {
+	const [color, setColor] = useState(initialColor);
+	return (
+		<div className="flex flex-col items-center">
+			<ColorPicker
+				// defaultValue={color}
+				// value={color}
+				onChange={(c) => {
+					setColor(floatToHexColor({ r: c.r, g: c.g, b: c.b }));
+				}}
+			/>
+			<Button
+				variant="outline"
+				className="w-full"
+				onClick={() => setFinalColor(color)}
+			>
+				Confirm
+			</Button>
+		</div>
+	);
 }
-

@@ -9,12 +9,13 @@ import { z } from "zod";
 import { SyncService } from "~/server/service/sync_service";
 
 export const syncRouter = createTRPCRouter({
-    getCandEmployees: publicProcedure
-		.input(z.object({ func: z.string() ,period: z.number() }))
+	getCandEmployees: publicProcedure
+		.input(z.object({ func: z.string(), period: z.number() }))
 		.query(async ({ input }) => {
 			const syncService = container.resolve(SyncService);
 			let candEmployees = await syncService.getCandPaidEmployees(
-				input.func, input.period
+				input.func,
+				input.period
 			);
 			if (candEmployees == null) {
 				throw new BaseResponseError("candEmployees does not exist");
@@ -32,24 +33,24 @@ export const syncRouter = createTRPCRouter({
 			);
 			return diffDatas;
 		}),
-    synchronize: publicProcedure
-        .input(z.object({ period: z.number(), emp_no_list: z.string().array() }))
-        .mutation(async ({ input }) => {
-            const syncService = container.resolve(SyncService);
-            let updatedDatas = await syncService.synchronize(
-                input.period,
-                input.emp_no_list
-            );
-            return updatedDatas;
-        }),
+	synchronize: publicProcedure
+		.input(
+			z.object({ period: z.number(), emp_no_list: z.string().array() })
+		)
+		.mutation(async ({ input }) => {
+			const syncService = container.resolve(SyncService);
+			let updatedDatas = await syncService.synchronize(
+				input.period,
+				input.emp_no_list
+			);
+			return updatedDatas;
+		}),
 
 	getPaidEmployees: publicProcedure
-		.input(z.object({ func: z.string()}))
+		.input(z.object({ func: z.string() }))
 		.query(async ({ input }) => {
 			const syncService = container.resolve(SyncService);
-			let paidEmployees = await syncService.getPaidEmps(
-				input.func,
-			);
+			let paidEmployees = await syncService.getPaidEmps(input.func);
 			return paidEmployees;
-		})
+		}),
 });

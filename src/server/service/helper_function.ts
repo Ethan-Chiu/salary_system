@@ -24,11 +24,11 @@ export function is_date_available(
 	start_date: string | null,
 	end_date: string | null
 ): boolean {
-	const { selectedPeriod } = useContext(periodContext)
+	const { selectedPeriod } = useContext(periodContext);
 	if (!selectedPeriod) {
 		return false;
 	}
-	const targetDate = selectedPeriod.end_date
+	const targetDate = selectedPeriod.end_date;
 
 	if (end_date && end_date < targetDate) {
 		return false;

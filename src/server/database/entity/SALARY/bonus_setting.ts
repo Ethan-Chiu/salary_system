@@ -14,10 +14,10 @@ export class BonusSetting extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-    declare fixed_multiplier: number;
-    declare criterion_date: Date;
-    declare base_on: string;
-    declare type: string;
+	declare fixed_multiplier: number;
+	declare criterion_date: Date;
+	declare base_on: string;
+	declare type: string;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -37,23 +37,23 @@ BonusSetting.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-        fixed_multiplier: {
-            type: DataTypes.FLOAT,
+		fixed_multiplier: {
+			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
-        },
-        criterion_date: {
+		},
+		criterion_date: {
 			type: DataTypes.DATE,
 			allowNull: false,
 		},
-        base_on: {
+		base_on: {
 			type: DataTypes.STRING(32),
 			allowNull: false,
 		},
-        type: {
-            type: DataTypes.STRING(32),
+		type: {
+			type: DataTypes.STRING(32),
 			allowNull: false,
-        },
+		},
 		create_date: {
 			type: DataTypes.DATE,
 		},
@@ -72,7 +72,7 @@ BonusSetting.init(
 	{
 		sequelize,
 		tableName: "U_BONUS_SETTING",
-		createdAt: 'create_date',
-		updatedAt: 'update_date',
+		createdAt: "create_date",
+		updatedAt: "update_date",
 	}
 );

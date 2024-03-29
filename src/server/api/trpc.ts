@@ -24,7 +24,7 @@ import { UserService } from "../service/user_service";
  */
 
 interface CreateContextOptions {
-  session: Session | null;
+	session: Session | null;
 }
 
 /**
@@ -38,9 +38,9 @@ interface CreateContextOptions {
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
 export const createInnerTRPCContext = ({ session }: CreateContextOptions) => {
-  return {
-    session,
-  };
+	return {
+		session,
+	};
 };
 
 /**
@@ -50,15 +50,15 @@ export const createInnerTRPCContext = ({ session }: CreateContextOptions) => {
  * @see https://trpc.io/docs/context
  */
 export const createTRPCContext = async ({
-  req,
-  res,
+	req,
+	res,
 }: CreateNextContextOptions) => {
-  // Get the session from the server using the getServerSession wrapper function
-  const session = await getServerAuthSession({ req, res });
+	// Get the session from the server using the getServerSession wrapper function
+	const session = await getServerAuthSession({ req, res });
 
-  return createInnerTRPCContext({
-    session,
-  });
+	return createInnerTRPCContext({
+		session,
+	});
 };
 
 /**
@@ -70,17 +70,19 @@ export const createTRPCContext = async ({
  */
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
-  transformer: superjson,
-  errorFormatter({ shape, error }) {
-    return {
-      ...shape,
-      data: {
-        ...shape.data,
-        zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
-      },
-    };
-  },
+	transformer: superjson,
+	errorFormatter({ shape, error }) {
+		return {
+			...shape,
+			data: {
+				...shape.data,
+				zodError:
+					error.cause instanceof ZodError
+						? error.cause.flatten()
+						: null,
+			},
+		};
+	},
 });
 
 /**
@@ -108,32 +110,32 @@ export const publicProcedure = t.procedure;
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.session?.user) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
-  return next({
-    ctx: {
-      // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
-    },
-  });
+	if (!ctx.session?.user) {
+		throw new TRPCError({ code: "UNAUTHORIZED" });
+	}
+	return next({
+		ctx: {
+			// infers the `session` as non-nullable
+			session: { ...ctx.session, user: ctx.session.user },
+		},
+	});
 });
 
 const resolveAuthedUser = t.middleware(async ({ ctx, next }) => {
-  const user_emp_no = ctx.session?.user.emp_no
-  if (!user_emp_no) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
-  const userService = container.resolve(UserService);
-  const user = await userService.getUser(user_emp_no);
+	const user_emp_no = ctx.session?.user.emp_no;
+	if (!user_emp_no) {
+		throw new TRPCError({ code: "UNAUTHORIZED" });
+	}
+	const userService = container.resolve(UserService);
+	const user = await userService.getUser(user_emp_no);
 
-  return next({
-    ctx: {
-      ...ctx,
-      user: user
-    },
-  });
-})
+	return next({
+		ctx: {
+			...ctx,
+			user: user,
+		},
+	});
+});
 
 /**
  * Protected (authenticated) procedure
@@ -145,4 +147,6 @@ const resolveAuthedUser = t.middleware(async ({ ctx, next }) => {
  */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
 
-export const userProcedure = t.procedure.use(enforceUserIsAuthed).use(resolveAuthedUser)
+export const userProcedure = t.procedure
+	.use(enforceUserIsAuthed)
+	.use(resolveAuthedUser);

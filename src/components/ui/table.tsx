@@ -64,7 +64,6 @@ const TableRow = React.forwardRef<
 ));
 TableRow.displayName = "TableRow";
 
-
 const TableHead = React.forwardRef<
 	HTMLTableCellElement,
 	React.ThHTMLAttributes<HTMLTableCellElement>
@@ -107,7 +106,6 @@ const TableCaption = React.forwardRef<
 ));
 TableCaption.displayName = "TableCaption";
 
-
 // custom design
 const CustomTableRow = React.forwardRef<
 	HTMLTableRowElement,
@@ -139,7 +137,6 @@ const CustomTableCell = React.forwardRef<
 ));
 CustomTableCell.displayName = "TableCell";
 
-
 export {
 	Table,
 	TableHeader,
@@ -150,5 +147,5 @@ export {
 	TableCell,
 	TableCaption,
 	CustomTableRow,
-	CustomTableCell
+	CustomTableCell,
 };

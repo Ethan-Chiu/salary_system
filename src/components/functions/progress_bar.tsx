@@ -18,7 +18,11 @@ function ProgressBar({
 						selectedIndex={selectedIndex + 1}
 						label={label}
 					/>
-					{index == labels.length - 1 ? <></> : <DoubleArrowRightIcon />}
+					{index == labels.length - 1 ? (
+						<></>
+					) : (
+						<DoubleArrowRightIcon />
+					)}
 				</>
 			))}
 		</ol>

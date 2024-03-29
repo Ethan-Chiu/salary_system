@@ -18,24 +18,24 @@ function formatDateString(type: string, isoString: string) {
 	const options =
 		type === "hour"
 			? {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "numeric",
-                minute: "numeric",
-                second: "numeric",
-                // timeZoneName: "short",
-                timeZone: "UTC",
+					year: "numeric",
+					month: "long",
+					day: "numeric",
+					hour: "numeric",
+					minute: "numeric",
+					second: "numeric",
+					// timeZoneName: "short",
+					timeZone: "UTC",
 			  }
 			: type === "day"
 			? {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-            }
+					year: "numeric",
+					month: "long",
+					day: "numeric",
+			  }
 			: {};
 
 	const formattedDate = date.toLocaleString("zh-Hans-TW", options as any);
-    // const formattedDate = date.toLocaleString("en", options as any);
+	// const formattedDate = date.toLocaleString("en", options as any);
 	return formattedDate;
 }

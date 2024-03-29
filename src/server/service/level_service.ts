@@ -11,7 +11,7 @@ import { Op } from "sequelize";
 
 @injectable()
 export class LevelService {
-	constructor() { }
+	constructor() {}
 
 	async createLevel({
 		level,
@@ -73,12 +73,16 @@ export class LevelService {
 		}
 	}
 
-	async getLevelBySalary(salary: number, level_start: number, level_end: number): Promise<Level> {
+	async getLevelBySalary(
+		salary: number,
+		level_start: number,
+		level_end: number
+	): Promise<Level> {
 		const levelList = await Level.findAll({
 			where: {
 				level: {
 					[Op.gte]: salary,
-				}
+				},
 			},
 		});
 		const minLevel = await this.getLevelById(level_start);
@@ -87,7 +91,12 @@ export class LevelService {
 			throw new BaseResponseError("Level does not exist");
 		}
 		const targetLevel = levelList.sort((a, b) => a.level - b.level)[0]!;
-		const level = targetLevel.level < minLevel.level ? minLevel : targetLevel.level > maxLevel.level ? maxLevel : targetLevel;
+		const level =
+			targetLevel.level < minLevel.level
+				? minLevel
+				: targetLevel.level > maxLevel.level
+				? maxLevel
+				: targetLevel;
 		return level;
 	}
 }

@@ -7,7 +7,10 @@ import React, {
 } from "react";
 import { type Dayjs } from "dayjs";
 import { cn } from "~/lib/utils";
-import calendarContext, { type CalendarEventLevelWithID, type CalendarEventWithID } from "../context/calendar_context";
+import calendarContext, {
+	type CalendarEventLevelWithID,
+	type CalendarEventWithID,
+} from "../context/calendar_context";
 import { getMaxLevel } from "../utils/event_level";
 import { Button } from "~/components/ui/button";
 import {

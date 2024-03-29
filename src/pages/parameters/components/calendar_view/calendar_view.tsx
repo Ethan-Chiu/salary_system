@@ -21,12 +21,18 @@ export default function CalendarView() {
 	return (
 		<>
 			<ApiFunctionsProvider selectedTableType={selectedTableType}>
-				{selectedPeriod ?
-					<ParameterToolbarFunctionsProvider selectedTableType={selectedTableType} period_id={selectedPeriod.period_id}>
-						<CompCalendarContent target_date={selectedPeriod.end_date} />
-					</ParameterToolbarFunctionsProvider> :
+				{selectedPeriod ? (
+					<ParameterToolbarFunctionsProvider
+						selectedTableType={selectedTableType}
+						period_id={selectedPeriod.period_id}
+					>
+						<CompCalendarContent
+							target_date={selectedPeriod.end_date}
+						/>
+					</ParameterToolbarFunctionsProvider>
+				) : (
 					<p>Please select period first</p>
-				}
+				)}
 			</ApiFunctionsProvider>
 		</>
 	);
@@ -59,7 +65,9 @@ function CompCalendarContent({ target_date }: { target_date: string }) {
 }
 
 function CompCalendarView({ target_date }: { target_date: string }) {
-	const [currenMonth, setCurrentMonth] = useState(getDayInMonth(target_date, null));
+	const [currenMonth, setCurrentMonth] = useState(
+		getDayInMonth(target_date, null)
+	);
 	const { monthIndex } = useContext(calendarContext);
 
 	useEffect(() => {

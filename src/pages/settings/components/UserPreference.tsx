@@ -16,15 +16,15 @@ export const UserPreferenceProvider = ({ children }: PropsWithChildren<{}>) => {
 
 	useEffect(() => {
 		setLang("zh");
-	}, [])
+	}, []);
 
 	const setLanguage = (newLanguage: string) => {
 		setLang(newLanguage);
 	};
 
-	const contextValue: any = { 
+	const contextValue: any = {
 		language: lang,
-		setLanguage: setLang 
+		setLanguage: setLang,
 	};
 
 	return (

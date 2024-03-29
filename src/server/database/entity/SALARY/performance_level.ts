@@ -14,8 +14,8 @@ export class PerformanceLevel extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-    declare performance_level: string;
-    declare multiplier: number;
+	declare performance_level: string;
+	declare multiplier: number;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -35,15 +35,15 @@ PerformanceLevel.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-        performance_level: {
-            type: DataTypes.STRING(128),
+		performance_level: {
+			type: DataTypes.STRING(128),
 			allowNull: false,
-        },
-        multiplier: {
-            type: DataTypes.INTEGER.UNSIGNED,
+		},
+		multiplier: {
+			type: DataTypes.INTEGER.UNSIGNED,
 			unique: false,
 			allowNull: false,
-        },
+		},
 		create_date: {
 			type: DataTypes.DATE,
 		},
@@ -62,7 +62,7 @@ PerformanceLevel.init(
 	{
 		sequelize,
 		tableName: "U_PERFORMANCE_LEVEL",
-		createdAt: 'create_date',
-		updatedAt: 'update_date',
+		createdAt: "create_date",
+		updatedAt: "update_date",
 	}
 );

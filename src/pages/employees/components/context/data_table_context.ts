@@ -1,5 +1,8 @@
 import React from "react";
-import { EmployeeTableEnum, EmployeeTableEnumValues } from "../../employee_tables";
+import {
+	EmployeeTableEnum,
+	EmployeeTableEnumValues,
+} from "../../employee_tables";
 const dataTableContext = React.createContext<{
 	selectedTableType: EmployeeTableEnum;
 	setSelectedTableType: (table: EmployeeTableEnum) => void;

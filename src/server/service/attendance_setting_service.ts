@@ -12,7 +12,7 @@ import { EHRService } from "./ehr_service";
 
 @injectable()
 export class AttendanceSettingService {
-	constructor() { }
+	constructor() {}
 
 	async createAttendanceSetting({
 		personal_leave_dock,
@@ -63,7 +63,9 @@ export class AttendanceSettingService {
 		return newData;
 	}
 
-	async getCurrentAttendanceSetting(period_id: number): Promise<AttendanceSetting | null> {
+	async getCurrentAttendanceSetting(
+		period_id: number
+	): Promise<AttendanceSetting | null> {
 		const ehr_service = container.resolve(EHRService);
 		const period = await ehr_service.getPeriodById(period_id);
 		const current_date_string = period.end_date;

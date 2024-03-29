@@ -11,12 +11,14 @@ import { LoadingSpinner } from "~/components/loading";
 import periodContext from "~/components/context/period_context";
 
 const Salary: NextPageWithLayout = () => {
-	return <>
-		<div className="flex h-full flex-col p-4">
-			<Header title="salary report" showOptions className="mb-4" />
-			<ExportPage />
-		</div>
-	</>
+	return (
+		<>
+			<div className="flex h-full flex-col p-4">
+				<Header title="salary report" showOptions className="mb-4" />
+				<ExportPage />
+			</div>
+		</>
+	);
 };
 
 Salary.getLayout = function getLayout(page: React.ReactElement) {
@@ -29,46 +31,46 @@ Salary.getLayout = function getLayout(page: React.ReactElement) {
 
 export default Salary;
 
-function ExportPage({}: {
-}) {
+function ExportPage({}: {}) {
 	// const getExcelA = api.function.getExcelA.useQuery();
 	const { selectedPeriod } = useContext(periodContext);
 	console.log(selectedPeriod);
 	const pseudoDatas = [
 		{
-		  name: 'Sheet1',
-		  data: [
-			{ Name: 'John', Age: 25, City: 'New York' },
-			{ Name: 'Alice', Age: 30, City: 'San Francisco' },
-			{ Name: 'Bob', Age: 22, City: 'Los Angeles' },
-			{ Name: 'Eva', Age: 28, City: 'Chicago' },
-			// Add more rows as needed
-		  ],
+			name: "Sheet1",
+			data: [
+				{ Name: "John", Age: 25, City: "New York" },
+				{ Name: "Alice", Age: 30, City: "San Francisco" },
+				{ Name: "Bob", Age: 22, City: "Los Angeles" },
+				{ Name: "Eva", Age: 28, City: "Chicago" },
+				// Add more rows as needed
+			],
 		},
 		{
-		  name: 'Sheet2',
-		  data: [
-			{ Product: 'Laptop', Price: 1200, Stock: 10 },
-			{ Product: 'Phone', Price: 800, Stock: 20 },
-			// Add more rows as needed
-		  ],
+			name: "Sheet2",
+			data: [
+				{ Product: "Laptop", Price: 1200, Stock: 10 },
+				{ Product: "Phone", Price: 800, Stock: 20 },
+				// Add more rows as needed
+			],
 		},
 		// Add more sheets as needed
-	  ];
+	];
 	const getExcelA = {
 		isFetched: true,
-		data: pseudoDatas
+		data: pseudoDatas,
 	};
-	
+
 	function getExcelData(Alldatas: any) {
 		let excelData: any = [];
 		Alldatas.map((sheetDatas: any) => {
 			let name: string = sheetDatas.name;
 			try {
 				let datas = sheetDatas.data;
-				let columns = Object.keys(datas[0]).map((key: string) =>
-					// Translate(key)
-					key
+				let columns = Object.keys(datas[0]).map(
+					(key: string) =>
+						// Translate(key)
+						key
 				);
 				let rows = datas.map((data: any, index: number) => {
 					return Object.keys(data).map((key: string) => {
@@ -81,7 +83,10 @@ function ExportPage({}: {
 				console.log(e);
 				excelData.push({
 					sheetName: name,
-					data: [["test col 1", "test col 2"], [123, 456]],
+					data: [
+						["test col 1", "test col 2"],
+						[123, 456],
+					],
 				});
 			}
 		});
@@ -93,7 +98,9 @@ function ExportPage({}: {
 			{getExcelA.isFetched ? (
 				<>
 					<div className="grow">
-						<ExcelViewer original_sheets={getExcelData(getExcelA.data)} />
+						<ExcelViewer
+							original_sheets={getExcelData(getExcelA.data)}
+						/>
 					</div>
 				</>
 			) : (

@@ -4,7 +4,11 @@ import dayjs from "dayjs";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
 
-export default function CalendarHeader({ target_date }: { target_date: string }) {
+export default function CalendarHeader({
+	target_date,
+}: {
+	target_date: string;
+}) {
 	const { monthIndex, setMonthIndex } = useContext(calendarContext);
 
 	function handlePrevMonth() {
@@ -17,7 +21,9 @@ export default function CalendarHeader({ target_date }: { target_date: string })
 
 	function handleReset() {
 		setMonthIndex(
-			monthIndex === dayjs(target_date).month() ? monthIndex : dayjs(target_date).month()
+			monthIndex === dayjs(target_date).month()
+				? monthIndex
+				: dayjs(target_date).month()
 		);
 	}
 

@@ -46,12 +46,11 @@ export default function Login() {
 
 	const onSubmit = useCallback(
 		async (data: z.infer<typeof LoginFormSchema>) => {
-
 			const res = await signIn("credentials", {
 				username: data.userid,
 				password: data.password,
 				callbackUrl: "/",
-				redirect: false
+				redirect: false,
 			});
 			if (!res?.ok) {
 				console.log(`error ${res?.error}`);
@@ -65,9 +64,8 @@ export default function Login() {
 						</pre>
 					),
 				});
-			}
-			else {
-				void router.push('/');
+			} else {
+				void router.push("/");
 			}
 		},
 		[router]
@@ -79,7 +77,11 @@ export default function Login() {
 				{!forgetPwd ? (
 					<Card className="w-[400px]">
 						<Form {...form}>
-							<form onSubmit={(event) => void form.handleSubmit(onSubmit)(event)}>
+							<form
+								onSubmit={(event) =>
+									void form.handleSubmit(onSubmit)(event)
+								}
+							>
 								<CardHeader>
 									<div className="justify-center">
 										<CardTitle>Login</CardTitle>
@@ -132,7 +134,12 @@ export default function Login() {
 									</div>
 								</CardContent>
 								<CardFooter className="justify-center">
-									<Button disabled={form.formState.isSubmitting} type="submit">LOGIN</Button>
+									<Button
+										disabled={form.formState.isSubmitting}
+										type="submit"
+									>
+										LOGIN
+									</Button>
 								</CardFooter>
 							</form>
 						</Form>

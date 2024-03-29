@@ -14,7 +14,6 @@ import { LevelService } from "./level_service";
 
 @injectable()
 export class EmployeePaymentService {
-
 	async createEmployeePayment({
 		emp_no,
 		base_salary,
@@ -63,7 +62,9 @@ export class EmployeePaymentService {
 		return employeePayment;
 	}
 
-	async getCurrentEmployeePayment(period_id: number): Promise<EmployeePayment[]> {
+	async getCurrentEmployeePayment(
+		period_id: number
+	): Promise<EmployeePayment[]> {
 		const ehr_service = container.resolve(EHRService);
 		const period = await ehr_service.getPeriodById(period_id);
 		const current_date_string = period.end_date;
@@ -83,7 +84,10 @@ export class EmployeePaymentService {
 		return employeePayment;
 	}
 
-	async getCurrentEmployeePaymentById(id: number, period_id: number): Promise<EmployeePayment[]> {
+	async getCurrentEmployeePaymentById(
+		id: number,
+		period_id: number
+	): Promise<EmployeePayment[]> {
 		const ehr_service = container.resolve(EHRService);
 		const period = await ehr_service.getPeriodById(period_id);
 		const current_date_string = period.end_date;
@@ -104,7 +108,10 @@ export class EmployeePaymentService {
 		return employeePayment;
 	}
 
-	async getCurrentEmployeePaymentByEmpNo(emp_no: string, period_id: number): Promise<EmployeePayment | null> {
+	async getCurrentEmployeePaymentByEmpNo(
+		emp_no: string,
+		period_id: number
+	): Promise<EmployeePayment | null> {
 		const ehr_service = container.resolve(EHRService);
 		const period = await ehr_service.getPeriodById(period_id);
 		const current_date_string = period.end_date;
@@ -211,20 +218,31 @@ export class EmployeePaymentService {
 		}
 	}
 
-	async autoCalculateEmployeePayment(period_id: number, emp_no_list: string[]): Promise<void> {
+	async autoCalculateEmployeePayment(
+		period_id: number,
+		emp_no_list: string[]
+	): Promise<void> {
 		const levelRangeService = container.resolve(LevelRangeService);
 		const leveService = container.resolve(LevelService);
 
 		emp_no_list.forEach(async (emp_no: string) => {
-			const employeePayment = await this.getCurrentEmployeePaymentByEmpNo(emp_no, period_id);
+			const employeePayment = await this.getCurrentEmployeePaymentByEmpNo(
+				emp_no,
+				period_id
+			);
 			if (employeePayment == null) {
 				throw new BaseResponseError("Employee Payment does not exist");
 			}
 			const levelRangeList = await levelRangeService.getAllLevelRange();
-			const salary = employeePayment.base_salary + employeePayment.food_bonus;
+			const salary =
+				employeePayment.base_salary + employeePayment.food_bonus;
 			let result = [];
 			for (const levelRange of levelRangeList) {
-				const level = await leveService.getLevelBySalary(salary, levelRange.level_start, levelRange.level_end);
+				const level = await leveService.getLevelBySalary(
+					salary,
+					levelRange.level_start,
+					levelRange.level_end
+				);
 				result.push({
 					type: levelRange.type,
 					level: level.level,
@@ -235,8 +253,12 @@ export class EmployeePaymentService {
 				{
 					l_i: result.find((r) => r.type === "l_i")?.level ?? 0,
 					h_i: result.find((r) => r.type === "h_i")?.level ?? 0,
-					labor_retirement: result.find((r) => r.type === "labor_retirement")?.level ?? 0,
-					occupational_injury: result.find((r) => r.type === "occupational_injury")?.level ?? 0,
+					labor_retirement:
+						result.find((r) => r.type === "labor_retirement")
+							?.level ?? 0,
+					occupational_injury:
+						result.find((r) => r.type === "occupational_injury")
+							?.level ?? 0,
 					update_by: "system",
 				},
 				{ where: { emp_no: emp_no } }
@@ -244,6 +266,37 @@ export class EmployeePaymentService {
 			if (affectedCount[0] == 0) {
 				throw new BaseResponseError("Update error");
 			}
-		})
+		});
+	}
+
+	async rescheduleEmployeePayment(): Promise<void> {
+		const employeePaymentList = await EmployeePayment.findAll({
+			order: [
+				["emp_no", "ASC"],
+				["start_date", "ASC"],
+			],
+		});
+
+		for (let i = 0; i < employeePaymentList.length - 1; i += 1) {
+			const end_date_string = get_date_string(
+				new Date(employeePaymentList[i]!.dataValues.end_date!)
+			);
+			const start_date = new Date(
+				employeePaymentList[i + 1]!.dataValues.start_date
+			);
+			const new_end_date_string = get_date_string(
+				new Date(start_date.setDate(start_date.getDate() - 1))
+			);
+			if (
+				end_date_string != new_end_date_string &&
+				employeePaymentList[i]!.dataValues.emp_no ==
+					employeePaymentList[i + 1]!.dataValues.emp_no
+			) {
+				await this.updateEmployeePayment({
+					id: employeePaymentList[i]!.dataValues.id,
+					end_date: new_end_date_string,
+				});
+			}
+		}
 	}
 }

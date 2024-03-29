@@ -1,15 +1,17 @@
 import React, { useState, type PropsWithChildren } from "react";
 import dataTableContext from "./data_table_context";
-import { EmployeeTableEnum, EmployeeTableEnumValues } from "../../employee_tables";
+import {
+	EmployeeTableEnum,
+	EmployeeTableEnumValues,
+} from "../../employee_tables";
 
-interface DataTableContextProviderProps { }
+interface DataTableContextProviderProps {}
 
 export default function DataTableContextProvider({
 	children,
 }: PropsWithChildren<DataTableContextProviderProps>) {
-	const [selectedTableType, setSelectedTableType] = useState<EmployeeTableEnum>(
-		EmployeeTableEnumValues[0]
-	);
+	const [selectedTableType, setSelectedTableType] =
+		useState<EmployeeTableEnum>(EmployeeTableEnumValues[0]);
 
 	return (
 		<dataTableContext.Provider

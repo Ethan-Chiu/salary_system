@@ -128,7 +128,7 @@ EmployeeData.init(
 	{
 		sequelize,
 		tableName: "U_EMPLOYEE_DATA",
-		createdAt: 'create_date',
-		updatedAt: 'update_date',
+		createdAt: "create_date",
+		updatedAt: "update_date",
 	}
-)
+);

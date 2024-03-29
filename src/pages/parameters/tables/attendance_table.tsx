@@ -172,7 +172,12 @@ export function attendanceMapper(
 	];
 }
 
-export function AttendanceTable({ index, globalFilter, period_id, viewOnly }: any) {
+export function AttendanceTable({
+	index,
+	globalFilter,
+	period_id,
+	viewOnly,
+}: any) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentAttendanceSetting.useQuery({ period_id });
 	const filterKey: RowItemKey = "name";

@@ -85,7 +85,7 @@ BankSetting.init(
 	{
 		sequelize,
 		tableName: "U_BANK_SETTING",
-		createdAt: 'create_date',
-		updatedAt: 'update_date',
+		createdAt: "create_date",
+		updatedAt: "update_date",
 	}
 );

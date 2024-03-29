@@ -10,7 +10,7 @@ import { select_value } from "./helper_function";
 
 @injectable()
 export class TrustMoneyService {
-	constructor() { }
+	constructor() {}
 
 	async createTrustMoney({
 		position,
@@ -42,7 +42,10 @@ export class TrustMoneyService {
 		return trustMoney;
 	}
 
-	async getTrustMoneyByPosition(position: number, position_type: string): Promise<TrustMoney | null> {
+	async getTrustMoneyByPosition(
+		position: number,
+		position_type: string
+	): Promise<TrustMoney | null> {
 		const trustMoney = await TrustMoney.findOne({
 			where: {
 				position: position,

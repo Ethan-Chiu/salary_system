@@ -21,7 +21,6 @@ export function DataTableViewOptions<TData>({
 	table,
 	className,
 }: DataTableViewOptionsProps<TData>) {
-
 	if (!table) {
 		return <div />;
 	}

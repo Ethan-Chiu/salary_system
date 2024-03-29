@@ -1,10 +1,11 @@
 import { useContext } from "react";
-import {UserPreferenceContext, useUserPreference} from "~/pages/settings/components/UserPreference";
+import {
+	UserPreferenceContext,
+	useUserPreference,
+} from "~/pages/settings/components/UserPreference";
 import { useSession, getSession } from "next-auth/react";
 
-
 export function Translate(word: string) {
-
 	// var language = (localStorage) ? localStorage.getItem("language"): "zh";
 	// if (!language) localStorage.setItem("language", "zh");
 	// console.log(language);
@@ -134,21 +135,20 @@ export function Translate(word: string) {
 		if (word === "confirm") return "確認";
 		if (word === "auto calculate") return "自動計算";
 		if (word === "form") return "表單";
-		
 
 		// tables
 		if (word === "attendanceSetting") return "請假加班";
-		if (word === "bankSetting")	return "銀行";
-		if (word === "insuranceRateSetting")	return "勞健保費率";
-		if (word === "bonusSetting")	return "獎金";
-		if (word === "bonusDepartmentSetting")	return "獎金部門";
-		if (word === "bonusPositionSetting")	return "獎金職等";
-		if (word === "bonusPositionTypeSetting")	return "獎金職級";
-		if (word === "bonusSenioritySetting")			return "獎金年資";
-		if (word === "levelRange")	return "級距類別範圍";
-		if (word === "performanceLevel")	return "績效等級比例";
-		if (word === "trustMoney")	return "信託金";
-		if (word === "basicInfo")	return "基本資訊";
+		if (word === "bankSetting") return "銀行";
+		if (word === "insuranceRateSetting") return "勞健保費率";
+		if (word === "bonusSetting") return "獎金";
+		if (word === "bonusDepartmentSetting") return "獎金部門";
+		if (word === "bonusPositionSetting") return "獎金職等";
+		if (word === "bonusPositionTypeSetting") return "獎金職級";
+		if (word === "bonusSenioritySetting") return "獎金年資";
+		if (word === "levelRange") return "級距類別範圍";
+		if (word === "performanceLevel") return "績效等級比例";
+		if (word === "trustMoney") return "信託金";
+		if (word === "basicInfo") return "基本資訊";
 	}
 
 	if (language === "en") {

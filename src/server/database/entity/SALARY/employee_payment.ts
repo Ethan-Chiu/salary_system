@@ -121,7 +121,7 @@ EmployeePayment.init(
 	{
 		sequelize,
 		tableName: "U_EMPLOYEE_PAYMENT",
-		createdAt: 'create_date',
-		updatedAt: 'update_date',
+		createdAt: "create_date",
+		updatedAt: "update_date",
 	}
-)
+);

@@ -14,15 +14,15 @@ export class EmployeeAccountService {
 
 	async createEmployeeAccount({
 		emp_no,
-        bank_account,
-        ratio,
+		bank_account,
+		ratio,
 	}: z.infer<typeof createEmployeeAccountService>): Promise<EmployeeAccount> {
 		const now = new Date();
 
 		const newData = await EmployeeAccount.create({
 			emp_no: emp_no,
-            bank_account: bank_account,
-            ratio: ratio,
+			bank_account: bank_account,
+			ratio: ratio,
 			create_by: "system",
 			update_by: "system",
 		});
@@ -40,8 +40,7 @@ export class EmployeeAccountService {
 
 	async getCurrentEmployeeAccount(): Promise<EmployeeAccount[]> {
 		const now = Date();
-		const employeeAccount = await EmployeeAccount.findAll({
-		});
+		const employeeAccount = await EmployeeAccount.findAll({});
 		return employeeAccount;
 	}
 
@@ -53,8 +52,8 @@ export class EmployeeAccountService {
 	async updateEmployeeAccount({
 		id,
 		emp_no,
-        bank_account,
-        ratio,
+		bank_account,
+		ratio,
 	}: z.infer<typeof updateEmployeeAccountService>): Promise<void> {
 		const employeeAccount = await this.getEmployeeAccountById(id!);
 		if (employeeAccount == null) {
@@ -63,8 +62,11 @@ export class EmployeeAccountService {
 		const affectedCount = await EmployeeAccount.update(
 			{
 				emp_no: select_value(emp_no, employeeAccount.emp_no),
-				bank_account: select_value(bank_account, employeeAccount.bank_account),
-                ratio: select_value(ratio, employeeAccount.ratio),
+				bank_account: select_value(
+					bank_account,
+					employeeAccount.bank_account
+				),
+				ratio: select_value(ratio, employeeAccount.ratio),
 				update_by: "system",
 			},
 			{ where: { id: id } }
@@ -75,7 +77,7 @@ export class EmployeeAccountService {
 	}
 
 	async deleteEmployeeAcount(id: number): Promise<void> {
-        const destroyedRows = await EmployeeAccount.destroy({
+		const destroyedRows = await EmployeeAccount.destroy({
 			where: { id: id },
 		});
 		if (destroyedRows != 1) {
