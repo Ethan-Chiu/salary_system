@@ -33,6 +33,7 @@ export const syncRouter = createTRPCRouter({
 			);
 			return diffDatas;
 		}),
+
 	synchronize: publicProcedure
 		.input(
 			z.object({ period: z.number(), emp_no_list: z.string().array() })

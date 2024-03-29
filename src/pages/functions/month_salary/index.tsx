@@ -25,6 +25,7 @@ import {
 	AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
 import { useRouter } from "next/router";
+import { PaidEmployee } from "~/server/service/sync_service";
 
 type FunctionStepPage = {
 	title: string;
@@ -32,8 +33,6 @@ type FunctionStepPage = {
 };
 
 const MonthSalary: NextPageWithLayout = () => {
-	const router = useRouter();
-	const [selectedIndex, setSelectedIndex] = useState(0);
 	const { selectedPeriod } = useContext(periodContext);
 
 	const periodId = selectedPeriod?.period_id;
@@ -55,7 +54,14 @@ const MonthSalary: NextPageWithLayout = () => {
 				</Link>
 			</div>
 		);
-	}
+	} 
+
+	return <MonthSalaryContent periodId={periodId} />;
+};
+
+function MonthSalaryContent({ periodId }: { periodId: number }) {
+	const router = useRouter();
+	const [selectedIndex, setSelectedIndex] = useState(0);
 
 	const { isLoading, isError, data, error } =
 		api.sync.getCandEmployees.useQuery({
@@ -70,8 +76,6 @@ const MonthSalary: NextPageWithLayout = () => {
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast
 	}
-
-	const hasBug = data.some((cand) => cand.bug !== undefined);
 
 	const pageList: FunctionStepPage[] = [
 		{
@@ -132,6 +136,9 @@ const MonthSalary: NextPageWithLayout = () => {
 	];
 	const titles: string[] = pageList.map((page) => page.title);
 
+	// const hasBug = data.some((cand) => cand.bug !== undefined);
+	const hasBug = false;
+
 	return (
 		<AlertDialog
 			open={hasBug}
@@ -147,45 +154,49 @@ const MonthSalary: NextPageWithLayout = () => {
 				<div className="h-4" />
 				{pageList[selectedIndex]?.page ?? <></>}
 			</div>
-			<AlertDialogContent className="w-[90vw]">
-				<AlertDialogHeader>
-					<AlertDialogTitle>
-						There are bugs in the data
-					</AlertDialogTitle>
-					<AlertDialogDescription>
-						Please resolve these bugs before proceed. You might need
-						to contact the EHR team.
-					</AlertDialogDescription>
-				</AlertDialogHeader>
-				<div className="m-4">
-					{data.map((cand) => {
-						return (
-							cand.bug && (
-								<div
-									key={cand.emp_no}
-									className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0"
-								>
-									<span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
-									<div className="space-y-1">
-										<p className="text-sm font-medium leading-none">
-											{`${cand.name} (${cand.emp_no})`}
-										</p>
-										<p className="text-sm text-muted-foreground">
-											{cand.bug}
-										</p>
-									</div>
-								</div>
-							)
-						);
-					})}
-				</div>
-				<AlertDialogFooter>
-					<AlertDialogAction>Continue</AlertDialogAction>
-				</AlertDialogFooter>
-			</AlertDialogContent>
+			<CompAlert data={data} />
 		</AlertDialog>
 	);
-};
+}
+
+function CompAlert({ data }: { data: PaidEmployee[] }) {
+	return (
+		<AlertDialogContent className="w-[90vw]">
+			<AlertDialogHeader>
+				<AlertDialogTitle>There are bugs in the data</AlertDialogTitle>
+				<AlertDialogDescription>
+					Please resolve these bugs before proceed. You might need to
+					contact the EHR team.
+				</AlertDialogDescription>
+			</AlertDialogHeader>
+			<div className="m-4">
+				{data.map((cand) => {
+					return (
+						cand.bug && (
+							<div
+								key={cand.emp_no}
+								className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0"
+							>
+								<span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
+								<div className="space-y-1">
+									<p className="text-sm font-medium leading-none">
+										{`${cand.name} (${cand.emp_no})`}
+									</p>
+									<p className="text-sm text-muted-foreground">
+										{cand.bug}
+									</p>
+								</div>
+							</div>
+						)
+					);
+				})}
+			</div>
+			<AlertDialogFooter>
+				<AlertDialogAction>Continue</AlertDialogAction>
+			</AlertDialogFooter>
+		</AlertDialogContent>
+	);
+}
 
 MonthSalary.getLayout = function getLayout(page: React.ReactElement) {
 	return (

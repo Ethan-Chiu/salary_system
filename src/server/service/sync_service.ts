@@ -6,13 +6,21 @@ import { Emp } from "../database/entity/UMEDIA/emp";
 import { EmployeeDataService } from "./employee_data_service";
 import { EmployeePaymentService } from "./employee_payment_service";
 import { EmployeeTrustService } from "./employee_trust_service";
+import { Exact, isKeyOfExactType } from "~/utils/exact_type";
 
-export interface CombinedData {
+interface DataComparison {
 	key: string;
 	salary_value: any;
 	ehr_value: any;
 	is_different: boolean;
 }
+
+export class SyncData {
+	emp_no: DataComparison;
+	name: DataComparison;
+	comparisons: Array<DataComparison>;
+}
+
 export interface PaidEmployee {
 	emp_no: string;
 	name: string;
@@ -68,7 +76,8 @@ export class SyncService {
 			else return "past";
 		} else return "past";
 	}
-	async empToEmployee(ehr_data: Emp) {
+
+	empToEmployee(ehr_data: Emp) {
 		let salary_data = new EmployeeData();
 		salary_data.emp_no = ehr_data.emp_no!;
 		salary_data.emp_name = ehr_data.emp_name!;
@@ -88,6 +97,43 @@ export class SyncService {
 		salary_data.nbanknumber = ehr_data.nbanknumber!;
 		return salary_data;
 	}
+
+	dataComparison<ValueT>(key: keyof EmployeeData, ehrData: ValueT, salaryData?: ValueT) {
+		const excludedKeys: (keyof EmployeeData)[] = [
+			"id",
+			"create_date",
+			"create_by",
+			"update_date",
+			"update_by",
+		];
+
+		const isDifferent = !excludedKeys.includes(key) && (ehrData !== salaryData);
+
+		const comparison: DataComparison = {
+			key: key,
+			salary_value: salaryData,
+			ehr_value: ehrData,
+			is_different: isDifferent,
+		};
+
+		return comparison;
+	}
+
+	compareEmpData<T>(ehrEmp: Exact<T, EmployeeData>, salaryEmp?: Exact<T, EmployeeData>): SyncData {
+		const syncData: SyncData = new SyncData();
+
+		syncData.emp_no = this.dataComparison("emp_no", ehrEmp.emp_no, salaryEmp?.emp_no);
+		syncData.name = this.dataComparison("emp_name", ehrEmp.emp_name, salaryEmp?.emp_name);
+
+		syncData.comparisons = [];
+		for (const key in ehrEmp.dataValues) {
+			if (key == "emp_no" || key == "emp_name") continue;
+			syncData.comparisons.push(this.dataComparison(key as keyof EmployeeData, ehrEmp.get(key), salaryEmp?.get(key)));
+		}
+
+		return syncData;
+	}
+
 
 	//stage1
 	async getCandPaidEmployees(
@@ -266,21 +312,22 @@ export class SyncService {
 		}
 		return cand_paid_emps; // 返回候選已支付員工數組
 	}
+	
 	// Stage 2
 	async checkEmployeeData(
-		func: string, // 要執行的功能
-		period: number // 期間
-	): Promise<CombinedData[][] | undefined> {
-		// 返回組合數據的二維數組的Promise或undefined
-		const ehrService = container.resolve(EHRService); // 獲取EHR服務的實例
-		let salary_datas = []; // 初始化工資數據為空
+		func: string,
+		period: number
+	): Promise<SyncData[] | null> {
+		const ehrService = container.resolve(EHRService);
 
 		const cand_paid_emps = await this.getCandPaidEmployees(func, period); // 獲取候選需支付員工數據
 		const cand_emp_no_list = cand_paid_emps.map((emp) => emp.emp_no); // 提取候選員工的員工編號列表
+
+		// Get Data from Salary and EHR
+		let salary_datas: EmployeeData[] = [];
+
 		if (func == "month_salary") {
-			// 如果功能是月薪計算
 			salary_datas = await EmployeeData.findAll({
-				// 查找符合候選員工編號的工資數據
 				where: {
 					emp_no: {
 						[Op.in]: cand_emp_no_list,
@@ -290,103 +337,39 @@ export class SyncService {
 		} else {
 			salary_datas = await EmployeeData.findAll({}); // 否則查找所有工資數據
 		}
-		const ehr_datas = await ehrService.getEmp(period); // 從EHR服務獲取員工數據
-		interface EmpDictType {
-			[key: string]: any;
-		}
-		const ehrDict: EmpDictType = {}; // 創建EHR員工字典
-		const salaryDict: EmpDictType = {}; // 創建salary資料庫員工字典
-		ehr_datas.forEach((emp) => {
-			// 將EHR員工映射到字典中
-			ehrDict[emp.emp_no!] = emp;
+
+		const ehr_datas: Emp[] = await ehrService.getEmp(period);
+		const ehr_datas_transformed: EmployeeData[] = ehr_datas.map((emp) => this.empToEmployee(emp));
+		
+		// Lookup table by EMP_NO
+		const ehrDict: Map<string, EmployeeData> = new Map();
+		const salaryDict: Map<string, EmployeeData> = new Map();
+
+		ehr_datas_transformed.forEach((emp) => {
+			ehrDict.set(emp.emp_no, emp);
 		});
 		salary_datas.forEach((emp) => {
-			// 將salary員工映射到字典中
-			salaryDict[emp.emp_no!] = emp;
+			salaryDict.set(emp.emp_no, emp);
 		});
-		const changedDatas = await Promise.all(
-			// 檢查並返回有更動的數據
-			cand_emp_no_list.map(async (cand_emp_no: string) => {
-				const excludedKeys = [
-					// 排除的鍵列表
-					"id",
-					"create_date",
-					"create_by",
-					"update_date",
-					"update_by",
-				];
-				if (!ehrDict[cand_emp_no]) {
-					// 如果EHR中沒有對應的員工
-					return undefined;
-				} else if (!salaryDict[cand_emp_no]) {
-					// 如果salary數據中沒有對應的員工
-					const employee_data = await this.empToEmployee(
-						// 將EHR數據轉換為Employee對象
-						ehrDict[cand_emp_no]
-					);
-					const keys = Object.keys(employee_data.dataValues); // 獲取對象的鍵列表
-					const combinedDatas = await Promise.all(
-						// 創建所有欄位比較結果
-						keys.map(async (key) => {
-							const salary_value = undefined; // 舊值設置為undefined
-							const ehr_value = (ehrDict[cand_emp_no] as any)[ // 從EHR字典中獲取值
-								key
-							];
-							const is_different = // 判斷舊值和EHR值是否不同
-								!excludedKeys.includes(key) &&
-								salary_value !== ehr_value;
-							const combinedData: CombinedData = {
-								// 創建單一欄位比較結果
-								key: key,
-								salary_value: salary_value,
-								ehr_value: ehr_value,
-								is_different: is_different,
-							};
-							return combinedData;
-						})
-					);
-					return combinedDatas; // 返回所有欄位比較結果
-				} else {
-					// 如果EHR數據和工資數據都存在
-					const salary_data = salaryDict[cand_emp_no]; // 獲取工資數據
-					const keys = Object.keys(salary_data.dataValues); // 獲取對象的鍵列表
-					const combinedDatas = await Promise.all(
-						// 創建所以欄位比較結果
-						keys.map(async (key) => {
-							const salary_value = (salary_data as any)[key]; // 從工資數據中獲取值
-							const ehr_value = // 從EHR字典中獲取值
-								(ehrDict[salary_data.emp_no] as any)[key];
-							const is_different = // 判斷工資值和EHR值是否不同
-								!excludedKeys.includes(key) &&
-								salary_value !== ehr_value;
-							const combinedData: CombinedData = {
-								// 創建單一欄位比較結果
-								key: key,
-								salary_value: salary_value,
-								ehr_value: ehr_value,
-								is_different: is_different,
-							};
-							return combinedData;
-						})
-					);
-					if (
-						// 如果存在不同的數據則返回所有欄位比較結果
-						combinedDatas.some(
-							(combinedData) => combinedData.is_different === true
-						)
-					) {
-						return combinedDatas; // 返回所有欄位比較結果
-					}
-					return undefined; // 對於db_data等於ehrData的情況，明確返回undefined
-				}
-			})
-		);
-		// 过滤掉未定义的值
-		const filteredChangeDatas = changedDatas.filter(
-			// 过滤未定义的值
-			(data): data is CombinedData[] => data !== undefined
-		);
-		return filteredChangeDatas; // 返回過濾後的所有員工所有欄位比較結果
+
+		// Compare data
+		const changedDatas: SyncData[] = [];
+		for (const cand_emp_no of cand_emp_no_list) {
+			// Get data from lookup table
+			const ehrEmp = ehrDict.get(cand_emp_no)
+			const salaryEmp = salaryDict.get(cand_emp_no)
+
+			if (!ehrEmp) {
+				continue;
+			}
+
+			const syncData = this.compareEmpData(ehrEmp, salaryEmp)
+			const hasDiff = syncData.comparisons.some((data) => data.is_different);
+			if (hasDiff)
+				changedDatas.push(syncData)
+		}
+
+		return changedDatas;
 	}
 	async synchronize(period: number, emp_no_list: string[]) {
 		const ehrService = container.resolve(EHRService);

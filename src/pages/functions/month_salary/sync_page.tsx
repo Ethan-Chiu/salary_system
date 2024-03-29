@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { api } from "~/utils/api";
-import { CombinedData } from "~/server/service/employee_data_service";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 
@@ -23,6 +22,8 @@ import { SelectModeComponent } from "~/pages/synchronize/components/Selects";
 import { EmployeeDataChange } from "~/pages/synchronize/components/EmpDataTable";
 import { AllDoneDialog } from "~/pages/synchronize/components/AllDoneDialog";
 import { Translate } from "~/lib/utils/translation";
+import { LoadingSpinner } from "~/components/loading";
+import { SyncData } from "~/server/service/sync_service";
 
 interface EMP {
 	emp_no: string;
@@ -36,32 +37,19 @@ export function SyncPage({
 	selectedIndex: number;
 	setSelectedIndex: (index: number) => void;
 }) {
-	const getDiffDatas = api.employeeData.checkEmployeeData.useQuery({
-		func: "",
-	});
-	const getDataLength = () => (getDiffDatas.data ?? []).length;
-
 	const [checkedEmployees, setCheckedEmployees] = useState<Array<string>>([]);
-	const [selectedEmployee, setSelectedEmployee] = useState("");
-	const [diffColor, setDiffColor] = useState("red");
+	const [selectedEmployee, setSelectedEmployee] = useState<string | null>(
+		null
+	);
 	const [mode, setMode] = useState("Changed");
 
-	const getKeyFromData = (
-		data: Array<CombinedData>,
-		query: string,
-		from?: string
-	): any => {
-		if (data === undefined) return null;
-		return !from
-			? data.find((cd: CombinedData) => cd.key === query)?.db_value
-			: data.find((cd: CombinedData) => cd.key === query)?.ehr_value;
-	};
+	const { isFetched, isLoading, isError, data, error } =
+		api.sync.checkEmployeeData.useQuery({
+			func: "month_salary",
+			period: period,
+		});
 
-	if (getDiffDatas.isFetched) {
-		if ((getDiffDatas.data ?? []).length > 0) {
-			if (selectedEmployee === "") next(); // set Default
-		}
-	}
+	const getDataLength = () => (data ?? []).length;
 
 	function check(newCheckedEmp: string) {
 		setCheckedEmployees((prevCheckedEmployees) => {
@@ -71,36 +59,8 @@ export function SyncPage({
 		});
 	}
 
-	const getEmpData = (emp_no: string) => {
-		let IDX = -1;
-		getDiffDatas.data!.map((data: Array<CombinedData>, index: number) => {
-			data.map((d: CombinedData) => {
-				if (d.key === "emp_no" && d.db_value === emp_no) IDX = index;
-			});
-		});
-		return getDiffDatas.data![IDX]!;
-	};
-
-	const getKeyData = (emp_no: string, query: string) => {
-		return getKeyFromData(getEmpData(emp_no), query);
-	};
-
-	function next() {
-		let nextEmpData = getDiffDatas.data!.filter(
-			(data: Array<CombinedData>) =>
-				!checkedEmployees.includes(
-					data.find((cd: CombinedData) => {
-						cd.key === "emp_no";
-					})?.db_value
-				) && getKeyFromData(data, "emp_no") !== selectedEmployee
-		)[0]!;
-		let nextEmp = getKeyFromData(nextEmpData, "emp_no");
-		setSelectedEmployee(nextEmp);
-	}
-
 	const handleConfirmChange = () => {
-		check(selectedEmployee);
-		next();
+		// check(selectedEmployee);
 	};
 
 	const handleAllDone = () => {
@@ -108,22 +68,14 @@ export function SyncPage({
 		console.log("confirm");
 	};
 
-	function SelectedEmpDepartment({ emp_no }: EMP) {
-		return <Label>部門：{getKeyData(emp_no, "department")}</Label>;
-	}
-
-	function SelectEmpComponent() {
+	function SelectEmpComponent({ data }: { data: SyncData[] }) {
 		const [open, setOpen] = useState(false);
 
-		function generateLongString(emp_no: string) {
-			return (
-				getKeyData(emp_no, "emp_no") +
-				" " +
-				getKeyData(emp_no, "emp_name") +
-				" " +
-				getKeyData(emp_no, "english_name")
-			);
-		}
+		const selectFilter = (value: string, search: string) =>
+			value.toUpperCase().includes(search) ||
+			value.toLowerCase().includes(search)
+				? 1
+				: 0;
 
 		return (
 			<Popover open={open} onOpenChange={setOpen}>
@@ -134,31 +86,23 @@ export function SyncPage({
 						aria-expanded={open}
 						className="w-[200px] justify-between"
 					>
-						{selectedEmployee !== ""
-							? generateLongString(selectedEmployee)
+						{selectedEmployee
+							? selectedEmployee
 							: "Select an Employee..."}
 						<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 					</Button>
 				</PopoverTrigger>
 				<PopoverContent className="w-[200px] p-0">
-					<Command
-						filter={(value, search) => {
-							return value.toUpperCase().includes(search) ||
-								value.toLowerCase().includes(search)
-								? 1
-								: 0;
-						}}
-					>
+					<Command filter={selectFilter}>
 						<CommandInput placeholder="Search Employee..." />
 						<CommandEmpty>No Employee found.</CommandEmpty>
 						<CommandGroup>
-							{getDiffDatas.data!.map(
-								(d: Array<CombinedData>) => (
+							{data.map((empData: SyncData) => {
+								const empNo = empData.emp_no.ehr_value;
+								return (
 									<CommandItem
-										key={getKeyFromData(d, "emp_no")}
-										value={generateLongString(
-											getKeyFromData(d, "emp_no")
-										)}
+										key={empNo}
+										value={empNo}
 										onSelect={(currentValue) => {
 											setSelectedEmployee(
 												(
@@ -173,48 +117,29 @@ export function SyncPage({
 										<Check
 											className={cn(
 												"mr-2 h-4 w-4",
-												selectedEmployee ===
-													getKeyFromData(d, "emp_no")
+												selectedEmployee === empNo
 													? "opacity-100"
 													: "opacity-0"
 											)}
 										/>
 										{
 											<div
-												className={`flex items-center ${
+												className={cn(
+													"flex items-center",
 													!checkedEmployees.includes(
-														getKeyFromData(
-															d,
-															"emp_no"
-														)
-													)
-														? "text-red-400"
-														: ""
-												}`}
+														empNo
+													) && "text-red-400"
+												)}
 											>
-												<b className="mr-1">
-													{getKeyFromData(
-														d,
-														"emp_no"
-													)}
-												</b>
+												<b className="mr-1">{empNo}</b>
 												<p className="mr-1">
-													{getKeyFromData(
-														d,
-														"emp_name"
-													) +
-														" " +
-														getKeyFromData(
-															d,
-															"english_name"
-														) +
-														" "}
+													{empData.name.ehr_value}
 												</p>
 											</div>
 										}
 									</CommandItem>
-								)
-							)}
+								);
+							})}
 						</CommandGroup>
 					</Command>
 				</PopoverContent>
@@ -225,13 +150,10 @@ export function SyncPage({
 	function isFinished() {
 		return (
 			(checkedEmployees.length == getDataLength() - 1 &&
+				selectedEmployee &&
 				!checkedEmployees.includes(selectedEmployee)) ||
 			checkedEmployees.length == getDataLength()
 		);
-	}
-
-	function FetchingPage() {
-		return <p>Fetching Data</p>;
 	}
 
 	function AllDonePage() {
@@ -266,26 +188,27 @@ export function SyncPage({
 		);
 	}
 
-	function MainPage() {
+	function MainPage({ data }: { data: SyncData[] }) {
 		return (
 			<div className="flex h-full flex-grow flex-col">
 				<div className="mb-4 flex items-center">
-					<SelectEmpComponent />
-					<div className="ml-4">
-						<SelectedEmpDepartment emp_no={selectedEmployee} />
-					</div>
-					<div className="ml-auto"></div>
-					<div className="ml-2">
+					<SelectEmpComponent data={data} />
+					{selectedEmployee && (
+						<Label className="ml-4">部門：{}</Label>
+					)}
+					<div className="ml-auto">
 						<SelectModeComponent mode={mode} setMode={setMode} />
 					</div>
 				</div>
-				<div className="h-0 w-full flex-grow">
-					<EmployeeDataChange
-						empData={getEmpData(selectedEmployee)}
-						mode={mode}
-						diffColor={diffColor}
-					/>
-				</div>
+				{selectedEmployee && (
+					<div className="h-0 w-full flex-grow">
+						{/* <EmployeeDataChange
+							empData={getEmpData(selectedEmployee)}
+							mode={mode}
+							diffColor={diffColor}
+						/> */}
+					</div>
+				)}
 				<div className="mt-4 flex justify-between">
 					<Button
 						key="PreviousButton"
@@ -312,15 +235,17 @@ export function SyncPage({
 		);
 	}
 
+	if (isLoading) {
+		return <LoadingSpinner />;
+	}
+
+	if (isError) {
+		return <span>Error: {error.message}</span>; // TODO: Error element with toast
+	}
+
 	return (
 		<div className="grow">
-			{!getDiffDatas.isFetched ? (
-				<FetchingPage />
-			) : (getDiffDatas.data ?? []).length == 0 ? (
-				<AllDonePage />
-			) : (
-				<MainPage />
-			)}
+			{data ? <MainPage data={data} /> : <AllDonePage />}
 		</div>
 	);
 }

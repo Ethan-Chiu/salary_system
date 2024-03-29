@@ -15,14 +15,6 @@ export interface CombinedData {
 	ehr_value: any;
 	is_different: boolean;
 }
-export interface PaidEmployee {
-	emp_no: string;
-	name: string;
-	department: string;
-	work_status: string;
-	quit_date: string | null;
-	bug?: string;
-}
 
 @injectable()
 export class EmployeeDataService {
