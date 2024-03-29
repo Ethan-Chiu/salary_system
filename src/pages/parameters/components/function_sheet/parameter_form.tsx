@@ -57,7 +57,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	const isList = Array.isArray(data);
 	const onlyOne = !(isList && data.length > 1);
 
-	const [selectedData, setSelectedData] = useState(defaultValue ?? isList ? null : data);
+	const [selectedData, setSelectedData] = useState((defaultValue) ?? (isList ? null : data));
 
 	const [formValues, setFormValues] = useState<
 		Partial<z.infer<z.AnyZodObject>>
@@ -140,6 +140,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 			/>
 		);
 	}
+
 
 	// Create or update an entry
 	return (

@@ -42,8 +42,19 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
 	className?: string;
 }) {
 	const objectFormSchema = getObjectFormSchema(formSchema);
+
+	let defaultValueToChange = getDefaultValues(objectFormSchema);
+	if(_defaultValues) {
+		Object.keys(_defaultValues).map((key: string) => {
+			defaultValueToChange[key] = _defaultValues[key];
+		})		
+		console.log(_defaultValues);
+		console.log(defaultValueToChange);
+	}
+
 	const defaultValues: DefaultValues<z.infer<typeof objectFormSchema>> =
-		_defaultValues ? _defaultValues : getDefaultValues(objectFormSchema);
+		_defaultValues = defaultValueToChange;
+		// _defaultValues ? _defaultValues : getDefaultValues(objectFormSchema);
 
 	const form = useForm<z.infer<typeof objectFormSchema>>({
 		resolver: zodResolver(formSchema),
