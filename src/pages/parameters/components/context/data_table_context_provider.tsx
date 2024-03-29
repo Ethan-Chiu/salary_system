@@ -9,9 +9,8 @@ import { type Table } from "@tanstack/react-table";
 
 interface DataTableContextProviderProps {}
 
-export type TableWithKey = {
+export type TableObject = {
 	table: Table<any>;
-	key: string;
 };
 
 export default function DataTableContextProvider({
@@ -22,7 +21,7 @@ export default function DataTableContextProvider({
 	const [selectedTab, setSelectedTab] = useState<TabsEnumType>(
 		TabsEnum.Enum.current
 	);
-	const [selectedTable, setSelectedTable] = useState<TableWithKey | null>(
+	const [selectedTable, setSelectedTable] = useState<TableObject | null>(
 		null
 	);
 
