@@ -27,8 +27,8 @@ const columns = [
 });
 
 export function EmployeePaymentTable({ index, globalFilter, period_id }: any) {
-    const { isLoading, isError, data, error } =
-        api.employeePayment.getCurrentEmployeePayment.useQuery({ period_id });
+	const { isLoading, isError, data, error } =
+		api.employeePayment.getCurrentEmployeePayment.useQuery({ period_id });
 
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast
@@ -38,7 +38,5 @@ export function EmployeePaymentTable({ index, globalFilter, period_id }: any) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-    return (
-        <DataTable columns={columns} data={data!} />
-    );
+	return <DataTable columns={columns} data={data!} />;
 }
