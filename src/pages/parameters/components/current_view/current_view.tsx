@@ -21,7 +21,7 @@ export default function CurrentView<TData>({
 		props: {},
 		WrappedComponent: CurrentViewContent,
 		onUpdate: (table) => {
-			setSelectedTable({ table: table, key: Math.random().toString() });
+			setSelectedTable({ table: table });
 		},
 	});
 }
