@@ -10,7 +10,7 @@ import { select_value } from "./helper_function";
 
 @injectable()
 export class TrustMoneyService {
-	constructor() {}
+	constructor() { }
 
 	async createTrustMoney({
 		position,
@@ -37,6 +37,16 @@ export class TrustMoneyService {
 		const trustMoney = await TrustMoney.findOne({
 			where: {
 				id: id,
+			},
+		});
+		return trustMoney;
+	}
+
+	async getTrustMoneyByPosition(position: number, position_type: string): Promise<TrustMoney | null> {
+		const trustMoney = await TrustMoney.findOne({
+			where: {
+				position: position,
+				position_type: position_type,
 			},
 		});
 		return trustMoney;
@@ -93,7 +103,7 @@ export class TrustMoneyService {
 			},
 			{ where: { id: id } }
 		);
-		if (affectedCount[0] != 1) {
+		if (affectedCount[0] == 0) {
 			throw new BaseResponseError("Update error");
 		}
 	}
