@@ -34,6 +34,7 @@ import { FieldConfig } from "~/components/ui/auto-form/types";
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
 	fieldConfig?: FieldConfig<z.infer<SchemaType>>;
+	defaultValue?: any;
 	mode: FunctionMode;
 	closeSheet: () => void;
 }
@@ -41,6 +42,7 @@ interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	formSchema,
 	fieldConfig,
+	defaultValue,
 	mode,
 	closeSheet,
 }: ParameterFormProps<SchemaType>) {
@@ -55,7 +57,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	const isList = Array.isArray(data);
 	const onlyOne = !(isList && data.length > 1);
 
-	const [selectedData, setSelectedData] = useState(isList ? null : data);
+	const [selectedData, setSelectedData] = useState(defaultValue ?? isList ? null : data);
 
 	const [formValues, setFormValues] = useState<
 		Partial<z.infer<z.AnyZodObject>>
@@ -144,7 +146,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 		<>
 			<AutoForm
 				className="m-5"
-				_defaultValues={mode === "create" ? {} : selectedData}
+				_defaultValues={selectedData}
 				values={formValues}
 				onValuesChange={setFormValues}
 				onSubmit={handleSubmit}
