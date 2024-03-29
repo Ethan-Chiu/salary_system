@@ -1,16 +1,15 @@
 {
-    "fixed_multiplier": {
-      "type": "number"
-    },
-    "criterion_date": {
-      "type": "date"
-    },
-    "base_on": {
-      "type": "string"
-    },
-    "type": {
-      "type": "enum",
-      "options": ["A", "B", "C", "D", "E"]
-    }
+	"fixed_multiplier": {
+		"type": "number"
+	},
+	"criterion_date": {
+		"type": "date"
+	},
+	"base_on": {
+		"type": "string"
+	},
+	"type": {
+		"type": "enum",
+		"options": ["A", "B", "C", "D", "E"]
+	}
 }
-  

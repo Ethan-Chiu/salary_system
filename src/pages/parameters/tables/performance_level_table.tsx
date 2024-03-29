@@ -8,8 +8,8 @@ import { LoadingSpinner } from "~/components/loading";
 import { PerformanceLevel } from "~/server/database/entity/SALARY/performance_level";
 
 export type RowItem = {
-    performance_level: string;
-    multiplier: number;
+	performance_level: string;
+	multiplier: number;
 };
 type RowItemKey = keyof RowItem;
 
@@ -40,7 +40,7 @@ export const performance_level_columns = [
 			<div className="lowercase">{`${row.original.performance_level}`}</div>
 		),
 	}),
-    columnHelper.accessor("multiplier", {
+	columnHelper.accessor("multiplier", {
 		header: ({ column }) => {
 			return (
 				<div className="flex justify-center">
@@ -66,16 +66,23 @@ export const performance_level_columns = [
 	}),
 ];
 
-export function performaceLevelMapper(performanceLevelData: PerformanceLevel[]): RowItem[] {
+export function performaceLevelMapper(
+	performanceLevelData: PerformanceLevel[]
+): RowItem[] {
 	return performanceLevelData.map((d) => {
 		return {
-            performance_level: d.performance_level,
-            multiplier: d.multiplier
+			performance_level: d.performance_level,
+			multiplier: d.multiplier,
 		};
 	});
 }
 
-export function PerformanceLevelTable({ index, globalFilter, period_id, viewOnly }: any) {
+export function PerformanceLevelTable({
+	index,
+	globalFilter,
+	period_id,
+	viewOnly,
+}: any) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentPerformanceLevel.useQuery();
 	const filterKey: RowItemKey = "performance_level";

@@ -15,7 +15,7 @@ export function ParameterPage({
 }) {
 	return (
 		<>
-			<div className="flex flex-col h-0 grow rounded-md border-2">
+			<div className="flex h-0 grow flex-col rounded-md border-2">
 				<TablesView />
 			</div>
 			<div className="mt-4 flex justify-between">

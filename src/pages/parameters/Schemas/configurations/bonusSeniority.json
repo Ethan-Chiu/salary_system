@@ -1,9 +1,8 @@
 {
-    "seniority": {
-      "type": "number"
-    },
-    "multiplier": {
-      "type": "number"
-    }
+	"seniority": {
+		"type": "number"
+	},
+	"multiplier": {
+		"type": "number"
+	}
 }
-  

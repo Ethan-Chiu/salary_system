@@ -22,5 +22,5 @@ export const attendanceSchema = z.object({
 	foreign_worker_holiday: zc.number(),
 	start_date: zodRequiredDate("start_date"),
 	// Since backend uses start_date to schedule, the end_date is of no use
-	// end_date: zodOptionalDate(),	
+	// end_date: zodOptionalDate(),
 });

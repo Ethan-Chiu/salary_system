@@ -515,13 +515,10 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ original_sheets }) => {
 	function DownloadButton() {
 		const [filename, setFilename] = useState("test");
 		return (
-			<div className={mode!="view"?"cursor-not-allowed":""}>
+			<div className={mode != "view" ? "cursor-not-allowed" : ""}>
 				<Dialog>
 					<DialogTrigger asChild>
-						<Button
-							variant={"outline"}
-							disabled={mode!=="view"}
-						>
+						<Button variant={"outline"} disabled={mode !== "view"}>
 							Download
 						</Button>
 					</DialogTrigger>
@@ -529,7 +526,8 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ original_sheets }) => {
 						<DialogHeader>
 							<DialogTitle>Download Excel File</DialogTitle>
 							<DialogDescription>
-								You may change the text and background color in each cell before download.
+								You may change the text and background color in
+								each cell before download.
 							</DialogDescription>
 						</DialogHeader>
 						<div className="grid gap-4 py-4">
@@ -548,7 +546,17 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ original_sheets }) => {
 							</div>
 						</div>
 						<DialogFooter>
-							<Button type="submit" onClick={() => handleExportExcel(sheets, `${filename}.xlsx`)}>Download</Button>
+							<Button
+								type="submit"
+								onClick={() =>
+									handleExportExcel(
+										sheets,
+										`${filename}.xlsx`
+									)
+								}
+							>
+								Download
+							</Button>
 						</DialogFooter>
 					</DialogContent>
 				</Dialog>

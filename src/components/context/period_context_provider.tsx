@@ -8,15 +8,15 @@ export default function PeriodContextProvider({ children }: PropsWithChildren) {
 	const [selectedPayDate, setSelectedPayDate] = useState<string | null>(null);
 
 	useEffect(() => {
-		const sessionPeriod = SessionStorage.getSelectedPeriod()
-		const sessionPayDate = SessionStorage.getSelectedPayDate()
+		const sessionPeriod = SessionStorage.getSelectedPeriod();
+		const sessionPayDate = SessionStorage.getSelectedPayDate();
 		if (sessionPeriod) {
-			setSelectedPeriod(sessionPeriod)
+			setSelectedPeriod(sessionPeriod);
 		}
 		if (sessionPayDate) {
-			setSelectedPayDate(sessionPayDate)
+			setSelectedPayDate(sessionPayDate);
 		}
-	}, [])
+	}, []);
 
 	return (
 		<periodContext.Provider

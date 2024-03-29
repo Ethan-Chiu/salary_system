@@ -15,7 +15,8 @@ import { getSchema } from "~/pages/parameters/schemas/get_schemas";
 import { Translate } from "~/lib/utils/translation";
 
 export default function CalendarAddEvent() {
-	const { openSheet, mouseDownDate, mouseUpDate, setOpenSheet, resetMouse } = useContext(calendarContext);
+	const { openSheet, mouseDownDate, mouseUpDate, setOpenSheet, resetMouse } =
+		useContext(calendarContext);
 	const { selectedTableType } = useContext(dataTableContext);
 
 	const mode = "create";
@@ -52,14 +53,17 @@ export default function CalendarAddEvent() {
 						fieldConfig={{
 							start_date: {
 								inputProps: {
-									defaultValue: mouseDownDate?.toDate() ?? undefined,
-								}
+									defaultValue:
+										mouseDownDate?.toDate() ?? undefined,
+								},
 							},
 							end_date: {
 								inputProps: {
-									defaultValue: mouseUpDate?.toDate() as any ?? undefined,
-								}
-							}
+									defaultValue:
+										(mouseUpDate?.toDate() as any) ??
+										undefined,
+								},
+							},
 						}}
 					/>
 					<ScrollBar orientation="horizontal" />

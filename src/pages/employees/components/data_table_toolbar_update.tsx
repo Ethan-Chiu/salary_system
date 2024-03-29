@@ -17,21 +17,24 @@ export function DataTableToolbar<TData>({
 	filterKey,
 }: DataTableToolbarProps<TData>) {
 	const { selectedTableType } = useContext(dataTableContext);
-	const { selectedPeriod } = useContext(periodContext)
+	const { selectedPeriod } = useContext(periodContext);
 
 	return (
 		<div className="flex flex-row items-center justify-between space-x-2 px-2 py-2">
 			{/* search bar */}
-      <ToolbarFilter table={table} filterColumnKey={filterKey} />
+			<ToolbarFilter table={table} filterColumnKey={filterKey} />
 			{/* tabs */}
 			<div className="flex">
 				<DataTableViewOptions table={table} />
-				<div className="w-12 ml-2">
-					{selectedPeriod &&
-						<EmployeeToolbarFunctionsProvider tableType={selectedTableType} period_id={selectedPeriod.period_id}>
+				<div className="ml-2 w-12">
+					{selectedPeriod && (
+						<EmployeeToolbarFunctionsProvider
+							tableType={selectedTableType}
+							period_id={selectedPeriod.period_id}
+						>
 							<DataTableFunctions tableType={selectedTableType} />
 						</EmployeeToolbarFunctionsProvider>
-					}
+					)}
 				</div>
 			</div>
 		</div>

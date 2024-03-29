@@ -14,7 +14,7 @@ export class Level extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-    declare level: number;
+	declare level: number;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -34,11 +34,11 @@ Level.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-        level: {
-            type: DataTypes.INTEGER.UNSIGNED,
+		level: {
+			type: DataTypes.INTEGER.UNSIGNED,
 			unique: false,
 			allowNull: false,
-        },
+		},
 		create_date: {
 			type: DataTypes.DATE,
 		},
@@ -57,7 +57,7 @@ Level.init(
 	{
 		sequelize,
 		tableName: "U_LEVEL",
-		createdAt: 'create_date',
-		updatedAt: 'update_date',
+		createdAt: "create_date",
+		updatedAt: "update_date",
 	}
 );

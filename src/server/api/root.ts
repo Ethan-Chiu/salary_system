@@ -25,7 +25,7 @@ export const appRouter = createTRPCRouter({
 	employeePayment: employeePaymentRouter,
 	employeeTrust: employeeTrustRouter,
 	sync: syncRouter,
-	calculate: calculateRouter
+	calculate: calculateRouter,
 });
 
 // export type definition of API

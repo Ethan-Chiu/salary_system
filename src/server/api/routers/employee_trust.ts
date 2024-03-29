@@ -13,8 +13,12 @@ export const employeeTrustRouter = createTRPCRouter({
 	getCurrentEmployeeTrust: publicProcedure
 		.input(z.object({ period_id: z.number() }))
 		.query(async ({ input }) => {
-			const employeeTrustService = container.resolve(EmployeeTrustService);
-			const employeeTrust = await employeeTrustService.getCurrentEmployeeTrust(input.period_id);
+			const employeeTrustService =
+				container.resolve(EmployeeTrustService);
+			const employeeTrust =
+				await employeeTrustService.getCurrentEmployeeTrust(
+					input.period_id
+				);
 			if (employeeTrust == null) {
 				throw new BaseResponseError("EmployeeTrust does not exist");
 			}
@@ -33,7 +37,8 @@ export const employeeTrustRouter = createTRPCRouter({
 	createEmployeeTrust: publicProcedure
 		.input(createEmployeeTrustAPI)
 		.mutation(async ({ input }) => {
-			const employeeTrustService = container.resolve(EmployeeTrustService);
+			const employeeTrustService =
+				container.resolve(EmployeeTrustService);
 			const newdata = await employeeTrustService.createEmployeeTrust({
 				...input,
 				start_date: input.start_date
@@ -43,13 +48,15 @@ export const employeeTrustRouter = createTRPCRouter({
 					? get_date_string(input.end_date)
 					: null,
 			});
+			await employeeTrustService.rescheduleEmployeeTrust();
 			return newdata;
 		}),
 
 	updateEmployeeTrust: publicProcedure
 		.input(updateEmployeeTrustAPI)
 		.mutation(async ({ input }) => {
-			const employeeTrustService = container.resolve(EmployeeTrustService);
+			const employeeTrustService =
+				container.resolve(EmployeeTrustService);
 			await employeeTrustService.updateEmployeeTrust({
 				...input,
 				start_date: input.start_date
@@ -59,19 +66,28 @@ export const employeeTrustRouter = createTRPCRouter({
 					? get_date_string(input.end_date)
 					: null,
 			});
+			await employeeTrustService.rescheduleEmployeeTrust();
 		}),
 
 	deleteEmployeeTrust: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.mutation(async ({ input }) => {
-			const employeeTrustService = container.resolve(EmployeeTrustService);
+			const employeeTrustService =
+				container.resolve(EmployeeTrustService);
 			await employeeTrustService.deleteEmployeeTrust(input.id);
+			await employeeTrustService.rescheduleEmployeeTrust();
 		}),
 
 	autoCalculateEmployeeTrust: publicProcedure
-		.input(z.object({ period_id: z.number(), emp_no_list: z.string().array() }))
+		.input(
+			z.object({ period_id: z.number(), emp_no_list: z.string().array() })
+		)
 		.mutation(async ({ input }) => {
-			const employeeTrustService = container.resolve(EmployeeTrustService);
-			await employeeTrustService.autoCalculateEmployeeTrust(input.period_id, input.emp_no_list);
+			const employeeTrustService =
+				container.resolve(EmployeeTrustService);
+			await employeeTrustService.autoCalculateEmployeeTrust(
+				input.period_id,
+				input.emp_no_list
+			);
 		}),
 });

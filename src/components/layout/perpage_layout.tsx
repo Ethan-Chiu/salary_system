@@ -19,9 +19,7 @@ export const PerpageLayout = (props: PropsWithChildren<PerpageLayoutProp>) => {
 					content="width=device-width, initial-scale=1"
 				/>
 			</Head>
-			<main className="min-h-screen bg-background">
-				{props.children}
-			</main>
+			<main className="min-h-screen bg-background">{props.children}</main>
 		</>
 	);
 };

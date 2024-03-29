@@ -1,25 +1,25 @@
 {
-    "position": {
-      "type": "number"
-    },
-    "position_type": {
-      "type": "string",
-      "max": 2
-    },
-    "emp_trust_reserve_limit": {
-      "type": "number",
-      "optional": true,
-      "onlynull": true
-    },
-    "org_trust_reserve_limit": {
-      "type": "number"
-    },
-    "emp_special_trust_incent_limit": {
-      "type": "number",
-      "optional": true,
-      "onlynull": true
-    },
-    "org_special_trust_incent_limit": {
-      "type": "number"
-    }
+	"position": {
+		"type": "number"
+	},
+	"position_type": {
+		"type": "string",
+		"max": 2
+	},
+	"emp_trust_reserve_limit": {
+		"type": "number",
+		"optional": true,
+		"onlynull": true
+	},
+	"org_trust_reserve_limit": {
+		"type": "number"
+	},
+	"emp_special_trust_incent_limit": {
+		"type": "number",
+		"optional": true,
+		"onlynull": true
+	},
+	"org_special_trust_incent_limit": {
+		"type": "number"
+	}
 }

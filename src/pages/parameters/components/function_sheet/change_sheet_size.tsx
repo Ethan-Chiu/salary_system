@@ -6,7 +6,7 @@
 //     level = level ?? 5;
 //     minValue = minValue ?? 0;
 //     maxValue = maxValue ?? 100;
-//     const suffix = 
+//     const suffix =
 //         (type === "percent") ? "%":
 //         (type === "value") ? "":
 //         "";
@@ -43,6 +43,6 @@
 //               </Button>
 //             </div>
 //             </div>
-    
+
 //     </>
 // }

@@ -1,9 +1,8 @@
-import React, {
-	useState,
-	type PropsWithChildren,
-	useEffect,
-} from "react";
-import calendarContext, { type CalendarEventLevelWithID, type CalendarEventWithID } from "./calendar_context";
+import React, { useState, type PropsWithChildren, useEffect } from "react";
+import calendarContext, {
+	type CalendarEventLevelWithID,
+	type CalendarEventWithID,
+} from "./calendar_context";
 import dayjs from "dayjs";
 import { CalendarEvent } from "../utils/calendar_event";
 import { getEventLevel } from "../utils/event_level";
@@ -30,21 +29,19 @@ export default function CalendarContextProvider<T extends RecordData>({
 	);
 	const [mouseUpDate, setMouseUpDate] = useState<dayjs.Dayjs | null>(null);
 
-	const [currentEvent, setCurrentEvent] = useState<CalendarEventWithID | null>(
-		null
-	);
+	const [currentEvent, setCurrentEvent] =
+		useState<CalendarEventWithID | null>(null);
 	const [openSheet, setOpenSheet] = useState<boolean>(false);
 	const [updateSheet, setUpdateSheet] = useState<boolean>(false);
 
 	// const [eventList, dispatchEventList] = useReducer(savedEventsReducer, []);
 	const [eventList, setEventList] = useState<CalendarEventWithID[]>([]);
-	const [showEventList, setShowEventList] = useState<CalendarEventLevelWithID[]>(
-		[]
-	);
+	const [showEventList, setShowEventList] = useState<
+		CalendarEventLevelWithID[]
+	>([]);
 
-	const [selectedEvent, setSelectedEvent] = useState<CalendarEventWithID | null>(
-		null
-	);
+	const [selectedEvent, setSelectedEvent] =
+		useState<CalendarEventWithID | null>(null);
 
 	useEffect(() => {
 		if (mouseDownDate && mouseUpDate) {

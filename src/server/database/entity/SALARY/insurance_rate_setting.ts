@@ -14,15 +14,15 @@ export class InsuranceRateSetting extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-    declare min_wage_rate: number;
-    declare l_i_accident_rate: number;
-    declare l_i_employment_premium_rate: number;
-    declare l_i_occupational_hazard_rate: number;
-    declare l_i_wage_replacement_rate: number;
-    declare h_i_standard_rate: number;
-    declare h_i_avg_dependents_count: number;
-    declare v2_h_i_supp_premium_rate: number;
-    declare v2_h_i_dock_tsx_thres: number;
+	declare min_wage_rate: number;
+	declare l_i_accident_rate: number;
+	declare l_i_employment_premium_rate: number;
+	declare l_i_occupational_hazard_rate: number;
+	declare l_i_wage_replacement_rate: number;
+	declare h_i_standard_rate: number;
+	declare h_i_avg_dependents_count: number;
+	declare v2_h_i_supp_premium_rate: number;
+	declare v2_h_i_dock_tsx_thres: number;
 	declare start_date: string;
 	declare end_date: string | null;
 
@@ -44,47 +44,47 @@ InsuranceRateSetting.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-        min_wage_rate: {
+		min_wage_rate: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        l_i_accident_rate: {
+		l_i_accident_rate: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        l_i_employment_premium_rate: {
+		l_i_employment_premium_rate: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        l_i_occupational_hazard_rate: {
+		l_i_occupational_hazard_rate: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        l_i_wage_replacement_rate: {
+		l_i_wage_replacement_rate: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        h_i_standard_rate: {
+		h_i_standard_rate: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        h_i_avg_dependents_count: {
+		h_i_avg_dependents_count: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        v2_h_i_supp_premium_rate: {
+		v2_h_i_supp_premium_rate: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        v2_h_i_dock_tsx_thres: {
+		v2_h_i_dock_tsx_thres: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
@@ -115,7 +115,7 @@ InsuranceRateSetting.init(
 	{
 		sequelize,
 		tableName: "U_INSURANCE_RATE_SETTING",
-		createdAt: 'create_date',
-		updatedAt: 'update_date',
+		createdAt: "create_date",
+		updatedAt: "update_date",
 	}
 );

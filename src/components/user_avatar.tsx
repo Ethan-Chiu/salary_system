@@ -1,8 +1,4 @@
-import {
-	LogOut,
-	Settings,
-	User,
-  } from "lucide-react"
+import { LogOut, Settings, User } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
@@ -31,11 +27,10 @@ import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 
 export function UserAvatar() {
-
 	const { data: session, status } = useSession();
 
-	const username = session?.user.emp_no
-	const userEmail = "m@example.com"
+	const username = session?.user.emp_no;
+	const userEmail = "m@example.com";
 
 	return (
 		<Dialog>
@@ -47,14 +42,16 @@ export function UserAvatar() {
 					>
 						<Avatar className="h-8 w-8">
 							<AvatarImage src="" alt="@shadcn" />
-							<AvatarFallback className="capitalize">{(username)?username[0]:"N/A"}</AvatarFallback>
+							<AvatarFallback className="capitalize">
+								{username ? username[0] : "N/A"}
+							</AvatarFallback>
 						</Avatar>
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent className="w-56" align="end" forceMount>
 					<DropdownMenuLabel className="font-normal">
 						<div className="flex flex-col space-y-1">
-							<p className="text-sm font-medium leading-none capitalize">
+							<p className="text-sm font-medium capitalize leading-none">
 								{username}
 							</p>
 							<p className="text-xs leading-none text-muted-foreground">

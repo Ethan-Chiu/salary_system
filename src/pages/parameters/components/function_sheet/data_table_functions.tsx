@@ -25,7 +25,6 @@ import { ParameterForm } from "./parameter_form";
 import { TableEnum, getTableName } from "../context/data_table_enum";
 import { getSchema } from "../../schemas/get_schemas";
 
-
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
 }

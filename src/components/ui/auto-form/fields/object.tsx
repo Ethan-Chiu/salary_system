@@ -35,7 +35,7 @@ export default function AutoFormObject<
 	path?: string[];
 }) {
 	const { shape } = getBaseSchema<SchemaType>(schema);
-	
+
 	return (
 		<Accordion type="multiple" className="space-y-5">
 			{Object.keys(shape).map((name) => {
@@ -82,18 +82,17 @@ export default function AutoFormObject<
 				const fieldConfigItem: FieldConfigItem =
 					fieldConfig?.[name] ?? {};
 				const zodInputProps = zodToHtmlInputProps(item);
-				
+
 				function getAllProps(s: any) {
-					let x = [], y: any = [];
-                    if(s._def.typeName !== undefined)
-                        x.push(s._def.typeName);
-                    if(s._def.innerType) {
-                        y = x.concat(getAllProps(s._def.innerType));
-                    }
-                    else if(s._def.schema) {
-                        y = x.concat(getAllProps(s._def.schema));
-                    }
-                    return y;
+					let x = [],
+						y: any = [];
+					if (s._def.typeName !== undefined) x.push(s._def.typeName);
+					if (s._def.innerType) {
+						y = x.concat(getAllProps(s._def.innerType));
+					} else if (s._def.schema) {
+						y = x.concat(getAllProps(s._def.schema));
+					}
+					return y;
 				}
 				let allprops = getAllProps((schema as any).shape[name]);
 				// Pony's modification
@@ -101,7 +100,7 @@ export default function AutoFormObject<
 				//   zodInputProps.required ||
 				//   fieldConfigItem.inputProps?.required ||
 				//   false;
-				const isRequired = true && !(allprops.includes("ZodOptional"));
+				const isRequired = true && !allprops.includes("ZodOptional");
 
 				return (
 					<FormField

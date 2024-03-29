@@ -71,7 +71,10 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ sheets }) => {
 		colIndex: number;
 	}>({ rowIndex: -1, colIndex: -1 });
 
-	interface ColorBlock {textColor: string, backgroundColor: string};
+	interface ColorBlock {
+		textColor: string;
+		backgroundColor: string;
+	}
 	const [blockProps, setBlockProps] = useState<ColorBlock[][][]>();
 
 	useEffect(() => {
@@ -89,16 +92,22 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ sheets }) => {
 				row.map((cell: string, colIndex: number) => {
 					defaultBlockProps[sheetIndex]![rowIndex]?.push({
 						textColor: "#000000",
-						backgroundColor: "#ffffff"
+						backgroundColor: "#ffffff",
 					});
-				})
-			})
-		})
+				});
+			});
+		});
 		console.log(defaultBlockProps);
 		setBlockProps(defaultBlockProps);
 	}, []);
 
-	function setBlockColor(element: "text" | "background", sheetIndex: number, rowIndex: number, colIndex: number, newColor: string) {
+	function setBlockColor(
+		element: "text" | "background",
+		sheetIndex: number,
+		rowIndex: number,
+		colIndex: number,
+		newColor: string
+	) {
 		// if (sheetIndex < 0 || rowIndex < 0 || colIndex < 0)	return;
 		let newBlockProps: ColorBlock[][][] = [];
 		blockProps?.map((sheet: ColorBlock[][], si: number) => {
@@ -110,26 +119,23 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ sheets }) => {
 						if (element === "text") {
 							let newCell: ColorBlock = {
 								textColor: newColor,
-								backgroundColor: cell.backgroundColor
-							}
+								backgroundColor: cell.backgroundColor,
+							};
 							newBlockProps[si]![ri]?.push(cell);
-						}
-						else if (element === "background") {
+						} else if (element === "background") {
 							let newCell: ColorBlock = {
 								textColor: cell.textColor,
-								backgroundColor: newColor
-							}
+								backgroundColor: newColor,
+							};
 							newBlockProps[si]![ri]?.push(cell);
 						}
-					}
-					else {
+					} else {
 						newBlockProps[si]![ri]?.push(cell);
 					}
-				})
-			})
-		})
+				});
+			});
+		});
 	}
-
 
 	const handleSheetChange = (index: number) => {
 		setSelectedSheetIndex(index);
@@ -145,15 +151,15 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ sheets }) => {
 
 	return (
 		<>
-			<Button onClick={()=>setBlockColor("text", 0, 1, 1, "#aa0000")}/>
-			<Button onClick={()=>console.log(blockProps)}/>
-			<div className="mb-4 grid grid-cols-4 full-w">
+			<Button onClick={() => setBlockColor("text", 0, 1, 1, "#aa0000")} />
+			<Button onClick={() => console.log(blockProps)} />
+			<div className="full-w mb-4 grid grid-cols-4">
 				<div>
 					{/* Sheet selection dropdown */}
 					<Select
-						value = {selectedSheetName}
+						value={selectedSheetName}
 						onValueChange={(value) => {
-							setSelectedCell({rowIndex: -1, colIndex: -1});
+							setSelectedCell({ rowIndex: -1, colIndex: -1 });
 							setSelectedSheetName(value);
 							setSelectedSheetIndex(findSheetIndexByName(value));
 						}}
@@ -176,8 +182,8 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ sheets }) => {
 					</Select>
 				</div>
 				<div className="col-start-4 flex items-center justify-end">
-					{
-						(mode=="edit")&&<>
+					{mode == "edit" && (
+						<>
 							<div className="mr-2">
 								<ChangeBackgroundColorIcon />
 							</div>
@@ -185,7 +191,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ sheets }) => {
 								<ChangeTextColorIcon />
 							</div>
 						</>
-					}
+					)}
 					<Button
 						className="mr-2"
 						variant={"outline"}
@@ -245,51 +251,75 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ sheets }) => {
 								</tr>
 							</thead>
 							<tbody>
-								{excelData.slice(1).map((row, rowIndex: number) => (
-									<tr key={rowIndex}>
-										{row.map((cell, colIndex: number) => {
-											let border_style =
-												selectedCell.rowIndex ===
-													rowIndex &&
-												selectedCell.colIndex ===
-													colIndex
-													? "1.5px solid #0000ff"
-													: "1.3px solid #dddddd";
-											console.log(excelData);
-											console.log(blockProps![selectedSheetIndex]![rowIndex])
-											console.log("%d, %d, %d", selectedSheetIndex, rowIndex, colIndex);
-											// let backgroundColor = blockProps![selectedSheetIndex]![rowIndex]![colIndex]!.backgroundColor;
-											let textColor = blockProps![selectedSheetIndex]![rowIndex]![colIndex]!.textColor
-											let backgroundColor = "#ffffff";
-											// let textColor = "#ffffff";
-											return (
-												<td
-													key={colIndex}
-													style={{
-														border: border_style,
-														padding: "8px",
-														textAlign: "center",
-														backgroundColor: backgroundColor,
-														color: textColor,
-
-													}}
-													onClick={() => {
-														if (mode == "edit") {
-															setSelectedCell({
-																rowIndex:
-																	rowIndex,
-																colIndex:
-																	colIndex,
-															});
-														}
-													}}
-												>
-													{cell}
-												</td>
-											);
-										})}
-									</tr>
-								))}
+								{excelData
+									.slice(1)
+									.map((row, rowIndex: number) => (
+										<tr key={rowIndex}>
+											{row.map(
+												(cell, colIndex: number) => {
+													let border_style =
+														selectedCell.rowIndex ===
+															rowIndex &&
+														selectedCell.colIndex ===
+															colIndex
+															? "1.5px solid #0000ff"
+															: "1.3px solid #dddddd";
+													console.log(excelData);
+													console.log(
+														blockProps![
+															selectedSheetIndex
+														]![rowIndex]
+													);
+													console.log(
+														"%d, %d, %d",
+														selectedSheetIndex,
+														rowIndex,
+														colIndex
+													);
+													// let backgroundColor = blockProps![selectedSheetIndex]![rowIndex]![colIndex]!.backgroundColor;
+													let textColor =
+														blockProps![
+															selectedSheetIndex
+														]![rowIndex]![colIndex]!
+															.textColor;
+													let backgroundColor =
+														"#ffffff";
+													// let textColor = "#ffffff";
+													return (
+														<td
+															key={colIndex}
+															style={{
+																border: border_style,
+																padding: "8px",
+																textAlign:
+																	"center",
+																backgroundColor:
+																	backgroundColor,
+																color: textColor,
+															}}
+															onClick={() => {
+																if (
+																	mode ==
+																	"edit"
+																) {
+																	setSelectedCell(
+																		{
+																			rowIndex:
+																				rowIndex,
+																			colIndex:
+																				colIndex,
+																		}
+																	);
+																}
+															}}
+														>
+															{cell}
+														</td>
+													);
+												}
+											)}
+										</tr>
+									))}
 							</tbody>
 						</table>
 					</div>

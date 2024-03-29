@@ -65,8 +65,8 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 						className={cn(
 							buttonVariants({ variant: "ghost" }),
 							props.currentPath === props.navLinkEntry.url &&
-							"bg-muted hover:bg-muted",
-							"w-full justify-center items-center"
+								"bg-muted hover:bg-muted",
+							"w-full items-center justify-center"
 						)}
 					>
 						<props.navLinkEntry.icon className="h-4 w-4" />
@@ -87,7 +87,7 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 			className={cn(
 				buttonVariants({ variant: "ghost" }),
 				props.currentPath === props.navLinkEntry.url &&
-				"bg-muted hover:bg-muted",
+					"bg-muted hover:bg-muted",
 				"w-full justify-start"
 			)}
 		>
@@ -109,7 +109,6 @@ type SelectItemProp = {
 };
 
 function CompSelectItemWrap(props: PropsWithChildren<SelectItemProp>) {
-
 	const { selectedPeriod, selectedPayDate } = useContext(periodContext);
 
 	return props.collapsed ? (
@@ -117,10 +116,12 @@ function CompSelectItemWrap(props: PropsWithChildren<SelectItemProp>) {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<Dialog>
-						<DialogTrigger className={cn(
-							buttonVariants({ variant: "ghost" }),
-							"w-full justify-start"
-						)}>
+						<DialogTrigger
+							className={cn(
+								buttonVariants({ variant: "ghost" }),
+								"w-full justify-start"
+							)}
+						>
 							<props.selectItemEntry.icon className="h-4 w-4" />
 							<TooltipContent>{props.children}</TooltipContent>
 						</DialogTrigger>
@@ -133,21 +134,27 @@ function CompSelectItemWrap(props: PropsWithChildren<SelectItemProp>) {
 		</TooltipProvider>
 	) : (
 		<Dialog>
-			<DialogTrigger className={cn(
-				buttonVariants({ variant: "ghost" }),
-				"w-full justify-start"
-			)}>
-				<div className="flex items-center w-full">
+			<DialogTrigger
+				className={cn(
+					buttonVariants({ variant: "ghost" }),
+					"w-full justify-start"
+				)}
+			>
+				<div className="flex w-full items-center">
 					<props.selectItemEntry.icon className="h-4 w-4 flex-shrink-0" />
-					<div className="flex justify-between ps-2 w-full">
-						<div className="line-clamp-1 break-all">{props.children}</div>
-						<div className="line-clamp-1 break-all">{selectedPeriod?.period_name && selectedPayDate ? selectedPayDate : "未設定完畢"}</div>
+					<div className="flex w-full justify-between ps-2">
+						<div className="line-clamp-1 break-all">
+							{props.children}
+						</div>
+						<div className="line-clamp-1 break-all">
+							{selectedPeriod?.period_name && selectedPayDate
+								? selectedPayDate
+								: "未設定完畢"}
+						</div>
 					</div>
 				</div>
 			</DialogTrigger>
-			<DialogContent>
-				{props.selectItemEntry.popUpPage}
-			</DialogContent>
+			<DialogContent>{props.selectItemEntry.popUpPage}</DialogContent>
 		</Dialog>
 	);
 }

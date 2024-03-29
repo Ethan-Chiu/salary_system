@@ -64,22 +64,21 @@ export class EHRService {
 
 	async getEmp(period_id: number): Promise<Emp[]> {
 		const dbConnection = container.resolve(Database).connection;
-		var dataList = await dbConnection.query(
-			this.GET_EMP_QUERY(period_id),
-			{
-				type: QueryTypes.SELECT,
-			}
-		);
+		var dataList = await dbConnection.query(this.GET_EMP_QUERY(period_id), {
+			type: QueryTypes.SELECT,
+		});
 		function dropColumns(objects: any[], columnsToRemove: any[]) {
-			return objects.map(obj => {
+			return objects.map((obj) => {
 				const modifiedObject = { ...obj };
-				columnsToRemove.forEach(column => delete modifiedObject[column]);
+				columnsToRemove.forEach(
+					(column) => delete modifiedObject[column]
+				);
 				return modifiedObject;
 			});
 		}
 
 		// Specify the columns you want to drop
-		const columnsToRemove = ['PERIOD_ID', 'CHANGE_DATE', 'CHANGE_MEMO'];
+		const columnsToRemove = ["PERIOD_ID", "CHANGE_DATE", "CHANGE_MEMO"];
 		dataList = dropColumns(dataList, columnsToRemove);
 		const empList: Emp[] = dataList.map(Emp.fromDB);
 		return empList;

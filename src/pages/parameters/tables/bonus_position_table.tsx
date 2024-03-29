@@ -39,9 +39,7 @@ export const bonus_position_columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="lowercase">
-				{row.getValue("position")}
-			</div>
+			<div className="lowercase">{row.getValue("position")}</div>
 		),
 	}),
 	columnHelper.accessor("multiplier", {
@@ -56,7 +54,9 @@ export const bonus_position_columns = [
 	}),
 ];
 
-export function bonusPositionMapper(bonusPositionData: BonusPosition[]): RowItem[] {
+export function bonusPositionMapper(
+	bonusPositionData: BonusPosition[]
+): RowItem[] {
 	return bonusPositionData.map((d) => {
 		return {
 			position: d.position,

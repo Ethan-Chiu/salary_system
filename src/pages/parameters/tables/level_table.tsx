@@ -9,7 +9,7 @@ import { LevelRange } from "~/server/database/entity/SALARY/level_range";
 import { Level } from "~/server/database/entity/SALARY/level";
 
 export type RowItem = {
-    level: number;
+	level: number;
 };
 type RowItemKey = keyof RowItem;
 
@@ -45,7 +45,7 @@ export const level_columns = [
 export function levelMapper(levelData: Level[]): RowItem[] {
 	return levelData.map((d) => {
 		return {
-            level: d.level,
+			level: d.level,
 		};
 	});
 }

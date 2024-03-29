@@ -1,37 +1,36 @@
 {
-    "min_wage_rate": {
-      "type": "number"
-    },
-    "l_i_accident_rate": {
-      "type": "number"
-    },
-    "l_i_employment_premium_rate": {
-      "type": "number"
-    },
-    "l_i_occupational_hazard_rate": {
-      "type": "number"
-    },
-    "l_i_wage_replacement_rate": {
-      "type": "number"
-    },
-    "h_i_standard_rate": {
-      "type": "number"
-    },
-    "h_i_avg_dependents_count": {
-      "type": "number"
-    },
-    "v2_h_i_supp_premium_rate": {
-      "type": "number"
-    },
-    "v2_h_i_dock_tsx_thres": {
-      "type": "number"
-    },
-    "start_date": {
-      "type": "date"
-    },
-    "end_date": {
-      "type": "date",
-      "optional": true
-    }
+	"min_wage_rate": {
+		"type": "number"
+	},
+	"l_i_accident_rate": {
+		"type": "number"
+	},
+	"l_i_employment_premium_rate": {
+		"type": "number"
+	},
+	"l_i_occupational_hazard_rate": {
+		"type": "number"
+	},
+	"l_i_wage_replacement_rate": {
+		"type": "number"
+	},
+	"h_i_standard_rate": {
+		"type": "number"
+	},
+	"h_i_avg_dependents_count": {
+		"type": "number"
+	},
+	"v2_h_i_supp_premium_rate": {
+		"type": "number"
+	},
+	"v2_h_i_dock_tsx_thres": {
+		"type": "number"
+	},
+	"start_date": {
+		"type": "date"
+	},
+	"end_date": {
+		"type": "date",
+		"optional": true
+	}
 }
-  

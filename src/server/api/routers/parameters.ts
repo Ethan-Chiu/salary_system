@@ -60,15 +60,17 @@ export const parametersRouter = createTRPCRouter({
 		}),
 
 	getCurrentBankSetting: publicProcedure
-		.input(z.object({ period_id: z.number() }))	
+		.input(z.object({ period_id: z.number() }))
 		.query(async ({ input }) => {
-		const bankService = container.resolve(BankSettingService);
-		const bankSetting = await bankService.getCurrentBankSetting(input.period_id);
-		if (bankSetting.length == 0) {
-			throw new BaseResponseError("BankSetting does not exist");
-		}
-		return bankSetting;
-	}),
+			const bankService = container.resolve(BankSettingService);
+			const bankSetting = await bankService.getCurrentBankSetting(
+				input.period_id
+			);
+			if (bankSetting.length == 0) {
+				throw new BaseResponseError("BankSetting does not exist");
+			}
+			return bankSetting;
+		}),
 
 	getAllBankSetting: publicProcedure.query(async () => {
 		const bankService = container.resolve(BankSettingService);
@@ -106,14 +108,18 @@ export const parametersRouter = createTRPCRouter({
 	getCurrentAttendanceSetting: publicProcedure
 		.input(z.object({ period_id: z.number() }))
 		.query(async ({ input }) => {
-		const attendanceService = container.resolve(AttendanceSettingService);
-		const attendanceSetting =
-			await attendanceService.getCurrentAttendanceSetting(input.period_id);
-		if (attendanceSetting == null) {
-			throw new BaseResponseError("AttendanceSetting does not exist");
-		}
-		return attendanceSetting;
-	}),
+			const attendanceService = container.resolve(
+				AttendanceSettingService
+			);
+			const attendanceSetting =
+				await attendanceService.getCurrentAttendanceSetting(
+					input.period_id
+				);
+			if (attendanceSetting == null) {
+				throw new BaseResponseError("AttendanceSetting does not exist");
+			}
+			return attendanceSetting;
+		}),
 
 	getAllAttendanceSetting: publicProcedure.query(async () => {
 		const attendanceService = container.resolve(AttendanceSettingService);
@@ -175,16 +181,20 @@ export const parametersRouter = createTRPCRouter({
 	getCurrentInsuranceRateSetting: publicProcedure
 		.input(z.object({ period_id: z.number() }))
 		.query(async ({ input }) => {
-		const insuranceRateService = container.resolve(
-			InsuranceRateSettingService
-		);
-		const insuranceRateSetting =
-			await insuranceRateService.getCurrentInsuranceRateSetting(input.period_id);
-		if (insuranceRateSetting == null) {
-			throw new BaseResponseError("InsuranceRateSetting does not exist");
-		}
-		return insuranceRateSetting;
-	}),
+			const insuranceRateService = container.resolve(
+				InsuranceRateSettingService
+			);
+			const insuranceRateSetting =
+				await insuranceRateService.getCurrentInsuranceRateSetting(
+					input.period_id
+				);
+			if (insuranceRateSetting == null) {
+				throw new BaseResponseError(
+					"InsuranceRateSetting does not exist"
+				);
+			}
+			return insuranceRateSetting;
+		}),
 
 	getAllInsuranceRateSetting: publicProcedure.query(async () => {
 		const insuranceRateService = container.resolve(

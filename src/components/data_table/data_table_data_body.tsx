@@ -1,9 +1,5 @@
 import { type Table } from "@tanstack/react-table";
-import {
-	TableBody,
-	TableCell,
-	TableRow,
-} from "~/components/ui/table";
+import { TableBody, TableCell, TableRow } from "~/components/ui/table";
 import { flexRender } from "@tanstack/react-table";
 
 interface DataTableDataBodyProps<TData> {

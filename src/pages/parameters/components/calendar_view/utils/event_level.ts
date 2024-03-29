@@ -1,6 +1,8 @@
 import { type CalendarEvent, type CalendarEventLevel } from "./calendar_event";
 
-export function getEventLevel(events: CalendarEvent<any>[]): CalendarEventLevel<any>[] {
+export function getEventLevel(
+	events: CalendarEvent<any>[]
+): CalendarEventLevel<any>[] {
 	const sortedEvents = events
 		.map((event) => event.toCalendarEventLevel(0))
 		.sort(
@@ -12,7 +14,7 @@ export function getEventLevel(events: CalendarEvent<any>[]): CalendarEventLevel<
 	let currentLevelLastEvent: CalendarEventLevel<any> | null = null;
 
 	while (handledEvents.size < sortedEvents.length) {
-    for (const currentEvent of sortedEvents) {
+		for (const currentEvent of sortedEvents) {
 			if (!handledEvents.has(currentEvent)) {
 				if (
 					currentLevelLastEvent &&

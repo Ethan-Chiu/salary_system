@@ -31,7 +31,10 @@ import dataTableContext from "./components/context/data_table_context";
 import { getTableName } from "./components/context/data_table_enum";
 import { Separator } from "~/components/ui/separator";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import { ParameterTableEnum, ParameterTableEnumValues } from "./parameter_tables";
+import {
+	ParameterTableEnum,
+	ParameterTableEnumValues,
+} from "./parameter_tables";
 import periodContext from "~/components/context/period_context";
 import { Period } from "~/server/database/entity/UMEDIA/period";
 import { LevelRangeTable } from "./tables/level_range_table";
@@ -48,63 +51,116 @@ type TableComponent = {
 	icon: LucideIcon;
 };
 
-function getTableComponent(table: ParameterTableEnum, selectedPeriod: Period | null): TableComponent {
+function getTableComponent(
+	table: ParameterTableEnum,
+	selectedPeriod: Period | null
+): TableComponent {
 	switch (table) {
 		case "TableAttendance":
 			return {
-				component: selectedPeriod ? <AttendanceTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
+				component: selectedPeriod ? (
+					<AttendanceTable period_id={selectedPeriod.period_id} />
+				) : (
+					<p>Please select period first</p>
+				),
 				icon: Clock,
 			};
 		case "TableBankSetting":
 			return {
-				component: selectedPeriod ? <BankTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
+				component: selectedPeriod ? (
+					<BankTable period_id={selectedPeriod.period_id} />
+				) : (
+					<p>Please select period first</p>
+				),
 				icon: CreditCard,
 			};
 		case "TableInsurance":
 			return {
-				component: selectedPeriod ? <InsuranceRateTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
+				component: selectedPeriod ? (
+					<InsuranceRateTable period_id={selectedPeriod.period_id} />
+				) : (
+					<p>Please select period first</p>
+				),
 				icon: ActivitySquare,
 			};
 		case "TableBonusSetting":
 			return {
-				component: selectedPeriod ? <BonusTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
+				component: selectedPeriod ? (
+					<BonusTable period_id={selectedPeriod.period_id} />
+				) : (
+					<p>Please select period first</p>
+				),
 				icon: CircleDollarSign,
 			};
 		case "TableBonusDepartment":
 			return {
-				component: selectedPeriod ? <BonusDepartmentTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
+				component: selectedPeriod ? (
+					<BonusDepartmentTable
+						period_id={selectedPeriod.period_id}
+					/>
+				) : (
+					<p>Please select period first</p>
+				),
 				icon: Users,
 			};
 		case "TableBonusPosition":
 			return {
-				component: selectedPeriod ? <BonusPositionTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
+				component: selectedPeriod ? (
+					<BonusPositionTable period_id={selectedPeriod.period_id} />
+				) : (
+					<p>Please select period first</p>
+				),
 				icon: Briefcase,
 			};
 		case "TableBonusPositionType":
 			return {
-				component: selectedPeriod ? <BonusPositionTypeTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
+				component: selectedPeriod ? (
+					<BonusPositionTypeTable
+						period_id={selectedPeriod.period_id}
+					/>
+				) : (
+					<p>Please select period first</p>
+				),
 				icon: Key,
 			};
 		case "TableBonusSeniority":
 			return {
-				component: selectedPeriod ? <BonusSeniorityTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
+				component: selectedPeriod ? (
+					<BonusSeniorityTable period_id={selectedPeriod.period_id} />
+				) : (
+					<p>Please select period first</p>
+				),
 				icon: Cake,
 			};
 		case "TableLevelRange":
 			return {
-				component: selectedPeriod ? <LevelRangeTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
+				component: selectedPeriod ? (
+					<LevelRangeTable period_id={selectedPeriod.period_id} />
+				) : (
+					<p>Please select period first</p>
+				),
 				icon: Table,
 			};
 		case "TableLevel":
 			return {
-				component: selectedPeriod ? <LevelTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
+				component: selectedPeriod ? (
+					<LevelTable period_id={selectedPeriod.period_id} />
+				) : (
+					<p>Please select period first</p>
+				),
 				icon: Table,
 			};
 		case "TablePerformanceLevel":
 			return {
-				component: selectedPeriod ? <PerformanceLevelTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
+				component: selectedPeriod ? (
+					<PerformanceLevelTable
+						period_id={selectedPeriod.period_id}
+					/>
+				) : (
+					<p>Please select period first</p>
+				),
 				icon: TrendingUp,
-			}
+			};
 		default:
 			throw new Error(`Invalid table: ${table}`);
 	}
@@ -190,18 +246,19 @@ function CompTableView() {
 
 	return (
 		<>
-			{ParameterTableEnumValues.filter((table) => table === selectedTableType).map(
-				(selectedTableType) => {
-					return (
-						<div key={selectedTableType} className="flex h-full">
-							{React.cloneElement<TableComponentProps>(
-								getTableComponent(selectedTableType, selectedPeriod).component,
-								{}
-							)}
-						</div>
-					);
-				}
-			)}
+			{ParameterTableEnumValues.filter(
+				(table) => table === selectedTableType
+			).map((selectedTableType) => {
+				return (
+					<div key={selectedTableType} className="flex h-full">
+						{React.cloneElement<TableComponentProps>(
+							getTableComponent(selectedTableType, selectedPeriod)
+								.component,
+							{}
+						)}
+					</div>
+				);
+			})}
 		</>
 	);
 }

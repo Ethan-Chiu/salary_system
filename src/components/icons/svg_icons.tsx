@@ -120,4 +120,3 @@ export function IconCoins({ size }: { size?: number }) {
 		</svg>
 	);
 }
-

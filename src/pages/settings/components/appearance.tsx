@@ -33,13 +33,11 @@ const appearanceFormSchema = z.object({
 type AppearanceFormValues = z.infer<typeof appearanceFormSchema>;
 
 export function AppearanceForm() {
-
 	// This can come from your database or API.
 	const defaultValues: Partial<AppearanceFormValues> = {
 		language: (localStorage.getItem("language") as any) ?? "zh",
 		theme: "light",
 	};
-
 
 	const form = useForm<AppearanceFormValues>({
 		resolver: zodResolver(appearanceFormSchema),
@@ -73,32 +71,38 @@ export function AppearanceForm() {
 					name="language"
 					render={({ field }) => {
 						return (
-						<FormItem>
-							<FormLabel>Language</FormLabel>
-							<div className="relative w-max">
-								<FormControl>
-									<select
-										defaultValue={localStorage.getItem("language") ?? "zh"}
-										className={cn(
-											buttonVariants({
-												variant: "outline",
-											}),
-											"w-[200px] appearance-none bg-transparent font-normal"
-										)}
-										{...field}
-									>
-										<option value="en">EN</option>
-										<option value="zh">ZH</option>
-									</select>
-								</FormControl>
-								<ChevronDownIcon className="absolute right-3 top-2.5 h-4 w-4 opacity-50" />
-							</div>
-							<FormDescription>
-								Set the font you want to use in the dashboard.
-							</FormDescription>
-							<FormMessage />
-						</FormItem>
-					)}}
+							<FormItem>
+								<FormLabel>Language</FormLabel>
+								<div className="relative w-max">
+									<FormControl>
+										<select
+											defaultValue={
+												localStorage.getItem(
+													"language"
+												) ?? "zh"
+											}
+											className={cn(
+												buttonVariants({
+													variant: "outline",
+												}),
+												"w-[200px] appearance-none bg-transparent font-normal"
+											)}
+											{...field}
+										>
+											<option value="en">EN</option>
+											<option value="zh">ZH</option>
+										</select>
+									</FormControl>
+									<ChevronDownIcon className="absolute right-3 top-2.5 h-4 w-4 opacity-50" />
+								</div>
+								<FormDescription>
+									Set the font you want to use in the
+									dashboard.
+								</FormDescription>
+								<FormMessage />
+							</FormItem>
+						);
+					}}
 				/>
 				<FormField
 					control={form.control}

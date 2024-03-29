@@ -39,7 +39,7 @@ export function SyncPage({
 	const getDiffDatas = api.employeeData.checkEmployeeData.useQuery({
 		func: "",
 	});
-	const getDataLength = () => (getDiffDatas.data ?? []).length
+	const getDataLength = () => (getDiffDatas.data ?? []).length;
 
 	const [checkedEmployees, setCheckedEmployees] = useState<Array<string>>([]);
 	const [selectedEmployee, setSelectedEmployee] = useState("");
@@ -181,15 +181,16 @@ export function SyncPage({
 										/>
 										{
 											<div
-												className={`flex items-center ${!checkedEmployees.includes(
-													getKeyFromData(
-														d,
-														"emp_no"
+												className={`flex items-center ${
+													!checkedEmployees.includes(
+														getKeyFromData(
+															d,
+															"emp_no"
+														)
 													)
-												)
-													? "text-red-400"
-													: ""
-													}`}
+														? "text-red-400"
+														: ""
+												}`}
 											>
 												<b className="mr-1">
 													{getKeyFromData(
@@ -234,33 +235,35 @@ export function SyncPage({
 	}
 
 	function AllDonePage() {
-		return <div className="flex h-full flex-grow flex-col">
-			<div className="h-0 w-full flex-grow">
-				System Data is updated with EHR
-			</div>
-			<div className="mt-4 flex justify-between">
-				<Button
-					key="PreviousButton"
-					onClick={() => setSelectedIndex(selectedIndex - 1)}
-				>
-					{Translate("previous_step")}
-				</Button>
-				{!isFinished() && (
+		return (
+			<div className="flex h-full flex-grow flex-col">
+				<div className="h-0 w-full flex-grow">
+					System Data is updated with EHR
+				</div>
+				<div className="mt-4 flex justify-between">
 					<Button
-						key="ConfirmButton"
-						onClick={() => handleConfirmChange()}
+						key="PreviousButton"
+						onClick={() => setSelectedIndex(selectedIndex - 1)}
 					>
-						{Translate("next_step")}
+						{Translate("previous_step")}
 					</Button>
-				)}
+					{!isFinished() && (
+						<Button
+							key="ConfirmButton"
+							onClick={() => handleConfirmChange()}
+						>
+							{Translate("next_step")}
+						</Button>
+					)}
 
-				{isFinished() && (
-					<AllDoneDialog
-						confirmFunction={() => handleAllDone()}
-					/>
-				)}
+					{isFinished() && (
+						<AllDoneDialog
+							confirmFunction={() => handleAllDone()}
+						/>
+					)}
+				</div>
 			</div>
-		</div>
+		);
 	}
 
 	function MainPage() {
@@ -273,10 +276,7 @@ export function SyncPage({
 					</div>
 					<div className="ml-auto"></div>
 					<div className="ml-2">
-						<SelectModeComponent
-							mode={mode}
-							setMode={setMode}
-						/>
+						<SelectModeComponent mode={mode} setMode={setMode} />
 					</div>
 				</div>
 				<div className="h-0 w-full flex-grow">

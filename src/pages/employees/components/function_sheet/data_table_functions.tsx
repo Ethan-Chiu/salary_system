@@ -1,6 +1,13 @@
 import { cn } from "~/lib/utils";
 import { useState } from "react";
-import { LucideIcon, PenSquare, Plus, PlusSquare, RefreshCcw, Trash2 } from "lucide-react";
+import {
+	LucideIcon,
+	PenSquare,
+	Plus,
+	PlusSquare,
+	RefreshCcw,
+	Trash2,
+} from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
 	DropdownMenu,
@@ -21,16 +28,23 @@ import {
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Button } from "~/components/ui/button";
 import { Translate } from "~/lib/utils/translation";
-import { TableEnum, getTableName } from "~/pages/parameters/components/context/data_table_enum";
+import {
+	TableEnum,
+	getTableName,
+} from "~/pages/parameters/components/context/data_table_enum";
 import { EmployeeForm } from "./employee_form";
 import { getSchema } from "~/pages/parameters/schemas/get_schemas";
-
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
 }
 
-export type FunctionMode = "create" | "update" | "delete" | "auto calculate" | "none";
+export type FunctionMode =
+	| "create"
+	| "update"
+	| "delete"
+	| "auto calculate"
+	| "none";
 
 export function DataTableFunctions({
 	tableType,

@@ -44,22 +44,22 @@ AccessSetting.init(
 			allowNull: false,
 			unique: true,
 		},
-        actions: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-        },
-        report: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-        },
-        roles: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-        },
-        settings: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-        },
+		actions: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+		},
+		report: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+		},
+		roles: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+		},
+		settings: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+		},
 		create_date: {
 			type: DataTypes.DATE,
 		},

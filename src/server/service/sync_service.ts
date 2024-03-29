@@ -5,6 +5,7 @@ import { EHRService } from "./ehr_service";
 import { Emp } from "../database/entity/UMEDIA/emp";
 import { EmployeeDataService } from "./employee_data_service";
 import { EmployeePaymentService } from "./employee_payment_service";
+import { EmployeeTrustService } from "./employee_trust_service";
 
 export interface CombinedData {
 	key: string;
@@ -411,6 +412,7 @@ export class SyncService {
 		const employee_payment_service = container.resolve(
 			EmployeePaymentService
 		);
+		const employee_trust_setvice = container.resolve(EmployeeTrustService);
 		updatedDatas.map(async (updatedData) => {
 			if (!salary_emp_no_list.includes(updatedData.emp_no)) {
 				await employee_data_service.createEmployeeData(updatedData);
@@ -432,6 +434,18 @@ export class SyncService {
 				};
 				await employee_payment_service.createEmployeePayment(
 					payment_input
+				);
+				let employee_trust_input = {
+					emp_no: updatedData.emp_no,
+					emp_trust_reserve: 0,
+					org_trust_reserve: 0,
+					emp_special_trust_incent: 0,
+					org_special_trust_incent: 0,
+					start_date: updatedData.registration_date,
+					end_date: null,
+				};
+				await employee_trust_setvice.createEmployeeTrust(
+					employee_trust_input
 				);
 			} else
 				await employee_data_service.updateEmployeeDataByEmpNO(
@@ -469,27 +483,4 @@ export class SyncService {
 			return paid_emps; // 返回需支付員工數據
 		}
 	}
-
-	// async getPaidEmps(func: string): Promise<EmployeeData[]> {
-	// 	if (func == "month_salary") {
-	// 		const paid_status = [
-	// 			"一般員工",
-	// 			"當月離職人員全月",
-	// 			"當月離職人員破月",
-	// 			"當月新進人員全月",
-	// 			"當月新進人員破月",
-	// 		];
-	// 		const paid_emps = await EmployeeData.findAll({
-	// 			where: {
-	// 				work_status: {
-	// 					[Op.in]: paid_status,
-	// 				},
-	// 			},
-	// 		});
-	// 		return paid_emps;
-	// 	} else {
-	// 		const paid_emps = await EmployeeData.findAll({});
-	// 		return paid_emps;
-	// 	}
-	// }
 }

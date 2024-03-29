@@ -14,22 +14,22 @@ export class AttendanceSetting extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-    declare personal_leave_dock: number;
-    declare sick_leave_dock: number;
-    declare rate_of_unpaid_leave: number;
-    declare unpaid_leave_compensatory_1: number;
-    declare unpaid_leave_compensatory_2: number;
-    declare unpaid_leave_compensatory_3: number;
-    declare unpaid_leave_compensatory_4: number;
-    declare unpaid_leave_compensatory_5: number;
-    declare overtime_by_local_workers_1: number;
-    declare overtime_by_local_workers_2: number;
-    declare overtime_by_local_workers_3: number;
-    declare local_worker_holiday: number;
-    declare overtime_by_foreign_workers_1: number;
-    declare overtime_by_foreign_workers_2: number;
-    declare overtime_by_foreign_workers_3: number;
-    declare foreign_worker_holiday: number;
+	declare personal_leave_dock: number;
+	declare sick_leave_dock: number;
+	declare rate_of_unpaid_leave: number;
+	declare unpaid_leave_compensatory_1: number;
+	declare unpaid_leave_compensatory_2: number;
+	declare unpaid_leave_compensatory_3: number;
+	declare unpaid_leave_compensatory_4: number;
+	declare unpaid_leave_compensatory_5: number;
+	declare overtime_by_local_workers_1: number;
+	declare overtime_by_local_workers_2: number;
+	declare overtime_by_local_workers_3: number;
+	declare local_worker_holiday: number;
+	declare overtime_by_foreign_workers_1: number;
+	declare overtime_by_foreign_workers_2: number;
+	declare overtime_by_foreign_workers_3: number;
+	declare foreign_worker_holiday: number;
 	declare start_date: string;
 	declare end_date: string | null;
 
@@ -56,77 +56,77 @@ AttendanceSetting.init(
 			unique: false,
 			allowNull: false,
 		},
-        sick_leave_dock: {
+		sick_leave_dock: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        rate_of_unpaid_leave: {
+		rate_of_unpaid_leave: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        unpaid_leave_compensatory_1: {
+		unpaid_leave_compensatory_1: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        unpaid_leave_compensatory_2: {
+		unpaid_leave_compensatory_2: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        unpaid_leave_compensatory_3: {
+		unpaid_leave_compensatory_3: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        unpaid_leave_compensatory_4: {
+		unpaid_leave_compensatory_4: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        unpaid_leave_compensatory_5: {
+		unpaid_leave_compensatory_5: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        overtime_by_local_workers_1: {
+		overtime_by_local_workers_1: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        overtime_by_local_workers_2: {
+		overtime_by_local_workers_2: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        overtime_by_local_workers_3: {
+		overtime_by_local_workers_3: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        local_worker_holiday: {
+		local_worker_holiday: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        overtime_by_foreign_workers_1: {
+		overtime_by_foreign_workers_1: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        overtime_by_foreign_workers_2: {
+		overtime_by_foreign_workers_2: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        overtime_by_foreign_workers_3: {
+		overtime_by_foreign_workers_3: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-        foreign_worker_holiday: {
+		foreign_worker_holiday: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
@@ -139,7 +139,7 @@ AttendanceSetting.init(
 			type: DataTypes.STRING(128),
 			allowNull: true,
 		},
-		// 
+		//
 		create_date: {
 			type: DataTypes.DATE,
 		},
@@ -158,7 +158,7 @@ AttendanceSetting.init(
 	{
 		sequelize,
 		tableName: "U_ATTENDANCE_SETTING",
-		createdAt: 'create_date',
-		updatedAt: 'update_date',
+		createdAt: "create_date",
+		updatedAt: "update_date",
 	}
 );

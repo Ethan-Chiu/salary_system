@@ -8,9 +8,9 @@ import { LoadingSpinner } from "~/components/loading";
 import { LevelRange } from "~/server/database/entity/SALARY/level_range";
 
 export type RowItem = {
-    type: string;
-    level_start: number;
-    level_end: number;
+	type: string;
+	level_start: number;
+	level_end: number;
 };
 type RowItemKey = keyof RowItem;
 
@@ -62,14 +62,19 @@ export const level_range_columns = [
 export function levelRangeMapper(levelRangeData: LevelRange[]): RowItem[] {
 	return levelRangeData.map((d) => {
 		return {
-            type: d.type,
-            level_start: d.level_start,
-            level_end: d.level_end
+			type: d.type,
+			level_start: d.level_start,
+			level_end: d.level_end,
 		};
 	});
 }
 
-export function LevelRangeTable({ index, globalFilter, period_id, viewOnly }: any) {
+export function LevelRangeTable({
+	index,
+	globalFilter,
+	period_id,
+	viewOnly,
+}: any) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentLevelRange.useQuery();
 	const filterKey: RowItemKey = "type";

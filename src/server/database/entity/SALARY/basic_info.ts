@@ -15,7 +15,7 @@ export class BasicInfo extends Model<
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
 	declare payday: Date;
-    declare announcement: string;
+	declare announcement: string;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -35,15 +35,15 @@ BasicInfo.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-        payday: {
-            type: DataTypes.DATE,
+		payday: {
+			type: DataTypes.DATE,
 			allowNull: false,
-        },
-        announcement: {
-            type: new DataTypes.STRING(512),
+		},
+		announcement: {
+			type: new DataTypes.STRING(512),
 			unique: false,
 			allowNull: true,
-        },
+		},
 		create_date: {
 			type: DataTypes.DATE,
 		},
@@ -62,7 +62,7 @@ BasicInfo.init(
 	{
 		sequelize,
 		tableName: "U_BASIC_INFO",
-		createdAt: 'create_date',
-		updatedAt: 'update_date',
+		createdAt: "create_date",
+		updatedAt: "update_date",
 	}
 );

@@ -5,7 +5,9 @@ import { type UseTRPCQueryResult } from "@trpc/react-query/shared";
 import { type TRPCClientErrorLike } from "@trpc/client";
 
 interface QueryFunctionsApi {
-	queryFunction: (() => UseTRPCQueryResult<any[], TRPCClientErrorLike<any>>) | undefined;
+	queryFunction:
+		| (() => UseTRPCQueryResult<any[], TRPCClientErrorLike<any>>)
+		| undefined;
 }
 
 export const apiFunctionsContext = createContext<QueryFunctionsApi>({

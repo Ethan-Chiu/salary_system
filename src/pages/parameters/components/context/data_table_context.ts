@@ -1,5 +1,8 @@
 import React from "react";
-import { type ParameterTableEnum, ParameterTableEnumValues } from "../../parameter_tables";
+import {
+	type ParameterTableEnum,
+	ParameterTableEnumValues,
+} from "../../parameter_tables";
 import { TabsEnum, type TabsEnumType } from "./tabs_enum";
 import { type TableWithKey } from "./data_table_context_provider";
 

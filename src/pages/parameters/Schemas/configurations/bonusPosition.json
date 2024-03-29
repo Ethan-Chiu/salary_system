@@ -1,9 +1,8 @@
 {
-    "position": {
-      "type": "number"
-    },
-    "multiplier": {
-      "type": "number"
-    }
+	"position": {
+		"type": "number"
+	},
+	"multiplier": {
+		"type": "number"
+	}
 }
-  

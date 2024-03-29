@@ -11,7 +11,9 @@ interface FunctionsApi {
 	updateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	createFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	deleteFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
-	autoCalculateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
+	autoCalculateFunction:
+		| UseTRPCMutationResult<any, any, any, any>
+		| undefined;
 }
 
 export const employeeToolbarFunctionsContext = createContext<FunctionsApi>({
@@ -70,24 +72,27 @@ export default function EmployeeToolbarFunctionsProvider({
 	//#region <EmployeeTrust>
 	const getEmployeeTrust = () =>
 		api.employeeTrust.getCurrentEmployeeTrust.useQuery({ period_id });
-	const updateEmployeeTrust = api.employeeTrust.updateEmployeeTrust.useMutation({
-		onSuccess: () => {
-			ctx.employeeTrust.getCurrentEmployeeTrust.invalidate();
-			ctx.employeeTrust.getAllEmployeeTrust.invalidate();
-		},
-	});
-	const createEmployeeTrust = api.employeeTrust.createEmployeeTrust.useMutation({
-		onSuccess: () => {
-			ctx.employeeTrust.getCurrentEmployeeTrust.invalidate();
-			ctx.employeeTrust.getAllEmployeeTrust.invalidate();
-		},
-	});
-	const deleteEmployeeTrust = api.employeeTrust.deleteEmployeeTrust.useMutation({
-		onSuccess: () => {
-			ctx.employeeTrust.getCurrentEmployeeTrust.invalidate();
-			ctx.employeeTrust.getAllEmployeeTrust.invalidate();
-		},
-	});
+	const updateEmployeeTrust =
+		api.employeeTrust.updateEmployeeTrust.useMutation({
+			onSuccess: () => {
+				ctx.employeeTrust.getCurrentEmployeeTrust.invalidate();
+				ctx.employeeTrust.getAllEmployeeTrust.invalidate();
+			},
+		});
+	const createEmployeeTrust =
+		api.employeeTrust.createEmployeeTrust.useMutation({
+			onSuccess: () => {
+				ctx.employeeTrust.getCurrentEmployeeTrust.invalidate();
+				ctx.employeeTrust.getAllEmployeeTrust.invalidate();
+			},
+		});
+	const deleteEmployeeTrust =
+		api.employeeTrust.deleteEmployeeTrust.useMutation({
+			onSuccess: () => {
+				ctx.employeeTrust.getCurrentEmployeeTrust.invalidate();
+				ctx.employeeTrust.getAllEmployeeTrust.invalidate();
+			},
+		});
 	const autoCalculateEmployeeTrust =
 		api.employeeTrust.autoCalculateEmployeeTrust.useMutation({
 			onSuccess: () => {

@@ -63,8 +63,11 @@ export function DataTableToolbar<TData>({
 			<DataTableViewOptions table={table} />
 			{/* Toolbar functions */}
 			<div className="w-12">
-				{selectedPeriod &&
-					<ParameterToolbarFunctionsProvider selectedTableType={selectedTableType} period_id={selectedPeriod.period_id}>
+				{selectedPeriod && (
+					<ParameterToolbarFunctionsProvider
+						selectedTableType={selectedTableType}
+						period_id={selectedPeriod.period_id}
+					>
 						{selectedTab === TabsEnum.Enum.current && (
 							<DataTableFunctions tableType={selectedTableType} />
 						)}
@@ -74,7 +77,7 @@ export function DataTableToolbar<TData>({
 							/>
 						)}
 					</ParameterToolbarFunctionsProvider>
-				}
+				)}
 			</div>
 		</div>
 	);

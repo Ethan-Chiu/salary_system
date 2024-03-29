@@ -14,9 +14,9 @@ export class EmployeeAccount extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-    declare emp_no: string;
-    declare bank_account: string;
-    declare ratio: number;
+	declare emp_no: string;
+	declare bank_account: string;
+	declare ratio: number;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -36,19 +36,19 @@ EmployeeAccount.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-        emp_no: {
-            type: DataTypes.STRING(32),
+		emp_no: {
+			type: DataTypes.STRING(32),
 			allowNull: false,
-        },
-        bank_account: {
-            type: DataTypes.STRING(32),
+		},
+		bank_account: {
+			type: DataTypes.STRING(32),
 			allowNull: false,
-        },
-        ratio: {
-            type: DataTypes.FLOAT,
+		},
+		ratio: {
+			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
-        },
+		},
 		create_date: {
 			type: DataTypes.DATE,
 		},
@@ -67,7 +67,7 @@ EmployeeAccount.init(
 	{
 		sequelize,
 		tableName: "U_EMPLOYEE_ACCOUNT",
-		createdAt: 'create_date',
-		updatedAt: 'update_date',
+		createdAt: "create_date",
+		updatedAt: "update_date",
 	}
-)
+);

@@ -7,26 +7,25 @@ import {
 } from "~/components/ui/select";
 
 interface MODE {
-    mode: string,
-    setMode: (mode: string) => void
-};
-
-export function SelectModeComponent({mode, setMode}: MODE) {
-    return (
-        <>
-            <Select value={mode} onValueChange={setMode}>
-                <SelectTrigger className="w-[180px]">
-                    <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="Changed">Only Changed</SelectItem>
-                    <SelectItem value="All">Display All</SelectItem>
-                </SelectContent>
-            </Select>
-        </>
-    );
+	mode: string;
+	setMode: (mode: string) => void;
 }
 
+export function SelectModeComponent({ mode, setMode }: MODE) {
+	return (
+		<>
+			<Select value={mode} onValueChange={setMode}>
+				<SelectTrigger className="w-[180px]">
+					<SelectValue />
+				</SelectTrigger>
+				<SelectContent>
+					<SelectItem value="Changed">Only Changed</SelectItem>
+					<SelectItem value="All">Display All</SelectItem>
+				</SelectContent>
+			</Select>
+		</>
+	);
+}
 
 // const SelectColorComponent = () => {
 //     return (

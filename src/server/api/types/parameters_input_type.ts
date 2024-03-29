@@ -245,8 +245,12 @@ const EmployeePayment = z.object({
 
 export const createEmployeePaymentAPI = EmployeePayment.merge(DateAPI);
 export const createEmployeePaymentService = EmployeePayment.merge(DateService);
-export const updateEmployeePaymentAPI = EmployeePayment.merge(Id).merge(DateAPI).partial();
-export const updateEmployeePaymentService = EmployeePayment.merge(Id).merge(DateService).partial();
+export const updateEmployeePaymentAPI = EmployeePayment.merge(Id)
+	.merge(DateAPI)
+	.partial();
+export const updateEmployeePaymentService = EmployeePayment.merge(Id)
+	.merge(DateService)
+	.partial();
 
 const EmployeeTrust = z.object({
 	emp_no: z.string(),
@@ -258,8 +262,12 @@ const EmployeeTrust = z.object({
 
 export const createEmployeeTrustAPI = EmployeeTrust.merge(DateAPI);
 export const createEmployeeTrustService = EmployeeTrust.merge(DateService);
-export const updateEmployeeTrustAPI = EmployeeTrust.merge(Id).merge(DateAPI).partial();
-export const updateEmployeeTrustService = EmployeeTrust.merge(Id).merge(DateService).partial();
+export const updateEmployeeTrustAPI = EmployeeTrust.merge(Id)
+	.merge(DateAPI)
+	.partial();
+export const updateEmployeeTrustService = EmployeeTrust.merge(Id)
+	.merge(DateService)
+	.partial();
 
 const EmployeeData = z.object({
 	emp_no: z.string(),

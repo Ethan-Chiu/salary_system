@@ -1,10 +1,9 @@
 {
-    "position_type": {
-      "type": "string",
-      "max": 2
-    },
-    "multiplier": {
-      "type": "number"
-    }
+	"position_type": {
+		"type": "string",
+		"max": 2
+	},
+	"multiplier": {
+		"type": "number"
+	}
 }
-  

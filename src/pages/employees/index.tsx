@@ -14,80 +14,100 @@ import periodContext from "~/components/context/period_context";
 const TabOptions = ["基本檔案", "薪資檔案", "持股信託"];
 
 const PageEmployeesContent = () => {
-    const { setSelectedTableType } = useContext(dataTableContext);
-    const { selectedPeriod } = useContext(periodContext);
-    function getTable(table_name: string) {
-        switch (table_name) {
-            case TabOptions[0]:
-                return <EmployeeDataTable />;
-            case TabOptions[1]:
-                return selectedPeriod ? <EmployeePaymentTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>;
-            case TabOptions[2]:
-                return selectedPeriod ? <EmployeeTrustTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>;
-            default:
-                return <p>No implement</p>;
-        }
-    }
+	const { setSelectedTableType } = useContext(dataTableContext);
+	const { selectedPeriod } = useContext(periodContext);
+	function getTable(table_name: string) {
+		switch (table_name) {
+			case TabOptions[0]:
+				return <EmployeeDataTable />;
+			case TabOptions[1]:
+				return selectedPeriod ? (
+					<EmployeePaymentTable
+						period_id={selectedPeriod.period_id}
+					/>
+				) : (
+					<p>Please select period first</p>
+				);
+			case TabOptions[2]:
+				return selectedPeriod ? (
+					<EmployeeTrustTable period_id={selectedPeriod.period_id} />
+				) : (
+					<p>Please select period first</p>
+				);
+			default:
+				return <p>No implement</p>;
+		}
+	}
 
-    function getTypeByOption(options: string) {
-        switch (options) {
-            case TabOptions[1]:
-                return "TableEmployeePayment";
-            case TabOptions[2]:
-                return "TableEmployeeTrust";
-            default:
-                return "TableEmployeePayment";
-        }
-    }
+	function getTypeByOption(options: string) {
+		switch (options) {
+			case TabOptions[1]:
+				return "TableEmployeePayment";
+			case TabOptions[2]:
+				return "TableEmployeeTrust";
+			default:
+				return "TableEmployeePayment";
+		}
+	}
 
-    return (
-        <div className="flex flex-col h-full w-full">
-            <Header title="employees" showOptions className="mb-4" />
-            <div className="h-0 grow m-4">
-                <Tabs
-                    defaultValue={TabOptions[0]}
-                    className="flex h-full w-full flex-col"
-                >
-                    <TabsList className={"grid w-full grid-cols-3"}>
-                        {TabOptions.map((option) => {
-                            return (
-                                <TabsTrigger key={option} value={option} onClick={() =>
-                                    setSelectedTableType(getTypeByOption(option))
-                                }>
-                                    {option}
-                                </TabsTrigger>
-                            );
-                        })}
-                    </TabsList>
-                    <div className="h-0 grow mt-2">
-                        {TabOptions.map((option) => {
-                            return (
-                                <TabsContent key={option} value={option} className="h-full">
-                                    {getTable(option)}
-                                </TabsContent>
-                            );
-                        })}
-                    </div>
-                </Tabs>
-            </div>
-        </div>
-    );
+	return (
+		<div className="flex h-full w-full flex-col">
+			<Header title="employees" showOptions className="mb-4" />
+			<div className="m-4 h-0 grow">
+				<Tabs
+					defaultValue={TabOptions[0]}
+					className="flex h-full w-full flex-col"
+				>
+					<TabsList className={"grid w-full grid-cols-3"}>
+						{TabOptions.map((option) => {
+							return (
+								<TabsTrigger
+									key={option}
+									value={option}
+									onClick={() =>
+										setSelectedTableType(
+											getTypeByOption(option)
+										)
+									}
+								>
+									{option}
+								</TabsTrigger>
+							);
+						})}
+					</TabsList>
+					<div className="mt-2 h-0 grow">
+						{TabOptions.map((option) => {
+							return (
+								<TabsContent
+									key={option}
+									value={option}
+									className="h-full"
+								>
+									{getTable(option)}
+								</TabsContent>
+							);
+						})}
+					</div>
+				</Tabs>
+			</div>
+		</div>
+	);
 };
 
 const PageEmployees: NextPageWithLayout = () => {
-    return (
-        <DataTableContextProvider>
-            <PageEmployeesContent />
-        </DataTableContextProvider>
-    )
-}
+	return (
+		<DataTableContextProvider>
+			<PageEmployeesContent />
+		</DataTableContextProvider>
+	);
+};
 
 PageEmployees.getLayout = function getLayout(page: ReactElement) {
-    return (
-        <RootLayout>
-            <PerpageLayoutNav pageTitle="employees">{page}</PerpageLayoutNav>
-        </RootLayout>
-    );
+	return (
+		<RootLayout>
+			<PerpageLayoutNav pageTitle="employees">{page}</PerpageLayoutNav>
+		</RootLayout>
+	);
 };
 
 export default PageEmployees;

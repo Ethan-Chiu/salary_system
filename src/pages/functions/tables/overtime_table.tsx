@@ -24,6 +24,6 @@ export function OvertimeTable({ period, index, globalFilter }: any) {
 	}
 
 	return (
-		<DataTable columns={columns} data={data!} filterColumnKey={filterKey}/>
+		<DataTable columns={columns} data={data!} filterColumnKey={filterKey} />
 	);
 }

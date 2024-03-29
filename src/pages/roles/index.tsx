@@ -53,24 +53,26 @@ const PageRoles: NextPageWithLayout = () => {
 	return (
 		<>
 			{/* header */}
-			<Header title="roles" showOptions/>
+			<Header title="roles" showOptions />
 			<CurrentUserCard />
 			<div>
-				<TeamMemberTable/>
+				<TeamMemberTable />
 			</div>
 		</>
 	);
 };
 
 const capitalizeFirstLetter = (str: string) => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+	return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
 function CurrentUserCard() {
-	const {data: session, status} = useSession();
+	const { data: session, status } = useSession();
 
 	const info: EmployeeInfo = {
-		username: capitalizeFirstLetter(session?.user.emp_no ?? "Something went wrong"),
+		username: capitalizeFirstLetter(
+			session?.user.emp_no ?? "Something went wrong"
+		),
 		userEmail: session?.user.email ?? "Email not set yet",
 		description: "balabalabalabala balabalabala balabala",
 		avatarImgSource: "https://github.com/shadcn.png",
@@ -145,7 +147,10 @@ function CompRoleDropdown() {
 						<CommandEmpty>No roles found.</CommandEmpty>
 						<CommandGroup>
 							{identitylist.map((props: IdentityType) => (
-								<CommandItem key={props.identity} className="teamaspace-y-1 flex flex-col items-start px-4 py-2">
+								<CommandItem
+									key={props.identity}
+									className="teamaspace-y-1 flex flex-col items-start px-4 py-2"
+								>
 									<p>{props.identity}</p>
 									<p className="text-sm text-muted-foreground">
 										{props.description}
@@ -207,9 +212,7 @@ function CompHoverCard({ info }: { info: EmployeeInfo }) {
 PageRoles.getLayout = function getLayout(page: ReactElement) {
 	return (
 		<RootLayout>
-			<PerpageLayoutNav pageTitle="roles">
-				{page}
-			</PerpageLayoutNav>
+			<PerpageLayoutNav pageTitle="roles">{page}</PerpageLayoutNav>
 		</RootLayout>
 	);
 };

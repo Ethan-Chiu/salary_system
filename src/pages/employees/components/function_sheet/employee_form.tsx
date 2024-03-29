@@ -48,7 +48,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 	closeSheet,
 }: EmployeeFormProps<SchemaType>) {
 	const functions = useContext(employeeToolbarFunctionsContext);
-	const { selectedPeriod } = useContext(periodContext)
+	const { selectedPeriod } = useContext(periodContext);
 
 	const queryFunction = functions.queryFunction!;
 	const updateFunction = functions.updateFunction!;
@@ -222,18 +222,29 @@ const CompViewAllDatas = ({
 	onDelete: Function;
 	onAutoCalculate: Function;
 }) => {
-
 	const [filterValue, setFilterValue] = useState<string>("");
-	const [selectedEmpNoList, setSelectedEmpNoList] = useState<string[]>(dataNoID.map(e => e.emp_no));
+	const [selectedEmpNoList, setSelectedEmpNoList] = useState<string[]>(
+		dataNoID.map((e) => e.emp_no)
+	);
 	const filteredData = dataNoID?.filter((data: any) => {
-		return Object.values(data).some((value: any) => value ? value.toString().includes(filterValue) : false)
-	})
+		return Object.values(data).some((value: any) =>
+			value ? value.toString().includes(filterValue) : false
+		);
+	});
 
 	return (
 		<>
-			<div className="flex justify-between items-center w-[45vw]">
-				<Input className="w-1/10 m-2" placeholder={"請輸入搜尋關鍵字"} onChange={e => setFilterValue(e.target.value)}></Input>
-				{mode == "auto calculate" && <Button onClick={() => onAutoCalculate(selectedEmpNoList)}>{Translate("auto calculate")}</Button>}
+			<div className="flex w-[45vw] items-center justify-between">
+				<Input
+					className="w-1/10 m-2"
+					placeholder={"請輸入搜尋關鍵字"}
+					onChange={(e) => setFilterValue(e.target.value)}
+				></Input>
+				{mode == "auto calculate" && (
+					<Button onClick={() => onAutoCalculate(selectedEmpNoList)}>
+						{Translate("auto calculate")}
+					</Button>
+				)}
 			</div>
 			{filteredData && (
 				<div className="m-4">
@@ -290,13 +301,27 @@ const CompViewAllDatas = ({
 											{mode === "auto calculate" && (
 												<Checkbox
 													className="cursor-pointer"
-													checked={selectedEmpNoList.includes(data.emp_no)}
-													onCheckedChange={(checked) => {
+													checked={selectedEmpNoList.includes(
+														data.emp_no
+													)}
+													onCheckedChange={(
+														checked
+													) => {
 														if (checked) {
-															setSelectedEmpNoList([...selectedEmpNoList, data.emp_no])
-														}
-														else {
-															setSelectedEmpNoList(selectedEmpNoList.filter((empNo) => empNo !== data.emp_no))
+															setSelectedEmpNoList(
+																[
+																	...selectedEmpNoList,
+																	data.emp_no,
+																]
+															);
+														} else {
+															setSelectedEmpNoList(
+																selectedEmpNoList.filter(
+																	(empNo) =>
+																		empNo !==
+																		data.emp_no
+																)
+															);
 														}
 													}}
 												/>

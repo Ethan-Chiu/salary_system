@@ -10,18 +10,18 @@ import { BaseResponseError } from "../api/error/BaseResponseError";
 import { select_value } from "./helper_function";
 
 export interface CombinedData {
-	key: string
-	salary_value: any
-	ehr_value: any
-	is_different: boolean
+	key: string;
+	salary_value: any;
+	ehr_value: any;
+	is_different: boolean;
 }
 export interface PaidEmployee {
-	emp_no: string
-	name: string
-	department: string
-	work_status: string
-	quit_date: string | null
-	bug?: string
+	emp_no: string;
+	name: string;
+	department: string;
+	work_status: string;
+	quit_date: string | null;
+	bug?: string;
 }
 
 @injectable()
@@ -44,7 +44,7 @@ export class EmployeeDataService {
 		registration_date,
 		quit_date,
 		licens_id,
-		nbanknumber
+		nbanknumber,
 	}: z.infer<typeof createEmployeeDataService>): Promise<EmployeeData> {
 		const newData = await EmployeeData.create({
 			emp_no: emp_no,
@@ -138,7 +138,10 @@ export class EmployeeDataService {
 				),
 				quit_date: select_value(quit_date, employeeData.quit_date),
 				licens_id: select_value(licens_id, employeeData.licens_id),
-				nbanknumber: select_value(nbanknumber, employeeData.nbanknumber),
+				nbanknumber: select_value(
+					nbanknumber,
+					employeeData.nbanknumber
+				),
 				position: select_value(position, employeeData.position),
 				position_type: select_value(
 					position_type,
@@ -200,7 +203,10 @@ export class EmployeeDataService {
 				),
 				quit_date: select_value(quit_date, employeeData.quit_date),
 				licens_id: select_value(licens_id, employeeData.licens_id),
-				nbanknumber: select_value(nbanknumber, employeeData.nbanknumber),
+				nbanknumber: select_value(
+					nbanknumber,
+					employeeData.nbanknumber
+				),
 				position: select_value(position, employeeData.position),
 				position_type: select_value(
 					position_type,
@@ -217,7 +223,7 @@ export class EmployeeDataService {
 			{ where: { emp_no: emp_no } }
 		);
 		if (affectedCount[0] != 1) {
-			throw new BaseResponseError("Update error" );
+			throw new BaseResponseError("Update error");
 		}
 	}
 

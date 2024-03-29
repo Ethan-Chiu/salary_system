@@ -16,16 +16,15 @@ export default function AutoFormDateCustom({
 	fieldConfigItem,
 	fieldProps,
 }: AutoFormInputComponentProps) {
-    function convertDate(inputDate: any){
-        let ans = null;
-        try {
-            ans = inputDate.toISOString().split("T")[0] ?? "";
-        }
-        catch {
-            ans = inputDate;
-        }   
-        return ans;
-    }
+	function convertDate(inputDate: any) {
+		let ans = null;
+		try {
+			ans = inputDate.toISOString().split("T")[0] ?? "";
+		} catch {
+			ans = inputDate;
+		}
+		return ans;
+	}
 	return (
 		<FormItem>
 			<FormLabel>
@@ -36,7 +35,9 @@ export default function AutoFormDateCustom({
 				<Input
 					type="date"
 					onChange={field.onChange}
-					defaultValue={convertDate(fieldProps.defaultValue ?? field.value)}
+					defaultValue={convertDate(
+						fieldProps.defaultValue ?? field.value
+					)}
 				/>
 				{/* <DatePicker
                     date={field.value}

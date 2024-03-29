@@ -57,8 +57,9 @@ export const bank_columns = [
 		header: () => <div className="text-center">start</div>,
 		cell: ({ row }) => {
 			return (
-				<div className="text-center font-medium">{`${row.original.start_date.toISOString().split("T")[0]
-					}`}</div>
+				<div className="text-center font-medium">{`${
+					row.original.start_date.toISOString().split("T")[0]
+				}`}</div>
 			);
 		},
 	}),
@@ -66,8 +67,9 @@ export const bank_columns = [
 		header: () => <div className="text-center">end</div>,
 		cell: ({ row }) => {
 			return row.original.end_date ? (
-				<div className="text-center font-medium">{`${row.original.end_date.toISOString().split("T")[0] ?? ""
-					}`}</div>
+				<div className="text-center font-medium">{`${
+					row.original.end_date.toISOString().split("T")[0] ?? ""
+				}`}</div>
 			) : (
 				<div className="text-center font-medium"></div>
 			);

@@ -34,15 +34,14 @@ import {
 import { EmployeeDataChange } from "./components/EmpDataTable";
 import { ScrollArea } from "~/components/ui/scroll-area";
 
-
 const PageCheckEHR: NextPageWithLayout = () => {
-	return <SyncPage period={113} />
+	return <SyncPage period={113} />;
 };
 
 function SyncPage({ period }: { period: number }) {
 	const getDiffDatas = api.sync.checkEmployeeData.useQuery({
 		func: "month_salary",
-		period: period
+		period: period,
 	});
 	const synchronizeAPI = api.sync.synchronize.useMutation({
 		onSuccess: () => {
@@ -65,9 +64,12 @@ function SyncPage({ period }: { period: number }) {
 			: data.find((cd: CombinedData) => cd.key === query)?.ehr_value;
 	};
 
-
 	const [empStatus, setEmpStatus] = useState<Status>({});
-	if (getDiffDatas.isFetched && Object.keys(empStatus).length === 0 && (getDiffDatas.data ?? []).length > 0) {
+	if (
+		getDiffDatas.isFetched &&
+		Object.keys(empStatus).length === 0 &&
+		(getDiffDatas.data ?? []).length > 0
+	) {
 		let tmp: any = {};
 		getDiffDatas.data?.map((cd: Array<CombinedData>) => {
 			tmp[getKeyFromData(cd, "emp_no", "ehr")] = "initial";
@@ -105,7 +107,9 @@ function SyncPage({ period }: { period: number }) {
 
 	const getKeyData = (emp_no: string, query: string) => {
 		let query_empData = getEmpData(emp_no);
-		let query_result = getKeyFromData(query_empData, query) ?? getKeyFromData(query_empData, query, "ehr");
+		let query_result =
+			getKeyFromData(query_empData, query) ??
+			getKeyFromData(query_empData, query, "ehr");
 		return query_result;
 	};
 
@@ -122,7 +126,9 @@ function SyncPage({ period }: { period: number }) {
 			(data: Array<CombinedData>) => {
 				let newConstructedData: DifferentKeys = {
 					emp_no: getKeyFromData(data, "emp_no", "ehr"),
-					emp_name: getKeyFromData(data, "emp_name") ?? getKeyFromData(data, "emp_name", "ehr"),
+					emp_name:
+						getKeyFromData(data, "emp_name") ??
+						getKeyFromData(data, "emp_name", "ehr"),
 					diffKeys: data.filter(
 						(cd: CombinedData) => cd.is_different === true
 					),
@@ -137,14 +143,15 @@ function SyncPage({ period }: { period: number }) {
 	function next() {
 		let notSeenDatas = getDiffDatas.data!.filter(
 			(data: Array<CombinedData>) =>
-				empStatus[getKeyFromData(data, "emp_no", "ehr")] === "initial" &&
+				empStatus[getKeyFromData(data, "emp_no", "ehr")] ===
+					"initial" &&
 				getKeyFromData(data, "emp_no", "ehr") !== selectedEmployee
 		);
 		let nextEmp =
 			notSeenDatas.length > 0
 				? getKeyFromData(notSeenDatas[0]!, "emp_no", "ehr")
 				: selectedEmployee;
-		console.log(nextEmp)
+		console.log(nextEmp);
 		setSelectedEmployee(nextEmp);
 	}
 
@@ -161,9 +168,9 @@ function SyncPage({ period }: { period: number }) {
 	const handleUpdate = (updateList: string[]) => {
 		synchronizeAPI.mutate({
 			period: period,
-			emp_no_list: updateList
+			emp_no_list: updateList,
 		});
-	}
+	};
 
 	function SelectedEmpDepartment({ emp_no }: { emp_no: string }) {
 		return <Label>部門：{getKeyData(emp_no, "u_dep")}</Label>;
@@ -183,26 +190,40 @@ function SyncPage({ period }: { period: number }) {
 		}
 
 		function SelectListEmp({ d }: { d: Array<CombinedData> }) {
-			let emp_no = getKeyFromData(d, "emp_no") ?? getKeyFromData(d, "emp_no", "ehr");
-			let emp_name = getKeyFromData(d, "emp_name") ?? getKeyFromData(d, "emp_name", "ehr");
-			let english_name = getKeyFromData(d, "english_name") ?? getKeyFromData(d, "english_name", "ehr");
+			let emp_no =
+				getKeyFromData(d, "emp_no") ??
+				getKeyFromData(d, "emp_no", "ehr");
+			let emp_name =
+				getKeyFromData(d, "emp_name") ??
+				getKeyFromData(d, "emp_name", "ehr");
+			let english_name =
+				getKeyFromData(d, "english_name") ??
+				getKeyFromData(d, "english_name", "ehr");
 			return (
 				<>
 					<b className="mr-1">{emp_no}</b>
 					<p className="mr-1">
-						{
-							emp_name +
+						{emp_name +
 							" " +
 							english_name +
-							" " + (isInitial(d) ? "(尚未確認)" : isIgnored(d) ? "(暫不修改)" : isChecked(d) ? "(確認更改)" : "(未知狀態)")
-						}
+							" " +
+							(isInitial(d)
+								? "(尚未確認)"
+								: isIgnored(d)
+								? "(暫不修改)"
+								: isChecked(d)
+								? "(確認更改)"
+								: "(未知狀態)")}
 					</p>
 				</>
 			);
 		}
 
 		function getStatus(d: Array<CombinedData>) {
-			return empStatus[getKeyFromData(d, "emp_no") ?? getKeyFromData(d, "emp_no", "ehr")];
+			return empStatus[
+				getKeyFromData(d, "emp_no") ??
+					getKeyFromData(d, "emp_no", "ehr")
+			];
 		}
 
 		function isInitial(d: Array<CombinedData>) {
@@ -248,9 +269,21 @@ function SyncPage({ period }: { period: number }) {
 								{getDiffDatas.data!.map(
 									(d: Array<CombinedData>) => (
 										<CommandItem
-											key={getKeyFromData(d, "emp_no") ?? getKeyFromData(d, "emp_no", "ehr")}
+											key={
+												getKeyFromData(d, "emp_no") ??
+												getKeyFromData(
+													d,
+													"emp_no",
+													"ehr"
+												)
+											}
 											value={generateLongString(
-												getKeyFromData(d, "emp_no") ?? getKeyFromData(d, "emp_no", "ehr")
+												getKeyFromData(d, "emp_no") ??
+													getKeyFromData(
+														d,
+														"emp_no",
+														"ehr"
+													)
 											)}
 											onSelect={(currentValue) => {
 												setSelectedEmployee(
@@ -267,19 +300,23 @@ function SyncPage({ period }: { period: number }) {
 												className={cn(
 													"mr-2 h-4 w-4",
 													selectedEmployee ===
-														getKeyFromData(d, "emp_no")
+														getKeyFromData(
+															d,
+															"emp_no"
+														)
 														? "opacity-100"
 														: "opacity-0"
 												)}
 											/>
 											{
 												<div
-													className={`flex items-center ${isInitial(d)
-														? "text-red-400"
-														: isIgnored(d)
+													className={`flex items-center ${
+														isInitial(d)
+															? "text-red-400"
+															: isIgnored(d)
 															? ""
 															: "text-green-400"
-														}`}
+													}`}
 												>
 													<SelectListEmp d={d} />
 												</div>
@@ -301,7 +338,8 @@ function SyncPage({ period }: { period: number }) {
 
 	function AllDonePage() {
 		function ImageComponent() {
-			const imageUrl = 'https://memeprod.sgp1.digitaloceanspaces.com/user-template/b3a4babd59ebb46530a7f7cca856d848.png';
+			const imageUrl =
+				"https://memeprod.sgp1.digitaloceanspaces.com/user-template/b3a4babd59ebb46530a7f7cca856d848.png";
 
 			return (
 				<div>
@@ -309,20 +347,21 @@ function SyncPage({ period }: { period: number }) {
 				</div>
 			);
 		}
-		return <>
-			<p>System Data is updated with EHR</p>
-			<ImageComponent />
-		</>;
+		return (
+			<>
+				<p>System Data is updated with EHR</p>
+				<ImageComponent />
+			</>
+		);
 	}
 
 	function MainPage() {
-
 		return (
 			<>
-				<div className="flex flex-col h-full grow">
+				<div className="flex h-full grow flex-col">
 					<Header title="Data Check" />
 					<Separator />
-					<div className="flex flex-col grow p-4">
+					<div className="flex grow flex-col p-4">
 						<div className="mb-4 flex items-center">
 							<SelectEmpComponent />
 							<div className="ml-4">
@@ -339,7 +378,7 @@ function SyncPage({ period }: { period: number }) {
 							</div>
 						</div>
 
-						<div className="w-full h-0 grow">
+						<div className="h-0 w-full grow">
 							<EmployeeDataChange
 								empData={getEmpData(selectedEmployee)}
 								mode={mode}
