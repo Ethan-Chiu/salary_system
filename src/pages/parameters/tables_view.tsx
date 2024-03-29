@@ -22,6 +22,8 @@ import {
 	CreditCard,
 	Key,
 	LucideIcon,
+	Table,
+	TrendingUp,
 	Users,
 } from "lucide-react";
 import DataTableContextProvider from "./components/context/data_table_context_provider";
@@ -32,6 +34,9 @@ import { ScrollArea } from "~/components/ui/scroll-area";
 import { ParameterTableEnum, ParameterTableEnumValues } from "./parameter_tables";
 import periodContext from "~/components/context/period_context";
 import { Period } from "~/server/database/entity/UMEDIA/period";
+import { LevelRangeTable } from "./tables/level_range_table";
+import { LevelTable } from "./tables/level_table";
+import { PerformanceLevelTable } from "./tables/performance_level_table";
 
 type TableComponentProps = {
 	index: number;
@@ -85,6 +90,21 @@ function getTableComponent(table: ParameterTableEnum, selectedPeriod: Period | n
 				component: selectedPeriod ? <BonusSeniorityTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
 				icon: Cake,
 			};
+		case "TableLevelRange":
+			return {
+				component: selectedPeriod ? <LevelRangeTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
+				icon: Table,
+			};
+		case "TableLevel":
+			return {
+				component: selectedPeriod ? <LevelTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
+				icon: Table,
+			};
+		case "TablePerformanceLevel":
+			return {
+				component: selectedPeriod ? <PerformanceLevelTable period_id={selectedPeriod.period_id} /> : <p>Please select period first</p>,
+				icon: TrendingUp,
+			}
 		default:
 			throw new Error(`Invalid table: ${table}`);
 	}

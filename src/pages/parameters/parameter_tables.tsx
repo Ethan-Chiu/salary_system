@@ -11,4 +11,7 @@ export  const ParameterTableEnumValues = [
 	"TableBonusPosition",
 	"TableBonusPositionType",
 	"TableBonusSeniority",
+	"TableLevelRange",
+	"TableLevel",
+	"TablePerformanceLevel",
 ] as const;
