@@ -7,10 +7,11 @@ import {
 } from "../api/types/parameters_input_type";
 import { Level } from "../database/entity/SALARY/level";
 import { select_value } from "./helper_function";
+import { Op } from "sequelize";
 
 @injectable()
 export class LevelService {
-	constructor() {}
+	constructor() { }
 
 	async createLevel({
 		level,
@@ -58,7 +59,7 @@ export class LevelService {
 			},
 			{ where: { id: id } }
 		);
-		if (affectedCount[0] != 1) {
+		if (affectedCount[0] == 0) {
 			throw new BaseResponseError("Update error");
 		}
 	}
@@ -70,5 +71,23 @@ export class LevelService {
 		if (destroyedRows != 1) {
 			throw new BaseResponseError("Delete error");
 		}
+	}
+
+	async getLevelBySalary(salary: number, level_start: number, level_end: number): Promise<Level> {
+		const levelList = await Level.findAll({
+			where: {
+				level: {
+					[Op.gte]: salary,
+				}
+			},
+		});
+		const minLevel = await this.getLevelById(level_start);
+		const maxLevel = await this.getLevelById(level_end);
+		if (minLevel == null || maxLevel == null) {
+			throw new BaseResponseError("Level does not exist");
+		}
+		const targetLevel = levelList.sort((a, b) => a.level - b.level)[0]!;
+		const level = targetLevel.level < minLevel.level ? minLevel : targetLevel.level > maxLevel.level ? maxLevel : targetLevel;
+		return level;
 	}
 }

@@ -111,13 +111,9 @@ function SyncPage({ period }: { period: number }) {
 
 	function getChangedDatas() {
 		let checkedData = Object.keys(empStatus)
-			// .filter((key: string) => empStatus[key] === "checked")
 			.map((emp_no: string) => {
 				return getEmpData(emp_no);
 			});
-		console.log(checkedData);
-		console.log(empStatus);
-		console.log(getDiffDatas.data);
 		let filterData: Array<DifferentKeys> = checkedData.map(
 			(data: Array<CombinedData>) => {
 				let newConstructedData: DifferentKeys = {
@@ -300,19 +296,7 @@ function SyncPage({ period }: { period: number }) {
 	}
 
 	function AllDonePage() {
-		function ImageComponent() {
-			const imageUrl = 'https://memeprod.sgp1.digitaloceanspaces.com/user-template/b3a4babd59ebb46530a7f7cca856d848.png';
-
-			return (
-				<div>
-					<img src={imageUrl} alt="Description of the image" />
-				</div>
-			);
-		}
-		return <>
-			<p>System Data is updated with EHR</p>
-			<ImageComponent />
-		</>;
+		return <p>System Data is updated with EHR</p>
 	}
 
 	function MainPage() {
@@ -371,7 +355,6 @@ function SyncPage({ period }: { period: number }) {
 								</Button>
 							</div>
 						</div>
-						{/* <Button onClick={() => console.log(empStatus)}></Button> */}
 					</div>
 				</div>
 			</>
@@ -392,7 +375,6 @@ function SyncPage({ period }: { period: number }) {
 			)}
 		</>
 	);
-	// return <Button onClick = {() => console.log(getDiffDatas.data)}> test </Button>
 }
 
 PageCheckEHR.getLayout = function getLayout(page: ReactElement) {

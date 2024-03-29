@@ -106,7 +106,7 @@ export class UserService {
 			},
 			{ where: { emp_no: emp_no } }
 		);
-		if (affectedCount[0] != 1) {
+		if (affectedCount[0] == 0) {
 			throw new BaseResponseError("Update error");
 		}
 	}
