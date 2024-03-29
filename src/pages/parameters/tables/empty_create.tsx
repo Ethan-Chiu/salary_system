@@ -62,7 +62,8 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 		Partial<z.infer<z.AnyZodObject>>
 	>(getDefaults(formSchema));
 
-	const [openDialog, setOpenDialog] = useState(false);
+	const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+
 
 	function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
 		return Object.fromEntries(
@@ -93,57 +94,72 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 	const handleSubmit = () => {
 		const parsedValues = formSchema.safeParse(formValues);
 		if (parsedValues.success) {
-			setOpenDialog(true);
+			setOpenConfirmDialog(true);
 		}
 	};
 
 	// Create or update an entry
 	return (
 		<>
-			<AutoForm
-				className="m-5"
-				_defaultValues={{}}
-				values={formValues}
-				onValuesChange={setFormValues}
-				onSubmit={handleSubmit}
-				formSchema={formSchema}
-				fieldConfig={fieldConfig}
-			>
-				<div>
-					<div className="flex justify-between">
-						<Button
-							type="button"
-							variant={"outline"}
-							onClick={() => {
-								if (mode === "create") {
-									onClose();
-								}
-							}}
+			<Dialog  open={openConfirmDialog} onOpenChange={setOpenConfirmDialog}>
+				<DialogTrigger asChild>
+					<AlertDialogAction>Create</AlertDialogAction>
+				</DialogTrigger>
+				<DialogContent className={"lg:max-w-screen-lg overflow-y-scroll max-h-screen"}>
+					<>
+						<AutoForm
+							className="m-5"
+							_defaultValues={{}}
+							values={formValues}
+							onValuesChange={setFormValues}
+							onSubmit={handleSubmit}
+							formSchema={formSchema}
+							fieldConfig={fieldConfig}
 						>
-							Cancel
-						</Button>
+							<div>
+								<div className="flex justify-between">
+									<Button
+										type="button"
+										variant={"outline"}
+										onClick={() => {
+											if (mode === "create") {
+												setOpenConfirmDialog(false);
+												onClose();
+											}
+										}}
+									>
+										Cancel
+									</Button>
 
-						<Button type="submit">
-							{mode === "create" && "Create"}
-						</Button>
-					</div>
-				</div>
-			</AutoForm>
-			{/* Submit change dialog */}
-			<Dialog open={openDialog} onOpenChange={setOpenDialog}>
-				<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
-					<DialogHeader>
-						<DialogTitle>Are you sure to update?</DialogTitle>
-						<DialogDescription></DialogDescription>
-					</DialogHeader>
-					<GeneralTable data={formValues} />
-					<DialogFooter>
-						<DialogClose asChild>
-							<Button onClick={submitForm} type="submit">
-								Save changes
-							</Button>
-						</DialogClose>
-					</DialogFooter>
+									<Button type="submit">
+										{mode === "create" && "Create"}
+									</Button>
+								</div>
+							</div>
+						</AutoForm>
+						{/* Submit change dialog */}
+						<Dialog open={openConfirmDialog} onOpenChange={setOpenConfirmDialog}>
+							<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
+								<DialogHeader>
+									<DialogTitle>
+										Are you sure to update?
+									</DialogTitle>
+									<DialogDescription></DialogDescription>
+								</DialogHeader>
+								<GeneralTable data={formValues} />
+								<DialogFooter>
+									<DialogClose asChild>
+										<Button
+											onClick={submitForm}
+											type="submit"
+										>
+											Save changes
+										</Button>
+									</DialogClose>
+								</DialogFooter>
+							</DialogContent>
+						</Dialog>
+					</>
 				</DialogContent>
 			</Dialog>
 		</>
@@ -155,6 +171,9 @@ interface EmptyCreateProps<SchemaType extends z.AnyZodObject> {
 	fieldConfig?: FieldConfig<z.infer<SchemaType>>;
 	onClose: () => void;
 	selectedTableType: ParameterTableEnum;
+	err_msg?: string;
+	alertOpen: true | false;
+	setAlertOpen: (alertOpen: true | false) => void;
 }
 
 export function EmptyCreate<SchemaType extends z.AnyZodObject>({
@@ -162,9 +181,11 @@ export function EmptyCreate<SchemaType extends z.AnyZodObject>({
 	fieldConfig,
 	onClose,
 	selectedTableType,
+	err_msg,
+	alertOpen,
+	setAlertOpen
 }: EmptyCreateProps<SchemaType>) {
 	const router = useRouter();
-	const [alertOpen, setAlertOpen] = useState(true);
 	return (
 		<>
 			<ParameterToolbarFunctionsProvider
@@ -183,28 +204,25 @@ export function EmptyCreate<SchemaType extends z.AnyZodObject>({
 					<AlertDialogContent className="w-[90vw]">
 						<AlertDialogHeader>
 							<AlertDialogTitle>
-								No data in selected table.
+								[system error message]: {err_msg}
 							</AlertDialogTitle>
 							<AlertDialogDescription>
 								Please create one first.
 							</AlertDialogDescription>
+							<AlertDialogDescription></AlertDialogDescription>
 						</AlertDialogHeader>
 						<div className="m-4"></div>
 						<AlertDialogFooter>
-							<Dialog>
-								<DialogTrigger asChild>
-									<AlertDialogAction>
-										Create
-									</AlertDialogAction>
-								</DialogTrigger>
-								<DialogContent className="sm:max-w-[425px]">
-									<EmptyCreateForm
-										formSchema={formSchema}
-										fieldConfig={fieldConfig}
-										onClose={onClose}
-									/>
-								</DialogContent>
-							</Dialog>
+							<Button variant={"ghost"}
+								onClick={() => setAlertOpen(!alertOpen)}
+							>
+								Cancel
+							</Button>
+							<EmptyCreateForm
+								formSchema={formSchema}
+								fieldConfig={fieldConfig}
+								onClose={onClose}
+							/>
 						</AlertDialogFooter>
 					</AlertDialogContent>
 				</AlertDialog>
