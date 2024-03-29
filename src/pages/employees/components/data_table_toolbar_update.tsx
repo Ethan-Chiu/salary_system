@@ -9,7 +9,7 @@ import { ToolbarFilter } from "~/components/data_table/toolbar/toolbar_filter";
 
 interface DataTableToolbarProps<TData> {
 	table: Table<TData>;
-	filterKey: keyof TData;
+	filterKey?: keyof TData;
 }
 
 export function DataTableToolbar<TData>({

@@ -10,7 +10,7 @@ import { WithDataTableStandardState } from "~/components/data_table/default/data
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
 	data: TData[];
-	filterColumnKey: keyof TData;
+	filterColumnKey?: keyof TData;
 }
 
 export function DataTable<TData>({
@@ -31,7 +31,7 @@ function DataTableContent<TData>({
 	filterColumnKey,
 }: {
 	table: Table<TData>;
-	filterColumnKey: keyof TData;
+	filterColumnKey?: keyof TData;
 }) {
 	const [dataPerRow, setDataPerRow] = React.useState(1);
 
