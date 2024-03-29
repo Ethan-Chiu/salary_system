@@ -14,6 +14,25 @@ import {
 import { BonusSetting } from "~/server/database/entity/SALARY/bonus_setting";
 import { LoadingSpinner } from "~/components/loading";
 import { formatDate } from "~/lib/utils/format_date";
+import { useEffect, useState } from "react";
+
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "~/components/ui/dialog";
+
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
+import { DataTableFunctions } from "../components/function_sheet/data_table_functions";
+import { ParameterForm } from "../components/function_sheet/parameter_form";
+import { getSchema } from "../schemas/get_schemas";
+import { EmptyCreate } from "./empty_create";
 
 export type RowItem = {
 	name: string;
@@ -111,15 +130,20 @@ export function BonusTable({ index, globalFilter, viewOnly }: any) {
 	const filterKey: RowItemKey = "name";
 
 	if (isLoading) {
-		return (
+		const LoaderUI = (
 			<div className="flex grow items-center justify-center">
 				<LoadingSpinner />
 			</div>
-		); // TODO: Loading element with toast
+		);
+		// TODO: Loading element with toast
+		return LoaderUI;
 	}
 
 	if (isError) {
-		return <span>Error: {error.message}</span>; // TODO: Error element with toast
+		// return <span>Error: {error.message}</span>; // TODO: Error element with toast
+		const err_msg = error.message;
+		const emptyError = true;
+		return emptyError ? <EmptyTable err_msg={err_msg} /> : <></>;
 	}
 
 	return (
@@ -143,4 +167,17 @@ export function BonusTable({ index, globalFilter, viewOnly }: any) {
 	// useMemo(() => {
 	// 	table.getColumn(filter_key)?.setFilterValue(globalFilter);
 	// }, [globalFilter]);
+}
+
+export function EmptyTable({ err_msg }: { err_msg: string }) {
+	const selectedTableType = "TableBonusSetting";
+	return (
+		<div>
+			<EmptyCreate
+				formSchema={getSchema(selectedTableType)}
+				onClose={() => {}}
+				selectedTableType={selectedTableType}
+			/>
+		</div>
+	);
 }
