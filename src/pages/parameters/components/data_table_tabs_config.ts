@@ -1,4 +1,4 @@
-import { ParameterTableEnum } from "../parameter_tables";
+import { type ParameterTableEnum } from "../parameter_tables";
 
 export function hasHistory(tableType: ParameterTableEnum): boolean {
     switch (tableType) {

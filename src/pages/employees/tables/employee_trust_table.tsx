@@ -1,40 +1,38 @@
 import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table_update";
 import { api } from "~/utils/api";
-import { useContext } from "react";
-import periodContext from "~/components/context/period_context";
 
 const columns = [
-    "emp_no",
-    "emp_trust_reserve",
-    "org_trust_reserve",
-    "emp_special_trust_incent",
-    "org_special_trust_incent",
-    "start_date",
-    "end_date",
+	"emp_no",
+	"emp_trust_reserve",
+	"org_trust_reserve",
+	"emp_special_trust_incent",
+	"org_special_trust_incent",
+	"start_date",
+	"end_date",
 ].map((key) => {
-    return {
-        accessorKey: key,
-        header: key,
-    };
+	return {
+		accessorKey: key,
+		header: key,
+	};
 });
 
-export function EmployeeTrustTable({ index, globalFilter, period_id }: any) {
-    const { isLoading, isError, data, error } =
-        api.employeeTrust.getCurrentEmployeeTrust.useQuery({ period_id: period_id });
-    const filterKey = "emp_no";
+export function EmployeeTrustTable({ period_id }: any) {
+	const { isLoading, isError, data, error } =
+		api.employeeTrust.getCurrentEmployeeTrust.useQuery({
+			period_id: period_id,
+		});
+	const filterKey = "emp_no";
 
-    if (isLoading) {
-        return <LoadingSpinner />; // TODO: Loading element with toast
-    }
+	if (isLoading) {
+		return <LoadingSpinner />; // TODO: Loading element with toast
+	}
 
-    if (isError) {
-        return <span>Error: {error.message}</span>; // TODO: Error element with toast
-    }
+	if (isError) {
+		return <span>Error: {error.message}</span>; // TODO: Error element with toast
+	}
 
-    console.log(data!);
-
-    return (
-        <DataTable columns={columns} data={data!} filterColumnKey={filterKey} />
-    );
+	return (
+		<DataTable columns={columns} data={data} filterColumnKey={filterKey} />
+	);
 }

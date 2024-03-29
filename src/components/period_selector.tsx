@@ -3,6 +3,7 @@ import { api } from "~/utils/api";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select";
 import periodContext from "./context/period_context";
 import { Input } from "./ui/input";
+import { SessionStorage } from "~/utils/session_storage";
 
 
 export default function PeriodSelector() {
@@ -18,13 +19,13 @@ export default function PeriodSelector() {
 						<div className="flex-1">
 							<Select
 								defaultValue={selectedPeriod?.period_name}
-								onValueChange={(chosen) =>
-									setSelectedPeriod(
-										getPeriod.data!.find(
-											(item) => item.period_name === chosen
-										)!
-									)
-								}
+								onValueChange={(chosen) => {
+									const targetPeriod = getPeriod.data!.find(
+										(item) => item.period_name === chosen
+									)!
+									setSelectedPeriod(targetPeriod)
+									SessionStorage.setSelectedPeriod(targetPeriod)
+								}}
 							>
 								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Select a period" />
@@ -53,7 +54,10 @@ export default function PeriodSelector() {
 							<Input
 								type="Date"
 								defaultValue={selectedPayDate ?? undefined}
-								onChange={(e) => setSelectedPayDate(e.target.value)}
+								onChange={(e) => {
+									setSelectedPayDate(e.target.value)
+									SessionStorage.setSelectedPayDate(e.target.value)
+								}}
 							></Input>
 						</div>
 					</div>

@@ -28,7 +28,7 @@ export function is_date_available(
 	if (!selectedPeriod) {
 		return false;
 	}
-	const targetDate = selectedPeriod.end_date ?? selectedPeriod.issue_date
+	const targetDate = selectedPeriod.end_date
 
 	if (end_date && end_date < targetDate) {
 		return false;

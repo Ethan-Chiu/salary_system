@@ -5,20 +5,9 @@ export class Period {
 	declare period_id: number;
 	declare period_name: string;
 	declare start_date: string;
-	declare end_date: string | null;
+	declare end_date: string;
 	declare status: string;
 	declare issue_date: string;
-	// declare PERIOD_ID: CreationOptional<number>;
-	// declare PERIOD_NAME: string;
-	// declare START_DATE: Date;
-	// declare END_DATE: Date | null;
-	// declare STATUS: string;
-	// declare ISSUE_DATE: Date;
-	// declare CLOSE_START_DATE: Date;
-	// declare CLOSE_END_DATE: Date;
-	// declare ATTENDANCE_DATE: Date;
-	// declare OVERTIME_TAX: number;
-	// declare MEAL_ALLOWANCE: number;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -31,7 +20,7 @@ export class Period {
 		period_id: number,
 		period_name: string,
 		start_date: string,
-		end_date: string | null,
+		end_date: string,
 		status: string,
 		issue_date: string
 	) {
