@@ -11,7 +11,7 @@ async function fetchData() {
 			return {
 				type: {
 					type: "enum",
-					options: ["勞保", "健保", "勞災"],
+					options: ["勞保", "健保", "職災", "勞退"],
 				},
 				level_start: {
 					type: "enum",

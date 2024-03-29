@@ -50,28 +50,22 @@ export default function CalendarAddEvent() {
 							setOpenSheet(false);
 							resetMouse();
 						}}
-						fieldConfig={{
-							start_date: {
-								inputProps: {
-									defaultValue: mouseDownDate
-										? new Date(
-												mouseDownDate.format(
-													"YYYY-MM-DD"
-												)
-										  )
-										: undefined,
-								},
-							},
-							end_date: {
-								inputProps: {
-									defaultValue: mouseUpDate
-										? (new Date(
-												mouseUpDate.format("YYYY-MM-DD")
-										  ) as any)
-										: undefined,
-								},
-							},
-						}}
+						defaultValue={
+							{
+								start_date: mouseDownDate
+									? new Date(
+										mouseDownDate.format(
+											"YYYY-MM-DD"
+										)
+									)
+									: undefined,
+								end_date: mouseUpDate
+									? (new Date(
+										mouseUpDate.format("YYYY-MM-DD")
+									) as any)
+									: undefined,
+							}
+						}
 					/>
 					<ScrollBar orientation="horizontal" />
 				</ScrollArea>

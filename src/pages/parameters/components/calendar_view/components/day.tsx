@@ -60,7 +60,6 @@ export default function DayView({ day, rowIdx, target_date }: DayViewProps) {
 	const handleMouseDown = (event: React.MouseEvent) => {
 		event.preventDefault();
 		if (event.button === 0) {
-			console.log("Mouse button down");
 			if (!mouseDownDate) {
 				setMouseDownDate(day);
 			}
@@ -70,7 +69,6 @@ export default function DayView({ day, rowIdx, target_date }: DayViewProps) {
 	const handleMouseUp = (event: React.MouseEvent) => {
 		event.preventDefault();
 		if (event.button === 0) {
-			console.log("Mouse button up");
 			if (mouseDownDate) {
 				setMouseUpDate(day);
 				setOpenSheet(true);
@@ -81,7 +79,6 @@ export default function DayView({ day, rowIdx, target_date }: DayViewProps) {
 	const handleMouseOver = (event: React.MouseEvent) => {
 		event.preventDefault();
 		if (event.button === 0) {
-			console.log("Mouse button over");
 			if (mouseDownDate) {
 				setMouseUpDate(day);
 			}
