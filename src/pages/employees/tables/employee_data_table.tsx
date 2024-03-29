@@ -27,9 +27,8 @@ const columns = [
 });
 
 export function EmployeeDataTable({ index, globalFilter }: any) {
-	const { isLoading, isError, data, error } =
-		api.employeeData.getAllEmployeeData.useQuery();
-	const filterKey = "emp_no";
+    const { isLoading, isError, data, error } =
+        api.employeeData.getAllEmployeeData.useQuery();
 
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast
@@ -41,7 +40,7 @@ export function EmployeeDataTable({ index, globalFilter }: any) {
 
 	console.log(data!);
 
-	return (
-		<DataTable columns={columns} data={data!} filterColumnKey={filterKey} />
-	);
+    return (
+        <DataTable columns={columns} data={data!} />
+    );
 }
