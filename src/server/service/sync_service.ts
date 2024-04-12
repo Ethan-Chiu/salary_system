@@ -8,7 +8,7 @@ import { EmployeePaymentService } from "./employee_payment_service";
 import { EmployeeTrustService } from "./employee_trust_service";
 import { Exact, isKeyOfExactType } from "~/utils/exact_type";
 
-interface DataComparison {
+export interface DataComparison {
 	key: string;
 	salary_value: any;
 	ehr_value: any;
