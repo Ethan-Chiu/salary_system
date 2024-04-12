@@ -14,9 +14,10 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
+import { DataComparison, SyncData } from "~/server/service/sync_service";
 
 interface EmpTableParameters {
-	empData: Array<CombinedData>;
+	empData: SyncData;
 	mode: string;
 	diffColor: string;
 }
@@ -27,9 +28,10 @@ export function EmployeeDataChange({
 	diffColor,
 }: EmpTableParameters) {
 	const [diffKeys, setDiffKeys] = useState<string[]>([]);
+	const allData = [empData.emp_no, empData.name, empData.english_name, empData.department, ...empData.comparisons];
 	useEffect(() => {
 		let dk: Array<string> = [];
-		empData.map((d: CombinedData) => {
+		allData.map((d: DataComparison) => {
 			if (d.is_different) dk.push(d.key);
 		});
 		setDiffKeys(dk);
@@ -60,7 +62,7 @@ export function EmployeeDataChange({
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{empData.map((d: CombinedData, index: number) => {
+							{allData.map((d: CombinedData, index: number) => {
 								let diff = isDiff(d.key);
 								return mode === "Changed" && !diff ? (
 									<Fragment key={d.key}></Fragment>

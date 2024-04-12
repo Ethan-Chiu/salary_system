@@ -3,7 +3,8 @@ import { RootLayout } from "~/components/layout/root_layout";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { type ReactElement, useState } from "react";
 import { api } from "~/utils/api";
-import { CombinedData } from "~/server/service/employee_data_service";
+import { SyncData } from "~/server/service/sync_service";
+import { DataComparison } from "~/server/service/sync_service";
 
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
@@ -54,14 +55,14 @@ function SyncPage({ period }: { period: number }) {
 	const [mode, setMode] = useState("Changed");
 
 	const getKeyFromData = (
-		data: Array<CombinedData>,
+		data: SyncData,
 		query: string,
 		from?: undefined | "ehr"
 	): any => {
 		if (data === undefined) return null;
 		return !from
-			? data.find((cd: CombinedData) => cd.key === query)?.salary_value
-			: data.find((cd: CombinedData) => cd.key === query)?.ehr_value;
+			? data.comparisons.find((dc: DataComparison) => dc.key === query)?.salary_value
+			: data.comparisons.find((dc: DataComparison) => dc.key === query)?.ehr_value;
 	};
 
 	const [empStatus, setEmpStatus] = useState<Status>({});
@@ -71,8 +72,8 @@ function SyncPage({ period }: { period: number }) {
 		(getDiffDatas.data ?? []).length > 0
 	) {
 		let tmp: any = {};
-		getDiffDatas.data?.map((cd: Array<CombinedData>) => {
-			tmp[getKeyFromData(cd, "emp_no", "ehr")] = "initial";
+		getDiffDatas.data?.map((sData: SyncData) => {
+			tmp[sData.emp_no.ehr_value] = "initial";
 		});
 		setEmpStatus(tmp);
 	}
@@ -96,13 +97,14 @@ function SyncPage({ period }: { period: number }) {
 	}
 
 	const getEmpData = (emp_no: string) => {
-		let IDX = -1;
-		getDiffDatas.data!.map((data: Array<CombinedData>, index: number) => {
-			data.map((d: CombinedData) => {
-				if (d.key === "emp_no" && d.ehr_value === emp_no) IDX = index;
-			});
-		});
-		return getDiffDatas.data![IDX]!;
+		// let IDX = -1;
+		// getDiffDatas.data!.map((data: SyncData, index: number) => {
+		// 	data.map((d: CombinedData) => {
+		// 		if (d.key === "emp_no" && d.ehr_value === emp_no) IDX = index;
+		// 	});
+		// });
+		// return getDiffDatas.data![IDX]!;
+		return getDiffDatas.data?.find((sData: SyncData) => sData.emp_no.ehr_value === emp_no)!;
 	};
 
 	const getKeyData = (emp_no: string, query: string) => {
@@ -114,37 +116,37 @@ function SyncPage({ period }: { period: number }) {
 	};
 
 	function getChangedDatas() {
-		let checkedData = Object.keys(empStatus).map((emp_no: string) => {
+		let checkedData: SyncData[] = Object.keys(empStatus).map((emp_no: string) => {
 			return getEmpData(emp_no);
 		});
-		let filterData: Array<DifferentKeys> = checkedData.map(
-			(data: Array<CombinedData>) => {
-				let newConstructedData: DifferentKeys = {
-					emp_no: getKeyFromData(data, "emp_no", "ehr"),
-					emp_name:
-						getKeyFromData(data, "emp_name") ??
-						getKeyFromData(data, "emp_name", "ehr"),
-					diffKeys: data.filter(
-						(cd: CombinedData) => cd.is_different === true
-					),
-				};
-				return newConstructedData;
-			}
-		);
-
+		let filterData: Array<DifferentKeys> = checkedData.map((sData: SyncData) => {
+			let emp_no = sData.emp_no.ehr_value;
+			let emp_name = sData.name.salary_value ?? sData.name.ehr_value;
+			let emp_english_name = sData.english_name.ehr_value;
+			let emp_department = sData.department.ehr_value;
+			let allDataComparisons = [sData.emp_no, sData.name, sData.department, sData.english_name, ...sData.comparisons];
+			let newConstructedData: DifferentKeys = {
+				emp_no: emp_no,
+				emp_name: emp_name,
+				diffKeys: allDataComparisons.filter(
+					(cd: DataComparison) => cd.is_different === true
+				),
+			};
+			return newConstructedData;
+		});
 		return filterData;
 	}
 
 	function next() {
 		let notSeenDatas = getDiffDatas.data!.filter(
-			(data: Array<CombinedData>) =>
-				empStatus[getKeyFromData(data, "emp_no", "ehr")] ===
+			(data: SyncData) =>
+				empStatus[data.emp_no.ehr_value] ===
 					"initial" &&
-				getKeyFromData(data, "emp_no", "ehr") !== selectedEmployee
+					data.emp_no.ehr_value !== selectedEmployee
 		);
 		let nextEmp =
 			notSeenDatas.length > 0
-				? getKeyFromData(notSeenDatas[0]!, "emp_no", "ehr")
+				? notSeenDatas[0]!.emp_no.ehr_value
 				: selectedEmployee;
 		console.log(nextEmp);
 		setSelectedEmployee(nextEmp);
@@ -175,25 +177,26 @@ function SyncPage({ period }: { period: number }) {
 		const [open, setOpen] = useState(false);
 
 		function generateLongString(emp_no: string) {
+			let EmpData = getEmpData(emp_no);
+			if (!EmpData)	return ""
+			let emp_name = EmpData.name.salary_value ?? EmpData.name.ehr_value ?? "";
+			let english_name = EmpData.english_name.ehr_value ?? "";
 			return (
-				getKeyData(emp_no, "emp_no") +
+				emp_no +
 				" " +
-				getKeyData(emp_no, "emp_name") +
+				emp_name +
 				" " +
-				getKeyData(emp_no, "english_name")
+				english_name
 			);
 		}
 
-		function SelectListEmp({ d }: { d: Array<CombinedData> }) {
+		function SelectListEmp({ d }: { d: SyncData }) {
 			let emp_no =
-				getKeyFromData(d, "emp_no") ??
-				getKeyFromData(d, "emp_no", "ehr");
+				d.emp_no.salary_value ?? d.emp_no.ehr_value;
 			let emp_name =
-				getKeyFromData(d, "emp_name") ??
-				getKeyFromData(d, "emp_name", "ehr");
+				d.name.salary_value ?? d.name.ehr_value;
 			let english_name =
-				getKeyFromData(d, "english_name") ??
-				getKeyFromData(d, "english_name", "ehr");
+				d.english_name.salary_value ?? d.english_name.ehr_value;
 			return (
 				<>
 					<b className="mr-1">{emp_no}</b>
@@ -214,22 +217,22 @@ function SyncPage({ period }: { period: number }) {
 			);
 		}
 
-		function getStatus(d: Array<CombinedData>) {
+		function getStatus(d: SyncData) {
 			return empStatus[
 				getKeyFromData(d, "emp_no") ??
 					getKeyFromData(d, "emp_no", "ehr")
 			];
 		}
 
-		function isInitial(d: Array<CombinedData>) {
+		function isInitial(d: SyncData) {
 			return getStatus(d) === "initial";
 		}
 
-		function isIgnored(d: Array<CombinedData>) {
+		function isIgnored(d: SyncData) {
 			return getStatus(d) === "ignored";
 		}
 
-		function isChecked(d: Array<CombinedData>) {
+		function isChecked(d: SyncData) {
 			return getStatus(d) === "checked";
 		}
 
@@ -262,23 +265,15 @@ function SyncPage({ period }: { period: number }) {
 							<CommandEmpty>No Employee found.</CommandEmpty>
 							<CommandGroup>
 								{getDiffDatas.data!.map(
-									(d: Array<CombinedData>) => (
+									(d: SyncData) => (
 										<CommandItem
 											key={
-												getKeyFromData(d, "emp_no") ??
-												getKeyFromData(
-													d,
-													"emp_no",
-													"ehr"
-												)
+												d.emp_no.salary_value ??
+												d.emp_no.ehr_value
 											}
 											value={generateLongString(
-												getKeyFromData(d, "emp_no") ??
-													getKeyFromData(
-														d,
-														"emp_no",
-														"ehr"
-													)
+												d.emp_no.salary_value ??
+												d.emp_no.ehr_value
 											)}
 											onSelect={(currentValue) => {
 												setSelectedEmployee(
@@ -295,10 +290,7 @@ function SyncPage({ period }: { period: number }) {
 												className={cn(
 													"mr-2 h-4 w-4",
 													selectedEmployee ===
-														getKeyFromData(
-															d,
-															"emp_no"
-														)
+														d.emp_no.ehr_value
 														? "opacity-100"
 														: "opacity-0"
 												)}
