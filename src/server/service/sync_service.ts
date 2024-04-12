@@ -2,22 +2,22 @@ import { container, injectable } from "tsyringe";
 import { EmployeeData } from "../database/entity/SALARY/employee_data";
 import { Op } from "sequelize";
 import { EHRService } from "./ehr_service";
-import { Emp } from "../database/entity/UMEDIA/emp";
+import { type Emp } from "../database/entity/UMEDIA/emp";
 import { EmployeeDataService } from "./employee_data_service";
 import { EmployeePaymentService } from "./employee_payment_service";
 import { EmployeeTrustService } from "./employee_trust_service";
-import { Exact, isKeyOfExactType } from "~/utils/exact_type";
+import { type Exact } from "~/utils/exact_type";
 
-interface DataComparison {
+export interface DataComparison<ValueT = any> {
 	key: string;
-	salary_value: any;
-	ehr_value: any;
-	is_different: boolean;
+	salary_value: ValueT;
+  ehr_value: ValueT;
+  is_different: boolean;
 }
 
 export class SyncData {
-	emp_no: DataComparison;
-	name: DataComparison;
+	emp_no: DataComparison<string>;
+	name: DataComparison<string>;
 	comparisons: Array<DataComparison>;
 }
 
@@ -32,7 +32,6 @@ export interface PaidEmployee {
 
 @injectable()
 export class SyncService {
-	constructor() {}
 	async checkQuitDate(period: number, quit_date: string): Promise<string> {
 		const ehrService = container.resolve(EHRService);
 		const periodInfo = await ehrService.getPeriodById(period);
@@ -40,9 +39,7 @@ export class SyncService {
 		const current_month = periodInfo.period_name.split("-")[0]!;
 		const levaing_year = quit_date.split("-")[0]!; //讀出來是2023-05-04的形式
 		const leaving_month = quit_date.split("-")[1]!;
-		const monthDict: {
-			[key: string]: string;
-		} = {
+		const monthDict = {
 			JAN: "1",
 			FEB: "2",
 			MAR: "3",
@@ -78,7 +75,7 @@ export class SyncService {
 	}
 
 	empToEmployee(ehr_data: Emp) {
-		let salary_data = new EmployeeData();
+		const salary_data = new EmployeeData();
 		salary_data.emp_no = ehr_data.emp_no!;
 		salary_data.emp_name = ehr_data.emp_name!;
 		salary_data.position = ehr_data.position!;
@@ -168,7 +165,7 @@ export class SyncService {
 				return pay_work_status.includes(emp.work_status!);
 			});
 			const salary_emp_nos = salary_emps.map((emp) => emp.emp_no); // 提取工資員工的員工編號
-			let ehr_emps = await ehrService.getEmp(period); // 從EHR服務中獲取員工數據
+			const ehr_emps = await ehrService.getEmp(period); // 從EHR服務中獲取員工數據
 			// 步驟1: 創建ehr_emps的字典
 			interface EHRDictType {
 				[key: string]: any;
@@ -190,16 +187,16 @@ export class SyncService {
 			});
 			const new_employees = await Promise.all(
 				// 將新員工轉換為Employee對象
-				newEmps.map(async (emp) => await this.empToEmployee(emp))
+				newEmps.map((emp) => this.empToEmployee(emp))
 			);
 			const all_emps = salary_emps.concat(new_employees); // 合併所有員工數據
 
 			const updated_all_emps = await Promise.all(
 				// 最新的所有員工數據
-				all_emps.map(async (salaryEmp) => {
+				all_emps.map((salaryEmp) => {
 					const matchingEhrEmp = ehrDict[salaryEmp.emp_no];
 					return matchingEhrEmp
-						? await this.empToEmployee(matchingEhrEmp)
+						? this.empToEmployee(matchingEhrEmp)
 						: salaryEmp;
 				})
 			);
@@ -342,8 +339,8 @@ export class SyncService {
 		const ehr_datas_transformed: EmployeeData[] = ehr_datas.map((emp) => this.empToEmployee(emp));
 		
 		// Lookup table by EMP_NO
-		const ehrDict: Map<string, EmployeeData> = new Map();
-		const salaryDict: Map<string, EmployeeData> = new Map();
+		const ehrDict: Map<string, EmployeeData> = new Map<string, EmployeeData>();
+		const salaryDict: Map<string, EmployeeData> = new Map<string, EmployeeData>();
 
 		ehr_datas_transformed.forEach((emp) => {
 			ehrDict.set(emp.emp_no, emp);

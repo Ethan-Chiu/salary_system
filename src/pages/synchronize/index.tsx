@@ -31,7 +31,7 @@ import {
 	Status,
 	UpdateTableDialog,
 } from "./components/UpdateTable";
-import { EmployeeDataChange } from "./components/EmpDataTable";
+import { EmployeeDataChange } from "./components/emp_data_table";
 import { ScrollArea } from "~/components/ui/scroll-area";
 
 const PageCheckEHR: NextPageWithLayout = () => {
