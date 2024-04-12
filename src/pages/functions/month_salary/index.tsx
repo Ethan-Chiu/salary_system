@@ -107,6 +107,7 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 				<DataPage
 					key="data"
 					period={periodId}
+					func={"month_salary"}
 					selectedIndex={selectedIndex}
 					setSelectedIndex={setSelectedIndex}
 				/>

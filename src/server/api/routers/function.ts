@@ -12,29 +12,29 @@ export const functionRouter = createTRPCRouter({
 		return period;
 	}),
 
-	getHoliday: publicProcedure
-		.input(z.object({ period_id: z.number() }))
+	getHolidayByEmpList: publicProcedure
+		.input(z.object({ period_id: z.number(), emp_no_list: z.string().array() }))
 		.query(async ({ input }) => {
 			const ehrService = container.resolve(EHRService);
-			const holiday = await ehrService.getHoliday(input.period_id);
+			const holiday = await ehrService.getHolidayByEmpNoList(input.period_id, input.emp_no_list);
 
 			return holiday;
 		}),
 
-	getOvertime: publicProcedure
-		.input(z.object({ period_id: z.number() }))
+	getOvertimeByEmpList: publicProcedure
+		.input(z.object({ period_id: z.number(), emp_no_list: z.string().array() }))
 		.query(async ({ input }) => {
 			const ehrService = container.resolve(EHRService);
-			const overtime = await ehrService.getOvertime(input.period_id);
+			const overtime = await ehrService.getOvertimeByEmpNoList(input.period_id, input.emp_no_list);
 
 			return overtime;
 		}),
 
-	getPayset: publicProcedure
-		.input(z.object({ period_id: z.number() }))
+	getPaysetByEmpList: publicProcedure
+		.input(z.object({ period_id: z.number(), emp_no_list: z.string().array() }))
 		.query(async ({ input }) => {
 			const ehrService = container.resolve(EHRService);
-			const payset = await ehrService.getPayset(input.period_id);
+			const payset = await ehrService.getPaysetByEmpNoList(input.period_id, input.emp_no_list);
 
 			return payset;
 		}),

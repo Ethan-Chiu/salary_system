@@ -10,9 +10,9 @@ const columns = Object.keys(new Payset()).map((key) => {
 	};
 });
 
-export function PaysetTable({ period, index, globalFilter }: any) {
-	const { isLoading, isError, data, error } = api.function.getPayset.useQuery(
-		{ period_id: period }
+export function PaysetTable({ period, emp_no_list, index, globalFilter }: any) {
+	const { isLoading, isError, data, error } = api.function.getPaysetByEmpList.useQuery(
+		{ period_id: period, emp_no_list: emp_no_list }
 	);
 	const filterKey = "emp_no";
 

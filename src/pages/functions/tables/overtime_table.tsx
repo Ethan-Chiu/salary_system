@@ -10,9 +10,9 @@ const columns = Object.keys(new Overtime()).map((key) => {
 	};
 });
 
-export function OvertimeTable({ period, index, globalFilter }: any) {
+export function OvertimeTable({ period, emp_no_list, index, globalFilter }: any) {
 	const { isLoading, isError, data, error } =
-		api.function.getOvertime.useQuery({ period_id: period });
+		api.function.getOvertimeByEmpList.useQuery({ period_id: period , emp_no_list: emp_no_list });
 	const filterKey = "emp_no";
 
 	if (isLoading) {
