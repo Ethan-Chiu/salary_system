@@ -1,7 +1,6 @@
 import React from "react";
 import { Button } from "~/components/ui/button";
 import { Translate } from "~/lib/utils/translation";
-import { progressBarLabels } from ".";
 import TablesView from "~/pages/parameters/tables_view";
 
 export function ParameterPage({
@@ -21,13 +20,11 @@ export function ParameterPage({
 			<div className="mt-4 flex justify-between">
 				<Button
 					onClick={() => setSelectedIndex(selectedIndex - 1)}
-					disabled={selectedIndex === 0}
 				>
 					{Translate("previous_step")}
 				</Button>
 				<Button
 					onClick={() => setSelectedIndex(selectedIndex + 1)}
-					disabled={selectedIndex === progressBarLabels.length - 1}
 				>
 					{Translate("next_step")}
 				</Button>

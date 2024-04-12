@@ -11,7 +11,6 @@ import { DataPage } from "./data_page";
 import { EmployeePage } from "./employee_page";
 import periodContext from "~/components/context/period_context";
 import { SyncPage } from "./sync_page";
-import ExportPage from "./export";
 import Link from "next/link";
 import { buttonVariants } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
@@ -26,6 +25,7 @@ import {
 } from "~/components/ui/alert-dialog";
 import { useRouter } from "next/router";
 import { PaidEmployee } from "~/server/service/sync_service";
+import { SalaryCalculatePage } from "./salary_calculate_page";
 
 type FunctionStepPage = {
 	title: string;
@@ -54,14 +54,14 @@ const MonthSalary: NextPageWithLayout = () => {
 				</Link>
 			</div>
 		);
-	} 
+	}
 
 	return <MonthSalaryContent periodId={periodId} />;
 };
 
 function MonthSalaryContent({ periodId }: { periodId: number }) {
 	const router = useRouter();
-	const [selectedIndex, setSelectedIndex] = useState(0);
+	const [selectedIndex, setSelectedIndex] = useState(1);
 
 	const { isLoading, isError, data, error } =
 		api.sync.getCandEmployees.useQuery({
@@ -124,12 +124,12 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 			),
 		},
 		{
-			title: "匯出報表",
+			title: "薪資計算",
 			page: (
-				<ExportPage
-					key="export"
-					selectedIndex={selectedIndex}
-					setSelectedIndex={setSelectedIndex}
+				<SalaryCalculatePage
+					key="salary_calculate"
+					period={periodId}
+					func={"month_salary"}
 				/>
 			),
 		},

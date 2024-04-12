@@ -56,15 +56,7 @@ export class SyncService {
 			NOV: "11",
 			DEC: "12",
 		};
-		// console.log(current_year);
-		// console.log(current_month);
-		// console.log(levaing_year);
-		// console.log(leaving_month);
-		// console.log(parseInt(current_year))
-		// console.log(parseInt(levaing_year))
-		// console.log(parseInt(monthDict[current_month]!))
-		// console.log(parseInt(leaving_month))
-		// console.log(parseInt(monthDict[current_month]!) == parseInt(leaving_month))
+		
 		if (parseInt(current_year) < parseInt(levaing_year)) return "future";
 		else if (parseInt(current_year) == parseInt(levaing_year)) {
 			if (parseInt(monthDict[current_month]!) < parseInt(leaving_month))
@@ -135,7 +127,7 @@ export class SyncService {
 	}
 
 
-	//stage1
+	// Stage 1
 	async getCandPaidEmployees(
 		func: string, // 要執行的功能
 		period: number // 期間
@@ -437,7 +429,6 @@ export class SyncService {
 		});
 		return updatedDatas;
 	}
-	//stage3
 	// Stage 3
 	async getPaidEmps(func: string): Promise<EmployeeData[]> {
 		// 獲取需支付員工的函數，返回Promise<EmployeeData[]>類型的數組

@@ -213,6 +213,7 @@ export function SyncPage({
 					<Button
 						key="PreviousButton"
 						onClick={() => setSelectedIndex(selectedIndex - 1)}
+						disabled={true}
 					>
 						{Translate("previous_step")}
 					</Button>
