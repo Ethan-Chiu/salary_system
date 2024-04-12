@@ -4,9 +4,9 @@ import { OvertimeTable } from "../tables/overtime_table";
 import { PaysetTable } from "../tables/payset_table";
 import { Button } from "~/components/ui/button";
 import { Translate } from "~/lib/utils/translation";
-import { progressBarLabels } from ".";
+import { cn } from "~/lib/utils";
 
-const TabOptions = ["請假", "加班", "工作天數", "其他1", "其他2"];
+const TabOptions = ["請假", "加班", "工作天數"];
 export function DataPage({
 	period,
 	selectedIndex,
@@ -36,7 +36,7 @@ export function DataPage({
 					defaultValue={TabOptions[0]}
 					className="flex h-full w-full flex-col"
 				>
-					<TabsList className={"grid w-full grid-cols-5"}>
+					<TabsList className={cn(`grid w-full grid-cols-${TabOptions.length}`)}>
 						{TabOptions.map((option) => {
 							return (
 								<TabsTrigger value={option}>
@@ -59,13 +59,11 @@ export function DataPage({
 			<div className="mt-4 flex justify-between">
 				<Button
 					onClick={() => setSelectedIndex(selectedIndex - 1)}
-					disabled={selectedIndex === 0}
 				>
 					{Translate("previous_step")}
 				</Button>
 				<Button
 					onClick={() => setSelectedIndex(selectedIndex + 1)}
-					disabled={selectedIndex === progressBarLabels.length - 1}
 				>
 					{Translate("next_step")}
 				</Button>

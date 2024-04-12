@@ -18,6 +18,8 @@ export interface DataComparison<ValueT = any> {
 export class SyncData {
 	emp_no: DataComparison<string>;
 	name: DataComparison<string>;
+	department: DataComparison;
+	english_name: DataComparison;
 	comparisons: Array<DataComparison>;
 }
 
@@ -53,15 +55,7 @@ export class SyncService {
 			NOV: "11",
 			DEC: "12",
 		};
-		// console.log(current_year);
-		// console.log(current_month);
-		// console.log(levaing_year);
-		// console.log(leaving_month);
-		// console.log(parseInt(current_year))
-		// console.log(parseInt(levaing_year))
-		// console.log(parseInt(monthDict[current_month]!))
-		// console.log(parseInt(leaving_month))
-		// console.log(parseInt(monthDict[current_month]!) == parseInt(leaving_month))
+		
 		if (parseInt(current_year) < parseInt(levaing_year)) return "future";
 		else if (parseInt(current_year) == parseInt(levaing_year)) {
 			if (parseInt(monthDict[current_month]!) < parseInt(leaving_month))
@@ -121,6 +115,15 @@ export class SyncService {
 
 		syncData.emp_no = this.dataComparison("emp_no", ehrEmp.emp_no, salaryEmp?.emp_no);
 		syncData.name = this.dataComparison("emp_name", ehrEmp.emp_name, salaryEmp?.emp_name);
+		syncData.department = this.dataComparison("u_dep", ehrEmp.u_dep, salaryEmp?.u_dep);
+		// syncData.english_name = this.dataComparison("english_name", ehrEmp.english_name, salaryEmp?.english_name);
+		let pseudo_english_name: DataComparison = {
+			key: "english_name",
+			salary_value: "Howard",
+			ehr_value: "Howard",
+			is_different: false,
+		};
+		syncData.english_name = pseudo_english_name;
 
 		syncData.comparisons = [];
 		for (const key in ehrEmp.dataValues) {
@@ -132,7 +135,7 @@ export class SyncService {
 	}
 
 
-	//stage1
+	// Stage 1
 	async getCandPaidEmployees(
 		func: string, // 要執行的功能
 		period: number // 期間
@@ -434,7 +437,6 @@ export class SyncService {
 		});
 		return updatedDatas;
 	}
-	//stage3
 	// Stage 3
 	async getPaidEmps(func: string): Promise<EmployeeData[]> {
 		// 獲取需支付員工的函數，返回Promise<EmployeeData[]>類型的數組
