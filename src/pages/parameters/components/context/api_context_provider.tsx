@@ -44,6 +44,15 @@ export default function ApiFunctionsProvider({
 	const getBonusSeniority = () =>
 		api.parameters.getAllBonusSeniority.useQuery();
 
+	const getLevelRange = () => 
+		api.parameters.getAllLevelRange.useQuery();
+	
+	const getLevel = () => 
+		api.parameters.getAllLevel.useQuery();
+
+	const getPerformanceLevel = () =>
+		api.parameters.getAllPerformanceLevel.useQuery();
+
 	const functionsDictionary: Record<ParameterTableEnum, QueryFunctionsApi> = {
 		TableAttendance: {
 			queryFunction: getAttendanceSetting,
@@ -68,6 +77,15 @@ export default function ApiFunctionsProvider({
 		},
 		TableBonusSeniority: {
 			queryFunction: getBonusSeniority,
+		},
+		TableLevelRange: {
+			queryFunction: getLevelRange,
+		},
+		TableLevel: {
+			queryFunction: getLevel,
+		},
+		TablePerformanceLevel: {
+			queryFunction: getPerformanceLevel,
 		},
 	};
 
