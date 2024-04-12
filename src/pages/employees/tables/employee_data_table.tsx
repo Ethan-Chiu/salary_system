@@ -19,6 +19,7 @@ const columns = [
 	"quit_date",
 	"licens_id",
 	"nbanknumber",
+	"month_pay",
 ].map((key) => {
 	return {
 		accessorKey: key,
@@ -26,9 +27,9 @@ const columns = [
 	};
 });
 
-export function EmployeeDataTable({ index, globalFilter }: any) {
+export function EmployeeDataTable({ index, globalFilter, period_id }: any) {
 	const { isLoading, isError, data, error } =
-		api.employeeData.getAllEmployeeData.useQuery();
+		api.employeeData.getAllEmployeeData.useQuery({ period_id });
 
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast
@@ -37,8 +38,6 @@ export function EmployeeDataTable({ index, globalFilter }: any) {
 	if (isError) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
-
-	console.log(data!);
 
 	return <DataTable columns={columns} data={data!} />;
 }

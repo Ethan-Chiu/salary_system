@@ -113,17 +113,17 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 				/>
 			),
 		},
-		{
-			title: "確認參數",
-			page: (
-				<ParameterPage
-					key="parameter"
-					period={periodId}
-					selectedIndex={selectedIndex}
-					setSelectedIndex={setSelectedIndex}
-				/>
-			),
-		},
+		// {
+		// 	title: "確認參數",
+		// 	page: (
+		// 		<ParameterPage
+		// 			key="parameter"
+		// 			period={periodId}
+		// 			selectedIndex={selectedIndex}
+		// 			setSelectedIndex={setSelectedIndex}
+		// 		/>
+		// 	),
+		// },
 		{
 			title: "薪資計算",
 			page: (
