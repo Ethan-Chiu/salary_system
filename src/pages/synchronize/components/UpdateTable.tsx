@@ -27,7 +27,7 @@ import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
 
 import { Checkbox } from "~/components/ui/checkbox";
-import { CombinedData } from "~/server/service/employee_data_service";
+import { DataComparison } from "~/server/service/sync_service";
 import { displayData } from "../utils/display";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { useRouter } from "next/router";
@@ -39,7 +39,7 @@ export interface Status {
 export interface DifferentKeys {
 	emp_no: string;
 	emp_name: string;
-	diffKeys: Array<CombinedData>;
+	diffKeys: Array<DataComparison>;
 }
 
 interface UpdateTableDialogProps {
@@ -245,7 +245,7 @@ export function UpdateTable({
 									)}
 								</CustomTableRow>
 								{d.diffKeys.map(
-									(cd: CombinedData, index: number) => {
+									(cd: DataComparison, index: number) => {
 										return (
 											<>
 												{index === 0 ? (

@@ -10,6 +10,9 @@ export function hasHistory(tableType: ParameterTableEnum): boolean {
 		case "TableBonusPosition":
 		case "TableBonusPositionType":
 		case "TableBonusSeniority":
+		case "TableLevelRange":
+		case "TableLevel":
+		case "TablePerformanceLevel":
 			return false;
 		default:
 			return true;

@@ -23,6 +23,9 @@ import {
 	insuranceRateMapper,
 	insurance_rate_columns,
 } from "./insurance_rate_table";
+import { levelMapper, level_columns } from "./level_table";
+import { levelRangeMapper, level_range_columns } from "./level_range_table";
+import { performaceLevelMapper,  performance_level_columns } from "./performance_level_table";
 
 export function getTableColumn(
 	selectedTableType: ParameterTableEnum
@@ -44,6 +47,12 @@ export function getTableColumn(
 			return bonus_columns;
 		case "TableInsurance":
 			return insurance_rate_columns;
+		case "TableLevelRange":
+			return level_range_columns;
+		case "TableLevel":
+			return level_columns;
+		case "TablePerformanceLevel":
+			return performance_level_columns;
 	}
 }
 
@@ -65,5 +74,11 @@ export function getTableMapper(selectedTableType: ParameterTableEnum) {
 			return bonusMapper;
 		case "TableInsurance":
 			return insuranceRateMapper;
+		case "TableLevelRange":
+			return levelRangeMapper;
+		case "TableLevel":
+			return levelMapper;
+		case "TablePerformanceLevel":
+			return performaceLevelMapper;
 	}
 }
