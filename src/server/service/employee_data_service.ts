@@ -9,12 +9,6 @@ import {
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { select_value } from "./helper_function";
 
-export interface CombinedData {
-	key: string;
-	salary_value: any;
-	ehr_value: any;
-	is_different: boolean;
-}
 
 @injectable()
 export class EmployeeDataService {

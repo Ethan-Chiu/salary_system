@@ -205,13 +205,13 @@ const actionLinks: NavLinkEntry[] = [
 		title: "Employees",
 		icon: Contact,
 		url: "/employees",
-		collapsed: true,
+		collapsed: false,
 	},
 	{
 		title: "Parameters",
 		icon: SlidersHorizontal,
 		url: "/parameters",
-		collapsed: true,
+		collapsed: false,
 	},
 ];
 
