@@ -63,6 +63,7 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 	>(getDefaults(formSchema));
 
 	const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+	const [openForm, setOpenForm] = useState(false);
 
 	function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
 		return Object.fromEntries(
@@ -78,6 +79,7 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 		const parsedValues = formSchema.safeParse(formValues);
 		if (parsedValues.success) {
 			if (mode === "create") {
+				console.log(parsedValues.data)
 				createFunction.mutate({
 					...parsedValues.data,
 				});
@@ -97,12 +99,14 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 		}
 	};
 
+	console.log(openConfirmDialog);
+
 	// Create or update an entry
 	return (
 		<>
 			<Dialog
-				open={openConfirmDialog}
-				onOpenChange={setOpenConfirmDialog}
+				open={openForm}
+				onOpenChange={setOpenForm}
 			>
 				<DialogTrigger asChild>
 					<AlertDialogAction>Create</AlertDialogAction>
@@ -137,7 +141,7 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 										Cancel
 									</Button>
 
-									<Button type="submit">
+									<Button type="submit" >
 										{mode === "create" && "Create"}
 									</Button>
 								</div>
