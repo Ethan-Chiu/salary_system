@@ -18,6 +18,8 @@ interface DataComparison {
 export class SyncData {
 	emp_no: DataComparison;
 	name: DataComparison;
+	department: DataComparison;
+	english_name: DataComparison;
 	comparisons: Array<DataComparison>;
 }
 
@@ -124,6 +126,15 @@ export class SyncService {
 
 		syncData.emp_no = this.dataComparison("emp_no", ehrEmp.emp_no, salaryEmp?.emp_no);
 		syncData.name = this.dataComparison("emp_name", ehrEmp.emp_name, salaryEmp?.emp_name);
+		syncData.department = this.dataComparison("u_dep", ehrEmp.u_dep, salaryEmp?.u_dep);
+		// syncData.english_name = this.dataComparison("english_name", ehrEmp.english_name, salaryEmp?.english_name);
+		let pseudo_english_name: DataComparison = {
+			key: "english_name",
+			salary_value: "Howard",
+			ehr_value: "Howard",
+			is_different: false,
+		};
+		syncData.english_name = pseudo_english_name;
 
 		syncData.comparisons = [];
 		for (const key in ehrEmp.dataValues) {
