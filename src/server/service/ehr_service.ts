@@ -34,6 +34,12 @@ export class EHRService {
 		return holidayList;
 	}
 
+	async getHolidayByEmpNoList(period_id: number, emp_no_list: string[]): Promise<Holiday[]> {
+		const all_holiday = await this.getHoliday(period_id);
+		const filtered_holiday = all_holiday.filter((holiday) => emp_no_list.includes(holiday.emp_no!) );
+		return filtered_holiday
+	}
+
 	async getOvertime(period_id: number): Promise<Overtime[]> {
 		const dbConnection = container.resolve(Database).connection;
 		const dataList = await dbConnection.query(
@@ -49,6 +55,12 @@ export class EHRService {
 		return overtimeList;
 	}
 
+	async getOvertimeByEmpNoList(period_id: number, emp_no_list: string[]): Promise<Overtime[]> {
+		const all_overtime = await this.getOvertime(period_id);
+		const filtered_overtime = all_overtime.filter((overtime) => emp_no_list.includes(overtime.emp_no!) );
+		return filtered_overtime
+	}
+
 	async getPayset(period_id: number): Promise<Payset[]> {
 		const dbConnection = container.resolve(Database).connection;
 		const dataList = await dbConnection.query(
@@ -62,6 +74,11 @@ export class EHRService {
 		return paysetList;
 	}
 
+	async getPaysetByEmpNoList(period_id: number, emp_no_list: string[]): Promise<Payset[]> {
+		const all_payset = await this.getPayset(period_id);
+		const filtered_payset = all_payset.filter((payset) => emp_no_list.includes(payset.emp_no!) );
+		return filtered_payset
+	}
 	async getEmp(period_id: number): Promise<Emp[]> {
 		const dbConnection = container.resolve(Database).connection;
 		var dataList = await dbConnection.query(this.GET_EMP_QUERY(period_id), {
