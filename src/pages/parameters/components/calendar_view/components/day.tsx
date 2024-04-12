@@ -20,6 +20,7 @@ import {
 } from "~/components/ui/hover-card";
 import { Pen, Trash2 } from "lucide-react";
 import { parameterToolbarFunctionsContext } from "../../function_sheet/parameter_functions_context";
+import { get_date_string } from "~/server/service/helper_function";
 
 interface DayViewProps {
 	day: Dayjs;
@@ -51,8 +52,8 @@ export default function DayView({ day, rowIdx, target_date }: DayViewProps) {
 	useEffect(() => {
 		const events = showEventList.filter(
 			(evt) =>
-				dayjs(evt.getStartDate()) <= day &&
-				day < dayjs(evt.getEndDate()).add(1, "day")
+				get_date_string(evt.getStartDate()) <= get_date_string(day.toDate()) &&
+				get_date_string(day.toDate()) <= get_date_string(evt.getEndDate())
 		);
 		setDayEvents(events);
 	}, [showEventList, day]);
@@ -106,8 +107,8 @@ export default function DayView({ day, rowIdx, target_date }: DayViewProps) {
 						className={cn(
 							"my-1 p-1 text-center text-sm",
 							day.format("DD-MM-YY") ===
-								dayjs(target_date).format("DD-MM-YY") &&
-								"w-7 rounded-full bg-primary text-white"
+							dayjs(target_date).format("DD-MM-YY") &&
+							"w-7 rounded-full bg-primary text-white"
 						)}
 					>
 						{day.format("DD")}
@@ -227,12 +228,10 @@ function CompEvent({
 			className={cn(
 				"z-20 mb-1 h-4 truncate bg-primary text-sm text-gray-600 opacity-20",
 				selected && "opacity-90",
-				dayjs(event.getStartDate()) <= day &&
-					day < dayjs(event.getStartDate()).add(1, "day") &&
-					"ml-4 rounded-s-md",
-				dayjs(event.getEndDate()) <= day &&
-					day < dayjs(event.getEndDate()).add(1, "day") &&
-					"mr-4 rounded-e-md"
+				get_date_string(event.getStartDate()) == get_date_string(day.toDate()) &&
+				"ml-4 rounded-s-md",
+				get_date_string(event.getEndDate()) == get_date_string(day.toDate()) &&
+				"mr-4 rounded-e-md"
 			)}
 		></div>
 	);
