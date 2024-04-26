@@ -24,9 +24,16 @@ import { LoadingSpinner } from "~/components/loading";
 import { type SyncData } from "~/server/service/sync_service";
 import {
 	type SyncDataAndStatus,
-	type SyncCheckStatus,
 	UpdateTableDialog,
 } from "~/pages/synchronize/components/update_table";
+import {
+	statusLabel,
+	type SyncCheckStatusEnumType,
+} from "~/components/synchronize/sync_check_status";
+import {
+	SyncDataDisplayModeEnum,
+	type SyncDataDisplayModeEnumType,
+} from "~/components/synchronize/data_display_mode";
 
 interface SyncPageProps {
 	period: number;
@@ -56,27 +63,35 @@ function SyncPageContent({ data }: { data: SyncData[] }) {
 	const [selectedEmployee, setSelectedEmployee] = useState<string | null>(
 		data[0]?.emp_no.ehr_value ?? null
 	);
-	const [mode, setMode] = useState("Changed");
+	const [mode, setMode] = useState<SyncDataDisplayModeEnumType>(
+		SyncDataDisplayModeEnum.Values.changed
+	);
 
-	const checked = {} as Record<string, SyncCheckStatus>
+	const checked = {} as Record<string, SyncCheckStatusEnumType>;
 	data.forEach((d) => {
-		checked[d.emp_no.ehr_value] = "initial"
-	})
-	const [checkedStatus, setCheckedStatus] = useState<Record<string, SyncCheckStatus>>(checked);
-	const [dataWithStatus, setDataWithStatus] = useState<SyncDataAndStatus[]>([]);
-	
-	useEffect(() => {
-		setDataWithStatus(data.map((d) => {
-			return {
-				emp_no: d.emp_no.ehr_value,
-				emp_name: d.name.ehr_value,
-				check_status: checkedStatus[d.emp_no.ehr_value] ?? "initial",
-				comparisons: d.comparisons
-			}
-		}))
-	}, [data, checkedStatus])
+		checked[d.emp_no.ehr_value] = "initial";
+	});
+	const [checkedStatus, setCheckedStatus] =
+		useState<Record<string, SyncCheckStatusEnumType>>(checked);
+	const [dataWithStatus, setDataWithStatus] = useState<SyncDataAndStatus[]>(
+		[]
+	);
 
-	const changeSelectedEmpStatus = (status: SyncCheckStatus) => {
+	useEffect(() => {
+		setDataWithStatus(
+			data.map((d) => {
+				return {
+					emp_no: d.emp_no.ehr_value,
+					emp_name: d.name.ehr_value,
+					check_status:
+						checkedStatus[d.emp_no.ehr_value] ?? "initial",
+					comparisons: d.comparisons,
+				};
+			})
+		);
+	}, [data, checkedStatus]);
+
+	const changeSelectedEmpStatus = (status: SyncCheckStatusEnumType) => {
 		setCheckedStatus((prevCheckedStatus) => {
 			if (!selectedEmployee) return prevCheckedStatus;
 
@@ -84,8 +99,8 @@ function SyncPageContent({ data }: { data: SyncData[] }) {
 				...prevCheckedStatus,
 				[selectedEmployee]: status,
 			};
-		})
-	}
+		});
+	};
 
 	const handleConfirm = () => {
 		changeSelectedEmpStatus("checked");
@@ -95,7 +110,7 @@ function SyncPageContent({ data }: { data: SyncData[] }) {
 		changeSelectedEmpStatus("ignored");
 	};
 
-	function AllDonePage() {
+	function CompAllDonePage() {
 		return (
 			<div className="h-0 w-full flex-grow">
 				System Data is updated with EHR
@@ -103,12 +118,7 @@ function SyncPageContent({ data }: { data: SyncData[] }) {
 		);
 	}
 
-	function MainPage({ data }: { data: SyncData[] }) {
-		const selectedEmployeeData =
-			data.find((emp) => {
-				return emp.emp_no.ehr_value === selectedEmployee;
-			})?.comparisons ?? [];
-
+	function CompTopBar({ data }: { data: SyncData[] }) {
 		return (
 			<>
 				<div className="mb-4 flex items-center">
@@ -122,6 +132,18 @@ function SyncPageContent({ data }: { data: SyncData[] }) {
 						<SelectModeComponent mode={mode} setMode={setMode} />
 					</div>
 				</div>
+			</>
+		);
+	}
+
+	function CompChangedDataTable({ data }: { data: SyncData[] }) {
+		const selectedEmployeeData =
+			data.find((emp) => {
+				return emp.emp_no.ehr_value === selectedEmployee;
+			})?.comparisons ?? [];
+
+		return (
+			<>
 				{selectedEmployee && (
 					<div className="h-0 w-full flex-grow">
 						<EmployeeDataChange
@@ -138,7 +160,14 @@ function SyncPageContent({ data }: { data: SyncData[] }) {
 		<div className="grow">
 			<div className="flex h-full flex-grow flex-col">
 				{/* Main Content */}
-				{data ? <MainPage data={data} /> : <AllDonePage />}
+				{data ? (
+					<>
+						<CompTopBar data={data} />
+						<CompChangedDataTable data={data} />
+					</>
+				) : (
+					<CompAllDonePage />
+				)}
 				{/* Bottom Buttons */}
 				<div className="mt-4 flex justify-between">
 					<UpdateTableDialog data={dataWithStatus} />
@@ -173,7 +202,7 @@ function CompSelectEmp({
 	setSelectedEmployee,
 }: {
 	data: SyncData[];
-	checkStatus: Record<string, SyncCheckStatus>;
+	checkStatus: Record<string, SyncCheckStatusEnumType>;
 	selectedEmployee: string | null;
 	setSelectedEmployee: (emp: string | null) => void;
 }) {
@@ -198,10 +227,11 @@ function CompSelectEmp({
 		name?: string;
 		englishName?: string;
 	}) => {
+		const status = statusLabel(checkStatus[empNo] ?? "initial");
 		return (
 			<>
 				<b className="mr-1">{empNo}</b>
-				<p className="mr-1">{`${name} ${englishName}`}</p>
+				<p className="mr-1">{`${name} ${englishName} ${status}`}</p>
 			</>
 		);
 	};
@@ -234,7 +264,7 @@ function CompSelectEmp({
 				{`部門： ${selectedEmployeeData?.department.ehr_value}`}
 			</Label>
 			{/* Popover */}
-			<PopoverContent className="w-[200px] p-0">
+			<PopoverContent className="p-0">
 				<Command filter={selectFilter}>
 					<CommandInput placeholder="Search Employee..." />
 					<CommandEmpty>No Employee found.</CommandEmpty>

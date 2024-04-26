@@ -30,13 +30,12 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { type DataComparison } from "~/server/service/sync_service";
-
-export type SyncCheckStatus = "initial" | "checked" | "ignored";
+import { type SyncCheckStatusEnumType } from "~/components/synchronize/sync_check_status";
 
 export interface SyncDataAndStatus {
 	emp_no: string;
 	emp_name: string;
-	check_status: SyncCheckStatus;
+	check_status: SyncCheckStatusEnumType;
 	comparisons: Array<DataComparison>;
 }
 
