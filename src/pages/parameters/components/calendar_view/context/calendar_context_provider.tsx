@@ -68,7 +68,7 @@ export default function CalendarContextProvider<T extends RecordData>({
 				.map((dataItem) => {
 					const event = new CalendarEvent(
 						new Date(dataItem.start_date),
-						new Date(dataItem.end_date ?? 8630000000000000),
+						new Date(dataItem.end_date ?? 250000000000000),
 						dataItem
 					);
 					return event;

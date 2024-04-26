@@ -17,23 +17,16 @@ const PageEmployeesContent = () => {
 	const { setSelectedTableType } = useContext(dataTableContext);
 	const { selectedPeriod } = useContext(periodContext);
 	function getTable(table_name: string) {
+		if (selectedPeriod == null) {
+			return <p>Please select period first</p>;
+		}
 		switch (table_name) {
 			case TabOptions[0]:
-				return <EmployeeDataTable />;
+				return <EmployeeDataTable period_id={selectedPeriod.period_id} />
 			case TabOptions[1]:
-				return selectedPeriod ? (
-					<EmployeePaymentTable
-						period_id={selectedPeriod.period_id}
-					/>
-				) : (
-					<p>Please select period first</p>
-				);
+				return <EmployeePaymentTable period_id={selectedPeriod.period_id} />
 			case TabOptions[2]:
-				return selectedPeriod ? (
-					<EmployeeTrustTable period_id={selectedPeriod.period_id} />
-				) : (
-					<p>Please select period first</p>
-				);
+				return <EmployeeTrustTable period_id={selectedPeriod.period_id} />
 			default:
 				return <p>No implement</p>;
 		}

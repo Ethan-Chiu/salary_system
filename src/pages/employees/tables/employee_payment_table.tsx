@@ -1,8 +1,6 @@
 import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table_update";
 import { api } from "~/utils/api";
-import { useContext } from "react";
-import periodContext from "~/components/context/period_context";
 
 const columns = [
 	"emp_no",

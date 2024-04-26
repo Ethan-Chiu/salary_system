@@ -1,4 +1,3 @@
-import { CombinedData } from "~/server/service/employee_data_service";
 import { type ReactElement, useState, useEffect, Fragment } from "react";
 
 import { ScrollArea } from "~/components/ui/scroll-area";
@@ -62,7 +61,7 @@ export function EmployeeDataChange({
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{allData.map((d: CombinedData, index: number) => {
+							{allData.map((d: DataComparison, index: number) => {
 								let diff = isDiff(d.key);
 								return mode === "Changed" && !diff ? (
 									<Fragment key={d.key}></Fragment>

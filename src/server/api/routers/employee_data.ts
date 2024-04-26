@@ -8,16 +8,21 @@ import {
 	updateEmployeeDataByEmpNOAPI,
 } from "../types/parameters_input_type";
 import { z } from "zod";
+import { EmployeeInformationService } from "~/server/service/employee_information_service";
 
 export const employeeDataRouter = createTRPCRouter({
-	getAllEmployeeData: publicProcedure.query(async () => {
-		const employeeDataService = container.resolve(EmployeeDataService);
-		const employeeData = await employeeDataService.getAllEmployeeData();
-		if (employeeData == null) {
-			throw new BaseResponseError("EmployeeData does not exist");
-		}
-		return employeeData;
-	}),
+	getAllEmployeeData: publicProcedure
+		.input(z.object({ period_id: z.number() }))
+		.query(async ({ input }) => {
+			const employeeDataService = container.resolve(EmployeeDataService);
+			const employeeInformationService = container.resolve(EmployeeInformationService);
+			const employeeData = await employeeDataService.getAllEmployeeData();
+			if (employeeData == null) {
+				throw new BaseResponseError("EmployeeData does not exist");
+			}
+			const employeeDataWithInformation = await employeeInformationService.addEmployeeInformation(input.period_id, employeeData);
+			return employeeDataWithInformation;
+		}),
 
 	createEmployeeData: publicProcedure
 		.input(createEmployeeDataAPI)

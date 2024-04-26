@@ -17,8 +17,6 @@ export class EmployeeAccountService {
 		bank_account,
 		ratio,
 	}: z.infer<typeof createEmployeeAccountService>): Promise<EmployeeAccount> {
-		const now = new Date();
-
 		const newData = await EmployeeAccount.create({
 			emp_no: emp_no,
 			bank_account: bank_account,
@@ -39,7 +37,6 @@ export class EmployeeAccountService {
 	}
 
 	async getCurrentEmployeeAccount(): Promise<EmployeeAccount[]> {
-		const now = Date();
 		const employeeAccount = await EmployeeAccount.findAll({});
 		return employeeAccount;
 	}

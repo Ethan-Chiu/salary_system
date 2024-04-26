@@ -5,25 +5,31 @@ import { PaysetTable } from "../tables/payset_table";
 import { Button } from "~/components/ui/button";
 import { Translate } from "~/lib/utils/translation";
 import { cn } from "~/lib/utils";
+import { api } from "~/utils/api";
 
 const TabOptions = ["請假", "加班", "工作天數"];
+
 export function DataPage({
 	period,
+	func,
 	selectedIndex,
 	setSelectedIndex,
 }: {
 	period: number;
+	func: string;
 	selectedIndex: number;
 	setSelectedIndex: (index: number) => void;
 }) {
 	function getTable(table_name: string) {
+		const employee_data_list = api.sync.getPaidEmployees.useQuery({ func }).data
+		const emp_no_list = employee_data_list!.map(emp => emp.emp_no)
 		switch (table_name) {
 			case "請假":
-				return <HolidayTable period={period} />;
+				return <HolidayTable period={period} emp_no_list={emp_no_list} />;
 			case "加班":
-				return <OvertimeTable period={period} />;
+				return <OvertimeTable period={period} emp_no_list={emp_no_list} />;
 			case "工作天數":
-				return <PaysetTable period={period} />;
+				return <PaysetTable period={period} emp_no_list={emp_no_list} />;
 			default:
 				return <p>No implement</p>;
 		}

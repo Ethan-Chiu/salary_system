@@ -9,12 +9,12 @@ import { ToolbarFilter } from "~/components/data_table/toolbar/toolbar_filter";
 
 interface DataTableToolbarProps<TData> {
 	table: Table<TData>;
-	filterKey?: keyof TData;
+	filterColumnKey?: keyof TData;
 }
 
 export function DataTableToolbar<TData>({
 	table,
-	filterKey,
+	filterColumnKey,
 }: DataTableToolbarProps<TData>) {
 	const { selectedTableType } = useContext(dataTableContext);
 	const { selectedPeriod } = useContext(periodContext);
@@ -22,7 +22,7 @@ export function DataTableToolbar<TData>({
 	return (
 		<div className="flex flex-row items-center justify-between space-x-2 px-2 py-2">
 			{/* search bar */}
-			<ToolbarFilter table={table} filterColumnKey={filterKey} />
+			<ToolbarFilter table={table} filterColumnKey={filterColumnKey} />
 			{/* tabs */}
 			<div className="flex">
 				<DataTableViewOptions table={table} />

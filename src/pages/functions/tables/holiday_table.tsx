@@ -10,9 +10,9 @@ const columns = Object.keys(new Holiday()).map((key) => {
 	};
 });
 
-export function HolidayTable({ period, index, globalFilter }: any) {
+export function HolidayTable({ period, emp_no_list, index, globalFilter }: any) {
 	const { isLoading, isError, data, error } =
-		api.function.getHoliday.useQuery({ period_id: period });
+		api.function.getHolidayByEmpList.useQuery({ period_id: period , emp_no_list: emp_no_list });
 	const filterKey = "emp_no";
 
 	if (isLoading) {
