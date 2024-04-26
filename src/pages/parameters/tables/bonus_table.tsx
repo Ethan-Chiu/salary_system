@@ -5,34 +5,14 @@ import { ArrowUpDown } from "lucide-react";
 import { isString, isNumber, isDateType } from "~/lib/utils/check_type";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
-import {
-	c_CreateDateStr,
-	c_UpdateDateStr,
-	c_EndDateStr,
-	c_StartDateStr,
-} from "../constant";
-import { BonusSetting } from "~/server/database/entity/SALARY/bonus_setting";
+import { c_CreateDateStr, c_UpdateDateStr } from "../constant";
+import { type BonusSetting } from "~/server/database/entity/SALARY/bonus_setting";
 import { LoadingSpinner } from "~/components/loading";
 import { formatDate } from "~/lib/utils/format_date";
-import { useEffect, useState } from "react";
-
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "~/components/ui/dialog";
-
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
-import { DataTableFunctions } from "../components/function_sheet/data_table_functions";
-import { ParameterForm } from "../components/function_sheet/parameter_form";
+import { useState } from "react";
 import { getSchema } from "../schemas/get_schemas";
 import { EmptyCreate } from "./empty_create";
+import { type TableComponentProps } from "../tables_view";
 
 export type RowItem = {
 	name: string;
@@ -81,8 +61,7 @@ export const bonus_columns = [
 			else if (isString(value)) formatted = row.getValue("value");
 			else if (isDateType(value)) {
 				if (value) {
-					formatted =
-						(value as Date).toISOString().split("T")[0] ?? "";
+					formatted = value.toISOString().split("T")[0] ?? "";
 				} else formatted = "";
 			}
 			return (
@@ -124,7 +103,13 @@ export function bonusMapper(bonusData: BonusSetting[]): RowItem[] {
 	];
 }
 
-export function BonusTable({ index, globalFilter, viewOnly }: any) {
+interface BonusTableProps extends TableComponentProps {
+	period_id: number;
+	globalFilter?: string;
+	viewOnly?: boolean;
+}
+
+export function BonusTable({ viewOnly }: BonusTableProps) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBonusSetting.useQuery();
 	const filterKey: RowItemKey = "name";
@@ -186,7 +171,7 @@ export function EmptyTable({ err_msg }: { err_msg: string }) {
 				</div>
 				<EmptyCreate
 					formSchema={getSchema(selectedTableType)}
-					onClose={() => {}}
+					onClose={() => undefined}
 					selectedTableType={selectedTableType}
 					err_msg={err_msg}
 					alertOpen={alertOpen}

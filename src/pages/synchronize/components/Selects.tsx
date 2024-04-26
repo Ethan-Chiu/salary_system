@@ -1,4 +1,9 @@
 import {
+	SyncDataDisplayModeEnum,
+	syncDataModeString,
+	type SyncDataDisplayModeEnumType,
+} from "~/components/synchronize/data_display_mode";
+import {
 	Select,
 	SelectContent,
 	SelectItem,
@@ -6,12 +11,15 @@ import {
 	SelectValue,
 } from "~/components/ui/select";
 
-interface MODE {
-	mode: string;
-	setMode: (mode: string) => void;
+interface SelectModeComponentProps {
+	mode: SyncDataDisplayModeEnumType;
+	setMode: (mode: SyncDataDisplayModeEnumType) => void;
 }
 
-export function SelectModeComponent({ mode, setMode }: MODE) {
+export function SelectModeComponent({
+	mode,
+	setMode,
+}: SelectModeComponentProps) {
 	return (
 		<>
 			<Select value={mode} onValueChange={setMode}>
@@ -19,34 +27,15 @@ export function SelectModeComponent({ mode, setMode }: MODE) {
 					<SelectValue />
 				</SelectTrigger>
 				<SelectContent>
-					<SelectItem value="Changed">Only Changed</SelectItem>
-					<SelectItem value="All">Display All</SelectItem>
+					{Object.values(SyncDataDisplayModeEnum.Values).map(
+						(value) => (
+							<SelectItem key={value} value={value}>
+								{syncDataModeString(value)}
+							</SelectItem>
+						)
+					)}
 				</SelectContent>
 			</Select>
 		</>
 	);
 }
-
-// const SelectColorComponent = () => {
-//     return (
-//         <>
-//             <Select value={diffColor} onValueChange={setDiffColor}>
-//                 <SelectPrimitive.Trigger
-//                     className={
-//                         "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-//                     }
-//                 >
-//                     <Paintbrush
-//                         strokeWidth={1.5}
-//                         className="cursor-pointer"
-//                     />
-//                 </SelectPrimitive.Trigger>
-//                 <SelectContent>
-//                     <SelectItem value="red">Red</SelectItem>
-//                     <SelectItem value="blue">Blue</SelectItem>
-//                     <SelectItem value="purple">Purple</SelectItem>
-//                 </SelectContent>
-//             </Select>
-//         </>
-//     );
-// };

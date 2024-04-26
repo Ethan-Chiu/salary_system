@@ -24,7 +24,7 @@ import {
 	AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
 import { useRouter } from "next/router";
-import { PaidEmployee } from "~/server/service/sync_service";
+import { type PaidEmployee } from "~/server/service/sync_service";
 import { SalaryCalculatePage } from "./salary_calculate_page";
 
 type FunctionStepPage = {
@@ -61,7 +61,7 @@ const MonthSalary: NextPageWithLayout = () => {
 
 function MonthSalaryContent({ periodId }: { periodId: number }) {
 	const router = useRouter();
-	const [selectedIndex, setSelectedIndex] = useState(1);
+	const [selectedIndex, setSelectedIndex] = useState(0);
 
 	const { isLoading, isError, data, error } =
 		api.sync.getCandEmployees.useQuery({

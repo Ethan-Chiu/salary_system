@@ -4,16 +4,6 @@ import { Button } from "~/components/ui/button";
 import { useState } from "react";
 
 import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "~/components/ui/table";
-import { Translate } from "~/lib/utils/translation";
-
-import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
@@ -38,8 +28,8 @@ import ParameterToolbarFunctionsProvider, {
 	parameterToolbarFunctionsContext,
 } from "../components/function_sheet/parameter_functions_context";
 import GeneralTable from "../components/function_sheet/general_table";
-import { FieldConfig } from "~/components/ui/auto-form/types";
-import { ParameterTableEnum } from "../parameter_tables";
+import { type FieldConfig } from "~/components/ui/auto-form/types";
+import { type ParameterTableEnum } from "../parameter_tables";
 import { useRouter } from "next/router";
 
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
@@ -67,11 +57,13 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 
 	function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
 		return Object.fromEntries(
-			Object.entries(schema.shape).map(([key, value]) => {
-				if (value instanceof z.ZodDefault)
-					return [key, value._def.defaultValue()];
-				return [key, undefined];
-			})
+			Object.entries(schema.shape as Record<string, unknown>).map(
+				([key, value]) => {
+					if (value instanceof z.ZodDefault)
+						return [key, value._def.defaultValue()];
+					return [key, undefined];
+				}
+			)
 		);
 	}
 
@@ -79,7 +71,7 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 		const parsedValues = formSchema.safeParse(formValues);
 		if (parsedValues.success) {
 			if (mode === "create") {
-				console.log(parsedValues.data)
+				console.log(parsedValues.data);
 				createFunction.mutate({
 					...parsedValues.data,
 				});
@@ -104,10 +96,7 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 	// Create or update an entry
 	return (
 		<>
-			<Dialog
-				open={openForm}
-				onOpenChange={setOpenForm}
-			>
+			<Dialog open={openForm} onOpenChange={setOpenForm}>
 				<DialogTrigger asChild>
 					<AlertDialogAction>Create</AlertDialogAction>
 				</DialogTrigger>
@@ -141,7 +130,7 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 										Cancel
 									</Button>
 
-									<Button type="submit" >
+									<Button type="submit">
 										{mode === "create" && "Create"}
 									</Button>
 								</div>

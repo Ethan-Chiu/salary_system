@@ -5,8 +5,8 @@ import { ArrowUpDown } from "lucide-react";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { LoadingSpinner } from "~/components/loading";
-import { LevelRange } from "~/server/database/entity/SALARY/level_range";
-import { Level } from "~/server/database/entity/SALARY/level";
+import { type Level } from "~/server/database/entity/SALARY/level";
+import { type TableComponentProps } from "../tables_view";
 
 export type RowItem = {
 	level: number;
@@ -50,7 +50,13 @@ export function levelMapper(levelData: Level[]): RowItem[] {
 	});
 }
 
-export function LevelTable({ index, globalFilter, period_id, viewOnly }: any) {
+interface LevelTableProps extends TableComponentProps {
+	period_id: number;
+	globalFilter?: string;
+	viewOnly?: boolean;
+}
+
+export function LevelTable({ viewOnly }: LevelTableProps) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentLevel.useQuery();
 	const filterKey: RowItemKey = "level";
