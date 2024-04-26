@@ -173,3 +173,16 @@ export class CalculateService {
 		}
 	}
 }
+
+
+
+/*
+if (!工作天數)
+	工作天數 = 30
+if (!勞保天數)
+	勞保天數 = 30
+if (!勞保追加)
+	勞保追加 = 0
+if (!健保追加)
+	建保追加 = False
+*/
