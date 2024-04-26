@@ -202,7 +202,7 @@ export const createPerformanceLevelService = PerformanceLevel;
 export const updatePerformanceLevelAPI = PerformanceLevel.merge(Id).partial();
 export const updatePerformanceLevelService =
 	PerformanceLevel.merge(Id).partial();
-
+//MARK:trust
 const TrustMoney = z.object({
 	position: z.number(),
 	position_type: z.string(),
@@ -216,7 +216,7 @@ export const createTrustMoneyAPI = TrustMoney;
 export const createTrustMoneyService = TrustMoney;
 export const updateTrustMoneyAPI = TrustMoney.merge(Id).partial();
 export const updateTrustMoneyService = TrustMoney.merge(Id).partial();
-
+//MARK:account
 const EmployeeAccount = z.object({
 	emp_no: z.string(),
 	bank_account: z.string(),
@@ -227,7 +227,7 @@ export const createEmployeeAccountAPI = EmployeeAccount;
 export const createEmployeeAccountService = EmployeeAccount;
 export const updateEmployeeAccountAPI = EmployeeAccount.merge(Id).partial();
 export const updateEmployeeAccountService = EmployeeAccount.merge(Id).partial();
-
+//MARK:payment
 const EmployeePayment = z.object({
 	emp_no: z.string(),
 	base_salary: z.number(),
@@ -251,7 +251,7 @@ export const updateEmployeePaymentAPI = EmployeePayment.merge(Id)
 export const updateEmployeePaymentService = EmployeePayment.merge(Id)
 	.merge(DateService)
 	.partial();
-
+//MARK:employee_trust
 const EmployeeTrust = z.object({
 	emp_no: z.string(),
 	emp_trust_reserve: z.number(),
@@ -268,7 +268,7 @@ export const updateEmployeeTrustAPI = EmployeeTrust.merge(Id)
 export const updateEmployeeTrustService = EmployeeTrust.merge(Id)
 	.merge(DateService)
 	.partial();
-
+//MARK:employee_data
 const EmployeeData = z.object({
 	emp_no: z.string(),
 	emp_name: z.string(),
