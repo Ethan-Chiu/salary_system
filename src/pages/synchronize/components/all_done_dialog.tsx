@@ -8,8 +8,6 @@ import {
 	DialogTrigger,
 } from "~/components/ui/dialog";
 
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { useState } from "react";

@@ -20,10 +20,9 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { SelectModeComponent } from "~/pages/synchronize/components/Selects";
 import { EmployeeDataChange } from "~/pages/functions/components/emp_data_table";
-import { AllDoneDialog } from "~/pages/synchronize/components/AllDoneDialog";
-import { Translate } from "~/lib/utils/translation";
 import { LoadingSpinner } from "~/components/loading";
 import { type SyncData } from "~/server/service/sync_service";
+import { SyncDataAndStatus, UpdateTableDialog } from "~/pages/synchronize/components/update_table";
 
 export function SyncPage({
 	period,
@@ -39,6 +38,7 @@ export function SyncPage({
 		null
 	);
 	const [mode, setMode] = useState("Changed");
+  const [checkedStatus, setCheckedStatus] = useState<SyncDataAndStatus[]>([]);
 
 	const { isLoading, isError, data, error } =
 		api.sync.checkEmployeeData.useQuery({
@@ -46,25 +46,21 @@ export function SyncPage({
 			period: period,
 		});
 
-	const [isFinished, setIsFinished] = useState(false);
+  /* TODO: put all the stuff into another components that uses data */
 
-	useEffect(() => {
-		const dataLength = data?.length ?? 0;
+  useEffect(() => {
+    setCheckedStatus(data?.map((d) => {
+        const empNo = d.emp_no.ehr_value;
+        return {
+          emp_no: empNo,
+          emp_name: d.name.ehr_value,
+          check_status: checkedEmployees.includes(empNo),
+          comparisons: d.comparisons,
+        } 
+      }) ?? []      
+  }, [data]);
 
-		setIsFinished(
-			(checkedEmployees.length == dataLength - 1 &&
-				selectedEmployee != null &&
-				!checkedEmployees.includes(selectedEmployee)) ||
-				checkedEmployees.length == dataLength
-		);
-	}, [
-		checkedEmployees,
-		data?.length,
-		selectedEmployee,
-		checkedEmployees.length,
-	]);
-
-	const handleConfirmChange = () => {
+	const handleConfirm = () => {
 		setCheckedEmployees((prevCheckedEmployees) => {
 			if (!selectedEmployee) return prevCheckedEmployees;
 
@@ -74,10 +70,9 @@ export function SyncPage({
 		});
 	};
 
-	const handleAllDone = () => {
-		setSelectedIndex(selectedIndex + 1);
-		console.log("confirm");
-	};
+  const handleIgnore = () => {
+
+  }
 
 	function AllDonePage() {
 		return (
@@ -134,12 +129,30 @@ export function SyncPage({
 			<div className="flex h-full flex-grow flex-col">
 				{/* Main Content */}
 				{data ? <MainPage data={data} /> : <AllDonePage />}
-				{/* Pagination */}
-				<CompPagination
-					isFinished={isFinished}
-					handleFinish={handleAllDone}
-					handleNext={handleConfirmChange}
-				/>
+				{/* Bottom Buttons */}
+				<div className="mt-4 flex justify-between">
+					<UpdateTableDialog
+						data={getChangedDatas()}
+					/>
+
+					<div className="flex">
+						<Button
+							key="IgnoreButton"
+							variant={"destructive"}
+							onClick={() => handleIgnore()}
+						>
+							{"Ignore"}
+						</Button>
+						<Button
+							key="ConfirmButton"
+							onClick={() => handleConfirm()}
+							className="ml-4"
+						>
+							{"Confirm"}
+						</Button>
+					</div>
+				</div>
+        {/*  */}
 			</div>
 		</div>
 	);
@@ -225,34 +238,5 @@ function CompSelectEmp({
 				</Command>
 			</PopoverContent>
 		</Popover>
-	);
-}
-
-function CompPagination({
-	isFinished,
-	handleFinish,
-	handleNext,
-}: {
-	isFinished: boolean;
-	handleFinish: () => void;
-	handleNext: () => void;
-}) {
-	return (
-		<div className="mt-4 flex justify-between">
-			<Button
-				key="PreviousButton"
-				className="disabled:cursor-not-allowed"
-			>
-				{Translate("previous_step")}
-			</Button>
-
-			{isFinished ? (
-				<AllDoneDialog confirmFunction={handleFinish} />
-			) : (
-				<Button key="ConfirmButton" onClick={handleNext}>
-					{Translate("next_step")}
-				</Button>
-			)}
-		</div>
 	);
 }

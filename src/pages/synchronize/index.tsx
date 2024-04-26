@@ -31,7 +31,7 @@ import {
 	DifferentKeys,
 	Status,
 	UpdateTableDialog,
-} from "./components/UpdateTable";
+} from "./components/update_table";
 import { EmployeeDataChange } from "./components/emp_data_table";
 import { ScrollArea } from "~/components/ui/scroll-area";
 
@@ -390,7 +390,6 @@ function SyncPage({ period }: { period: number }) {
 
 	return (
 		<>
-			<></>
 			{!getDiffDatas.isFetched ? (
 				<FetchingPage />
 			) : (getDiffDatas.data ?? []).length == 0 ? (
