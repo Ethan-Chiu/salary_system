@@ -61,7 +61,7 @@ const MonthSalary: NextPageWithLayout = () => {
 
 function MonthSalaryContent({ periodId }: { periodId: number }) {
 	const router = useRouter();
-	const [selectedIndex, setSelectedIndex] = useState(1);
+	const [selectedIndex, setSelectedIndex] = useState(0);
 
 	const { isLoading, isError, data, error } =
 		api.sync.getCandEmployees.useQuery({
