@@ -4,8 +4,9 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
-import { BonusSeniority } from "~/server/database/entity/SALARY/bonus_seniority";
+import { type BonusSeniority } from "~/server/database/entity/SALARY/bonus_seniority";
 import { LoadingSpinner } from "~/components/loading";
+import { type TableComponentProps } from "../tables_view";
 
 export type RowItem = {
 	seniority: number;
@@ -63,7 +64,13 @@ export function bonusSeniorityMapper(
 	});
 }
 
-export function BonusSeniorityTable({ index, globalFilter, viewOnly }: any) {
+interface BonusSeniorityTableProps extends TableComponentProps {
+	period_id: number;
+	globalFilter?: string;
+	viewOnly?: boolean;
+}
+
+export function BonusSeniorityTable({ viewOnly }: BonusSeniorityTableProps) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBonusSeniority.useQuery();
 	const filterKey: RowItemKey = "seniority";

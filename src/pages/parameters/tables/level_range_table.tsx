@@ -5,7 +5,8 @@ import { ArrowUpDown } from "lucide-react";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { LoadingSpinner } from "~/components/loading";
-import { LevelRange } from "~/server/database/entity/SALARY/level_range";
+import { type LevelRange } from "~/server/database/entity/SALARY/level_range";
+import { type TableComponentProps } from "../tables_view";
 
 export type RowItem = {
 	type: string;
@@ -69,12 +70,13 @@ export function levelRangeMapper(levelRangeData: LevelRange[]): RowItem[] {
 	});
 }
 
-export function LevelRangeTable({
-	index,
-	globalFilter,
-	period_id,
-	viewOnly,
-}: any) {
+interface LevelRangeTableProps extends TableComponentProps {
+	period_id: number;
+	globalFilter?: string;
+	viewOnly?: boolean;
+}
+
+export function LevelRangeTable({ viewOnly }: LevelRangeTableProps) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentLevelRange.useQuery();
 	const filterKey: RowItemKey = "type";
