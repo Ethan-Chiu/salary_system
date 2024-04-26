@@ -9,6 +9,8 @@ import { EmployeePayment } from "../database/entity/SALARY/employee_payment";
 import { Period } from "../database/entity/UMEDIA/period";
 import { EHRService } from "./ehr_service";
 import { Overtime } from "../database/entity/UMEDIA/overtime";
+import { Payset } from "../database/entity/UMEDIA/payset";
+import { InsuranceRateSetting } from "../database/entity/SALARY/insurance_rate_setting";
 
 @injectable()
 export class CalculateService {
@@ -176,8 +178,60 @@ export class CalculateService {
 	async getGrossSalary(): Promise<number> {
 	}
 	//MARK: 勞保扣除額
-	async getInsuranceDeduction(): Promise<number> {
+	async getLaborInsuranceDeduction(
+		employee_data: EmployeeData,
+		employee_payment: EmployeePayment,
+		payset: Payset,
+		insuranceRateSetting: InsuranceRateSetting
+	): Promise<number> {
+		// rd("勞保扣除額") = CalacWorkTex(rd("勞保"), CheckNull(rd("工作天數"), 30), CheckNull(rd("勞保天數"), 30), rd("工作類別"), rd("工作形態"), CheckNull(rd("殘障等級"), "正常"), CheckNull(rd("勞保追加"), 30), rd("已領老年給付")) 'Jerry 07/03/30 加入殘障等級計算, 07/11/26 增加勞保追加計算,10/04/26增加"已領老年給付"判斷
+		// Tax: rd("勞保")
+		// Normalday: CheckNull(rd("工作天數"), 30)
+		// PartTimeDay: CheckNull(rd("勞保天數"), 30)
+		// kind1: rd("工作類別")
+		// kind2: rd("工作形態")
+		// hinder: CheckNull(rd("殘障等級"), "正常")
+		// Work_type: rd("已領老年給付")
+
+		const wci_normal = insuranceRateSetting.l_i_accident_rate;		// 勞工保險普通事故險
+		const wci_ji = insuranceRateSetting.l_i_employment_premium_rate; // 勞工保險就業保險率
+
+		const hinderDict: { [key: string]: number } = {
+			"正常": 1,
+			"輕度": 0.75,
+			"中度": 0.5,
+			"重度": 0
+		};		
+
+		const FOREIGN = "外籍勞工";
+		const PROFESSOR = "顧問";
+		const BOSS = "總經理";
+		const DAY_PAY = "日薪制";
+		const NEWBIE = "當月新進人員";
+		const WILL_LEAVE = "當月離職人員_破月";
+		const PARTTIME1 = "工讀生";
+		const PARTTIME2 = "建教生";
+		const CONTRACT = "約聘人員";
+
+		const Tax = employee_payment.l_i;
+		const Normalday = payset.work_day ?? 30;
+		const PartTimeDay = payset.li_day ?? 30;
+		const kind1 = employee_data.work_type;
+		const kind2 = employee_data.work_status;
+		const hinder_rate = hinderDict[employee_data.accessible ?? "正常"] ?? 1;		// 假設accessible是殘障等級
+		const old_age_benefit = (true || false);		// old_age_benefit: rd("已領老年給付")
+
+
+		if (old_age_benefit)	return 0;	// 'Jerry 100426 已領老年給付者,員工免付勞保
 		
+
+		if (kind1 == FOREIGN || kind2 == FOREIGN) return Math.round(Math.round(Tax * wci_normal * 0.200001 * PartTimeDay / 30)) * hinder_rate;   // 'Jerry 2023/04/06 由工作天數改為加勞保天數計算
+		if (kind2 == PROFESSOR) return 0;
+		if (kind2 == BOSS)	return Math.round(Math.round(Tax * wci_normal * 0.200001 * PartTimeDay / 30)) * hinder_rate;	//   'Jerry 10/04/26 由工作天數改為加勞保天數計算
+		if (kind2 == DAY_PAY)	return Math.round(Math.round(Tax * wci_normal * 0.200001 * PartTimeDay / 30) + Math.round(Tax * wci_ji * 0.200001 * PartTimeDay / 30)) * hinder_rate;
+		if (kind2 == NEWBIE || kind2 == WILL_LEAVE || kind2 == PARTTIME1 || kind2 == PARTTIME2 || kind2 == CONTRACT)	return Math.round(Math.round(Tax * wci_normal * 0.200001 * PartTimeDay / 30, 0) + Math.round(Tax * wci_ji * 0.200001 * PartTimeDay / 30)) * hinder_rate;		// 'Jerry 07/07/19 由工作天數改為加勞保天數計算
+		
+		return Math.round(Math.round(Tax * wci_normal * 0.200001) + Math.round(Tax * wci_ji * 0.200001)) * hinder_rate
 	}
 	//MARK: 健保扣除額
 	async getHealthInsuranceDeduction(): Promise<number> {
@@ -268,7 +322,7 @@ export class CalculateService {
 	}
 	//MARK: 勞保費
 	async getBonusSummary(): Promise<number> {
-		
+		// 
 	}
 	//MARK: 健保費
 	async getTotal(): Promise<number> {
