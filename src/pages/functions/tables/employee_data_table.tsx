@@ -26,9 +26,13 @@ const columns = [
 	};
 });
 
-export function EmployeeDataTable({ index, globalFilter, func }: any) {
+interface EmployeeDataTableProps {
+	func: any;
+}
+
+export function EmployeeDataTable({ func }: EmployeeDataTableProps) {
 	const { isLoading, isError, data, error } =
-		api.sync.getPaidEmployees.useQuery({ func })
+		api.sync.getPaidEmployees.useQuery({ func });
 
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast
@@ -38,7 +42,5 @@ export function EmployeeDataTable({ index, globalFilter, func }: any) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-	console.log(data!);
-
-	return <DataTable columns={columns} data={data!} />;
+	return <DataTable columns={columns} data={data} />;
 }
