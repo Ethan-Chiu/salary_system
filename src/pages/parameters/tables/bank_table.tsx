@@ -4,9 +4,9 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
-import { BankSetting } from "~/server/database/entity/SALARY/bank_setting";
+import { type BankSetting } from "~/server/database/entity/SALARY/bank_setting";
 import { LoadingSpinner } from "~/components/loading";
-import { TABLE_BANK_SETTING } from "~/pages/table_names";
+import { type TableComponentProps } from "../tables_view";
 
 export type RowItem = {
 	bank_name: string;
@@ -90,7 +90,13 @@ export function bankSettingMapper(bankSettingData: BankSetting[]): RowItem[] {
 	});
 }
 
-export function BankTable({ index, globalFilter, period_id, viewOnly }: any) {
+interface BankTableProps extends TableComponentProps {
+	period_id: number;
+	globalFilter?: string;
+	viewOnly?: boolean;
+}
+
+export function BankTable({ period_id, viewOnly }: BankTableProps) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBankSetting.useQuery({ period_id });
 	const filterKey: RowItemKey = "bank_name";

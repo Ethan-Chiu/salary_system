@@ -4,10 +4,9 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
-import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
-import { BonusPosition } from "~/server/database/entity/SALARY/bonus_position";
+import { type BonusPosition } from "~/server/database/entity/SALARY/bonus_position";
 import { LoadingSpinner } from "~/components/loading";
-import { TABLE_BONUS_POSITION } from "~/pages/table_names";
+import { type TableComponentProps } from "../tables_view";
 
 export type RowItem = {
 	position: number;
@@ -65,7 +64,13 @@ export function bonusPositionMapper(
 	});
 }
 
-export function BonusPositionTable({ index, globalFilter, viewOnly }: any) {
+interface BonusPositionTableProps extends TableComponentProps {
+	period_id: number;
+	globalFilter?: string;
+	viewOnly?: boolean;
+}
+
+export function BonusPositionTable({ viewOnly }: BonusPositionTableProps) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBonusPosition.useQuery();
 	const filterKey: RowItemKey = "position";
