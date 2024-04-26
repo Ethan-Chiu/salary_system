@@ -41,7 +41,7 @@ export class SyncService {
 		const current_month = periodInfo.period_name.split("-")[0]!;
 		const levaing_year = quit_date.split("-")[0]!; //讀出來是2023-05-04的形式
 		const leaving_month = quit_date.split("-")[1]!;
-		const monthDict = {
+		const monthDict: {[key: string]: string} = {
 			JAN: "1",
 			FEB: "2",
 			MAR: "3",
@@ -55,7 +55,6 @@ export class SyncService {
 			NOV: "11",
 			DEC: "12",
 		};
-		
 		if (parseInt(current_year) < parseInt(levaing_year)) return "future";
 		else if (parseInt(current_year) == parseInt(levaing_year)) {
 			if (parseInt(monthDict[current_month]!) < parseInt(leaving_month))
