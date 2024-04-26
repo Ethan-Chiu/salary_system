@@ -1,4 +1,3 @@
-import { type CombinedData } from "~/server/service/employee_data_service";
 import { Fragment } from "react";
 
 import { ScrollArea } from "~/components/ui/scroll-area";
@@ -15,31 +14,20 @@ import {
 import { type DataComparison } from "~/server/service/sync_service";
 import { displayData } from "~/pages/synchronize/utils/display";
 import { cn } from "~/lib/utils";
+import {
+	SyncDataDisplayModeEnum,
+	type SyncDataDisplayModeEnumType,
+} from "~/components/synchronize/data_display_mode";
 
 interface EmpTableParameters {
 	empData: Array<DataComparison>;
-	mode: string;
+	mode: SyncDataDisplayModeEnumType;
 }
 
-export function EmployeeDataChange({
-	empData,
-	mode,
-}: EmpTableParameters) {
-
-  const diffKeys: string[] = [];
-  empData.forEach((d: CombinedData) => {
-    diffKeys.push(d.key)    
-  })
-
-	const isDiff = (checkKey: string): boolean => {
-		return diffKeys.includes(checkKey);
-	};
-
-	const colorClassName = "text-red-500";
-
+export function EmployeeDataChange({ empData, mode }: EmpTableParameters) {
 	return (
 		<>
-			<ScrollArea className="h-full overflow-y-auto border text-center">
+			<ScrollArea className="h-full overflow-y-auto border text-center rounded-md">
 				<Table>
 					<TableHeader className="bg-secondary">
 						<TableRow className="sticky top-0 bg-secondary hover:bg-secondary">
@@ -56,10 +44,17 @@ export function EmployeeDataChange({
 					</TableHeader>
 					<TableBody>
 						{empData.map((d: DataComparison, _index: number) => {
-							const diff = isDiff(d.key);
-							return mode === "Changed" && !diff ? (
-								<Fragment key={d.key}></Fragment>
-							) : (
+							const diff = d.is_different;
+
+							if (
+								mode ===
+									SyncDataDisplayModeEnum.Values.changed &&
+								!diff
+							) {
+								return <Fragment key={d.key}></Fragment>;
+							}
+
+							return (
 								<TableRow key={d.key}>
 									<TableCell className="font-medium">
 										{d.key}
@@ -67,7 +62,7 @@ export function EmployeeDataChange({
 									<TableCell
 										className={cn(
 											"font-medium",
-											diff && colorClassName
+											diff && "text-red-500"
 										)}
 									>
 										{displayData(d.salary_value)}
@@ -75,7 +70,7 @@ export function EmployeeDataChange({
 									<TableCell
 										className={cn(
 											"font-medium",
-											diff && colorClassName
+											diff && "text-red-500"
 										)}
 									>
 										{displayData(d.ehr_value)}

@@ -11,9 +11,10 @@ import {
 	c_StartDateStr,
 	c_UpdateDateStr,
 } from "../constant";
-import { InsuranceRateSetting } from "~/server/database/entity/SALARY/insurance_rate_setting";
+import { type InsuranceRateSetting } from "~/server/database/entity/SALARY/insurance_rate_setting";
 import { LoadingSpinner } from "~/components/loading";
 import { formatDate } from "~/lib/utils/format_date";
+import { type TableComponentProps } from "../tables_view";
 
 export type RowItem = {
 	name: string;
@@ -59,7 +60,7 @@ export const insurance_rate_columns = [
 			else if (isDateType(value)) {
 				if (value) {
 					formatted =
-						(value as Date).toISOString().split("T")[0] ?? "";
+						value.toISOString().split("T")[0] ?? "";
 				} else formatted = "";
 			}
 			return (
@@ -136,12 +137,16 @@ export function insuranceRateMapper(
 	];
 }
 
+
+interface InsuranceRateTableProps extends TableComponentProps {
+	period_id: number;
+	globalFilter?: string;
+	viewOnly?: boolean;
+}
 export function InsuranceRateTable({
-	index,
-	globalFilter,
 	period_id,
 	viewOnly,
-}: any) {
+}: InsuranceRateTableProps) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentInsuranceRateSetting.useQuery({ period_id });
 	const filterKey: RowItemKey = "name";

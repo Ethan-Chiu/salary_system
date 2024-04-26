@@ -5,7 +5,8 @@ import { ArrowUpDown } from "lucide-react";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { LoadingSpinner } from "~/components/loading";
-import { PerformanceLevel } from "~/server/database/entity/SALARY/performance_level";
+import { type PerformanceLevel } from "~/server/database/entity/SALARY/performance_level";
+import { type TableComponentProps } from "../tables_view";
 
 export type RowItem = {
 	performance_level: string;
@@ -77,12 +78,15 @@ export function performaceLevelMapper(
 	});
 }
 
+interface PerformanceLevelTableProps extends TableComponentProps {
+	period_id: number;
+	globalFilter?: string;
+	viewOnly?: boolean;
+}
+
 export function PerformanceLevelTable({
-	index,
-	globalFilter,
-	period_id,
 	viewOnly,
-}: any) {
+}: PerformanceLevelTableProps) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentPerformanceLevel.useQuery();
 	const filterKey: RowItemKey = "performance_level";
