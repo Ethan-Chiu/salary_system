@@ -1,20 +1,19 @@
-import * as bcrypt from "bcrypt";
 import { container, injectable } from "tsyringe";
 import { Op } from "sequelize";
-import { BaseResponseError } from "../api/error/BaseResponseError";
-import { check_date, get_date_string, select_value } from "./helper_function";
-import { z } from "zod";
 import { EmployeeData } from "../database/entity/SALARY/employee_data";
 import { EmployeePayment } from "../database/entity/SALARY/employee_payment";
 import { Period } from "../database/entity/UMEDIA/period";
 import { EHRService } from "./ehr_service";
 import { Overtime } from "../database/entity/UMEDIA/overtime";
 import { Payset } from "../database/entity/UMEDIA/payset";
+<<<<<<< HEAD:src/server/service/calculate.ts
 import { InsuranceRateSetting } from "../database/entity/SALARY/insurance_rate_setting";
+=======
+>>>>>>> 664f3d5276dc0488fbbb9a09d3323dd5e925b33c:src/server/service/calculate_service.ts
 
 @injectable()
 export class CalculateService {
-	constructor() {}
+	constructor() { }
 
 	// 平/假日加班費
 	async getOvertimeMoney(
@@ -78,25 +77,43 @@ export class CalculateService {
 			work_type === "外籍勞工"
 				? SALARY_RATE
 				: work_status === "離職人員"
-				? 0
-				: work_status === "日薪"
-				? base_salary / 8
-				: base_salary / 240;
-
-		console.log(emp_no);
-		console.log(base_salary);
-		console.log(work_type);
-		console.log(work_status);
-		console.log("%f, %f, %f, %f", t1, t2, t3, t4);
+					? 0
+					: work_status === "日薪"
+						? base_salary / 8
+						: base_salary / 240;
 
 		const salary = Math.round(
 			salary_rate * (t1 * r1 + t2 * r2 + t3 * r3 + t4 * r4)
 		);
-		console.log(salary);
 
 		return salary;
 	}
-
+	//MARK: 應發底薪
+	async getGrossSalary(
+		employee_payment: EmployeePayment,
+		pay_set: Payset
+	): Promise<number> {
+		const gross_salary = (
+			employee_payment.base_salary
+			+ employee_payment.food_bonus
+			+ employee_payment.supervisor_comp
+			+ employee_payment.professional_cert_comp
+			+ employee_payment.job_comp
+			+ employee_payment.subsidy_comp
+		) * (pay_set.work_day! / 30)
+		return gross_salary;
+	}
+	//MARK: 勞保扣除額
+	async getInsuranceDeduction(): Promise<number> {
+	}
+	//MARK: 健保扣除額
+	async getHealthInsuranceDeduction(): Promise<number> {
+	}
+	//MARK:福利金提撥
+	async getWelfareDeduction(): Promise<number> {
+		const welfare_deduction = 0
+		return welfare_deduction
+	}
 	// 請假扣款
 	async getLeaveDeduction(
 		emp_no: string,
@@ -137,8 +154,8 @@ export class CalculateService {
 		const work_status = employee_data?.work_status;
 		const base_salary = employee_payment?.base_salary ?? 0;
 		/* bonus
-            不知道bonus是啥
-        */
+			不知道bonus是啥
+		*/
 		const bonus = 0;
 
 		const t1 = leavetime.compensatory_134 ?? 0;
@@ -170,10 +187,11 @@ export class CalculateService {
 		} else {
 			return Math.round(
 				((base_salary + bonus) / 240) * t1 +
-					(((base_salary + bonus) / 240) * t2) / 2
+				(((base_salary + bonus) / 240) * t2) / 2
 			);
 		}
 	}
+<<<<<<< HEAD:src/server/service/calculate.ts
 	//MARK: 應發底薪
 	async getGrossSalary(): Promise<number> {
 	}
@@ -260,91 +278,73 @@ export class CalculateService {
 	async getReissueSalary(): Promise<number> {
 		
 	}
+=======
+>>>>>>> 664f3d5276dc0488fbbb9a09d3323dd5e925b33c:src/server/service/calculate_service.ts
 	//MARK: 年終獎金
-	async getEndOfYearBonus(): Promise<number> {
-		
-	}
-	//MARK: 年終考核獎金
-	async getEndOfYearAssessmentBonus(): Promise<number> {
-		
-	}	
-	//MARK: 營運考核獎金
-	async getOperationAssessmentBonus(): Promise<number> {
-		
-	}
-	//MARK: 專案獎金
-	async getProjectBonus(): Promise<number> {
-		
-	}
-	//MARK: 其他減項
-	async getOtherDeduction(): Promise<number> {
-		
-	}
-	//MARK: 其他加項
-	async getOtherBonus(): Promise<number> {
-		
-	}
-	//MARK: 伙食扣款
-	async getFoodDeduction(): Promise<number> {
-		
-	}
-	//MARK: 課稅所得
-	async getTaxIncome(): Promise<number> {
-		
+	async getYearEndBonus(): Promise<number> {
+		const end_of_year_bonus = 0; // to be checked
+		return end_of_year_bonus;
 	}
 	//MARK: 薪資所得稅
 	async getSalaryIncomeTax(): Promise<number> {
-		
+		const salary_income_tax = 0
+		return salary_income_tax
 	}
 	//MARK: 獎金所得稅
-	async getBonusIncomeTax(): Promise<number> {
-		
+	async getBonusTax(): Promise<number> {
+		const bonus_tax = 0
+		return bonus_tax
 	}
 	//MARK: 不休假代金
 	async getUnpaidLeaveDeduction(): Promise<number> {
-		
+		const unpaid_leave_deduction = 0
+		return unpaid_leave_deduction
 	}
 	//MARK: 薪資所得扣繳總額
 	async getSalaryIncomeDeduction(): Promise<number> {
-		
+		const salary_income_deduction = 0
+		return salary_income_deduction
 	}
-	//MARK: 課稅小記
+	//MARK: 課稅小計
 	async getTaxSummary(): Promise<number> {
-		
+		const tax_summary = 0
+		return tax_summary
 	}
-	//MARK: 非課稅小記
+	//MARK: 非課稅小計
 	async getNonTaxSummary(): Promise<number> {
-		
+		const non_tax_summary = 0
+		return non_tax_summary
 	}
-	//MARK: 減項小記
+	//MARK: 減項小計
 	async getDeductionSummary(): Promise<number> {
-		
+		const deduction_summary = 0
+		return deduction_summary
 	}
 	//MARK: 勞保費
+<<<<<<< HEAD:src/server/service/calculate.ts
 	async getBonusSummary(): Promise<number> {
 		// 
+=======
+	async getLaborInsurance(
+		employee_payment: EmployeePayment,
+	): Promise<number> {
+		return employee_payment.l_i
+>>>>>>> 664f3d5276dc0488fbbb9a09d3323dd5e925b33c:src/server/service/calculate_service.ts
 	}
 	//MARK: 健保費
-	async getTotal(): Promise<number> {
-		
+	async getHealthInsurance(
+		employee_payment: EmployeePayment,
+	): Promise<number> {
+		return employee_payment.h_i
 	}
 	//MARK: 團保費
-	//MARK: 工資墊償
-
 	//MARK: 實發金額
-	//MARK: 勞保追加
-	//MARK: 健保追加
-	//MARK: 其他加項稅
-	//MARK: 其他減項稅
-	
+
 	//MARK: 所得稅代扣
 	//MARK: 勞退金自提
-	//MARK: 薪資區額
+	//MARK: 薪資區隔
 	//MARK: 薪資總額
-	//MARK: 端午獎金
-	//MARK: 中秋獎金
 	//MARK: 勞退金提撥
-	//MARK:考核獎金
 	//MARK:二代健保
 	//MARK:員工信托提存金
 	//MARK:特別信託獎勵金＿員工
@@ -352,7 +352,6 @@ export class CalculateService {
 	//MARK:特別信託獎勵金＿公司
 	//MARK:團保費代扣＿升等
 	//MARK:特別事假扣款
-	
 }
 
 

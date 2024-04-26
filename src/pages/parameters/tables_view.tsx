@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, type ComponentType } from "react";
 import {
 	ResizableHandle,
 	ResizablePanel,
@@ -21,7 +21,7 @@ import {
 	Clock,
 	CreditCard,
 	Key,
-	LucideIcon,
+	type LucideIcon,
 	Table,
 	TrendingUp,
 	Users,
@@ -32,137 +32,85 @@ import { getTableName } from "./components/context/data_table_enum";
 import { Separator } from "~/components/ui/separator";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import {
-	ParameterTableEnum,
+	type ParameterTableEnum,
 	ParameterTableEnumValues,
 } from "./parameter_tables";
 import periodContext from "~/components/context/period_context";
-import { Period } from "~/server/database/entity/UMEDIA/period";
 import { LevelRangeTable } from "./tables/level_range_table";
 import { LevelTable } from "./tables/level_table";
 import { PerformanceLevelTable } from "./tables/performance_level_table";
 
-type TableComponentProps = {
-	index: number;
-	globalFilter: string;
+export type TableComponentProps = {
+	period_id: number;
+	globalFilter?: string;
 };
 
 type TableComponent = {
-	component: React.ReactElement<TableComponentProps>;
+	component: ComponentType<TableComponentProps>;
 	icon: LucideIcon;
 };
 
 function getTableComponent(
 	table: ParameterTableEnum,
-	selectedPeriod: Period | null
 ): TableComponent {
 	switch (table) {
 		case "TableAttendance":
 			return {
-				component: selectedPeriod ? (
-					<AttendanceTable period_id={selectedPeriod.period_id} />
-				) : (
-					<p>Please select period first</p>
-				),
+				component: AttendanceTable,
 				icon: Clock,
 			};
 		case "TableBankSetting":
 			return {
-				component: selectedPeriod ? (
-					<BankTable period_id={selectedPeriod.period_id} />
-				) : (
-					<p>Please select period first</p>
-				),
+				component: BankTable,
 				icon: CreditCard,
 			};
 		case "TableInsurance":
 			return {
-				component: selectedPeriod ? (
-					<InsuranceRateTable period_id={selectedPeriod.period_id} />
-				) : (
-					<p>Please select period first</p>
-				),
+					component: InsuranceRateTable,
 				icon: ActivitySquare,
 			};
 		case "TableBonusSetting":
 			return {
-				component: selectedPeriod ? (
-					<BonusTable period_id={selectedPeriod.period_id} />
-				) : (
-					<p>Please select period first</p>
-				),
+				component: BonusTable,
 				icon: CircleDollarSign,
 			};
 		case "TableBonusDepartment":
 			return {
-				component: selectedPeriod ? (
-					<BonusDepartmentTable
-						period_id={selectedPeriod.period_id}
-					/>
-				) : (
-					<p>Please select period first</p>
-				),
+				component: BonusDepartmentTable,
 				icon: Users,
 			};
 		case "TableBonusPosition":
 			return {
-				component: selectedPeriod ? (
-					<BonusPositionTable period_id={selectedPeriod.period_id} />
-				) : (
-					<p>Please select period first</p>
-				),
+				component: BonusPositionTable,
 				icon: Briefcase,
 			};
 		case "TableBonusPositionType":
 			return {
-				component: selectedPeriod ? (
-					<BonusPositionTypeTable
-						period_id={selectedPeriod.period_id}
-					/>
-				) : (
-					<p>Please select period first</p>
-				),
+				component: BonusPositionTypeTable,
 				icon: Key,
 			};
 		case "TableBonusSeniority":
 			return {
-				component: selectedPeriod ? (
-					<BonusSeniorityTable period_id={selectedPeriod.period_id} />
-				) : (
-					<p>Please select period first</p>
-				),
+				component: BonusSeniorityTable,
 				icon: Cake,
 			};
 		case "TableLevelRange":
 			return {
-				component: selectedPeriod ? (
-					<LevelRangeTable period_id={selectedPeriod.period_id} />
-				) : (
-					<p>Please select period first</p>
-				),
+				component: LevelRangeTable,
 				icon: Table,
 			};
 		case "TableLevel":
 			return {
-				component: selectedPeriod ? (
-					<LevelTable period_id={selectedPeriod.period_id} />
-				) : (
-					<p>Please select period first</p>
-				),
+				component: LevelTable,
 				icon: Table,
 			};
 		case "TablePerformanceLevel":
 			return {
-				component: selectedPeriod ? (
-					<PerformanceLevelTable
-						period_id={selectedPeriod.period_id}
-					/>
-				) : (
-					<p>Please select period first</p>
-				),
+				component: PerformanceLevelTable,
 				icon: TrendingUp,
 			};
 		default:
-			throw new Error(`Invalid table: ${table}`);
+			throw new Error(`Invalid table`);
 	}
 }
 
@@ -190,17 +138,16 @@ function CompTablesSelector() {
 	);
 
 	const { setSelectedTableType } = useContext(dataTableContext);
-	const { selectedPeriod } = useContext(periodContext);
 
 	const tableComponentMap: Record<ParameterTableEnum, TableComponent> =
 		ParameterTableEnumValues.reduce((map, table) => {
-			map[table] = getTableComponent(table, selectedPeriod);
+			map[table] = getTableComponent(table);
 			return map;
 		}, {} as Record<ParameterTableEnum, TableComponent>);
 
 	useEffect(() => {
 		setSelectedTableType(selectedTag);
-	}, [selectedTag]);
+	}, [selectedTag, setSelectedTableType]);
 
 	return (
 		<div className="flex h-full flex-col">
@@ -251,11 +198,10 @@ function CompTableView() {
 			).map((selectedTableType) => {
 				return (
 					<div key={selectedTableType} className="flex h-full">
-						{React.cloneElement<TableComponentProps>(
-							getTableComponent(selectedTableType, selectedPeriod)
-								.component,
-							{}
-						)}
+						{selectedPeriod ? React.createElement<TableComponentProps>(
+							getTableComponent(selectedTableType).component,
+							{period_id: selectedPeriod.period_id}
+						) : <p>Please select a period first</p>}
 					</div>
 				);
 			})}

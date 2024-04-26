@@ -4,10 +4,9 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
-import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
-import { BonusDepartment } from "~/server/database/entity/SALARY/bonus_department";
+import { type BonusDepartment } from "~/server/database/entity/SALARY/bonus_department";
 import { LoadingSpinner } from "~/components/loading";
-import { TABLE_BONUS_DEPARTMENT } from "~/pages/table_names";
+import { type TableComponentProps } from "../tables_view";
 
 export type RowItem = {
 	department: string;
@@ -65,7 +64,13 @@ export function bonusDepartmentMapper(
 	});
 }
 
-export function BonusDepartmentTable({ index, globalFilter, viewOnly }: any) {
+interface BonusDepartmentTableProps extends TableComponentProps {
+	period_id: number;
+	globalFilter?: string;
+	viewOnly?: boolean;
+}
+
+export function BonusDepartmentTable({ viewOnly }: BonusDepartmentTableProps) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBonusDepartment.useQuery();
 	const filterKey: RowItemKey = "department";
@@ -99,8 +104,4 @@ export function BonusDepartmentTable({ index, globalFilter, viewOnly }: any) {
 			)}
 		</>
 	);
-
-	// useMemo(() => {
-	// 	table.getColumn(filter_key)?.setFilterValue(globalFilter);
-	// }, [globalFilter]);
 }

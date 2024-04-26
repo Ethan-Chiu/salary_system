@@ -22,59 +22,130 @@ import { SelectModeComponent } from "~/pages/synchronize/components/Selects";
 import { EmployeeDataChange } from "~/pages/functions/components/emp_data_table";
 import { LoadingSpinner } from "~/components/loading";
 import { type SyncData } from "~/server/service/sync_service";
-import { SyncDataAndStatus, UpdateTableDialog } from "~/pages/synchronize/components/update_table";
+import {
+	type SyncDataAndStatus,
+	UpdateTableDialog,
+} from "~/pages/synchronize/components/update_table";
+import {
+	statusLabel,
+	type SyncCheckStatusEnumType,
+} from "~/components/synchronize/sync_check_status";
+import {
+	SyncDataDisplayModeEnum,
+	type SyncDataDisplayModeEnumType,
+} from "~/components/synchronize/data_display_mode";
+import { toast } from "~/components/ui/use-toast";
 
-export function SyncPage({
-	period,
-	selectedIndex,
-	setSelectedIndex,
-}: {
+interface SyncPageProps {
 	period: number;
 	selectedIndex: number;
 	setSelectedIndex: (index: number) => void;
-}) {
-	const [checkedEmployees, setCheckedEmployees] = useState<Array<string>>([]);
-	const [selectedEmployee, setSelectedEmployee] = useState<string | null>(
-		null
-	);
-	const [mode, setMode] = useState("Changed");
-  const [checkedStatus, setCheckedStatus] = useState<SyncDataAndStatus[]>([]);
+}
 
+export function SyncPage({ period }: SyncPageProps) {
 	const { isLoading, isError, data, error } =
 		api.sync.checkEmployeeData.useQuery({
 			func: "month_salary",
 			period: period,
 		});
 
-  /* TODO: put all the stuff into another components that uses data */
+	if (isLoading) {
+		return <LoadingSpinner />;
+	}
 
-  useEffect(() => {
-    setCheckedStatus(data?.map((d) => {
-        const empNo = d.emp_no.ehr_value;
-        return {
-          emp_no: empNo,
-          emp_name: d.name.ehr_value,
-          check_status: checkedEmployees.includes(empNo),
-          comparisons: d.comparisons,
-        } 
-      }) ?? []      
-  }, [data]);
+	if (isError) {
+		return <span>Error: {error.message}</span>; // TODO: Error element with toast
+	}
 
-	const handleConfirm = () => {
-		setCheckedEmployees((prevCheckedEmployees) => {
-			if (!selectedEmployee) return prevCheckedEmployees;
+	return data != null ? <SyncPageContent data={data} /> : <div>no data</div>;
+}
 
-			return prevCheckedEmployees.includes(selectedEmployee)
-				? prevCheckedEmployees
-				: [...prevCheckedEmployees, selectedEmployee];
+function SyncPageContent({ data }: { data: SyncData[] }) {
+	const [selectedEmployee, setSelectedEmployee] = useState<string | null>(
+		data[0]?.emp_no.ehr_value ?? null
+	);
+	const [mode, setMode] = useState<SyncDataDisplayModeEnumType>(
+		SyncDataDisplayModeEnum.Values.changed
+	);
+
+	const checked = {} as Record<string, SyncCheckStatusEnumType>;
+	data.forEach((d) => {
+		checked[d.emp_no.ehr_value] = "initial";
+	});
+	const [checkedStatus, setCheckedStatus] =
+		useState<Record<string, SyncCheckStatusEnumType>>(checked);
+	const [dataWithStatus, setDataWithStatus] = useState<SyncDataAndStatus[]>(
+		[]
+	);
+	const [isAllConfirmed, setIsAllConfirmed] = useState<boolean>(false);
+
+	useEffect(() => {
+		setDataWithStatus(
+			data.map((d) => {
+				return {
+					emp_no: d.emp_no.ehr_value,
+					emp_name: d.name.ehr_value,
+					check_status:
+						checkedStatus[d.emp_no.ehr_value] ?? "initial",
+					comparisons: d.comparisons,
+				};
+			})
+		);
+	}, [data, checkedStatus]);
+
+	useEffect(() => {
+		setIsAllConfirmed(
+			Object.values(checkedStatus).every((status) => status === "checked")
+		);
+	}, [checkedStatus]);
+
+	const changeSelectedEmpStatus = (status: SyncCheckStatusEnumType) => {
+		setCheckedStatus((prevCheckedStatus) => {
+			if (!selectedEmployee) return prevCheckedStatus;
+
+			return {
+				...prevCheckedStatus,
+				[selectedEmployee]: status,
+			};
 		});
 	};
 
-  const handleIgnore = () => {
+	const nextEmp = () => {
+		const selectedEmployeeIndex = data.findIndex(
+			(d) => d.emp_no.ehr_value === selectedEmployee
+		);
+		for (let i = 1; i < data.length; i++) {
+			const idx = (selectedEmployeeIndex + i) % data.length;
+			const empNo = data[idx]?.emp_no.ehr_value;
+			if (empNo && checkedStatus[empNo] === "initial") {
+				setSelectedEmployee(empNo);
+				return true;
+			}
+		}
+		// All checked
+		return false;
+	};
 
-  }
+	const handleConfirm = () => {
+		changeSelectedEmpStatus("checked");
+		if (!nextEmp()) {
+			toast({
+				title: "Well done!",
+				description:
+					"You have checked all the changes. Please click Update button.",
+				className: cn(
+					"top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4 data-[state=open]:sm:slide-in-from-top-full"
+				),
+			});
+		}
+	};
 
-	function AllDonePage() {
+	const handleIgnore = () => {
+		changeSelectedEmpStatus("ignored");
+		nextEmp();
+	};
+
+	function CompAllDonePage() {
 		return (
 			<div className="h-0 w-full flex-grow">
 				System Data is updated with EHR
@@ -82,7 +153,25 @@ export function SyncPage({
 		);
 	}
 
-	function MainPage({ data }: { data: SyncData[] }) {
+	function CompTopBar({ data }: { data: SyncData[] }) {
+		return (
+			<>
+				<div className="mb-4 flex items-center">
+					<CompSelectEmp
+						data={data}
+						checkStatus={checkedStatus}
+						selectedEmployee={selectedEmployee}
+						setSelectedEmployee={setSelectedEmployee}
+					/>
+					<div className="ml-auto">
+						<SelectModeComponent mode={mode} setMode={setMode} />
+					</div>
+				</div>
+			</>
+		);
+	}
+
+	function CompChangedDataTable({ data }: { data: SyncData[] }) {
 		const selectedEmployeeData =
 			data.find((emp) => {
 				return emp.emp_no.ehr_value === selectedEmployee;
@@ -90,20 +179,6 @@ export function SyncPage({
 
 		return (
 			<>
-				<div className="mb-4 flex items-center">
-					<CompSelectEmp
-						data={data}
-						checkedEmployees={checkedEmployees}
-						selectedEmployee={selectedEmployee}
-						setSelectedEmployee={setSelectedEmployee}
-					/>
-					{selectedEmployee && (
-						<Label className="ml-4">部門：{}</Label>
-					)}
-					<div className="ml-auto">
-						<SelectModeComponent mode={mode} setMode={setMode} />
-					</div>
-				</div>
 				{selectedEmployee && (
 					<div className="h-0 w-full flex-grow">
 						<EmployeeDataChange
@@ -116,24 +191,21 @@ export function SyncPage({
 		);
 	}
 
-	if (isLoading) {
-		return <LoadingSpinner />;
-	}
-
-	if (isError) {
-		return <span>Error: {error.message}</span>; // TODO: Error element with toast
-	}
-
 	return (
 		<div className="grow">
 			<div className="flex h-full flex-grow flex-col">
 				{/* Main Content */}
-				{data ? <MainPage data={data} /> : <AllDonePage />}
+				{data ? (
+					<>
+						<CompTopBar data={data} />
+						<CompChangedDataTable data={data} />
+					</>
+				) : (
+					<CompAllDonePage />
+				)}
 				{/* Bottom Buttons */}
 				<div className="mt-4 flex justify-between">
-					<UpdateTableDialog
-						data={getChangedDatas()}
-					/>
+					<UpdateTableDialog data={dataWithStatus} />
 
 					<div className="flex">
 						<Button
@@ -147,12 +219,13 @@ export function SyncPage({
 							key="ConfirmButton"
 							onClick={() => handleConfirm()}
 							className="ml-4"
+							disabled={isAllConfirmed}
 						>
 							{"Confirm"}
 						</Button>
 					</div>
 				</div>
-        {/*  */}
+				{/*  */}
 			</div>
 		</div>
 	);
@@ -160,12 +233,12 @@ export function SyncPage({
 
 function CompSelectEmp({
 	data,
-	checkedEmployees,
+	checkStatus,
 	selectedEmployee,
 	setSelectedEmployee,
 }: {
 	data: SyncData[];
-	checkedEmployees: string[];
+	checkStatus: Record<string, SyncCheckStatusEnumType>;
 	selectedEmployee: string | null;
 	setSelectedEmployee: (emp: string | null) => void;
 }) {
@@ -177,28 +250,64 @@ function CompSelectEmp({
 			? 1
 			: 0;
 
+	const selectedEmployeeData = data.find(
+		(emp) => emp.emp_no.ehr_value === selectedEmployee
+	);
+
+	const CompEntryDisplay = ({
+		empNo,
+		name,
+		englishName,
+	}: {
+		empNo: string;
+		name?: string;
+		englishName?: string;
+	}) => {
+		const status = statusLabel(checkStatus[empNo] ?? "initial");
+		return (
+			<>
+				<b className="mr-1">{empNo}</b>
+				<p className="mr-1">{`${name} ${englishName} ${status}`}</p>
+			</>
+		);
+	};
+
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
+			{/* Selector */}
 			<PopoverTrigger asChild>
 				<Button
 					variant="outline"
 					role="combobox"
 					aria-expanded={open}
-					className="w-[200px] justify-between"
+					className="justify-between"
 				>
-					{selectedEmployee
-						? selectedEmployee
-						: "Select an Employee..."}
+					{selectedEmployee ? (
+						<CompEntryDisplay
+							empNo={selectedEmployee}
+							name={selectedEmployeeData?.name.ehr_value}
+							englishName={
+								selectedEmployeeData?.english_name.ehr_value
+							}
+						/>
+					) : (
+						"Select an Employee..."
+					)}
 					<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className="w-[200px] p-0">
+			<Label className="ml-4">
+				{`部門： ${selectedEmployeeData?.department.ehr_value}`}
+			</Label>
+			{/* Popover */}
+			<PopoverContent className="p-0">
 				<Command filter={selectFilter}>
 					<CommandInput placeholder="Search Employee..." />
 					<CommandEmpty>No Employee found.</CommandEmpty>
 					<CommandGroup>
 						{data.map((empData: SyncData) => {
 							const empNo = empData.emp_no.ehr_value;
+							const checked = checkStatus[empNo] === "checked";
 							return (
 								<CommandItem
 									key={empNo}
@@ -220,15 +329,17 @@ function CompSelectEmp({
 										<div
 											className={cn(
 												"flex items-center",
-												!checkedEmployees.includes(
-													empNo
-												) && "text-red-400"
+												!checked && "text-red-400"
 											)}
 										>
-											<b className="mr-1">{empNo}</b>
-											<p className="mr-1">
-												{empData.name.ehr_value}
-											</p>
+											<CompEntryDisplay
+												empNo={empNo}
+												name={empData.name.ehr_value}
+												englishName={
+													empData.english_name
+														.ehr_value
+												}
+											/>
 										</div>
 									}
 								</CommandItem>

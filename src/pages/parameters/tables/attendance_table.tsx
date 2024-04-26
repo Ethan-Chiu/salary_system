@@ -1,23 +1,15 @@
 import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { isString, isNumber, isDateType } from "~/lib/utils/check_type";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
 import { z } from "zod";
-import { DropdownCopyAction } from "../../../components/data_table/dropdown_copy_action";
-import { AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
+import { type AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
 import { LoadingSpinner } from "~/components/loading";
+import { type TableComponentProps } from "../tables_view";
 
 const rowSchema = z.object({
 	name: z.string(),
@@ -68,8 +60,7 @@ export const attendance_columns = [
 			else if (isString(value)) formatted = row.getValue("value");
 			else if (isDateType(value)) {
 				if (value) {
-					formatted =
-						(value as Date).toISOString().split("T")[0] ?? "";
+					formatted = value.toISOString().split("T")[0] ?? "";
 				} else formatted = "";
 			}
 			return (
@@ -79,13 +70,6 @@ export const attendance_columns = [
 			);
 		},
 	}),
-	// columnHelper.display({
-	// 	id: "actions",
-	// 	enableHiding: false,
-	// 	cell: ({ row }) => {
-	// 		return <CompDropdown row={row.original} />;
-	// 	},
-	// }),
 ];
 
 export function attendanceMapper(
@@ -172,12 +156,13 @@ export function attendanceMapper(
 	];
 }
 
-export function AttendanceTable({
-	index,
-	globalFilter,
-	period_id,
-	viewOnly,
-}: any) {
+interface AttendanceTableProps extends TableComponentProps{
+	period_id: number;
+	globalFilter?: string;
+	viewOnly?: boolean;
+}
+
+export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentAttendanceSetting.useQuery({ period_id });
 	const filterKey: RowItemKey = "name";

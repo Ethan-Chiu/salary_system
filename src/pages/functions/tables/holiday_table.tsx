@@ -10,10 +10,17 @@ const columns = Object.keys(new Holiday()).map((key) => {
 	};
 });
 
-export function HolidayTable({ period, emp_no_list, index, globalFilter }: any) {
+interface HolidayTableProps {
+	period: number;
+	emp_no_list: string[];
+}
+
+export function HolidayTable({ period, emp_no_list }: HolidayTableProps) {
 	const { isLoading, isError, data, error } =
-		api.function.getHolidayByEmpList.useQuery({ period_id: period , emp_no_list: emp_no_list });
-	const filterKey = "emp_no";
+		api.function.getHolidayByEmpList.useQuery({
+			period_id: period,
+			emp_no_list: emp_no_list,
+		});
 
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast
@@ -23,7 +30,5 @@ export function HolidayTable({ period, emp_no_list, index, globalFilter }: any) 
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-	return (
-		<DataTable columns={columns} data={data!} />
-	);
+	return <DataTable columns={columns} data={data} />;
 }
