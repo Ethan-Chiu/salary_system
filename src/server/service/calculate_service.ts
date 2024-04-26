@@ -1,9 +1,5 @@
-import * as bcrypt from "bcrypt";
 import { container, injectable } from "tsyringe";
 import { Op } from "sequelize";
-import { BaseResponseError } from "../api/error/BaseResponseError";
-import { check_date, get_date_string, select_value } from "./helper_function";
-import { z } from "zod";
 import { EmployeeData } from "../database/entity/SALARY/employee_data";
 import { EmployeePayment } from "../database/entity/SALARY/employee_payment";
 import { Period } from "../database/entity/UMEDIA/period";
@@ -111,7 +107,8 @@ export class CalculateService {
 	}
 	//MARK:福利金提撥
 	async getWelfareDeduction(): Promise<number> {
-		
+		const welfare_deduction = 0
+		return welfare_deduction
 	}
 	// 請假扣款
 	async getLeaveDeduction(
@@ -197,7 +194,8 @@ export class CalculateService {
 	}
 	//MARK: 薪資所得稅
 	async getSalaryIncomeTax(): Promise<number> {
-
+		const salary_income_tax = 0
+		return salary_income_tax
 	}
 	//MARK: 獎金所得稅
 	async getBonusTax(): Promise<number> {
@@ -206,31 +204,40 @@ export class CalculateService {
 	}
 	//MARK: 不休假代金
 	async getUnpaidLeaveDeduction(): Promise<number> {
-
+		const unpaid_leave_deduction = 0
+		return unpaid_leave_deduction
 	}
 	//MARK: 薪資所得扣繳總額
 	async getSalaryIncomeDeduction(): Promise<number> {
-
+		const salary_income_deduction = 0
+		return salary_income_deduction
 	}
 	//MARK: 課稅小計
 	async getTaxSummary(): Promise<number> {
-
+		const tax_summary = 0
+		return tax_summary
 	}
 	//MARK: 非課稅小計
 	async getNonTaxSummary(): Promise<number> {
-
+		const non_tax_summary = 0
+		return non_tax_summary
 	}
 	//MARK: 減項小計
 	async getDeductionSummary(): Promise<number> {
-
+		const deduction_summary = 0
+		return deduction_summary
 	}
 	//MARK: 勞保費
-	async getBonusSummary(): Promise<number> {
-
+	async getLaborInsurance(
+		employee_payment: EmployeePayment,
+	): Promise<number> {
+		return employee_payment.l_i
 	}
 	//MARK: 健保費
-	async getTotal(): Promise<number> {
-
+	async getHealthInsurance(
+		employee_payment: EmployeePayment,
+	): Promise<number> {
+		return employee_payment.h_i
 	}
 	//MARK: 團保費
 	//MARK: 實發金額
