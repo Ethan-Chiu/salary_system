@@ -31,6 +31,7 @@ import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { type DataComparison } from "~/server/service/sync_service";
 import { type SyncCheckStatusEnumType } from "~/components/synchronize/sync_check_status";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
 export interface SyncDataAndStatus {
 	emp_no: string;
@@ -46,10 +47,48 @@ interface UpdateTableDialogProps {
 interface UpdateTableProps {
 	data: SyncDataAndStatus[];
 	showDetails: boolean;
+	checkedEmps: Record<string, boolean>;
+	setCheckedEmps: React.Dispatch<
+		React.SetStateAction<Record<string, boolean>>
+	>;
 }
 
 export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 	const [showDetails, setShowDetails] = useState<boolean>(true);
+
+	const checked: Record<string, boolean> = {};
+	data.forEach((d: SyncDataAndStatus) => {
+		checked[d.emp_no] = d.check_status === "checked";
+	});
+	const [checkedEmps, setCheckedEmps] =
+		useState<Record<string, boolean>>(checked);
+
+	const router = useRouter();
+
+	const { mutate } = api.sync.synchronize.useMutation({
+		onSuccess: () => {
+			console.log("Call synchronize API");
+
+			alert("Call API success! Reloading the page");
+			router.reload();
+		},
+	});
+
+	function handleUpdate() {
+		const updateList: Array<string> = [];
+
+		for (const key in checkedEmps) {
+			if (checkedEmps[key]) {
+				updateList.push(key);
+			}
+		}
+
+		mutate({
+			period: 113,
+			emp_no_list: updateList,
+		});
+	}
+
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
@@ -61,8 +100,8 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 					Update
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[60%]">
-				<DialogHeader className="flex items-center">
+			<DialogContent className="p-8 sm:max-w-[60%]">
+				<DialogHeader className="mx-4 flex items-center">
 					<div className="mr-auto">
 						<DialogTitle>Changed Data</DialogTitle>
 						<DialogDescription>
@@ -79,32 +118,30 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 						<Label htmlFor="showDetails">Show Details</Label>
 					</div>
 				</DialogHeader>
-				<UpdateTable data={data} showDetails={showDetails} />
+				<ScrollArea className="max-h-[70vh] overflow-y-scroll">
+					<UpdateTable
+						data={data}
+						showDetails={showDetails}
+						checkedEmps={checkedEmps}
+						setCheckedEmps={setCheckedEmps}
+					/>
+				</ScrollArea>
+				<DialogClose>
+					<Button type="submit" onClick={handleUpdate}>
+						Update
+					</Button>
+				</DialogClose>
 			</DialogContent>
 		</Dialog>
 	);
 }
 
-export function UpdateTable({ data, showDetails }: UpdateTableProps) {
-	const router = useRouter();
-
-	const { mutate } = api.sync.synchronize.useMutation({
-		onSuccess: () => {
-			console.log("Call synchronize API");
-
-			alert("Call API success! Reloading the page");
-			router.reload();
-		},
-	});
-
-	const checked: Record<string, boolean> = {};
-	data.forEach((d: SyncDataAndStatus) => {
-		checked[d.emp_no] = d.check_status === "checked";
-	});
-
-	const [checkedEmps, setCheckedEmps] =
-		useState<Record<string, boolean>>(checked);
-
+export function UpdateTable({
+	data,
+	showDetails,
+	checkedEmps,
+	setCheckedEmps,
+}: UpdateTableProps) {
 	function check(empNo: string) {
 		setCheckedEmps((checkedEmps) => ({
 			...checkedEmps,
@@ -119,21 +156,6 @@ export function UpdateTable({ data, showDetails }: UpdateTableProps) {
 				checkedEmps[key] = !allChecked;
 			}
 			return checkedEmps;
-		});
-	}
-
-	function handleUpdate() {
-		const updateList: Array<string> = [];
-
-    for (const key in checkedEmps) {
-      if (checkedEmps[key]) {
-        updateList.push(key);
-      }
-    }
-
-		mutate({
-			period: 113,
-			emp_no_list: updateList,
 		});
 	}
 
@@ -270,11 +292,6 @@ export function UpdateTable({ data, showDetails }: UpdateTableProps) {
 					})}
 				</TableBody>
 			</Table>
-			<DialogClose>
-				<Button type="submit" onClick={handleUpdate}>
-					Update
-				</Button>
-			</DialogClose>
 		</>
 	);
 }
