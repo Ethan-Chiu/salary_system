@@ -18,7 +18,7 @@ export class Transaction extends Model<
 	declare issue_date: string; // 發新日期
 	declare pay_type: string; // 發薪別
 	declare department: string; // 部門
-	declare employee_id: string; // 員工編號
+	declare emp_no: string; // 員工編號
 	declare name: string; // 姓名
 	declare job_category: string; // 工作類別
 	declare job_type: string; // 工作形態
@@ -56,7 +56,6 @@ export class Transaction extends Model<
 	declare holiday_overtime_pay: number; // 假日加班費
 	declare leave_deduction: number; // 請假扣款
 	declare overtime_hours: number; // 超時加班
-	declare night_shift_pay: number; // 夜點費
 	declare personal_leave: number; // 事假
 	declare sick_leave: number; // 病假
 	declare personal_leave_hours: number; // 事假時數

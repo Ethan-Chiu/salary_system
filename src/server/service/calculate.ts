@@ -172,4 +172,131 @@ export class CalculateService {
 			);
 		}
 	}
+	//MARK: 應發底薪
+	async getGrossSalary(): Promise<number> {
+	}
+	//MARK: 勞保扣除額
+	async getInsuranceDeduction(): Promise<number> {
+		
+	}
+	//MARK: 健保扣除額
+	async getHealthInsuranceDeduction(): Promise<number> {
+		
+	}
+	//MARK:福利金提撥
+	async getWelfareDeduction(): Promise<number> {
+		
+	}
+	//MARK: 平日加班費
+	//MARK: 假日加班費
+	//MARK: 請假扣款
+	async getLeaveDeduction(): Promise<number> {
+		
+	}
+	
+	//MARK: 全勤獎金
+	async getAttendanceBonus(): Promise<number> {
+		
+	}
+	//MARK: 團保費代扣
+	async getGroupInsuranceDeduction(): Promise<number> {
+		
+	}
+	//MARK: 補發薪資
+	async getReissueSalary(): Promise<number> {
+		
+	}
+	//MARK: 年終獎金
+	async getEndOfYearBonus(): Promise<number> {
+		
+	}
+	//MARK: 年終考核獎金
+	async getEndOfYearAssessmentBonus(): Promise<number> {
+		
+	}	
+	//MARK: 營運考核獎金
+	async getOperationAssessmentBonus(): Promise<number> {
+		
+	}
+	//MARK: 專案獎金
+	async getProjectBonus(): Promise<number> {
+		
+	}
+	//MARK: 其他減項
+	async getOtherDeduction(): Promise<number> {
+		
+	}
+	//MARK: 其他加項
+	async getOtherBonus(): Promise<number> {
+		
+	}
+	//MARK: 伙食扣款
+	async getFoodDeduction(): Promise<number> {
+		
+	}
+	//MARK: 課稅所得
+	async getTaxIncome(): Promise<number> {
+		
+	}
+	//MARK: 薪資所得稅
+	async getSalaryIncomeTax(): Promise<number> {
+		
+	}
+	//MARK: 獎金所得稅
+	async getBonusIncomeTax(): Promise<number> {
+		
+	}
+	//MARK: 不休假代金
+	async getUnpaidLeaveDeduction(): Promise<number> {
+		
+	}
+	//MARK: 薪資所得扣繳總額
+	async getSalaryIncomeDeduction(): Promise<number> {
+		
+	}
+	//MARK: 課稅小記
+	async getTaxSummary(): Promise<number> {
+		
+	}
+	//MARK: 非課稅小記
+	async getNonTaxSummary(): Promise<number> {
+		
+	}
+	//MARK: 減項小記
+	async getDeductionSummary(): Promise<number> {
+		
+	}
+	//MARK: 勞保費
+	async getBonusSummary(): Promise<number> {
+		
+	}
+	//MARK: 健保費
+	async getTotal(): Promise<number> {
+		
+	}
+	//MARK: 團保費
+	//MARK: 工資墊償
+
+	//MARK: 實發金額
+	//MARK: 勞保追加
+	//MARK: 健保追加
+	//MARK: 其他加項稅
+	//MARK: 其他減項稅
+	
+	//MARK: 所得稅代扣
+	//MARK: 勞退金自提
+	//MARK: 薪資區額
+	//MARK: 薪資總額
+	//MARK: 端午獎金
+	//MARK: 中秋獎金
+	//MARK: 勞退金提撥
+	//MARK:考核獎金
+	//MARK:二代健保
+	//MARK:員工信托提存金
+	//MARK:特別信託獎勵金＿員工
+	//MARK:公司獎勵金
+	//MARK:特別信託獎勵金＿公司
+	//MARK:團保費代扣＿升等
+	//MARK:特別事假扣款
+	
 }
