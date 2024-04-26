@@ -11,8 +11,8 @@ import { type Exact } from "~/utils/exact_type";
 export interface DataComparison<ValueT = any> {
 	key: string;
 	salary_value: ValueT;
-  ehr_value: ValueT;
-  is_different: boolean;
+	ehr_value: ValueT;
+	is_different: boolean;
 }
 
 export class SyncData {
@@ -55,7 +55,7 @@ export class SyncService {
 			NOV: "11",
 			DEC: "12",
 		};
-		
+
 		if (parseInt(current_year) < parseInt(levaing_year)) return "future";
 		else if (parseInt(current_year) == parseInt(levaing_year)) {
 			if (parseInt(monthDict[current_month]!) < parseInt(leaving_month))
@@ -89,7 +89,11 @@ export class SyncService {
 		return salary_data;
 	}
 
-	dataComparison<ValueT>(key: keyof EmployeeData, ehrData: ValueT, salaryData?: ValueT) {
+	dataComparison<ValueT>(
+		key: keyof EmployeeData,
+		ehrData: ValueT,
+		salaryData?: ValueT
+	) {
 		const excludedKeys: (keyof EmployeeData)[] = [
 			"id",
 			"create_date",
@@ -98,7 +102,8 @@ export class SyncService {
 			"update_by",
 		];
 
-		const isDifferent = !excludedKeys.includes(key) && (ehrData !== salaryData);
+		const isDifferent =
+			!excludedKeys.includes(key) && ehrData !== salaryData;
 
 		const comparison: DataComparison = {
 			key: key,
@@ -110,12 +115,27 @@ export class SyncService {
 		return comparison;
 	}
 
-	compareEmpData<T>(ehrEmp: Exact<T, EmployeeData>, salaryEmp?: Exact<T, EmployeeData>): SyncData {
+	compareEmpData<T>(
+		ehrEmp: Exact<T, EmployeeData>,
+		salaryEmp?: Exact<T, EmployeeData>
+	): SyncData {
 		const syncData: SyncData = new SyncData();
 
-		syncData.emp_no = this.dataComparison("emp_no", ehrEmp.emp_no, salaryEmp?.emp_no);
-		syncData.name = this.dataComparison("emp_name", ehrEmp.emp_name, salaryEmp?.emp_name);
-		syncData.department = this.dataComparison("u_dep", ehrEmp.u_dep, salaryEmp?.u_dep);
+		syncData.emp_no = this.dataComparison(
+			"emp_no",
+			ehrEmp.emp_no,
+			salaryEmp?.emp_no
+		);
+		syncData.name = this.dataComparison(
+			"emp_name",
+			ehrEmp.emp_name,
+			salaryEmp?.emp_name
+		);
+		syncData.department = this.dataComparison(
+			"u_dep",
+			ehrEmp.u_dep,
+			salaryEmp?.u_dep
+		);
 		// syncData.english_name = this.dataComparison("english_name", ehrEmp.english_name, salaryEmp?.english_name);
 		let pseudo_english_name: DataComparison = {
 			key: "english_name",
@@ -128,12 +148,17 @@ export class SyncService {
 		syncData.comparisons = [];
 		for (const key in ehrEmp.dataValues) {
 			if (key == "emp_no" || key == "emp_name") continue;
-			syncData.comparisons.push(this.dataComparison(key as keyof EmployeeData, ehrEmp.get(key), salaryEmp?.get(key)));
+			syncData.comparisons.push(
+				this.dataComparison(
+					key as keyof EmployeeData,
+					ehrEmp.get(key),
+					salaryEmp?.get(key)
+				)
+			);
 		}
 
 		return syncData;
 	}
-
 
 	// Stage 1
 	async getCandPaidEmployees(
@@ -312,7 +337,7 @@ export class SyncService {
 		}
 		return cand_paid_emps; // 返回候選已支付員工數組
 	}
-	
+
 	// Stage 2
 	async checkEmployeeData(
 		func: string,
@@ -339,11 +364,19 @@ export class SyncService {
 		}
 
 		const ehr_datas: Emp[] = await ehrService.getEmp(period);
-		const ehr_datas_transformed: EmployeeData[] = ehr_datas.map((emp) => this.empToEmployee(emp));
-		
+		const ehr_datas_transformed: EmployeeData[] = ehr_datas.map((emp) =>
+			this.empToEmployee(emp)
+		);
+
 		// Lookup table by EMP_NO
-		const ehrDict: Map<string, EmployeeData> = new Map<string, EmployeeData>();
-		const salaryDict: Map<string, EmployeeData> = new Map<string, EmployeeData>();
+		const ehrDict: Map<string, EmployeeData> = new Map<
+			string,
+			EmployeeData
+		>();
+		const salaryDict: Map<string, EmployeeData> = new Map<
+			string,
+			EmployeeData
+		>();
 
 		ehr_datas_transformed.forEach((emp) => {
 			ehrDict.set(emp.emp_no, emp);
@@ -356,17 +389,18 @@ export class SyncService {
 		const changedDatas: SyncData[] = [];
 		for (const cand_emp_no of cand_emp_no_list) {
 			// Get data from lookup table
-			const ehrEmp = ehrDict.get(cand_emp_no)
-			const salaryEmp = salaryDict.get(cand_emp_no)
+			const ehrEmp = ehrDict.get(cand_emp_no);
+			const salaryEmp = salaryDict.get(cand_emp_no);
 
 			if (!ehrEmp) {
 				continue;
 			}
 
-			const syncData = this.compareEmpData(ehrEmp, salaryEmp)
-			const hasDiff = syncData.comparisons.some((data) => data.is_different);
-			if (hasDiff)
-				changedDatas.push(syncData)
+			const syncData = this.compareEmpData(ehrEmp, salaryEmp);
+			const hasDiff = syncData.comparisons.some(
+				(data) => data.is_different
+			);
+			if (hasDiff) changedDatas.push(syncData);
 		}
 
 		return changedDatas;
