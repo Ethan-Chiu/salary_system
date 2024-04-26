@@ -15,10 +15,8 @@ export function isValidDateString(input: string): string | undefined {
 }
 
 export const displayData = (
-	data: string | number | Date | undefined | null
+	data: any 
 ) => {
-	// if (data === undefined)	return "Undefined";
-	// if (data === null)	return "Null"
 	if (typeof data === "boolean") return data ? "True" : "False";
 	if (typeof data === "number") return data;
 
@@ -27,7 +25,7 @@ export const displayData = (
 	}
 
 	if (typeof data === "string") {
-		let dateCheck = isValidDateString(data);
+		const dateCheck = isValidDateString(data);
 		if (dateCheck) return formatDate(dateCheck as "day" | "hour", data);
 		return data;
 	}

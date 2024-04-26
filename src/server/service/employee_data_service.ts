@@ -78,7 +78,7 @@ export class EmployeeDataService {
 	}
 
 	async getAllEmployeeData(): Promise<EmployeeData[]> {
-		const employeeData = await EmployeeData.findAll();
+		const employeeData = await EmployeeData.findAll({ raw: true });
 		return employeeData;
 	}
 

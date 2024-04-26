@@ -4,8 +4,8 @@ import { Separator } from "~/components/ui/separator";
 
 import { DataTablePagination } from "~/components/data_table/data_table_pagination";
 import { DataTableStandardBody } from "~/components/data_table/default/data_table_standard_body";
-import { DataTableStandardToolbar } from "~/components/data_table/default/data_table_standard_toolbar";
 import { WithDataTableStandardState } from "~/components/data_table/default/data_table_standard_state";
+import { DataTableToolbar } from "./data_table_toolbar";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
@@ -37,7 +37,7 @@ function DataTableContent<TData>({
 
 	return (
 		<div className="flex h-full w-full flex-col rounded-md border">
-			<DataTableStandardToolbar
+			<DataTableToolbar
 				table={table}
 				filterColumnKey={filterColumnKey}
 			/>

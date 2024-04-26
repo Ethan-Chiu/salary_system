@@ -1,9 +1,8 @@
 import React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
 	Table,
 	TableBody,
-	TableCaption,
 	TableCell,
 	TableHead,
 	TableHeader,
@@ -17,7 +16,6 @@ import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
-	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
@@ -27,39 +25,31 @@ import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
 
 import { Checkbox } from "~/components/ui/checkbox";
-import { DataComparison } from "~/server/service/sync_service";
 import { displayData } from "../utils/display";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { useRouter } from "next/router";
+import { api } from "~/utils/api";
+import { type DataComparison } from "~/server/service/sync_service";
 
-export interface Status {
-	[key: string]: "initial" | "checked" | "ignored";
-}
+export type SyncCheckStatus = "initial" | "checked" | "ignored";
 
-export interface DifferentKeys {
+export interface SyncDataAndStatus {
 	emp_no: string;
 	emp_name: string;
-	diffKeys: Array<DataComparison>;
+	check_status: SyncCheckStatus;
+	comparisons: Array<DataComparison>;
 }
 
 interface UpdateTableDialogProps {
-	data: DifferentKeys[];
-	status: Status;
-	updateFunction: (updateList: Array<string>) => void;
+	data: SyncDataAndStatus[];
 }
 
 interface UpdateTableProps {
-	data: DifferentKeys[];
-	status: Status;
+	data: SyncDataAndStatus[];
 	showDetails: boolean;
-	updateFunction: (updateList: Array<string>) => void;
 }
 
-export function UpdateTableDialog({
-	data,
-	status,
-	updateFunction,
-}: UpdateTableDialogProps) {
+export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 	const [showDetails, setShowDetails] = useState<boolean>(true);
 	return (
 		<Dialog>
@@ -90,68 +80,62 @@ export function UpdateTableDialog({
 						<Label htmlFor="showDetails">Show Details</Label>
 					</div>
 				</DialogHeader>
-				<UpdateTable
-					data={data}
-					status={status}
-					showDetails={showDetails}
-					updateFunction={updateFunction}
-				/>
+				<UpdateTable data={data} showDetails={showDetails} />
 			</DialogContent>
 		</Dialog>
 	);
 }
 
-export function UpdateTable({
-	data,
-	status,
-	showDetails,
-	updateFunction,
-}: UpdateTableProps) {
-	const initialCheckedData: Record<string, boolean> = {};
-	const [checkedData, setCheckedData] =
-		useState<Record<string, boolean>>(initialCheckedData);
+export function UpdateTable({ data, showDetails }: UpdateTableProps) {
 	const router = useRouter();
 
-	useEffect(() => {
-		let tmpDir: any = {};
-		data.map((d: DifferentKeys) => {
-			tmpDir[d.emp_no] = status[d.emp_no] == "checked";
-		});
-		setCheckedData(tmpDir);
-	}, []);
+	const { mutate } = api.sync.synchronize.useMutation({
+		onSuccess: () => {
+			console.log("Call synchronize API");
 
-	function checkEmp(emp_no: string) {
-		return function (b: boolean) {
-			setCheckedData((prevState) => {
-				return {
-					...prevState,
-					[emp_no]: b,
-				};
-			});
-		};
+			alert("Call API success! Reloading the page");
+			router.reload();
+		},
+	});
+
+	const checked: Record<string, boolean> = {};
+	data.forEach((d: SyncDataAndStatus) => {
+		checked[d.emp_no] = d.check_status === "checked";
+	});
+
+	const [checkedEmps, setCheckedEmps] =
+		useState<Record<string, boolean>>(checked);
+
+	function check(empNo: string) {
+		setCheckedEmps((checkedEmps) => ({
+			...checkedEmps,
+			[empNo]: !checkedEmps[empNo],
+		}));
 	}
 
-	function AllClick() {
-		const AllClicked = Object.values(checkedData).every(
-			(value) => value === true
-		);
-		let tmpDir: any = {};
-		data.map((d: DifferentKeys) => {
-			tmpDir[d.emp_no] = AllClicked ? false : true;
+	function checkAll() {
+		const allChecked: boolean = Object.values(checkedEmps).every((v) => v);
+		setCheckedEmps((checkedEmps) => {
+			for (const key in checkedEmps) {
+				checkedEmps[key] = !allChecked;
+			}
+			return checkedEmps;
 		});
-		setCheckedData(tmpDir);
 	}
 
 	function handleUpdate() {
-		let toUpdate: Array<string> = [];
-		Object.keys(checkedData).map((key) => {
-			if (checkedData[key] === true) {
-				toUpdate.push(key);
-			}
+		const updateList: Array<string> = [];
+
+    for (const key in checkedEmps) {
+      if (checkedEmps[key]) {
+        updateList.push(key);
+      }
+    }
+
+		mutate({
+			period: 113,
+			emp_no_list: updateList,
 		});
-		updateFunction(toUpdate);
-		alert("Call API success! Reloading the page");
-		router.reload();
 	}
 
 	return (
@@ -160,7 +144,7 @@ export function UpdateTable({
 				<TableHeader>
 					<TableRow className="border">
 						<TableHead className="w-[50px] border text-center">
-							<Button variant={"ghost"} onClick={AllClick}>
+							<Button variant={"ghost"} onClick={checkAll}>
 								All (un)Click
 							</Button>
 						</TableHead>
@@ -196,29 +180,32 @@ export function UpdateTable({
 							</TableCell>
 						</TableRow>
 					)}
-					{data.map((d: DifferentKeys) => {
+					{data.map((d: SyncDataAndStatus) => {
 						console.log(d);
+						const comparisons = d.comparisons;
 						return (
 							<>
 								<CustomTableRow>
 									<CustomTableCell
-										rowSpan={d.diffKeys.length + 1}
+										rowSpan={comparisons.length + 1}
 										className="border text-center"
 									>
 										<Checkbox
-											checked={checkedData[d.emp_no]}
-											onCheckedChange={checkEmp(d.emp_no)}
+											checked={checkedEmps[d.emp_no]}
+											onCheckedChange={() => {
+												check(d.emp_no);
+											}}
 											className="mr-5"
 										/>
 									</CustomTableCell>
 									<CustomTableCell
-										rowSpan={d.diffKeys.length + 1}
+										rowSpan={comparisons.length + 1}
 										className="border text-center"
 									>
 										{d.emp_no}
 									</CustomTableCell>
 									<CustomTableCell
-										rowSpan={d.diffKeys.length + 1}
+										rowSpan={comparisons.length + 1}
 										className="border text-center"
 									>
 										{d.emp_name}
@@ -228,23 +215,23 @@ export function UpdateTable({
 										<>
 											<CustomTableCell className="border text-center">
 												{displayData(
-													d.diffKeys[0]!.key
+													comparisons[0]!.key
 												)}
 											</CustomTableCell>
 											<CustomTableCell className="border text-center">
 												{displayData(
-													d.diffKeys[0]!.salary_value
+													comparisons[0]!.salary_value
 												)}
 											</CustomTableCell>
 											<CustomTableCell className="border text-center">
 												{displayData(
-													d.diffKeys[0]!.ehr_value
+													comparisons[0]!.ehr_value
 												)}
 											</CustomTableCell>
 										</>
 									)}
 								</CustomTableRow>
-								{d.diffKeys.map(
+								{comparisons.map(
 									(cd: DataComparison, index: number) => {
 										return (
 											<>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
@@ -19,15 +19,11 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { SelectModeComponent } from "~/pages/synchronize/components/Selects";
-import { EmployeeDataChange } from "~/pages/synchronize/components/EmpDataTable";
-import { AllDoneDialog } from "~/pages/synchronize/components/AllDoneDialog";
-import { Translate } from "~/lib/utils/translation";
+import { EmployeeDataChange } from "~/pages/functions/components/emp_data_table";
 import { LoadingSpinner } from "~/components/loading";
-import { SyncData } from "~/server/service/sync_service";
+import { type SyncData } from "~/server/service/sync_service";
+import { SyncDataAndStatus, UpdateTableDialog } from "~/pages/synchronize/components/update_table";
 
-interface EMP {
-	emp_no: string;
-}
 export function SyncPage({
 	period,
 	selectedIndex,
@@ -42,157 +38,65 @@ export function SyncPage({
 		null
 	);
 	const [mode, setMode] = useState("Changed");
+  const [checkedStatus, setCheckedStatus] = useState<SyncDataAndStatus[]>([]);
 
-	const { isFetched, isLoading, isError, data, error } =
+	const { isLoading, isError, data, error } =
 		api.sync.checkEmployeeData.useQuery({
 			func: "month_salary",
 			period: period,
 		});
 
-	const getDataLength = () => (data ?? []).length;
+  /* TODO: put all the stuff into another components that uses data */
 
-	function check(newCheckedEmp: string) {
+  useEffect(() => {
+    setCheckedStatus(data?.map((d) => {
+        const empNo = d.emp_no.ehr_value;
+        return {
+          emp_no: empNo,
+          emp_name: d.name.ehr_value,
+          check_status: checkedEmployees.includes(empNo),
+          comparisons: d.comparisons,
+        } 
+      }) ?? []      
+  }, [data]);
+
+	const handleConfirm = () => {
 		setCheckedEmployees((prevCheckedEmployees) => {
-			if (prevCheckedEmployees.includes(newCheckedEmp))
-				return prevCheckedEmployees;
-			return [...prevCheckedEmployees, newCheckedEmp];
+			if (!selectedEmployee) return prevCheckedEmployees;
+
+			return prevCheckedEmployees.includes(selectedEmployee)
+				? prevCheckedEmployees
+				: [...prevCheckedEmployees, selectedEmployee];
 		});
-	}
-
-	const handleConfirmChange = () => {
-		// check(selectedEmployee);
 	};
 
-	const handleAllDone = () => {
-		setSelectedIndex(selectedIndex + 1);
-		console.log("confirm");
-	};
+  const handleIgnore = () => {
 
-	function SelectEmpComponent({ data }: { data: SyncData[] }) {
-		const [open, setOpen] = useState(false);
-
-		const selectFilter = (value: string, search: string) =>
-			value.toUpperCase().includes(search) ||
-			value.toLowerCase().includes(search)
-				? 1
-				: 0;
-
-		return (
-			<Popover open={open} onOpenChange={setOpen}>
-				<PopoverTrigger asChild>
-					<Button
-						variant="outline"
-						role="combobox"
-						aria-expanded={open}
-						className="w-[200px] justify-between"
-					>
-						{selectedEmployee
-							? selectedEmployee
-							: "Select an Employee..."}
-						<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-					</Button>
-				</PopoverTrigger>
-				<PopoverContent className="w-[200px] p-0">
-					<Command filter={selectFilter}>
-						<CommandInput placeholder="Search Employee..." />
-						<CommandEmpty>No Employee found.</CommandEmpty>
-						<CommandGroup>
-							{data.map((empData: SyncData) => {
-								const empNo = empData.emp_no.ehr_value;
-								return (
-									<CommandItem
-										key={empNo}
-										value={empNo}
-										onSelect={(currentValue) => {
-											setSelectedEmployee(
-												(
-													currentValue.split(
-														" "
-													)[0] ?? ""
-												).toUpperCase()
-											);
-											setOpen(false);
-										}}
-									>
-										<Check
-											className={cn(
-												"mr-2 h-4 w-4",
-												selectedEmployee === empNo
-													? "opacity-100"
-													: "opacity-0"
-											)}
-										/>
-										{
-											<div
-												className={cn(
-													"flex items-center",
-													!checkedEmployees.includes(
-														empNo
-													) && "text-red-400"
-												)}
-											>
-												<b className="mr-1">{empNo}</b>
-												<p className="mr-1">
-													{empData.name.ehr_value}
-												</p>
-											</div>
-										}
-									</CommandItem>
-								);
-							})}
-						</CommandGroup>
-					</Command>
-				</PopoverContent>
-			</Popover>
-		);
-	}
-
-	function isFinished() {
-		return (
-			(checkedEmployees.length == getDataLength() - 1 &&
-				selectedEmployee &&
-				!checkedEmployees.includes(selectedEmployee)) ||
-			checkedEmployees.length == getDataLength()
-		);
-	}
+  }
 
 	function AllDonePage() {
 		return (
-			<div className="flex h-full flex-grow flex-col">
-				<div className="h-0 w-full flex-grow">
-					System Data is updated with EHR
-				</div>
-				<div className="mt-4 flex justify-between">
-					<Button
-						key="PreviousButton"
-						onClick={() => setSelectedIndex(selectedIndex - 1)}
-					>
-						{Translate("previous_step")}
-					</Button>
-					{!isFinished() && (
-						<Button
-							key="ConfirmButton"
-							onClick={() => handleConfirmChange()}
-						>
-							{Translate("next_step")}
-						</Button>
-					)}
-
-					{isFinished() && (
-						<AllDoneDialog
-							confirmFunction={() => handleAllDone()}
-						/>
-					)}
-				</div>
+			<div className="h-0 w-full flex-grow">
+				System Data is updated with EHR
 			</div>
 		);
 	}
 
 	function MainPage({ data }: { data: SyncData[] }) {
+		const selectedEmployeeData =
+			data.find((emp) => {
+				return emp.emp_no.ehr_value === selectedEmployee;
+			})?.comparisons ?? [];
+
 		return (
-			<div className="flex h-full flex-grow flex-col">
+			<>
 				<div className="mb-4 flex items-center">
-					<SelectEmpComponent data={data} />
+					<CompSelectEmp
+						data={data}
+						checkedEmployees={checkedEmployees}
+						selectedEmployee={selectedEmployee}
+						setSelectedEmployee={setSelectedEmployee}
+					/>
 					{selectedEmployee && (
 						<Label className="ml-4">部門：{}</Label>
 					)}
@@ -202,37 +106,13 @@ export function SyncPage({
 				</div>
 				{selectedEmployee && (
 					<div className="h-0 w-full flex-grow">
-						{/* <EmployeeDataChange
-							empData={getEmpData(selectedEmployee)}
+						<EmployeeDataChange
+							empData={selectedEmployeeData}
 							mode={mode}
-							diffColor={diffColor}
-						/> */}
+						/>
 					</div>
 				)}
-				<div className="mt-4 flex justify-between">
-					<Button
-						key="PreviousButton"
-						onClick={() => setSelectedIndex(selectedIndex - 1)}
-						disabled={true}
-					>
-						{Translate("previous_step")}
-					</Button>
-					{!isFinished() && (
-						<Button
-							key="ConfirmButton"
-							onClick={() => handleConfirmChange()}
-						>
-							{Translate("next_step")}
-						</Button>
-					)}
-
-					{isFinished() && (
-						<AllDoneDialog
-							confirmFunction={() => handleAllDone()}
-						/>
-					)}
-				</div>
-			</div>
+			</>
 		);
 	}
 
@@ -246,7 +126,117 @@ export function SyncPage({
 
 	return (
 		<div className="grow">
-			{data ? <MainPage data={data} /> : <AllDonePage />}
+			<div className="flex h-full flex-grow flex-col">
+				{/* Main Content */}
+				{data ? <MainPage data={data} /> : <AllDonePage />}
+				{/* Bottom Buttons */}
+				<div className="mt-4 flex justify-between">
+					<UpdateTableDialog
+						data={getChangedDatas()}
+					/>
+
+					<div className="flex">
+						<Button
+							key="IgnoreButton"
+							variant={"destructive"}
+							onClick={() => handleIgnore()}
+						>
+							{"Ignore"}
+						</Button>
+						<Button
+							key="ConfirmButton"
+							onClick={() => handleConfirm()}
+							className="ml-4"
+						>
+							{"Confirm"}
+						</Button>
+					</div>
+				</div>
+        {/*  */}
+			</div>
 		</div>
+	);
+}
+
+function CompSelectEmp({
+	data,
+	checkedEmployees,
+	selectedEmployee,
+	setSelectedEmployee,
+}: {
+	data: SyncData[];
+	checkedEmployees: string[];
+	selectedEmployee: string | null;
+	setSelectedEmployee: (emp: string | null) => void;
+}) {
+	const [open, setOpen] = useState(false);
+
+	const selectFilter = (value: string, search: string) =>
+		value.toUpperCase().includes(search) ||
+		value.toLowerCase().includes(search)
+			? 1
+			: 0;
+
+	return (
+		<Popover open={open} onOpenChange={setOpen}>
+			<PopoverTrigger asChild>
+				<Button
+					variant="outline"
+					role="combobox"
+					aria-expanded={open}
+					className="w-[200px] justify-between"
+				>
+					{selectedEmployee
+						? selectedEmployee
+						: "Select an Employee..."}
+					<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+				</Button>
+			</PopoverTrigger>
+			<PopoverContent className="w-[200px] p-0">
+				<Command filter={selectFilter}>
+					<CommandInput placeholder="Search Employee..." />
+					<CommandEmpty>No Employee found.</CommandEmpty>
+					<CommandGroup>
+						{data.map((empData: SyncData) => {
+							const empNo = empData.emp_no.ehr_value;
+							return (
+								<CommandItem
+									key={empNo}
+									value={empNo}
+									onSelect={() => {
+										setSelectedEmployee(empNo);
+										setOpen(false);
+									}}
+								>
+									<Check
+										className={cn(
+											"mr-2 h-4 w-4",
+											selectedEmployee === empNo
+												? "opacity-100"
+												: "opacity-0"
+										)}
+									/>
+									{
+										<div
+											className={cn(
+												"flex items-center",
+												!checkedEmployees.includes(
+													empNo
+												) && "text-red-400"
+											)}
+										>
+											<b className="mr-1">{empNo}</b>
+											<p className="mr-1">
+												{empData.name.ehr_value}
+											</p>
+										</div>
+									}
+								</CommandItem>
+							);
+						})}
+					</CommandGroup>
+				</Command>
+			</PopoverContent>
+		</Popover>
 	);
 }
