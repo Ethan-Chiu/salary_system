@@ -1,7 +1,6 @@
 import {
 	createTRPCRouter,
 	publicProcedure,
-	protectedProcedure,
 } from "~/server/api/trpc";
 import { container } from "tsyringe";
 import { BaseResponseError } from "../error/BaseResponseError";
@@ -13,7 +12,7 @@ export const syncRouter = createTRPCRouter({
 		.input(z.object({ func: z.string(), period: z.number() }))
 		.query(async ({ input }) => {
 			const syncService = container.resolve(SyncService);
-			let candEmployees = await syncService.getCandPaidEmployees(
+			const candEmployees = await syncService.getCandPaidEmployees(
 				input.func,
 				input.period
 			);
@@ -27,7 +26,7 @@ export const syncRouter = createTRPCRouter({
 		.input(z.object({ func: z.string(), period: z.number() }))
 		.query(async ({ input }) => {
 			const syncService = container.resolve(SyncService);
-			let diffDatas = await syncService.checkEmployeeData(
+			const diffDatas = await syncService.checkEmployeeData(
 				input.func,
 				input.period
 			);
@@ -40,7 +39,7 @@ export const syncRouter = createTRPCRouter({
 		)
 		.mutation(async ({ input }) => {
 			const syncService = container.resolve(SyncService);
-			let updatedDatas = await syncService.synchronize(
+			const updatedDatas = await syncService.synchronize(
 				input.period,
 				input.emp_no_list
 			);
@@ -51,7 +50,7 @@ export const syncRouter = createTRPCRouter({
 		.input(z.object({ func: z.string() }))
 		.query(async ({ input }) => {
 			const syncService = container.resolve(SyncService);
-			let paidEmployees = await syncService.getPaidEmps(input.func);
+			const paidEmployees = await syncService.getPaidEmps(input.func);
 			return paidEmployees;
 		}),
 });
