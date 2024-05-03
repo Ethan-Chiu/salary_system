@@ -509,20 +509,20 @@ export class CalculateService {
 
 		throw new Error("No Implement");
 	}
-	//MARK: 實發金額
-
 	//MARK: 所得稅代扣
 	//MARK: 勞退金自提
 	//MARK: 薪資區隔
 	//MARK: 薪資總額
 	//MARK: 勞退金提撥
-	//MARK:二代健保
-	//MARK:員工信托提存金
-	//MARK:特別信託獎勵金＿員工
-	//MARK:公司獎勵金
-	//MARK:特別信託獎勵金＿公司
-	//MARK:團保費代扣＿升等
-	//MARK:特別事假扣款
+	//MARK: 二代健保
+	//MARK: 員工信托提存金
+	//MARK: 特別信託獎勵金＿員工
+	//MARK: 公司獎勵金
+	//MARK: 特別信託獎勵金＿公司
+	//MARK: 團保費代扣＿升等
+	//MARK: 特別事假扣款
+
+	//MARK: 實發金額
 }
 
 
