@@ -16,12 +16,12 @@ export class EmployeeData extends Model<
 	declare id: CreationOptional<number>;
 	declare emp_no: string;
 	declare emp_name: string;
-	declare position: number;
-	declare position_type: string;
+	declare position: number; //職等
+	declare position_type: string; //職級
 	declare ginsurance_type: string;
 	declare u_dep: string;
-	declare work_type: string;
-	declare work_status: string;
+	declare work_type: string; //工作類別
+	declare work_status: string; //工作型態
 	declare accessible: string | null;
 	declare sex_type: string;
 	declare dependents: number | null;
