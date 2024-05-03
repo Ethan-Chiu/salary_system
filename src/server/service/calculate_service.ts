@@ -6,10 +6,7 @@ import { Period } from "../database/entity/UMEDIA/period";
 import { EHRService } from "./ehr_service";
 import { Overtime } from "../database/entity/UMEDIA/overtime";
 import { Payset } from "../database/entity/UMEDIA/payset";
-<<<<<<< HEAD:src/server/service/calculate.ts
 import { InsuranceRateSetting } from "../database/entity/SALARY/insurance_rate_setting";
-=======
->>>>>>> 664f3d5276dc0488fbbb9a09d3323dd5e925b33c:src/server/service/calculate_service.ts
 
 @injectable()
 export class CalculateService {
@@ -106,9 +103,7 @@ export class CalculateService {
 	//MARK: 勞保扣除額
 	async getInsuranceDeduction(): Promise<number> {
 	}
-	//MARK: 健保扣除額
-	async getHealthInsuranceDeduction(): Promise<number> {
-	}
+
 	//MARK:福利金提撥
 	async getWelfareDeduction(): Promise<number> {
 		const welfare_deduction = 0
@@ -191,7 +186,6 @@ export class CalculateService {
 			);
 		}
 	}
-<<<<<<< HEAD:src/server/service/calculate.ts
 	//MARK: 應發底薪
 	async getGrossSalary(): Promise<number> {
 	}
@@ -252,8 +246,51 @@ export class CalculateService {
 		return Math.round(Math.round(Tax * wci_normal * 0.200001) + Math.round(Tax * wci_ji * 0.200001)) * hinder_rate
 	}
 	//MARK: 健保扣除額
-	async getHealthInsuranceDeduction(): Promise<number> {
+	async getHealthInsuranceDeduction(
+		insurance_rate_setting: InsuranceRateSetting,
+	): Promise<number> {
+		// rd("健保扣除額") = CalacHelTax(rd("健保"), rd("健保眷口數"), rd("工作形態"), CheckNull(rd("殘障等級"), "正常"), 0, rd("健保追加"))   'Jerry 07/03/30 加入殘障等級計算  , 07/11/26 增加健保追加計算
+		let Tax : number = rd("健保");
+		let Peop : number = rd("健保眷口數");
+		let kind : string = rd("工作形態");
+		const hinder : string = CheckNull(rd("殘障等級"), 0);
+		let exePep : number = 0;
+		let HelAdd_YN : boolean = rd("健保追加");				
 		
+		if (Peop > 3) Peop = 3;
+
+		let hinder_rate: number = 1;
+		if (hinder == "正常") hinder_rate = 1;
+		if (hinder == "輕度") hinder_rate = 0.75;
+		if (hinder == "中度") hinder_rate = 0.5;
+		if (hinder == "重度") hinder_rate = 0;
+
+		const FOREIGN = "外籍勞工";
+		const PROFESSOR = "顧問";
+		const BOSS = "總經理";
+		const DAY_PAY = "日薪制";
+		const NEWBIE = "當月新進人員";
+		const WILL_LEAVE = "當月離職人員_破月";
+		const LEAVE_MAN = "離職人員";
+		const PARTTIME1 = "工讀生";
+		const PARTTIME2 = "建教生";
+		const CONTRACT = "約聘人員";
+
+		const nhi_rate = insurance_rate_setting.h_i_standard_rate;			// 健保一般保費費率 : 應該是這個
+
+		if (HelAdd_YN) {
+			if (kind === LEAVE_MAN || kind === PROFESSOR || kind === WILL_LEAVE) return 0;
+			if (kind === BOSS) return ((Math.round(Math.round(Tax * nhi_rate) * (Peop + 1)) + Math.round(Math.round(Tax * nhi_rate) * exePep))) * hinder_rate * 2;
+			return (Math.round(Math.round(Tax * nhi_rate * 0.3) * (Peop + 1)) + Math.round(Math.round(Tax * nhi_rate * 0.3) * exePep)) * hinder_rate * 2;
+		}
+		
+		else {		// HelAdd_YN = False	=> 		不追加健保
+			if (kind === LEAVE_MAN || kind === PROFESSOR || kind === WILL_LEAVE) return 0;
+			if (kind === BOSS) return ((Math.round(Math.round(Tax * nhi_rate) * (Peop + 1)) + Math.round(Math.round(Tax * nhi_rate) * exePep))) * hinder_rate;
+			return (Math.round(Tax * nhi_rate * 0.3) * (Peop + 1) + Math.round(Tax * nhi_rate * 0.3) * exePep) * hinder_rate;
+		}
+
+		return 0;
 	}
 	//MARK:福利金提撥
 	async getWelfareDeduction(): Promise<number> {
@@ -278,8 +315,6 @@ export class CalculateService {
 	async getReissueSalary(): Promise<number> {
 		
 	}
-=======
->>>>>>> 664f3d5276dc0488fbbb9a09d3323dd5e925b33c:src/server/service/calculate_service.ts
 	//MARK: 年終獎金
 	async getYearEndBonus(): Promise<number> {
 		const end_of_year_bonus = 0; // to be checked
@@ -321,15 +356,10 @@ export class CalculateService {
 		return deduction_summary
 	}
 	//MARK: 勞保費
-<<<<<<< HEAD:src/server/service/calculate.ts
-	async getBonusSummary(): Promise<number> {
-		// 
-=======
 	async getLaborInsurance(
 		employee_payment: EmployeePayment,
 	): Promise<number> {
 		return employee_payment.l_i
->>>>>>> 664f3d5276dc0488fbbb9a09d3323dd5e925b33c:src/server/service/calculate_service.ts
 	}
 	//MARK: 健保費
 	async getHealthInsurance(
