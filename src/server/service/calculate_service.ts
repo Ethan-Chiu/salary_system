@@ -485,6 +485,30 @@ export class CalculateService {
 		return employee_payment.h_i
 	}
 	//MARK: 團保費
+	async groupInsurance(
+		employee_data: EmployeeData,
+	): Promise<number> {
+		/*
+			rd("團保費") = ComInsurance(
+				CheckNull(rd("團保類別"), X),
+				rd("工作類別"),
+				rd("工作形態")
+			)    'Jerry 07/01/04 計算公司付團保
+		*/
+		const level = employee_data.ginsurance_type;
+		const kind1 = employee_data.work_type;
+		const kind2  = employee_data.work_status;
+
+		if (kind1 === FOREIGN) {
+			if (level === "F")	return 47;
+		}
+		else {
+			if (level === "A")	return 341;
+			if (level === "C+")	return 711;
+		}
+
+		throw new Error("No Implement");
+	}
 	//MARK: 實發金額
 
 	//MARK: 所得稅代扣
