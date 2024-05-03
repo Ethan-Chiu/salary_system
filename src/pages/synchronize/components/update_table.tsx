@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment, useEffect } from "react";
 import { useState } from "react";
 import {
 	Table,
@@ -14,6 +14,7 @@ import {
 import { Button } from "~/components/ui/button";
 import {
 	Dialog,
+	DialogClose,
 	DialogContent,
 	DialogDescription,
 	DialogHeader,
@@ -26,12 +27,11 @@ import { Switch } from "~/components/ui/switch";
 
 import { Checkbox } from "~/components/ui/checkbox";
 import { displayData } from "../utils/display";
-import { DialogClose } from "@radix-ui/react-dialog";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { type DataComparison } from "~/server/service/sync_service";
 import { type SyncCheckStatusEnumType } from "~/components/synchronize/sync_check_status";
-import { ScrollArea } from "~/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 
 export interface SyncDataAndStatus {
 	emp_no: string;
@@ -56,12 +56,17 @@ interface UpdateTableProps {
 export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 	const [showDetails, setShowDetails] = useState<boolean>(true);
 
-	const checked: Record<string, boolean> = {};
-	data.forEach((d: SyncDataAndStatus) => {
-		checked[d.emp_no] = d.check_status === "checked";
-	});
-	const [checkedEmps, setCheckedEmps] =
-		useState<Record<string, boolean>>(checked);
+	const [checkedEmps, setCheckedEmps] = useState<Record<string, boolean>>({});
+
+	useEffect(() => {
+		const checked: Record<string, boolean> = {};
+		data.forEach((d: SyncDataAndStatus) => {
+			checked[d.emp_no] = d.check_status === "checked";
+		});
+		setCheckedEmps(checked);
+	}, [data]);
+
+	console.log("checkedEmps upper", checkedEmps);
 
 	const router = useRouter();
 
@@ -100,7 +105,7 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 					Update
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="p-8 sm:max-w-[60%]">
+			<DialogContent className="w-[90vw] max-w-3xl p-8">
 				<DialogHeader className="mx-4 flex items-center">
 					<div className="mr-auto">
 						<DialogTitle>Changed Data</DialogTitle>
@@ -125,8 +130,10 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 						checkedEmps={checkedEmps}
 						setCheckedEmps={setCheckedEmps}
 					/>
+					<ScrollBar orientation="horizontal" />
 				</ScrollArea>
-				<DialogClose>
+
+				<DialogClose asChild>
 					<Button type="submit" onClick={handleUpdate}>
 						Update
 					</Button>
@@ -158,6 +165,8 @@ export function UpdateTable({
 			return checkedEmps;
 		});
 	}
+
+	console.log("checkedEmps", checkedEmps);
 
 	return (
 		<>
@@ -202,10 +211,9 @@ export function UpdateTable({
 						</TableRow>
 					)}
 					{data.map((d: SyncDataAndStatus) => {
-						console.log(d);
 						const comparisons = d.comparisons;
 						return (
-							<>
+							<Fragment key={d.emp_no}>
 								<CustomTableRow>
 									<CustomTableCell
 										rowSpan={comparisons.length + 1}
@@ -255,7 +263,7 @@ export function UpdateTable({
 								{comparisons.map(
 									(cd: DataComparison, index: number) => {
 										return (
-											<>
+											<Fragment key={cd.key}>
 												{index === 0 ? (
 													<CustomTableRow></CustomTableRow>
 												) : (
@@ -283,11 +291,11 @@ export function UpdateTable({
 														</CustomTableRow>
 													</>
 												)}
-											</>
+											</Fragment>
 										);
 									}
 								)}
-							</>
+							</Fragment>
 						);
 					})}
 				</TableBody>
