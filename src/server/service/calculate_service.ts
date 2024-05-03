@@ -113,7 +113,51 @@ export class CalculateService {
 		if (kind2 === FOREIGN)	return Math.round(SALARY_RATE * FOREIGN_RATE3 * t1 + SALARY_RATE * FOREIGN_RATE1 * T2 + SALARY_RATE * FOREIGN_RATE2 * T3 + SALARY_RATE * FOREIGN_RATE4 * T4);
 		return Math.round(money / 240 * LOCAL_RATE3 * t1 + money / 240 * LOCAL_RATE1 * T2 + money / 240 * LOCAL_RATE2 * T3 + money / 240 * LOCAL_RATE4 * T4);
 	}	
+	
+	// MARK: 超時加班費
+	async getOvertimeMoney(
+		employee_data: EmployeeData,
+		employee_payment: EmployeePayment,
+		attendance_setting: AttendanceSetting,
+		overtime: Overtime
+	): Promise<number> {
+		/*
+				超時加班 = GetOverTimeMoney(
+					工作類別,
+					工作形態,
+					應發底薪+全勤獎金+輪班津貼+專業証照津貼,
+					加班稅1_時數+休加班稅1_時數+國加班稅1_時數,
+					加班稅2_時數+休加班稅2_時數+國加班稅2_時數,
+					例假日加班稅_時數,
+					休加班稅3_時數
+				)
+		*/
 
+		const kind1 = employee_data.work_type;
+		const kind2 = employee_data.work_status;
+		const money = employee_payment.(應發底薪+全勤獎金+輪班津貼+專業証照津貼);
+		const t1 = overtime.(加班稅1_時數+休加班稅1_時數+國加班稅1_時數);	
+		const T2 = overtime.(加班稅2_時數+休加班稅2_時數+國加班稅2_時數);
+		const T3 = overtime.例假日加班稅_時數;
+		const T4 = overtime.休加班稅3_時數;
+		const SALARY_RATE = 最低工資率;
+		
+		const FOREIGN_RATE1 = attendance_setting.overtime_by_foreign_workers_1;
+		const FOREIGN_RATE2 = attendance_setting.overtime_by_foreign_workers_2;
+		const FOREIGN_RATE3 = attendance_setting.foreign_worker_holiday;
+		const FOREIGN_RATE4 = attendance_setting.overtime_by_foreign_workers_3;
+
+		const LOCAL_RATE1 = attendance_setting.overtime_by_local_workers_1;
+		const LOCAL_RATE2 = attendance_setting.overtime_by_local_workers_2;
+		const LOCAL_RATE3 = attendance_setting.local_worker_holiday;
+		const LOCAL_RATE4 = attendance_setting.overtime_by_local_workers_3;
+
+		if (kind1 === FOREIGN)	return Math.round(SALARY_RATE * FOREIGN_RATE1 * t1 + SALARY_RATE * FOREIGN_RATE2 * T2 + SALARY_RATE * FOREIGN_RATE3 * T3 + SALARY_RATE * FOREIGN_RATE4 * T4);
+		if (kind2 === LEAVE_MAN)	return 0;
+		if (kind2 === FOREIGN)	return Math.round(SALARY_RATE * FOREIGN_RATE1 * t1 + SALARY_RATE * FOREIGN_RATE2 * T2 + SALARY_RATE * FOREIGN_RATE3 * T3 + SALARY_RATE * FOREIGN_RATE4 * T4);
+		return Math.round(money / 240 * LOCAL_RATE1 * t1 + money / 240 * LOCAL_RATE2 * T2 + money / 240 * LOCAL_RATE3 * T3 + money / 240 * LOCAL_RATE4 * T4);
+	}
+	
 
 	//MARK: 應發底薪
 	async getGrossSalary(
@@ -410,13 +454,13 @@ export class CalculateService {
 			return 抓上面那陀東西加起來;
 		}
 
-		if (PayType = Award_1_Pay || PayType = Award_2_Pay || PayType = YearEnd_Pay || PayType = YearResult_Pay || PayType = Project_Pay || PayType = DS_Pay)	return rd("年終獎金") + rd("績效獎金") + rd("營運積效獎金") + rd("專案獎金");   // '2014/7/24 增加營運積效獎金
-	
-		if (pay_type === "不休假代金") {
-			return 0;
-		}
+		if (pay_type === "不休假代金")	return 0;
 
-		return tax_summary
+		if (pay_type === "端午獎金" || pay_type === "中秋獎金" || pay_type === "年終獎金" || pay_type === "營運考核獎金" || pay_type === "專案考核獎金" || pay_type === "董監事酬勞")	return rd("年終獎金") + rd("績效獎金") + rd("營運積效獎金") + rd("專案獎金");   // '2014/7/24 增加營運積效獎金
+	
+		
+
+		return 0;
 	}
 	//MARK: 非課稅小計
 	async getNonTaxSummary(): Promise<number> {
