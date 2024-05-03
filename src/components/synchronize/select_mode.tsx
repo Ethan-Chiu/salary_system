@@ -2,7 +2,7 @@ import {
 	SyncDataDisplayModeEnum,
 	syncDataModeString,
 	type SyncDataDisplayModeEnumType,
-} from "~/components/synchronize/data_display_mode";
+} from "~/components/synchronize/utils/data_display_mode";
 import {
 	Select,
 	SelectContent,

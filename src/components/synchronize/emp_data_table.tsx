@@ -12,12 +12,12 @@ import {
 	TableRow,
 } from "~/components/ui/table";
 import { type DataComparison } from "~/server/service/sync_service";
-import { displayData } from "~/pages/synchronize/utils/display";
+import { displayData } from "~/components/synchronize/utils/display";
 import { cn } from "~/lib/utils";
 import {
 	SyncDataDisplayModeEnum,
 	type SyncDataDisplayModeEnumType,
-} from "~/components/synchronize/data_display_mode";
+} from "~/components/synchronize/utils/data_display_mode";
 
 interface EmpTableParameters {
 	empData: Array<DataComparison>;

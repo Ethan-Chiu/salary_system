@@ -26,11 +26,11 @@ import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
 
 import { Checkbox } from "~/components/ui/checkbox";
-import { displayData } from "../utils/display";
+import { displayData } from "~/components/synchronize/utils/display";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { type DataComparison } from "~/server/service/sync_service";
-import { type SyncCheckStatusEnumType } from "~/components/synchronize/sync_check_status";
+import { type SyncCheckStatusEnumType } from "~/components/synchronize/utils/sync_check_status";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 
 export interface SyncDataAndStatus {
