@@ -8,6 +8,20 @@ import { Overtime } from "../database/entity/UMEDIA/overtime";
 import { Payset } from "../database/entity/UMEDIA/payset";
 import { InsuranceRateSetting } from "../database/entity/SALARY/insurance_rate_setting";
 
+
+
+const FOREIGN = "外籍勞工";
+const PROFESSOR = "顧問";
+const BOSS = "總經理";
+const DAY_PAY = "日薪制";
+const NEWBIE = "當月新進人員";
+const WILL_LEAVE = "當月離職人員_破月";
+const LEAVE_MAN = "離職人員";
+const PARTTIME1 = "工讀生";
+const PARTTIME2 = "建教生";
+const CONTRACT = "約聘人員";
+
+
 @injectable()
 export class CalculateService {
 	constructor() { }
@@ -99,9 +113,6 @@ export class CalculateService {
 			+ employee_payment.subsidy_comp
 		) * (pay_set.work_day! / 30)
 		return gross_salary;
-	}
-	//MARK: 勞保扣除額
-	async getInsuranceDeduction(): Promise<number> {
 	}
 
 	//MARK:福利金提撥
@@ -215,15 +226,6 @@ export class CalculateService {
 			"重度": 0
 		};		
 
-		const FOREIGN = "外籍勞工";
-		const PROFESSOR = "顧問";
-		const BOSS = "總經理";
-		const DAY_PAY = "日薪制";
-		const NEWBIE = "當月新進人員";
-		const WILL_LEAVE = "當月離職人員_破月";
-		const PARTTIME1 = "工讀生";
-		const PARTTIME2 = "建教生";
-		const CONTRACT = "約聘人員";
 
 		const Tax = employee_payment.l_i;
 		const Normalday = payset.work_day ?? 30;
@@ -265,16 +267,7 @@ export class CalculateService {
 		if (hinder == "中度") hinder_rate = 0.5;
 		if (hinder == "重度") hinder_rate = 0;
 
-		const FOREIGN = "外籍勞工";
-		const PROFESSOR = "顧問";
-		const BOSS = "總經理";
-		const DAY_PAY = "日薪制";
-		const NEWBIE = "當月新進人員";
-		const WILL_LEAVE = "當月離職人員_破月";
-		const LEAVE_MAN = "離職人員";
-		const PARTTIME1 = "工讀生";
-		const PARTTIME2 = "建教生";
-		const CONTRACT = "約聘人員";
+		
 
 		const nhi_rate = insurance_rate_setting.h_i_standard_rate;			// 健保一般保費費率 : 應該是這個
 
@@ -293,8 +286,29 @@ export class CalculateService {
 		return 0;
 	}
 	//MARK:福利金提撥
-	async getWelfareDeduction(): Promise<number> {
-		
+	async getWelfareDeduction(
+		employ_data: EmployeeData,
+		employ_payment: EmployeePayment
+	): Promise<number> {
+		// rd("福利金提撥") = GetFooMoney(rd("工作類別"), rd("工作形態"), rd("底薪"), rd("伙食津貼"), CheckNull(rd("營運積效獎金"), 0), CheckNull(rd("全勤獎金"), 0))
+		const kind1 = employ_data.work_type;
+		const kind2 = employ_data.work_status;
+		const money = employ_payment.base_salary;
+		const food = employ_payment.food_bonus;
+		const Effect = CheckNull(rd("營運積效獎金"), 0);
+		const Fulltime = CheckNull(rd("全勤獎金"), 0);
+
+		if (kind1 === FOREIGN) return Math.round((money + food + Effect + Fulltime) * 0.005);
+		if (kind2 === LEAVE_MAN)	return 0;
+		if (kind2 === PROFESSOR)	return 0;
+		if (kind2 === PARTTIME1)	return 0;
+		if (kind2 === PARTTIME2)	return 0;
+		if (kind2 === CONTRACT)	return 0;
+		if (kind2 === DAY_PAY)	return 0;
+		if (kind2 === FOREIGN)	return Math.round((money + food + Effect + Fulltime) * 0.005);
+
+		return Math.round((money + food) * 0.005);
+
 	}
 	//MARK: 平日加班費
 	//MARK: 假日加班費
