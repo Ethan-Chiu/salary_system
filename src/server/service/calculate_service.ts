@@ -9,6 +9,7 @@ import { Payset } from "../database/entity/UMEDIA/payset";
 import { InsuranceRateSetting } from "../database/entity/SALARY/insurance_rate_setting";
 import { Holiday } from "../database/entity/UMEDIA/holiday";
 import { AttendanceSetting } from "../database/entity/SALARY/attendance_setting";
+import { PayType } from "./transaction_service";
 
 
 
@@ -382,8 +383,39 @@ export class CalculateService {
 	}
 
 	//MARK: 課稅小計
-	async getTaxSummary(): Promise<number> {
-		const tax_summary = 0
+	async getTaxSummary(
+		pay_type: PayType,
+	): Promise<number> {
+		if (pay_type === PayType.month_pay) {
+			/*
+					rd("課稅小計") = 
+						rd("底薪") + 
+						rd("主管津貼") + 
+						rd("專業証照津貼") + 
+						rd("職務津貼") + 
+						rd("營運積效獎金") + 
+						rd("補發薪資") + 
+						rd("超時加班") + 
+						rd("其他加項稅") + 
+						rd("全勤獎金") + 
+						rd("輪班津貼") + 
+						rd("夜點費") + 
+						rd("績效獎金") + 
+						rd("專案獎金")
+			*/
+			return 抓上面那陀東西加起來;
+		}
+		if (pay_type === "加班費") {
+			// rd("課稅小計") = rd("超時加班") + rd("營運積效獎金") + rd("專案獎金") + rd("其他加項稅") 'hm 20201023
+			return 抓上面那陀東西加起來;
+		}
+
+		if (PayType = Award_1_Pay || PayType = Award_2_Pay || PayType = YearEnd_Pay || PayType = YearResult_Pay || PayType = Project_Pay || PayType = DS_Pay)	return rd("年終獎金") + rd("績效獎金") + rd("營運積效獎金") + rd("專案獎金");   // '2014/7/24 增加營運積效獎金
+	
+		if (pay_type === "不休假代金") {
+			return 0;
+		}
+
 		return tax_summary
 	}
 	//MARK: 非課稅小計
