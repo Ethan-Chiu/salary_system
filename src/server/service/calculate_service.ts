@@ -183,11 +183,11 @@ export class CalculateService {
 	): Promise<number> {
 		// rd("健保扣除額") = CalacHelTax(rd("健保"), rd("健保眷口數"), rd("工作形態"), CheckNull(rd("殘障等級"), "正常"), 0, rd("健保追加"))   'Jerry 07/03/30 加入殘障等級計算  , 07/11/26 增加健保追加計算
 		let Tax : number = employee_payment.h_i;
-		let Peop : number = rd("健保眷口數");
+		let Peop : number = employee_data.healthcare ?? 0;
 		let kind : string = employee_data.work_status;
-		const hinder : string = CheckNull(rd("殘障等級"), 0);
+		const hinder : string = employee_data.accessible ?? "正常";
 		let exePep : number = 0;
-		let HelAdd_YN : boolean = rd("健保追加");				
+		let HelAdd_YN : boolean = false;	// 建保追加 => 似乎bang不見了
 		
 		if (Peop > 3) Peop = 3;
 
@@ -215,14 +215,14 @@ export class CalculateService {
 	}
 	//MARK:福利金提撥
 	async getWelfareDeduction(
-		employ_data: EmployeeData,
-		employ_payment: EmployeePayment
+		employee_data: EmployeeData,
+		employee_payment: EmployeePayment
 	): Promise<number> {
 		// rd("福利金提撥") = GetFooMoney(rd("工作類別"), rd("工作形態"), rd("底薪"), rd("伙食津貼"), CheckNull(rd("營運積效獎金"), 0), CheckNull(rd("全勤獎金"), 0))
-		const kind1 = employ_data.work_type;
-		const kind2 = employ_data.work_status;
-		const money = employ_payment.base_salary;
-		const food = employ_payment.food_bonus;
+		const kind1 = employee_data.work_type;
+		const kind2 = employee_data.work_status;
+		const money = employee_payment.base_salary;
+		const food = employee_payment.food_bonus;
 		const Effect = CheckNull(rd("營運積效獎金"), 0);
 		const Fulltime = CheckNull(rd("全勤獎金"), 0);
 
@@ -240,14 +240,14 @@ export class CalculateService {
 	}
 	//MARK: 請假扣款
 	async getLeaveDeduction(
-		employ_data: EmployeeData,
-		employ_payment: EmployeePayment,
+		employee_data: EmployeeData,
+		employee_payment: EmployeePayment,
 		holiday: Holiday	// Maybe not this
 	): Promise<number> {
 		// UPDATE 薪資查詢 SET 薪資查詢.請假扣款 = GetLeaveMoney(薪資查詢!工作類別,薪資查詢!工作形態,薪資查詢!應發底薪,薪資查詢!補助津貼+薪資查詢!輪班津貼+薪資查詢!全勤獎金+薪資查詢!專業証照津貼,薪資查詢!事假時數,薪資查詢!病假時數)
 		// 薪資查詢.不休假代金 = IIf(薪資查詢!工作類別="外籍勞工",round(GetSALARY_RATE()*(薪資查詢!不休假時數*Getnon_leaving_rate()+薪資查詢!不休假補休1時數*Getnon_leaving_rate1()+薪資查詢!不休假補休2時數*Getnon_leaving_rate2()+薪資查詢!不休假補休3時數*Getnon_leaving_rate3()+薪資查詢!不休假補休4時數*Getnon_leaving_rate4()+薪資查詢!不休假補休5時數*Getnon_leaving_rate5()),0),round(薪資查詢!應發底薪/240*(薪資查詢!不休假時數*Getnon_leaving_rate()+薪資查詢!不休假補休1時數*Getnon_leaving_rate1()+薪資查詢!不休假補休2時數*Getnon_leaving_rate2()+薪資查詢!不休假補休3時數*Getnon_leaving_rate3()+薪資查詢!不休假補休4時數*Getnon_leaving_rate4()+薪資查詢!不休假補休5時數*Getnon_leaving_rate5()),0));
-		const kind1 = employ_data.work_type;
-		const kind2 = employ_data.work_status;
+		const kind1 = employee_data.work_type;
+		const kind2 = employee_data.work_status;
 		const money = 應發底薪;
 		const bonus = 補助津貼 + 輪班津貼 + 全勤獎金 + 專業証照津貼;
 		const t1 = holiday.事假時數; // 事假時數
@@ -262,7 +262,8 @@ export class CalculateService {
 	
 	//MARK: 全勤獎金
 	async getAttendanceBonus(): Promise<number> {
-		
+		const attendance_bonus = 0;
+		return attendance_bonus;
 	}
 	//MARK: 團保費代扣
 	async getGroupInsuranceDeduction(): Promise<number> {
@@ -281,26 +282,105 @@ export class CalculateService {
 		const end_of_year_bonus = 0; // to be checked
 		return end_of_year_bonus;
 	}
+
+	//MARK: 薪資所得扣繳總額
+	async getSalaryIncomeDeduction(): Promise<number> {
+		/* 
+			rd("薪資所得扣繳總額") = 
+				rd("底薪") + 
+				rd("主管津貼") + 
+				rd("專業証照津貼") + 
+				rd("職務津貼") + 
+				rd("營運積效獎金") + 
+				rd("補發薪資") +
+				rd("超時加班") +
+				rd("其他加項稅") +
+				rd("全勤獎金") +
+				 rd("輪班津貼") +
+				rd("夜點費") -
+				rd("請假扣款") -
+				rd("特別事假扣款") -
+				rd("其他減項稅")
+		*/
+		const salary_income_deduction = 0
+		return salary_income_deduction
+	}
+
 	//MARK: 薪資所得稅
-	async getSalaryIncomeTax(): Promise<number> {
-		const salary_income_tax = 0
-		return salary_income_tax
+	async getSalaryIncomeTax(
+		employee_data : EmployeeData,
+		issue_date : Date,
+	): Promise<number> {
+		/*
+					rd("薪資所得稅") = FindTex(
+						rd("薪資所得扣繳總額"),
+						rd("扶養人數"), 
+						rd("工作類別"), 
+						rd("工作形態"), 
+						rd("入境日期"), 
+						rd("工作天數")
+					)
+		*/
+		const Tax = rd("薪資所得扣繳總額");
+		const Num = employee_data.dependents;
+		const kind1 = employee_data.work_type;
+		const kind2 = employee_data.work_status;
+		/*
+		const Entity = rd("入境日期");
+		const Day = rd("工作天數");			// no use in prev salary system code
+		*/
+		const taxi = rd("扣繳稅額");		// Maybe a list
+
+		const START_WORK_DAY = new Date(employee_data.registration_date);
+		const PAY_DATE = issue_date;
+
+		const differenceInMilliseconds = START_WORK_DAY.getTime() - PAY_DATE.getTime();
+		const differenceInDays = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
+
+		// Jerry 07/01/31 主要區別外籍勞工 同時也是當月離職人員的算法會與間接人員計計算邏輯衝突,因此以工作類別區分外籍勞工
+		if (kind1 === FOREIGN)	{	
+			// Jerry 07/09/21  15840 ==> 17280   09/4/28 17280 ==> 25920
+			if (differenceInDays > 183) return Math.round(Tax * 0.06);
+			else {
+				if (Tax < 25920)		return Math.round(Tax * 0.06);
+				else 					return Math.round(Tax * 0.2);
+			}
+		}
+
+		if (kind2 === LEAVE_MAN)	return 0;
+		if (kind2 === FOREIGN)	{
+			if (differenceInDays > 183) return Math.round(Tax * 0.06);
+			else {
+				if (Tax < 25920)		return Math.round(Tax * 0.06);
+				else 					return Math.round(Tax * 0.2);
+			}
+		}
+
+		if (Tax > 0) {	
+			taxi.map((item: any) => {
+				if (Tax >= item.薪資1 && Tax <= item.薪資2 && Num == item.扶養親屬) {
+					if (kind2 === NEWBIE || kind2 === WILL_LEAVE)
+						return Math.round(item.扣繳稅額);
+					else
+						return item.扣繳稅額;
+				}
+			})
+		}
+
+		return Math.round(Tax * 0.06);
+
 	}
 	//MARK: 獎金所得稅
 	async getBonusTax(): Promise<number> {
-		const bonus_tax = 0
-		return bonus_tax
+		const bonus_tax = 0;
+		return bonus_tax;
 	}
 	//MARK: 不休假代金
 	async getUnpaidLeaveDeduction(): Promise<number> {
 		const unpaid_leave_deduction = 0
 		return unpaid_leave_deduction
 	}
-	//MARK: 薪資所得扣繳總額
-	async getSalaryIncomeDeduction(): Promise<number> {
-		const salary_income_deduction = 0
-		return salary_income_deduction
-	}
+
 	//MARK: 課稅小計
 	async getTaxSummary(): Promise<number> {
 		const tax_summary = 0
