@@ -16,11 +16,12 @@ export class EmployeePayment extends Model<
 	declare id: CreationOptional<number>;
 	declare emp_no: string;
 	declare base_salary: number;
-	declare food_bonus: number;
-	declare supervisor_comp: number;
-	declare job_comp: number;
-	declare subsidy_comp: number;
-	declare professional_cert_comp: number;
+	declare food_bonus: number | null;
+	declare supervisor_comp: number | null;
+	declare job_comp: number | null;
+	declare subsidy_comp: number | null;
+	declare shift_allowance: number | null;
+	declare professional_cert_comp: number | null;
 	declare labor_retirement_self: number;
 	declare l_i: number;
 	declare h_i: number;
@@ -57,23 +58,27 @@ EmployeePayment.init(
 		},
 		food_bonus: {
 			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
+			allowNull: true,
 		},
 		supervisor_comp: {
 			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
+			allowNull: true,
 		},
 		job_comp: {
 			type: DataTypes.STRING(128),
-			allowNull: false,
+			allowNull: true,
 		},
 		subsidy_comp: {
 			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
+			allowNull: true,
+		},
+		shift_allowance: {
+			type: DataTypes.INTEGER.UNSIGNED,
+			allowNull: true,
 		},
 		professional_cert_comp: {
 			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
+			allowNull: true,
 		},
 		labor_retirement_self: {
 			type: DataTypes.INTEGER.UNSIGNED,

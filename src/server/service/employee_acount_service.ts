@@ -36,6 +36,15 @@ export class EmployeeAccountService {
 		return employeeAccount;
 	}
 
+	async getEmployeeAccountByEmpNo(emp_no: string): Promise<EmployeeAccount[] | null> {
+		const employeeAccountList = await EmployeeAccount.findAll({
+			where: {
+				emp_no: emp_no,
+			},
+		});
+		return employeeAccountList;
+	}
+
 	async getCurrentEmployeeAccount(): Promise<EmployeeAccount[]> {
 		const employeeAccount = await EmployeeAccount.findAll({});
 		return employeeAccount;

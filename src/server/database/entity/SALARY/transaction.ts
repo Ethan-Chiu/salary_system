@@ -20,24 +20,24 @@ export class Transaction extends Model<
 	declare u_dep: string; // 部門
 	declare emp_no: string; // 員工編號
 	declare work_status: string; // 工作形態
-	declare position: string; // 職等
-	declare dependents: number; // 扶養人數
-	declare healthcare: number; // 健保眷口數
+	declare position: number; // 職等
+	declare dependents: number | null; // 扶養人數
+	declare healthcare: number | null; // 健保眷口數
 
 	// 勞工相關信息
-	declare l_i: string; // 勞保
-	declare h_i: string; // 健保
-	declare labor_retirement: string; // 勞退
-	declare occupational_injury: string; // 職災
-	declare supervisor_allowance: number; // 主管津貼
-	declare professional_cert_allowance: number; // 專業証照津貼
+	declare l_i: number; // 勞保
+	declare h_i: number; // 健保
+	declare labor_retirement: number; // 勞退
+	declare occupational_injury: number; // 職災
+	declare supervisor_allowance: number | null; // 主管津貼
+	declare professional_cert_allowance: number | null; // 專業証照津貼
 	declare base_salary: number; // 底薪
-	declare food_allowance: number; // 伙食津貼
+	declare food_allowance: number | null; // 伙食津貼
 	declare gross_salary: number; // 應發底薪
 	declare labor_insurance_deduction: number; // 勞保扣除額
 	declare health_insurance_deduction: number; // 健保扣除額
 	declare welfare_fund_contribution: number; // 福利金提撥
-	declare subsidy_allowance: number; // 補助津貼
+	declare subsidy_allowance: number | null; // 補助津貼
 	declare weekday_overtime_pay: number; // 平日加班費
 	declare holiday_overtime_pay: number; // 假日加班費
 	declare leave_deduction: number; // 請假扣款
@@ -45,20 +45,16 @@ export class Transaction extends Model<
 	declare attendance_bonus: number; // 全勤獎金
 	declare group_insurance_premium_deduction: number; // 團保費代扣
 	declare retroactive_salary: number; // 補發薪資
-	declare year_end_bonus: number; // 年終獎金
-	declare year_end_performance_bonus: number; // 年終考核獎金
-	declare operational_performance_bonus: number; // 營運考核獎金
-	declare project_bonus: number; // 專案獎金
 	declare other_deductions: number; // 其他減項
 	declare other_additions: number; // 其他加項
 	declare meal_deduction: number; // 伙食扣款
 	declare taxable_income: number; // 課稅所得
 	declare income_tax: number; // 薪資所得稅
 	declare bonus_tax: number; // 獎金所得稅
-	declare position_allowance: number; // 職務津貼
-	declare shift_allowance: number; // 輪班津貼
-	declare non_leave: string; // 不休假
-	declare non_leave_hours: number; // 不休假時數
+	declare position_allowance: number | null; // 職務津貼
+	declare shift_allowance: number | null; // 輪班津貼
+	// declare non_leave: string; // 不休假
+	// declare non_leave_hours: number; // 不休假時數
 	declare non_leave_compensation: number; // 不休假代金
 	declare total_income_tax_withheld: number; // 薪資所得扣繳總額
 	declare taxable_subtotal: number; // 課稅小計
@@ -69,12 +65,12 @@ export class Transaction extends Model<
 	declare health_insurance_premium: number; // 健保費
 	declare group_insurance_premium: number; // 團保費
 	declare net_salary: number; // 實發金額
-	declare additional_labor_insurance: number; // 勞保追加
-	declare additional_health_insurance: number; // 健保追加
+	// declare additional_labor_insurance: number; // 勞保追加
+	// declare additional_health_insurance: number; // 健保追加
 	declare other_addition_tax: number; // 其他加項稅
 	declare other_deduction_tax: number; // 其他減項稅
 	declare income_tax_withheld: number; // 所得稅代扣
-	declare self_withdrawn_retirement_pension: number; // 勞退金自提
+	declare labor_retirement_self: number; // 勞退金自提
 	declare parking_fee: number; // 停車費
 	declare brokerage_fee: number; // 仲介費
 	declare salary_range: string; // 薪資區隔
@@ -93,7 +89,7 @@ export class Transaction extends Model<
 	declare appraisal_rate: number; // 考核比率
 	declare appraisal_bonus: number; // 考核獎金
 	declare probation_period_complete: string; // 試用期滿
-	declare accessible: string; // 殘障等級
+	declare accessible: string | null; // 殘障等級
 	declare retirement_income: number; // 退職所得
 	declare received_elderly_benefits: string; // 已領老年給付
 	declare second_generation_health_insurance: string; // 二代健保
@@ -147,7 +143,7 @@ Transaction.init(
 			comment: "工作形態",
 		},
 		position: {
-			type: DataTypes.STRING(128),
+			type: DataTypes.INTEGER,
 			comment: "職等",
 		},
 		dependents: {
@@ -238,22 +234,6 @@ Transaction.init(
 			type: DataTypes.INTEGER,
 			comment: "補發薪資",
 		},
-		year_end_bonus: {
-			type: DataTypes.INTEGER,
-			comment: "年終獎金",
-		},
-		year_end_performance_bonus: {
-			type: DataTypes.INTEGER,
-			comment: "年終考核獎金",
-		},
-		operational_performance_bonus: {
-			type: DataTypes.INTEGER,
-			comment: "營運考核獎金",
-		},
-		project_bonus: {
-			type: DataTypes.INTEGER,
-			comment: "專案獎金",
-		},
 		other_deductions: {
 			type: DataTypes.INTEGER,
 			comment: "其他減項",
@@ -286,14 +266,14 @@ Transaction.init(
 			type: DataTypes.INTEGER,
 			comment: "輪班津貼",
 		},
-		non_leave: {
-			type: DataTypes.STRING(128),
-			comment: "不休假",
-		},
-		non_leave_hours: {
-			type: DataTypes.INTEGER,
-			comment: "不休假時數",
-		},
+		// non_leave: {
+		// 	type: DataTypes.STRING(128),
+		// 	comment: "不休假",
+		// },
+		// non_leave_hours: {
+		// 	type: DataTypes.INTEGER,
+		// 	comment: "不休假時數",
+		// },
 		non_leave_compensation: {
 			type: DataTypes.INTEGER,
 			comment: "不休假代金",
@@ -334,14 +314,14 @@ Transaction.init(
 			type: DataTypes.INTEGER,
 			comment: "實發金額",
 		},
-		additional_labor_insurance: {
-			type: DataTypes.INTEGER,
-			comment: "勞保追加",
-		},
-		additional_health_insurance: {
-			type: DataTypes.INTEGER,
-			comment: "健保追加",
-		},
+		// additional_labor_insurance: {
+		// 	type: DataTypes.INTEGER,
+		// 	comment: "勞保追加",
+		// },
+		// additional_health_insurance: {
+		// 	type: DataTypes.INTEGER,
+		// 	comment: "健保追加",
+		// },
 		other_addition_tax: {
 			type: DataTypes.INTEGER,
 			comment: "其他加項稅",
@@ -354,7 +334,7 @@ Transaction.init(
 			type: DataTypes.INTEGER,
 			comment: "所得稅代扣",
 		},
-		self_withdrawn_retirement_pension: {
+		labor_retirement_self: {
 			type: DataTypes.INTEGER,
 			comment: "勞退金自提",
 		},

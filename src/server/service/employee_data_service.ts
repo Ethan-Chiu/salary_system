@@ -3,7 +3,7 @@ import { EmployeeData } from "../database/entity/SALARY/employee_data";
 import { type z } from "zod";
 import {
 	createEmployeeDataService,
-	updateEmployeeDataByEmpNOService,
+	updateEmployeeDataByEmpNoService,
 	updateEmployeeDataService,
 } from "../api/types/parameters_input_type";
 import { BaseResponseError } from "../api/error/BaseResponseError";
@@ -148,7 +148,7 @@ export class EmployeeDataService {
 		}
 	}
 
-	async updateEmployeeDataByEmpNO({
+	async updateEmployeeDataByEmpNo({
 		emp_no: emp_no,
 		emp_name: emp_name,
 		position: position,
@@ -165,7 +165,7 @@ export class EmployeeDataService {
 		quit_date: quit_date,
 		licens_id: licens_id,
 		nbanknumber: nbanknumber,
-	}: z.infer<typeof updateEmployeeDataByEmpNOService>): Promise<void> {
+	}: z.infer<typeof updateEmployeeDataByEmpNoService>): Promise<void> {
 		const employeeData = await this.getEmployeeDataByEmpNo(emp_no!);
 		if (employeeData == null) {
 			throw new BaseResponseError("Employee account does not exist");

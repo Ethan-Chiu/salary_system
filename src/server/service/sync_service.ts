@@ -465,7 +465,7 @@ export class SyncService {
 					employee_trust_input
 				);
 			} else
-				await employee_data_service.updateEmployeeDataByEmpNO(
+				await employee_data_service.updateEmployeeDataByEmpNo(
 					updatedData
 				);
 		});
