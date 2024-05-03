@@ -18,7 +18,7 @@ import {
 
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "~/lib/utils";
-import { SelectModeComponent } from "~/pages/synchronize/components/Selects";
+import { SelectModeComponent } from "~/pages/synchronize/components/select_mode";
 import { EmployeeDataChange } from "~/pages/functions/components/emp_data_table";
 import { LoadingSpinner } from "~/components/loading";
 import { type SyncData } from "~/server/service/sync_service";

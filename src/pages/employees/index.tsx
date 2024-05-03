@@ -1,8 +1,8 @@
-import { NextPageWithLayout } from "../_app";
+import { type NextPageWithLayout } from "../_app";
 import { Header } from "~/components/header";
 import { RootLayout } from "~/components/layout/root_layout";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
-import { ReactElement, useContext } from "react";
+import { type ReactElement, useContext } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { EmployeeDataTable } from "./tables/employee_data_table";
 import { EmployeePaymentTable } from "./tables/employee_payment_table";

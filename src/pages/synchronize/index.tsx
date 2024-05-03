@@ -1,14 +1,9 @@
 import { type NextPageWithLayout } from "../_app";
 import { RootLayout } from "~/components/layout/root_layout";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
-import { type ReactElement, useState } from "react";
+import { type ReactElement, useState, useEffect } from "react";
 import { api } from "~/utils/api";
-import { SyncData } from "~/server/service/sync_service";
-import { DataComparison } from "~/server/service/sync_service";
-
-import { Button } from "~/components/ui/button";
-import { Separator } from "~/components/ui/separator";
-import { Header } from "~/components/header";
+import { type SyncData } from "~/server/service/sync_service";
 import { Label } from "~/components/ui/label";
 
 import {
@@ -26,380 +21,344 @@ import {
 
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "~/lib/utils";
-import { SelectModeComponent } from "./components/Selects";
+import { SelectModeComponent } from "./components/select_mode";
 import {
-	DifferentKeys,
-	Status,
+	type SyncDataAndStatus,
 	UpdateTableDialog,
 } from "./components/update_table";
-import { EmployeeDataChange } from "./components/emp_data_table";
-import { ScrollArea } from "~/components/ui/scroll-area";
+import { LoadingSpinner } from "~/components/loading";
+import {
+	type SyncCheckStatusEnumType,
+	statusLabel,
+} from "~/components/synchronize/sync_check_status";
+import { toast } from "~/components/ui/use-toast";
+import {
+	SyncDataDisplayModeEnum,
+	type SyncDataDisplayModeEnumType,
+} from "~/components/synchronize/data_display_mode";
+import { Button } from "~/components/ui/button";
+import { EmployeeDataChange } from "../functions/components/emp_data_table";
+import { Header } from "~/components/header";
+
 
 const PageCheckEHR: NextPageWithLayout = () => {
-	return <SyncPage period={113} />;
+	return <SyncPage period={115} />;
 };
 
 function SyncPage({ period }: { period: number }) {
-	const getDiffDatas = api.sync.checkEmployeeData.useQuery({
-		func: "month_salary",
-		period: period,
+	const { isLoading, isError, data, error } =
+		api.sync.checkEmployeeData.useQuery({
+			func: "month_salary",
+			period: period,
+		});
+
+	if (isLoading) {
+		return <LoadingSpinner />;
+	}
+
+	if (isError) {
+		return <span>Error: {error.message}</span>; // TODO: Error element with toast
+	}
+
+	return data != null ? (
+		<div className="flex h-full w-full flex-col">
+			<Header title="Synchronize" showOptions className="mb-4" />
+			<div className="mx-4 flex h-0 grow">
+				<SyncPageContent data={data} />
+			</div>
+		</div>
+	) : (
+		<div>no data</div>
+	);
+}
+
+function SyncPageContent({ data }: { data: SyncData[] }) {
+	const [selectedEmployee, setSelectedEmployee] = useState<string | null>(
+		data[0]?.emp_no.ehr_value ?? null
+	);
+	const [mode, setMode] = useState<SyncDataDisplayModeEnumType>(
+		SyncDataDisplayModeEnum.Values.changed
+	);
+
+	const checked = {} as Record<string, SyncCheckStatusEnumType>;
+	data.forEach((d) => {
+		checked[d.emp_no.ehr_value] = "initial";
 	});
-	const synchronizeAPI = api.sync.synchronize.useMutation({
-		onSuccess: () => {
-			console.log("Call synchronize API");
-		},
-	});
+	const [checkedStatus, setCheckedStatus] =
+		useState<Record<string, SyncCheckStatusEnumType>>(checked);
+	const [dataWithStatus, setDataWithStatus] = useState<SyncDataAndStatus[]>(
+		[]
+	);
+	const [isAllConfirmed, setIsAllConfirmed] = useState<boolean>(false);
 
-	const [selectedEmployee, setSelectedEmployee] = useState("");
-	const [diffColor, setDiffColor] = useState("red");
-	const [mode, setMode] = useState("Changed");
-
-	const getKeyFromData = (
-		data: SyncData,
-		query: string,
-		from?: undefined | "ehr"
-	): any => {
-		if (data === undefined) return null;
-		return !from
-			? data.comparisons.find((dc: DataComparison) => dc.key === query)?.salary_value
-			: data.comparisons.find((dc: DataComparison) => dc.key === query)?.ehr_value;
-	};
-
-	const [empStatus, setEmpStatus] = useState<Status>({});
-	if (
-		getDiffDatas.isFetched &&
-		Object.keys(empStatus).length === 0 &&
-		(getDiffDatas.data ?? []).length > 0
-	) {
-		let tmp: any = {};
-		getDiffDatas.data?.map((sData: SyncData) => {
-			tmp[sData.emp_no.ehr_value] = "initial";
-		});
-		setEmpStatus(tmp);
-	}
-
-	if (getDiffDatas.isFetched && empStatus !== null) {
-		if ((getDiffDatas.data ?? []).length > 0) {
-			if (selectedEmployee === "") next(); // set Default
-		}
-	}
-
-	function check(newCheckedEmp: string) {
-		let tmp = empStatus;
-		tmp[newCheckedEmp] = "checked";
-		setEmpStatus(tmp);
-	}
-
-	function ignore(newIgnoredEmp: string) {
-		let tmp = empStatus;
-		tmp[newIgnoredEmp] = "ignored";
-		setEmpStatus(tmp);
-	}
-
-	const getEmpData = (emp_no: string) => {
-		// let IDX = -1;
-		// getDiffDatas.data!.map((data: SyncData, index: number) => {
-		// 	data.map((d: CombinedData) => {
-		// 		if (d.key === "emp_no" && d.ehr_value === emp_no) IDX = index;
-		// 	});
-		// });
-		// return getDiffDatas.data![IDX]!;
-		return getDiffDatas.data?.find((sData: SyncData) => sData.emp_no.ehr_value === emp_no)!;
-	};
-
-	const getKeyData = (emp_no: string, query: string) => {
-		let query_empData = getEmpData(emp_no);
-		let query_result =
-			getKeyFromData(query_empData, query) ??
-			getKeyFromData(query_empData, query, "ehr");
-		return query_result;
-	};
-
-	function getChangedDatas() {
-		let checkedData: SyncData[] = Object.keys(empStatus).map((emp_no: string) => {
-			return getEmpData(emp_no);
-		});
-		let filterData: Array<DifferentKeys> = checkedData.map((sData: SyncData) => {
-			let emp_no = sData.emp_no.ehr_value;
-			let emp_name = sData.name.salary_value ?? sData.name.ehr_value;
-			let emp_english_name = sData.english_name.ehr_value;
-			let emp_department = sData.department.ehr_value;
-			let allDataComparisons = [sData.emp_no, sData.name, sData.department, sData.english_name, ...sData.comparisons];
-			let newConstructedData: DifferentKeys = {
-				emp_no: emp_no,
-				emp_name: emp_name,
-				diffKeys: allDataComparisons.filter(
-					(cd: DataComparison) => cd.is_different === true
-				),
-			};
-			return newConstructedData;
-		});
-		return filterData;
-	}
-
-	function next() {
-		let notSeenDatas = getDiffDatas.data!.filter(
-			(data: SyncData) =>
-				empStatus[data.emp_no.ehr_value] ===
-					"initial" &&
-					data.emp_no.ehr_value !== selectedEmployee
+	useEffect(() => {
+		setDataWithStatus(
+			data.map((d) => {
+				return {
+					emp_no: d.emp_no.ehr_value,
+					emp_name: d.name.ehr_value,
+					check_status:
+						checkedStatus[d.emp_no.ehr_value] ?? "initial",
+					comparisons: d.comparisons,
+				};
+			})
 		);
-		let nextEmp =
-			notSeenDatas.length > 0
-				? notSeenDatas[0]!.emp_no.ehr_value
-				: selectedEmployee;
-		console.log(nextEmp);
-		setSelectedEmployee(nextEmp);
-	}
+	}, [data, checkedStatus]);
+
+	useEffect(() => {
+		setIsAllConfirmed(
+			Object.values(checkedStatus).every((status) => status === "checked")
+		);
+	}, [checkedStatus]);
+
+	const changeSelectedEmpStatus = (status: SyncCheckStatusEnumType) => {
+		setCheckedStatus((prevCheckedStatus) => {
+			if (!selectedEmployee) return prevCheckedStatus;
+
+			return {
+				...prevCheckedStatus,
+				[selectedEmployee]: status,
+			};
+		});
+	};
+
+	const nextEmp = () => {
+		const selectedEmployeeIndex = data.findIndex(
+			(d) => d.emp_no.ehr_value === selectedEmployee
+		);
+		for (let i = 1; i < data.length; i++) {
+			const idx = (selectedEmployeeIndex + i) % data.length;
+			const empNo = data[idx]?.emp_no.ehr_value;
+			if (empNo && checkedStatus[empNo] === "initial") {
+				setSelectedEmployee(empNo);
+				return true;
+			}
+		}
+		// All checked
+		return false;
+	};
 
 	const handleConfirm = () => {
-		check(selectedEmployee);
-		next();
+		changeSelectedEmpStatus("checked");
+		if (!nextEmp()) {
+			toast({
+				title: "Well done!",
+				description:
+					"You have checked all the changes. Please click Update button.",
+				className: cn(
+					"top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4 data-[state=open]:sm:slide-in-from-top-full"
+				),
+			});
+		}
 	};
 
 	const handleIgnore = () => {
-		ignore(selectedEmployee);
-		next();
+		changeSelectedEmpStatus("ignored");
+		nextEmp();
 	};
 
-	const handleUpdate = (updateList: string[]) => {
-		synchronizeAPI.mutate({
-			period: period,
-			emp_no_list: updateList,
-		});
-	};
-
-	function SelectedEmpDepartment({ emp_no }: { emp_no: string }) {
-		return <Label>部門：{getKeyData(emp_no, "u_dep")}</Label>;
-	}
-
-	function SelectEmpComponent() {
-		const [open, setOpen] = useState(false);
-
-		function generateLongString(emp_no: string) {
-			let EmpData = getEmpData(emp_no);
-			if (!EmpData)	return ""
-			let emp_name = EmpData.name.salary_value ?? EmpData.name.ehr_value ?? "";
-			let english_name = EmpData.english_name.ehr_value ?? "";
-			return (
-				emp_no +
-				" " +
-				emp_name +
-				" " +
-				english_name
-			);
-		}
-
-		function SelectListEmp({ d }: { d: SyncData }) {
-			let emp_no =
-				d.emp_no.salary_value ?? d.emp_no.ehr_value;
-			let emp_name =
-				d.name.salary_value ?? d.name.ehr_value;
-			let english_name =
-				d.english_name.salary_value ?? d.english_name.ehr_value;
-			return (
-				<>
-					<b className="mr-1">{emp_no}</b>
-					<p className="mr-1">
-						{emp_name +
-							" " +
-							english_name +
-							" " +
-							(isInitial(d)
-								? "(尚未確認)"
-								: isIgnored(d)
-								? "(暫不修改)"
-								: isChecked(d)
-								? "(確認更改)"
-								: "(未知狀態)")}
-					</p>
-				</>
-			);
-		}
-
-		function getStatus(d: SyncData) {
-			return empStatus[
-				getKeyFromData(d, "emp_no") ??
-					getKeyFromData(d, "emp_no", "ehr")
-			];
-		}
-
-		function isInitial(d: SyncData) {
-			return getStatus(d) === "initial";
-		}
-
-		function isIgnored(d: SyncData) {
-			return getStatus(d) === "ignored";
-		}
-
-		function isChecked(d: SyncData) {
-			return getStatus(d) === "checked";
-		}
-
+	function CompAllDonePage() {
 		return (
-			<Popover open={open} onOpenChange={setOpen}>
-				<PopoverTrigger asChild>
-					<Button
-						variant="outline"
-						role="combobox"
-						aria-expanded={open}
-						className="w-[350px] justify-between"
-					>
-						{selectedEmployee !== ""
-							? generateLongString(selectedEmployee)
-							: "Select an Employee..."}
-						<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-					</Button>
-				</PopoverTrigger>
-				<PopoverContent className="w-[350px] p-0">
-					<Command
-						filter={(value, search) => {
-							return value.toUpperCase().includes(search) ||
-								value.toLowerCase().includes(search)
-								? 1
-								: 0;
-						}}
-					>
-						<CommandInput placeholder="Search Employee..." />
-						<ScrollArea className="h-[50vh]">
-							<CommandEmpty>No Employee found.</CommandEmpty>
-							<CommandGroup>
-								{getDiffDatas.data!.map(
-									(d: SyncData) => (
-										<CommandItem
-											key={
-												d.emp_no.salary_value ??
-												d.emp_no.ehr_value
-											}
-											value={generateLongString(
-												d.emp_no.salary_value ??
-												d.emp_no.ehr_value
-											)}
-											onSelect={(currentValue) => {
-												setSelectedEmployee(
-													(
-														currentValue.split(
-															" "
-														)[0] ?? ""
-													).toUpperCase()
-												);
-												setOpen(false);
-											}}
-										>
-											<Check
-												className={cn(
-													"mr-2 h-4 w-4",
-													selectedEmployee ===
-														d.emp_no.ehr_value
-														? "opacity-100"
-														: "opacity-0"
-												)}
-											/>
-											{
-												<div
-													className={`flex items-center ${
-														isInitial(d)
-															? "text-red-400"
-															: isIgnored(d)
-															? ""
-															: "text-green-400"
-													}`}
-												>
-													<SelectListEmp d={d} />
-												</div>
-											}
-										</CommandItem>
-									)
-								)}
-							</CommandGroup>
-						</ScrollArea>
-					</Command>
-				</PopoverContent>
-			</Popover>
+			<div className="h-0 w-full flex-grow">
+				System Data is updated with EHR
+			</div>
 		);
 	}
 
-	function FetchingPage() {
-		return <p>Fetching Data</p>;
-	}
-
-	function AllDonePage() {
-		return <p>System Data is updated with EHR</p>;
-	}
-
-	function MainPage() {
+	function CompTopBar({ data }: { data: SyncData[] }) {
 		return (
 			<>
-				<div className="flex h-full grow flex-col">
-					<Header title="Data Check" />
-					<Separator />
-					<div className="flex grow flex-col p-4">
-						<div className="mb-4 flex items-center">
-							<SelectEmpComponent />
-							<div className="ml-4">
-								<SelectedEmpDepartment
-									emp_no={selectedEmployee}
-								/>
-							</div>
-							<div className="ml-auto"></div>
-							<div className="ml-2">
-								<SelectModeComponent
-									mode={mode}
-									setMode={setMode}
-								/>
-							</div>
-						</div>
-
-						<div className="h-0 w-full grow">
-							<EmployeeDataChange
-								empData={getEmpData(selectedEmployee)}
-								mode={mode}
-								diffColor={diffColor}
-							/>
-						</div>
-
-						<div className="mt-2 flex items-center justify-between">
-							<UpdateTableDialog
-								data={getChangedDatas()}
-								status={empStatus}
-								updateFunction={handleUpdate}
-							/>
-
-							<div className="flex">
-								<Button
-									key="IgnoreButton"
-									variant={"destructive"}
-									onClick={() => handleIgnore()}
-								>
-									{"Ignore"}
-								</Button>
-								<Button
-									key="ConfirmButton"
-									onClick={() => handleConfirm()}
-									className="ml-4"
-								>
-									{"Confirm"}
-								</Button>
-							</div>
-						</div>
+				<div className="mb-4 flex items-center">
+					<CompSelectEmp
+						data={data}
+						checkStatus={checkedStatus}
+						selectedEmployee={selectedEmployee}
+						setSelectedEmployee={setSelectedEmployee}
+					/>
+					<div className="ml-auto">
+						<SelectModeComponent mode={mode} setMode={setMode} />
 					</div>
 				</div>
 			</>
 		);
 	}
 
+	function CompChangedDataTable({ data }: { data: SyncData[] }) {
+		const selectedEmployeeData =
+			data.find((emp) => {
+				return emp.emp_no.ehr_value === selectedEmployee;
+			})?.comparisons ?? [];
+
+		return (
+			<>
+				{selectedEmployee && (
+					<div className="h-0 w-full flex-grow">
+						<EmployeeDataChange
+							empData={selectedEmployeeData}
+							mode={mode}
+						/>
+					</div>
+				)}
+			</>
+		);
+	}
+
 	return (
-		<>
-			{!getDiffDatas.isFetched ? (
-				<FetchingPage />
-			) : (getDiffDatas.data ?? []).length == 0 ? (
-				<AllDonePage />
-			) : (
+		<div className="w-full flex flex-col mb-4">
+			{/* Main Content */}
+			{data ? (
 				<>
-					<MainPage />
+					<CompTopBar data={data} />
+          <CompChangedDataTable data={data} />
 				</>
+			) : (
+				<CompAllDonePage />
 			)}
-		</>
+			{/* Bottom Buttons */}
+			<div className="mt-4 flex justify-between">
+				<UpdateTableDialog data={dataWithStatus} />
+
+				<div className="flex">
+					<Button
+						key="IgnoreButton"
+						variant={"destructive"}
+						onClick={() => handleIgnore()}
+					>
+						{"Ignore"}
+					</Button>
+					<Button
+						key="ConfirmButton"
+						onClick={() => handleConfirm()}
+						className="ml-4"
+						disabled={isAllConfirmed}
+					>
+						{"Confirm"}
+					</Button>
+				</div>
+			</div>
+			{/*  */}
+		</div>
+	);
+}
+
+function CompSelectEmp({
+	data,
+	checkStatus,
+	selectedEmployee,
+	setSelectedEmployee,
+}: {
+	data: SyncData[];
+	checkStatus: Record<string, SyncCheckStatusEnumType>;
+	selectedEmployee: string | null;
+	setSelectedEmployee: (emp: string | null) => void;
+}) {
+	const [open, setOpen] = useState(false);
+
+	const selectFilter = (value: string, search: string) =>
+		value.toUpperCase().includes(search) ||
+		value.toLowerCase().includes(search)
+			? 1
+			: 0;
+
+	const selectedEmployeeData = data.find(
+		(emp) => emp.emp_no.ehr_value === selectedEmployee
+	);
+
+	const CompEntryDisplay = ({
+		empNo,
+		name,
+		englishName,
+	}: {
+		empNo: string;
+		name?: string;
+		englishName?: string;
+	}) => {
+		const status = statusLabel(checkStatus[empNo] ?? "initial");
+		return (
+			<>
+				<b className="mr-1">{empNo}</b>
+				<p className="mr-1">{`${name} ${englishName} ${status}`}</p>
+			</>
+		);
+	};
+
+	return (
+		<Popover open={open} onOpenChange={setOpen}>
+			{/* Selector */}
+			<PopoverTrigger asChild>
+				<Button
+					variant="outline"
+					role="combobox"
+					aria-expanded={open}
+					className="justify-between"
+				>
+					{selectedEmployee ? (
+						<CompEntryDisplay
+							empNo={selectedEmployee}
+							name={selectedEmployeeData?.name.ehr_value}
+							englishName={
+								selectedEmployeeData?.english_name.ehr_value
+							}
+						/>
+					) : (
+						"Select an Employee..."
+					)}
+					<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+				</Button>
+			</PopoverTrigger>
+			<Label className="ml-4">
+				{`部門： ${selectedEmployeeData?.department.ehr_value}`}
+			</Label>
+			{/* Popover */}
+			<PopoverContent className="p-0">
+				<Command filter={selectFilter}>
+					<CommandInput placeholder="Search Employee..." />
+					<CommandEmpty>No Employee found.</CommandEmpty>
+					<CommandGroup>
+						{data.map((empData: SyncData) => {
+							const empNo = empData.emp_no.ehr_value;
+							const checked = checkStatus[empNo] === "checked";
+							return (
+								<CommandItem
+									key={empNo}
+									value={empNo}
+									onSelect={() => {
+										setSelectedEmployee(empNo);
+										setOpen(false);
+									}}
+								>
+									<Check
+										className={cn(
+											"mr-2 h-4 w-4",
+											selectedEmployee === empNo
+												? "opacity-100"
+												: "opacity-0"
+										)}
+									/>
+									{
+										<div
+											className={cn(
+												"flex items-center",
+												!checked && "text-red-400"
+											)}
+										>
+											<CompEntryDisplay
+												empNo={empNo}
+												name={empData.name.ehr_value}
+												englishName={
+													empData.english_name
+														.ehr_value
+												}
+											/>
+										</div>
+									}
+								</CommandItem>
+							);
+						})}
+					</CommandGroup>
+				</Command>
+			</PopoverContent>
+		</Popover>
 	);
 }
 
