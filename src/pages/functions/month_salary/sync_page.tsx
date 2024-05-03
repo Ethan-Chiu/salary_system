@@ -34,6 +34,7 @@ import {
 	SyncDataDisplayModeEnum,
 	type SyncDataDisplayModeEnumType,
 } from "~/components/synchronize/data_display_mode";
+import { toast } from "~/components/ui/use-toast";
 
 interface SyncPageProps {
 	period: number;
@@ -76,6 +77,7 @@ function SyncPageContent({ data }: { data: SyncData[] }) {
 	const [dataWithStatus, setDataWithStatus] = useState<SyncDataAndStatus[]>(
 		[]
 	);
+	const [isAllConfirmed, setIsAllConfirmed] = useState<boolean>(false);
 
 	useEffect(() => {
 		setDataWithStatus(
@@ -91,6 +93,12 @@ function SyncPageContent({ data }: { data: SyncData[] }) {
 		);
 	}, [data, checkedStatus]);
 
+	useEffect(() => {
+		setIsAllConfirmed(
+			Object.values(checkedStatus).every((status) => status === "checked")
+		);
+	}, [checkedStatus]);
+
 	const changeSelectedEmpStatus = (status: SyncCheckStatusEnumType) => {
 		setCheckedStatus((prevCheckedStatus) => {
 			if (!selectedEmployee) return prevCheckedStatus;
@@ -102,12 +110,39 @@ function SyncPageContent({ data }: { data: SyncData[] }) {
 		});
 	};
 
+	const nextEmp = () => {
+		const selectedEmployeeIndex = data.findIndex(
+			(d) => d.emp_no.ehr_value === selectedEmployee
+		);
+		for (let i = 1; i < data.length; i++) {
+			const idx = (selectedEmployeeIndex + i) % data.length;
+			const empNo = data[idx]?.emp_no.ehr_value;
+			if (empNo && checkedStatus[empNo] === "initial") {
+				setSelectedEmployee(empNo);
+				return true;
+			}
+		}
+		// All checked
+		return false;
+	};
+
 	const handleConfirm = () => {
 		changeSelectedEmpStatus("checked");
+		if (!nextEmp()) {
+			toast({
+				title: "Well done!",
+				description:
+					"You have checked all the changes. Please click Update button.",
+				className: cn(
+					"top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4 data-[state=open]:sm:slide-in-from-top-full"
+				),
+			});
+		}
 	};
 
 	const handleIgnore = () => {
 		changeSelectedEmpStatus("ignored");
+		nextEmp();
 	};
 
 	function CompAllDonePage() {
@@ -184,6 +219,7 @@ function SyncPageContent({ data }: { data: SyncData[] }) {
 							key="ConfirmButton"
 							onClick={() => handleConfirm()}
 							className="ml-4"
+							disabled={isAllConfirmed}
 						>
 							{"Confirm"}
 						</Button>
