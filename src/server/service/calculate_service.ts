@@ -485,7 +485,7 @@ export class CalculateService {
 		return employee_payment.h_i
 	}
 	//MARK: 團保費
-	async groupInsurance(
+	async getGroupInsurance(
 		employee_data: EmployeeData,
 	): Promise<number> {
 		/*
