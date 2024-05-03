@@ -510,10 +510,40 @@ export class CalculateService {
 		throw new Error("No Implement");
 	}
 	//MARK: 所得稅代扣
-	//MARK: 勞退金自提
+	//MARK: 勞退金自提		
 	//MARK: 薪資區隔
 	//MARK: 薪資總額
 	//MARK: 勞退金提撥
+	async getLaborPensionContribution(
+		employee_data: EmployeeData,
+	): Promise<number> {
+		/*
+			rd("勞退金提撥") = ComRetire(
+				rd("勞退"), 
+				rd("工作類別"), 
+				rd("工作形態"), 
+				CheckNull(rd("工作天數"), 30), 
+				CheckNull(rd("勞保天數"), 30)
+			) 'Jerry 07/07/24 加勞保天數計算
+		*/
+		const money = 勞退;
+		const kind1 = employee_data.work_type;
+		const kind2 = employee_data.work_status;
+		const Normalday = 工作天數;
+		const PartTimeDay = 勞保天數;
+
+		if (kind1 === FOREIGN) return 0;
+		if (kind2 === BOSS) return 0;
+		if (kind2 === LEAVE_MAN)	return 0;
+		if (kind2 === PROFESSOR)	return 0;
+		if (kind2 === FOREIGN)	return 0;
+
+		if ([NEWBIE, WILL_LEAVE, PARTTIME1, PARTTIME2, CONTRACT, DAY_PAY].includes(kind2)) {
+			return Math.round(Math.round(money * PartTimeDay / 30 * 0.06));  // Jerry 07/07/24 由工作天數改為加勞保天數計算
+		}
+
+		return Math.round(Math.round(money * 0.06));
+	}
 	//MARK: 二代健保
 	//MARK: 員工信托提存金
 	//MARK: 特別信託獎勵金＿員工
