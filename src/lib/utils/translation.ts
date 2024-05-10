@@ -1,16 +1,9 @@
-import { useContext } from "react";
-import {
-	UserPreferenceContext,
-	useUserPreference,
-} from "~/pages/settings/components/UserPreference";
-import { useSession, getSession } from "next-auth/react";
-
 export function Translate(word: string) {
 	// var language = (localStorage) ? localStorage.getItem("language"): "zh";
 	// if (!language) localStorage.setItem("language", "zh");
 	// console.log(language);
 
-	var language = "zh";
+	const language = "zh";
 
 	if (language === "zh") {
 		if (word === "id") return "資料編號";

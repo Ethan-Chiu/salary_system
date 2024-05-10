@@ -1,136 +1,166 @@
-import { useState } from "react";
-import AutoForm, { AutoFormSubmit } from "~/components/ui/auto-form";
 import {
 	Card,
 	CardContent,
 	CardDescription,
+	CardFooter,
 	CardHeader,
 	CardTitle,
 } from "~/components/ui/card";
-import { Button } from "~/components/ui/button";
+import { Button, buttonVariants } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
 import * as z from "zod";
 import { signOut, useSession } from "next-auth/react";
-import { useToast } from "~/components/ui/use-toast";
-
+import { toast } from "~/components/ui/use-toast";
 import { api } from "~/utils/api";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "~/components/ui/form";
+import { onPromise } from "~/utils/on_promise";
+import Router from "next/router";
+import { cn } from "~/lib/utils";
 
-const formComponent = (mode?: string) => {
-	const formSchema = z.object({
-		old_pw: z.string().describe("Old Password"),
-		new_pw: z.string().describe("New Password"),
-		new_pw2: z.string().describe("Confirm New Password"),
+const changePasswordFormSchema = z.object({
+	old_pw: z
+		.string({ required_error: "Please enter your old password" })
+		.describe("Old Password"),
+	new_pw: z
+		.string({ required_error: "Please enter your new password" })
+		.describe("New Password"),
+	new_pw2: z
+		.string({ required_error: "Please enter your new password again" })
+		.describe("Confirm New Password"),
+});
+
+type ChangePasswordFormValues = z.infer<typeof changePasswordFormSchema>;
+
+export function ChangePasswordForm() {
+	const { data: session } = useSession();
+
+	const changePassword = api.login.changePassword.useMutation();
+
+	const form = useForm<ChangePasswordFormValues>({
+		resolver: zodResolver(changePasswordFormSchema),
 	});
-	const [values, setValues] = useState<Partial<z.infer<typeof formSchema>>>(
-		{}
-	);
 
-	const { toast } = useToast();
-
-	const { data: session, status } = useSession();
-	const api_login = api.login.login.useMutation();
-	const api_changePassword = api.login.changePassword.useMutation({
-		onSuccess: () => {},
-	});
-
-	async function checkPassword(data: any) {
-		try {
-			await api_login.mutateAsync({
-				emp_no: session?.user.emp_no!,
-				password: data.old_pw,
-			});
-
-			if (api_login.isError) {
-				return api_login.error.message;
-			}
-
-			if (data.new_pw !== data.new_pw2)
-				return "Confirm of new password fail!";
-			if (data.new_pw === data.old_pw)
-				return "The new password is same as the old one!";
-			return "Success";
-		} catch (error) {
-			return error as string;
+	async function onSubmit(data: ChangePasswordFormValues) {
+		if (session === null) {
+			void Router.push("/login");
+			return;
 		}
-	}
-	async function callAPI(newPassword: string) {
-		await api_changePassword.mutateAsync({
-			emp_no: session?.user.emp_no!,
-			password: newPassword,
+		await changePassword.mutateAsync({
+			emp_no: session.user.emp_no,
+			password: data.new_pw,
 		});
+		toast({
+			title: "Successfully update password",
+			description: "Automatically logout",
+		});
+		await signOut();
 	}
 
-	async function handleSubmit(data: any) {
-		const status: string = await checkPassword(data);
-		if (status === "Success") {
-			await callAPI(data.new_pw);
-			toast({
-				title: "Successfully update password",
-				description: "Automatically logout",
-			});
-			signOut();
-		} else {
-			alert(status);
-			window.location.reload();
-		}
-	}
-
-	function getForm() {
-		return (
-			<>
-				<AutoForm
-					formSchema={formSchema}
-					onSubmit={(data) => {
-						handleSubmit(data);
-					}}
-					values={values}
-					onValuesChange={setValues}
-					fieldConfig={{
-						old_pw: {
-							inputProps: {
-								type: "password",
-								// placeholder: "••••••••",
-							},
-						},
-						new_pw: {
-							inputProps: {
-								type: "password",
-								// placeholder: "••••••••",
-							},
-						},
-						new_pw2: {
-							inputProps: {
-								type: "password",
-								// placeholder: "••••••••",
-							},
-						},
-					}}
-				>
-					{/* <AutoFormSubmit>Confirm</AutoFormSubmit> */}
-					<Button>Confirm</Button>
-				</AutoForm>
-			</>
-		);
-	}
-
-	if (mode === "card")
-		return (
-			<div className="mx-auto my-6 max-w-lg">
-				<Card>
+	return (
+		<Form {...form}>
+			<form
+				onSubmit={onPromise<void>(form.handleSubmit(onSubmit))}
+				className="flex space-y-8 w-1/2 justify-center"
+			>
+				<Card className="w-full max-w-sm">
 					<CardHeader>
-						<CardTitle>Change Password</CardTitle>
-						{/* <CardDescription>
-						Automatically generate a form from a Zod schema.
-					</CardDescription> */}
+						<CardTitle className="text-2xl">Change Password</CardTitle>
+						<CardDescription>
+							Enter your old password and new password.
+						</CardDescription>
 					</CardHeader>
-
-					<CardContent>{getForm()}</CardContent>
+					<CardContent className="grid gap-4">
+						<FormField
+							control={form.control}
+							name="old_pw"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Old password</FormLabel>
+									<FormControl>
+										<Input
+											type="password"
+											placeholder="old password"
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="new_pw"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>New password</FormLabel>
+									<FormControl>
+										<Input
+											type="password"
+											placeholder="new password"
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="new_pw2"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Confirm new password</FormLabel>
+									<FormControl>
+										<Input
+											type="password"
+											placeholder="new password"
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</CardContent>
+					<CardFooter>
+						<Button type="submit" className="w-full">
+							Change password
+						</Button>
+					</CardFooter>
 				</Card>
-			</div>
-		);
+			</form>
+		</Form>
+	);
+}
 
-	return <>{getForm()}</>;
-};
+// async function checkPassword(data: any) {
+// 	try {
+// 		await api_login.mutateAsync({
+// 			emp_no: session?.user.emp_no!,
+// 			password: data.old_pw,
+// 		});
 
-export const changePasswordForm = (mode?: string) => {
-	return <>{formComponent(mode)}</>;
-};
+// 		if (api_login.isError) {
+// 			return api_login.error.message;
+// 		}
+
+// 		if (data.new_pw !== data.new_pw2)
+// 			return "Confirm of new password fail!";
+// 		if (data.new_pw === data.old_pw)
+// 			return "The new password is same as the old one!";
+// 		return "Success";
+// 	} catch (error) {
+// 		return error as string;
+// 	}
+// }
