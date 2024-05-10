@@ -15,8 +15,8 @@ export class AttendanceSettingService {
 	constructor() {}
 
 	async createAttendanceSetting({
-		personal_leave_dock,
-		sick_leave_dock,
+		personal_leave_deduction,
+		sick_leave_deduction,
 		rate_of_unpaid_leave,
 		unpaid_leave_compensatory_1,
 		unpaid_leave_compensatory_2,
@@ -39,8 +39,8 @@ export class AttendanceSettingService {
 		const current_date_string = get_date_string(new Date());
 		check_date(start_date, end_date, current_date_string);
 		const newData = await AttendanceSetting.create({
-			personal_leave_dock: personal_leave_dock,
-			sick_leave_dock: sick_leave_dock,
+			personal_leave_deduction: personal_leave_deduction,
+			sick_leave_deduction: sick_leave_deduction,
 			rate_of_unpaid_leave: rate_of_unpaid_leave,
 			unpaid_leave_compensatory_1: unpaid_leave_compensatory_1,
 			unpaid_leave_compensatory_2: unpaid_leave_compensatory_2,
@@ -115,8 +115,8 @@ export class AttendanceSettingService {
 
 	async updateAttendanceSetting({
 		id,
-		personal_leave_dock,
-		sick_leave_dock,
+		personal_leave_deduction,
+		sick_leave_deduction,
 		rate_of_unpaid_leave,
 		unpaid_leave_compensatory_1,
 		unpaid_leave_compensatory_2,
@@ -141,13 +141,13 @@ export class AttendanceSettingService {
 
 		const affectedCount = await AttendanceSetting.update(
 			{
-				personal_leave_dock: select_value(
-					personal_leave_dock,
-					attendance_setting.personal_leave_dock
+				personal_leave_deduction: select_value(
+					personal_leave_deduction,
+					attendance_setting.personal_leave_deduction
 				),
-				sick_leave_dock: select_value(
-					sick_leave_dock,
-					attendance_setting.sick_leave_dock
+				sick_leave_deduction: select_value(
+					sick_leave_deduction,
+					attendance_setting.sick_leave_deduction
 				),
 				rate_of_unpaid_leave: select_value(
 					rate_of_unpaid_leave,
@@ -170,7 +170,7 @@ export class AttendanceSettingService {
 					attendance_setting.unpaid_leave_compensatory_4
 				),
 				unpaid_leave_compensatory_5: select_value(
-					unpaid_leave_compensatory_5,
+					unpaid_leave_allowanceensatory_5,
 					attendance_setting.unpaid_leave_compensatory_5
 				),
 				overtime_by_local_workers_1: select_value(

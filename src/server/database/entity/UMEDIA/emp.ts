@@ -3,57 +3,57 @@ export class Emp {
 	declare change_flag: string;
 	declare emp_no: string;
 	declare emp_name: string;
-	declare position_level: number;
+	declare position: number;
 	declare position_type: string;
-	declare ginsurance_type: string;
+	declare group_insurance_type: string;
 	declare department: string;
 	declare work_type: string;
 	declare work_status: string;
-	declare accessible: string | null;
+	declare disabilty_level: string | null;
 	declare sex_type: string;
 	declare dependents: number | null;
 	declare healthcare_dependents: number | null; //健保眷口數
 	declare registration_date: string;
 	declare quit_date: string | null;
-	declare licens_id: string | null;
-	declare nbanknumber: string | null;
+	declare license_id: string | null;
+	declare bank_account: string | null;
 
 	constructor(
 		change_flag: string,
 		emp_no: string,
 		emp_name: string,
-		position_level: number,
+		position: number,
 		position_type: string,
-		ginsurance_type: string,
+		group_insurance_type: string,
 		department: string,
 		work_type: string,
 		work_status: string,
-		accessible: string | null,
+		disabilty_level: string | null,
 		sex_type: string,
 		dependents: number | null,
 		healthcare_dependents: number | null,
 		registration_date: string,
 		quit_date: string | null,
-		licens_id: string | null,
-		nbanknumber: string | null
+		license_id: string | null,
+		bank_account: string | null
 	) {
 		this.change_flag = change_flag;
 		this.emp_no = emp_no;
 		this.emp_name = emp_name;
-		this.position_level = position_level;
+		this.position = position;
 		this.position_type = position_type;
-		this.ginsurance_type = ginsurance_type;
+		this.group_insurance_type = group_insurance_type;
 		this.department = department;
 		this.work_type = work_type;
 		this.work_status = work_status;
-		this.accessible = accessible;
+		this.disabilty_level = disabilty_level;
 		this.sex_type = sex_type;
 		this.dependents = dependents;
 		this.healthcare_dependents = healthcare_dependents;
 		this.registration_date = registration_date;
 		this.quit_date = quit_date;
-		this.licens_id = licens_id;
-		this.nbanknumber = nbanknumber;
+		this.license_id = license_id;
+		this.bank_account = bank_account;
 	}
 
 	static fromDB(data: any): Emp {

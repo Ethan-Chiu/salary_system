@@ -32,7 +32,7 @@ export class CalculateService {
 	constructor() { }
 
 	// MARK: 平日加班費
-	async getNormalMoney(
+	async getWeekdayOvertimePay(
 		employee_data: EmployeeData,
 		employee_payment: EmployeePayment,
 		attendance_setting: AttendanceSetting,
@@ -72,7 +72,7 @@ export class CalculateService {
 	}
 
 	//MARK: 假日加班費
-	async getVocationMoney(
+	async getHollidayOvertimePay(
 		employee_data: EmployeeData,
 		employee_payment: EmployeePayment,
 		attendance_setting: AttendanceSetting,
@@ -117,7 +117,7 @@ export class CalculateService {
 	}	
 	
 	// MARK: 超時加班費
-	async getOvertimeMoney(
+	async getExceedOvertimePay(
 		employee_data: EmployeeData,
 		employee_payment: EmployeePayment,
 		attendance_setting: AttendanceSetting,
@@ -168,11 +168,11 @@ export class CalculateService {
 	): Promise<number> {
 		const gross_salary = (
 			employee_payment.base_salary
-			+ (employee_payment.food_bonus ?? 0)
-			+ (employee_payment.supervisor_comp ?? 0)
-			+ (employee_payment.professional_cert_comp ?? 0)
-			+ (employee_payment.job_comp ?? 0)
-			+ (employee_payment.subsidy_comp ?? 0)
+			+ (employee_payment.food_allowance ?? 0)
+			+ (employee_payment.supervisor_allowance ?? 0)
+			+ (employee_payment.professional_cert_allowance ?? 0)
+			+ (employee_payment.occupational_allowance ?? 0)
+			+ (employee_payment.subsidy_allowance ?? 0)
 		) * (pay_set.work_day! / 30)
 		return gross_salary;
 	}
@@ -193,7 +193,7 @@ export class CalculateService {
 		// Work_type: rd("已領老年給付")
 
 		const wci_normal = insuranceRateSetting.l_i_accident_rate;		// 勞工保險普通事故險
-		const wci_ji = insuranceRateSetting.l_i_employment_premium_rate; // 勞工保險就業保險率
+		const wci_ji = insuranceRateSetting.l_i_employment_pay_rate; // 勞工保險就業保險率
 
 		const hinderDict: { [key: string]: number } = {
 			"正常": 1,
@@ -207,7 +207,7 @@ export class CalculateService {
 		const PartTimeDay = payset.li_day ?? 30;
 		const kind1 = employee_data.work_type;
 		const kind2 = employee_data.work_status;
-		const hinder_rate = hinderDict[employee_data.accessible ?? "正常"] ?? 1;		// 假設accessible是殘障等級
+		const hinder_rate = hinderDict[employee_data.disabilty_level ?? "正常"] ?? 1;
 		const old_age_benefit = (true || false);		// old_age_benefit: rd("已領老年給付")
 
 
@@ -232,7 +232,7 @@ export class CalculateService {
 		let Tax : number = employee_payment.h_i;
 		let Peop : number = employee_data.healthcare_dependents ?? 0;
 		let kind : string = employee_data.work_status;
-		const hinder : string = employee_data.accessible ?? "正常";
+		const hinder : string = employee_data.disabilty_level ?? "正常";
 		let exePep : number = 0;
 		let HelAdd_YN : boolean = false;	// 建保追加 => 似乎bang不見了
 		
@@ -269,7 +269,7 @@ export class CalculateService {
 		const kind1 = employee_data.work_type;
 		const kind2 = employee_data.work_status;
 		const money = employee_payment.base_salary;
-		const food = employee_payment.food_bonus ?? 0;
+		const food = employee_payment.food_allowance ?? 0;
 		const Effect = rd("營運積效獎金") ?? 0;
 		const Fulltime = rd("全勤獎金") ?? 0;
 
@@ -308,9 +308,9 @@ export class CalculateService {
 	}
 	
 	//MARK: 全勤獎金
-	async getAttendanceBonus(): Promise<number> {
-		const attendance_bonus = 0;
-		return attendance_bonus;
+	async getFullAttendanceBonus(): Promise<number> {
+		const full_attendance_bonus = 0;
+		return full_attendance_bonus;
 	}
 	//MARK: 團保費代扣
 	async getGroupInsuranceDeduction(): Promise<number> {
@@ -499,7 +499,7 @@ export class CalculateService {
 		return employee_payment.h_i
 	}
 	//MARK: 團保費
-	async getGroupInsurance(
+	async getGroupInsurancePay(
 		employee_data: EmployeeData,
 	): Promise<number> {
 		/*
@@ -509,7 +509,7 @@ export class CalculateService {
 				rd("工作形態")
 			)    'Jerry 07/01/04 計算公司付團保
 		*/
-		const level = employee_data.ginsurance_type;
+		const level = employee_data.group_insurance_type;
 		const kind1 = employee_data.work_type;
 		const kind2  = employee_data.work_status;
 
@@ -528,7 +528,7 @@ export class CalculateService {
 	//MARK: 薪資區隔
 	//MARK: 薪資總額
 	//MARK: 勞退金提撥
-	async getLaborPensionContribution(
+	async getLaborRetirementContribution(
 		employee_data: EmployeeData,
 	): Promise<number> {
 		/*

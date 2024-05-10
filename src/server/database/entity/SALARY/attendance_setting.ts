@@ -14,8 +14,8 @@ export class AttendanceSetting extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-	declare personal_leave_dock: number;
-	declare sick_leave_dock: number;
+	declare personal_leave_deduction: number;
+	declare sick_leave_deduction: number;
 	declare rate_of_unpaid_leave: number;
 	declare unpaid_leave_compensatory_1: number;
 	declare unpaid_leave_compensatory_2: number;
@@ -51,12 +51,12 @@ AttendanceSetting.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		personal_leave_dock: {
+		personal_leave_deduction: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-		sick_leave_dock: {
+		sick_leave_deduction: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,

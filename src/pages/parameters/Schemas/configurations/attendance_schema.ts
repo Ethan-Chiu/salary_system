@@ -4,8 +4,8 @@ import { zodOptionalDate, zodRequiredDate } from "~/lib/utils/zod_types";
 const zc = z.coerce;
 
 export const attendanceSchema = z.object({
-	personal_leave_dock: zc.number().min(0).max(100),
-	sick_leave_dock: zc.number(),
+	personal_leave_deduction: zc.number().min(0).max(100),
+	sick_leave_deduction: zc.number(),
 	rate_of_unpaid_leave: zc.number(),
 	unpaid_leave_compensatory_1: zc.number(),
 	unpaid_leave_compensatory_2: zc.number(),

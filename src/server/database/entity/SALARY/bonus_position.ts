@@ -14,7 +14,7 @@ export class BonusPosition extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-	declare position_level: number;
+	declare position: number;
 	declare multiplier: number;
 
 	// timestamps!
@@ -35,7 +35,7 @@ BonusPosition.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		position_level: {
+		position: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			unique: false,
 			allowNull: false,

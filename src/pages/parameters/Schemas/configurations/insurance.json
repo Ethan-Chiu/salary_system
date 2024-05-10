@@ -5,7 +5,7 @@
 	"l_i_accident_rate": {
 		"type": "number"
 	},
-	"l_i_employment_premium_rate": {
+	"l_i_employment_pay_rate": {
 		"type": "number"
 	},
 	"l_i_occupational_hazard_rate": {
@@ -20,10 +20,10 @@
 	"h_i_avg_dependents_count": {
 		"type": "number"
 	},
-	"v2_h_i_supp_premium_rate": {
+	"v2_h_i_supp_pay_rate": {
 		"type": "number"
 	},
-	"v2_h_i_dock_tsx_thres": {
+	"v2_h_i_deduction_tsx_thres": {
 		"type": "number"
 	},
 	"start_date": {

@@ -1,10 +1,10 @@
 {
-	"personal_leave_dock": {
+	"personal_leave_deduction": {
 		"type": "number",
 		"min": 0,
 		"max": 100
 	},
-	"sick_leave_dock": {
+	"sick_leave_deduction": {
 		"type": "number"
 	},
 	"rate_of_unpaid_leave": {

@@ -66,7 +66,7 @@ export class ExcelService {
 	//             where: {
 	//                 emp_no: emp_no,
 	//             },
-	//             attributes: ['base_salary', 'supervisor_bonus', 'performance_bonus', 'food_bonus', 'subsidy_bonus', 'l_i', 'h_i', 'job_bonus', 'shift_bonus'],
+	//             attributes: ['base_salary', 'supervisor_allowance', 'performance_bonus', 'food_allowance', 'subsidy_allowance', 'l_i', 'h_i', 'occupational_allowance', 'shift_allowance'],
 	//         })
 	//         const employeeData = await EmployeeData.findOne({
 	//             where: {

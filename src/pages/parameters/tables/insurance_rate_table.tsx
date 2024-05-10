@@ -87,7 +87,7 @@ export function insuranceRateMapper(
 		},
 		{
 			name: "勞保就業保險費率",
-			value: data.l_i_employment_premium_rate,
+			value: data.l_i_employment_pay_rate,
 		},
 		{
 			name: "勞保職業災害費率",
@@ -107,11 +107,11 @@ export function insuranceRateMapper(
 		},
 		{
 			name: "二代健保補充保費率",
-			value: data.v2_h_i_supp_premium_rate,
+			value: data.v2_h_i_supp_pay_rate,
 		},
 		{
 			name: "二代健保扣繳門檻單次",
-			value: data.v2_h_i_dock_tsx_thres,
+			value: data.v2_h_i_deduction_tsx_thres,
 		},
 		{
 			name: c_StartDateStr,

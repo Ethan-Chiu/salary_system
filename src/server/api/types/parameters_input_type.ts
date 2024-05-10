@@ -42,8 +42,8 @@ export const updateBankSettingService = BankSetting.merge(Id)
 	.partial();
 
 const AttendanceSetting = z.object({
-	personal_leave_dock: z.number(),
-	sick_leave_dock: z.number(),
+	personal_leave_deduction: z.number(),
+	sick_leave_deduction: z.number(),
 	rate_of_unpaid_leave: z.number(),
 	unpaid_leave_compensatory_1: z.number(),
 	unpaid_leave_compensatory_2: z.number(),
@@ -83,26 +83,26 @@ export const updateBasicInfoService = BasicInfo.merge(Id).partial();
 const InsuranceRateSetting = z.object({
 	min_wage_rate: z.number(),
 	l_i_accident_rate: z.number(),
-	l_i_employment_premium_rate: z.number(),
+	l_i_employment_pay_rate: z.number(),
 	l_i_occupational_hazard_rate: z.number(),
 	l_i_wage_replacement_rate: z.number(),
 	h_i_standard_rate: z.number(),
 	h_i_avg_dependents_count: z.number(),
-	v2_h_i_supp_premium_rate: z.number(),
-	v2_h_i_dock_tsx_thres: z.number(),
+	v2_h_i_supp_pay_rate: z.number(),
+	v2_h_i_deduction_tsx_thres: z.number(),
 });
 export const updateInsuranceRateSettingInput = z
 	.object({
 		id: z.number(),
 		min_wage_rate: z.number().nullable(),
 		l_i_accident_rate: z.number().nullable(),
-		l_i_employment_premium_rate: z.number().nullable(),
+		l_i_employment_pay_rate: z.number().nullable(),
 		l_i_occupational_hazard_rate: z.number().nullable(),
 		l_i_wage_replacement_rate: z.number().nullable(),
 		h_i_standard_rate: z.number().nullable(),
 		h_i_avg_dependents_count: z.number().nullable(),
-		v2_h_i_supp_premium_rate: z.number().nullable(),
-		v2_h_i_dock_tsx_thres: z.number().nullable(),
+		v2_h_i_supp_pay_rate: z.number().nullable(),
+		v2_h_i_deduction_tsx_thres: z.number().nullable(),
 		start_date: z.date().nullable(),
 		end_date: z.date().nullable(),
 	})
@@ -130,7 +130,7 @@ export const updateBonusDepartmentAPI = BonusDepartment.merge(Id).partial();
 export const updateBonusDepartmentService = BonusDepartment.merge(Id).partial();
 
 const BonusPosition = z.object({
-	position_level: z.number(),
+	position: z.number(),
 	multiplier: z.number(),
 });
 
@@ -204,7 +204,7 @@ export const updatePerformanceLevelService =
 	PerformanceLevel.merge(Id).partial();
 //MARK:trust
 const TrustMoney = z.object({
-	position_level: z.number(),
+	position: z.number(),
 	position_type: z.string(),
 	emp_trust_reserve_limit: z.number().nullable(),
 	org_trust_reserve_limit: z.number(),
@@ -231,15 +231,15 @@ export const updateEmployeeAccountService = EmployeeAccount.merge(Id).partial();
 const EmployeePayment = z.object({
 	emp_no: z.string(),
 	base_salary: z.number(),
-	food_bonus: z.number(),
-	supervisor_comp: z.number(),
-	job_comp: z.number(),
-	subsidy_comp: z.number(),
-	professional_cert_comp: z.number(),
-	labor_retirement_self: z.number(),
+	food_allowance: z.number(),
+	supervisor_allowance: z.number(),
+	occupational_allowance: z.number(),
+	subsidy_allowance: z.number(),
+	professional_cert_allowance: z.number(),
+	l_r_self: z.number(),
 	l_i: z.number(),
 	h_i: z.number(),
-	labor_retirement: z.number(),
+	l_r: z.number(),
 	occupational_injury: z.number(),
 });
 
@@ -272,20 +272,20 @@ export const updateEmployeeTrustService = EmployeeTrust.merge(Id)
 const EmployeeData = z.object({
 	emp_no: z.string(),
 	emp_name: z.string(),
-	position_level: z.number(),
+	position: z.number(),
 	position_type: z.string(),
-	ginsurance_type: z.string(),
+	group_insurance_type: z.string(),
 	department: z.string(),
 	work_type: z.string(),
 	work_status: z.string(),
-	accessible: z.string().nullable(),
+	disabilty_level: z.string().nullable(),
 	sex_type: z.string(),
 	dependents: z.number().nullable(),
 	healthcare_dependents: z.number().nullable(),
 	registration_date: z.string(),
 	quit_date: z.string().nullable(),
-	licens_id: z.string().nullable(),
-	nbanknumber: z.string(),
+	license_id: z.string().nullable(),
+	bank_account: z.string(),
 });
 
 export const createEmployeeDataAPI = EmployeeData;

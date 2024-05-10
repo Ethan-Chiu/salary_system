@@ -80,11 +80,11 @@ export function attendanceMapper(
 	return [
 		{
 			name: "事假扣薪",
-			value: data.personal_leave_dock,
+			value: data.personal_leave_deduction,
 		},
 		{
 			name: "病假扣薪",
-			value: data.sick_leave_dock,
+			value: data.sick_leave_deduction,
 		},
 		{
 			name: "不休假代金比率",

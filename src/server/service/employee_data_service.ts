@@ -17,38 +17,38 @@ export class EmployeeDataService {
 	async createEmployeeData({
 		emp_no,
 		emp_name,
-		position_level,
+		position,
 		position_type,
-		ginsurance_type,
+		group_insurance_type,
 		department,
 		work_type,
 		work_status,
-		accessible,
+		disabilty_level,
 		sex_type,
 		dependents,
 		healthcare_dependents,
 		registration_date,
 		quit_date,
-		licens_id,
-		nbanknumber,
+		license_id,
+		bank_account,
 	}: z.infer<typeof createEmployeeDataService>): Promise<EmployeeData> {
 		const newData = await EmployeeData.create({
 			emp_no: emp_no,
 			emp_name: emp_name,
-			position_level: position_level,
+			position: position,
 			position_type: position_type,
-			ginsurance_type: ginsurance_type,
+			group_insurance_type: group_insurance_type,
 			department: department,
 			work_type: work_type,
 			work_status: work_status,
-			accessible: accessible,
+			disabilty_level: disabilty_level,
 			sex_type: sex_type,
 			dependents: dependents,
 			healthcare_dependents: healthcare_dependents,
 			registration_date: registration_date,
 			quit_date: quit_date,
-			licens_id: licens_id,
-			nbanknumber: nbanknumber,
+			license_id: license_id,
+			bank_account: bank_account,
 			create_by: "system",
 			update_by: "system",
 		});
@@ -86,20 +86,20 @@ export class EmployeeDataService {
 		id,
 		emp_no: emp_no,
 		emp_name: emp_name,
-		position_level: position_level,
+		position: position,
 		position_type: position_type,
-		ginsurance_type: ginsurance_type,
+		group_insurance_type: group_insurance_type,
 		department: department,
 		work_type: work_type,
 		work_status: work_status,
-		accessible: accessible,
+		disabilty_level: disabilty_level,
 		sex_type: sex_type,
 		dependents: dependents,
 		healthcare_dependents: healthcare_dependents,
 		registration_date: registration_date,
 		quit_date: quit_date,
-		licens_id: licens_id,
-		nbanknumber: nbanknumber,
+		license_id: license_id,
+		bank_account: bank_account,
 	}: z.infer<typeof updateEmployeeDataService>): Promise<void> {
 		const employeeData = await this.getEmployeeDataById(id!);
 		if (employeeData == null) {
@@ -114,7 +114,7 @@ export class EmployeeDataService {
 					work_status,
 					employeeData.work_status
 				),
-				accessible: select_value(accessible, employeeData.accessible),
+				disabilty_level: select_value(disabilty_level, employeeData.disabilty_level),
 				sex_type: select_value(sex_type, employeeData.sex_type),
 				dependents: select_value(dependents, employeeData.dependents),
 				healthcare_dependents: select_value(healthcare_dependents, employeeData.healthcare_dependents),
@@ -123,19 +123,19 @@ export class EmployeeDataService {
 					employeeData.registration_date
 				),
 				quit_date: select_value(quit_date, employeeData.quit_date),
-				licens_id: select_value(licens_id, employeeData.licens_id),
-				nbanknumber: select_value(
-					nbanknumber,
-					employeeData.nbanknumber
+				license_id: select_value(license_id, employeeData.license_id),
+				bank_account: select_value(
+					bank_account,
+					employeeData.bank_account
 				),
-				position_level: select_value(position_level, employeeData.position_level),
+				position: select_value(position, employeeData.position),
 				position_type: select_value(
 					position_type,
 					employeeData.position_type
 				),
-				ginsurance_type: select_value(
-					ginsurance_type,
-					employeeData.ginsurance_type
+				group_insurance_type: select_value(
+					group_insurance_type,
+					employeeData.group_insurance_type
 				),
 				department: select_value(department, employeeData.department),
 
@@ -151,20 +151,20 @@ export class EmployeeDataService {
 	async updateEmployeeDataByEmpNo({
 		emp_no: emp_no,
 		emp_name: emp_name,
-		position_level: position_level,
+		position: position,
 		position_type: position_type,
-		ginsurance_type: ginsurance_type,
+		group_insurance_type: group_insurance_type,
 		department: department,
 		work_type: work_type,
 		work_status: work_status,
-		accessible: accessible,
+		disabilty_level: disabilty_level,
 		sex_type: sex_type,
 		dependents: dependents,
 		healthcare_dependents: healthcare_dependents,
 		registration_date: registration_date,
 		quit_date: quit_date,
-		licens_id: licens_id,
-		nbanknumber: nbanknumber,
+		license_id: license_id,
+		bank_account: bank_account,
 	}: z.infer<typeof updateEmployeeDataByEmpNoService>): Promise<void> {
 		const employeeData = await this.getEmployeeDataByEmpNo(emp_no!);
 		if (employeeData == null) {
@@ -179,7 +179,7 @@ export class EmployeeDataService {
 					work_status,
 					employeeData.work_status
 				),
-				accessible: select_value(accessible, employeeData.accessible),
+				disabilty_level: select_value(disabilty_level, employeeData.disabilty_level),
 				sex_type: select_value(sex_type, employeeData.sex_type),
 				dependents: select_value(dependents, employeeData.dependents),
 				healthcare_dependents: select_value(healthcare_dependents, employeeData.healthcare_dependents),
@@ -188,19 +188,19 @@ export class EmployeeDataService {
 					employeeData.registration_date
 				),
 				quit_date: select_value(quit_date, employeeData.quit_date),
-				licens_id: select_value(licens_id, employeeData.licens_id),
-				nbanknumber: select_value(
-					nbanknumber,
-					employeeData.nbanknumber
+				license_id: select_value(license_id, employeeData.license_id),
+				bank_account: select_value(
+					bank_account,
+					employeeData.bank_account
 				),
-				position_level: select_value(position_level, employeeData.position_level),
+				position: select_value(position, employeeData.position),
 				position_type: select_value(
 					position_type,
 					employeeData.position_type
 				),
-				ginsurance_type: select_value(
-					ginsurance_type,
-					employeeData.ginsurance_type
+				group_insurance_type: select_value(
+					group_insurance_type,
+					employeeData.group_insurance_type
 				),
 				department: select_value(department, employeeData.department),
 

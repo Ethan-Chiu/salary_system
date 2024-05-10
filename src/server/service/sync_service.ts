@@ -72,20 +72,20 @@ export class SyncService {
 		const salary_data = new EmployeeData();
 		salary_data.emp_no = ehr_data.emp_no!;
 		salary_data.emp_name = ehr_data.emp_name!;
-		salary_data.position_level = ehr_data.position_level!;
+		salary_data.position = ehr_data.position!;
 		salary_data.position_type = ehr_data.position_type!;
-		salary_data.ginsurance_type = ehr_data.ginsurance_type!;
+		salary_data.group_insurance_type = ehr_data.group_insurance_type!;
 		salary_data.department = ehr_data.department!;
 		salary_data.work_type = ehr_data.work_type!;
 		salary_data.work_status = ehr_data.work_status!;
-		salary_data.accessible = ehr_data.accessible!;
+		salary_data.disabilty_level = ehr_data.disabilty_level!;
 		salary_data.sex_type = ehr_data.sex_type!;
 		salary_data.dependents = ehr_data.dependents!;
 		salary_data.healthcare_dependents = ehr_data.healthcare_dependents!;
 		salary_data.registration_date = ehr_data.registration_date!;
 		salary_data.quit_date = ehr_data.quit_date!;
-		salary_data.licens_id = ehr_data.licens_id!;
-		salary_data.nbanknumber = ehr_data.nbanknumber!;
+		salary_data.license_id = ehr_data.license_id!;
+		salary_data.bank_account = ehr_data.bank_account!;
 		return salary_data;
 	}
 
@@ -436,15 +436,15 @@ export class SyncService {
 				let payment_input = {
 					emp_no: updatedData.emp_no,
 					base_salary: 0,
-					food_bonus: 0,
-					supervisor_comp: 0,
-					job_comp: 0,
-					subsidy_comp: 0,
-					professional_cert_comp: 0,
-					labor_retirement_self: 0,
+					food_allowance: 0,
+					supervisor_allowance: 0,
+					occupational_allowance: 0,
+					subsidy_allowance: 0,
+					professional_cert_allowance: 0,
+					l_r_self: 0,
 					l_i: 0,
 					h_i: 0,
-					labor_retirement: 0,
+					l_r: 0,
 					occupational_injury: 0,
 					start_date: updatedData.registration_date,
 					end_date: null,

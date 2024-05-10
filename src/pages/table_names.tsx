@@ -7,9 +7,9 @@ export const TABLE_INSURANCE = Translate("insuranceRateSetting");
 // bonus
 export const TABLE_BONUS_SETTING = Translate("bonusSetting");
 export const TABLE_BONUS_DEPARTMENT = Translate("bonusDepartmentSetting");
-export const TABLE_BONUS_POSITION = Translate("bonusPositionSetting");
-export const TABLE_BONUS_POSITION_TYPE = Translate("bonusPositionTypeSetting");
-export const TABLE_BONUS_SENIORITY = Translate("bonusSenioritySetting");
+export const TABLE_BONUS_POSITION = Translate("BonusPosition");
+export const TABLE_BONUS_POSITION_TYPE = Translate("bonusPositionType");
+export const TABLE_BONUS_SENIORITY = Translate("bonusSeniority");
 
 // level
 export const TABLE_LEVEL = Translate("level");

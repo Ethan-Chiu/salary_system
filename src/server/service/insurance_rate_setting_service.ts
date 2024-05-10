@@ -17,13 +17,13 @@ export class InsuranceRateSettingService {
 	async createInsuranceRateSetting({
 		min_wage_rate,
 		l_i_accident_rate,
-		l_i_employment_premium_rate,
+		l_i_employment_pay_rate,
 		l_i_occupational_hazard_rate,
 		l_i_wage_replacement_rate,
 		h_i_standard_rate,
 		h_i_avg_dependents_count,
-		v2_h_i_supp_premium_rate,
-		v2_h_i_dock_tsx_thres,
+		v2_h_i_supp_pay_rate,
+		v2_h_i_deduction_tsx_thres,
 		start_date,
 		end_date,
 	}: z.infer<
@@ -34,13 +34,13 @@ export class InsuranceRateSettingService {
 		const newData = await InsuranceRateSetting.create({
 			min_wage_rate: min_wage_rate,
 			l_i_accident_rate: l_i_accident_rate,
-			l_i_employment_premium_rate: l_i_employment_premium_rate,
+			l_i_employment_pay_rate: l_i_employment_pay_rate,
 			l_i_occupational_hazard_rate: l_i_occupational_hazard_rate,
 			l_i_wage_replacement_rate: l_i_wage_replacement_rate,
 			h_i_standard_rate: h_i_standard_rate,
 			h_i_avg_dependents_count: h_i_avg_dependents_count,
-			v2_h_i_supp_premium_rate: v2_h_i_supp_premium_rate,
-			v2_h_i_dock_tsx_thres: v2_h_i_dock_tsx_thres,
+			v2_h_i_supp_pay_rate: v2_h_i_supp_pay_rate,
+			v2_h_i_deduction_tsx_thres: v2_h_i_deduction_tsx_thres,
 			start_date: start_date ?? current_date_string,
 			end_date: end_date,
 			create_by: "system",
@@ -103,13 +103,13 @@ export class InsuranceRateSettingService {
 		id,
 		min_wage_rate,
 		l_i_accident_rate,
-		l_i_employment_premium_rate,
+		l_i_employment_pay_rate,
 		l_i_occupational_hazard_rate,
 		l_i_wage_replacement_rate,
 		h_i_standard_rate,
 		h_i_avg_dependents_count,
-		v2_h_i_supp_premium_rate,
-		v2_h_i_dock_tsx_thres,
+		v2_h_i_supp_pay_rate,
+		v2_h_i_deduction_tsx_thres,
 		start_date,
 		end_date,
 	}: z.infer<typeof updateInsuranceRateSettingService>): Promise<void> {
@@ -128,9 +128,9 @@ export class InsuranceRateSettingService {
 					l_i_accident_rate,
 					insuranceSetting.l_i_accident_rate
 				),
-				l_i_employment_premium_rate: select_value(
-					l_i_employment_premium_rate,
-					insuranceSetting.l_i_employment_premium_rate
+				l_i_employment_pay_rate: select_value(
+					l_i_employment_pay_rate,
+					insuranceSetting.l_i_employment_pay_rate
 				),
 				l_i_occupational_hazard_rate: select_value(
 					l_i_occupational_hazard_rate,
@@ -148,13 +148,13 @@ export class InsuranceRateSettingService {
 					h_i_avg_dependents_count,
 					insuranceSetting.h_i_avg_dependents_count
 				),
-				v2_h_i_supp_premium_rate: select_value(
-					v2_h_i_supp_premium_rate,
-					insuranceSetting.v2_h_i_supp_premium_rate
+				v2_h_i_supp_pay_rate: select_value(
+					v2_h_i_supp_pay_rate,
+					insuranceSetting.v2_h_i_supp_pay_rate
 				),
-				v2_h_i_dock_tsx_thres: select_value(
-					v2_h_i_dock_tsx_thres,
-					insuranceSetting.v2_h_i_dock_tsx_thres
+				v2_h_i_deduction_tsx_thres: select_value(
+					v2_h_i_deduction_tsx_thres,
+					insuranceSetting.v2_h_i_deduction_tsx_thres
 				),
 				start_date: select_value(
 					start_date,

@@ -1,5 +1,5 @@
 {
-	"position_level": {
+	"position": {
 		"type": "number"
 	},
 	"multiplier": {

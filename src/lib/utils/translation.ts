@@ -20,7 +20,7 @@ export function Translate(word: string) {
 		if (word === "update_date") return "更新時間";
 		if (word === "create_date") return "建立時間";
 		if (word === "performance_level") return "績效等級";
-		if (word === "position_level") return "職等"; //number
+		if (word === "position") return "職等"; //number
 		if (word === "position_type") return "職級"; //string
 		if (word === "org_trust_reserve_limit") return "公司信託提存金";
 		if (word === "emp_trust_reserve_limit") return "員工信託提存金";
@@ -30,8 +30,8 @@ export function Translate(word: string) {
 			return "特別信託獎勵金員工";
 		if (word === "end_date") return "截止時間";
 		if (word === "start_date") return "開始時間";
-		if (word === "sick_leave_dock") return "病假扣薪";
-		if (word === "personal_leave_dock") return "事假扣薪";
+		if (word === "sick_leave_deduction") return "病假扣薪";
+		if (word === "personal_leave_deduction") return "事假扣薪";
 		if (word === "rate_of_unpaid_leave") return "不休假代金比率";
 		if (word === "local_worker_holiday") return "本勞假日";
 		if (word === "foreign_worker_holiday") return "外勞假日";
@@ -85,7 +85,7 @@ export function Translate(word: string) {
 		if (word === "old_age_benifit") return "已領老年給付";
 		if (word === "dependents") return "扶養人數";
 		if (word === "branch_full_name") return "分行全稱";
-		if (word === "accessible") return "殘障等級";
+		if (word === "disabilty_level") return "殘障等級";
 		if (word === "tax_rate_category") return "稅率別";
 		if (word === "bonus_calculation") return "計算獎金";
 		if (word === "securities_account") return "證券帳號";
@@ -93,33 +93,33 @@ export function Translate(word: string) {
 		if (word === "healthcare_dependents") return "健保眷口數";
 		if (word === "group_insurance_type") return "團保類別";
 		if (word === "tax_identification_code") return "稅務識別碼";
-		if (word === "probationary_period_over") return "試用期滿";
-		if (word === "labor_retirement_self_ratio") return "勞退自提比例";
+		if (word === "probation_period_over") return "試用期滿";
+		if (word === "l_r_self_ratio") return "勞退自提比例";
 		if (word === "h_i") return "健保";
 		if (word === "l_i") return "勞保";
-		if (word === "job_allowance") return "職務津貼";
+		if (word === "occupational_allowance") return "職務津貼";
 		if(word === "food_allowance") return "伙食津貼";
 		if (word === "base_salary") return "底薪";
 		if (word === "shift_allowance") return "輪班津貼";
 		if (word === "subsidy_allowance") return "補助津貼";
 		if (word === "supervisor_allowance") return "主管津貼";
-		if (word === "labor_retirement") return "勞退";
+		if (word === "l_r") return "勞退";
 		if (word === "emp_trust_reserve") return "員工信託提存金";
 		if (word === "org_trust_reserve") return "公司信託提存金";
 		if (word === "occupational_injury") return "職災";
-		if (word === "labor_retirement_self") return "勞退金自提";
-		if (word === "professional_cert_bonus") return "專業證照津貼";
+		if (word === "l_r_self") return "勞退金自提";
+		if (word === "professional_cert_allowance") return "專業證照津貼";
 		if (word === "emp_special_trust_incent") return "特別信託獎勵金員工";
 		if (word === "org_special_trust_incent") return "特別信託獎勵金公司";
 		if (word === "min_wage_rate") return "最低薪資率";
 		if (word === "h_i_standard_rate") return "健保一般費率";
 		if (word === "l_i_accident_rate") return "勞保事故費率";
-		if (word === "v2_h_i_dock_tsx_thres") return "二代健保扣繳門檻單次";
-		if (word === "v2_h_i_supp_premium_rate") return "二代健保補充保費率";
+		if (word === "v2_h_i_deduction_tsx_thres") return "二代健保扣繳門檻單次";
+		if (word === "v2_h_i_supp_pay_rate") return "二代健保補充保費率";
 		if (word === "h_i_avg_dependents_count") return "健保平均眷口數";
 		if (word === "l_i_wage_replacement_rate")
 			return "勞保工資墊償基金提繳率";
-		if (word === "l_i_employment_premium_rate") return "勞保就業保險費率";
+		if (word === "l_i_employment_pay_rate") return "勞保就業保險費率";
 		if (word === "l_i_occupational_hazard_rate") return "勞保職業災害費率";
 		if (word === "level") return "級距";
 		if (word === "level_end") return "迄";
@@ -143,9 +143,9 @@ export function Translate(word: string) {
 		if (word === "insuranceRateSetting") return "勞健保費率";
 		if (word === "bonusSetting") return "獎金";
 		if (word === "bonusDepartmentSetting") return "獎金部門";
-		if (word === "bonusPositionSetting") return "獎金職等";
-		if (word === "bonusPositionTypeSetting") return "獎金職級";
-		if (word === "bonusSenioritySetting") return "獎金年資";
+		if (word === "bonusPosition") return "獎金職等";
+		if (word === "bonusPositionType") return "獎金職級";
+		if (word === "bonusSeniority") return "獎金年資";
 		if (word === "levelRange") return "級距類別範圍";
 		if (word === "performanceLevel") return "績效等級比例";
 		if (word === "trustMoney") return "信託金";
@@ -160,7 +160,7 @@ export function Translate(word: string) {
 		if (word === "update_date") return "Update Date";
 		if (word === "create_date") return "Create Date";
 		if (word === "performance_level") return "Performance Level";
-		if (word === "position_level") return "position_level"; //number
+		if (word === "position") return "position"; //number
 		if (word === "position_type") return "Position Type"; //string
 		if (word === "org_trust_reserve_limit")
 			return "Company Trust Reserve Limit";
@@ -172,8 +172,8 @@ export function Translate(word: string) {
 			return "Special Trust Incentive Limit (Employee)";
 		if (word === "end_date") return "End Date";
 		if (word === "start_date") return "Start Date";
-		if (word === "sick_leave_dock") return "Sick Leave Deduction";
-		if (word === "personal_leave_dock") return "Personal Leave Deduction";
+		if (word === "sick_leave_deduction") return "Sick Leave Deduction";
+		if (word === "personal_leave_deduction") return "Personal Leave Deduction";
 		if (word === "rate_of_unpaid_leave")
 			return "Unpaid Leave Compensation Rate";
 		if (word === "local_worker_holiday") return "Local Worker Holiday";
@@ -240,7 +240,7 @@ export function Translate(word: string) {
 		if (word === "old_age_benefit") return "Received Old Age Benefit";
 		if (word === "dependents_count") return "Number of Dependents";
 		if (word === "branch_full_name") return "Full Name of Branch";
-		if (word === "accessible") return "Disability Level";
+		if (word === "disabilty_level") return "Disability Level";
 		if (word === "tax_rate_category") return "Tax Rate Category";
 		if (word === "bonus_calculation") return "Bonus Calculation";
 		if (word === "securities_account") return "Securities Account";
@@ -250,23 +250,23 @@ export function Translate(word: string) {
 		if (word === "group_insurance_type") return "Group Insurance Type";
 		if (word === "tax_identification_code")
 			return "Tax Identification Code";
-		if (word === "probationary_period_over")
-			return "Probationary Period Over";
-		if (word === "labor_retirement_self_ratio")
+		if (word === "probation_period_over")
+			return "Probation Period Over";
+		if (word === "l_r_self_ratio")
 			return "Labor Retirement Self Ratio";
 		if (word === "h_i") return "Health Insurance";
 		if (word === "l_i") return "Labor Insurance";
-		if (word === "job_bonus") return "Job Allowance";
+		if (word === "occupational_allowance") return "Job Allowance";
 		if (word === "base_salary") return "Base Salary";
-		if (word === "shift_bonus") return "Shift Allowance";
-		if (word === "subsidy_bonus") return "Subsidy Allowance";
-		if (word === "supervisor_bonus") return "Supervisor Allowance";
-		if (word === "labor_retirement") return "Labor Retirement";
+		if (word === "shift_allowance") return "Shift Allowance";
+		if (word === "subsidy_allowance") return "Subsidy Allowance";
+		if (word === "supervisor_allowance") return "Supervisor Allowance";
+		if (word === "l_r") return "Labor Retirement";
 		if (word === "emp_trust_reserve") return "Employee Trust Reserve";
 		if (word === "org_trust_reserve") return "Company Trust Reserve";
 		if (word === "occupational_injury") return "Occupational Injury";
-		if (word === "labor_retirement_self") return "Labor Retirement Self";
-		if (word === "professional_cert_bonus")
+		if (word === "l_r_self") return "Labor Retirement Self";
+		if (word === "professional_cert_allowance")
 			return "Professional Certification Allowance";
 		if (word === "emp_special_trust_incent")
 			return "Employee Special Trust Incentive";
@@ -277,16 +277,16 @@ export function Translate(word: string) {
 			return "Health Insurance Standard Rate";
 		if (word === "l_i_accident_rate")
 			return "Labor Insurance Accident Rate";
-		if (word === "v2_h_i_dock_tsx_thres")
+		if (word === "v2_h_i_deduction_tsx_thres")
 			return "V2 Health Insurance Dock Threshold (Single)";
-		if (word === "v2_h_i_supp_premium_rate")
-			return "V2 Health Insurance Supplementary Premium Rate";
+		if (word === "v2_h_i_supp_pay_rate")
+			return "V2 Health Insurance Supplementary Pay Rate";
 		if (word === "h_i_avg_dependents_count")
 			return "Health Insurance Average Dependents Count";
 		if (word === "l_i_wage_replacement_rate")
-			return "Labor Insurance Wage Replacement Fund Payment Rate";
-		if (word === "l_i_employment_premium_rate")
-			return "Labor Insurance Employment Insurance Premium Rate";
+			return "Labor Insurance Wage Replacement Fund Pay Rate";
+		if (word === "l_i_employment_pay_rate")
+			return "Labor Insurance Employment Insurance Pay Rate";
 		if (word === "l_i_occupational_hazard_rate")
 			return "Labor Insurance Occupational Hazard Insurance Rate";
 		if (word === "level") return "Level";

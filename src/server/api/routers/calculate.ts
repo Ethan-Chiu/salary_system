@@ -6,7 +6,7 @@ import { z } from "zod";
 
 export const calculateRouter = createTRPCRouter({
 	// API for 平日加班費
-	calculateOvertimeNormalPayment: publicProcedure
+	calculateWeekdayOvertimePay: publicProcedure
 		.input(
 			z.object({
 				emp_no: z.coerce.string(),
@@ -15,18 +15,18 @@ export const calculateRouter = createTRPCRouter({
 		)
 		.query(async ({ input }) => {
 			const calculateService = container.resolve(CalculateService);
-			const overtime_payment: number =
-				await calculateService.getOvertimeMoney(
+			const overtime_pay: number =
+				await calculateService.getExceedOvertimePay(
 					input.emp_no,
 					input.period_id,
 					"平日"
 				);
-			if (overtime_payment == null) {
+			if (overtime_pay == null) {
 				throw new BaseResponseError(
 					"Cannot calculate normal overtime payment"
 				);
 			}
-			return overtime_payment;
+			return overtime_pay;
 		}),
 
 	// API for 假日加班費
@@ -40,7 +40,7 @@ export const calculateRouter = createTRPCRouter({
 		.query(async ({ input }) => {
 			const calculateService = container.resolve(CalculateService);
 			const overtime_payment: number =
-				await calculateService.getOvertimeMoney(
+				await calculateService.getExceedOvertimePay(
 					input.emp_no,
 					input.period_id,
 					"假日"

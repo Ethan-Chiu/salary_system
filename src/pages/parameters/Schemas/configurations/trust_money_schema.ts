@@ -3,7 +3,7 @@ import { z } from "zod";
 const zc = z.coerce;
 
 export const trustMoneySchema = z.object({
-	position_level: zc.number(),
+	position: zc.number(),
 	position_type: zc.number().max(2),
 	emp_trust_reserve_limit: zc.number().optional(),
 	org_trust_reserve_limit: zc.number(),

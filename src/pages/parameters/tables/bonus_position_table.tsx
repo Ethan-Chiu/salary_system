@@ -9,7 +9,7 @@ import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 
 export type RowItem = {
-	position_level: number;
+	position: number;
 	multiplier: number;
 };
 type RowItemKey = keyof RowItem;
@@ -17,7 +17,7 @@ type RowItemKey = keyof RowItem;
 const columnHelper = createColumnHelper<RowItem>();
 
 export const bonus_position_columns = [
-	columnHelper.accessor("position_level", {
+	columnHelper.accessor("position", {
 		header: ({ column }) => {
 			return (
 				<div className="flex justify-center">
@@ -30,7 +30,7 @@ export const bonus_position_columns = [
 								)
 							}
 						>
-							Position_level
+							position
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -38,7 +38,7 @@ export const bonus_position_columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="lowercase">{row.getValue("position_level")}</div>
+			<div className="lowercase">{row.getValue("position")}</div>
 		),
 	}),
 	columnHelper.accessor("multiplier", {
@@ -58,7 +58,7 @@ export function bonusPositionMapper(
 ): RowItem[] {
 	return bonusPositionData.map((d) => {
 		return {
-			position_level: d.position_level,
+			position: d.position,
 			multiplier: d.multiplier,
 		};
 	});
@@ -73,7 +73,7 @@ interface BonusPositionTableProps extends TableComponentProps {
 export function BonusPositionTable({ viewOnly }: BonusPositionTableProps) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBonusPosition.useQuery();
-	const filterKey: RowItemKey = "position_level";
+	const filterKey: RowItemKey = "position";
 
 	if (isLoading) {
 		return (

@@ -16,16 +16,16 @@ export class EmployeePayment extends Model<
 	declare id: CreationOptional<number>;
 	declare emp_no: string;
 	declare base_salary: number;
-	declare food_bonus: number | null;
-	declare supervisor_comp: number | null;
-	declare job_comp: number | null;
-	declare subsidy_comp: number | null;
+	declare food_allowance: number | null;
+	declare supervisor_allowance: number | null;
+	declare occupational_allowance: number | null;
+	declare subsidy_allowance: number | null;
 	declare shift_allowance: number | null;
-	declare professional_cert_comp: number | null;
-	declare labor_retirement_self: number;
+	declare professional_cert_allowance: number | null;
+	declare l_r_self: number;
 	declare l_i: number;
 	declare h_i: number;
-	declare labor_retirement: number;
+	declare l_r: number;
 	declare occupational_injury: number;
 	declare start_date: string;
 	declare end_date: string | null;
@@ -56,19 +56,19 @@ EmployeePayment.init(
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
 		},
-		food_bonus: {
+		food_allowance: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: true,
 		},
-		supervisor_comp: {
+		supervisor_allowance: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: true,
 		},
-		job_comp: {
+		occupational_allowance: {
 			type: DataTypes.STRING(128),
 			allowNull: true,
 		},
-		subsidy_comp: {
+		subsidy_allowance: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: true,
 		},
@@ -76,11 +76,11 @@ EmployeePayment.init(
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: true,
 		},
-		professional_cert_comp: {
+		professional_cert_allowance: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: true,
 		},
-		labor_retirement_self: {
+		l_r_self: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
 		},
@@ -92,7 +92,7 @@ EmployeePayment.init(
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
 		},
-		labor_retirement: {
+		l_r: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
 		},

@@ -16,13 +16,13 @@ export class InsuranceRateSetting extends Model<
 	declare id: CreationOptional<number>;
 	declare min_wage_rate: number;
 	declare l_i_accident_rate: number;
-	declare l_i_employment_premium_rate: number;
+	declare l_i_employment_pay_rate: number;
 	declare l_i_occupational_hazard_rate: number;
 	declare l_i_wage_replacement_rate: number;
 	declare h_i_standard_rate: number;
 	declare h_i_avg_dependents_count: number;
-	declare v2_h_i_supp_premium_rate: number;
-	declare v2_h_i_dock_tsx_thres: number;
+	declare v2_h_i_supp_pay_rate: number;
+	declare v2_h_i_deduction_tsx_thres: number;
 	declare start_date: string;
 	declare end_date: string | null;
 
@@ -54,7 +54,7 @@ InsuranceRateSetting.init(
 			unique: false,
 			allowNull: false,
 		},
-		l_i_employment_premium_rate: {
+		l_i_employment_pay_rate: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
@@ -79,12 +79,12 @@ InsuranceRateSetting.init(
 			unique: false,
 			allowNull: false,
 		},
-		v2_h_i_supp_premium_rate: {
+		v2_h_i_supp_pay_rate: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
 		},
-		v2_h_i_dock_tsx_thres: {
+		v2_h_i_deduction_tsx_thres: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,

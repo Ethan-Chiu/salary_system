@@ -17,15 +17,15 @@ export class EmployeePaymentService {
 	async createEmployeePayment({
 		emp_no,
 		base_salary,
-		food_bonus,
-		supervisor_comp,
-		job_comp,
-		subsidy_comp,
-		professional_cert_comp,
-		labor_retirement_self,
+		food_allowance,
+		supervisor_allowance,
+		occupational_allowance,
+		subsidy_allowance,
+		professional_cert_allowance,
+		l_r_self,
 		l_i,
 		h_i,
-		labor_retirement,
+		l_r,
 		occupational_injury,
 		start_date,
 		end_date,
@@ -35,15 +35,15 @@ export class EmployeePaymentService {
 		const newData = await EmployeePayment.create({
 			emp_no: emp_no,
 			base_salary: base_salary,
-			food_bonus: food_bonus,
-			supervisor_comp: supervisor_comp,
-			job_comp: job_comp,
-			subsidy_comp: subsidy_comp,
-			professional_cert_comp: professional_cert_comp,
-			labor_retirement_self: labor_retirement_self,
+			food_allowance: food_allowance,
+			supervisor_allowance: supervisor_allowance,
+			occupational_allowance: occupational_allowance,
+			subsidy_allowance: subsidy_allowance,
+			professional_cert_allowance: professional_cert_allowance,
+			l_r_self: l_r_self,
 			l_i: l_i,
 			h_i: h_i,
-			labor_retirement: labor_retirement,
+			l_r: l_r,
 			occupational_injury: occupational_injury,
 			start_date: start_date ?? current_date_string,
 			end_date: end_date,
@@ -140,15 +140,15 @@ export class EmployeePaymentService {
 		id,
 		emp_no,
 		base_salary,
-		food_bonus,
-		supervisor_comp,
-		job_comp,
-		subsidy_comp,
-		professional_cert_comp,
-		labor_retirement_self,
+		food_allowance,
+		supervisor_allowance,
+		occupational_allowance,
+		subsidy_allowance,
+		professional_cert_allowance,
+		l_r_self,
 		l_i,
 		h_i,
-		labor_retirement,
+		l_r,
 		occupational_injury,
 		start_date,
 		end_date,
@@ -164,32 +164,32 @@ export class EmployeePaymentService {
 					base_salary,
 					employeePayment.base_salary
 				),
-				food_bonus: select_value(
-					food_bonus,
-					employeePayment.food_bonus
+				food_allowance: select_value(
+					food_allowance,
+					employeePayment.food_allowance
 				),
-				supervisor_comp: select_value(
-					supervisor_comp,
-					employeePayment.supervisor_comp
+				supervisor_allowance: select_value(
+					supervisor_allowance,
+					employeePayment.supervisor_allowance
 				),
-				job_comp: select_value(job_comp, employeePayment.job_comp),
-				subsidy_comp: select_value(
-					subsidy_comp,
-					employeePayment.subsidy_comp
+				occupational_allowance: select_value(occupational_allowance, employeePayment.occupational_allowance),
+				subsidy_allowance: select_value(
+					subsidy_allowance,
+					employeePayment.subsidy_allowance
 				),
-				professional_cert_comp: select_value(
-					professional_cert_comp,
-					employeePayment.professional_cert_comp
+				professional_cert_allowance: select_value(
+					professional_cert_allowance,
+					employeePayment.professional_cert_allowance
 				),
-				labor_retirement_self: select_value(
-					labor_retirement_self,
-					employeePayment.labor_retirement_self
+				l_r_self: select_value(
+					l_r_self,
+					employeePayment.l_r_self
 				),
 				l_i: select_value(l_i, employeePayment.l_i),
 				h_i: select_value(h_i, employeePayment.h_i),
-				labor_retirement: select_value(
-					labor_retirement,
-					employeePayment.labor_retirement
+				l_r: select_value(
+					l_r,
+					employeePayment.l_r
 				),
 				occupational_injury: select_value(
 					occupational_injury,
@@ -235,7 +235,7 @@ export class EmployeePaymentService {
 			}
 			const levelRangeList = await levelRangeService.getAllLevelRange();
 			const salary =
-				employeePayment.base_salary + employeePayment.food_bonus;
+				employeePayment.base_salary + employeePayment.food_allowance;
 			let result = [];
 			for (const levelRange of levelRangeList) {
 				const level = await leveService.getLevelBySalary(
@@ -253,8 +253,8 @@ export class EmployeePaymentService {
 				{
 					l_i: result.find((r) => r.type === "l_i")?.level ?? 0,
 					h_i: result.find((r) => r.type === "h_i")?.level ?? 0,
-					labor_retirement:
-						result.find((r) => r.type === "labor_retirement")
+					l_r:
+						result.find((r) => r.type === "l_r")
 							?.level ?? 0,
 					occupational_injury:
 						result.find((r) => r.type === "occupational_injury")
