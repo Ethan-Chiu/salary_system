@@ -14,7 +14,7 @@ export class TrustMoney extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-	declare position: number;
+	declare position_level: number;
 	declare position_type: string;
 	declare emp_trust_reserve_limit: number | null;
 	declare org_trust_reserve_limit: number;
@@ -39,7 +39,7 @@ TrustMoney.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		position: {
+		position_level: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
 		},

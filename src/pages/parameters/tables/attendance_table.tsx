@@ -5,11 +5,12 @@ import { ArrowUpDown } from "lucide-react";
 import { isString, isNumber, isDateType } from "~/lib/utils/check_type";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
-import { c_CreateDateStr, c_EndDateStr, c_StartDateStr } from "../constant";
+import { c_CreateDateStr, c_EndDateStr, c_StartDateStr, c_UpdateDateStr } from "../constant";
 import { z } from "zod";
 import { type AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
+import { formatDate } from "~/lib/utils/format_date";
 
 const rowSchema = z.object({
 	name: z.string(),
@@ -143,20 +144,24 @@ export function attendanceMapper(
 		},
 		{
 			name: c_StartDateStr,
-			value: new Date(data.start_date),
+			value: formatDate("day", data.start_date),
 		},
 		{
 			name: c_EndDateStr,
-			value: data.end_date ? new Date(data.end_date) : new Date(),
+			value: data.end_date ? formatDate("day", data.end_date) : "",
 		},
 		{
 			name: c_CreateDateStr,
-			value: data.create_date,
+			value: formatDate("hour", data.create_date),
+		},
+		{
+			name: c_UpdateDateStr,
+			value: formatDate("hour", data.update_date),
 		},
 	];
 }
 
-interface AttendanceTableProps extends TableComponentProps{
+interface AttendanceTableProps extends TableComponentProps {
 	period_id: number;
 	globalFilter?: string;
 	viewOnly?: boolean;

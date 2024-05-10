@@ -17,16 +17,16 @@ export class EmployeeDataService {
 	async createEmployeeData({
 		emp_no,
 		emp_name,
-		position,
+		position_level,
 		position_type,
 		ginsurance_type,
-		u_dep,
+		department,
 		work_type,
 		work_status,
 		accessible,
 		sex_type,
 		dependents,
-		healthcare,
+		healthcare_dependents,
 		registration_date,
 		quit_date,
 		licens_id,
@@ -35,16 +35,16 @@ export class EmployeeDataService {
 		const newData = await EmployeeData.create({
 			emp_no: emp_no,
 			emp_name: emp_name,
-			position: position,
+			position_level: position_level,
 			position_type: position_type,
 			ginsurance_type: ginsurance_type,
-			u_dep: u_dep,
+			department: department,
 			work_type: work_type,
 			work_status: work_status,
 			accessible: accessible,
 			sex_type: sex_type,
 			dependents: dependents,
-			healthcare: healthcare,
+			healthcare_dependents: healthcare_dependents,
 			registration_date: registration_date,
 			quit_date: quit_date,
 			licens_id: licens_id,
@@ -86,16 +86,16 @@ export class EmployeeDataService {
 		id,
 		emp_no: emp_no,
 		emp_name: emp_name,
-		position: position,
+		position_level: position_level,
 		position_type: position_type,
 		ginsurance_type: ginsurance_type,
-		u_dep: u_dep,
+		department: department,
 		work_type: work_type,
 		work_status: work_status,
 		accessible: accessible,
 		sex_type: sex_type,
 		dependents: dependents,
-		healthcare: healthcare,
+		healthcare_dependents: healthcare_dependents,
 		registration_date: registration_date,
 		quit_date: quit_date,
 		licens_id: licens_id,
@@ -117,7 +117,7 @@ export class EmployeeDataService {
 				accessible: select_value(accessible, employeeData.accessible),
 				sex_type: select_value(sex_type, employeeData.sex_type),
 				dependents: select_value(dependents, employeeData.dependents),
-				healthcare: select_value(healthcare, employeeData.healthcare),
+				healthcare_dependents: select_value(healthcare_dependents, employeeData.healthcare_dependents),
 				registration_date: select_value(
 					registration_date,
 					employeeData.registration_date
@@ -128,7 +128,7 @@ export class EmployeeDataService {
 					nbanknumber,
 					employeeData.nbanknumber
 				),
-				position: select_value(position, employeeData.position),
+				position_level: select_value(position_level, employeeData.position_level),
 				position_type: select_value(
 					position_type,
 					employeeData.position_type
@@ -137,7 +137,7 @@ export class EmployeeDataService {
 					ginsurance_type,
 					employeeData.ginsurance_type
 				),
-				u_dep: select_value(u_dep, employeeData.u_dep),
+				department: select_value(department, employeeData.department),
 
 				update_by: "system",
 			},
@@ -151,16 +151,16 @@ export class EmployeeDataService {
 	async updateEmployeeDataByEmpNo({
 		emp_no: emp_no,
 		emp_name: emp_name,
-		position: position,
+		position_level: position_level,
 		position_type: position_type,
 		ginsurance_type: ginsurance_type,
-		u_dep: u_dep,
+		department: department,
 		work_type: work_type,
 		work_status: work_status,
 		accessible: accessible,
 		sex_type: sex_type,
 		dependents: dependents,
-		healthcare: healthcare,
+		healthcare_dependents: healthcare_dependents,
 		registration_date: registration_date,
 		quit_date: quit_date,
 		licens_id: licens_id,
@@ -182,7 +182,7 @@ export class EmployeeDataService {
 				accessible: select_value(accessible, employeeData.accessible),
 				sex_type: select_value(sex_type, employeeData.sex_type),
 				dependents: select_value(dependents, employeeData.dependents),
-				healthcare: select_value(healthcare, employeeData.healthcare),
+				healthcare_dependents: select_value(healthcare_dependents, employeeData.healthcare_dependents),
 				registration_date: select_value(
 					registration_date,
 					employeeData.registration_date
@@ -193,7 +193,7 @@ export class EmployeeDataService {
 					nbanknumber,
 					employeeData.nbanknumber
 				),
-				position: select_value(position, employeeData.position),
+				position_level: select_value(position_level, employeeData.position_level),
 				position_type: select_value(
 					position_type,
 					employeeData.position_type
@@ -202,7 +202,7 @@ export class EmployeeDataService {
 					ginsurance_type,
 					employeeData.ginsurance_type
 				),
-				u_dep: select_value(u_dep, employeeData.u_dep),
+				department: select_value(department, employeeData.department),
 
 				update_by: "system",
 			},

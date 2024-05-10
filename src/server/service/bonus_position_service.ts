@@ -13,11 +13,11 @@ export class BonusPositionService {
 	constructor() {}
 
 	async createBonusPosition({
-		position,
+		position_level,
 		multiplier,
 	}: z.infer<typeof createBonusPositionService>): Promise<BonusPosition> {
 		const newData = await BonusPosition.create({
-			position: position,
+			position_level: position_level,
 			multiplier: multiplier,
 			create_by: "system",
 			update_by: "system",
@@ -46,7 +46,7 @@ export class BonusPositionService {
 
 	async updateBonusPosition({
 		id,
-		position,
+		position_level,
 		multiplier,
 	}: z.infer<typeof updateBonusPositionService>): Promise<void> {
 		const bonus_position = await this.getBonusPositionById(id!);
@@ -56,7 +56,7 @@ export class BonusPositionService {
 
 		const affectedCount = await BonusPosition.update(
 			{
-				position: select_value(position, bonus_position.position),
+				position_level: select_value(position_level, bonus_position.position_level),
 				multiplier: select_value(multiplier, bonus_position.multiplier),
 				update_by: "system",
 			},

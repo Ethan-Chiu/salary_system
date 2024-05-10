@@ -13,7 +13,7 @@ export class TrustMoneyService {
 	constructor() {}
 
 	async createTrustMoney({
-		position,
+		position_level,
 		position_type,
 		emp_trust_reserve_limit,
 		org_trust_reserve_limit,
@@ -21,7 +21,7 @@ export class TrustMoneyService {
 		org_special_trust_incent_limit,
 	}: z.infer<typeof createTrustMoneyService>): Promise<TrustMoney> {
 		const newData = await TrustMoney.create({
-			position: position,
+			position_level: position_level,
 			position_type: position_type,
 			emp_trust_reserve_limit: emp_trust_reserve_limit,
 			org_trust_reserve_limit: org_trust_reserve_limit,
@@ -43,12 +43,12 @@ export class TrustMoneyService {
 	}
 
 	async getTrustMoneyByPosition(
-		position: number,
+		position_level: number,
 		position_type: string
 	): Promise<TrustMoney | null> {
 		const trustMoney = await TrustMoney.findOne({
 			where: {
-				position: position,
+				position_level: position_level,
 				position_type: position_type,
 			},
 		});
@@ -67,7 +67,7 @@ export class TrustMoneyService {
 
 	async updateTrustMoney({
 		id,
-		position,
+		position_level,
 		position_type,
 		emp_trust_reserve_limit,
 		org_trust_reserve_limit,
@@ -81,7 +81,7 @@ export class TrustMoneyService {
 
 		const affectedCount = await TrustMoney.update(
 			{
-				position: select_value(position, trustMoney.position),
+				position_level: select_value(position_level, trustMoney.position_level),
 				position_type: select_value(
 					position_type,
 					trustMoney.position_type

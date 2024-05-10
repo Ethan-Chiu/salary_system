@@ -66,8 +66,6 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 		setCheckedEmps(checked);
 	}, [data]);
 
-	console.log("checkedEmps upper", checkedEmps);
-
 	const router = useRouter();
 
 	const { mutate } = api.sync.synchronize.useMutation({

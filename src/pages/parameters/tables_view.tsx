@@ -66,7 +66,7 @@ function getTableComponent(
 			};
 		case "TableInsurance":
 			return {
-					component: InsuranceRateTable,
+				component: InsuranceRateTable,
 				icon: ActivitySquare,
 			};
 		case "TableBonusSetting":
@@ -200,7 +200,7 @@ function CompTableView() {
 					<div key={selectedTableType} className="flex h-full">
 						{selectedPeriod ? React.createElement<TableComponentProps>(
 							getTableComponent(selectedTableType).component,
-							{period_id: selectedPeriod.period_id}
+							{ period_id: selectedPeriod.period_id }
 						) : <p>Please select a period first</p>}
 					</div>
 				);
