@@ -230,7 +230,7 @@ export class CalculateService {
 	): Promise<number> {
 		// rd("健保扣除額") = CalacHelTax(rd("健保"), rd("健保眷口數"), rd("工作形態"), CheckNull(rd("殘障等級"), "正常"), 0, rd("健保追加"))   'Jerry 07/03/30 加入殘障等級計算  , 07/11/26 增加健保追加計算
 		let Tax : number = employee_payment.h_i;
-		let Peop : number = employee_data.healthcare ?? 0;
+		let Peop : number = employee_data.healthcare_dependents ?? 0;
 		let kind : string = employee_data.work_status;
 		const hinder : string = employee_data.accessible ?? "正常";
 		let exePep : number = 0;

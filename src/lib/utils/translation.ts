@@ -20,7 +20,7 @@ export function Translate(word: string) {
 		if (word === "update_date") return "更新時間";
 		if (word === "create_date") return "建立時間";
 		if (word === "performance_level") return "績效等級";
-		if (word === "position") return "職等"; //number
+		if (word === "position_level") return "職等"; //number
 		if (word === "position_type") return "職級"; //string
 		if (word === "org_trust_reserve_limit") return "公司信託提存金";
 		if (word === "emp_trust_reserve_limit") return "員工信託提存金";
@@ -54,7 +54,7 @@ export function Translate(word: string) {
 		if (word === "org_code") return "公司編號";
 		if (word === "bank_name") return "銀行名稱";
 		if (word === "bank_code") return "銀行代碼";
-		if (word === "payday") return "發薪日期";
+		if (word === "issue_date") return "發薪日期";
 		if (word === "anouncement") return "公告訊息";
 		if (word === "department") return "部門";
 		if (word === "seniority") return "年資";
@@ -90,7 +90,7 @@ export function Translate(word: string) {
 		if (word === "bonus_calculation") return "計算獎金";
 		if (word === "securities_account") return "證券帳號";
 		if (word === "registered_address") return "戶籍地址";
-		if (word === "healthcare") return "健保眷口數";
+		if (word === "healthcare_dependents") return "健保眷口數";
 		if (word === "group_insurance_type") return "團保類別";
 		if (word === "tax_identification_code") return "稅務識別碼";
 		if (word === "probationary_period_over") return "試用期滿";
@@ -160,7 +160,7 @@ export function Translate(word: string) {
 		if (word === "update_date") return "Update Date";
 		if (word === "create_date") return "Create Date";
 		if (word === "performance_level") return "Performance Level";
-		if (word === "position") return "Position"; //number
+		if (word === "position_level") return "position_level"; //number
 		if (word === "position_type") return "Position Type"; //string
 		if (word === "org_trust_reserve_limit")
 			return "Company Trust Reserve Limit";
@@ -208,7 +208,7 @@ export function Translate(word: string) {
 		if (word === "org_code") return "Company Code";
 		if (word === "bank_name") return "Bank Name";
 		if (word === "bank_code") return "Bank Code";
-		if (word === "payday") return "Payday";
+		if (word === "issue_date") return "Payday";
 		if (word === "announcement") return "Announcement";
 		if (word === "department") return "Department";
 		if (word === "seniority") return "Seniority";

@@ -17,12 +17,12 @@ export class Transaction extends Model<
 	declare period_id: number;
 	declare issue_date: string; // 發新日期
 	declare pay_type: string; // 發薪別
-	declare u_dep: string; // 部門
+	declare department: string; // 部門
 	declare emp_no: string; // 員工編號
 	declare work_status: string; // 工作形態
-	declare position: number; // 職等
+	declare position_level: number; // 職等
 	declare dependents: number | null; // 扶養人數
-	declare healthcare: number | null; // 健保眷口數
+	declare healthcare_dependents: number | null; // 健保眷口數
 
 	// 勞工相關信息
 	declare l_i: number; // 勞保
@@ -36,12 +36,12 @@ export class Transaction extends Model<
 	declare gross_salary: number; // 應發底薪
 	declare labor_insurance_deduction: number; // 勞保扣除額
 	declare health_insurance_deduction: number; // 健保扣除額
-	declare welfare_fund_contribution: number; // 福利金提撥
+	declare welfare_deduction: number; // 福利金提撥
 	declare subsidy_allowance: number | null; // 補助津貼
 	declare weekday_overtime_pay: number; // 平日加班費
 	declare holiday_overtime_pay: number; // 假日加班費
 	declare leave_deduction: number; // 請假扣款
-	declare overtime_hours: number; // 超時加班
+	declare overtime_money: number; // 超時加班
 	declare attendance_bonus: number; // 全勤獎金
 	declare group_insurance_premium_deduction: number; // 團保費代扣
 	declare retroactive_salary: number; // 補發薪資
@@ -130,7 +130,7 @@ Transaction.init(
 			type: DataTypes.STRING(128),
 			comment: "發薪別",
 		},
-		u_dep: {
+		department: {
 			type: DataTypes.STRING(128),
 			comment: "部門",
 		},
@@ -142,7 +142,7 @@ Transaction.init(
 			type: DataTypes.STRING(128),
 			comment: "工作形態",
 		},
-		position: {
+		position_level: {
 			type: DataTypes.INTEGER,
 			comment: "職等",
 		},
@@ -150,7 +150,7 @@ Transaction.init(
 			type: DataTypes.INTEGER,
 			comment: "扶養人數",
 		},
-		healthcare: {
+		healthcare_dependents: {
 			type: DataTypes.INTEGER,
 			comment: "健保眷口數",
 		},
@@ -198,7 +198,7 @@ Transaction.init(
 			type: DataTypes.INTEGER,
 			comment: "健保扣除額",
 		},
-		welfare_fund_contribution: {
+		welfare_deduction: {
 			type: DataTypes.INTEGER,
 			comment: "福利金提撥",
 		},
@@ -218,7 +218,7 @@ Transaction.init(
 			type: DataTypes.INTEGER,
 			comment: "請假扣款",
 		},
-		overtime_hours: {
+		overtime_money: {
 			type: DataTypes.INTEGER,
 			comment: "超時加班",
 		},

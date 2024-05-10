@@ -13,11 +13,11 @@ export class BasicInfoService {
 	constructor() {}
 
 	async createBasicInfo({
-		payday,
+		issue_date,
 		announcement,
 	}: z.infer<typeof createBasicInfoService>): Promise<BasicInfo> {
 		const newData = await BasicInfo.create({
-			payday: payday,
+			issue_date: issue_date,
 			announcement: announcement,
 			create_by: "system",
 			update_by: "system",
@@ -52,7 +52,7 @@ export class BasicInfoService {
 
 	async updateBasicInfo({
 		id,
-		payday,
+		issue_date,
 		announcement,
 	}: z.infer<typeof updateBasicInfoService>): Promise<void> {
 		const basicInfo = await this.getBasicInfoById(id!);
@@ -62,7 +62,7 @@ export class BasicInfoService {
 
 		const affectedCount = await BasicInfo.update(
 			{
-				payday: select_value(payday, basicInfo.payday),
+				issue_date: select_value(issue_date, basicInfo.issue_date),
 				announcement: select_value(
 					announcement,
 					basicInfo.announcement

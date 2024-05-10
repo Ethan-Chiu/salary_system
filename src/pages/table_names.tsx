@@ -20,6 +20,6 @@ export const TABLE_TRUST_MONEY = Translate("trustMoney");
 
 export const TABLE_BASIC_INFO = Translate("basicInfo");
 // const BasicInfo = z.object({
-// 	payday: z.date(),
+// 	issue_date: z.date(),
 // 	announcement: z.string(),
 // });

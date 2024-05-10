@@ -16,16 +16,16 @@ export class EmployeeData extends Model<
 	declare id: CreationOptional<number>;
 	declare emp_no: string;
 	declare emp_name: string;
-	declare position: number; //職等
+	declare position_level: number; //職等
 	declare position_type: string; //職級
 	declare ginsurance_type: string;
-	declare u_dep: string;
+	declare department: string;
 	declare work_type: string; //工作類別
 	declare work_status: string; //工作型態
 	declare accessible: string | null;
 	declare sex_type: string;
 	declare dependents: number | null;
-	declare healthcare: number | null;
+	declare healthcare_dependents: number | null;
 	declare registration_date: string;
 	declare quit_date: string | null;
 	declare licens_id: string | null;
@@ -68,11 +68,11 @@ EmployeeData.init(
 		accessible: {
 			type: DataTypes.STRING,
 		},
-		u_dep: {
+		department: {
 			type: DataTypes.STRING(32),
 			allowNull: false,
 		},
-		position: {
+		position_level: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
 		},
@@ -92,7 +92,7 @@ EmployeeData.init(
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: true,
 		},
-		healthcare: {
+		healthcare_dependents: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: true,
 		},

@@ -11,6 +11,8 @@ import { EHRService } from "./ehr_service";
 import { BonusSettingService } from "./bonus_setting_service";
 import { EmployeeAccountService } from "./employee_acount_service";
 import { EmployeeTrustService } from "./employee_trust_service";
+import { AttendanceSettingService } from "./attendance_setting_service";
+import { InsuranceRateSettingService } from "./insurance_rate_setting_service";
 export enum PayType {
     month_pay = "月薪",
     foreign_15_bonus = "外勞15日獎金",
@@ -35,6 +37,8 @@ export class TransactionService {
 		const bonusSettingService = container.resolve(BonusSettingService);
 		const employeeAccountService = container.resolve(EmployeeAccountService);
 		const employeeTrustService = container.resolve(EmployeeTrustService);
+		const attendanceSettingService = container.resolve(AttendanceSettingService);
+		const insuranceRateSettingService = container.resolve(InsuranceRateSettingService);
 		// Data
 		const payset = (await ehrsService.getPaysetByEmpNoList(period_id, [emp_no]))[0];
 		const calculateService = container.resolve(CalculateService);
@@ -43,16 +47,20 @@ export class TransactionService {
 		const bonus_setting = await bonusSettingService.getCurrentBonusSetting();
 		const employee_acount = await employeeAccountService.getEmployeeAccountByEmpNo(emp_no);
 		const employee_trust = await employeeTrustService.getCurrentEmployeeTrustByEmpNo(emp_no, period_id);
+		const attendance_setting = await attendanceSettingService.getCurrentAttendanceSetting(period_id);
+		const overtime = (await ehrsService.getOvertimeByEmpNoList(period_id, [emp_no]))[0];
+		const insurance_rate_setting = await insuranceRateSettingService.getCurrentInsuranceRateSetting(period_id);
+		const holiday = (await ehrsService.getHolidayByEmpNoList(period_id, [emp_no]))[0];
 		// Variable
 		period_id = period_id;
-		issue_date = issue_date;
+		issue_date = issue_date; 
         pay_type = pay_type;
-        const u_dep = employee_data!.u_dep;
+        const department = employee_data!.department;
 		emp_no = emp_no;
 		const work_status = employee_data!.work_status;
-		const position = employee_data!.position;
+		const position_level = employee_data!.position_level;
 		const dependents = employee_data!.dependents;
-		const healthcare = employee_data!.healthcare;
+		const healthcare_dependents = employee_data!.healthcare_dependents; 
 		const l_i = employee_payment!.l_i;
 		const h_i = employee_payment!.h_i;
 		const labor_retirement = employee_payment!.labor_retirement;
@@ -62,22 +70,22 @@ export class TransactionService {
 		const food_allowance = employee_payment!.food_bonus;
 		const base_salary = employee_payment!.base_salary;
 		const gross_salary = await calculateService.getGrossSalary(employee_payment!, payset!);
-		const labor_insurance_deduction = await calculateService.getLaborInsuranceDeduction(gross_salary, payset!);
-		const health_insurance_deduction = await calculateService.getHealthInsuranceDeduction(gross_salary, payset!);
-		const welfare_fund_contribution = await calculateService.getWelfareFundContribution(gross_salary, payset!);
+		const labor_insurance_deduction = await calculateService.getLaborInsuranceDeduction(employee_data!,employee_payment!,payset!,insurance_rate_setting!);
+		const health_insurance_deduction = await calculateService.getHealthInsuranceDeduction(employee_data!,employee_payment!,insurance_rate_setting!);
+		const welfare_deduction = await calculateService.getWelfareDeduction(employee_data!,employee_payment!);
 		const subsidy_allowance = employee_payment!.subsidy_comp;
-		const weekday_overtime_pay = await calculateService.getOvertimeMoney(emp_no, period_id, "平日");
-		const holiday_overtime_pay = await calculateService.getOvertimeMoney(emp_no, period_id, "假日");
-		const leave_deduction = await calculateService.getLeaveDeduction(emp_no, period_id);
-		const overtime_hours = await calculateService.getOvertimeHours(emp_no, period_id);	
-		const attendance_bonus = 0;
+		const weekday_overtime_pay = await calculateService.getNormalMoney(employee_data!, employee_payment!, attendance_setting!, overtime!);
+		const holiday_overtime_pay = await calculateService.getVocationMoney(employee_data!, employee_payment!, attendance_setting!, overtime!); // change name
+		const leave_deduction = await calculateService.getLeaveDeduction(employee_data!,employee_payment!,holiday!);
+		const overtime_money = await calculateService.getOvertimeMoney(employee_data!, employee_payment!, attendance_setting!, overtime!);	
+		const attendance_bonus = await calculateService.getAttendanceBonus();
 		const group_insurance_premium_deduction = await calculateService.getGroupInsurancePremiumDeduction(gross_salary, payset!);
 		const retroactive_salary = await calculateService.getRetroactiveDeduction(gross_salary, payset!);
 		const other_deductions = await calculateService.getOtherDeductions(gross_salary, payset!);
 		const other_additions = await calculateService.getOtherAdditions(gross_salary, payset!);
 		const meal_deduction = await calculateService.getMealDeduction(gross_salary, payset!);
 		const taxable_income = await calculateService.getTaxableIncome(gross_salary, payset!);
-		const income_tax = await calculateService.getIncomeTax(gross_salary, payset!);
+		const income_tax = await calculateService.getSalaryIncomeTax(employee_data!, new Date(issue_date));
 		const bonus_tax = await calculateService.getBonusTax();
 		const position_allowance = employee_payment!.job_comp;
 		const shift_allowance = employee_payment!.shift_allowance;
@@ -89,7 +97,7 @@ export class TransactionService {
 		const labor_insurance_premium = await calculateService.getLaborInsurancePremium(gross_salary, payset!);
 		const salary_advance = await calculateService.getSalaryAdvance(gross_salary, payset!);
 		const health_insurance_premium = await calculateService.getHealthInsurancePremium(gross_salary, payset!);
-		const group_insurance_premium = await calculateService.getGroupInsurancePremium(gross_salary, payset!);
+		const group_insurance_premium = await calculateService.getGroupInsurance(employee_data!);
 		const net_salary = await calculateService.getNetSalary(gross_salary, payset!);
 		const other_addition_tax = await calculateService.getOtherAdditionTax(gross_salary, payset!);
 		const other_deduction_tax = await calculateService.getOtherDeductionTax(gross_salary, payset!);
@@ -102,12 +110,12 @@ export class TransactionService {
 		const dragon_boat_festival_bonus = await calculateService.getDragonBoatFestivalBonus(gross_salary, payset!);
 		const mid_autumn_festival_bonus = await calculateService.getMidAutumnFestivalBonus(gross_salary, payset!);
 		note = note;
-		const account1 = employee_data!.nbanknumber;
-		const account2 = employee_data!.nbanknumber2;
+		const account1 = employee_acount![0]?.bank_account!;
+		const account2 = employee_acount![1]?.bank_account!;
 		const foreign_currency_account = employee_data!.foreign_currency_account;
 		const bonus_ratio = bonus_setting!.fixed_multiplier;
 		const annual_days_in_service = payset!.work_day!;
-		const labor_pension_contribution = await calculateService.getLaborPensionContribution(gross_salary, payset!);
+		const labor_pension_contribution = await calculateService.getLaborPensionContribution(employee_data!);
 		const old_system_labor_pension_contribution = await calculateService.getOldSystemLaborPensionContribution(gross_salary, payset!);
 		const seniority = employee_data!.seniority;
 		const appraisal_rate = await calculateService.getAppraisalRate(gross_salary, payset!);
@@ -131,12 +139,12 @@ export class TransactionService {
 			period_id,
 			issue_date, // 發薪日期
 			pay_type, // 發薪別
-			u_dep, // 部門
+			department, // 部門
 			emp_no, // 員工編號
 			work_status, // 工作形態
-			position, // 職等
+			position_level, // 職等
 			dependents, // 扶養人數
-			healthcare, // 健保眷口數
+			healthcare_dependents, // 健保眷口數
 			// 勞工相關信息
 			l_i, // 勞保
 			h_i, // 健保
@@ -149,12 +157,12 @@ export class TransactionService {
 			gross_salary, // 應發底薪
 			labor_insurance_deduction, // 勞保扣除額
 			health_insurance_deduction, // 健保扣除額
-			welfare_fund_contribution, // 福利金提撥
+			welfare_deduction, // 福利金提撥
 			subsidy_allowance, // 補助津貼
 			weekday_overtime_pay, // 平日加班費
 			holiday_overtime_pay, // 假日加班費
 			leave_deduction, // 請假扣款
-			overtime_hours, // 超時加班
+			overtime_money, // 超時加班
 			attendance_bonus, // 全勤獎金
 			group_insurance_premium_deduction, // 團保費代扣
 			retroactive_salary, // 補發薪資

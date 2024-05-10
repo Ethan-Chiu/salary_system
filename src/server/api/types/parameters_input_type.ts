@@ -71,7 +71,7 @@ export const updateAttendanceSettingService = AttendanceSetting.merge(Id)
 	.partial();
 
 const BasicInfo = z.object({
-	payday: z.date(),
+	issue_date: z.date(),
 	announcement: z.string(),
 });
 
@@ -130,7 +130,7 @@ export const updateBonusDepartmentAPI = BonusDepartment.merge(Id).partial();
 export const updateBonusDepartmentService = BonusDepartment.merge(Id).partial();
 
 const BonusPosition = z.object({
-	position: z.number(),
+	position_level: z.number(),
 	multiplier: z.number(),
 });
 
@@ -204,7 +204,7 @@ export const updatePerformanceLevelService =
 	PerformanceLevel.merge(Id).partial();
 //MARK:trust
 const TrustMoney = z.object({
-	position: z.number(),
+	position_level: z.number(),
 	position_type: z.string(),
 	emp_trust_reserve_limit: z.number().nullable(),
 	org_trust_reserve_limit: z.number(),
@@ -272,16 +272,16 @@ export const updateEmployeeTrustService = EmployeeTrust.merge(Id)
 const EmployeeData = z.object({
 	emp_no: z.string(),
 	emp_name: z.string(),
-	position: z.number(),
+	position_level: z.number(),
 	position_type: z.string(),
 	ginsurance_type: z.string(),
-	u_dep: z.string(),
+	department: z.string(),
 	work_type: z.string(),
 	work_status: z.string(),
 	accessible: z.string().nullable(),
 	sex_type: z.string(),
 	dependents: z.number().nullable(),
-	healthcare: z.number().nullable(),
+	healthcare_dependents: z.number().nullable(),
 	registration_date: z.string(),
 	quit_date: z.string().nullable(),
 	licens_id: z.string().nullable(),
