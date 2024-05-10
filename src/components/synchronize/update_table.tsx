@@ -158,15 +158,12 @@ export function UpdateTable({
 
 	function checkAll() {
 		const allChecked: boolean = Object.values(checkedEmps).every((v) => v);
-		setCheckedEmps((checkedEmps) => {
-			for (const key in checkedEmps) {
-				checkedEmps[key] = !allChecked;
-			}
-			return checkedEmps;
+		const newChecked: Record<string, boolean> = {};
+		Object.keys(checkedEmps).forEach((k: string) => {
+			newChecked[k] = !allChecked;
 		});
+		setCheckedEmps(newChecked);
 	}
-
-	console.log("checkedEmps", checkedEmps);
 
 	return (
 		<>
