@@ -1,5 +1,5 @@
 import { DoubleArrowRightIcon } from "@radix-ui/react-icons";
-import React from "react";
+import React, { Fragment } from "react";
 
 function ProgressBar({
 	labels,
@@ -11,9 +11,8 @@ function ProgressBar({
 	return (
 		<ol className="flex w-full items-center justify-evenly space-x-2 rounded-lg border border-gray-200 bg-white p-3 text-center text-sm font-medium text-gray-500 shadow-sm rtl:space-x-reverse dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 sm:space-x-4 sm:p-4 sm:text-base">
 			{labels.map((label, index) => (
-				<>
+				<Fragment key={label}>
 					<Step
-						key={label}
 						number={index + 1}
 						selectedIndex={selectedIndex + 1}
 						label={label}
@@ -23,7 +22,7 @@ function ProgressBar({
 					) : (
 						<DoubleArrowRightIcon />
 					)}
-				</>
+				</Fragment>
 			))}
 		</ol>
 	);

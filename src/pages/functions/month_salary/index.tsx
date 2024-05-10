@@ -149,11 +149,13 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 				}
 			}}
 		>
-			<div className="flex h-full flex-col p-4">
-				<Header title="functions" showOptions className="mb-4" />
-				<ProgressBar labels={titles} selectedIndex={selectedIndex} />
-				<div className="h-4" />
-				{pageList[selectedIndex]?.page ?? <></>}
+			<div className="flex flex-col h-full">
+				<Header title="functions" showOptions />
+				<div className="flex flex-col grow p-4">
+					<ProgressBar labels={titles} selectedIndex={selectedIndex} />
+					<div className="h-4" />
+					{pageList[selectedIndex]?.page ?? <></>}
+				</div>
 			</div>
 			<CompAlert data={data} />
 		</AlertDialog>

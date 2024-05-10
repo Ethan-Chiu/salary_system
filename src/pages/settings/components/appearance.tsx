@@ -17,8 +17,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { useToast } from "~/components/ui/use-toast";
 import { onPromise } from "~/utils/on_promise";
-import { useContext } from "react";
-import { useSession } from "next-auth/react";
+import { useTheme } from "next-themes";
 
 const appearanceFormSchema = z.object({
 	theme: z.enum(["light", "dark"], {
@@ -33,6 +32,8 @@ const appearanceFormSchema = z.object({
 type AppearanceFormValues = z.infer<typeof appearanceFormSchema>;
 
 export function AppearanceForm() {
+	const { setTheme } = useTheme();
+
 	// This can come from your database or API.
 	const defaultValues: Partial<AppearanceFormValues> = {
 		language: (localStorage.getItem("language") as any) ?? "zh",
@@ -48,6 +49,7 @@ export function AppearanceForm() {
 
 	function onSubmit(data: AppearanceFormValues) {
 		localStorage.setItem("language", data.language);
+		setTheme(data.theme);
 		toast({
 			title: "You submitted the following values:",
 			description: (
@@ -76,11 +78,6 @@ export function AppearanceForm() {
 								<div className="relative w-max">
 									<FormControl>
 										<select
-											defaultValue={
-												localStorage.getItem(
-													"language"
-												) ?? "zh"
-											}
 											className={cn(
 												buttonVariants({
 													variant: "outline",

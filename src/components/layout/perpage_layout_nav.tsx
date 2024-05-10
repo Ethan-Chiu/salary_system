@@ -48,7 +48,7 @@ export const PerpageLayoutNav = (
 							ref={ref}
 							defaultSize={265}
 							collapsedSize={3}
-							collapsible={true}
+							collapsible
 							minSize={10}
 							maxSize={20}
 							onExpand={() => {

@@ -6,7 +6,7 @@ export const LoadingSpinner = (props: {
 }) => {
 	return (
 		<div
-			className={cn("flex items-center justify-center", props.className)}
+			className={cn("flex items-center justify-center h-full", props.className)}
 			role="status"
 		>
 			<svg
