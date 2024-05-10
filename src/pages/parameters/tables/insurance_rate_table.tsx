@@ -119,20 +119,15 @@ export function insuranceRateMapper(
 		},
 		{
 			name: c_EndDateStr,
-			value: data.end_date
-				? // ? new Date(insuranceRateData.end_date)
-				  formatDate("day", data.end_date)
-				: "",
+			value: data.end_date ? formatDate("day", data.end_date) : "",
 		},
 		{
 			name: c_CreateDateStr,
 			value: formatDate("hour", data.create_date),
-			// value: insuranceRateData.create_date
 		},
 		{
 			name: c_UpdateDateStr,
 			value: formatDate("hour", data.update_date),
-			// value: insuranceRateData.create_date
 		},
 	];
 }

@@ -7,14 +7,15 @@ import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/compon
 import { type BankSetting } from "~/server/database/entity/SALARY/bank_setting";
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
+import { formatDate } from "~/lib/utils/format_date";
 
 export type RowItem = {
 	bank_name: string;
 	bank_code: string;
 	org_name: string;
 	org_code: string;
-	start_date: Date;
-	end_date: Date | null;
+	start_date: string;
+	end_date: string | null;
 };
 type RowItemKey = keyof RowItem;
 
@@ -58,7 +59,7 @@ export const bank_columns = [
 		cell: ({ row }) => {
 			return (
 				<div className="text-center font-medium">{`${
-					row.original.start_date.toISOString().split("T")[0]
+					row.original.start_date
 				}`}</div>
 			);
 		},
@@ -68,7 +69,7 @@ export const bank_columns = [
 		cell: ({ row }) => {
 			return row.original.end_date ? (
 				<div className="text-center font-medium">{`${
-					row.original.end_date.toISOString().split("T")[0] ?? ""
+					row.original.end_date
 				}`}</div>
 			) : (
 				<div className="text-center font-medium"></div>
@@ -84,8 +85,8 @@ export function bankSettingMapper(bankSettingData: BankSetting[]): RowItem[] {
 			bank_code: d.bank_code,
 			org_name: d.org_name,
 			org_code: d.org_code,
-			start_date: new Date(d.start_date),
-			end_date: d.end_date ? new Date(d.end_date) : null,
+			start_date: formatDate("day", d.start_date),
+			end_date: d.end_date ? formatDate("day", d.end_date) : "",
 		};
 	});
 }
