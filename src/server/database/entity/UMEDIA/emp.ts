@@ -3,16 +3,16 @@ export class Emp {
 	declare change_flag: string;
 	declare emp_no: string;
 	declare emp_name: string;
-	declare position: number;
+	declare position_level: number;
 	declare position_type: string;
 	declare ginsurance_type: string;
-	declare u_dep: string;
+	declare department: string;
 	declare work_type: string;
 	declare work_status: string;
 	declare accessible: string | null;
 	declare sex_type: string;
 	declare dependents: number | null;
-	declare healthcare: number | null; //健保眷口數
+	declare healthcare_dependents: number | null; //健保眷口數
 	declare registration_date: string;
 	declare quit_date: string | null;
 	declare licens_id: string | null;
@@ -22,16 +22,16 @@ export class Emp {
 		change_flag: string,
 		emp_no: string,
 		emp_name: string,
-		position: number,
+		position_level: number,
 		position_type: string,
 		ginsurance_type: string,
-		u_dep: string,
+		department: string,
 		work_type: string,
 		work_status: string,
 		accessible: string | null,
 		sex_type: string,
 		dependents: number | null,
-		healthcare: number | null,
+		healthcare_dependents: number | null,
 		registration_date: string,
 		quit_date: string | null,
 		licens_id: string | null,
@@ -40,16 +40,16 @@ export class Emp {
 		this.change_flag = change_flag;
 		this.emp_no = emp_no;
 		this.emp_name = emp_name;
-		this.position = position;
+		this.position_level = position_level;
 		this.position_type = position_type;
 		this.ginsurance_type = ginsurance_type;
-		this.u_dep = u_dep;
+		this.department = department;
 		this.work_type = work_type;
 		this.work_status = work_status;
 		this.accessible = accessible;
 		this.sex_type = sex_type;
 		this.dependents = dependents;
-		this.healthcare = healthcare;
+		this.healthcare_dependents = healthcare_dependents;
 		this.registration_date = registration_date;
 		this.quit_date = quit_date;
 		this.licens_id = licens_id;

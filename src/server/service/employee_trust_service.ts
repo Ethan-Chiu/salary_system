@@ -225,7 +225,7 @@ export class EmployeeTrustService {
 			}
 			const trust_money =
 				await trust_money_service.getTrustMoneyByPosition(
-					employee_data.position,
+					employee_data.position_level,
 					employee_data.position_type
 				);
 			if (trust_money == null) {

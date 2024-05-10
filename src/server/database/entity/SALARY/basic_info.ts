@@ -14,7 +14,7 @@ export class BasicInfo extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-	declare payday: Date;
+	declare issue_date: Date;
 	declare announcement: string;
 
 	// timestamps!
@@ -35,7 +35,7 @@ BasicInfo.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		payday: {
+		issue_date: {
 			type: DataTypes.DATE,
 			allowNull: false,
 		},

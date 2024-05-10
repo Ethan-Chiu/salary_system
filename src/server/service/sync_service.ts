@@ -72,16 +72,16 @@ export class SyncService {
 		const salary_data = new EmployeeData();
 		salary_data.emp_no = ehr_data.emp_no!;
 		salary_data.emp_name = ehr_data.emp_name!;
-		salary_data.position = ehr_data.position!;
+		salary_data.position_level = ehr_data.position_level!;
 		salary_data.position_type = ehr_data.position_type!;
 		salary_data.ginsurance_type = ehr_data.ginsurance_type!;
-		salary_data.u_dep = ehr_data.u_dep!;
+		salary_data.department = ehr_data.department!;
 		salary_data.work_type = ehr_data.work_type!;
 		salary_data.work_status = ehr_data.work_status!;
 		salary_data.accessible = ehr_data.accessible!;
 		salary_data.sex_type = ehr_data.sex_type!;
 		salary_data.dependents = ehr_data.dependents!;
-		salary_data.healthcare = ehr_data.healthcare!;
+		salary_data.healthcare_dependents = ehr_data.healthcare_dependents!;
 		salary_data.registration_date = ehr_data.registration_date!;
 		salary_data.quit_date = ehr_data.quit_date!;
 		salary_data.licens_id = ehr_data.licens_id!;
@@ -132,9 +132,9 @@ export class SyncService {
 			salaryEmp?.emp_name
 		);
 		syncData.department = this.dataComparison(
-			"u_dep",
-			ehrEmp.u_dep,
-			salaryEmp?.u_dep
+			"department",
+			ehrEmp.department,
+			salaryEmp?.department
 		);
 		// syncData.english_name = this.dataComparison("english_name", ehrEmp.english_name, salaryEmp?.english_name);
 		let pseudo_english_name: DataComparison = {
@@ -182,7 +182,7 @@ export class SyncService {
 				// 查找所有員工數據
 				attributes: [
 					"emp_name",
-					"u_dep",
+					"department",
 					"emp_no",
 					"work_status",
 					"quit_date",
@@ -326,7 +326,7 @@ export class SyncService {
 					const cand_paid_emp: PaidEmployee = {
 						emp_no: emp.emp_no,
 						name: emp.emp_name,
-						department: emp.u_dep,
+						department: emp.department,
 						work_status: emp.work_status,
 						quit_date: emp.quit_date,
 						bug: msg != "" ? msg : undefined, // 如果消息不為空，將其添加為bug屬性
