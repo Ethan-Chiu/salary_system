@@ -91,7 +91,7 @@ export function insuranceRateMapper(
 		},
 		{
 			name: "勞保職業災害費率",
-			value: data.l_i_occupational_hazard_rate,
+			value: data.l_i_occupational_injury_rate,
 		},
 		{
 			name: "勞保工資墊償基金提繳率",

@@ -8,7 +8,7 @@
 	"l_i_employment_pay_rate": {
 		"type": "number"
 	},
-	"l_i_occupational_hazard_rate": {
+	"l_i_occupational_injury_rate": {
 		"type": "number"
 	},
 	"l_i_wage_replacement_rate": {

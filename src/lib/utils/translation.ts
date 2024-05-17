@@ -113,7 +113,7 @@ export function Translate(word: string) {
 		if (word === "l_i_wage_replacement_rate")
 			return "勞保工資墊償基金提繳率";
 		if (word === "l_i_employment_pay_rate") return "勞保就業保險費率";
-		if (word === "l_i_occupational_hazard_rate") return "勞保職業災害費率";
+		if (word === "l_i_occupational_injury_rate") return "勞保職業災害費率";
 		if (word === "level") return "級距";
 		if (word === "level_end") return "迄";
 		if (word === "level_start") return "起";
@@ -280,8 +280,8 @@ export function Translate(word: string) {
 			return "Labor Insurance Wage Replacement Fund Pay Rate";
 		if (word === "l_i_employment_pay_rate")
 			return "Labor Insurance Employment Insurance Pay Rate";
-		if (word === "l_i_occupational_hazard_rate")
-			return "Labor Insurance Occupational Hazard Insurance Rate";
+		if (word === "l_i_occupational_injury_rate")
+			return "Labor Insurance Occupational Injury Insurance Rate";
 		if (word === "level") return "Level";
 		if (word === "level_end") return "End";
 		if (word === "level_start") return "Start";
