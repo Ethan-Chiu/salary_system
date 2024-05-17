@@ -24,6 +24,9 @@ import { Translate } from "~/lib/utils/translation";
 import { ParameterForm } from "./parameter_form";
 import { TableEnum, getTableName } from "../context/data_table_enum";
 import { getSchema } from "../../schemas/get_schemas";
+import { api } from "~/utils/api";
+import { z } from "zod";
+import { Level } from "~/server/database/entity/SALARY/level";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
@@ -37,6 +40,28 @@ export function DataTableFunctions({
 }: DataTableFunctionsProps) {
 	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
+
+	const { isLoading, isError, data, error } =
+		(tableType === "TableLevelRange") ? api.parameters.getCurrentLevel.useQuery() 
+		: { isLoading: false, isError: false, data: {data: []}, error: null };
+
+	// ========================= Additional Condition for Schema =====================================
+	let schema = getSchema(tableType);
+	if (tableType === "TableLevelRange") {
+		if (isLoading || isError) {
+			return <></>;
+		}	
+		else {
+			const levelData: string[] = (data as Level[]).map((d: Level) => d.level.toString());
+			const levelDataAsTuple: readonly [string, ...string[]] = levelData as any as [string, ...string[]];
+			console.log(levelData);
+			console.log(levelDataAsTuple);
+			schema = schema.extend({
+				level_start: z.enum(levelDataAsTuple),
+				level_end: z.enum(levelDataAsTuple),
+			})
+		}
+	}
 
 	return (
 		<div className={cn(className, "flex h-full items-center")}>
@@ -88,7 +113,7 @@ export function DataTableFunctions({
 					</SheetHeader>
 					<ScrollArea className="h-[85%] w-full">
 						<ParameterForm
-							formSchema={getSchema(tableType)!}
+							formSchema={schema!}
 							mode={mode}
 							closeSheet={() => setOpen(false)}
 						/>
