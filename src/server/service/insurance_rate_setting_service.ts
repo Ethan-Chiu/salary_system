@@ -18,7 +18,7 @@ export class InsuranceRateSettingService {
 		min_wage_rate,
 		l_i_accident_rate,
 		l_i_employment_pay_rate,
-		l_i_occupational_hazard_rate,
+		l_i_occupational_injury_rate,
 		l_i_wage_replacement_rate,
 		h_i_standard_rate,
 		h_i_avg_dependents_count,
@@ -35,7 +35,7 @@ export class InsuranceRateSettingService {
 			min_wage_rate: min_wage_rate,
 			l_i_accident_rate: l_i_accident_rate,
 			l_i_employment_pay_rate: l_i_employment_pay_rate,
-			l_i_occupational_hazard_rate: l_i_occupational_hazard_rate,
+			l_i_occupational_injury_rate: l_i_occupational_injury_rate,
 			l_i_wage_replacement_rate: l_i_wage_replacement_rate,
 			h_i_standard_rate: h_i_standard_rate,
 			h_i_avg_dependents_count: h_i_avg_dependents_count,
@@ -104,7 +104,7 @@ export class InsuranceRateSettingService {
 		min_wage_rate,
 		l_i_accident_rate,
 		l_i_employment_pay_rate,
-		l_i_occupational_hazard_rate,
+		l_i_occupational_injury_rate,
 		l_i_wage_replacement_rate,
 		h_i_standard_rate,
 		h_i_avg_dependents_count,
@@ -132,9 +132,9 @@ export class InsuranceRateSettingService {
 					l_i_employment_pay_rate,
 					insuranceSetting.l_i_employment_pay_rate
 				),
-				l_i_occupational_hazard_rate: select_value(
-					l_i_occupational_hazard_rate,
-					insuranceSetting.l_i_occupational_hazard_rate
+				l_i_occupational_injury_rate: select_value(
+					l_i_occupational_injury_rate,
+					insuranceSetting.l_i_occupational_injury_rate
 				),
 				l_i_wage_replacement_rate: select_value(
 					l_i_wage_replacement_rate,

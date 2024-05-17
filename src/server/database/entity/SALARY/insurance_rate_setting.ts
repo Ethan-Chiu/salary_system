@@ -17,7 +17,7 @@ export class InsuranceRateSetting extends Model<
 	declare min_wage_rate: number;
 	declare l_i_accident_rate: number;
 	declare l_i_employment_pay_rate: number;
-	declare l_i_occupational_hazard_rate: number;
+	declare l_i_occupational_injury_rate: number;
 	declare l_i_wage_replacement_rate: number;
 	declare h_i_standard_rate: number;
 	declare h_i_avg_dependents_count: number;
@@ -59,7 +59,7 @@ InsuranceRateSetting.init(
 			unique: false,
 			allowNull: false,
 		},
-		l_i_occupational_hazard_rate: {
+		l_i_occupational_injury_rate: {
 			type: DataTypes.FLOAT,
 			unique: false,
 			allowNull: false,
