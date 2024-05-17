@@ -81,9 +81,10 @@ export class EHRService {
 	}
 	async getEmp(period_id: number): Promise<Emp[]> {
 		const dbConnection = container.resolve(Database).connection;
-		var dataList = await dbConnection.query(this.GET_EMP_QUERY(period_id), {
+		let dataList = await dbConnection.query(this.GET_EMP_QUERY(period_id), {
 			type: QueryTypes.SELECT,
 		});
+
 		function dropColumns(objects: any[], columnsToRemove: any[]) {
 			return objects.map((obj) => {
 				const modifiedObject = { ...obj };

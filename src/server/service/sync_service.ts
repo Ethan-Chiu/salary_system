@@ -9,8 +9,9 @@ import { EmployeeTrustService } from "./employee_trust_service";
 import { type Exact } from "~/utils/exact_type";
 import { z } from "zod";
 
-export const FunctionsEnum = z.enum  (["month_salary"])
+export const FunctionsEnum = z.enum(["month_salary"]);
 export type FunctionsEnumType = z.infer<typeof FunctionsEnum>;
+
 export interface DataComparison<ValueT = any> {
 	key: string;
 	salary_value: ValueT;
@@ -44,7 +45,7 @@ export class SyncService {
 		const current_month = periodInfo.period_name.split("-")[0]!;
 		const levaing_year = quit_date.split("-")[0]!; //讀出來是2023-05-04的形式
 		const leaving_month = quit_date.split("-")[1]!;
-		const monthDict: {[key: string]: string} = {
+		const monthDict: Record<string, string> = {
 			JAN: "1",
 			FEB: "2",
 			MAR: "3",
@@ -140,7 +141,7 @@ export class SyncService {
 			salaryEmp?.department
 		);
 		// syncData.english_name = this.dataComparison("english_name", ehrEmp.english_name, salaryEmp?.english_name);
-		let pseudo_english_name: DataComparison = {
+		const pseudo_english_name: DataComparison = {
 			key: "english_name",
 			salary_value: "Howard",
 			ehr_value: "Howard",
@@ -193,26 +194,22 @@ export class SyncService {
 			});
 			salary_emps = salary_emps.filter((emp) => {
 				// 篩選符合支付工作狀態的員工
-				return pay_work_status.includes(emp.work_status!);
+				return pay_work_status.includes(emp.work_status);
 			});
 			const salary_emp_nos = salary_emps.map((emp) => emp.emp_no); // 提取工資員工的員工編號
 			const ehr_emps = await ehrService.getEmp(period); // 從EHR服務中獲取員工數據
 			// 步驟1: 創建ehr_emps的字典
-			interface EHRDictType {
-				[key: string]: any;
-			}
-			const ehrDict: EHRDictType = {}; // 創建EHR字典
+			const ehrDict: Map<string, Emp> = new Map<string, Emp>();
 			ehr_emps.forEach((emp) => {
-				// 將EHR員工映射到字典中
-				ehrDict[emp.emp_no!] = emp;
+				ehrDict.set(emp.emp_no, emp);
 			});
 
 			// 步驟2: 添加新員工
-			let newEmps: Array<Emp> = [];
+			const newEmps: Array<Emp> = [];
 			ehr_emps.map((emp) => {
 				if (
 					emp.change_flag == "當月新進" &&
-					!salary_emp_nos.includes(emp.emp_no!)
+					!salary_emp_nos.includes(emp.emp_no)
 				)
 					newEmps.push(emp);
 			});
@@ -225,7 +222,7 @@ export class SyncService {
 			const updated_all_emps = await Promise.all(
 				// 最新的所有員工數據
 				all_emps.map((salaryEmp) => {
-					const matchingEhrEmp = ehrDict[salaryEmp.emp_no];
+					const matchingEhrEmp = ehrDict.get(salaryEmp.emp_no);
 					return matchingEhrEmp
 						? this.empToEmployee(matchingEhrEmp)
 						: salaryEmp;
@@ -408,6 +405,7 @@ export class SyncService {
 
 		return changedDatas;
 	}
+
 	async synchronize(period: number, emp_no_list: string[]) {
 		const ehrService = container.resolve(EHRService);
 		const ehr_datas = await ehrService.getEmp(period);
@@ -415,19 +413,17 @@ export class SyncService {
 			where: { emp_no: { [Op.in]: emp_no_list } },
 		});
 		const salary_emp_no_list = salary_datas.map((emp) => emp.emp_no);
-		interface EHRDictType {
-			[key: string]: any;
-		}
-		const ehrDict: EHRDictType = {};
+
+		const ehrDict: Map<string, Emp> = new Map<string, Emp>();
 		ehr_datas.forEach((emp) => {
-			ehrDict[emp.emp_no!] = emp;
+			ehrDict.set(emp.emp_no, emp);
 		});
-		const updatedDatas = await Promise.all(
-			emp_no_list.map(async (emp_no: string) => {
-				const updatedData = await this.empToEmployee(ehrDict[emp_no]);
-				return updatedData;
-			})
-		);
+
+		const updatedDatas = emp_no_list.map((emp_no: string) => {
+			const updatedData = this.empToEmployee(ehrDict.get(emp_no)!);
+			return updatedData;
+		});
+
 		const employee_data_service = container.resolve(EmployeeDataService);
 		const employee_payment_service = container.resolve(
 			EmployeePaymentService
@@ -436,7 +432,7 @@ export class SyncService {
 		updatedDatas.map(async (updatedData) => {
 			if (!salary_emp_no_list.includes(updatedData.emp_no)) {
 				await employee_data_service.createEmployeeData(updatedData);
-				let payment_input = {
+				const payment_input = {
 					emp_no: updatedData.emp_no,
 					base_salary: 0,
 					food_allowance: 0,
@@ -455,7 +451,7 @@ export class SyncService {
 				await employee_payment_service.createEmployeePayment(
 					payment_input
 				);
-				let employee_trust_input = {
+				const employee_trust_input = {
 					emp_no: updatedData.emp_no,
 					emp_trust_reserve: 0,
 					org_trust_reserve: 0,
