@@ -1,22 +1,27 @@
 import { type NextPageWithLayout } from "../_app";
 import { RootLayout } from "~/components/layout/root_layout";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
-import { type ReactElement } from "react";
+import { useContext, type ReactElement } from "react";
 import { api } from "~/utils/api";
 import { LoadingSpinner } from "~/components/loading";
 import { Header } from "~/components/header";
 import { SyncPageContent } from "~/components/synchronize/sync_page_content";
+import periodContext from "~/components/context/period_context";
 
 
 const PageCheckEHR: NextPageWithLayout = () => {
-	return <SyncPage period={115} />;
+	return <SyncPage />;
 };
 
-function SyncPage({ period }: { period: number }) {
+function SyncPage() {
+	const {selectedPeriod} = useContext(periodContext);
+	if (selectedPeriod == null) {
+		return <p>Please select period first</p>;
+	}
 	const { isLoading, isError, data, error } =
 		api.sync.checkEmployeeData.useQuery({
 			func: "month_salary",
-			period: period,
+			period: selectedPeriod.period_id,
 		});
 
 	if (isLoading) {
