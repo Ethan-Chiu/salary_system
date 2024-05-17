@@ -527,6 +527,7 @@ export class CalculateService {
 	//MARK: 勞退金自提		
 	//MARK: 薪資區隔
 	//MARK: 薪資總額
+	
 	//MARK: 勞退金提撥
 	async getLaborRetirementContribution(
 		employee_data: EmployeeData,
@@ -564,7 +565,9 @@ export class CalculateService {
 	//MARK: 公司獎勵金
 	//MARK: 特別信託獎勵金＿公司
 	//MARK: 團保費代扣＿升等
-	//MARK: 特別事假扣款
+
+	//MARK: 特別事假扣款		// 薪資查詢.特別事假扣款 = GetLeave2Money(薪資查詢!工作類別,薪資查詢!工作形態,薪資查詢!原應發底薪,薪資查詢!補助津貼+薪資查詢!專業証照津貼,薪資查詢!特別事假時數);
+
 
 	//MARK: 實發金額
 }
