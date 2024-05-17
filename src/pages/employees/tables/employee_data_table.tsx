@@ -29,7 +29,7 @@ const columns = [
 
 export function EmployeeDataTable({ index, globalFilter, period_id }: any) {
 	const { isLoading, isError, data, error } =
-		api.employeeData.getAllEmployeeData.useQuery({ period_id });
+		api.employeeData.getAllEmployeeDataWithInfo.useQuery({ period_id });
 
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast

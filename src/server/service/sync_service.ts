@@ -7,10 +7,10 @@ import { EmployeeDataService } from "./employee_data_service";
 import { EmployeePaymentService } from "./employee_payment_service";
 import { EmployeeTrustService } from "./employee_trust_service";
 import { type Exact } from "~/utils/exact_type";
+import { z } from "zod";
 
-export  enum Functions {
-	month_salary = "month_salary"
-}
+export const FunctionsEnum = z.enum  (["month_salary"])
+export type FunctionsEnumType = z.infer<typeof FunctionsEnum>;
 export interface DataComparison<ValueT = any> {
 	key: string;
 	salary_value: ValueT;
@@ -165,7 +165,7 @@ export class SyncService {
 
 	// Stage 1
 	async getCandPaidEmployees(
-		func: Functions, // 要執行的功能
+		func: FunctionsEnumType, // 要執行的功能
 		period: number // 期間
 	): Promise<PaidEmployee[]> {
 		// 返回需支付的員工數組的Promise
@@ -179,7 +179,7 @@ export class SyncService {
 			"當月新進人員全月",
 			"當月新進人員破月",
 		];
-		if (func == Functions.month_salary) {
+		if (func == FunctionsEnum.Enum.month_salary) {
 			// 如果功能是月薪計算
 			let salary_emps = await EmployeeData.findAll({
 				// 查找所有員工數據
@@ -343,7 +343,7 @@ export class SyncService {
 
 	// Stage 2
 	async checkEmployeeData(
-		func: Functions,
+		func: FunctionsEnumType,
 		period: number
 	): Promise<SyncData[] | null> {
 		const ehrService = container.resolve(EHRService);
@@ -354,7 +354,7 @@ export class SyncService {
 		// Get Data from Salary and EHR
 		let salary_datas: EmployeeData[] = [];
 
-		if (func == "month_salary") {
+		if (func == FunctionsEnum.Enum.month_salary) {
 			salary_datas = await EmployeeData.findAll({
 				where: {
 					emp_no: {
@@ -475,9 +475,9 @@ export class SyncService {
 		return updatedDatas;
 	}
 	// Stage 3
-	async getPaidEmps(func: string): Promise<EmployeeData[]> {
+	async getPaidEmps(func: FunctionsEnumType): Promise<EmployeeData[]> {
 		// 獲取需支付員工的函數，返回Promise<EmployeeData[]>類型的數組
-		if (func == "month_salary") {
+		if (func == FunctionsEnum.Enum.month_salary) {
 			// 如果功能是月薪計算
 			const paid_status = [
 				// 定義需支付的員工狀態列表
