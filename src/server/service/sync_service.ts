@@ -8,6 +8,9 @@ import { EmployeePaymentService } from "./employee_payment_service";
 import { EmployeeTrustService } from "./employee_trust_service";
 import { type Exact } from "~/utils/exact_type";
 
+export  enum Functions {
+	month_salary = "month_salary"
+}
 export interface DataComparison<ValueT = any> {
 	key: string;
 	salary_value: ValueT;
@@ -162,7 +165,7 @@ export class SyncService {
 
 	// Stage 1
 	async getCandPaidEmployees(
-		func: string, // 要執行的功能
+		func: Functions, // 要執行的功能
 		period: number // 期間
 	): Promise<PaidEmployee[]> {
 		// 返回需支付的員工數組的Promise
@@ -176,7 +179,7 @@ export class SyncService {
 			"當月新進人員全月",
 			"當月新進人員破月",
 		];
-		if (func == "month_salary") {
+		if (func == Functions.month_salary) {
 			// 如果功能是月薪計算
 			let salary_emps = await EmployeeData.findAll({
 				// 查找所有員工數據
@@ -340,7 +343,7 @@ export class SyncService {
 
 	// Stage 2
 	async checkEmployeeData(
-		func: string,
+		func: Functions,
 		period: number
 	): Promise<SyncData[] | null> {
 		const ehrService = container.resolve(EHRService);

@@ -11,7 +11,7 @@ import { z } from "zod";
 import { EmployeeInformationService } from "~/server/service/employee_information_service";
 
 export const employeeDataRouter = createTRPCRouter({
-	getAllEmployeeData: publicProcedure
+	getAllEmployeeDataWithInfo: publicProcedure
 		.input(z.object({ period_id: z.number() }))
 		.query(async ({ input }) => {
 			const employeeDataService = container.resolve(EmployeeDataService);
@@ -23,6 +23,15 @@ export const employeeDataRouter = createTRPCRouter({
 			const employeeDataWithInformation = await employeeInformationService.addEmployeeInformation(input.period_id, employeeData);
 			return employeeDataWithInformation;
 		}),
+
+	getAllEmployeeData: publicProcedure.query(async () => {
+		const employeeDataService = container.resolve(EmployeeDataService);
+		const employeeData = await employeeDataService.getAllEmployeeData();
+		if (employeeData.length == 0) {
+			throw new BaseResponseError("EmployeeData does not exist");
+		}
+		return employeeData;
+	}),
 
 	createEmployeeData: publicProcedure
 		.input(createEmployeeDataAPI)

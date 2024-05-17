@@ -9,11 +9,11 @@ interface DataTableToolbarProps<TData> {
 function getFilterFunvtionByValue<TData>(table: Table<TData>, value: string) {
     switch (value) {
         case "all":
-            return table.getColumn("month_pay")?.setFilterValue("");
-        case "month_pay":
-            return table.getColumn("month_pay")?.setFilterValue(true);
-        case "no_month_pay":
-            return table.getColumn("month_pay")?.setFilterValue(false);
+            return table.getColumn("month_salary")?.setFilterValue("");
+        case "month_salary":
+            return table.getColumn("month_salary")?.setFilterValue(true);
+        case "no_month_salary":
+            return table.getColumn("month_salary")?.setFilterValue(false);
         default:
             return table.setGlobalFilter("");
     }
@@ -29,8 +29,8 @@ export function AdvancedFilter<TData>({
             </SelectTrigger>
             <SelectContent>
                 <SelectItem value="all">All</SelectItem>
-                <SelectItem value="month_pay">month_pay</SelectItem>
-                <SelectItem value="no_month_pay">no_month_pay</SelectItem>
+                <SelectItem value="month_salary">month_salary</SelectItem>
+                <SelectItem value="no_month_salary">no_month_salary</SelectItem>
             </SelectContent>
         </Select>
     )

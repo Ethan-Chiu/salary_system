@@ -14,7 +14,7 @@ import { EmployeeTrustService } from "./employee_trust_service";
 import { AttendanceSettingService } from "./attendance_setting_service";
 import { InsuranceRateSettingService } from "./insurance_rate_setting_service";
 export enum PayType {
-    month_pay = "月薪",
+    month_salary = "月薪",
     foreign_15_bonus = "外勞15日獎金",
     Q1_performance = "Q1績效",
     Q2_performance = "Q2績效",
@@ -79,7 +79,7 @@ export class TransactionService {
 		const leave_deduction = await calculateService.getLeaveDeduction(employee_data!,employee_payment!,holiday!);
 		const exceed_overtime_pay = await calculateService.getExceedOvertimePay(employee_data!, employee_payment!, attendance_setting!, overtime!);	
 		const full_attendance_bonus = await calculateService.getFullAttendanceBonus();
-		const group_insurance_deduction = await calculateService.getGroupInsuranceDeduction(gross_salary, payset!);
+		const group_insurance_deduction = await calculateService.getGroupInsuranceDeduction();
 		// const retroactive_salary = await calculateService.getRetroactiveDeduction(gross_salary, payset!);
 		const other_deduction = await calculateService.getOtherDeduction(gross_salary, payset!);
 		const other_addition = await calculateService.getOtherAddition(gross_salary, payset!);

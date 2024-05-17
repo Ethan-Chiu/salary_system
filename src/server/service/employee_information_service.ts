@@ -2,7 +2,7 @@ import { container, injectable } from "tsyringe";
 import { SyncService } from "./sync_service";
 
 interface EmployeeInformation {
-    month_pay: boolean;
+    month_salary: boolean;
 }
 
 
@@ -14,9 +14,9 @@ export class EmployeeInformationService {
         period: number,
         data: T[],
     ): Promise<(T & EmployeeInformation)[]> {
-        const emp_no_list_month_pay = await this.getCurrentMonthPayEmpNo(period)
+        const emp_no_list_month_salary = await this.getCurrentMonthPayEmpNo(period)
         return data.map(e => {
-            return { ...e, month_pay: emp_no_list_month_pay.includes(e.emp_no) }
+            return { ...e, month_salary: emp_no_list_month_salary.includes(e.emp_no) }
         })
     };
 

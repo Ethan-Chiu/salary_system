@@ -170,7 +170,7 @@ export class AttendanceSettingService {
 					attendance_setting.unpaid_leave_compensatory_4
 				),
 				unpaid_leave_compensatory_5: select_value(
-					unpaid_leave_allowanceensatory_5,
+					unpaid_leave_compensatory_5,
 					attendance_setting.unpaid_leave_compensatory_5
 				),
 				overtime_by_local_workers_1: select_value(

@@ -432,7 +432,7 @@ export class CalculateService {
 	async getTaxSummary(
 		pay_type: PayType,
 	): Promise<number> {
-		if (pay_type === PayType.month_pay) {
+		if (pay_type === PayType.month_salary) {
 			/*
 					rd("課稅小計") = 
 						rd("底薪") + 

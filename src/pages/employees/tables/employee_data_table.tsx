@@ -19,7 +19,7 @@ const columns = [
 	"quit_date",
 	"license_id",
 	"bank_account",
-	"month_pay",
+	"month_salary",
 ].map((key) => {
 	return {
 		accessorKey: key,
