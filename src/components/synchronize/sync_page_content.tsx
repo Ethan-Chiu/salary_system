@@ -8,16 +8,20 @@ import {
 	type SyncDataAndStatus,
 	UpdateTableDialog,
 } from "~/components/synchronize/update_table";
-import {
-	type SyncCheckStatusEnumType,
-} from "~/components/synchronize/utils/sync_check_status";
+import { type SyncCheckStatusEnumType } from "~/components/synchronize/utils/sync_check_status";
 import {
 	SyncDataDisplayModeEnum,
 	type SyncDataDisplayModeEnumType,
 } from "~/components/synchronize/utils/data_display_mode";
 import { toast } from "~/components/ui/use-toast";
 import { SelectEmployee } from "~/components/synchronize/select_employee";
-
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "~/components/ui/card";
 
 export function SyncPageContent({ data }: { data: SyncData[] }) {
 	const [selectedEmployee, setSelectedEmployee] = useState<string | null>(
@@ -106,8 +110,17 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 
 	function CompAllDonePage() {
 		return (
-			<div className="h-0 w-full flex-grow">
-				System Data is updated with EHR
+			<div className="h-0 w-full flex-grow flex justify-center items-center">
+				<Card className="text-center w-1/2">
+					<CardHeader className="p-2 pt-0 md:p-4">
+						<CardTitle className="p-4">Up to date</CardTitle>
+						<CardDescription>
+              System data is up to date with the EHR data.
+						</CardDescription>
+					</CardHeader>
+					<CardContent className="p-2 pt-0 md:p-4 md:pt-0">
+					</CardContent>
+				</Card>
 			</div>
 		);
 	}
@@ -150,17 +163,15 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		);
 	}
 
+	if (!data || data.length === 0) {
+		return <CompAllDonePage />;
+	}
+
 	return (
 		<>
 			{/* Main Content */}
-			{data ? (
-				<>
-					<CompTopBar data={data} />
-					<CompChangedDataTable data={data} />
-				</>
-			) : (
-				<CompAllDonePage />
-			)}
+			<CompTopBar data={data} />
+			<CompChangedDataTable data={data} />
 			{/* Bottom Buttons */}
 			<div className="mt-4 flex justify-between">
 				<UpdateTableDialog data={dataWithStatus} />
