@@ -7,10 +7,8 @@ import { EmployeeDataService } from "./employee_data_service";
 import { EmployeePaymentService } from "./employee_payment_service";
 import { EmployeeTrustService } from "./employee_trust_service";
 import { type Exact } from "~/utils/exact_type";
-import { z } from "zod";
+import { FunctionsEnum, FunctionsEnumType } from "../api/types/functions_enum";
 
-export const FunctionsEnum = z.enum  (["month_salary"])
-export type FunctionsEnumType = z.infer<typeof FunctionsEnum>;
 export interface DataComparison<ValueT = any> {
 	key: string;
 	salary_value: ValueT;

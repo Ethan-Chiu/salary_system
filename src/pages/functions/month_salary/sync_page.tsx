@@ -3,7 +3,7 @@ import { LoadingSpinner } from "~/components/loading";
 import { SyncPageContent } from "~/components/synchronize/sync_page_content";
 import { Button } from "~/components/ui/button";
 import { Translate } from "~/lib/utils/translation";
-import { FunctionsEnum } from "~/server/service/sync_service";
+import { FunctionsEnum } from "~/server/api/types/functions_enum";
 
 interface SyncPageProps {
 	period: number;

@@ -1,5 +1,6 @@
 import { container, injectable } from "tsyringe";
-import { FunctionsEnum, SyncService } from "./sync_service";
+import { SyncService } from "./sync_service";
+import { FunctionsEnum } from "../api/types/functions_enum";
 
 interface EmployeeInformation {
     month_salary: boolean;
