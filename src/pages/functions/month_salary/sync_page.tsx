@@ -3,6 +3,7 @@ import { LoadingSpinner } from "~/components/loading";
 import { SyncPageContent } from "~/components/synchronize/sync_page_content";
 import { Button } from "~/components/ui/button";
 import { Translate } from "~/lib/utils/translation";
+import { FunctionsEnum } from "~/server/service/sync_service";
 
 interface SyncPageProps {
 	period: number;
@@ -13,7 +14,7 @@ interface SyncPageProps {
 export function SyncPage({ period, selectedIndex, setSelectedIndex }: SyncPageProps) {
 	const { isLoading, isError, data, error } =
 		api.sync.checkEmployeeData.useQuery({
-			func: FunctionsEnum.enum.month_salary,
+			func: FunctionsEnum.Enum.month_salary,
 			period: period,
 		});
 

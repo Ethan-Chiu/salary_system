@@ -5,11 +5,11 @@ import {
 import { container } from "tsyringe";
 import { BaseResponseError } from "../error/BaseResponseError";
 import { z } from "zod";
-import { SyncService } from "~/server/service/sync_service";
+import { FunctionsEnum, SyncService } from "~/server/service/sync_service";
 
 export const syncRouter = createTRPCRouter({
 	getCandEmployees: publicProcedure
-		.input(z.object({ func: z.string(), period: z.number() }))
+		.input(z.object({ func: FunctionsEnum, period: z.number() }))
 		.query(async ({ input }) => {
 			const syncService = container.resolve(SyncService);
 			const candEmployees = await syncService.getCandPaidEmployees(
@@ -23,7 +23,7 @@ export const syncRouter = createTRPCRouter({
 		}),
 
 	checkEmployeeData: publicProcedure
-		.input(z.object({ func: z.string(), period: z.number() }))
+		.input(z.object({ func: FunctionsEnum, period: z.number() }))
 		.query(async ({ input }) => {
 			const syncService = container.resolve(SyncService);
 			const diffDatas = await syncService.checkEmployeeData(
@@ -47,7 +47,7 @@ export const syncRouter = createTRPCRouter({
 		}),
 
 	getPaidEmployees: publicProcedure
-		.input(z.object({ func: z.string() }))
+		.input(z.object({ func: FunctionsEnum }))
 		.query(async ({ input }) => {
 			const syncService = container.resolve(SyncService);
 			const paidEmployees = await syncService.getPaidEmps(input.func);
