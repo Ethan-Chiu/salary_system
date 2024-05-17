@@ -13,8 +13,6 @@ const columns = Object.keys(new Payset()).map((key) => {
 interface PaysetTableProps {
 	period: number;
 	emp_no_list: string[];
-	index: number;
-	globalFilter: string;
 }
 
 export function PaysetTable({ period, emp_no_list }: PaysetTableProps) {

@@ -74,9 +74,6 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 
 	const { mutate } = api.sync.synchronize.useMutation({
 		onSuccess: () => {
-			console.log("Call synchronize API");
-
-			alert("Call API success! Reloading the page");
 			router.reload();
 		},
 	});

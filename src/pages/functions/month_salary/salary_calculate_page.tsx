@@ -1,5 +1,6 @@
 import React from "react";
 import { LoadingSpinner } from "~/components/loading";
+import { FunctionsEnumType } from "~/server/api/types/functions_enum";
 import { api } from "~/utils/api";
 
 export function SalaryCalculatePage({
@@ -7,7 +8,7 @@ export function SalaryCalculatePage({
     func,
 }: {
     period: number;
-    func: string,
+    func: FunctionsEnumType,
 }) {
     const { isLoading, isError, data, error } = api.sync.getPaidEmployees.useQuery({ func })
 
@@ -29,7 +30,7 @@ function SalaryCalculateContent({
     period: number,
     emp_no_list: string[],
 }) {
-    const { isLoading, isError, data, error } = api.calculate.calculateOvertimeNormalPayment.useQuery({ emp_no: emp_no_list[0]!, period_id: period })
+    const { isLoading, isError, data, error } = api.calculate.calculateWeekdayOvertimePay.useQuery({ emp_no: emp_no_list[0]!, period_id: period })
 
     if (isLoading) {
         return <LoadingSpinner />; // TODO: Loading element with toast

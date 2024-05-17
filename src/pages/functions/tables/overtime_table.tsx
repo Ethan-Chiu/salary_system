@@ -13,8 +13,6 @@ const columns = Object.keys(new Overtime()).map((key) => {
 interface OvertimeTableProps {
 	period: number;
 	emp_no_list: string[];
-	index: number;
-	globalFilter: string;
 }
 
 export function OvertimeTable({ period, emp_no_list }: OvertimeTableProps) {
