@@ -15,7 +15,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 function SyncPage({ period }: { period: number }) {
 	const { isLoading, isError, data, error } =
 		api.sync.checkEmployeeData.useQuery({
-			func: "month_salary",
+			func: FunctionsEnum.enum.month_salary,
 			period: period,
 		});
 

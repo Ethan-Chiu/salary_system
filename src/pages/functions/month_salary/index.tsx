@@ -65,7 +65,7 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 
 	const { isLoading, isError, data, error } =
 		api.sync.getCandEmployees.useQuery({
-			func: "month_salary",
+			func: FunctionsEnum.enum.month_salary,
 			period: periodId,
 		});
 
@@ -95,7 +95,7 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 				<EmployeePage
 					key="employee"
 					period={periodId}
-					func={"month_salary"}
+					func={FunctionsEnum.enum.month_salary}
 					selectedIndex={selectedIndex}
 					setSelectedIndex={setSelectedIndex}
 				/>
@@ -107,7 +107,7 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 				<DataPage
 					key="data"
 					period={periodId}
-					func={"month_salary"}
+					func={FunctionsEnum.enum.month_salary}
 					selectedIndex={selectedIndex}
 					setSelectedIndex={setSelectedIndex}
 				/>
@@ -130,7 +130,7 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 				<SalaryCalculatePage
 					key="salary_calculate"
 					period={periodId}
-					func={"month_salary"}
+					func={FunctionsEnum.enum.month_salary}
 				/>
 			),
 		},

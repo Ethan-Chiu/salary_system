@@ -13,7 +13,7 @@ interface SyncPageProps {
 export function SyncPage({ period, selectedIndex, setSelectedIndex }: SyncPageProps) {
 	const { isLoading, isError, data, error } =
 		api.sync.checkEmployeeData.useQuery({
-			func: "month_salary",
+			func: FunctionsEnum.enum.month_salary,
 			period: period,
 		});
 

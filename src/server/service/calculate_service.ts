@@ -9,7 +9,7 @@ import { Payset } from "../database/entity/UMEDIA/payset";
 import { InsuranceRateSetting } from "../database/entity/SALARY/insurance_rate_setting";
 import { Holiday } from "../database/entity/UMEDIA/holiday";
 import { AttendanceSetting } from "../database/entity/SALARY/attendance_setting";
-import { PayType } from "./transaction_service";
+import { PayTypeEnum, PayTypeEnumType } from "./transaction_service";
 
 
 
@@ -430,9 +430,9 @@ export class CalculateService {
 
 	//MARK: 課稅小計
 	async getTaxSummary(
-		pay_type: PayType,
+		pay_type: PayTypeEnumType,
 	): Promise<number> {
-		if (pay_type === PayType.month_salary) {
+		if (pay_type === PayTypeEnum.Enum.month_salary) {
 			/*
 					rd("課稅小計") = 
 						rd("底薪") + 
