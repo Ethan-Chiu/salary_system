@@ -5,7 +5,8 @@ import {
 import { container } from "tsyringe";
 import { BaseResponseError } from "../error/BaseResponseError";
 import { z } from "zod";
-import { FunctionsEnum, SyncService } from "~/server/service/sync_service";
+import { SyncService } from "~/server/service/sync_service";
+import { FunctionsEnum } from "../types/functions_enum";
 
 export const syncRouter = createTRPCRouter({
 	getCandEmployees: publicProcedure

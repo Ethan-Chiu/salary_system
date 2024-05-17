@@ -9,7 +9,7 @@ import { Payset } from "../database/entity/UMEDIA/payset";
 import { InsuranceRateSetting } from "../database/entity/SALARY/insurance_rate_setting";
 import { Holiday } from "../database/entity/UMEDIA/holiday";
 import { AttendanceSetting } from "../database/entity/SALARY/attendance_setting";
-import { PayTypeEnum, PayTypeEnumType } from "./transaction_service";
+import { PayTypeEnum, PayTypeEnumType } from "../api/types/pay_type_enum";
 
 
 

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useContext, useEffect } from "react";
 import { useState } from "react";
 import {
 	Table,
@@ -32,6 +32,7 @@ import { api } from "~/utils/api";
 import { type DataComparison } from "~/server/service/sync_service";
 import { type SyncCheckStatusEnumType } from "~/components/synchronize/utils/sync_check_status";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
+import periodContext from "../context/period_context";
 
 export interface SyncDataAndStatus {
 	emp_no: string;
@@ -55,8 +56,11 @@ interface UpdateTableProps {
 
 export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 	const [showDetails, setShowDetails] = useState<boolean>(true);
-
 	const [checkedEmps, setCheckedEmps] = useState<Record<string, boolean>>({});
+	const { selectedPeriod } = useContext(periodContext);
+	if (selectedPeriod == null) {
+		return <p>Please select period first</p>;
+	}
 
 	useEffect(() => {
 		const checked: Record<string, boolean> = {};
@@ -77,7 +81,7 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 		},
 	});
 
-	function handleUpdate() {
+	function handleUpdate(period_id: number) {
 		const updateList: Array<string> = [];
 
 		for (const key in checkedEmps) {
@@ -87,7 +91,7 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 		}
 
 		mutate({
-			period: 113,
+			period: period_id,
 			emp_no_list: updateList,
 		});
 	}
@@ -132,7 +136,7 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 				</ScrollArea>
 
 				<DialogClose asChild>
-					<Button type="submit" onClick={handleUpdate}>
+					<Button type="submit" onClick={() => handleUpdate(selectedPeriod.period_id)}>
 						Update
 					</Button>
 				</DialogClose>

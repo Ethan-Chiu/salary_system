@@ -278,28 +278,26 @@ const CompViewAllDatas = ({
 					<Table>
 						<TableHeader>
 							<TableRow>
-								{mode == "auto calculate" && (
-									<TableHead className="whitespace-nowrap text-center">
-										<Checkbox
-											className="cursor-pointer"
-											checked={
-												selectedEmpNoList.length ===
-												dataNoID.length
+								<TableHead className="whitespace-nowrap text-center">
+									{mode == "auto calculate" && (<Checkbox
+										className="cursor-pointer"
+										checked={
+											selectedEmpNoList.length ===
+											dataNoID.length
+										}
+										onCheckedChange={(checked) => {
+											if (checked) {
+												setSelectedEmpNoList(
+													dataNoID.map(
+														(e) => e.emp_no
+													)
+												);
+											} else {
+												setSelectedEmpNoList([]);
 											}
-											onCheckedChange={(checked) => {
-												if (checked) {
-													setSelectedEmpNoList(
-														dataNoID.map(
-															(e) => e.emp_no
-														)
-													);
-												} else {
-													setSelectedEmpNoList([]);
-												}
-											}}
-										/>
-									</TableHead>
-								)}
+										}}
+									/>)}
+								</TableHead>
 								{filteredData[0] ? (
 									Object.keys(filteredData[0]).map(
 										(key: string) => {
