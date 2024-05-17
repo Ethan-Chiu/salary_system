@@ -7,6 +7,7 @@ import { LoadingSpinner } from "~/components/loading";
 import { Header } from "~/components/header";
 import { SyncPageContent } from "~/components/synchronize/sync_page_content";
 import periodContext from "~/components/context/period_context";
+import { FunctionsEnum } from "~/server/service/sync_service";
 
 
 const PageCheckEHR: NextPageWithLayout = () => {
@@ -20,7 +21,7 @@ function SyncPage() {
 	}
 	const { isLoading, isError, data, error } =
 		api.sync.checkEmployeeData.useQuery({
-			func: "month_salary",
+			func: FunctionsEnum.enum.month_salary,
 			period: selectedPeriod.period_id,
 		});
 
