@@ -1,6 +1,9 @@
 import { api } from "~/utils/api";
 import { LoadingSpinner } from "~/components/loading";
 import { SyncPageContent } from "~/components/synchronize/sync_page_content";
+import { Button } from "~/components/ui/button";
+import { Translate } from "~/lib/utils/translation";
+import { FunctionsEnum } from "~/server/api/types/functions_enum";
 
 interface SyncPageProps {
 	period: number;
@@ -8,10 +11,10 @@ interface SyncPageProps {
 	setSelectedIndex: (index: number) => void;
 }
 
-export function SyncPage({ period }: SyncPageProps) {
+export function SyncPage({ period, selectedIndex, setSelectedIndex }: SyncPageProps) {
 	const { isLoading, isError, data, error } =
 		api.sync.checkEmployeeData.useQuery({
-			func: "month_salary",
+			func: FunctionsEnum.Enum.month_salary,
 			period: period,
 		});
 
@@ -24,10 +27,16 @@ export function SyncPage({ period }: SyncPageProps) {
 	}
 
 	return data != null ? (
-		<div className="grow">
-			<div className="flex h-full flex-grow flex-col">
+		<div className="grow flex flex-col">
+			<div className="flex flex-grow flex-col">
 				<SyncPageContent data={data} />
 			</div>
+      <div className="mt-4 flex justify-end">
+				<Button onClick={() => setSelectedIndex(selectedIndex + 1)}>
+					{Translate("next_step")}
+				</Button>
+			</div>
+
 		</div>
 	) : (
 		<div>no data</div>

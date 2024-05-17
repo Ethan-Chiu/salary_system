@@ -26,6 +26,7 @@ import {
 import { useRouter } from "next/router";
 import { type PaidEmployee } from "~/server/service/sync_service";
 import { SalaryCalculatePage } from "./salary_calculate_page";
+import { FunctionsEnum } from "~/server/api/types/functions_enum";
 
 type FunctionStepPage = {
 	title: string;
@@ -65,7 +66,7 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 
 	const { isLoading, isError, data, error } =
 		api.sync.getCandEmployees.useQuery({
-			func: "month_salary",
+			func: FunctionsEnum.enum.month_salary,
 			period: periodId,
 		});
 
@@ -95,7 +96,7 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 				<EmployeePage
 					key="employee"
 					period={periodId}
-					func={"month_salary"}
+					func={FunctionsEnum.enum.month_salary}
 					selectedIndex={selectedIndex}
 					setSelectedIndex={setSelectedIndex}
 				/>
@@ -107,7 +108,7 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 				<DataPage
 					key="data"
 					period={periodId}
-					func={"month_salary"}
+					func={FunctionsEnum.enum.month_salary}
 					selectedIndex={selectedIndex}
 					setSelectedIndex={setSelectedIndex}
 				/>
@@ -130,7 +131,7 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 				<SalaryCalculatePage
 					key="salary_calculate"
 					period={periodId}
-					func={"month_salary"}
+					func={FunctionsEnum.enum.month_salary}
 				/>
 			),
 		},

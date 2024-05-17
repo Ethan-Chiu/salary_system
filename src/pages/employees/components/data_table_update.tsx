@@ -38,7 +38,7 @@ function DataTableContent<TData>({
 
 	return (
 		<div className="flex h-full w-full flex-col rounded-md border">
-			<DataTableToolbar table={table} filterKey={filterColumnKey} />
+			<DataTableToolbar table={table} filterColumnKey={filterColumnKey} />
 			<Separator />
 			<div className="h-0 flex-grow">
 				<DataTableStandardBody table={table} dataPerRow={dataPerRow} />
