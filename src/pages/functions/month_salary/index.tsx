@@ -6,7 +6,6 @@ import { api } from "~/utils/api";
 import { type ReactElement, useContext, useState } from "react";
 import { ProgressBar } from "~/components/functions/progress_bar";
 import { LoadingSpinner } from "~/components/loading";
-import { ParameterPage } from "./parameters_page";
 import { DataPage } from "./data_page";
 import { EmployeePage } from "./employee_page";
 import periodContext from "~/components/context/period_context";

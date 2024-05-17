@@ -11,7 +11,11 @@ interface SyncPageProps {
 	setSelectedIndex: (index: number) => void;
 }
 
-export function SyncPage({ period, selectedIndex, setSelectedIndex }: SyncPageProps) {
+export function SyncPage({
+	period,
+	selectedIndex,
+	setSelectedIndex,
+}: SyncPageProps) {
 	const { isLoading, isError, data, error } =
 		api.sync.checkEmployeeData.useQuery({
 			func: FunctionsEnum.Enum.month_salary,
@@ -27,16 +31,17 @@ export function SyncPage({ period, selectedIndex, setSelectedIndex }: SyncPagePr
 	}
 
 	return data != null ? (
-		<div className="grow flex flex-col">
+		<div className="flex grow flex-col">
 			<div className="flex flex-grow flex-col">
 				<SyncPageContent data={data} />
 			</div>
-      <div className="mt-4 flex justify-end">
-				<Button onClick={() => setSelectedIndex(selectedIndex + 1)}>
-					{Translate("next_step")}
-				</Button>
-			</div>
-
+			{data.length == 0 && (
+				<div className="mt-4 flex justify-end">
+					<Button onClick={() => setSelectedIndex(selectedIndex + 1)}>
+						{Translate("next_step")}
+					</Button>
+				</div>
+			)}
 		</div>
 	) : (
 		<div>no data</div>
