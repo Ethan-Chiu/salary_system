@@ -12,6 +12,7 @@ import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { formatDate } from "~/lib/utils/format_date";
 import { useState } from "react";
+import { EmptyTable } from "./empty_table";
 import { EmptyCreate } from "./empty_create";
 import { getSchema } from "../schemas/get_schemas";
 
@@ -187,7 +188,7 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 		// return <span>Error: {error.message}</span>; // TODO: Error element with toast
 		const err_msg = error.message;
 		const emptyError = true;
-		return emptyError ? <EmptyTable err_msg={err_msg} /> : <></>;
+		return emptyError ? <EmptyTable err_msg={err_msg} selectedTableType="TableAttendance" /> : <></>;
 	}
 
 
@@ -206,36 +207,6 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 					filterColumnKey={filterKey}
 				/>
 			)}
-		</>
-	);
-}
-
-
-
-export function EmptyTable({ err_msg }: { err_msg: string }) {
-	const selectedTableType = "TableAttendance";
-	const [alertOpen, setAlertOpen] = useState(true);
-	return (
-		<>
-			<div className="flex grow items-center justify-center">
-				<div className="text-center">
-					<p>{err_msg}</p>
-					<Button
-						variant={"ghost"}
-						onClick={() => setAlertOpen(true)}
-					>
-						Create
-					</Button>
-				</div>
-				<EmptyCreate
-					formSchema={getSchema(selectedTableType)}
-					onClose={() => undefined}
-					selectedTableType={selectedTableType}
-					err_msg={err_msg}
-					alertOpen={alertOpen}
-					setAlertOpen={setAlertOpen}
-				/>
-			</div>
 		</>
 	);
 }
