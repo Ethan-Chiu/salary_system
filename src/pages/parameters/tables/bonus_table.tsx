@@ -9,9 +9,7 @@ import { c_CreateDateStr, c_UpdateDateStr } from "../constant";
 import { type BonusSetting } from "~/server/database/entity/SALARY/bonus_setting";
 import { LoadingSpinner } from "~/components/loading";
 import { formatDate } from "~/lib/utils/format_date";
-import { useState } from "react";
-import { getSchema } from "../schemas/get_schemas";
-import { EmptyCreate } from "./empty_create";
+import { EmptyTable } from "./empty_table";
 import { type TableComponentProps } from "../tables_view";
 
 export type RowItem = {
@@ -128,7 +126,7 @@ export function BonusTable({ viewOnly }: BonusTableProps) {
 		// return <span>Error: {error.message}</span>; // TODO: Error element with toast
 		const err_msg = error.message;
 		const emptyError = true;
-		return emptyError ? <EmptyTable err_msg={err_msg} /> : <></>;
+		return emptyError ? <EmptyTable err_msg={err_msg} selectedTableType="TableBonusSetting"  /> : <></>;
 	}
 
 	return (
@@ -154,30 +152,30 @@ export function BonusTable({ viewOnly }: BonusTableProps) {
 	// }, [globalFilter]);
 }
 
-export function EmptyTable({ err_msg }: { err_msg: string }) {
-	const selectedTableType = "TableBonusSetting";
-	const [alertOpen, setAlertOpen] = useState(true);
-	return (
-		<>
-			<div className="flex grow items-center justify-center">
-				<div className="text-center">
-					<p>{err_msg}</p>
-					<Button
-						variant={"ghost"}
-						onClick={() => setAlertOpen(true)}
-					>
-						Create
-					</Button>
-				</div>
-				<EmptyCreate
-					formSchema={getSchema(selectedTableType)}
-					onClose={() => undefined}
-					selectedTableType={selectedTableType}
-					err_msg={err_msg}
-					alertOpen={alertOpen}
-					setAlertOpen={setAlertOpen}
-				/>
-			</div>
-		</>
-	);
-}
+// export function EmptyTable({ err_msg }: { err_msg: string }) {
+// 	const selectedTableType = "TableBonusSetting";
+// 	const [alertOpen, setAlertOpen] = useState(true);
+// 	return (
+// 		<>
+// 			<div className="flex grow items-center justify-center">
+// 				<div className="text-center">
+// 					<p>{err_msg}</p>
+// 					<Button
+// 						variant={"ghost"}
+// 						onClick={() => setAlertOpen(true)}
+// 					>
+// 						Create
+// 					</Button>
+// 				</div>
+// 				<EmptyCreate
+// 					formSchema={getSchema(selectedTableType)}
+// 					onClose={() => undefined}
+// 					selectedTableType={selectedTableType}
+// 					err_msg={err_msg}
+// 					alertOpen={alertOpen}
+// 					setAlertOpen={setAlertOpen}
+// 				/>
+// 			</div>
+// 		</>
+// 	);
+// }

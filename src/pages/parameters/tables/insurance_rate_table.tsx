@@ -15,6 +15,7 @@ import { type InsuranceRateSetting } from "~/server/database/entity/SALARY/insur
 import { LoadingSpinner } from "~/components/loading";
 import { formatDate } from "~/lib/utils/format_date";
 import { type TableComponentProps } from "../tables_view";
+import { EmptyTable } from "./empty_table";
 
 export type RowItem = {
 	name: string;
@@ -155,7 +156,10 @@ export function InsuranceRateTable({
 	}
 
 	if (isError) {
-		return <span>Error: {error.message}</span>; // TODO: Error element with toast
+		// return <span>Error: {error.message}</span>; // TODO: Error element with toast
+		const err_msg = error.message;
+		const emptyError = true;
+		return emptyError ? <EmptyTable err_msg={err_msg} selectedTableType="TableInsurance"  /> : <></>;
 	}
 
 	return (
