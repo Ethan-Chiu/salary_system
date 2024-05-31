@@ -38,7 +38,7 @@ export default function PeriodSelector() {
 			{getPeriod.isFetched ? (
 				<>
 					<div className="flex w-full p-2">
-						<div className="flex-1">{Translate("Period")}</div>
+						<div className="flex-1">{Translate("period")}</div>
 						<div className="flex-1">
 							<Select
 								defaultValue={selectedPeriod?.period_name}
@@ -58,18 +58,20 @@ export default function PeriodSelector() {
 								</SelectTrigger>
 								<SelectContent>
 									<SelectGroup>
-										<SelectLabel>Period</SelectLabel>
+										<SelectLabel>{Translate('period')}</SelectLabel>
 										{getPeriod.data!.map((period_info) => {
+											const original_name = period_info.period_name
+											console.log(original_name)
 											return (
 												<SelectItem
 													key={
-														period_info.period_name
+														original_name
 													}
 													value={
-														period_info.period_name
+														original_name
 													}
 												>
-													{period_info.period_name}
+													{`20${original_name.split("-")[1]}年${Translate(original_name.split("-")[0]!)}`}
 												</SelectItem>
 											);
 										})}

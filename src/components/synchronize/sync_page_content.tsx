@@ -22,6 +22,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "~/components/ui/card";
+import { Translate } from "~/lib/utils/translation";
 
 export function SyncPageContent({ data }: { data: SyncData[] }) {
 	const [selectedEmployee, setSelectedEmployee] = useState<string | null>(
@@ -113,10 +114,8 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 			<div className="h-0 w-full flex-grow flex justify-center items-center">
 				<Card className="text-center w-1/2">
 					<CardHeader className="p-2 pt-0 md:p-4">
-						<CardTitle className="p-4">Up to date</CardTitle>
-						<CardDescription>
-              System data is up to date with the EHR data.
-						</CardDescription>
+						<CardTitle className="p-4">{Translate("up to date")}</CardTitle>
+						<CardDescription>{Translate("system data is up to date with the EHR data")}</CardDescription>
 					</CardHeader>
 					<CardContent className="p-2 pt-0 md:p-4 md:pt-0">
 					</CardContent>

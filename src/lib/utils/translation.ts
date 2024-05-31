@@ -186,6 +186,26 @@ export function Translate(word: string) {
 		if (word === "settings") return "設定";
 		if (word === "roles") return "身份";
 		if (word === "reports") return "報表";
+
+		// month
+		if (word === "jan") return "1月";
+		if (word === "feb") return "2月";
+		if (word === "mar") return "3月";
+		if (word === "apr") return "4月";
+		if (word === "may") return "5月";
+		if (word === "jun") return "6月";
+		if (word === "jul") return "7月";
+		if (word === "aug") return "8月";
+		if (word === "sep") return "9月";
+		if (word === "oct") return "10月";
+		if (word === "nov") return "11月";
+		if (word === "dec") return "12月";
+
+		// others
+		if (word === "visible columns") return "顯示欄位";
+		if (word === "filter setting...") return "篩選關鍵字...";
+		if (word === "up to date") return "已是最新資料";
+		if (word === "system data is up to date with the EHR data") return "當前資料與EHR完全一致";
 	}
 
 	if (language === "en") {
