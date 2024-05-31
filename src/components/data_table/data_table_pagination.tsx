@@ -10,6 +10,7 @@ import {
 	SelectValue,
 } from "~/components/ui/select";
 import { cn } from "~/lib/utils";
+import { Translate } from "~/lib/utils/translation";
 
 interface DataTablePaginationProps<TData>
 	extends React.HTMLAttributes<HTMLDivElement> {
@@ -109,7 +110,7 @@ export function DataTablePagination<TData>({
 						>
 							<span className="sr-only">Go to previous page</span>
 							<ChevronLeftIcon className="h-4 w-4" />
-							Previous
+							{Translate("Previous")}
 						</Button>
 						<Button
 							variant="outline"
@@ -118,7 +119,7 @@ export function DataTablePagination<TData>({
 							disabled={!table.getCanNextPage()}
 						>
 							<span className="sr-only">Go to next page</span>
-							Next
+							{Translate("Next")}
 							<ChevronRightIcon className="h-4 w-4" />
 						</Button>
 					</div>

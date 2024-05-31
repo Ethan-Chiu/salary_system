@@ -41,8 +41,8 @@ export function DataTableViewOptions<TData>({
 						</div>
 					</Button>
 				</DropdownMenuTrigger>
-				<DropdownMenuContent align="end" className="w-[150px]">
-					<DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+				<DropdownMenuContent align="end" className="w-[200px]">
+					<DropdownMenuLabel>{Translate("visible columns")}</DropdownMenuLabel>
 					<DropdownMenuSeparator />
 					{table
 						.getAllColumns()
@@ -61,7 +61,7 @@ export function DataTableViewOptions<TData>({
 										column.toggleVisibility(value);
 									}}
 								>
-									{column.id}
+									{Translate(column.id)}
 								</DropdownMenuCheckboxItem>
 							);
 						})}

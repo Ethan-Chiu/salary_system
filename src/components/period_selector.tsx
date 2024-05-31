@@ -61,6 +61,7 @@ export default function PeriodSelector() {
 										<SelectLabel>{Translate('period')}</SelectLabel>
 										{getPeriod.data!.map((period_info) => {
 											const original_name = period_info.period_name
+											console.log(original_name)
 											return (
 												<SelectItem
 													key={
