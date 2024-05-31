@@ -78,21 +78,21 @@ export function DataTableFunctions({
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-[120px]">
-						<DropdownMenuLabel>Functions</DropdownMenuLabel>
+						<DropdownMenuLabel>{Translate("Functions")}</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<CompTriggerItem
 							mode={"update"}
-							itemName="Update"
+							itemName={Translate("Update")}
 							icon={PenSquare}
 						/>
 						<CompTriggerItem
 							mode={"create"}
-							itemName="Create"
+							itemName={Translate("Create")}
 							icon={Plus}
 						/>
 						<CompTriggerItem
 							mode={"delete"}
-							itemName="Delete"
+							itemName={Translate("Delete")}
 							icon={Trash2}
 						/>
 					</DropdownMenuContent>

@@ -31,7 +31,7 @@ export const bonus_position_type_columns = [
 								)
 							}
 						>
-							{Translate("Position Type")}
+							{Translate("Position_Type")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>

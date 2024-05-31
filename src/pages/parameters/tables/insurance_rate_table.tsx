@@ -19,7 +19,7 @@ import { EmptyTable } from "./empty_table";
 import { Translate } from "~/lib/utils/translation";
 
 export type RowItem = {
-	name: string;
+	parameters: string;
 	value: number | string | Date;
 };
 type RowItemKey = keyof RowItem;
@@ -27,7 +27,7 @@ type RowItemKey = keyof RowItem;
 const columnHelper = createColumnHelper<RowItem>();
 
 export const insurance_rate_columns = [
-	columnHelper.accessor("name", {
+	columnHelper.accessor("parameters", {
 		header: ({ column }) => {
 			return (
 				<div className="flex justify-center pl-3">
@@ -40,7 +40,7 @@ export const insurance_rate_columns = [
 								)
 							}
 						>
-							{Translate("parameter")}
+							{Translate("parameters")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -48,7 +48,7 @@ export const insurance_rate_columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="lowercase">{row.getValue("name")}</div>
+			<div className="lowercase">{row.getValue("parameters")}</div>
 		),
 	}),
 	columnHelper.accessor("value", {
@@ -80,55 +80,55 @@ export function insuranceRateMapper(
 	const data = insuranceRateData[0]!;
 	return [
 		{
-			name: "最低薪資率",
+			parameters: "最低薪資率",
 			value: data.min_wage_rate,
 		},
 		{
-			name: "勞保事故費率",
+			parameters: "勞保事故費率",
 			value: data.l_i_accident_rate,
 		},
 		{
-			name: "勞保就業保險費率",
+			parameters: "勞保就業保險費率",
 			value: data.l_i_employment_pay_rate,
 		},
 		{
-			name: "勞保職業災害費率",
+			parameters: "勞保職業災害費率",
 			value: data.l_i_occupational_injury_rate,
 		},
 		{
-			name: "勞保工資墊償基金提繳率",
+			parameters: "勞保工資墊償基金提繳率",
 			value: data.l_i_wage_replacement_rate,
 		},
 		{
-			name: "健保一般費率",
+			parameters: "健保一般費率",
 			value: data.h_i_standard_rate,
 		},
 		{
-			name: "健保平均眷口數",
+			parameters: "健保平均眷口數",
 			value: data.h_i_avg_dependents_count,
 		},
 		{
-			name: "二代健保補充保費率",
+			parameters: "二代健保補充保費率",
 			value: data.v2_h_i_supp_pay_rate,
 		},
 		{
-			name: "二代健保扣繳門檻單次",
+			parameters: "二代健保扣繳門檻單次",
 			value: data.v2_h_i_deduction_tsx_thres,
 		},
 		{
-			name: c_StartDateStr,
+			parameters: c_StartDateStr,
 			value: formatDate("day", data.start_date),
 		},
 		{
-			name: c_EndDateStr,
+			parameters: c_EndDateStr,
 			value: data.end_date ? formatDate("day", data.end_date) : "",
 		},
 		{
-			name: c_CreateDateStr,
+			parameters: c_CreateDateStr,
 			value: formatDate("hour", data.create_date),
 		},
 		{
-			name: c_UpdateDateStr,
+			parameters: c_UpdateDateStr,
 			value: formatDate("hour", data.update_date),
 		},
 	];
@@ -146,7 +146,7 @@ export function InsuranceRateTable({
 }: InsuranceRateTableProps) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentInsuranceRateSetting.useQuery({ period_id });
-	const filterKey: RowItemKey = "name";
+	const filterKey: RowItemKey = "parameters";
 
 	if (isLoading) {
 		return (

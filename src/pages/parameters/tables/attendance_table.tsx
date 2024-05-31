@@ -18,7 +18,7 @@ import { getSchema } from "../schemas/get_schemas";
 import { Translate } from "~/lib/utils/translation";
 
 const rowSchema = z.object({
-	name: z.string(),
+	parameters: z.string(),
 	value: z.union([z.number(), z.string(), z.date()]),
 });
 type RowItem = z.infer<typeof rowSchema>;
@@ -28,7 +28,7 @@ type RowItemKey = keyof RowItem;
 const columnHelper = createColumnHelper<RowItem>();
 
 export const attendance_columns = [
-	columnHelper.accessor("name", {
+	columnHelper.accessor("parameters", {
 		header: ({ column }) => {
 			return (
 				<div className="flex justify-center">
@@ -41,7 +41,7 @@ export const attendance_columns = [
 								)
 							}
 						>
-							{Translate("Parameter")}
+							{Translate("parameters")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -51,7 +51,7 @@ export const attendance_columns = [
 		cell: ({ row }) => (
 			<div className="flex justify-center">
 				<div className="text-center font-medium">
-					{row.getValue("name")}
+					{row.getValue("parameters")}
 				</div>
 			</div>
 		),
@@ -84,83 +84,83 @@ export function attendanceMapper(
 	const data = attendanceData[0]!;
 	return [
 		{
-			name: "事假扣薪",
+			parameters: "事假扣薪",
 			value: data.personal_leave_deduction,
 		},
 		{
-			name: "病假扣薪",
+			parameters: "病假扣薪",
 			value: data.sick_leave_deduction,
 		},
 		{
-			name: "不休假代金比率",
+			parameters: "不休假代金比率",
 			value: data.rate_of_unpaid_leave,
 		},
 		{
-			name: "不休假-補休1",
+			parameters: "不休假-補休1",
 			value: data.unpaid_leave_compensatory_1,
 		},
 		{
-			name: "不休假-補休2",
+			parameters: "不休假-補休2",
 			value: data.unpaid_leave_compensatory_2,
 		},
 		{
-			name: "不休假-補休3",
+			parameters: "不休假-補休3",
 			value: data.unpaid_leave_compensatory_3,
 		},
 		{
-			name: "不休假-補休4",
+			parameters: "不休假-補休4",
 			value: data.unpaid_leave_compensatory_4,
 		},
 		{
-			name: "不休假-補休5",
+			parameters: "不休假-補休5",
 			value: data.unpaid_leave_compensatory_5,
 		},
 		{
-			name: "本勞加班1",
+			parameters: "本勞加班1",
 			value: data.overtime_by_local_workers_1,
 		},
 		{
-			name: "本勞加班2",
+			parameters: "本勞加班2",
 			value: data.overtime_by_local_workers_2,
 		},
 		{
-			name: "本勞加班3",
+			parameters: "本勞加班3",
 			value: data.overtime_by_local_workers_3,
 		},
 		{
-			name: "本勞假日",
+			parameters: "本勞假日",
 			value: data.local_worker_holiday,
 		},
 		{
-			name: "外勞加班1",
+			parameters: "外勞加班1",
 			value: data.overtime_by_foreign_workers_1,
 		},
 		{
-			name: "外勞加班2",
+			parameters: "外勞加班2",
 			value: data.overtime_by_foreign_workers_2,
 		},
 		{
-			name: "外勞加班3",
+			parameters: "外勞加班3",
 			value: data.overtime_by_foreign_workers_3,
 		},
 		{
-			name: "外勞假日",
+			parameters: "外勞假日",
 			value: data.foreign_worker_holiday,
 		},
 		{
-			name: c_StartDateStr,
+			parameters: c_StartDateStr,
 			value: formatDate("day", data.start_date),
 		},
 		{
-			name: c_EndDateStr,
+			parameters: c_EndDateStr,
 			value: data.end_date ? formatDate("day", data.end_date) : "",
 		},
 		{
-			name: c_CreateDateStr,
+			parameters: c_CreateDateStr,
 			value: formatDate("hour", data.create_date),
 		},
 		{
-			name: c_UpdateDateStr,
+			parameters: c_UpdateDateStr,
 			value: formatDate("hour", data.update_date),
 		},
 	];
@@ -175,7 +175,7 @@ interface AttendanceTableProps extends TableComponentProps {
 export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentAttendanceSetting.useQuery({ period_id });
-	const filterKey: RowItemKey = "name";
+	const filterKey: RowItemKey = "parameters";
 
 	if (isLoading) {
 		return (

@@ -115,8 +115,8 @@ export function Translate(word: string) {
 		if (word === "l_i_employment_pay_rate") return "勞保就業保險費率";
 		if (word === "l_i_occupational_injury_rate") return "勞保職業災害費率";
 		if (word === "level") return "級距";
-		if (word === "level_end") return "迄";
 		if (word === "level_start") return "起";
+		if (word === "level_end") return "迄";
 
 		// button
 		if (word === "next_step") return "下一步";
@@ -127,6 +127,7 @@ export function Translate(word: string) {
 		if (word === "modify") return "修改";
 		if (word === "delete") return "刪除";
 		if (word === "confirm") return "確認";
+		if (word === "cancel") return "取消";
 		if (word === "auto calculate") return "自動計算";
 		if (word === "form") return "表單";
 
@@ -149,23 +150,9 @@ export function Translate(word: string) {
 		if (word === "current") return "當前";
 		if (word === "history") return "歷史";
 		if (word === "calendar") return "排程";
-		if (word === "parameter") return "參數";
 		if (word === "value") return "值";
-		if (word === "department") return "部門";
-		if (word === "multiplier") return "倍率";
-		if (word === "position") return "職等";
-		if (word === "position type") return "職級";
-		if (word === "seniority") return "年資";
-		if (word === "type") return "類別";
-		if (word === "level_start") return "起";
-		if (word === "level_end") return "迄";
-		if (word === "level") return "級距";
-		if (word === "performance level") return "績效等級";
 		if (word === "view") return "顯示";
-		if (word === "bank") return "銀行";
-		if (word === "company") return "公司";
-		if (word === "start") return "起";
-		if (word === "end") return "迄";
+		if (word === "no data") return "沒有資料";
 		
 
 		// title
@@ -197,7 +184,7 @@ export function Translate(word: string) {
 
 		// others
 		if (word === "visible columns") return "顯示欄位";
-		if (word === "filter setting...") return "篩選關鍵字...";
+		if (word === "filter setting...") return "請輸入搜尋關鍵字...";
 		if (word === "up to date") return "已是最新資料";
 		if (word === "system data is up to date with the EHR data") return "當前資料與EHR完全一致";
 	}

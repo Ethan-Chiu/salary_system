@@ -111,10 +111,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 
 	if (mode === "delete" && onlyOne) {
 		return (
-			<p>
-				There's only one data left. Please create a new one before you
-				continue to delete.
-			</p>
+			<p>There's only one data left. Please create a new one before you continue to delete.</p>
 		);
 	}
 
@@ -170,12 +167,12 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 								}
 							}}
 						>
-							Cancel
+							{Translate("Cancel")}
 						</Button>
 
 						<Button type="submit">
-							{mode === "create" && "Create"}
-							{mode === "update" && "Update"}
+							{mode === "create" && Translate("Create")}
+							{mode === "update" && Translate("Update")}
 						</Button>
 					</div>
 				</div>
@@ -238,7 +235,7 @@ const CompViewAllDatas = ({
 										colSpan={5}
 										className="h-24 text-center"
 									>
-										No results.
+										{Translate("no data")}
 									</TableCell>
 								)}
 							</TableRow>
