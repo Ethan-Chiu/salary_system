@@ -2,11 +2,12 @@ import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table";
 import { Payset } from "~/server/database/entity/UMEDIA/payset";
 import { api } from "~/utils/api";
+import { Translate } from "~/lib/utils/translation";
 
 const columns = Object.keys(new Payset()).map((key) => {
 	return {
 		accessorKey: key,
-		header: key,
+		header: Translate(key),
 	};
 });
 

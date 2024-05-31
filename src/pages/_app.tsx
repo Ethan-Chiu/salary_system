@@ -6,6 +6,8 @@ import type { NextPage } from "next";
 import type { AppProps } from "next/app";
 import "~/styles/globals.css";
 import { RootLayout } from "~/components/layout/root_layout";
+import { appWithTranslation } from 'next-i18next'
+import nextI18nConfig from '../../next-i18next.config.mjs';
 
 export type NextPageWithLayout<P = Record<string, never>, IP = P> = NextPage<
 	P,
@@ -36,4 +38,4 @@ const MyApp = ({
 	);
 };
 
-export default api.withTRPC(MyApp);
+export default api.withTRPC(appWithTranslation(MyApp, nextI18nConfig));
