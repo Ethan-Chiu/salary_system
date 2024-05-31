@@ -13,9 +13,14 @@ import { useRouter } from "next/router";
 import { useContext, useState } from "react";
 import periodContext from "~/components/context/period_context";
 import { useToast } from "~/components/ui/use-toast";
-import { ToastAction } from "@radix-ui/react-toast";
 import PeriodSelector from "~/components/period_selector";
 import { Dialog, DialogContent } from "~/components/ui/dialog";
+import { ToastAction } from "~/components/ui/toast";
+
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import nextI18nConfig from "../../../next-i18next.config.mjs";
 
 type FunctionLinkData = CardFunctionData & { url: string | null };
 
@@ -58,6 +63,8 @@ const PageHome: NextPageWithLayout = () => {
 	const { toast } = useToast();
 	const [open, setOpen] = useState(false);
 
+  const { t } = useTranslation('common')
+  
 	return (
 		<>
 			<Header title="functions" showOptions className="mb-4" />
@@ -114,6 +121,18 @@ const PageHome: NextPageWithLayout = () => {
 		</>
 	);
 };
+
+
+export const getServerSideProps = async ({ locale }: { locale: string }) => {
+  console.log("locale", locale); 
+  return ({props: {
+    ...(await serverSideTranslations(locale, ["common"], nextI18nConfig, [
+      "en",
+      "zh-TW",
+    ])),
+  }});
+};
+
 
 PageHome.getLayout = function getLayout(page: React.ReactElement) {
 	return (

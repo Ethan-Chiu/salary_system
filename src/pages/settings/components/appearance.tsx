@@ -18,12 +18,13 @@ import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { useToast } from "~/components/ui/use-toast";
 import { onPromise } from "~/utils/on_promise";
 import { useTheme } from "next-themes";
+import { useRouter } from 'next/router';
 
 const appearanceFormSchema = z.object({
 	theme: z.enum(["light", "dark"], {
 		required_error: "Please select a theme.",
 	}),
-	language: z.enum(["en", "zh"], {
+	language: z.enum(["en", "zh-TW"], {
 		invalid_type_error: "Select a language",
 		required_error: "Please select a language.",
 	}),
@@ -33,6 +34,8 @@ type AppearanceFormValues = z.infer<typeof appearanceFormSchema>;
 
 export function AppearanceForm() {
 	const { setTheme } = useTheme();
+  const router = useRouter();
+  const { pathname, asPath, query } = router;
 
 	// This can come from your database or API.
 	const defaultValues: Partial<AppearanceFormValues> = {
@@ -47,7 +50,11 @@ export function AppearanceForm() {
 
 	const { toast } = useToast();
 
-	function onSubmit(data: AppearanceFormValues) {
+  const changeLocale = async (locale: string) => {
+    await router.push({ pathname, query }, asPath, { locale: locale });
+  };
+
+	async function onSubmit(data: AppearanceFormValues) {
 		localStorage.setItem("language", data.language);
 		setTheme(data.theme);
 		toast({
@@ -60,6 +67,7 @@ export function AppearanceForm() {
 				</pre>
 			),
 		});
+    await changeLocale(data.language);
 	}
 
 	return (
@@ -87,7 +95,7 @@ export function AppearanceForm() {
 											{...field}
 										>
 											<option value="en">EN</option>
-											<option value="zh">ZH</option>
+											<option value="zh-TW">ZH</option>
 										</select>
 									</FormControl>
 									<ChevronDownIcon className="absolute right-3 top-2.5 h-4 w-4 opacity-50" />
