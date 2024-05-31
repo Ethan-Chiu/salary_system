@@ -117,6 +117,11 @@ export function Translate(word: string) {
 		if (word === "level") return "級距";
 		if (word === "level_end") return "迄";
 		if (word === "level_start") return "起";
+		if (word === "sex_type"	) return "性別";
+		if (word === "registration_date") return "到職日期";
+		if (word === "quit_date") return "離職日期";
+		if (word === "license_id") return "身份（居留）證字號";
+		if (word === "month_salary") return "月薪";
 
 		// button
 		if (word === "next_step") return "下一步";
@@ -129,6 +134,7 @@ export function Translate(word: string) {
 		if (word === "confirm") return "確認";
 		if (word === "auto calculate") return "自動計算";
 		if (word === "form") return "表單";
+		
 
 		// tables
 		if (word === "attendanceSetting") return "請假加班";
