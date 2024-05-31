@@ -25,10 +25,11 @@ const PageHome: NextPageWithLayout = () => {
 	}
 
 	if (data && status === "authenticated") {
+    const locale = localStorage.getItem("language") ?? "en";
 		if (data?.actions) {
-			void Router.push("/functions");
+			void Router.push("/functions", undefined, { locale: locale });
 		} else {
-			void Router.push("/settings");
+			void Router.push("/settings", undefined, { locale: locale });
 		}
 	}
 

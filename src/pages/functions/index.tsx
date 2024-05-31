@@ -19,8 +19,8 @@ import { ToastAction } from "~/components/ui/toast";
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { i18n, locales } from '~/components/lang_config'
 
-import nextI18nConfig from "../../../next-i18next.config.mjs";
 import { Translate } from "~/lib/utils/translation";
 
 type FunctionLinkData = CardFunctionData & { url: string | null };
@@ -127,10 +127,7 @@ const PageHome: NextPageWithLayout = () => {
 export const getServerSideProps = async ({ locale }: { locale: string }) => {
   console.log("locale", locale); 
   return ({props: {
-    ...(await serverSideTranslations(locale, ["common"], nextI18nConfig, [
-      "en",
-      "zh-TW",
-    ])),
+    ...(await serverSideTranslations(locale, ["common"], i18n, locales)),
   }});
 };
 

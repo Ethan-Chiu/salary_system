@@ -37,9 +37,11 @@ export function AppearanceForm() {
   const router = useRouter();
   const { pathname, asPath, query } = router;
 
+  const locale = router.locale ?? "en";
+  /* console.log(locale) */
 	// This can come from your database or API.
 	const defaultValues: Partial<AppearanceFormValues> = {
-		language: (localStorage.getItem("language") as any) ?? "zh",
+		language: (localStorage.getItem("language") as any) ?? locale,
 		theme: "light",
 	};
 
@@ -57,16 +59,16 @@ export function AppearanceForm() {
 	async function onSubmit(data: AppearanceFormValues) {
 		localStorage.setItem("language", data.language);
 		setTheme(data.theme);
-		toast({
-			title: "You submitted the following values:",
-			description: (
-				<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-					<code className="text-white">
-						{JSON.stringify(data, null, 2)}
-					</code>
-				</pre>
-			),
-		});
+		/* toast({ */
+		/* 	title: "You submitted the following values:", */
+		/* 	description: ( */
+		/* 		<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4"> */
+		/* 			<code className="text-white"> */
+		/* 				{JSON.stringify(data, null, 2)} */
+		/* 			</code> */
+		/* 		</pre> */
+		/* 	), */
+		/* }); */
     await changeLocale(data.language);
 	}
 
