@@ -2,7 +2,7 @@ export function Translate(word: string) {
 	// var language = (localStorage) ? localStorage.getItem("language"): "zh";
 	// if (!language) localStorage.setItem("language", "zh");
 	// console.log(language);
-
+	word = word.toLowerCase();
 	const language = "zh";
 
 	if (language === "zh") {
@@ -117,6 +117,11 @@ export function Translate(word: string) {
 		if (word === "level") return "級距";
 		if (word === "level_end") return "迄";
 		if (word === "level_start") return "起";
+		if (word === "sex_type"	) return "性別";
+		if (word === "registration_date") return "到職日期";
+		if (word === "quit_date") return "離職日期";
+		if (word === "license_id") return "身份（居留）證字號";
+		if (word === "month_salary") return "月薪";
 
 		// button
 		if (word === "next_step") return "下一步";
@@ -129,6 +134,7 @@ export function Translate(word: string) {
 		if (word === "confirm") return "確認";
 		if (word === "auto calculate") return "自動計算";
 		if (word === "form") return "表單";
+		
 
 		// tables
 		if (word === "attendanceSetting") return "請假加班";
@@ -143,6 +149,63 @@ export function Translate(word: string) {
 		if (word === "performanceLevel") return "績效等級比例";
 		if (word === "trustMoney") return "信託金";
 		if (word === "basicInfo") return "基本資訊";
+		if (word === "tables") return "表格";
+		if (word === "previous") return "上一頁";
+		if (word === "next") return "下一頁";
+		if (word === "current") return "當前";
+		if (word === "history") return "歷史";
+		if (word === "calendar") return "排程";
+		if (word === "parameter") return "參數";
+		if (word === "value") return "值";
+		if (word === "department") return "部門";
+		if (word === "multiplier") return "倍率";
+		if (word === "position") return "職等";
+		if (word === "position type") return "職級";
+		if (word === "seniority") return "年資";
+		if (word === "type") return "類別";
+		if (word === "level_start") return "起";
+		if (word === "level_end") return "迄";
+		if (word === "level") return "級距";
+		if (word === "performance level") return "績效等級";
+		if (word === "view") return "顯示";
+		if (word === "bank") return "銀行";
+		if (word === "company") return "公司";
+		if (word === "start") return "起";
+		if (word === "end") return "迄";
+		
+
+		// title
+		if (word === "selects") return "選擇";
+		if (word === "actions") return "功能";
+		if (word === "configurations") return "設置";
+		if (word === "period") return "時期";
+		if (word === "functions") return "計算薪資";
+		if (word === "synchronize") return "同步";
+		if (word === "employees") return "員工";
+		if (word === "parameters") return "參數";
+		if (word === "settings") return "設定";
+		if (word === "roles") return "身份";
+		if (word === "reports") return "報表";
+
+		// month
+		if (word === "jan") return "1月";
+		if (word === "feb") return "2月";
+		if (word === "mar") return "3月";
+		if (word === "apr") return "4月";
+		if (word === "may") return "5月";
+		if (word === "jun") return "6月";
+		if (word === "jul") return "7月";
+		if (word === "aug") return "8月";
+		if (word === "sep") return "9月";
+		if (word === "oct") return "10月";
+		if (word === "nov") return "11月";
+		if (word === "dec") return "12月";
+
+		// others
+		if (word === "visible columns") return "顯示欄位";
+		if (word === "filter setting...") return "篩選關鍵字...";
+		if (word === "up to date") return "已是最新資料";
+		if (word === "system data is up to date with the EHR data") return "當前資料與EHR完全一致";
 	}
 
 	if (language === "en") {

@@ -6,6 +6,7 @@ import { Button } from "~/components/ui/button";
 import { Translate } from "~/lib/utils/translation";
 import { cn } from "~/lib/utils";
 import { api } from "~/utils/api";
+import { FunctionsEnumType } from "~/server/api/types/functions_enum";
 
 const TabOptions = ["請假", "加班", "工作天數"];
 
@@ -16,7 +17,7 @@ export function DataPage({
 	setSelectedIndex,
 }: {
 	period: number;
-	func: string;
+	func: FunctionsEnumType;
 	selectedIndex: number;
 	setSelectedIndex: (index: number) => void;
 }) {

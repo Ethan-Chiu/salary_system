@@ -27,6 +27,7 @@ import { Dialog, DialogContent } from "./ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import periodContext from "./context/period_context";
 import PeriodSelector from "./period_selector";
+import { Translate } from "~/lib/utils/translation";
 
 export type Playlist = (typeof playlists)[number];
 
@@ -182,7 +183,7 @@ type SelectItemEntry = {
 
 const selectItems: SelectItemEntry[] = [
 	{
-		title: "Period",
+		title: Translate("period"),
 		icon: CalendarRange,
 		popUpPage: <PeriodSelector />,
 	},
@@ -190,25 +191,25 @@ const selectItems: SelectItemEntry[] = [
 
 const actionLinks: NavLinkEntry[] = [
 	{
-		title: "Functions",
+		title: Translate("functions"),
 		icon: LayoutGrid,
 		url: "/functions",
 		collapsed: false,
 	},
 	{
-		title: "Synchronize",
+		title: Translate("synchronize"),
 		icon: CheckSquare,
 		url: "/synchronize",
 		collapsed: false,
 	},
 	{
-		title: "Employees",
+		title: Translate("employees"),
 		icon: Contact,
 		url: "/employees",
 		collapsed: false,
 	},
 	{
-		title: "Parameters",
+		title: Translate("parameters"),
 		icon: SlidersHorizontal,
 		url: "/parameters",
 		collapsed: false,
@@ -217,19 +218,19 @@ const actionLinks: NavLinkEntry[] = [
 
 const settingLinks: NavLinkEntry[] = [
 	{
-		title: "Settings",
+		title: Translate("settings"),
 		icon: Settings,
 		url: "/settings",
 		collapsed: false,
 	},
 	{
-		title: "Roles",
+		title: Translate("roles"),
 		icon: ShieldCheck,
 		url: "/roles",
 		collapsed: false,
 	},
 	{
-		title: "Report",
+		title: Translate("reports"),
 		icon: GanttChartSquare,
 		url: "/report",
 		collapsed: false,
@@ -256,7 +257,7 @@ export function Sidebar({
 				<div className={cn("py-2", !isCollapsed && "px-3")}>
 					{!isCollapsed && (
 						<div className="mb-2 line-clamp-1 break-all px-4 text-lg font-semibold tracking-tight">
-							Select
+							{Translate("selects")}
 						</div>
 					)}
 					<div className="space-y-1">
@@ -278,7 +279,7 @@ export function Sidebar({
 					<div className={cn("py-2", !isCollapsed && "px-3")}>
 						{!isCollapsed && (
 							<div className="mb-2 line-clamp-1 break-all px-4 text-lg font-semibold tracking-tight">
-								Actions
+								{Translate("actions")}
 							</div>
 						)}
 						<div className="space-y-1">
@@ -301,7 +302,7 @@ export function Sidebar({
 				<div className={cn("py-2", !isCollapsed && "px-3")}>
 					{!isCollapsed && (
 						<div className="mb-2 line-clamp-1 break-all px-4 text-lg font-semibold tracking-tight">
-							Configurations
+							{Translate("configurations")}
 						</div>
 					)}
 					<div className="space-y-1">

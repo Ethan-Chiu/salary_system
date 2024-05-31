@@ -5,11 +5,12 @@ import { type NextPageWithLayout } from "../_app";
 import { type ReactElement } from "react";
 import { Header } from "~/components/header";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
+import { Translate } from "~/lib/utils/translation";
 
 const ProfilePage: NextPageWithLayout = () => {
 	return (
 		<>
-			<Header title="Profile" showOptions />
+			<Header title={Translate("profile")} showOptions />
 		</>
 	);
 };

@@ -17,6 +17,7 @@ import { ToastAction } from "@radix-ui/react-toast";
 import PeriodSelector from "~/components/period_selector";
 import { Dialog, DialogContent } from "~/components/ui/dialog";
 import PeriodContextProvider from "~/components/context/period_context_provider";
+import { Translate } from "~/lib/utils/translation";
 
 type FunctionLinkData = CardFunctionData & { url: string | null };
 
@@ -37,7 +38,7 @@ const ReportHomePage: NextPageWithLayout = () => {
 
 	return (
 		<>
-			<Header title="functions" showOptions className="mb-4" />
+			<Header title={Translate("reports")} showOptions className="mb-4" />
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogContent>
 					<PeriodSelector />

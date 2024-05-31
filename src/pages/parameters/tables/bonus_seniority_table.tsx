@@ -7,6 +7,7 @@ import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/compon
 import { type BonusSeniority } from "~/server/database/entity/SALARY/bonus_seniority";
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
+import { Translate } from "~/lib/utils/translation";
 
 export type RowItem = {
 	seniority: number;
@@ -30,7 +31,7 @@ export const bonus_seniority_columns = [
 								)
 							}
 						>
-							Seniority
+							{Translate("Seniority")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -42,7 +43,7 @@ export const bonus_seniority_columns = [
 		),
 	}),
 	columnHelper.accessor("multiplier", {
-		header: () => <div className="text-center">Multiplier</div>,
+		header: () => <div className="text-center">{Translate("Multiplier")}</div>, 
 		cell: ({ row }) => {
 			return (
 				<div className="flex justify-center">

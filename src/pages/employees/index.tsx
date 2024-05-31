@@ -10,6 +10,7 @@ import { EmployeeTrustTable } from "./tables/employee_trust_table";
 import DataTableContextProvider from "./components/context/data_table_context_provider";
 import dataTableContext from "./components/context/data_table_context";
 import periodContext from "~/components/context/period_context";
+import { Translate } from "~/lib/utils/translation";
 
 const TabOptions = ["基本檔案", "薪資檔案", "持股信託"];
 
@@ -45,7 +46,7 @@ const PageEmployeesContent = () => {
 
 	return (
 		<div className="flex h-full w-full flex-col">
-			<Header title="employees" showOptions className="mb-4" />
+			<Header title={Translate("employees")} showOptions className="mb-4" />
 			<div className="m-4 h-0 grow">
 				<Tabs
 					defaultValue={TabOptions[0]}

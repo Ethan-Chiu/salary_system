@@ -560,13 +560,74 @@ export class CalculateService {
 		return Math.round(Math.round(money * 0.06));
 	}
 	//MARK: 二代健保
+	async urdaizienbow(): Promise<number> {
+	/*
+	rd("二代健保") = 0
+        
+        If PayType = DS_Pay Then ' 董監事 2014/7/24
+        
+            If rd("營運積效獎金") + rd("專案獎金") > nhi_2nd_per Then  'hm20160128
+                rd("二代健保") = (rd("營運積效獎金") + rd("專案獎金")) * nhi_2nd_rate 'hm20160128
+                rd.Update
+                rd.edit
+            End If
+        
+        Else
+        
+             '計算二代健保補充保費 '2014/04/16
+            If rd("年終獎金") > 0 Or rd("年終積效獎金") > 0 Or rd("營運積效獎金") > 0 Or rd("績效獎金") > 0 Or rd("專案獎金") > 0 Or rd("公司獎勵金") > 0 Or rd("特別獎勵金_公司") > 0 Then
+                '本次獎金
+                bonus = rd("年終獎金") + rd("年終積效獎金") + rd("營運積效獎金") + rd("績效獎金") + rd("專案獎金") + rd("公司獎勵金") + rd("特別獎勵金_公司")
+                'MsgBox bonus
+                
+                Set kkk = CurrentDb.OpenRecordset("select 發薪日期 from 系統預設值")
+                
+                Do Until kkk.EOF
+                    current_year = Year(kkk("發薪日期"))
+                    kkk.MoveNext
+                Loop
+                    
+    
+                Set re2 = CurrentDb.OpenRecordset("select *  from 累計獎金金額 " & "where 員工編號 = '" & rd("員工編號") & "' and 年度 =" & current_year)
+                total_bonus = 0
+                Do Until re2.EOF
+                    total_bonus = re2("累計金額")
+                    re2.MoveNext
+                Loop
+    
+                total_bonus = total_bonus + bonus
+                over_amt = total_bonus - rd("健保") * nhi_2nd_mitiple 'hm20160128
+    
+                If over_amt > 0 Then
+                'over_amt & bonus 二者取小的*2% =補充保除費
+                    If over_amt < bonus Then
+                        rd("二代健保") = over_amt * nhi_2nd_rate 'hm20160128
+                    Else
+                        rd("二代健保") = bonus * nhi_2nd_rate 'hm20160128
+                   End If
+                   'MsgBox rd("二代健保")
+                    rd.Update
+                    rd.edit
+                End If
+    
+            End If
+            '2014/04/16
+        End If
+	 */
+		return 0;	
+	}
+	
 	//MARK: 員工信托提存金
 	//MARK: 特別信託獎勵金＿員工
 	//MARK: 公司獎勵金
+
 	//MARK: 特別信託獎勵金＿公司
 	//MARK: 團保費代扣＿升等
+	// 感覺在這裡: DoCmd.OpenQuery "其他更新", acNormal, acEdit    'Jerry 07/09/03  增加退職所得  23/6/3 增加團保費代扣_升等
+	
 
-	//MARK: 特別事假扣款		// 薪資查詢.特別事假扣款 = GetLeave2Money(薪資查詢!工作類別,薪資查詢!工作形態,薪資查詢!原應發底薪,薪資查詢!補助津貼+薪資查詢!專業証照津貼,薪資查詢!特別事假時數);
+	//MARK: 特別事假扣款		
+	// 薪資查詢.特別事假扣款 = GetLeave2Money(薪資查詢!工作類別,薪資查詢!工作形態,薪資查詢!原應發底薪,薪資查詢!補助津貼+薪資查詢!專業証照津貼,薪資查詢!特別事假時數);
 
 
 	//MARK: 實發金額

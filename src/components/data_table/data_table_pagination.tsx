@@ -10,6 +10,7 @@ import {
 	SelectValue,
 } from "~/components/ui/select";
 import { cn } from "~/lib/utils";
+import { Translate } from "~/lib/utils/translation";
 
 interface DataTablePaginationProps<TData>
 	extends React.HTMLAttributes<HTMLDivElement> {
@@ -39,15 +40,7 @@ export function DataTablePagination<TData>({
 			<div className="text-sm text-muted-foreground">
 				{dataNum != 0 ? (
 					<div className="min-w-[100px]">
-						<span className="font-medium">
-							{pageIndex * pageSize + 1}
-						</span>{" "}
-						to{" "}
-						<span className="font-medium">
-							{Math.min((pageIndex + 1) * pageSize, dataNum)}
-						</span>{" "}
-						of <span className="font-medium">{dataNum}</span>{" "}
-						results
+						{`第 ${pageIndex * pageSize + 1} 到 ${Math.min((pageIndex + 1) * pageSize, dataNum)} 筆 (共 ${dataNum} 筆)`}
 					</div>
 				) : (
 					<>No results</>
@@ -72,7 +65,7 @@ export function DataTablePagination<TData>({
 									key={value}
 									value={(value + 1).toString()}
 								>
-									{value + 1} Rows
+									{`${value + 1} 列`}
 								</SelectItem>
 							)
 						)}
@@ -96,7 +89,7 @@ export function DataTablePagination<TData>({
 								key={value}
 								value={(value + 1).toString()}
 							>
-								{value + 1} Columns
+								{`每列 ${value + 1} 筆`}
 							</SelectItem>
 						))}
 					</SelectContent>
@@ -105,10 +98,8 @@ export function DataTablePagination<TData>({
 			{/* Pagination */}
 			<div className="ml-2 flex justify-end">
 				<div className=" flex items-center space-x-4">
-					<div className="flex w-24 items-center justify-center text-sm font-medium">
-						{`Page ${
-							table.getState().pagination.pageIndex + 1
-						} of ${table.getPageCount()}`}
+					<div className="flex w-30 items-center justify-center text-sm font-medium">
+						{`第 ${table.getState().pagination.pageIndex + 1} 頁 (共 ${table.getPageCount()} 頁)`}
 					</div>
 					<div className="flex items-center space-x-2">
 						<Button
@@ -119,7 +110,7 @@ export function DataTablePagination<TData>({
 						>
 							<span className="sr-only">Go to previous page</span>
 							<ChevronLeftIcon className="h-4 w-4" />
-							Previous
+							{Translate("Previous")}
 						</Button>
 						<Button
 							variant="outline"
@@ -128,7 +119,7 @@ export function DataTablePagination<TData>({
 							disabled={!table.getCanNextPage()}
 						>
 							<span className="sr-only">Go to next page</span>
-							Next
+							{Translate("Next")}
 							<ChevronRightIcon className="h-4 w-4" />
 						</Button>
 					</div>

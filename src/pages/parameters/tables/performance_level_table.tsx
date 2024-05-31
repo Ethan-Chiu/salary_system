@@ -7,6 +7,7 @@ import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/compon
 import { LoadingSpinner } from "~/components/loading";
 import { type PerformanceLevel } from "~/server/database/entity/SALARY/performance_level";
 import { type TableComponentProps } from "../tables_view";
+import { Translate } from "~/lib/utils/translation";
 
 export type RowItem = {
 	performance_level: string;
@@ -30,7 +31,7 @@ export const performance_level_columns = [
 								)
 							}
 						>
-							performance level
+							{Translate("performance level")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -54,7 +55,7 @@ export const performance_level_columns = [
 								)
 							}
 						>
-							performance level
+							{Translate("multiplier")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>

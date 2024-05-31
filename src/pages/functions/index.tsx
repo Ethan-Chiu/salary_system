@@ -21,6 +21,7 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import nextI18nConfig from "../../../next-i18next.config.mjs";
+import { Translate } from "~/lib/utils/translation";
 
 type FunctionLinkData = CardFunctionData & { url: string | null };
 
@@ -67,7 +68,7 @@ const PageHome: NextPageWithLayout = () => {
   
 	return (
 		<>
-			<Header title="functions" showOptions className="mb-4" />
+			<Header title={Translate("functions")} showOptions className="mb-4" />
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogContent>
 					<PeriodSelector />
