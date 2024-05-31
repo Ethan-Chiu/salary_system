@@ -38,13 +38,11 @@ export function DataTablePagination<TData>({
 		>
 			{/* Showing results */}
 			<div className="text-sm text-muted-foreground">
-				{dataNum != 0 ? (
+				{
 					<div className="min-w-[100px]">
 						{`第 ${pageIndex * pageSize + 1} 到 ${Math.min((pageIndex + 1) * pageSize, dataNum)} 筆 (共 ${dataNum} 筆)`}
 					</div>
-				) : (
-					<>No results</>
-				)}
+				}
 			</div>
 			{/* Select data layout */}
 			<div className="mx-2 flex flex-1 items-center justify-center text-sm text-muted-foreground">

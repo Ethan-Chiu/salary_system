@@ -2,11 +2,12 @@ import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table";
 import { Holiday } from "~/server/database/entity/UMEDIA/holiday";
 import { api } from "~/utils/api";
+import { Translate } from "~/lib/utils/translation";
 
 const columns = Object.keys(new Holiday()).map((key) => {
 	return {
 		accessorKey: key,
-		header: key,
+		header: Translate(key),
 	};
 });
 

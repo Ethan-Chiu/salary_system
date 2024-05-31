@@ -31,7 +31,7 @@ export const performance_level_columns = [
 								)
 							}
 						>
-							{Translate("performance level")}
+							{Translate("performance_level")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>

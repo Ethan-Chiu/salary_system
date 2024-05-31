@@ -37,7 +37,7 @@ export const bank_columns = [
 								)
 							}
 						>
-							{Translate("bank")}
+							{Translate("bank_name")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -49,7 +49,7 @@ export const bank_columns = [
 		),
 	}),
 	columnHelper.accessor("org_name", {
-		header: () => <div className="text-center">{Translate("company")}</div>,
+		header: () => <div className="text-center">{Translate("org_name")}</div>,
 		cell: ({ row }) => {
 			return (
 				<div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>
@@ -57,7 +57,7 @@ export const bank_columns = [
 		},
 	}),
 	columnHelper.accessor("start_date", {
-		header: () => <div className="text-center">{Translate("start")}</div>, 
+		header: () => <div className="text-center">{Translate("start_date")}</div>, 
 		cell: ({ row }) => {
 			return (
 				<div className="text-center font-medium">{`${
@@ -67,7 +67,7 @@ export const bank_columns = [
 		},
 	}),
 	columnHelper.accessor("end_date", {
-		header: () => <div className="text-center">{Translate("end")}</div>,
+		header: () => <div className="text-center">{Translate("end_date")}</div>,
 		cell: ({ row }) => {
 			return row.original.end_date ? (
 				<div className="text-center font-medium">{`${

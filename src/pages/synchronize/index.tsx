@@ -46,7 +46,7 @@ function SyncPage() {
 			</div>
 		</div>
 	) : (
-		<div>no data</div>
+		<div>{Translate("no data")}</div>
 	);
 }
 

@@ -179,12 +179,12 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 								}
 							}}
 						>
-							Cancel
+							{Translate("Cancel")}
 						</Button>
 
 						<Button type="submit">
-							{mode === "create" && "Create"}
-							{mode === "update" && "Update"}
+							{mode === "create" && Translate("Create")}
+							{mode === "update" && Translate("Update")}
 						</Button>
 					</div>
 				</div>
@@ -238,7 +238,7 @@ const CompViewAllDatas = ({
 			<div className="flex h-10 items-center justify-between">
 				<Input
 					className="w-1/10 absolute left-4 top-4"
-					placeholder={"請輸入搜尋關鍵字"}
+					placeholder={Translate("filter setting...")}
 					onChange={(e) => setFilterValue(e.target.value)}
 				></Input>
 				{mode == "auto calculate" && (
@@ -316,7 +316,7 @@ const CompViewAllDatas = ({
 										colSpan={5}
 										className="h-24 text-center"
 									>
-										No results.
+										{Translate("no data")}
 									</TableCell>
 								)}
 							</TableRow>

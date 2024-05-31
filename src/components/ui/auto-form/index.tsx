@@ -90,7 +90,6 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
 					form={form}
 					fieldConfig={fieldConfig}
 				/>
-
 				{children}
 			</form>
 		</Form>

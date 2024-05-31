@@ -59,6 +59,7 @@ import {
 	HoverCardTrigger,
 } from "~/components/ui/hover-card";
 import { useState, type ReactElement } from "react";
+import { Translate } from "~/lib/utils/translation";
 
 type IdentityType = {
 	identity: string;
@@ -233,7 +234,7 @@ function CompRoleDropdown() {
 						// value={commandInputValue}
 					/>
 					<CommandList>
-						<CommandEmpty>No results found.</CommandEmpty>
+						<CommandEmpty>{Translate("no data")}</CommandEmpty>
 						<CommandGroup heading="Employees">
 							<CommandItem value="-" className="hidden" />
 							{data.map((emp: EmployeeInfo, index: number) => {

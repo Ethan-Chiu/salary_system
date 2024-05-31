@@ -44,6 +44,6 @@ export function SyncPage({
 			)}
 		</div>
 	) : (
-		<div>no data</div>
+		<div>{Translate("no data")}</div>
 	);
 }

@@ -14,7 +14,7 @@ import { type TableComponentProps } from "../tables_view";
 import { Translate } from "~/lib/utils/translation";
 
 export type RowItem = {
-	name: string;
+	parameters: string;
 	value: number | string | Date;
 };
 type RowItemKey = keyof RowItem;
@@ -22,7 +22,7 @@ type RowItemKey = keyof RowItem;
 const columnHelper = createColumnHelper<RowItem>();
 
 export const bonus_columns = [
-	columnHelper.accessor("name", {
+	columnHelper.accessor("parameters", {
 		header: ({ column }) => {
 			return (
 				<div className="flex justify-center">
@@ -35,7 +35,7 @@ export const bonus_columns = [
 								)
 							}
 						>
-							{Translate("Parameter")}
+							{Translate("parameters")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -45,7 +45,7 @@ export const bonus_columns = [
 		cell: ({ row }) => (
 			<div className="flex justify-center">
 				<div className="text-center font-medium">
-					{row.getValue("name")}
+					{row.getValue("parameters")}
 				</div>
 			</div>
 		),
@@ -76,27 +76,27 @@ export function bonusMapper(bonusData: BonusSetting[]): RowItem[] {
 	const data = bonusData[0]!;
 	return [
 		{
-			name: "固定比率",
+			parameters: "固定比率",
 			value: data.fixed_multiplier,
 		},
 		{
-			name: "獎金(發放)基準日",
+			parameters: "獎金(發放)基準日",
 			value: formatDate("day", data.criterion_date),
 		},
 		{
-			name: "獎金計算依據",
+			parameters: "獎金計算依據",
 			value: data.base_on,
 		},
 		{
-			name: "類別",
+			parameters: "類別",
 			value: data.type,
 		},
 		{
-			name: c_CreateDateStr,
+			parameters: c_CreateDateStr,
 			value: formatDate("hour", data.create_date),
 		},
 		{
-			name: c_UpdateDateStr,
+			parameters: c_UpdateDateStr,
 			value: formatDate("hour", data.update_date),
 		},
 	];
@@ -111,7 +111,7 @@ interface BonusTableProps extends TableComponentProps {
 export function BonusTable({ viewOnly }: BonusTableProps) {
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBonusSetting.useQuery();
-	const filterKey: RowItemKey = "name";
+	const filterKey: RowItemKey = "parameters";
 
 	if (isLoading) {
 		const LoaderUI = (

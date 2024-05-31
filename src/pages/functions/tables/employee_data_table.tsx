@@ -1,6 +1,7 @@
 import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table";
 import { api } from "~/utils/api";
+import { Translate } from "~/lib/utils/translation";
 
 const columns = [
 	"emp_no",
@@ -22,7 +23,7 @@ const columns = [
 ].map((key) => {
 	return {
 		accessorKey: key,
-		header: key,
+		header: Translate(key),
 	};
 });
 
