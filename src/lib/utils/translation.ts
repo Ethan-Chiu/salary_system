@@ -2,7 +2,7 @@ export function Translate(word: string) {
 	// var language = (localStorage) ? localStorage.getItem("language"): "zh";
 	// if (!language) localStorage.setItem("language", "zh");
 	// console.log(language);
-
+	word = word.toLowerCase();
 	const language = "zh";
 
 	if (language === "zh") {
@@ -143,6 +143,30 @@ export function Translate(word: string) {
 		if (word === "performanceLevel") return "績效等級比例";
 		if (word === "trustMoney") return "信託金";
 		if (word === "basicInfo") return "基本資訊";
+		if (word === "tables") return "表格";
+		if (word === "previous") return "上一頁";
+		if (word === "next") return "下一頁";
+		if (word === "current") return "當前";
+		if (word === "history") return "歷史";
+		if (word === "calendar") return "排程";
+		if (word === "parameter") return "參數";
+		if (word === "value") return "值";
+		if (word === "department") return "部門";
+		if (word === "multiplier") return "倍率";
+		if (word === "position") return "職等";
+		if (word === "position type") return "職級";
+		if (word === "seniority") return "年資";
+		if (word === "type") return "類別";
+		if (word === "level_start") return "起";
+		if (word === "level_end") return "迄";
+		if (word === "level") return "級距";
+		if (word === "performance level") return "績效等級";
+		if (word === "view") return "顯示";
+		if (word === "bank") return "銀行";
+		if (word === "company") return "公司";
+		if (word === "start") return "起";
+		if (word === "end") return "迄";
+		
 
 		// title
 		if (word === "selects") return "選擇";

@@ -11,6 +11,7 @@ import {
 	DropdownMenuSeparator,
 } from "~/components/ui/dropdown-menu";
 import { cn } from "~/lib/utils";
+import { Translate } from "~/lib/utils/translation";
 
 interface DataTableViewOptionsProps<TData>
 	extends React.HTMLAttributes<HTMLDivElement> {
@@ -32,10 +33,12 @@ export function DataTableViewOptions<TData>({
 					<Button
 						variant="outline"
 						size="sm"
-						className="ml-auto hidden h-8 lg:flex"
+						className="ml-auto hidden w-20 h-8 lg:flex"
 					>
+						<div className="flex items-center">
 						<MixerHorizontalIcon className="mr-2 h-4 w-4" />
-						View
+						{Translate("view")}
+						</div>
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end" className="w-[150px]">

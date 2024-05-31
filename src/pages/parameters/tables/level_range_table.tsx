@@ -7,6 +7,7 @@ import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/compon
 import { LoadingSpinner } from "~/components/loading";
 import { type LevelRange } from "~/server/database/entity/SALARY/level_range";
 import { type TableComponentProps } from "../tables_view";
+import { Translate } from "~/lib/utils/translation";
 
 export type RowItem = {
 	type: string;
@@ -31,7 +32,7 @@ export const level_range_columns = [
 								)
 							}
 						>
-							Type
+							{Translate("type")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -43,7 +44,7 @@ export const level_range_columns = [
 		),
 	}),
 	columnHelper.accessor("level_start", {
-		header: () => <div className="text-center">level_start</div>,
+		header: () => <div className="text-center">{Translate("level_start")}</div>,
 		cell: ({ row }) => {
 			return (
 				<div className="text-center font-medium">{`${row.original.level_start}`}</div>
@@ -51,7 +52,7 @@ export const level_range_columns = [
 		},
 	}),
 	columnHelper.accessor("level_end", {
-		header: () => <div className="text-center">level_end</div>,
+		header: () => <div className="text-center">{Translate("level_end")}</div>,
 		cell: ({ row }) => {
 			return (
 				<div className="text-center font-medium">{`${row.original.level_end}`}</div>

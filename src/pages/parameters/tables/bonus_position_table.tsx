@@ -7,7 +7,7 @@ import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/compon
 import { type BonusPosition } from "~/server/database/entity/SALARY/bonus_position";
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
-
+import { Translate } from "~/lib/utils/translation";
 export type RowItem = {
 	position: number;
 	multiplier: number;
@@ -30,7 +30,7 @@ export const bonus_position_columns = [
 								)
 							}
 						>
-							position
+							{Translate("position")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -42,7 +42,7 @@ export const bonus_position_columns = [
 		),
 	}),
 	columnHelper.accessor("multiplier", {
-		header: () => <div className="text-center">Multiplier</div>,
+		header: () => <div className="text-center">{Translate("multiplier")}</div>,
 		cell: ({ row }) => {
 			return (
 				<div className="flex justify-center">
