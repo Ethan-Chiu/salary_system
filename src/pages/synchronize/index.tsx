@@ -8,6 +8,7 @@ import { Header } from "~/components/header";
 import { SyncPageContent } from "~/components/synchronize/sync_page_content";
 import periodContext from "~/components/context/period_context";
 import { FunctionsEnum } from "~/server/api/types/functions_enum";
+import { Translate } from "~/lib/utils/translation";
 
 
 const PageCheckEHR: NextPageWithLayout = () => {
@@ -37,7 +38,7 @@ function SyncPage() {
 
 	return data != null ? (
 		<div className="flex h-full w-full flex-col">
-			<Header title="Synchronize" showOptions className="mb-4" />
+			<Header title={Translate("synchronize")} showOptions className="mb-4" />
 			<div className="mx-4 flex h-0 grow">
         <div className="w-full flex flex-col mb-4">
           <SyncPageContent data={data} />

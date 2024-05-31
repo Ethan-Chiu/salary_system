@@ -9,11 +9,12 @@ import { AppearanceForm } from "./components/appearance";
 import { Header } from "~/components/header";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { ChangePasswordForm } from "./components/changePassword";
+import { Translate } from "~/lib/utils/translation";
 
 const PageSettings: NextPageWithLayout = () => {
 	return (
 		<>
-			<Header title="Settings" showOptions className="mb-4" />
+			<Header title={Translate("settings")} showOptions className="mb-4" />
 			<div className="m-4">
 				<Tabs defaultValue="profile" className="h-full space-y-6">
 					<div className="space-between flex items-center">

@@ -4,11 +4,12 @@ import { type NextPageWithLayout } from "../_app";
 import React, { type ReactElement } from "react";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import TablesView from "./tables_view";
+import { Translate } from "~/lib/utils/translation";
 
 const PageParameters: NextPageWithLayout = () => {
 	return (
 		<div className="flex h-screen flex-col">
-			<Header title="parameters" showOptions />
+			<Header title={Translate("parameters")} showOptions />
 
 			<div className="m-4 h-0 grow rounded-md border-2">
 				<TablesView />

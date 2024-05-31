@@ -50,7 +50,7 @@ export const PerpageLayoutNav = (
 							collapsedSize={3}
 							collapsible
 							minSize={10}
-							maxSize={20}
+							maxSize={15}
 							onExpand={() => {
 								setIsCollapsed(false);
 								document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(

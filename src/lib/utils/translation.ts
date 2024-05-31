@@ -143,6 +143,19 @@ export function Translate(word: string) {
 		if (word === "performanceLevel") return "績效等級比例";
 		if (word === "trustMoney") return "信託金";
 		if (word === "basicInfo") return "基本資訊";
+
+		// title
+		if (word === "selects") return "選擇";
+		if (word === "actions") return "功能";
+		if (word === "configurations") return "設置";
+		if (word === "period") return "時期";
+		if (word === "functions") return "計算薪資";
+		if (word === "synchronize") return "同步";
+		if (word === "employees") return "員工";
+		if (word === "parameters") return "參數";
+		if (word === "settings") return "設定";
+		if (word === "roles") return "身份";
+		if (word === "reports") return "報表";
 	}
 
 	if (language === "en") {

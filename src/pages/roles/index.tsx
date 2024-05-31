@@ -36,6 +36,7 @@ import { Header } from "~/components/header";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { useSession } from "next-auth/react";
 import { TeamMemberTable } from "./team_member_table";
+import { Translate } from "~/lib/utils/translation";
 
 type EmployeeInfo = {
 	username: string;
@@ -53,7 +54,7 @@ const PageRoles: NextPageWithLayout = () => {
 	return (
 		<>
 			{/* header */}
-			<Header title="roles" showOptions />
+			<Header title={Translate("roles")} showOptions />
 			<CurrentUserCard />
 			<div>
 				<TeamMemberTable />

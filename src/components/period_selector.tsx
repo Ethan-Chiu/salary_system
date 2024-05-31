@@ -15,6 +15,7 @@ import { SessionStorage } from "~/utils/session_storage";
 import { Button } from "./ui/button";
 import { DialogClose } from "./ui/dialog";
 import { type Period } from "~/server/database/entity/UMEDIA/period";
+import { Translate } from "~/lib/utils/translation";
 
 export default function PeriodSelector() {
 	const getPeriod = api.function.getPeriod.useQuery();
@@ -37,7 +38,7 @@ export default function PeriodSelector() {
 			{getPeriod.isFetched ? (
 				<>
 					<div className="flex w-full p-2">
-						<div className="flex-1">Period</div>
+						<div className="flex-1">{Translate("Period")}</div>
 						<div className="flex-1">
 							<Select
 								defaultValue={selectedPeriod?.period_name}

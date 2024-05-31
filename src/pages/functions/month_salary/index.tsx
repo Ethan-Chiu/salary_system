@@ -26,6 +26,7 @@ import { useRouter } from "next/router";
 import { type PaidEmployee } from "~/server/service/sync_service";
 import { SalaryCalculatePage } from "./salary_calculate_page";
 import { FunctionsEnum } from "~/server/api/types/functions_enum";
+import { Translate } from "~/lib/utils/translation";
 
 type FunctionStepPage = {
 	title: string;
@@ -150,7 +151,7 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 			}}
 		>
 			<div className="flex flex-col h-full">
-				<Header title="functions" showOptions />
+				<Header title={Translate("functions")} showOptions />
 				<div className="flex flex-col grow p-4">
 					<ProgressBar labels={titles} selectedIndex={selectedIndex} />
 					<div className="h-4" />
