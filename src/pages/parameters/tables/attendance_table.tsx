@@ -15,6 +15,7 @@ import { useState } from "react";
 import { EmptyTable } from "./empty_table";
 import { EmptyCreate } from "./empty_create";
 import { getSchema } from "../schemas/get_schemas";
+import { Translate } from "~/lib/utils/translation";
 
 const rowSchema = z.object({
 	name: z.string(),
@@ -40,7 +41,7 @@ export const attendance_columns = [
 								)
 							}
 						>
-							Parameter
+							{Translate("Parameter")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -56,7 +57,7 @@ export const attendance_columns = [
 		),
 	}),
 	columnHelper.accessor("value", {
-		header: () => <div className="text-center">Value</div>,
+		header: () => <div className="text-center">{Translate("Value")}</div>,
 		cell: ({ row }) => {
 			const value = row.getValue("value");
 			let formatted = "";

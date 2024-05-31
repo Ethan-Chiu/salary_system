@@ -11,6 +11,7 @@ import { LoadingSpinner } from "~/components/loading";
 import { formatDate } from "~/lib/utils/format_date";
 import { EmptyTable } from "./empty_table";
 import { type TableComponentProps } from "../tables_view";
+import { Translate } from "~/lib/utils/translation";
 
 export type RowItem = {
 	name: string;
@@ -34,7 +35,7 @@ export const bonus_columns = [
 								)
 							}
 						>
-							Parameter
+							{Translate("Parameter")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -50,7 +51,7 @@ export const bonus_columns = [
 		),
 	}),
 	columnHelper.accessor("value", {
-		header: () => <div className="text-center">Value</div>,
+		header: () => <div className="text-center">{Translate("Value")}</div>,
 		cell: ({ row }) => {
 			const value = row.getValue("value");
 			let formatted = "";

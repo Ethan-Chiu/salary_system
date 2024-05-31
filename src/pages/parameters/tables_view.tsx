@@ -39,6 +39,7 @@ import periodContext from "~/components/context/period_context";
 import { LevelRangeTable } from "./tables/level_range_table";
 import { LevelTable } from "./tables/level_table";
 import { PerformanceLevelTable } from "./tables/performance_level_table";
+import { Translate } from "~/lib/utils/translation";
 
 export type TableComponentProps = {
 	period_id: number;
@@ -152,7 +153,7 @@ function CompTablesSelector() {
 	return (
 		<div className="flex h-full flex-col">
 			<div className="flex h-[48px] items-center justify-center text-lg">
-				<div>Tables</div>
+				<div>{Translate("Tables")} </div>
 			</div>
 			<Separator />
 			<div className="h-0 grow">

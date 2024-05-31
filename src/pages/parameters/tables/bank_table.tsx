@@ -9,6 +9,7 @@ import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { formatDate } from "~/lib/utils/format_date";
 import { EmptyTable } from "./empty_table";
+import { Translate } from "~/lib/utils/translation";
 
 export type RowItem = {
 	bank_name: string;
@@ -36,7 +37,7 @@ export const bank_columns = [
 								)
 							}
 						>
-							Bank
+							{Translate("bank")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -48,7 +49,7 @@ export const bank_columns = [
 		),
 	}),
 	columnHelper.accessor("org_name", {
-		header: () => <div className="text-center">Company</div>,
+		header: () => <div className="text-center">{Translate("company")}</div>,
 		cell: ({ row }) => {
 			return (
 				<div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>
@@ -56,7 +57,7 @@ export const bank_columns = [
 		},
 	}),
 	columnHelper.accessor("start_date", {
-		header: () => <div className="text-center">start</div>,
+		header: () => <div className="text-center">{Translate("start")}</div>, 
 		cell: ({ row }) => {
 			return (
 				<div className="text-center font-medium">{`${
@@ -66,7 +67,7 @@ export const bank_columns = [
 		},
 	}),
 	columnHelper.accessor("end_date", {
-		header: () => <div className="text-center">end</div>,
+		header: () => <div className="text-center">{Translate("end")}</div>,
 		cell: ({ row }) => {
 			return row.original.end_date ? (
 				<div className="text-center font-medium">{`${

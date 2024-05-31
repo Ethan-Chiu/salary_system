@@ -7,6 +7,7 @@ import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/compon
 import { LoadingSpinner } from "~/components/loading";
 import { type Level } from "~/server/database/entity/SALARY/level";
 import { type TableComponentProps } from "../tables_view";
+import { Translate } from "~/lib/utils/translation";
 
 export type RowItem = {
 	level: number;
@@ -29,7 +30,7 @@ export const level_columns = [
 								)
 							}
 						>
-							level
+							{Translate("level")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
