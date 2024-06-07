@@ -1,6 +1,7 @@
 import { Button } from "~/components/ui/button";
-import { Translate } from "~/lib/utils/translation";
 import { EmployeeDataTable } from "../tables/employee_data_table";
+
+import { useTranslation } from 'next-i18next'
 
 interface EmployeePageProps {
 	period: number;
@@ -14,15 +15,17 @@ export function EmployeePage({
 	selectedIndex,
 	setSelectedIndex,
 }: EmployeePageProps) {
+  const { t } = useTranslation(['common'], { keyPrefix: "button" })
+
 	return (
 		<>
 			<EmployeeDataTable func={func} />
 			<div className="mt-4 flex justify-between">
 				<Button onClick={() => setSelectedIndex(selectedIndex - 1)}>
-					{Translate("previous_step")}
+					{t("previous_step")}
 				</Button>
 				<Button onClick={() => setSelectedIndex(selectedIndex + 1)}>
-					{Translate("next_step")}
+					{t("next_step")}
 				</Button>
 			</div>
 		</>

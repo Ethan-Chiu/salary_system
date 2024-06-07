@@ -22,7 +22,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from "~/components/ui/card";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from 'next-i18next'
+
 
 export function SyncPageContent({ data }: { data: SyncData[] }) {
 	const [selectedEmployee, setSelectedEmployee] = useState<string | null>(
@@ -42,6 +43,8 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		[]
 	);
 	const [isAllConfirmed, setIsAllConfirmed] = useState<boolean>(false);
+
+  const { t } = useTranslation(['common'])
 
 	useEffect(() => {
 		setDataWithStatus(
@@ -94,9 +97,9 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		changeSelectedEmpStatus("checked");
 		if (!nextEmp()) {
 			toast({
-				title: Translate("Well done!"),
+				title: t("others.well_done"),
 				description:
-					Translate("You have checked all the changes. Please click Update button."),
+					t("others.well_done_msg"),
 				className: cn(
 					"top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4 data-[state=open]:sm:slide-in-from-top-full"
 				),
@@ -114,8 +117,8 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 			<div className="h-0 w-full flex-grow flex justify-center items-center">
 				<Card className="text-center w-1/2">
 					<CardHeader className="p-2 pt-0 md:p-4">
-						<CardTitle className="p-4">{Translate("up to date")}</CardTitle>
-						<CardDescription>{Translate("system data is up to date with the EHR data")}</CardDescription>
+						<CardTitle className="p-4">{t("others.up_to_date")}</CardTitle>
+						<CardDescription>{t("others.up_to_date_msg")}</CardDescription>
 					</CardHeader>
 					<CardContent className="p-2 pt-0 md:p-4 md:pt-0">
 					</CardContent>
@@ -181,7 +184,7 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 						variant={"destructive"}
 						onClick={() => handleIgnore()}
 					>
-						{Translate("Ignore")}
+						{t("button.ignore")}
 					</Button>
 					<Button
 						key="ConfirmButton"
@@ -189,7 +192,7 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 						className="ml-4"
 						disabled={isAllConfirmed}
 					>
-						{Translate("Confirm")}
+						{t("button.confirm")}
 					</Button>
 				</div>
 			</div>
