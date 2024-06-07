@@ -10,6 +10,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "~/components/ui/select";
+import { Translate } from "~/lib/utils/translation";
 
 interface SelectModeComponentProps {
 	mode: SyncDataDisplayModeEnumType;
@@ -30,7 +31,7 @@ export function SelectModeComponent({
 					{Object.values(SyncDataDisplayModeEnum.Values).map(
 						(value) => (
 							<SelectItem key={value} value={value}>
-								{syncDataModeString(value)}
+								{Translate(syncDataModeString(value))}
 							</SelectItem>
 						)
 					)}

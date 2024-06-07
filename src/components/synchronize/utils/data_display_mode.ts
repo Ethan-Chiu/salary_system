@@ -6,8 +6,8 @@ export type SyncDataDisplayModeEnumType = z.infer<typeof SyncDataDisplayModeEnum
 export function syncDataModeString(mode: SyncDataDisplayModeEnumType): string {
     switch (mode) {
         case "changed":
-            return "Only Changed";
+            return "mode_only_changed";
         case "all":
-            return "Display All";
+            return "mode_display_all";
     }
 }

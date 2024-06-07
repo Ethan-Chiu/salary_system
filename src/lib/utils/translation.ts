@@ -236,6 +236,18 @@ export function Translate(word: string) {
 		if (word === "confirm auto calculate") return "確認自動計算";
 		if (word === "please make sure all the data are correct before you click confirm.") return "請確認所有資料正確後再按確認";
 		if (word === "there's only one data left. please create a new one before you continue to delete.") return "只剩下一筆資料，請先建立一筆新資料再進行刪除";
+
+		// synchronize page
+		if (word === "key")					return "欄位名稱";
+		if (word === "salary_data")			return "當前資料";
+		if (word === "ehr_data")			return "更新資料";
+		if (word === "mode_only_changed")	return "僅顯示變更資料";
+		if (word === "mode_display_all")	return "顯示所有資料";
+		if (word === "ignore")				return "忽略";
+		if (word === "show_details")		return "顯示所有欄位";
+		if (word === "changed_data")		return "異動資料";
+		if (word === "changed_data_msg")	return "按下更新按鈕以完成資料更新";
+		if (word === "all_(un)click")		return "全選/取消全選";
 	}
 
 	if (language === "en") {

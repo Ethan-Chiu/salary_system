@@ -181,7 +181,7 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 						variant={"destructive"}
 						onClick={() => handleIgnore()}
 					>
-						{"Ignore"}
+						{Translate("Ignore")}
 					</Button>
 					<Button
 						key="ConfirmButton"
@@ -189,7 +189,7 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 						className="ml-4"
 						disabled={isAllConfirmed}
 					>
-						{"Confirm"}
+						{Translate("Confirm")}
 					</Button>
 				</div>
 			</div>
