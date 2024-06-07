@@ -18,10 +18,12 @@ import { Dialog, DialogContent } from "~/components/ui/dialog";
 import { ToastAction } from "~/components/ui/toast";
 
 import { useTranslation } from 'next-i18next'
+
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
 
 import { Translate } from "~/lib/utils/translation";
+
 
 type FunctionLinkData = CardFunctionData & { url: string | null };
 
@@ -80,6 +82,7 @@ const PageHome: NextPageWithLayout = () => {
 				initial="hidden"
 				animate="visible"
 			>
+        {t('title')}
 				{function_data.map((f_data: FunctionLinkData) => (
 					<motion.div
 						key={f_data.title}
@@ -123,14 +126,11 @@ const PageHome: NextPageWithLayout = () => {
 	);
 };
 
-
-export const getServerSideProps = async ({ locale }: { locale: string }) => {
-  console.log("locale", locale); 
+export const getStaticProps = async ({ locale }: { locale: string }) => {
   return ({props: {
     ...(await serverSideTranslations(locale, ["common"], i18n, locales)),
   }});
 };
-
 
 PageHome.getLayout = function getLayout(page: React.ReactElement) {
 	return (

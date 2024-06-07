@@ -11,6 +11,9 @@ import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { ChangePasswordForm } from "./components/changePassword";
 import { Translate } from "~/lib/utils/translation";
 
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { i18n, locales } from '~/components/lang_config'
+
 const PageSettings: NextPageWithLayout = () => {
 	return (
 		<>
@@ -86,6 +89,12 @@ const PageSettings: NextPageWithLayout = () => {
 			</div>
 		</>
 	);
+};
+
+export const getStaticProps = async ({ locale }: { locale: string }) => {
+  return ({props: {
+    ...(await serverSideTranslations(locale, ["common"], i18n, locales)),
+  }});
 };
 
 PageSettings.getLayout = function getLayout(page: ReactElement) {

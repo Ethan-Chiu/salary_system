@@ -11,14 +11,15 @@ function guardRoute(
 	route: string,
 	access: boolean
 ): NextResponse | null {
-	if (request.nextUrl.pathname.startsWith(route)) {
+  const { pathname, locale } = request.nextUrl;
+
+	if (pathname.startsWith(route)) {
 		if (access) {
-			return NextResponse.rewrite(
-				new URL(request.nextUrl.pathname, request.url)
-			);
+			return NextResponse.rewrite(new URL(request.url));
 		}
 		console.log(`You cannot view ${route} page`);
-		return NextResponse.redirect(new URL("/", request.url));
+    const redirectUrl = new URL(`/${locale}`, request.url);
+		return NextResponse.redirect(redirectUrl);
 	}
 	return null;
 }
@@ -45,7 +46,6 @@ export default withAuth(
 
 		const data: { result: { data: { json: AccessiblePagesType } } } =
 			await res.json();
-		// console.log("Data", data)
 
 		const parseAccessible = accessiblePages.safeParse(
 			data.result.data.json
