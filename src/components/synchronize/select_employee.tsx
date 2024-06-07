@@ -20,6 +20,7 @@ import { type SyncData } from "~/server/service/sync_service";
 import { statusLabel, type SyncCheckStatusEnumType } from "./utils/sync_check_status";
 import { useState } from "react";
 import { cn } from "~/lib/utils";
+import { Translate } from "~/lib/utils/translation";
 
 
 export function SelectEmployee({
@@ -93,7 +94,7 @@ export function SelectEmployee({
 			{/* Popover */}
 			<PopoverContent className="p-0">
 				<Command filter={selectFilter}>
-					<CommandInput placeholder="Search Employee..." />
+					<CommandInput placeholder={Translate("Search Employee...")} />
 					<CommandEmpty>No Employee found.</CommandEmpty>
 					<CommandGroup>
 						{data.map((empData: SyncData) => {

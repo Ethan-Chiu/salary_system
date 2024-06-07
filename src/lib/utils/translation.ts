@@ -248,6 +248,7 @@ export function Translate(word: string) {
 		if (word === "changed_data")		return "異動資料";
 		if (word === "changed_data_msg")	return "按下更新按鈕以完成資料更新";
 		if (word === "all_(un)click")		return "全選/取消全選";
+		if (word === "search employee...")	return "搜尋員工...";
 	}
 
 	if (language === "en") {
