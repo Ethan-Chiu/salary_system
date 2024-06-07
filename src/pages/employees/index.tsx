@@ -12,6 +12,9 @@ import dataTableContext from "./components/context/data_table_context";
 import periodContext from "~/components/context/period_context";
 import { Translate } from "~/lib/utils/translation";
 
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { i18n, locales } from '~/components/lang_config'
+
 const TabOptions = ["基本檔案", "薪資檔案", "持股信託"];
 
 const PageEmployeesContent = () => {
@@ -94,6 +97,12 @@ const PageEmployees: NextPageWithLayout = () => {
 			<PageEmployeesContent />
 		</DataTableContextProvider>
 	);
+};
+
+export const getStaticProps = async ({ locale }: { locale: string }) => {
+  return ({props: {
+    ...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
+  }});
 };
 
 PageEmployees.getLayout = function getLayout(page: ReactElement) {

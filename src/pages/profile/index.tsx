@@ -7,6 +7,10 @@ import { Header } from "~/components/header";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { Translate } from "~/lib/utils/translation";
 
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { i18n, locales } from '~/components/lang_config'
+
+
 const ProfilePage: NextPageWithLayout = () => {
 	return (
 		<>
@@ -24,3 +28,10 @@ ProfilePage.getLayout = function getLayout(page: ReactElement) {
 };
 
 export default ProfilePage;
+
+export const getStaticProps = async ({ locale }: { locale: string }) => {
+  return ({props: {
+    ...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
+  }});
+};
+

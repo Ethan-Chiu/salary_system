@@ -10,6 +10,9 @@ import ExcelViewer from "./ExcelViewer";
 import { LoadingSpinner } from "~/components/loading";
 import periodContext from "~/components/context/period_context";
 
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { i18n, locales } from '~/components/lang_config'
+
 const Salary: NextPageWithLayout = () => {
 	return (
 		<>
@@ -111,3 +114,10 @@ function ExportPage({}: {}) {
 		</>
 	);
 }
+
+export const getStaticProps = async ({ locale }: { locale: string }) => {
+  return ({props: {
+    ...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
+  }});
+};
+
