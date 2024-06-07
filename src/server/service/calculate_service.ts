@@ -36,7 +36,8 @@ export class CalculateService {
 		employee_data: EmployeeData,
 		employee_payment: EmployeePayment,
 		attendance_setting: AttendanceSetting,
-		overtime: Overtime,
+		overtime_list: Overtime[],
+		insurance_rate_setting: InsuranceRateSetting
 	): Promise<number> {
 		/*
 				平日加班費 = GetNormalMoney(
@@ -50,9 +51,21 @@ export class CalculateService {
 		const kind1 = employee_data.work_type;
 		const kind2 = employee_data.work_status;
 		const money = employee_payment.base_salary;
-		const t1 = rd("加班1_時數");
-		const T2 = rd("加班2_時數");
-		const SALARY_RATE = rd("最低工資率");
+		let t1 = 0;
+		let t2 = 0;
+		let t3 = 0;
+		let t4 = 0;
+		let t5 = 0;
+		overtime_list.map((overtime) => {
+			if (overtime.type_name === "平日"){
+				t1 += overtime.hours_1 ?? 0;
+				t2 += overtime.hours_2 ?? 0;
+				t3 += overtime.hours_134 ?? 0;
+				t4 += overtime.hours_167 ?? 0;
+				t5 += overtime.hours_267 ?? 0;
+			}
+		})
+		const SALARY_RATE = insurance_rate_setting.min_wage_rate;
 
 		const FOREIGN_RATE1 = attendance_setting.overtime_by_foreign_workers_1;
 		const FOREIGN_RATE2 = attendance_setting.overtime_by_foreign_workers_2;
@@ -300,7 +313,7 @@ export class CalculateService {
 		const t1 = rd("事假時數"); // 事假時數
 		const T2 = rd("病假時數"); // 病假時數
 
-		const SALARY_RATE = 0;		// 最低工資率
+		const SALARY_RATE = rd("最低工資率");		// 最低工資率
 		if (kind1 === FOREIGN)	return Math.round(SALARY_RATE * t1 + SALARY_RATE / 2 * T2);	
 		if (kind2 === LEAVE_MAN)	return 0;
 		if (kind2 === FOREIGN)	return Math.round(SALARY_RATE * t1 + SALARY_RATE / 2 * T2);
@@ -343,11 +356,11 @@ export class CalculateService {
 				rd("超時加班") +
 				rd("其他加項稅") +
 				rd("全勤獎金") +
-				 rd("輪班津貼") +
+				rd("輪班津貼") +
 				rd("夜點費") -
 				rd("請假扣款") -
 				rd("特別事假扣款") -
-				rd("其他減項稅")
+				rd("其他減項稅") //expense expense class
 		*/
 		const salary_income_deduction = 0
 		return salary_income_deduction
@@ -626,8 +639,25 @@ export class CalculateService {
 	// 感覺在這裡: DoCmd.OpenQuery "其他更新", acNormal, acEdit    'Jerry 07/09/03  增加退職所得  23/6/3 增加團保費代扣_升等
 	
 
-	//MARK: 特別事假扣款		
-	// 薪資查詢.特別事假扣款 = GetLeave2Money(薪資查詢!工作類別,薪資查詢!工作形態,薪資查詢!原應發底薪,薪資查詢!補助津貼+薪資查詢!專業証照津貼,薪資查詢!特別事假時數);
+	//MARK: 特別事假扣款
+	def getSpecialLeavePay(employee_data: EmployeeData): number {
+		let work_type = employee_data.work_type;
+		let work_status = employee_data.work_status;
+		let 
+	// GetLeave2Money(kind1 As String, kind2 As String, money As Long, bouns As Long, t1 As Single)
+    // If kind1 = Foreign_Man Then
+    //    GetLeave2Money = Round(SALARY_RATE * t1, 0)
+    // Else
+    // Select Case kind2
+    //     Case Leave_Man
+    //         GetLeave2Money = 0
+    //     Case Foreign
+    //         GetLeave2Money = Round(SALARY_RATE * t1, 0)
+    //     Case Else
+    //         GetLeave2Money = Round((money + bouns) / 240 * t1, 0)
+    // End Select
+    // End If
+	薪資查詢.特別事假扣款 = GetLeave2Money(薪資查詢!工作類別,薪資查詢!工作形態,薪資查詢!原應發底薪,薪資查詢!補助津貼+薪資查詢!專業証照津貼,薪資查詢!特別事假時數);
 
 
 	//MARK: 實發金額

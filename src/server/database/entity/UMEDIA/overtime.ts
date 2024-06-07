@@ -24,7 +24,7 @@ export class Overtime {
 		period_name?: string,
 		emp_no?: string,
 		emp_name?: string,
-		pay?: number,
+		pay?: number, //1：5日 2：15日
 		type_id?: number,
 		days_radio?: string,
 		type_name?: string,
