@@ -8,7 +8,7 @@ import { ProfileForm } from "./components/profile";
 import { AppearanceForm } from "./components/appearance";
 import { Header } from "~/components/header";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
-import { ChangePasswordForm } from "./components/changePassword";
+import { ChangePasswordForm } from "./components/change_password";
 import { Translate } from "~/lib/utils/translation";
 
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
