@@ -27,7 +27,7 @@ import { Dialog, DialogContent } from "./ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import periodContext from "./context/period_context";
 import PeriodSelector from "./period_selector";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 export type Playlist = (typeof playlists)[number];
 
@@ -183,7 +183,7 @@ type SelectItemEntry = {
 
 const selectItems: SelectItemEntry[] = [
 	{
-		title: Translate("period"),
+		title: "period",
 		icon: CalendarRange,
 		popUpPage: <PeriodSelector />,
 	},
@@ -191,25 +191,25 @@ const selectItems: SelectItemEntry[] = [
 
 const actionLinks: NavLinkEntry[] = [
 	{
-		title: Translate("functions"),
+		title: "functions",
 		icon: LayoutGrid,
 		url: "/functions",
 		collapsed: false,
 	},
 	{
-		title: Translate("synchronize"),
+		title: "synchronize",
 		icon: CheckSquare,
 		url: "/synchronize",
 		collapsed: false,
 	},
 	{
-		title: Translate("employees"),
+		title: "employees",
 		icon: Contact,
 		url: "/employees",
 		collapsed: false,
 	},
 	{
-		title: Translate("parameters"),
+		title: "parameters",
 		icon: SlidersHorizontal,
 		url: "/parameters",
 		collapsed: false,
@@ -218,19 +218,19 @@ const actionLinks: NavLinkEntry[] = [
 
 const settingLinks: NavLinkEntry[] = [
 	{
-		title: Translate("settings"),
+		title: "settings",
 		icon: Settings,
 		url: "/settings",
 		collapsed: false,
 	},
 	{
-		title: Translate("roles"),
+		title: "roles",
 		icon: ShieldCheck,
 		url: "/roles",
 		collapsed: false,
 	},
 	{
-		title: Translate("reports"),
+		title: "reports",
 		icon: GanttChartSquare,
 		url: "/report",
 		collapsed: false,
@@ -247,9 +247,12 @@ export function Sidebar({
 	const pathname = usePathname();
 	const { isLoading, data } = api.access.accessByRole.useQuery(); // isError, error
 
+  const { t } = useTranslation(["nav", "common"]);
+
 	if (isLoading) {
 		return <></>;
 	}
+
 
 	return (
 		<div className={cn("pb-12", className)}>
@@ -257,7 +260,7 @@ export function Sidebar({
 				<div className={cn("py-2", !isCollapsed && "px-3")}>
 					{!isCollapsed && (
 						<div className="mb-2 line-clamp-1 break-all px-4 text-lg font-semibold tracking-tight">
-							{Translate("selects")}
+							{t("selects")}
 						</div>
 					)}
 					<div className="space-y-1">
@@ -269,7 +272,7 @@ export function Sidebar({
 								collapseFunction={collapseFunction}
 								expandFunction={expandFunction}
 							>
-								{item.title}
+								{t("period")}
 							</CompSelectItemWrap>
 						))}
 					</div>
@@ -279,7 +282,7 @@ export function Sidebar({
 					<div className={cn("py-2", !isCollapsed && "px-3")}>
 						{!isCollapsed && (
 							<div className="mb-2 line-clamp-1 break-all px-4 text-lg font-semibold tracking-tight">
-								{Translate("actions")}
+								{t("actions")}
 							</div>
 						)}
 						<div className="space-y-1">
@@ -292,7 +295,7 @@ export function Sidebar({
 									collapseFunction={collapseFunction}
 									expandFunction={expandFunction}
 								>
-									{link.title}
+                  {t(link.title)}
 								</CompNavLinkWrap>
 							))}
 						</div>
@@ -302,7 +305,7 @@ export function Sidebar({
 				<div className={cn("py-2", !isCollapsed && "px-3")}>
 					{!isCollapsed && (
 						<div className="mb-2 line-clamp-1 break-all px-4 text-lg font-semibold tracking-tight">
-							{Translate("configurations")}
+							{t("configurations")}
 						</div>
 					)}
 					<div className="space-y-1">
@@ -315,7 +318,7 @@ export function Sidebar({
 								collapseFunction={collapseFunction}
 								expandFunction={expandFunction}
 							>
-								{link.title}
+								{t(link.title)}
 							</CompNavLinkWrap>
 						))}
 					</div>

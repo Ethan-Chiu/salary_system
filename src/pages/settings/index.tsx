@@ -93,7 +93,7 @@ const PageSettings: NextPageWithLayout = () => {
 
 export const getStaticProps = async ({ locale }: { locale: string }) => {
   return ({props: {
-    ...(await serverSideTranslations(locale, ["common"], i18n, locales)),
+    ...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
   }});
 };
 

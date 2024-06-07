@@ -26,6 +26,10 @@ import { useRouter } from "next/router";
 import { toast } from "~/components/ui/use-toast";
 import { signIn } from "next-auth/react";
 
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { i18n, locales } from '~/components/lang_config'
+
+
 const LoginFormSchema = z.object({
 	userid: z.string(),
 	password: z.string().min(1, { message: "enter password" }),
@@ -174,3 +178,10 @@ export default function Login() {
 		</PerpageLayout>
 	);
 }
+
+export const getStaticProps = async ({ locale }: { locale: string }) => {
+  return ({props: {
+    ...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
+  }});
+};
+

@@ -18,7 +18,6 @@ import { Dialog, DialogContent } from "~/components/ui/dialog";
 import { ToastAction } from "~/components/ui/toast";
 
 import { useTranslation } from 'next-i18next'
-
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
 
@@ -82,7 +81,6 @@ const PageHome: NextPageWithLayout = () => {
 				initial="hidden"
 				animate="visible"
 			>
-        {t('title')}
 				{function_data.map((f_data: FunctionLinkData) => (
 					<motion.div
 						key={f_data.title}
@@ -128,7 +126,7 @@ const PageHome: NextPageWithLayout = () => {
 
 export const getStaticProps = async ({ locale }: { locale: string }) => {
   return ({props: {
-    ...(await serverSideTranslations(locale, ["common"], i18n, locales)),
+    ...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
   }});
 };
 
