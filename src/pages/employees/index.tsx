@@ -19,7 +19,7 @@ const PageEmployeesContent = () => {
 	const { selectedPeriod } = useContext(periodContext);
 	function getTable(table_name: string) {
 		if (selectedPeriod == null) {
-			return <p>Please select period first</p>;
+			return <p>{Translate("Please select period first")}</p>;
 		}
 		switch (table_name) {
 			case TabOptions[0]:

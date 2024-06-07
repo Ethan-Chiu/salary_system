@@ -181,14 +181,14 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 			<Dialog open={openDialog} onOpenChange={setOpenDialog}>
 				<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
 					<DialogHeader>
-						<DialogTitle>Are you sure to update?</DialogTitle>
+						<DialogTitle>{Translate("Please check the data.")}</DialogTitle>
 						<DialogDescription></DialogDescription>
 					</DialogHeader>
 					<GeneralTable data={formValues} />
 					<DialogFooter>
 						<DialogClose asChild>
 							<Button onClick={submitForm} type="submit">
-								Save changes
+								{Translate("Save")}
 							</Button>
 						</DialogClose>
 					</DialogFooter>

@@ -169,6 +169,7 @@ export function Translate(word: string) {
 		if (word === "cancel") return "取消";
 		if (word === "auto calculate") return "自動計算";
 		if (word === "form") return "表單";
+		if (word === "save") return "儲存";
 
 
 		// tables
@@ -187,7 +188,7 @@ export function Translate(word: string) {
 		if (word === "tables") return "表格";
 		if (word === "previous") return "上一頁";
 		if (word === "next") return "下一頁";
-		if (word === "current") return "當前";
+		if (word === "current") return "基準日";
 		if (word === "history") return "歷史";
 		if (word === "calendar") return "排程";
 		if (word === "value") return "值";
@@ -224,6 +225,15 @@ export function Translate(word: string) {
 		if (word === "nov") return "11月";
 		if (word === "dec") return "12月";
 
+		// day
+		if (word === "sun") return "日";
+		if (word === "mon") return "一";
+		if (word === "tue") return "二";
+		if (word === "wed") return "三";
+		if (word === "thu") return "四";
+		if (word === "fri") return "五";
+		if (word === "sat") return "六";
+
 		// others
 		if (word === "visible columns") return "顯示欄位";
 		if (word === "filter setting...") return "請輸入搜尋關鍵字...";
@@ -236,19 +246,27 @@ export function Translate(word: string) {
 		if (word === "confirm auto calculate") return "確認自動計算";
 		if (word === "please make sure all the data are correct before you click confirm.") return "請確認所有資料正確後再按確認";
 		if (word === "there's only one data left. please create a new one before you continue to delete.") return "只剩下一筆資料，請先建立一筆新資料再進行刪除";
+		if (word === "please check the data.") return "確認更新？";
+		if (word === "now") return "現在";
+		if (word === "updated by") return "更新者";
+		if (word === "please select period first") return "請先選擇期別";
+		if (word === "year") return "年";
+		if (word === "month") return "月";
 
 		// synchronize page
-		if (word === "key")					return "欄位名稱";
-		if (word === "salary_data")			return "當前資料";
-		if (word === "ehr_data")			return "更新資料";
-		if (word === "mode_only_changed")	return "僅顯示變更資料";
-		if (word === "mode_display_all")	return "顯示所有資料";
-		if (word === "ignore")				return "忽略";
-		if (word === "show_details")		return "顯示所有欄位";
-		if (word === "changed_data")		return "異動資料";
-		if (word === "changed_data_msg")	return "按下更新按鈕以完成資料更新";
-		if (word === "all_(un)click")		return "全選/取消全選";
-		if (word === "search employee...")	return "搜尋員工...";
+		if (word === "key")	return "欄位名稱";
+		if (word === "salary_data")	return "當前資料";
+		if (word === "ehr_data") return "更新資料";
+		if (word === "mode_only_changed") return "僅顯示變更資料";
+		if (word === "mode_display_all") return "顯示所有資料";
+		if (word === "ignore") return "忽略";
+		if (word === "show_details") return "顯示所有欄位";
+		if (word === "changed_data") return "異動資料";
+		if (word === "changed_data_msg") return "按下更新按鈕以完成資料更新";
+		if (word === "all_(un)click") return "全選/取消全選";
+		if (word === "search employee...") return "搜尋員工...";
+		if (word === "well done!") return "大功告成！";
+		if (word === "you have checked all the changes. please click update button.") return "已確認所有變更，請按更新按鈕";
 	}
 
 	if (language === "en") {

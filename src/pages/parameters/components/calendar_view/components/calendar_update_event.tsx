@@ -131,7 +131,7 @@ export default function CalendarUpdateEvent<
 						<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
 							<DialogHeader>
 								<DialogTitle>
-									Are you sure to update?
+									{Translate("Please check the data.")}
 								</DialogTitle>
 								<DialogDescription></DialogDescription>
 							</DialogHeader>
@@ -139,7 +139,7 @@ export default function CalendarUpdateEvent<
 							<DialogFooter>
 								<DialogClose asChild>
 									<Button onClick={submitForm} type="submit">
-										Save changes
+										{Translate("Save")}
 									</Button>
 								</DialogClose>
 							</DialogFooter>

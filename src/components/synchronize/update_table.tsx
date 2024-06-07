@@ -61,7 +61,7 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 	const [checkedEmps, setCheckedEmps] = useState<Record<string, boolean>>({});
 	const { selectedPeriod } = useContext(periodContext);
 	if (selectedPeriod == null) {
-		return <p>Please select period first</p>;
+		return <p>{Translate("Please select period first")}</p>;
 	}
 
 	useEffect(() => {

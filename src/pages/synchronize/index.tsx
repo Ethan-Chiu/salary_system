@@ -18,7 +18,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 function SyncPage() {
 	const {selectedPeriod} = useContext(periodContext);
 	if (selectedPeriod == null) {
-		return <p>Please select period first</p>;
+		return <p>{Translate("Please select period first")}</p>;
 	}
 
 	const { isLoading, isError, data, error } =

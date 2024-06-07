@@ -16,10 +16,10 @@ export default function GeneralTable({ data }: { data: Record<string, any> }) {
 			<TableHeader>
 				<TableRow>
 					<TableHead className="whitespace-nowrap text-center">
-						{"Key"}
+						{Translate("Key")}
 					</TableHead>
 					<TableHead className="whitespace-nowrap text-center">
-						{"Value"}
+						{Translate("Value")}
 					</TableHead>
 				</TableRow>
 			</TableHeader>

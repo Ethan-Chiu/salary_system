@@ -94,9 +94,9 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		changeSelectedEmpStatus("checked");
 		if (!nextEmp()) {
 			toast({
-				title: "Well done!",
+				title: Translate("Well done!"),
 				description:
-					"You have checked all the changes. Please click Update button.",
+					Translate("You have checked all the changes. Please click Update button."),
 				className: cn(
 					"top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4 data-[state=open]:sm:slide-in-from-top-full"
 				),
