@@ -246,9 +246,8 @@ export function Translate(word: string) {
 		if (word === "confirm auto calculate") return "確認自動計算";
 		if (word === "please make sure all the data are correct before you click confirm.") return "請確認所有資料正確後再按確認";
 		if (word === "there's only one data left. please create a new one before you continue to delete.") return "只剩下一筆資料，請先建立一筆新資料再進行刪除";
-		if (word === "please check the data.") return "確認更新？";
+		if (word === "please check the data.") return "請確認資料正確";
 		if (word === "now") return "現在";
-		if (word === "updated by") return "更新者";
 		if (word === "please select period first") return "請先選擇期別";
 		if (word === "year") return "年";
 		if (word === "month") return "月";
