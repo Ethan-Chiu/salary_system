@@ -19,6 +19,8 @@ import {
 	type SyncDataDisplayModeEnumType,
 } from "~/components/synchronize/utils/data_display_mode";
 
+import { Translate } from "~/lib/utils/translation";
+
 interface EmpTableParameters {
 	empData: Array<DataComparison>;
 	mode: SyncDataDisplayModeEnumType;
@@ -32,13 +34,13 @@ export function EmployeeDataChange({ empData, mode }: EmpTableParameters) {
 					<TableHeader className="bg-secondary">
 						<TableRow className="sticky top-0 bg-secondary hover:bg-secondary">
 							<TableHead className="w-1/3 text-center">
-								Key
+								{Translate("key")}
 							</TableHead>
 							<TableHead className="w-1/3 text-center">
-								Old Value
+								{Translate("salary_data")}
 							</TableHead>
 							<TableHead className="w-1/3 text-center">
-								New Value
+								{Translate("ehr_data")}
 							</TableHead>
 						</TableRow>
 					</TableHeader>
@@ -57,7 +59,7 @@ export function EmployeeDataChange({ empData, mode }: EmpTableParameters) {
 							return (
 								<TableRow key={d.key}>
 									<TableCell className="font-medium">
-										{d.key}
+										{Translate(d.key)}
 									</TableCell>
 									<TableCell
 										className={cn(

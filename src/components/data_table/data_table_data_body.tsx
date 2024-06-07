@@ -24,6 +24,7 @@ export function DataTableDataBody<TData>({
 					<TableRow
 						key={row[0]!.id}
 						data-state={row[0]!.getIsSelected() && "selected"}
+						className="whitespace-nowrap"
 					>
 						{row.map((data) =>
 							data.getVisibleCells().map((cell) => (

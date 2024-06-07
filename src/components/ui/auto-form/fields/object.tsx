@@ -16,6 +16,7 @@ import {
 import { FormField } from "../../form";
 import { DEFAULT_ZOD_HANDLERS, INPUT_COMPONENTS } from "../config";
 import AutoFormArray from "./array";
+import { Translate } from "~/lib/utils/translation";
 
 function DefaultParent({ children }: { children: React.ReactNode }) {
 	return <>{children}</>;
@@ -126,7 +127,7 @@ export default function AutoFormObject<
 										zodInputProps={zodInputProps}
 										field={field}
 										fieldConfigItem={fieldConfigItem}
-										label={itemName}
+										label={Translate(itemName)}
 										isRequired={isRequired}
 										zodItem={item}
 										fieldProps={{

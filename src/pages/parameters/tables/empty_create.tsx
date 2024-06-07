@@ -31,6 +31,7 @@ import GeneralTable from "../components/function_sheet/general_table";
 import { type FieldConfig } from "~/components/ui/auto-form/types";
 import { type ParameterTableEnum } from "../parameter_tables";
 import { useRouter } from "next/router";
+import { Translate } from "~/lib/utils/translation";
 
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
@@ -131,7 +132,7 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 									</Button>
 
 									<Button type="submit">
-										{mode === "create" && "Create"}
+										{mode === "create" && Translate("Create")}
 									</Button>
 								</div>
 							</div>
@@ -144,7 +145,7 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 							<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
 								<DialogHeader>
 									<DialogTitle>
-										Are you sure to update?
+										{Translate("Please check the data.")}
 									</DialogTitle>
 									<DialogDescription></DialogDescription>
 								</DialogHeader>
@@ -155,7 +156,7 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 											onClick={submitForm}
 											type="submit"
 										>
-											Save changes
+											{Translate("Save")}
 										</Button>
 									</DialogClose>
 								</DialogFooter>

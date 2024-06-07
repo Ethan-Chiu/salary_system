@@ -21,6 +21,7 @@ import {
 import { Pen, Trash2 } from "lucide-react";
 import { parameterToolbarFunctionsContext } from "../../function_sheet/parameter_functions_context";
 import { get_date_string } from "~/server/service/helper_function";
+import { Translate } from "~/lib/utils/translation";
 
 interface DayViewProps {
 	day: Dayjs;
@@ -99,7 +100,7 @@ export default function DayView({ day, rowIdx, target_date }: DayViewProps) {
 					{/* day of the week */}
 					{rowIdx === 0 && (
 						<p className="mt-1 text-sm">
-							{day.format("ddd").toUpperCase()}
+							{Translate(day.format("ddd").toUpperCase())}
 						</p>
 					)}
 					{/* date */}

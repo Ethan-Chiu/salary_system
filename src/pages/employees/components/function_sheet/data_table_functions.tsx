@@ -34,6 +34,7 @@ import {
 } from "~/pages/parameters/components/context/data_table_enum";
 import { EmployeeForm } from "./employee_form";
 import { getSchema } from "~/pages/parameters/schemas/get_schemas";
+import { modeDescription } from "~/lib/utils/helper_function";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
@@ -101,9 +102,7 @@ export function DataTableFunctions({
 							)} (${getTableName(tableType)})`}
 						</SheetTitle>
 						<SheetDescription>
-							{mode === "create"
-								? "Fill in the parameters to create new table."
-								: "Make changes to the table by modifying the parameters."}
+							{modeDescription(mode)}
 						</SheetDescription>
 					</SheetHeader>
 					<ScrollArea className="h-[85%] w-full">

@@ -3,6 +3,7 @@ import calendarContext from "../context/calendar_context";
 import dayjs from "dayjs";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
+import { Translate } from "~/lib/utils/translation";
 
 export default function CalendarHeader({
 	target_date,
@@ -31,7 +32,7 @@ export default function CalendarHeader({
 		<div className="flex items-center gap-x-1 px-4 py-1">
 			<p className="mx-4 w-40 text-xl font-bold text-primary">
 				{dayjs(new Date(dayjs(target_date).year(), monthIndex)).format(
-					"MMMM YYYY"
+					"YYYY" + Translate("year") + "M" + Translate("month")
 				)}
 			</p>
 
@@ -40,7 +41,7 @@ export default function CalendarHeader({
 				<ChevronLeftIcon className="h-4 w-4" />
 			</Button>
 			<Button variant="outline" size="sm" onClick={handleReset}>
-				Today
+				{Translate("current")}
 			</Button>
 			<Button variant="outline" size="sm" onClick={handleNextMonth}>
 				<span className="sr-only">Go to next month</span>

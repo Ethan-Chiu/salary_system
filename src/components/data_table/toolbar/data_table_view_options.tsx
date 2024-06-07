@@ -1,5 +1,6 @@
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { MixerHorizontalIcon } from "@radix-ui/react-icons";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { type Table } from "@tanstack/react-table";
 import { Button } from "~/components/ui/button";
 
@@ -36,35 +37,38 @@ export function DataTableViewOptions<TData>({
 						className="ml-auto hidden w-20 h-8 lg:flex"
 					>
 						<div className="flex items-center">
-						<MixerHorizontalIcon className="mr-2 h-4 w-4" />
-						{Translate("view")}
+							<MixerHorizontalIcon className="mr-2 h-4 w-4" />
+							{Translate("view")}
 						</div>
 					</Button>
 				</DropdownMenuTrigger>
-				<DropdownMenuContent align="end" className="w-[200px]">
-					<DropdownMenuLabel>{Translate("visible columns")}</DropdownMenuLabel>
-					<DropdownMenuSeparator />
-					{table
-						.getAllColumns()
-						.filter(
-							(column) =>
-								typeof column.accessorFn !== "undefined" &&
-								column.getCanHide()
-						)
-						.map((column) => {
-							return (
-								<DropdownMenuCheckboxItem
-									key={column.id}
-									className="capitalize"
-									checked={column.getIsVisible()}
-									onCheckedChange={(value) => {
-										column.toggleVisibility(value);
-									}}
-								>
-									{Translate(column.id)}
-								</DropdownMenuCheckboxItem>
-							);
-						})}
+
+				<DropdownMenuContent align="end" className="w-[200px] max-h-[300px] overflow-y-auto">
+					<ScrollArea>
+						<DropdownMenuLabel>{Translate("visible columns")}</DropdownMenuLabel>
+						<DropdownMenuSeparator />
+						{table
+							.getAllColumns()
+							.filter(
+								(column) =>
+									typeof column.accessorFn !== "undefined" &&
+									column.getCanHide()
+							)
+							.map((column) => {
+								return (
+									<DropdownMenuCheckboxItem
+										key={column.id}
+										className="capitalize"
+										checked={column.getIsVisible()}
+										onCheckedChange={(value) => {
+											column.toggleVisibility(value);
+										}}
+									>
+										{Translate(column.id)}
+									</DropdownMenuCheckboxItem>
+								);
+							})}
+					</ScrollArea>
 				</DropdownMenuContent>
 			</DropdownMenu>
 		</div>

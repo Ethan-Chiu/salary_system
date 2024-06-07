@@ -34,6 +34,8 @@ import { type SyncCheckStatusEnumType } from "~/components/synchronize/utils/syn
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import periodContext from "../context/period_context";
 
+import { Translate } from "~/lib/utils/translation";
+
 export interface SyncDataAndStatus {
 	emp_no: string;
 	emp_name: string;
@@ -59,7 +61,7 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 	const [checkedEmps, setCheckedEmps] = useState<Record<string, boolean>>({});
 	const { selectedPeriod } = useContext(periodContext);
 	if (selectedPeriod == null) {
-		return <p>Please select period first</p>;
+		return <p>{Translate("Please select period first")}</p>;
 	}
 
 	useEffect(() => {
@@ -101,16 +103,15 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 						console.log("Show update table dialog");
 					}}
 				>
-					Update
+					{Translate("Update")}
 				</Button>
 			</DialogTrigger>
 			<DialogContent className="w-[90vw] max-w-3xl p-8">
 				<DialogHeader className="mx-4 flex items-center">
 					<div className="mr-auto">
-						<DialogTitle>Changed Data</DialogTitle>
+						<DialogTitle>{Translate("changed_data")}</DialogTitle>
 						<DialogDescription>
-							Check the checked data and press the update button
-							to confirm the changes.
+							{Translate("changed_data_msg")}
 						</DialogDescription>
 					</div>
 					<div className="ml-auto flex items-center space-x-2">
@@ -119,7 +120,7 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 							checked={showDetails}
 							onCheckedChange={setShowDetails}
 						/>
-						<Label htmlFor="showDetails">Show Details</Label>
+						<Label htmlFor="showDetails">{Translate("show_details")}</Label>
 					</div>
 				</DialogHeader>
 				<ScrollArea className="max-h-[70vh] overflow-y-scroll">
@@ -134,7 +135,7 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 
 				<DialogClose asChild>
 					<Button type="submit" onClick={() => handleUpdate(selectedPeriod.period_id)}>
-						Update
+						{Translate("Update")}
 					</Button>
 				</DialogClose>
 			</DialogContent>
@@ -169,27 +170,27 @@ export function UpdateTable({
 			<Table className="border">
 				<TableHeader>
 					<TableRow className="border">
-						<TableHead className="w-[50px] border text-center">
+						<TableHead className="w-[50px] border text-center whitespace-nowrap">
 							<Button variant={"ghost"} onClick={checkAll}>
-								All (un)Click
+								{Translate("all_(un)click")}
 							</Button>
 						</TableHead>
-						<TableHead className="border text-center">
-							Emp Number
+						<TableHead className="border text-center whitespace-nowrap">
+							{Translate("emp_no")}
 						</TableHead>
-						<TableHead className="border text-center">
-							Emp Name
+						<TableHead className="border text-center whitespace-nowrap">
+							{Translate("name")}
 						</TableHead>
 						{showDetails && (
 							<>
-								<TableHead className="border text-center">
-									Key
+								<TableHead className="border text-center whitespace-nowrap">
+									{Translate("key")}
 								</TableHead>
-								<TableHead className="border text-center">
-									Local Value
+								<TableHead className="border text-center whitespace-nowrap">
+									{Translate("salary_data")}
 								</TableHead>
-								<TableHead className="border text-center">
-									eHR Value
+								<TableHead className="border text-center whitespace-nowrap">
+									{Translate("ehr_data")}
 								</TableHead>
 							</>
 						)}
@@ -200,9 +201,9 @@ export function UpdateTable({
 						<TableRow>
 							<TableCell
 								colSpan={6}
-								className="border text-center"
+								className="border text-center whitespace-nowrap"
 							>
-								No Result
+								{Translate("no data")}
 							</TableCell>
 						</TableRow>
 					)}
@@ -213,7 +214,7 @@ export function UpdateTable({
 								<CustomTableRow>
 									<CustomTableCell
 										rowSpan={comparisons.length + 1}
-										className="border text-center"
+										className="border text-center whitespace-nowrap"
 									>
 										<Checkbox
 											checked={checkedEmps[d.emp_no]}
@@ -225,30 +226,30 @@ export function UpdateTable({
 									</CustomTableCell>
 									<CustomTableCell
 										rowSpan={comparisons.length + 1}
-										className="border text-center"
+										className="border text-center whitespace-nowrap"
 									>
 										{d.emp_no}
 									</CustomTableCell>
 									<CustomTableCell
 										rowSpan={comparisons.length + 1}
-										className="border text-center"
+										className="border text-center whitespace-nowrap"
 									>
 										{d.emp_name}
 									</CustomTableCell>
 
 									{showDetails && (
 										<>
-											<CustomTableCell className="border text-center">
+											<CustomTableCell className="border text-center whitespace-nowrap">
 												{displayData(
-													comparisons[0]!.key
+													Translate(comparisons[0]!.key)
 												)}
 											</CustomTableCell>
-											<CustomTableCell className="border text-center">
+											<CustomTableCell className="border text-center whitespace-nowrap">
 												{displayData(
 													comparisons[0]!.salary_value
 												)}
 											</CustomTableCell>
-											<CustomTableCell className="border text-center">
+											<CustomTableCell className="border text-center whitespace-nowrap">
 												{displayData(
 													comparisons[0]!.ehr_value
 												)}
@@ -267,17 +268,17 @@ export function UpdateTable({
 														<CustomTableRow>
 															{showDetails && (
 																<>
-																	<CustomTableCell className="border text-center">
+																	<CustomTableCell className="border text-center whitespace-nowrap">
 																		{displayData(
-																			cd.key
+																			Translate(cd.key)
 																		)}
 																	</CustomTableCell>
-																	<CustomTableCell className="border text-center">
+																	<CustomTableCell className="border text-center whitespace-nowrap">
 																		{displayData(
 																			cd.salary_value
 																		)}
 																	</CustomTableCell>
-																	<CustomTableCell className="border text-center">
+																	<CustomTableCell className="border text-center whitespace-nowrap">
 																		{displayData(
 																			cd.ehr_value
 																		)}
