@@ -38,6 +38,10 @@ import { useSession } from "next-auth/react";
 import { TeamMemberTable } from "./team_member_table";
 import { Translate } from "~/lib/utils/translation";
 
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { i18n, locales } from '~/components/lang_config'
+
+
 type EmployeeInfo = {
 	username: string;
 	userEmail: string;
@@ -219,3 +223,10 @@ PageRoles.getLayout = function getLayout(page: ReactElement) {
 };
 
 export default PageRoles;
+
+export const getStaticProps = async ({ locale }: { locale: string }) => {
+  return ({props: {
+    ...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
+  }});
+};
+

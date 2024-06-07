@@ -6,6 +6,9 @@ import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import TablesView from "./tables_view";
 import { Translate } from "~/lib/utils/translation";
 
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { i18n, locales } from '~/components/lang_config'
+
 const PageParameters: NextPageWithLayout = () => {
 	return (
 		<div className="flex h-screen flex-col">
@@ -27,3 +30,10 @@ PageParameters.getLayout = function getLayout(page: ReactElement) {
 };
 
 export default PageParameters;
+
+export const getStaticProps = async ({ locale }: { locale: string }) => {
+  return ({props: {
+    ...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
+  }});
+};
+

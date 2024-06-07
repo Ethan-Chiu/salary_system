@@ -19,6 +19,7 @@ import { useToast } from "~/components/ui/use-toast";
 import { onPromise } from "~/utils/on_promise";
 import { useTheme } from "next-themes";
 import { useRouter } from 'next/router';
+import { useTranslation } from "react-i18next";
 
 const appearanceFormSchema = z.object({
 	theme: z.enum(["light", "dark"], {
@@ -52,12 +53,15 @@ export function AppearanceForm() {
 
 	const { toast } = useToast();
 
+  const { t } = useTranslation('common')
+
   const changeLocale = async (locale: string) => {
     await router.push({ pathname, query }, asPath, { locale: locale });
   };
 
 	async function onSubmit(data: AppearanceFormValues) {
 		localStorage.setItem("language", data.language);
+    document.cookie = `NEXT_LOCALE=${data.language}`;
 		setTheme(data.theme);
 		/* toast({ */
 		/* 	title: "You submitted the following values:", */

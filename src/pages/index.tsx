@@ -4,6 +4,7 @@ import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import Router from "next/router";
 
+
 const PageHome: NextPageWithLayout = () => {
 	const { data: session, status } = useSession();
 
@@ -25,11 +26,10 @@ const PageHome: NextPageWithLayout = () => {
 	}
 
 	if (data && status === "authenticated") {
-    const locale = localStorage.getItem("language") ?? "en";
 		if (data?.actions) {
-			void Router.push("/functions", undefined, { locale: locale });
+			void Router.replace("/functions");
 		} else {
-			void Router.push("/settings", undefined, { locale: locale });
+			void Router.replace("/settings");
 		}
 	}
 

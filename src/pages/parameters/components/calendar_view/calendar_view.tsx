@@ -13,6 +13,7 @@ import ApiFunctionsProvider, {
 import { LoadingSpinner } from "~/components/loading";
 import CalendarUpdateEvent from "./components/calendar_update_event";
 import periodContext from "~/components/context/period_context";
+import { Translate } from "~/lib/utils/translation";
 
 export default function CalendarView() {
 	const { selectedTableType } = useContext(dataTableContext);
@@ -31,7 +32,7 @@ export default function CalendarView() {
 						/>
 					</ParameterToolbarFunctionsProvider>
 				) : (
-					<p>Please select period first</p>
+					<p>{Translate("Please select period first")}</p>
 				)}
 			</ApiFunctionsProvider>
 		</>

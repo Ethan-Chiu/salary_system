@@ -27,6 +27,7 @@ import { getSchema } from "../../schemas/get_schemas";
 import { api } from "~/utils/api";
 import { z } from "zod";
 import { Level } from "~/server/database/entity/SALARY/level";
+import { modeDescription } from "~/lib/utils/helper_function";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
@@ -42,15 +43,15 @@ export function DataTableFunctions({
 	const [mode, setMode] = useState<FunctionMode>("none");
 
 	const { isLoading, isError, data, error } =
-		(tableType === "TableLevelRange") ? api.parameters.getCurrentLevel.useQuery() 
-		: { isLoading: false, isError: false, data: {data: []}, error: null };
+		(tableType === "TableLevelRange") ? api.parameters.getCurrentLevel.useQuery()
+			: { isLoading: false, isError: false, data: { data: [] }, error: null };
 
 	// ========================= Additional Condition for Schema =====================================
 	let schema = getSchema(tableType);
 	if (tableType === "TableLevelRange") {
 		if (isLoading || isError) {
 			return <></>;
-		}	
+		}
 		else {
 			const levelData: string[] = (data as Level[]).map((d: Level) => d.level.toString());
 			const levelDataAsTuple: readonly [string, ...string[]] = levelData as any as [string, ...string[]];
@@ -106,9 +107,7 @@ export function DataTableFunctions({
 							)} (${getTableName(tableType)})`}
 						</SheetTitle>
 						<SheetDescription>
-							{mode === "create"
-								? "Fill in the parameters to create new table."
-								: "Make changes to the table by modifying the parameters."}
+							{modeDescription(mode)}
 						</SheetDescription>
 					</SheetHeader>
 					<ScrollArea className="h-[85%] w-full">

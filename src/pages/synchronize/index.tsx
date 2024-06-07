@@ -10,6 +10,9 @@ import periodContext from "~/components/context/period_context";
 import { FunctionsEnum } from "~/server/api/types/functions_enum";
 import { Translate } from "~/lib/utils/translation";
 
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { i18n, locales } from '~/components/lang_config'
+
 
 const PageCheckEHR: NextPageWithLayout = () => {
 	return <SyncPage />;
@@ -18,7 +21,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 function SyncPage() {
 	const {selectedPeriod} = useContext(periodContext);
 	if (selectedPeriod == null) {
-		return <p>Please select period first</p>;
+		return <p>{Translate("Please select period first")}</p>;
 	}
 
 	const { isLoading, isError, data, error } =
@@ -59,3 +62,10 @@ PageCheckEHR.getLayout = function getLayout(page: ReactElement) {
 };
 
 export default PageCheckEHR;
+
+export const getStaticProps = async ({ locale }: { locale: string }) => {
+  return ({props: {
+    ...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
+  }});
+};
+

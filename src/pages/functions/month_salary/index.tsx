@@ -28,6 +28,9 @@ import { SalaryCalculatePage } from "./salary_calculate_page";
 import { FunctionsEnum } from "~/server/api/types/functions_enum";
 import { Translate } from "~/lib/utils/translation";
 
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { i18n, locales } from '~/components/lang_config'
+
 type FunctionStepPage = {
 	title: string;
 	page: ReactElement;
@@ -211,3 +214,10 @@ MonthSalary.getLayout = function getLayout(page: React.ReactElement) {
 };
 
 export default MonthSalary;
+
+export const getStaticProps = async ({ locale }: { locale: string }) => {
+  return ({props: {
+    ...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
+  }});
+};
+

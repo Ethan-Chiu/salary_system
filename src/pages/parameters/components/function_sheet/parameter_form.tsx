@@ -111,7 +111,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 
 	if (mode === "delete" && onlyOne) {
 		return (
-			<p>There's only one data left. Please create a new one before you continue to delete.</p>
+			<p>{Translate("There's only one data left. Please create a new one before you continue to delete.")}</p>
 		);
 	}
 
@@ -181,14 +181,14 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 			<Dialog open={openDialog} onOpenChange={setOpenDialog}>
 				<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
 					<DialogHeader>
-						<DialogTitle>Are you sure to update?</DialogTitle>
+						<DialogTitle>{Translate("Please check the data.")}</DialogTitle>
 						<DialogDescription></DialogDescription>
 					</DialogHeader>
 					<GeneralTable data={formValues} />
 					<DialogFooter>
 						<DialogClose asChild>
 							<Button onClick={submitForm} type="submit">
-								Save changes
+								{Translate("Save")}
 							</Button>
 						</DialogClose>
 					</DialogFooter>
@@ -266,7 +266,7 @@ const CompViewAllDatas = ({
 										</TableCell>
 										{Object.keys(data).map((key) => {
 											return (
-												<TableCell className="text-center font-medium">
+												<TableCell className="text-center font-medium whitespace-nowrap">
 													{data[key]}
 												</TableCell>
 											);

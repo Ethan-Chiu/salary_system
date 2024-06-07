@@ -23,6 +23,7 @@ import { i18n, locales } from '~/components/lang_config'
 
 import { Translate } from "~/lib/utils/translation";
 
+
 type FunctionLinkData = CardFunctionData & { url: string | null };
 
 const function_data: FunctionLinkData[] = [
@@ -123,14 +124,11 @@ const PageHome: NextPageWithLayout = () => {
 	);
 };
 
-
-export const getServerSideProps = async ({ locale }: { locale: string }) => {
-  console.log("locale", locale); 
+export const getStaticProps = async ({ locale }: { locale: string }) => {
   return ({props: {
-    ...(await serverSideTranslations(locale, ["common"], i18n, locales)),
+    ...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
   }});
 };
-
 
 PageHome.getLayout = function getLayout(page: React.ReactElement) {
 	return (

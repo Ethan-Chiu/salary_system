@@ -61,7 +61,7 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 	const [checkedEmps, setCheckedEmps] = useState<Record<string, boolean>>({});
 	const { selectedPeriod } = useContext(periodContext);
 	if (selectedPeriod == null) {
-		return <p>Please select period first</p>;
+		return <p>{Translate("Please select period first")}</p>;
 	}
 
 	useEffect(() => {
@@ -170,26 +170,26 @@ export function UpdateTable({
 			<Table className="border">
 				<TableHeader>
 					<TableRow className="border">
-						<TableHead className="w-[50px] border text-center">
+						<TableHead className="w-[50px] border text-center whitespace-nowrap">
 							<Button variant={"ghost"} onClick={checkAll}>
 								{Translate("all_(un)click")}
 							</Button>
 						</TableHead>
-						<TableHead className="border text-center">
+						<TableHead className="border text-center whitespace-nowrap">
 							{Translate("emp_no")}
 						</TableHead>
-						<TableHead className="border text-center">
+						<TableHead className="border text-center whitespace-nowrap">
 							{Translate("name")}
 						</TableHead>
 						{showDetails && (
 							<>
-								<TableHead className="border text-center">
+								<TableHead className="border text-center whitespace-nowrap">
 									{Translate("key")}
 								</TableHead>
-								<TableHead className="border text-center">
+								<TableHead className="border text-center whitespace-nowrap">
 									{Translate("salary_data")}
 								</TableHead>
-								<TableHead className="border text-center">
+								<TableHead className="border text-center whitespace-nowrap">
 									{Translate("ehr_data")}
 								</TableHead>
 							</>
@@ -201,7 +201,7 @@ export function UpdateTable({
 						<TableRow>
 							<TableCell
 								colSpan={6}
-								className="border text-center"
+								className="border text-center whitespace-nowrap"
 							>
 								{Translate("no data")}
 							</TableCell>
@@ -214,7 +214,7 @@ export function UpdateTable({
 								<CustomTableRow>
 									<CustomTableCell
 										rowSpan={comparisons.length + 1}
-										className="border text-center"
+										className="border text-center whitespace-nowrap"
 									>
 										<Checkbox
 											checked={checkedEmps[d.emp_no]}
@@ -226,30 +226,30 @@ export function UpdateTable({
 									</CustomTableCell>
 									<CustomTableCell
 										rowSpan={comparisons.length + 1}
-										className="border text-center"
+										className="border text-center whitespace-nowrap"
 									>
 										{d.emp_no}
 									</CustomTableCell>
 									<CustomTableCell
 										rowSpan={comparisons.length + 1}
-										className="border text-center"
+										className="border text-center whitespace-nowrap"
 									>
 										{d.emp_name}
 									</CustomTableCell>
 
 									{showDetails && (
 										<>
-											<CustomTableCell className="border text-center">
+											<CustomTableCell className="border text-center whitespace-nowrap">
 												{displayData(
 													Translate(comparisons[0]!.key)
 												)}
 											</CustomTableCell>
-											<CustomTableCell className="border text-center">
+											<CustomTableCell className="border text-center whitespace-nowrap">
 												{displayData(
 													comparisons[0]!.salary_value
 												)}
 											</CustomTableCell>
-											<CustomTableCell className="border text-center">
+											<CustomTableCell className="border text-center whitespace-nowrap">
 												{displayData(
 													comparisons[0]!.ehr_value
 												)}
@@ -268,17 +268,17 @@ export function UpdateTable({
 														<CustomTableRow>
 															{showDetails && (
 																<>
-																	<CustomTableCell className="border text-center">
+																	<CustomTableCell className="border text-center whitespace-nowrap">
 																		{displayData(
 																			Translate(cd.key)
 																		)}
 																	</CustomTableCell>
-																	<CustomTableCell className="border text-center">
+																	<CustomTableCell className="border text-center whitespace-nowrap">
 																		{displayData(
 																			cd.salary_value
 																		)}
 																	</CustomTableCell>
-																	<CustomTableCell className="border text-center">
+																	<CustomTableCell className="border text-center whitespace-nowrap">
 																		{displayData(
 																			cd.ehr_value
 																		)}

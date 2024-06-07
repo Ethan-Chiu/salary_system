@@ -19,6 +19,10 @@ import { Dialog, DialogContent } from "~/components/ui/dialog";
 import PeriodContextProvider from "~/components/context/period_context_provider";
 import { Translate } from "~/lib/utils/translation";
 
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { i18n, locales } from '~/components/lang_config'
+
+
 type FunctionLinkData = CardFunctionData & { url: string | null };
 
 const function_data: FunctionLinkData[] = [
@@ -101,6 +105,12 @@ ReportHomePage.getLayout = function getLayout(page: React.ReactElement) {
 };
 
 export default ReportHomePage;
+
+export const getStaticProps = async ({ locale }: { locale: string }) => {
+  return ({props: {
+    ...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
+  }});
+};
 
 const container = {
 	hidden: {},

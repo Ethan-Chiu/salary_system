@@ -1,0 +1,13 @@
+{
+  "selects": "Select",
+  "actions": "Actions",
+	"configurations": "Configurations",
+  "period": "Period",
+  "functions": "Functions",
+  "synchronize": "Synchronize",
+  "employees": "Employees",
+  "parameters": "Parameters",
+  "settings": "Settings",
+	"roles": "Roles",
+	"reports": "Reports"
+}
