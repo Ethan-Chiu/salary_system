@@ -17,13 +17,14 @@ export function DataTableDataHeader<TData>({
 			{table.getHeaderGroups().map((headerGroup) => (
 				<TableRow
 					key={headerGroup.id}
-					className="sticky top-0 bg-secondary hover:bg-secondary"
+					className="sticky top-0 bg-secondary hover:bg-secondary whitespace-nowrap"
 				>
 					{dataPerRowList.map(() =>
 						headerGroup.headers.map((header) => {
 							return (
 								<TableHead
 									key={header.id}
+									className="text-center"
 									colSpan={header.colSpan}
 								>
 									{header.isPlaceholder

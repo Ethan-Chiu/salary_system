@@ -24,6 +24,7 @@ import { Translate } from "~/lib/utils/translation";
 import { ParameterForm } from "../../function_sheet/parameter_form";
 import { getSchema } from "~/pages/parameters/schemas/get_schemas";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
+import { modeDescription } from "~/lib/utils/helper_function";
 
 interface CalendarToolbarFunctionsProps
 	extends React.HTMLAttributes<HTMLDivElement> {
@@ -72,9 +73,7 @@ export function CalendarToolbarFunctions({
 							)} (${getTableName(tableType)})`}
 						</SheetTitle>
 						<SheetDescription>
-							{mode === "create"
-								? "Fill in the parameters to create new table."
-								: "Make changes to the table by modifying the parameters."}
+							{modeDescription(mode)}
 						</SheetDescription>
 					</SheetHeader>
 					<ScrollArea className="h-[85%] w-full">

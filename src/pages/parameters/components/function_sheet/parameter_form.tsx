@@ -111,7 +111,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 
 	if (mode === "delete" && onlyOne) {
 		return (
-			<p>There's only one data left. Please create a new one before you continue to delete.</p>
+			<p>{Translate("There's only one data left. Please create a new one before you continue to delete.")}</p>
 		);
 	}
 
@@ -266,7 +266,7 @@ const CompViewAllDatas = ({
 										</TableCell>
 										{Object.keys(data).map((key) => {
 											return (
-												<TableCell className="text-center font-medium">
+												<TableCell className="text-center font-medium whitespace-nowrap">
 													{data[key]}
 												</TableCell>
 											);

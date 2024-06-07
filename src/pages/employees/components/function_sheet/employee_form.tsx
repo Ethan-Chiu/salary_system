@@ -115,10 +115,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 
 	if (mode === "delete" && onlyOne) {
 		return (
-			<p>
-				There's only one data left. Please create a new one before you
-				continue to delete.
-			</p>
+			<p>{Translate("There's only one data left. Please create a new one before you continue to delete.")}</p>
 		);
 	}
 
@@ -251,11 +248,10 @@ const CompViewAllDatas = ({
 						<DialogContent>
 							<DialogHeader>
 								<DialogTitle>
-									Confirm Auto Calculate
+									{Translate("Confirm Auto Calculate")}
 								</DialogTitle>
 								<DialogDescription>
-									Please make sure all the data is correct
-									before you click confirm.
+									{Translate("Please make sure all the data are correct before you click confirm.")}
 								</DialogDescription>
 							</DialogHeader>
 							<DialogFooter>
@@ -375,7 +371,7 @@ const CompViewAllDatas = ({
 										</TableCell>
 										{Object.keys(data).map((key) => {
 											return (
-												<TableCell className="text-center font-medium">
+												<TableCell className="text-center font-medium whitespace-nowrap">
 													{data[key]}
 												</TableCell>
 											);

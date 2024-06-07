@@ -26,12 +26,13 @@ import AutoForm from "~/components/ui/auto-form";
 import GeneralTable from "../../function_sheet/general_table";
 import { z } from "zod";
 import { parameterToolbarFunctionsContext } from "../../function_sheet/parameter_functions_context";
+import { modeDescription } from "~/lib/utils/helper_function";
 
-interface CalendarUpdateEventProps<SchemaType extends z.AnyZodObject> {}
+interface CalendarUpdateEventProps<SchemaType extends z.AnyZodObject> { }
 
 export default function CalendarUpdateEvent<
 	SchemaType extends z.AnyZodObject
->({}: CalendarUpdateEventProps<SchemaType>) {
+>({ }: CalendarUpdateEventProps<SchemaType>) {
 	const { updateSheet, setUpdateSheet, resetMouse, selectedEvent } =
 		useContext(calendarContext);
 
@@ -97,9 +98,7 @@ export default function CalendarUpdateEvent<
 						)} (${getTableName(selectedTableType)})`}
 					</SheetTitle>
 					<SheetDescription>
-						{
-							"Make changes to the table by modifying the parameters."
-						}
+						{modeDescription(mode)}
 					</SheetDescription>
 				</SheetHeader>
 				<ScrollArea className="h-[85%] w-full">

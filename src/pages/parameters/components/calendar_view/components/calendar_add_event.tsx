@@ -13,6 +13,7 @@ import dataTableContext from "../../context/data_table_context";
 import { getTableName } from "../../context/data_table_enum";
 import { getSchema } from "~/pages/parameters/schemas/get_schemas";
 import { Translate } from "~/lib/utils/translation";
+import { modeDescription } from "~/lib/utils/helper_function";
 
 export default function CalendarAddEvent() {
 	const { openSheet, mouseDownDate, mouseUpDate, setOpenSheet, resetMouse } =
@@ -37,9 +38,7 @@ export default function CalendarAddEvent() {
 						)} (${getTableName(selectedTableType)})`}
 					</SheetTitle>
 					<SheetDescription>
-						{mode === "create"
-							? "Fill in the parameters to create new table."
-							: "Make changes to the table by modifying the parameters."}
+						{modeDescription(mode)}
 					</SheetDescription>
 				</SheetHeader>
 				<ScrollArea className="h-[85%] w-full">

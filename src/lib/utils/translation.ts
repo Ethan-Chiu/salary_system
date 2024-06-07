@@ -91,7 +91,7 @@ export function Translate(word: string) {
 		if (word === "h_i") return "健保";
 		if (word === "l_i") return "勞保";
 		if (word === "occupational_allowance") return "職務津貼";
-		if(word === "food_allowance") return "伙食津貼";
+		if (word === "food_allowance") return "伙食津貼";
 		if (word === "base_salary") return "底薪";
 		if (word === "shift_allowance") return "輪班津貼";
 		if (word === "subsidy_allowance") return "補助津貼";
@@ -117,7 +117,7 @@ export function Translate(word: string) {
 		if (word === "level") return "級距";
 		if (word === "level_start") return "起";
 		if (word === "level_end") return "迄";
-		if (word === "sex_type"	) return "性別";
+		if (word === "sex_type") return "性別";
 		if (word === "registration_date") return "到職日期";
 		if (word === "quit_date") return "離職日期";
 		if (word === "license_id") return "身份（居留）證字號";
@@ -127,7 +127,7 @@ export function Translate(word: string) {
 		if (word === "pay_order") return "pay order";
 		if (word === "pay_period") return "pay period";
 		if (word === "pay_delay") return "pay delay";
-		if (word === "total_hours") return "總時數"	
+		if (word === "total_hours") return "總時數"
 		if (word === "annual_1") return "annual_1";
 		if (word === "compensatory_134") return "compensatory_134";
 		if (word === "compensatory_167") return "compensatory_167";
@@ -169,7 +169,7 @@ export function Translate(word: string) {
 		if (word === "cancel") return "取消";
 		if (word === "auto calculate") return "自動計算";
 		if (word === "form") return "表單";
-		
+
 
 		// tables
 		if (word === "attendanceSetting") return "請假加班";
@@ -193,13 +193,15 @@ export function Translate(word: string) {
 		if (word === "value") return "值";
 		if (word === "view") return "顯示";
 		if (word === "no data") return "沒有資料";
-		
+		if (word === "all") return "全部";
+		if (word === "no_month_salary") return "未發放月薪";
+
 
 		// title
 		if (word === "selects") return "選擇";
 		if (word === "actions") return "功能";
 		if (word === "configurations") return "設置";
-		if (word === "period") return "期別";	
+		if (word === "period") return "期別";
 		if (word === "functions") return "計算薪資";
 		if (word === "synchronize") return "同步";
 		if (word === "employees") return "員工";
@@ -227,6 +229,13 @@ export function Translate(word: string) {
 		if (word === "filter setting...") return "請輸入搜尋關鍵字...";
 		if (word === "up to date") return "已是最新資料";
 		if (word === "system data is up to date with the ehr data") return "當前資料與EHR完全一致";
+		if (word === "fill in the parameters to create new data.") return "請填寫參數來建立新資料";
+		if (word === "please select one data to update.") return "請選擇一筆資料進行更新";
+		if (word === "please select one data to delete.") return "請選擇一筆資料進行刪除";
+		if (word === "please select data to auto calculate.") return "請選擇資料進行自動計算";
+		if (word === "confirm auto calculate") return "確認自動計算";
+		if (word === "please make sure all the data are correct before you click confirm.") return "請確認所有資料正確後再按確認";
+		if (word === "there's only one data left. please create a new one before you continue to delete.") return "只剩下一筆資料，請先建立一筆新資料再進行刪除";
 	}
 
 	if (language === "en") {
