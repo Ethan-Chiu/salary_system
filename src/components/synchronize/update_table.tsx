@@ -34,6 +34,8 @@ import { type SyncCheckStatusEnumType } from "~/components/synchronize/utils/syn
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import periodContext from "../context/period_context";
 
+import { Translate } from "~/lib/utils/translation";
+
 export interface SyncDataAndStatus {
 	emp_no: string;
 	emp_name: string;
@@ -101,16 +103,15 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 						console.log("Show update table dialog");
 					}}
 				>
-					Update
+					{Translate("Update")}
 				</Button>
 			</DialogTrigger>
 			<DialogContent className="w-[90vw] max-w-3xl p-8">
 				<DialogHeader className="mx-4 flex items-center">
 					<div className="mr-auto">
-						<DialogTitle>Changed Data</DialogTitle>
+						<DialogTitle>{Translate("changed_data")}</DialogTitle>
 						<DialogDescription>
-							Check the checked data and press the update button
-							to confirm the changes.
+							{Translate("changed_data_msg")}
 						</DialogDescription>
 					</div>
 					<div className="ml-auto flex items-center space-x-2">
@@ -119,7 +120,7 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 							checked={showDetails}
 							onCheckedChange={setShowDetails}
 						/>
-						<Label htmlFor="showDetails">Show Details</Label>
+						<Label htmlFor="showDetails">{Translate("show_details")}</Label>
 					</div>
 				</DialogHeader>
 				<ScrollArea className="max-h-[70vh] overflow-y-scroll">
@@ -134,7 +135,7 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 
 				<DialogClose asChild>
 					<Button type="submit" onClick={() => handleUpdate(selectedPeriod.period_id)}>
-						Update
+						{Translate("Update")}
 					</Button>
 				</DialogClose>
 			</DialogContent>
@@ -171,25 +172,25 @@ export function UpdateTable({
 					<TableRow className="border">
 						<TableHead className="w-[50px] border text-center">
 							<Button variant={"ghost"} onClick={checkAll}>
-								All (un)Click
+								{Translate("all_(un)click")}
 							</Button>
 						</TableHead>
 						<TableHead className="border text-center">
-							Emp Number
+							{Translate("emp_no")}
 						</TableHead>
 						<TableHead className="border text-center">
-							Emp Name
+							{Translate("name")}
 						</TableHead>
 						{showDetails && (
 							<>
 								<TableHead className="border text-center">
-									Key
+									{Translate("key")}
 								</TableHead>
 								<TableHead className="border text-center">
-									Local Value
+									{Translate("salary_data")}
 								</TableHead>
 								<TableHead className="border text-center">
-									eHR Value
+									{Translate("ehr_data")}
 								</TableHead>
 							</>
 						)}
@@ -202,7 +203,7 @@ export function UpdateTable({
 								colSpan={6}
 								className="border text-center"
 							>
-								No Result
+								{Translate("no data")}
 							</TableCell>
 						</TableRow>
 					)}
@@ -240,7 +241,7 @@ export function UpdateTable({
 										<>
 											<CustomTableCell className="border text-center">
 												{displayData(
-													comparisons[0]!.key
+													Translate(comparisons[0]!.key)
 												)}
 											</CustomTableCell>
 											<CustomTableCell className="border text-center">
@@ -269,7 +270,7 @@ export function UpdateTable({
 																<>
 																	<CustomTableCell className="border text-center">
 																		{displayData(
-																			cd.key
+																			Translate(cd.key)
 																		)}
 																	</CustomTableCell>
 																	<CustomTableCell className="border text-center">

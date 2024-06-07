@@ -193,7 +193,6 @@ export function Translate(word: string) {
 		if (word === "value") return "值";
 		if (word === "view") return "顯示";
 		if (word === "no data") return "沒有資料";
-		
 
 		// title
 		if (word === "selects") return "選擇";
@@ -227,6 +226,24 @@ export function Translate(word: string) {
 		if (word === "filter setting...") return "請輸入搜尋關鍵字...";
 		if (word === "up to date") return "已是最新資料";
 		if (word === "system data is up to date with the ehr data") return "當前資料與EHR完全一致";
+
+		// synchronize page
+		if (word === "key")					return "欄位名稱";
+		if (word === "salary_data")			return "當前資料";
+		if (word === "ehr_data")			return "更新資料";
+		if (word === "mode_only_changed")	return "僅顯示變更資料";
+		if (word === "mode_display_all")	return "顯示所有資料";
+		if (word === "ignore")				return "忽略";
+		if (word === "confirm")				return "確認";
+
+		
+		if (word === "show_details")		return "顯示所有欄位";
+		if (word === "changed_data")		return "異動資料";
+		if (word === "changed_data_msg")	return "按下更新按鈕以完成資料更新";
+
+		if (word === "all_(un)click")		return "全選/取消全選";
+		
+
 	}
 
 	if (language === "en") {
