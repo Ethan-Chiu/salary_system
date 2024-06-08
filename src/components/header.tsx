@@ -16,8 +16,7 @@ export const Header = (props: PropsWithChildren<TitleProp>) => {
 		<div className={props.className}>
 			<div className="m-4 flex">
 				<h2 className="text-2xl font-semibold tracking-tight">
-					{props.title.charAt(0).toUpperCase() +
-						props.title.slice(1).toLowerCase()}
+					{props.title}
 				</h2>
 				{props.showOptions ? (
 					<div className="align-bot ml-auto flex items-center space-x-1">

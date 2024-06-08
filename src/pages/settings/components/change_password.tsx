@@ -6,9 +6,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from "~/components/ui/card";
-import { Button, buttonVariants } from "~/components/ui/button";
+import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
 import * as z from "zod";
 import { signOut, useSession } from "next-auth/react";
 import { toast } from "~/components/ui/use-toast";
@@ -18,7 +17,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	Form,
 	FormControl,
-	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -26,7 +24,6 @@ import {
 } from "~/components/ui/form";
 import { onPromise } from "~/utils/on_promise";
 import Router from "next/router";
-import { cn } from "~/lib/utils";
 
 const changePasswordFormSchema = z.object({
 	old_pw: z

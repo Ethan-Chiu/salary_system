@@ -1,11 +1,8 @@
 import { RootLayout } from "~/components/layout/root_layout";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { Header } from "~/components/header";
-import { NextPageWithLayout } from "../../_app";
-import { api } from "~/utils/api";
-import { useContext, useState } from "react";
-import { ProgressBar } from "~/components/functions/progress_bar";
-import { Translate } from "~/lib/utils/translation";
+import { type NextPageWithLayout } from "../../_app";
+import { useContext } from "react";
 import ExcelViewer from "./ExcelViewer";
 import { LoadingSpinner } from "~/components/loading";
 import periodContext from "~/components/context/period_context";
@@ -34,7 +31,7 @@ Salary.getLayout = function getLayout(page: React.ReactElement) {
 
 export default Salary;
 
-function ExportPage({}: {}) {
+function ExportPage() {
 	// const getExcelA = api.function.getExcelA.useQuery();
 	const { selectedPeriod } = useContext(periodContext);
 	console.log(selectedPeriod);
@@ -64,18 +61,18 @@ function ExportPage({}: {}) {
 		data: pseudoDatas,
 	};
 
-	function getExcelData(Alldatas: any) {
-		let excelData: any = [];
-		Alldatas.map((sheetDatas: any) => {
-			let name: string = sheetDatas.name;
+	function getExcelData(Alldatas: any[]) {
+		const excelData: any[] = [];
+		Alldatas.map((sheetDatas: {name: string; data: any[]}) => {
+			const name: string = sheetDatas.name;
 			try {
-				let datas = sheetDatas.data;
-				let columns = Object.keys(datas[0]).map(
+				const datas = sheetDatas.data;
+				const columns = Object.keys(datas[0]).map(
 					(key: string) =>
 						// Translate(key)
 						key
 				);
-				let rows = datas.map((data: any, index: number) => {
+				const rows = datas.map((data: any, index: number) => {
 					return Object.keys(data).map((key: string) => {
 						return data[key];
 					});
