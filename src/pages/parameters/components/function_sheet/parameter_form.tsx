@@ -115,6 +115,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 		);
 	}
 
+
 	// Select one entry
 	if (mode !== "create" && selectedData === null) {
 		const noIDData: any[] = data.map((item: any) => {

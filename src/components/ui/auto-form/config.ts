@@ -9,6 +9,9 @@ import AutoFormRadioGroup from "./fields/radio-group";
 import AutoFormSwitch from "./fields/switch";
 import AutoFormTextarea from "./fields/textarea";
 
+// Number ENUM
+import AutoFormNumberEnum from "./fields/customNumberEnum";
+
 export const INPUT_COMPONENTS = {
 	checkbox: AutoFormCheckbox,
 	date: AutoFormDateCustom,
@@ -18,6 +21,9 @@ export const INPUT_COMPONENTS = {
 	textarea: AutoFormTextarea,
 	number: AutoFormNumber,
 	fallback: AutoFormInput,
+
+	// Number ENUM
+	number_select: AutoFormNumberEnum,
 };
 
 /**
@@ -32,4 +38,5 @@ export const DEFAULT_ZOD_HANDLERS: {
 	ZodEnum: "select",
 	ZodNativeEnum: "select",
 	ZodNumber: "number",
+	ZodUnion: "number_select"
 };
