@@ -106,7 +106,7 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 					{Translate("Update")}
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="w-[90vw] max-w-3xl p-8">
+			<DialogContent className="w-[90vw] max-w-5xl p-8">
 				<DialogHeader className="mx-4 flex items-center">
 					<div className="mr-auto">
 						<DialogTitle>{Translate("changed_data")}</DialogTitle>
@@ -123,7 +123,8 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 						<Label htmlFor="showDetails">{Translate("show_details")}</Label>
 					</div>
 				</DialogHeader>
-				<ScrollArea className="max-h-[70vh] overflow-y-scroll">
+				{/* <ScrollArea className="max-h-[70vh] overflow-y-scroll"> */}
+				<ScrollArea className="max-h-[70vh]">
 					<UpdateTable
 						data={data}
 						showDetails={showDetails}
