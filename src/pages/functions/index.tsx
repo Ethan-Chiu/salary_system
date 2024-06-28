@@ -21,8 +21,6 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
 
-import { Translate } from "~/lib/utils/translation";
-
 
 type FunctionLinkData = CardFunctionData & { url: string | null };
 
@@ -65,11 +63,11 @@ const PageHome: NextPageWithLayout = () => {
 	const { toast } = useToast();
 	const [open, setOpen] = useState(false);
 
-  const { t } = useTranslation('common')
+  const { t } = useTranslation(['common', 'nav'])
   
 	return (
 		<>
-			<Header title={Translate("functions")} showOptions className="mb-4" />
+			<Header title={t("functions", { ns: "nav" })} showOptions className="mb-4" />
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogContent>
 					<PeriodSelector />

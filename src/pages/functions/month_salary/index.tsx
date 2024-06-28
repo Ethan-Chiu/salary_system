@@ -26,8 +26,8 @@ import { useRouter } from "next/router";
 import { type PaidEmployee } from "~/server/service/sync_service";
 import { SalaryCalculatePage } from "./salary_calculate_page";
 import { FunctionsEnum } from "~/server/api/types/functions_enum";
-import { Translate } from "~/lib/utils/translation";
 
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
 
@@ -66,6 +66,8 @@ const MonthSalary: NextPageWithLayout = () => {
 function MonthSalaryContent({ periodId }: { periodId: number }) {
 	const router = useRouter();
 	const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const { t } = useTranslation(['common', 'nav'])
 
 	const { isLoading, isError, data, error } =
 		api.sync.getCandEmployees.useQuery({
@@ -154,7 +156,7 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 			}}
 		>
 			<div className="flex flex-col h-full">
-				<Header title={Translate("functions")} showOptions />
+				<Header title={t("functions", { ns: "nav" })} showOptions />
 				<div className="flex flex-col grow p-4">
 					<ProgressBar labels={titles} selectedIndex={selectedIndex} />
 					<div className="h-4" />

@@ -28,6 +28,7 @@ import { api } from "~/utils/api";
 import { z } from "zod";
 import { Level } from "~/server/database/entity/SALARY/level";
 import { modeDescription } from "~/lib/utils/helper_function";
+import { literal } from "sequelize";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
@@ -53,13 +54,16 @@ export function DataTableFunctions({
 			return <></>;
 		}
 		else {
-			const levelData: string[] = (data as Level[]).map((d: Level) => d.level.toString());
-			const levelDataAsTuple: readonly [string, ...string[]] = levelData as any as [string, ...string[]];
-			console.log(levelData);
-			console.log(levelDataAsTuple);
+			const levelOptions: Array<z.ZodLiteral<number>> = 
+				(data as Level[]).map((d: Level) => {
+					return z.literal(d.level);
+				})
+			const levelDataAsTuple: readonly [z.ZodTypeAny, z.ZodTypeAny, ...z.ZodTypeAny[]] = levelOptions as any as [z.ZodTypeAny, z.ZodTypeAny, ...z.ZodTypeAny[]];
+			const levelSchema = z.union(levelDataAsTuple);
 			schema = schema.extend({
-				level_start: z.enum(levelDataAsTuple),
-				level_end: z.enum(levelDataAsTuple),
+				// level_start: z.enum(levelDataAsTuple),
+				level_start: levelSchema,
+				level_end: levelSchema,
 			})
 		}
 	}

@@ -2,8 +2,9 @@ import { api } from "~/utils/api";
 import { LoadingSpinner } from "~/components/loading";
 import { SyncPageContent } from "~/components/synchronize/sync_page_content";
 import { Button } from "~/components/ui/button";
-import { Translate } from "~/lib/utils/translation";
 import { FunctionsEnum } from "~/server/api/types/functions_enum";
+
+import { useTranslation } from 'next-i18next'
 
 interface SyncPageProps {
 	period: number;
@@ -16,6 +17,8 @@ export function SyncPage({
 	selectedIndex,
 	setSelectedIndex,
 }: SyncPageProps) {
+  const { t } = useTranslation(['common'])
+
 	const { isLoading, isError, data, error } =
 		api.sync.checkEmployeeData.useQuery({
 			func: FunctionsEnum.Enum.month_salary,
@@ -38,12 +41,12 @@ export function SyncPage({
 			{data.length == 0 && (
 				<div className="mt-4 flex justify-end">
 					<Button onClick={() => setSelectedIndex(selectedIndex + 1)}>
-						{Translate("next_step")}
+						{t("button.next_step")}
 					</Button>
 				</div>
 			)}
 		</div>
 	) : (
-		<div>{Translate("no data")}</div>
+		<div>{t("table.no_data")}</div>
 	);
 }
