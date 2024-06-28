@@ -8,6 +8,8 @@ import { Overtime } from "../database/entity/UMEDIA/overtime";
 import { Payset } from "../database/entity/UMEDIA/payset";
 import { Emp } from "../database/entity/UMEDIA/emp";
 import { BaseResponseError } from "../api/error/BaseResponseError";
+import { Bonus } from "../database/entity/UMEDIA/bonus";
+import { BonusType } from "../database/entity/UMEDIA/bonus_type";
 
 @injectable()
 export class EHRService {
@@ -115,6 +117,39 @@ export class EHRService {
 		return Period.fromDB(dataList[0]!);
 	}
 
+	async getBonus(period_id: number): Promise<Bonus[]> {
+		const dbConnection = container.resolve(Database).connection;
+		const dataList = await dbConnection.query(
+			this.GET_BONUS_QUERY(period_id),
+			{
+				type: QueryTypes.SELECT,
+			}
+		);
+		if (dataList.length === 0) {
+			throw new BaseResponseError("Bonus Not Found");
+		}
+		const bonusList : Bonus[] = dataList.map((o) => Bonus.fromDB(o));
+		return bonusList;
+	}
+
+	async getBonusByEmpNoList(period_id: number, emp_no_list: string[]): Promise<Bonus[]> {
+		const all_bonus = await this.getBonus(period_id);
+		const filtered_bonus = all_bonus.filter((bonus) => emp_no_list.includes(bonus.emp_no!) );
+		return filtered_bonus
+	}
+
+	async getBonusType(): Promise<BonusType[]> {
+		const dbConnection = container.resolve(Database).connection;
+		const dataList = await dbConnection.query(
+			this.GET_BONUS_TYPE_QUERY(),
+			{
+				type: QueryTypes.SELECT,
+			}
+		);
+		const bonusTypeList: BonusType[] = dataList.map((o) => BonusType.fromDB(o));
+		return bonusTypeList;
+	}
+
 	private GET_PERIOD_QUERY(): string {
 		return `SELECT "PERIOD_ID", "PERIOD_NAME", "START_DATE", "END_DATE", "STATUS", "ISSUE_DATE" FROM "U_HR_PERIOD" WHERE "U_HR_PERIOD"."STATUS" = 'OPEN'`;
 	}
@@ -137,5 +172,11 @@ export class EHRService {
 
 	private GET_PERIOD_BY_ID_QUERY(period_id: number): string {
 		return `SELECT "PERIOD_ID", "PERIOD_NAME", "START_DATE", "END_DATE", "STATUS", "ISSUE_DATE" FROM "U_HR_PERIOD" WHERE "U_HR_PERIOD"."PERIOD_ID" = '${period_id}'`;
+	}
+	private GET_BONUS_QUERY(period_id: number): string {
+		return `SELECT * FROM "U_HR_PAYDRAFT_BONUS" WHERE "U_HR_PAYDRAFT_BONUS"."PERIOD_ID" = '${period_id}'`;
+	}
+	private GET_BONUS_TYPE_QUERY(): string {
+		return `SELECT * FROM "U_HR_BONUS_TYPE"`;
 	}
 }
