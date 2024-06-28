@@ -1,0 +1,46 @@
+發薪日期: 
+	若7/5要發薪，7/4中午前要交
+	可能可以設定只能期別的當月或次月發薪
+
+
+季獎金、員工分紅
+
+
+sync:
+	null, undefined可能還是要顯示出來
+	update 視窗盡量拉長，不用左右scroll bar，上下要把沒用的scroll bar去掉		(Fixed)
+	
+	確認資料: 中文補齊
+	
+	根據EHR table建立table顯示，同人多筆要合成一列
+
+	工作津貼、獎金、加班、請假、其他、工作天數
+	Need Editable feature:	
+		請假、加班 (we need table (may have different format, columns) to store the new datas, do not modify EHR table)
+		Modified data should be highlight: the modified cell and emp_no and emp_name
+		EX: 我們這裡存 人名, 欄位, 新增值，把我們這裡有異動的值加上EHR原本人名對到的欄位值再用不同顏色顯示出來就好了
+
+	外勞離境，需要試算功能，雖然身分為當月離職人員(破月)，但是可以已經先發放過了			# 理論上EHR要設為離職人員，暫不考慮
+
+
+
+	季獎金
+		發放資格: 1. 試用期滿, 2. 整個季度完整 EX: Q1, 10/1(含)前報到符合 (例外，若遇假日，則以最近的一天上班日作為基準)
+		若要同步，則取EHR同步
+		試算=>列出所有人(以符合資格與否作為分類顯示，需要有勾勾來進行發放資格的更改)
+		可能要多個欄位: 績效獎金
+
+	員工:薪資檔案 => 若有異動，整筆都更新 (要存歷史檔案) , 勞保健保...要用select
+
+
+	
+	parameter table order	勞健保費率 => *級距 => *級距類別範圍 (* means to change order)
+	
+	
+	級距類別範圍，新增有bug (type error)
+
+
+	
+
+		
+	
