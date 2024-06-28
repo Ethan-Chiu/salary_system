@@ -68,8 +68,9 @@ export class CalculateService {
 				t5 += overtime.hours_267 ?? 0;
 			}
 		})
+
 		if (employee_data.work_type === "外籍勞工"){
-			hourly_fee = insurance_rate_setting.l_i_wage_replacement_rate;
+			hourly_fee = insurance_rate_setting.min_wage_rate;
 			return Math.round(hourly_fee * t1 +hourly_fee * t2 *2 +hourly_fee * t3 * 1.34+hourly_fee * t4 *1.67 +hourly_fee * t5 * 2.67);
 		}
 		else
@@ -105,7 +106,7 @@ export class CalculateService {
 		let t4 = 0;
 		let t5 = 0;
 		overtime_list.map((overtime) => {
-			if (overtime.type_name === "國定假日" || "休息日"){
+			if (overtime.type_name === "國定假日" || overtime.type_name === "休息日"){
 				t1 += overtime.hours_1 ?? 0;
 				t2 += overtime.hours_2 ?? 0;
 				t3 += overtime.hours_134 ?? 0;
@@ -116,7 +117,7 @@ export class CalculateService {
 		/// 外勞不確定是不是也是用hourly_fee
 		// rate存哪裡？
 		if (employee_data.work_type === "外籍勞工"){
-			hourly_fee = insurance_rate_setting.l_i_wage_replacement_rate;
+			hourly_fee = insurance_rate_setting.min_wage_rate;
 			return Math.round(hourly_fee * t1 +hourly_fee * t2 *2 +hourly_fee * t3 * 1.34+hourly_fee * t4 *1.67 +hourly_fee * t5 * 2.67);
 		}
 		else
@@ -180,7 +181,7 @@ export class CalculateService {
 			+ (employee_payment.professional_cert_allowance ?? 0)
 			+ (employee_payment.occupational_allowance ?? 0)
 			+ (employee_payment.subsidy_allowance ?? 0)
-		) * (pay_set.work_day! / 30)
+		) * (((pay_set) ? pay_set.work_day! : 30) / 30)
 		return gross_salary;
 	}
 	//MARK: 勞保扣除額
@@ -666,7 +667,7 @@ export class CalculateService {
 	//MARK: 團保費代扣＿升等
 	// 感覺在這裡: DoCmd.OpenQuery "其他更新", acNormal, acEdit    'Jerry 07/09/03  增加退職所得  23/6/3 增加團保費代扣_升等
 	
-
+/*
 	//MARK: 特別事假扣款
 	def getSpecialLeavePay(employee_data: EmployeeData): number {
 		let work_type = employee_data.work_type;
@@ -690,7 +691,7 @@ export class CalculateService {
 
 	//MARK: 實發金額
 }
-
+*/
 
 
 /*

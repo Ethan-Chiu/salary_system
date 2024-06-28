@@ -177,6 +177,6 @@ export class EHRService {
 		return `SELECT * FROM "U_HR_PAYDRAFT_BONUS" WHERE "U_HR_PAYDRAFT_BONUS"."PERIOD_ID" = '${period_id}'`;
 	}
 	private GET_BONUS_TYPE_QUERY(): string {
-		return `SELECT * FROM "U_HR_BONUS_TYPE"`;
+		return `SELECT * FROM UMEDIA."U_HR_BONUS_TYPE"`;
 	}
 }
