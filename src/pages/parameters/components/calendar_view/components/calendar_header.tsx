@@ -33,7 +33,7 @@ export default function CalendarHeader({
 		<div className="flex items-center gap-x-1 px-4 py-1">
 			<p className="mx-4 w-40 text-xl font-bold text-primary">
 				{dayjs(new Date(dayjs(target_date).year(), monthIndex)).format(
-					"YYYY" + t("others.year") + "M" + t("others.month")
+					`YYYY-MM`
 				)}
 			</p>
 

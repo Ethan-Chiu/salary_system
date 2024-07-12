@@ -1,8 +1,8 @@
 {
   "table": {
     "id": "ID",
-    "created_by": "Created By",
-    "updated_by": "Updated By",
+    "create_by": "Create By",
+    "update_by": "Update By",
     "create_date": "Create Date",
     "update_date": "Update Date",
     "start_date": "Start Date",
