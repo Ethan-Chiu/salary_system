@@ -114,7 +114,6 @@ export class CalculateService {
 				t5 += overtime.hours_267 ?? 0;
 			}
 		})
-		/// 外勞不確定是不是也是用hourly_fee
 		// rate存哪裡？
 		if (employee_data.work_type === "外籍勞工"){
 			hourly_fee = insurance_rate_setting.min_wage_rate;
@@ -125,48 +124,50 @@ export class CalculateService {
 	}	
 	
 	// MARK: 超時加班費
-	// async getExceedOvertimePay(
-	// 	employee_data: EmployeeData,
-	// 	employee_payment: EmployeePayment,
-	// 	attendance_setting: AttendanceSetting,
-	// 	overtime: Overtime
-	// ): Promise<number> {
-	// 	/*
-	// 			超時加班 = GetOverTimeMoney(
-	// 				工作類別,
-	// 				工作形態,
-	// 				應發底薪+全勤獎金+輪班津貼+專業証照津貼,
-	// 				加班稅1_時數+休加班稅1_時數+國加班稅1_時數,
-	// 				加班稅2_時數+休加班稅2_時數+國加班稅2_時數,
-	// 				例假日加班稅_時數,
-	// 				休加班稅3_時數
-	// 			)
-	// 	*/
-
-	// 	const kind1 = employee_data.work_type;
-	// 	const kind2 = employee_data.work_status;
-	// 	const money = rd("應發底薪")+rd("全勤獎金")+rd("輪班津貼")+rd("專業証照津貼");
-	// 	const t1 = rd("加班稅1_時數")+rd("休加班稅1_時數")+rd("國加班稅1_時數");	
-	// 	const T2 = rd("加班稅2_時數")+rd("休加班稅2_時數")+rd("國加班稅2_時數");
-	// 	const T3 = rd("例假日加班稅_時數");
-	// 	const T4 = rd("休加班稅3_時數");
-	// 	const SALARY_RATE = rd("最低工資率");
-		
-	// 	const FOREIGN_RATE1 = attendance_setting.overtime_by_foreign_workers_1;
-	// 	const FOREIGN_RATE2 = attendance_setting.overtime_by_foreign_workers_2;
-	// 	const FOREIGN_RATE3 = attendance_setting.foreign_worker_holiday;
-	// 	const FOREIGN_RATE4 = attendance_setting.overtime_by_foreign_workers_3;
-
-	// 	const LOCAL_RATE1 = attendance_setting.overtime_by_local_workers_1;
-	// 	const LOCAL_RATE2 = attendance_setting.overtime_by_local_workers_2;
-	// 	const LOCAL_RATE3 = attendance_setting.local_worker_holiday;
-	// 	const LOCAL_RATE4 = attendance_setting.overtime_by_local_workers_3;
-
-	// 	if (kind1 === FOREIGN)	return Math.round(SALARY_RATE * FOREIGN_RATE1 * t1 + SALARY_RATE * FOREIGN_RATE2 * T2 + SALARY_RATE * FOREIGN_RATE3 * T3 + SALARY_RATE * FOREIGN_RATE4 * T4);
-	// 	if (kind2 === LEAVE_MAN)	return 0;
-	// 	if (kind2 === FOREIGN)	return Math.round(SALARY_RATE * FOREIGN_RATE1 * t1 + SALARY_RATE * FOREIGN_RATE2 * T2 + SALARY_RATE * FOREIGN_RATE3 * T3 + SALARY_RATE * FOREIGN_RATE4 * T4);
-	// 	return Math.round(money / 240 * LOCAL_RATE1 * t1 + money / 240 * LOCAL_RATE2 * T2 + money / 240 * LOCAL_RATE3 * T3 + money / 240 * LOCAL_RATE4 * T4);
-	// }
+	async getExceedOvertimePay(
+		employee_data: EmployeeData,
+		employee_payment: EmployeePayment,
+		overtime_list: Overtime[],
+		payset: Payset,
+		insurance_rate_setting: InsuranceRateSetting,
+		full_attendance_bonus: number
+	): Promise<number> {
+		/*
+				超時加班 = GetOverTimeMoney(
+					工作類別,
+					工作形態,
+					應發底薪+全勤獎金+輪班津貼+專業証照津貼,
+					加班稅1_時數+休加班稅1_時數+國加班稅1_時數,
+					加班稅2_時數+休加班稅2_時數+國加班稅2_時數,
+					例假日加班稅_時數,
+					休加班稅3_時數
+				)
+		*/
+		const money = await this.getGrossSalary(employee_payment, payset);
+		const shift_allowance = employee_payment.shift_allowance ?? 0;
+		let hourly_fee = (money+shift_allowance+full_attendance_bonus) / 240;
+		let t1 = 0;
+		let t2 = 0;
+		let t3 = 0;
+		let t4 = 0;
+		let t5 = 0;
+		overtime_list.map((overtime) => {
+			if (overtime.type_name === "超時加班" ){ //不確定名字
+				t1 += overtime.hours_1 ?? 0;
+				t2 += overtime.hours_2 ?? 0;
+				t3 += overtime.hours_134 ?? 0;
+				t4 += overtime.hours_167 ?? 0;
+				t5 += overtime.hours_267 ?? 0;
+			}
+		})
+		// rate存哪裡？
+		if (employee_data.work_type === "外籍勞工"){
+			hourly_fee = insurance_rate_setting.min_wage_rate;
+			return Math.round(hourly_fee * t1 +hourly_fee * t2 *2 +hourly_fee * t3 * 1.34+hourly_fee * t4 *1.67 +hourly_fee * t5 * 2.67);
+		}
+		else
+			return Math.round(hourly_fee * t1 + hourly_fee * t2 *2 +hourly_fee * t3 * 1.34+hourly_fee * t4 * 1.67 +hourly_fee * t5 * 2.67);
+	}
 	
 
 	//MARK: 應發底薪
@@ -216,7 +217,7 @@ export class CalculateService {
 		const kind1 = employee_data.work_type;
 		const kind2 = employee_data.work_status;
 		const hinder_rate = hinderDict[employee_data.disabilty_level ?? "正常"] ?? 1;
-		const old_age_benefit = (true || false);		// old_age_benefit: rd("已領老年給付")
+		const old_age_benefit = (true || false);	//employee_data.received_elderly_benefits;		// old_age_benefit: rd("已領老年給付")
 
 
 		if (old_age_benefit)	return 0;	// 'Jerry 100426 已領老年給付者,員工免付勞保

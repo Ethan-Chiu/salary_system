@@ -75,7 +75,7 @@ export const calculateRouter = createTRPCRouter({
 		}),
 
 	// API for 假日加班費
-	calculateOvertimeWeekendPayment: publicProcedure
+	calculateHolidayOvertimePay: publicProcedure
 		.input(
 			z.object({
 				emp_no: z.coerce.string(),
@@ -136,6 +136,69 @@ export const calculateRouter = createTRPCRouter({
 			}
 			return holiday_overtime_pay;
 		}),
+	// API for 超時加班
+		calculateExceedOvertimePay: publicProcedure
+		.input(
+			z.object({
+				emp_no: z.coerce.string(),
+				period_id: z.coerce.number(),
+			})
+		)
+		.query(async ({ input }) => {
+			const employeeDataService = container.resolve(EmployeeDataService);
+			const employeePaymentService = container.resolve(
+				EmployeePaymentService
+			);
+			const attendanceSettingService = container.resolve(
+				AttendanceSettingService
+			);
+			const insuranceRateSettingService = container.resolve(
+				InsuranceRateSettingService
+			);
+			const ehrService = container.resolve(EHRService);
+			const employee_data =
+				await employeeDataService.getEmployeeDataByEmpNo(input.emp_no);
+			const employee_payment =
+				await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
+					input.emp_no,
+					input.period_id
+				);
+			const overtime_list = await ehrService.getOvertimeByEmpNoList(
+				input.period_id,
+				[input.emp_no]
+			);
+			const payset = (
+				await ehrService.getPaysetByEmpNoList(input.period_id, [
+					input.emp_no,
+				])
+			)[0];
+			const insurance_rate_setting =
+				await insuranceRateSettingService.getCurrentInsuranceRateSetting(
+					input.period_id
+				);
+			const calculateService = container.resolve(CalculateService);
+			const full_attendance_bonus: number =
+				await calculateService.getFullAttendanceBonus(
+					input.period_id,
+					input.emp_no
+				);
+			const exceed_overtime_pay: number =
+				await calculateService.getExceedOvertimePay(
+					employee_data!,
+					employee_payment!,
+					overtime_list!,
+					payset!,
+					insurance_rate_setting!,
+					full_attendance_bonus
+				);
+			if (exceed_overtime_pay == null) {
+				throw new BaseResponseError(
+					"Cannot calculate holiday overtime payment"
+				);
+			}
+			return exceed_overtime_pay;
+		}),
+	//API for 應發底薪
 
 	// API for 請假扣款
 	calculateLeaveDeduction: publicProcedure

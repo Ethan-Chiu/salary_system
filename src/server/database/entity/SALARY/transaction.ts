@@ -91,7 +91,7 @@ export class Transaction extends Model<
 	declare probation_period_over: boolean; // 試用期滿
 	declare disabilty_level: string | null; // 殘障等級
 	declare retirement_income: number; // 退職所得
-	declare received_elderly_benefits: string; // 已領老年給付
+	declare received_elderly_benefits: boolean; // 已領老年給付
 	declare v_2_h_i: string; // 二代健保
 	declare has_trust: boolean; // 持股信託_YN
 	declare emp_trust_reserve: number; // 員工信託提存金
