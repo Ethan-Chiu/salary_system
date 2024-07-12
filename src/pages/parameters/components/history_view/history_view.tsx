@@ -105,7 +105,7 @@ function CompHistoryView() {
 										className="mr-2 flex-shrink-0"
 									/>
 									<div className="line-clamp-1 break-all">
-										{t("table.updated_by") + " " + e.update_by}
+										{t("table.update_by") + " " + e.update_by}
 									</div>
 								</div>
 								{is_date_available(

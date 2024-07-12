@@ -1,8 +1,8 @@
 {
   "table": {
     "id": "資料編號",
-    "created_by": "建立者",
-    "updated_by": "更新者",
+    "create_by": "建立者",
+    "update_by": "更新者",
     "create_date": "建立時間",
     "update_date": "更新時間",
     "start_date": "開始時間",
