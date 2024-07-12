@@ -7,8 +7,9 @@ import { cn } from "~/lib/utils";
 import { api } from "~/utils/api";
 import { type FunctionsEnumType } from "~/server/api/types/functions_enum";
 import { useTranslation } from "react-i18next";
+import i18n from "~/lib/utils/i18n";
 
-const TabOptions = ["請假", "加班", "工作天數"];
+const TabOptions = () => [i18n.t("common.table_name.holiday"), i18n.t("common.table_name.overtime"), i18n.t("common.table_name.payset")];
 
 export function DataPage({
 	period,
@@ -28,11 +29,11 @@ export function DataPage({
 		const employee_data_list = api.sync.getPaidEmployees.useQuery({ func }).data
 		const emp_no_list = employee_data_list!.map(emp => emp.emp_no)
 		switch (table_name) {
-			case "請假":
+			case TabOptions()[0]:
 				return <HolidayTable period={period} emp_no_list={emp_no_list} />;
-			case "加班":
+			case TabOptions()[1]:
 				return <OvertimeTable period={period} emp_no_list={emp_no_list} />;
-			case "工作天數":
+			case TabOptions()[2]:
 				return <PaysetTable period={period} emp_no_list={emp_no_list} />;
 			default:
 				return <p>No implement</p>;
@@ -43,11 +44,11 @@ export function DataPage({
 		<>
 			<div className="h-0 grow">
 				<Tabs
-					defaultValue={TabOptions[0]}
+					defaultValue={TabOptions()[0]}
 					className="flex h-full w-full flex-col"
 				>
 					<TabsList className={cn(`grid w-full grid-cols-${TabOptions.length}`)}>
-						{TabOptions.map((option) => {
+						{TabOptions().map((option) => {
 							return (
 								<TabsTrigger key={option} value={option}>
 									{option}
@@ -56,7 +57,7 @@ export function DataPage({
 						})}
 					</TabsList>
 					<div className="mt-2 h-0 grow">
-						{TabOptions.map((option) => {
+						{TabOptions().map((option) => {
 							return (
 								<TabsContent key={option} value={option} className="h-full">
 									{period > 0 ? getTable(option) : <></>}
