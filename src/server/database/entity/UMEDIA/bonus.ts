@@ -2,7 +2,7 @@ export class Bonus {
 	// id can be undefined during creation when using `autoIncrement`
 	declare period_id?: number;
 	declare emp_no?: string;
-	declare name?: string;
+	declare emp_name?: string;
 	declare bonus_id?: number;
 	declare amount?: number;
 	declare pay?: number;
@@ -10,7 +10,7 @@ export class Bonus {
 	constructor(
 		period_id?: number,
         emp_no?: string,
-        name?: string,
+        emp_name?: string,
         bonus_id?: number,
         amount?: number,
         pay?: number,
@@ -18,7 +18,7 @@ export class Bonus {
 	) {
 		this.period_id = period_id;
         this.emp_no = emp_no;
-        this.name = name;
+        this.emp_name = emp_name;
         this.bonus_id = bonus_id;
         this.amount = amount;
         this.pay = pay;
