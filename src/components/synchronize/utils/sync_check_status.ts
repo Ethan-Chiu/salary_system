@@ -6,10 +6,10 @@ export type SyncCheckStatusEnumType = z.infer<typeof SyncCheckStatusEnum>;
 export function statusLabel(status: SyncCheckStatusEnumType): string {
     switch (status) {
         case "initial":
-            return "尚未確認";
+            return "sync_state.initial";
         case "checked":
-            return "確認更改";
+            return "sync_state.checked";
         case "ignored":
-            return "暫不修改";
+            return "sync_state.ignored";
     }
 }

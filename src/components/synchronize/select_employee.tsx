@@ -57,7 +57,7 @@ export function SelectEmployee({
 		name?: string;
 		englishName?: string;
 	}) => {
-		const status = statusLabel(checkStatus[empNo] ?? "initial");
+		const status = t(statusLabel(checkStatus[empNo] ?? "initial"));
 		return (
 			<>
 				<b className="mr-1">{empNo}</b>
@@ -91,7 +91,7 @@ export function SelectEmployee({
 				</Button>
 			</PopoverTrigger>
 			<Label className="ml-4">
-				{`部門： ${selectedEmployeeData?.department.ehr_value}`}
+				{`${t("table.department")}： ${selectedEmployeeData?.department.ehr_value}`}
 			</Label>
 			{/* Popover */}
 			<PopoverContent className="p-0">

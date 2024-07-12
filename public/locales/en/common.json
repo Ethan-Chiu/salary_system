@@ -224,6 +224,11 @@
     "fri": "Fri",
     "sat": "Sat"
   },
+  "sync_state": {
+    "initial": "Unchecked",
+    "checked": "Checked",
+    "ignored": "Ignored"
+  },
   "others": {
     "month_salary": "Month Salary",
     "foreign_workers_bonus": "Foreign Workers Bonus",

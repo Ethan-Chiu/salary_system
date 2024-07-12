@@ -68,7 +68,7 @@ export function EmployeeDataChange({ empData, mode }: EmpTableParameters) {
 											diff && "text-red-500"
 										)}
 									>
-										{displayData(d.salary_value)}
+										{displayData(d.salary_value, t)}
 									</TableCell>
 									<TableCell
 										className={cn(
@@ -76,7 +76,7 @@ export function EmployeeDataChange({ empData, mode }: EmpTableParameters) {
 											diff && "text-red-500"
 										)}
 									>
-										{displayData(d.ehr_value)}
+										{displayData(d.ehr_value, t)}
 									</TableCell>
 								</TableRow>
 							);
