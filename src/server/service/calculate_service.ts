@@ -2,7 +2,7 @@
 	Known Bugs:
 		超時加班不確定overtime 的type name (現在是 "超時加班")
 		Labor Insurance Deduction:	old_age_benefit doesn't know where, so its logic is commented
-
+		GS: 假解: 強制轉型 (之後要重啟DB check occupational_allowance的type)
 
 */
 import { container, injectable } from "tsyringe";
@@ -187,7 +187,7 @@ export class CalculateService {
 			+ (employee_payment.food_allowance ?? 0)
 			+ (employee_payment.supervisor_allowance ?? 0)
 			+ (employee_payment.professional_cert_allowance ?? 0)
-			+ (employee_payment.occupational_allowance ?? 0)
+			+ (Number(employee_payment.occupational_allowance) ?? 0)
 			+ (employee_payment.subsidy_allowance ?? 0)
 		) * (((payset) ? payset.work_day! : 30) / 30)
 		return gross_salary;
