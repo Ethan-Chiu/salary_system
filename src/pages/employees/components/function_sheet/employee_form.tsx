@@ -181,7 +181,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 						</Button>
 
 						<Button type="submit">
-							{mode === "create" && t("button.Create")}
+							{mode === "create" && t("button.create")}
 							{mode === "update" && t("button.update")}
 						</Button>
 					</div>
