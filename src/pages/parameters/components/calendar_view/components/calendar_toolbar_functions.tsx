@@ -11,7 +11,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 
 import { Button } from "~/components/ui/button";
-import { getTableName, type TableEnum } from "../../context/data_table_enum";
+import { getTableNameKey, type TableEnum } from "../../context/data_table_enum";
 import {
 	Sheet,
 	SheetContent,
@@ -69,7 +69,7 @@ export function CalendarToolbarFunctions({
 				<SheetContent className="w-[50%]">
 					<SheetHeader>
 						<SheetTitle>
-							{`${t(`button.${mode}`)!}${t("button.form")} (${getTableName(tableType)})`}
+							{`${t(`button.${mode}`)!}${t("button.form")} (${t(getTableNameKey(tableType))})`}
 						</SheetTitle>
 						<SheetDescription>
 							{modeDescription(mode)}

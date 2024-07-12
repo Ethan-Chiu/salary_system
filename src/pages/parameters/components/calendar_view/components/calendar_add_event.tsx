@@ -10,7 +10,7 @@ import {
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { ParameterForm } from "../../function_sheet/parameter_form";
 import dataTableContext from "../../context/data_table_context";
-import { getTableName } from "../../context/data_table_enum";
+import { getTableNameKey } from "../../context/data_table_enum";
 import { getSchema } from "~/pages/parameters/schemas/get_schemas";
 import { useTranslation } from "react-i18next";
 import { modeDescription } from "~/lib/utils/helper_function";
@@ -34,7 +34,7 @@ export default function CalendarAddEvent() {
 			<SheetContent className="w-[50%]">
 				<SheetHeader>
 					<SheetTitle>
-						{`${t(`button.${mode}`)!}${t("button.form")} (${getTableName(selectedTableType)})`}
+						{`${t(`button.${mode}`)!}${t("button.form")} (${t(getTableNameKey(selectedTableType))})`}
 					</SheetTitle>
 					<SheetDescription>
 						{modeDescription(mode)}

@@ -1,5 +1,5 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { ParameterTableEnum } from "../parameter_tables";
+import { type ColumnDef } from "@tanstack/react-table";
+import { type ParameterTableEnum } from "../parameter_tables";
 import { attendanceMapper, attendance_columns } from "./attendance_table";
 import { bankSettingMapper, bank_columns } from "./bank_table";
 import {
@@ -26,13 +26,15 @@ import {
 import { levelMapper, level_columns } from "./level_table";
 import { levelRangeMapper, level_range_columns } from "./level_range_table";
 import { performaceLevelMapper,  performance_level_columns } from "./performance_level_table";
+import { type TFunction } from "i18next";
 
 export function getTableColumn(
-	selectedTableType: ParameterTableEnum
+	selectedTableType: ParameterTableEnum,
+  t: TFunction<[string], undefined>
 ): ColumnDef<any, any>[] {
 	switch (selectedTableType) {
 		case "TableAttendance":
-			return attendance_columns;
+			return attendance_columns({t: t});
 		case "TableBankSetting":
 			return bank_columns;
 		case "TableBonusDepartment":
