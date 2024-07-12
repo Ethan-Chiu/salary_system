@@ -9,7 +9,7 @@ import {
 } from "~/components/ui/sheet";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import dataTableContext from "../../context/data_table_context";
-import { getTableName } from "../../context/data_table_enum";
+import { getTableNameKey } from "../../context/data_table_enum";
 import { getSchema } from "~/pages/parameters/schemas/get_schemas";
 import { useTranslation } from "react-i18next";
 import {
@@ -28,11 +28,10 @@ import { z } from "zod";
 import { parameterToolbarFunctionsContext } from "../../function_sheet/parameter_functions_context";
 import { modeDescription } from "~/lib/utils/helper_function";
 
-interface CalendarUpdateEventProps<SchemaType extends z.AnyZodObject> { }
+/* interface CalendarUpdateEventProps<SchemaType extends z.AnyZodObject> { } */
+interface CalendarUpdateEventProps {}
 
-export default function CalendarUpdateEvent<
-	SchemaType extends z.AnyZodObject
->({ }: CalendarUpdateEventProps<SchemaType>) {
+export default function CalendarUpdateEvent({}: CalendarUpdateEventProps) {
 	const { updateSheet, setUpdateSheet, resetMouse, selectedEvent } =
 		useContext(calendarContext);
 
@@ -94,11 +93,11 @@ export default function CalendarUpdateEvent<
 			<SheetContent className="w-[50%]">
 				<SheetHeader>
 					<SheetTitle>
-						{`${t(`button.${mode}`)!}${t("button.form")} (${getTableName(selectedTableType)})`}
+						{`${t(`button.${mode}`)!}${t(
+							"button.form"
+						)} (${t(getTableNameKey(selectedTableType))}`}
 					</SheetTitle>
-					<SheetDescription>
-						{modeDescription(mode)}
-					</SheetDescription>
+					<SheetDescription>{modeDescription(mode)}</SheetDescription>
 				</SheetHeader>
 				<ScrollArea className="h-[85%] w-full">
 					<AutoForm

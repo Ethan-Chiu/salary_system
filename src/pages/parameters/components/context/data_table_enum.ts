@@ -18,37 +18,41 @@ export const TableEnumValues = [
 
 export type TableEnum = (typeof TableEnumValues)[number];
 
-export function getTableName(table: TableEnum) {
+function getTableName(table: TableEnum) {
 	switch (table) {
 		case "TableAttendance":
-			return "請假加班";
+			return "attendanceSetting";
 		case "TableBankSetting":
-			return "銀行";
+			return "bankSetting";
 		case "TableInsurance":
-			return "勞健保費率";
+			return "insuranceRateSetting";
 		case "TableBonusSetting":
-			return "獎金";
+			return "bonusSetting";
 		case "TableBonusDepartment":
-			return "獎金部門";
+			return "bonusDepartmentSetting";
 		case "TableBonusPosition":
-			return "獎金職等";
+			return "bonusPosition";
 		case "TableBonusPositionType":
-			return "獎金職級";
+			return "bonusPositionType";
 		case "TableBonusSeniority":
-			return "獎金年資";
+			return "bonusSeniority";
 		case "TableLevel":
-			return "級距";
+			return "level";
 		case "TableLevelRange":
-			return "級距類別範圍";
+			return "levelRange";
 		case "TablePerformanceLevel":
-			return "績效等級比例";
+			return "performanceLevel";
 		case "TableTrustMoney":
-			return "信託金";
+			return "trustMoney";
 		case "TableBasicInfo":
-			return "基本資訊";
+			return "basicInfo";
 		case "TableEmployeePayment":
 			return "員工薪資";
 		case "TableEmployeeTrust":
 			return "員工信託";
 	}
+}
+
+export function getTableNameKey(table: TableEnum) {
+  return `table_name.${getTableName(table)}`
 }

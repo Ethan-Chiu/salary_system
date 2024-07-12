@@ -17,6 +17,8 @@ import { DataTable } from "./data_table";
 import { is_date_available } from "~/server/service/helper_function";
 import { Badge } from "~/components/ui/badge";
 import { useTranslation } from "react-i18next";
+import { type TRPCClientErrorLike } from "@trpc/client";
+import { type UseTRPCQueryResult } from "@trpc/react-query/shared";
 
 export default function HistoryView() {
 	const { selectedTableType } = useContext(dataTableContext);
@@ -29,6 +31,8 @@ export default function HistoryView() {
 		</>
 	);
 }
+
+/* type queryFunction () => UseTRPCQueryResult<any[], TRPCClientErrorLike<any>>; */
 
 function CompHistoryView() {
 	const { selectedTableType } = useContext(dataTableContext);
@@ -44,7 +48,7 @@ function CompHistoryView() {
 
 	useEffect(() => {
 		if (!isLoading && data) {
-			setSelectedId(data![0]!.id);
+			setSelectedId(data[0].id);
 		}
 	}, [isLoading]);
 
@@ -124,7 +128,7 @@ function CompHistoryView() {
 			<ResizablePanel defaultSize={75}>
 				{data.filter((e) => e.id === selectedId).length > 0 ? (
 					<DataTable
-						columns={getTableColumn(selectedTableType)}
+						columns={getTableColumn(selectedTableType, t)}
 						data={getTableMapper(selectedTableType)(
 							data.filter((e) => e.id === selectedId)
 						)}
