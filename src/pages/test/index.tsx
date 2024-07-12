@@ -6,15 +6,24 @@ import { Header } from "~/components/header";
 import { OvertimeTable } from "./test_overtime";
 import { LIDTable } from "./test_LIdeduction";
 import { Separator } from "~/components/ui/separator";
+import { HIDTable } from "./test_HIdeduction";
+import { GSTable } from "./test_GrossSalary";
 
 const TEST: NextPageWithLayout = () => {
+	const EMP = "F103007"
 	return <>
 		<Header title="TEST" />
 		<OvertimeTable />
-
 		<Separator />
 
 		<LIDTable />
+		<Separator />
+
+		<HIDTable EMP = {EMP}/>
+		<Separator />
+
+		<GSTable EMP = {EMP}/>
+		<Separator />
 	</>
 };
 
