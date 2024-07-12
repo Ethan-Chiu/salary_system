@@ -1,3 +1,10 @@
+/*
+	Known Bugs:
+		超時加班不確定overtime 的type name (現在是 "超時加班")
+		Labor Insurance Deduction:	old_age_benefit doesn't know where, so its logic is commented
+
+
+*/
 import { container, injectable } from "tsyringe";
 import { Op } from "sequelize";
 import { EmployeeData } from "../database/entity/SALARY/employee_data";
@@ -212,22 +219,20 @@ export class CalculateService {
 		};		
 
 		const Tax = employee_payment.l_i;
-		const Normalday = payset.work_day ?? 30;
-		const PartTimeDay = payset.li_day ?? 30;
+		const Normalday = payset ? payset.work_day : 30;
+		const PartTimeDay = payset ? payset.li_day! : 30;
 		const kind1 = employee_data.work_type;
 		const kind2 = employee_data.work_status;
 		const hinder_rate = hinderDict[employee_data.disabilty_level ?? "正常"] ?? 1;
 		const old_age_benefit = (true || false);	//employee_data.received_elderly_benefits;		// old_age_benefit: rd("已領老年給付")
 
-
-		if (old_age_benefit)	return 0;	// 'Jerry 100426 已領老年給付者,員工免付勞保
+		// if (old_age_benefit)	return 0;	// 'Jerry 100426 已領老年給付者,員工免付勞保
 		
-
-		if (kind1 == FOREIGN || kind2 == FOREIGN) return Math.round(Math.round(Tax * wci_normal * 0.200001 * PartTimeDay / 30)) * hinder_rate;   // 'Jerry 2023/04/06 由工作天數改為加勞保天數計算
-		if (kind2 == PROFESSOR) return 0;
-		if (kind2 == BOSS)	return Math.round(Math.round(Tax * wci_normal * 0.200001 * PartTimeDay / 30)) * hinder_rate;	//   'Jerry 10/04/26 由工作天數改為加勞保天數計算
-		if (kind2 == DAY_PAY)	return Math.round(Math.round(Tax * wci_normal * 0.200001 * PartTimeDay / 30) + Math.round(Tax * wci_ji * 0.200001 * PartTimeDay / 30)) * hinder_rate;
-		if (kind2 == NEWBIE || kind2 == WILL_LEAVE || kind2 == PARTTIME1 || kind2 == PARTTIME2 || kind2 == CONTRACT)	return Math.round(Math.round(Tax * wci_normal * 0.200001 * PartTimeDay / 30) + Math.round(Tax * wci_ji * 0.200001 * PartTimeDay / 30)) * hinder_rate;		// 'Jerry 07/07/19 由工作天數改為加勞保天數計算
+		if ((kind1 === "外籍勞工") || (kind2 === FOREIGN)) return Math.round(Math.round(Tax * wci_normal * 0.200001 * PartTimeDay / 30) * hinder_rate);   // 'Jerry 2023/04/06 由工作天數改為加勞保天數計算
+		if (kind2 === PROFESSOR) return 0;
+		if (kind2 === BOSS)	return Math.round(Math.round(Tax * wci_normal * 0.200001 * PartTimeDay / 30)) * hinder_rate;	//   'Jerry 10/04/26 由工作天數改為加勞保天數計算
+		if (kind2 === DAY_PAY)	return Math.round(Math.round(Tax * wci_normal * 0.200001 * PartTimeDay / 30) + Math.round(Tax * wci_ji * 0.200001 * PartTimeDay / 30)) * hinder_rate;
+		if (kind2 === NEWBIE || kind2 === WILL_LEAVE || kind2 === PARTTIME1 || kind2 === PARTTIME2 || kind2 == CONTRACT)	return Math.round(Math.round(Tax * wci_normal * 0.200001 * PartTimeDay / 30) + Math.round(Tax * wci_ji * 0.200001 * PartTimeDay / 30)) * hinder_rate;		// 'Jerry 07/07/19 由工作天數改為加勞保天數計算
 		
 		return Math.round(Math.round(Tax * wci_normal * 0.200001) + Math.round(Tax * wci_ji * 0.200001)) * hinder_rate
 	}
