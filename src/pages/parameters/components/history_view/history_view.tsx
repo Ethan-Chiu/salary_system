@@ -32,13 +32,20 @@ export default function HistoryView() {
 	);
 }
 
-/* type queryFunction () => UseTRPCQueryResult<any[], TRPCClientErrorLike<any>>; */
+interface historyDataType {
+  id: number;
+  start_date: string;
+  end_date: string;
+  update_by: string;
+}
+
+type queryFunctionType = () => UseTRPCQueryResult<historyDataType[], TRPCClientErrorLike<any>>;
 
 function CompHistoryView() {
 	const { selectedTableType } = useContext(dataTableContext);
 
 	const queryFunctions = useContext(apiFunctionsContext);
-	const queryFunction = queryFunctions.queryFunction!;
+	const queryFunction = queryFunctions.queryFunction! as queryFunctionType;
 
 	const { isLoading, isError, data, error } = queryFunction();
 
@@ -47,10 +54,10 @@ function CompHistoryView() {
 	const { t } = useTranslation(['common']);
 
 	useEffect(() => {
-		if (!isLoading && data) {
+		if (!isLoading && data?.[0]) {
 			setSelectedId(data[0].id);
 		}
-	}, [isLoading]);
+	}, [isLoading, data]);
 
 	if (isLoading) {
 		return (
@@ -130,7 +137,7 @@ function CompHistoryView() {
 					<DataTable
 						columns={getTableColumn(selectedTableType, t)}
 						data={getTableMapper(selectedTableType)(
-							data.filter((e) => e.id === selectedId)
+							data.filter((e) => e.id === selectedId) as any[]
 						)}
 						filterColumnKey={filterKey}
 					/>
