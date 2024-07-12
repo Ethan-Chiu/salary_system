@@ -46,7 +46,7 @@ export const calculateRouter = createTRPCRouter({
 				await ehrService.getPaysetByEmpNoList(input.period_id, [
 					input.emp_no,
 				])
-			)[0];
+			).findLast((data) => data.emp_no === input.emp_no);
 			const insurance_rate_setting =
 				await insuranceRateSettingService.getCurrentInsuranceRateSetting(
 					input.period_id
@@ -109,7 +109,7 @@ export const calculateRouter = createTRPCRouter({
 				await ehrService.getPaysetByEmpNoList(input.period_id, [
 					input.emp_no,
 				])
-			)[0];
+			).findLast((data) => data.emp_no === input.emp_no);
 			const insurance_rate_setting =
 				await insuranceRateSettingService.getCurrentInsuranceRateSetting(
 					input.period_id
@@ -171,7 +171,7 @@ export const calculateRouter = createTRPCRouter({
 				await ehrService.getPaysetByEmpNoList(input.period_id, [
 					input.emp_no,
 				])
-			)[0];
+			).findLast((data) => data.emp_no === input.emp_no);
 			const insurance_rate_setting =
 				await insuranceRateSettingService.getCurrentInsuranceRateSetting(
 					input.period_id
@@ -199,7 +199,38 @@ export const calculateRouter = createTRPCRouter({
 			return exceed_overtime_pay;
 		}),
 	//API for 應發底薪
-
+	calculateGrossSalary: publicProcedure
+		.input(
+			z.object({
+				emp_no: z.coerce.string(),
+				period_id: z.coerce.number(),
+			})
+		)
+		.query(async ({ input }) => {
+			const calculateService = container.resolve(CalculateService);
+			const employeePaymentService = container.resolve(
+				EmployeePaymentService
+			);
+			const employee_payment =
+				await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
+					input.emp_no,
+					input.period_id
+				);
+			const ehrService = container.resolve(EHRService);
+			const payset = (
+				await ehrService.getPaysetByEmpNoList(input.period_id, [
+					input.emp_no,
+				])
+			).findLast((data) => data.emp_no === input.emp_no);
+			const gross_salary = await calculateService.getGrossSalary(
+				employee_payment!,
+				payset!,
+			);
+			if (gross_salary == null) {
+				throw new BaseResponseError("Cannot calculate gross salary");
+			}
+			return gross_salary;
+		}),
 	// API for 請假扣款
 	calculateLeaveDeduction: publicProcedure
 		.input(

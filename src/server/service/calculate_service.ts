@@ -173,7 +173,7 @@ export class CalculateService {
 	//MARK: 應發底薪
 	async getGrossSalary(
 		employee_payment: EmployeePayment,
-		pay_set: Payset
+		payset: Payset
 	): Promise<number> {
 		const gross_salary = (
 			employee_payment.base_salary
@@ -182,7 +182,7 @@ export class CalculateService {
 			+ (employee_payment.professional_cert_allowance ?? 0)
 			+ (employee_payment.occupational_allowance ?? 0)
 			+ (employee_payment.subsidy_allowance ?? 0)
-		) * (((pay_set) ? pay_set.work_day! : 30) / 30)
+		) * (((payset) ? payset.work_day! : 30) / 30)
 		return gross_salary;
 	}
 	//MARK: 勞保扣除額
