@@ -273,6 +273,47 @@ export const calculateRouter = createTRPCRouter({
 				insurance_rate_setting!
 			)
 		}),
+	// API for 健保扣除額
+	calculateHealthInsuranceDeduction: publicProcedure
+		.input(
+			z.object({
+				emp_no: z.string(),
+				period_id: z.number(),
+			})
+		)
+		.query(async ({ input }) => {
+			const calculateService = container.resolve(CalculateService);
+			const employeeDataService = container.resolve(EmployeeDataService);
+			const employee_data = await employeeDataService.getEmployeeDataByEmpNo(
+				input.emp_no
+			)
+			const employeePaymentService = container.resolve(
+				EmployeePaymentService
+			);
+			const employee_payment =
+				await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
+					input.emp_no,
+					input.period_id
+				);
+			const ehrService = container.resolve(EHRService);
+			const payset = (
+				await ehrService.getPaysetByEmpNoList(input.period_id, [
+					input.emp_no,
+				])
+			).findLast((data) => data.emp_no === input.emp_no);
+			const insuranceRateSettingService = container.resolve(
+				InsuranceRateSettingService
+			);
+			const insurance_rate_setting =
+				await insuranceRateSettingService.getCurrentInsuranceRateSetting(
+					input.period_id
+				)
+			const health_insurance_deduction = await calculateService.getHealthInsuranceDeduction(
+				employee_data!,
+				employee_payment!,
+				insurance_rate_setting!,
+			)
+		}),
 	// API for 請假扣款
 	calculateLeaveDeduction: publicProcedure
 		.input(
