@@ -194,6 +194,8 @@ function CompTableView() {
 	const { selectedTableType } = useContext(dataTableContext);
 	const { selectedPeriod } = useContext(periodContext);
 
+  const { t } = useTranslation(['common']);
+
 	return (
 		<>
 			{ParameterTableEnumValues.filter(
@@ -204,7 +206,7 @@ function CompTableView() {
 						{selectedPeriod ? React.createElement<TableComponentProps>(
 							getTableComponent(selectedTableType).component,
 							{ period_id: selectedPeriod.period_id }
-						) : <p>Please select a period first</p>}
+						) : <p>{t("others.select_period")}</p>}
 					</div>
 				);
 			})}

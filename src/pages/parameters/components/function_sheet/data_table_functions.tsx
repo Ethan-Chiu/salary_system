@@ -41,7 +41,7 @@ export function DataTableFunctions({
 }: DataTableFunctionsProps) {
 	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
-	const { t } = useTranslation(['nav', 'common']);
+	const { t } = useTranslation(['common', 'nav']);
 
 	const { isLoading, isError, data, error } =
 		(tableType === "TableLevelRange") ? api.parameters.getCurrentLevel.useQuery()
