@@ -7,7 +7,7 @@ import i18n from "~/lib/utils/i18n";
 const columns = () => Object.keys(new Overtime()).map((key) => {
 	return {
 		accessorKey: key,
-		header: i18n.t(`commone.table.${key}`),
+		header: i18n.t(`common.table.${key}`),
 	};
 });
 
