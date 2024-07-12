@@ -277,7 +277,8 @@ export class CalculateService {
 	//MARK:福利金提撥
 	async getWelfareDeduction(
 		employee_data: EmployeeData,
-		employee_payment: EmployeePayment
+		employee_payment: EmployeePayment,
+		full_attendance_bonus: number,
 	): Promise<number> {
 		// rd("福利金提撥") = GetFooMoney(rd("工作類別"), rd("工作形態"), rd("底薪"), rd("伙食津貼"), CheckNull(rd("營運積效獎金"), 0), CheckNull(rd("全勤獎金"), 0))
 		const kind1 = employee_data.work_type;
@@ -285,7 +286,7 @@ export class CalculateService {
 		const money = employee_payment.base_salary;
 		const food = employee_payment.food_allowance ?? 0;
 		const Effect = rd("營運積效獎金") ?? 0;
-		const Fulltime = rd("全勤獎金") ?? 0;
+		const Fulltime = full_attendance_bonus ?? 0;
 
 		if (kind1 === FOREIGN) return Math.round((money + food + Effect + Fulltime) * 0.005);
 		if (kind2 === LEAVE_MAN)	return 0;
