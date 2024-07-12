@@ -15,9 +15,7 @@ import { useTranslation } from "react-i18next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
 
-import i18nGlobal from "~/lib/utils/i18n";
-
-const TabOptions = [i18nGlobal.t("common.table_name.employeeData"), i18nGlobal.t("common.table_name.employeePayment"), i18nGlobal.t("common.table_name.employeeTrust")];
+const tabOptions = ["table_name.employeeData", "table_name.employeePayment", "table_name.employeeTrust"];
 
 const PageEmployeesContent = () => {
 	const { setSelectedTableType } = useContext(dataTableContext);
@@ -27,11 +25,11 @@ const PageEmployeesContent = () => {
 			return <p>{t("others.select_period")}</p>;
 		}
 		switch (table_name) {
-			case TabOptions[0]:
+			case tabOptions[0]:
 				return <EmployeeDataTable period_id={selectedPeriod.period_id} />
-			case TabOptions[1]:
+			case tabOptions[1]:
 				return <EmployeePaymentTable period_id={selectedPeriod.period_id} />
-			case TabOptions[2]:
+			case tabOptions[2]:
 				return <EmployeeTrustTable period_id={selectedPeriod.period_id} />
 			default:
 				return <p>No implement</p>;
@@ -40,27 +38,27 @@ const PageEmployeesContent = () => {
 
 	function getTypeByOption(options: string) {
 		switch (options) {
-			case TabOptions[1]:
+			case tabOptions[1]:
 				return "TableEmployeePayment";
-			case TabOptions[2]:
+			case tabOptions[2]:
 				return "TableEmployeeTrust";
 			default:
 				return "TableEmployeePayment";
 		}
 	}
 
-	const { t } = useTranslation(['nav', 'common']);
+	const { t } = useTranslation(['common', 'nav']);
 
 	return (
 		<div className="flex h-full w-full flex-col">
 			<Header title={t("employees")} showOptions className="mb-4" />
 			<div className="m-4 h-0 grow">
 				<Tabs
-					defaultValue={TabOptions[0]}
+					defaultValue={tabOptions[0]}
 					className="flex h-full w-full flex-col"
 				>
 					<TabsList className={"grid w-full grid-cols-3"}>
-						{TabOptions.map((option) => {
+						{tabOptions.map((option) => {
 							return (
 								<TabsTrigger
 									key={option}
@@ -71,13 +69,13 @@ const PageEmployeesContent = () => {
 										)
 									}
 								>
-									{option}
+									{t(option)}
 								</TabsTrigger>
 							);
 						})}
 					</TabsList>
 					<div className="mt-2 h-0 grow">
-						{TabOptions.map((option) => {
+						{tabOptions.map((option) => {
 							return (
 								<TabsContent
 									key={option}

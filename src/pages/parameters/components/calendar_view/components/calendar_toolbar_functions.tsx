@@ -39,7 +39,7 @@ export function CalendarToolbarFunctions({
 }: CalendarToolbarFunctionsProps) {
 	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
-	const { t } = useTranslation(['nav', 'common']);
+	const { t } = useTranslation(['common', 'nav']);
 
 	return (
 		<div className={cn(className, "flex h-full items-center")}>
