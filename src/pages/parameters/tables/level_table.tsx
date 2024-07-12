@@ -7,7 +7,7 @@ import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/compon
 import { LoadingSpinner } from "~/components/loading";
 import { type Level } from "~/server/database/entity/SALARY/level";
 import { type TableComponentProps } from "../tables_view";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 export type RowItem = {
 	level: number;
@@ -19,6 +19,7 @@ const columnHelper = createColumnHelper<RowItem>();
 export const level_columns = [
 	columnHelper.accessor("level", {
 		header: ({ column }) => {
+			const { t } = useTranslation(["common"]);
 			return (
 				<div className="flex justify-center">
 					<div className="text-center font-medium">
@@ -30,7 +31,7 @@ export const level_columns = [
 								)
 							}
 						>
-							{Translate("level")}
+							{t("table.level")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>

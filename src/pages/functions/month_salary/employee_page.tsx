@@ -15,7 +15,7 @@ export function EmployeePage({
 	selectedIndex,
 	setSelectedIndex,
 }: EmployeePageProps) {
-  const { t } = useTranslation(['common'], { keyPrefix: "button" })
+	const { t } = useTranslation(['common'], { keyPrefix: "button" })
 
 	return (
 		<>

@@ -16,7 +16,7 @@ import {
 import { FormField } from "../../form";
 import { DEFAULT_ZOD_HANDLERS, INPUT_COMPONENTS } from "../config";
 import AutoFormArray from "./array";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 function DefaultParent({ children }: { children: React.ReactNode }) {
 	return <>{children}</>;
@@ -103,6 +103,8 @@ export default function AutoFormObject<
 				//   false;
 				const isRequired = true && !allprops.includes("ZodOptional");
 
+				const { t } = useTranslation(["common"]);
+
 				return (
 					<FormField
 						control={form.control}
@@ -127,7 +129,7 @@ export default function AutoFormObject<
 										zodInputProps={zodInputProps}
 										field={field}
 										fieldConfigItem={fieldConfigItem}
-										label={Translate(itemName)}
+										label={t(`table.${itemName}`)}
 										isRequired={isRequired}
 										zodItem={item}
 										fieldProps={{

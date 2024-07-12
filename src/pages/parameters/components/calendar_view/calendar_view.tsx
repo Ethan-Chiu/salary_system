@@ -13,11 +13,12 @@ import ApiFunctionsProvider, {
 import { LoadingSpinner } from "~/components/loading";
 import CalendarUpdateEvent from "./components/calendar_update_event";
 import periodContext from "~/components/context/period_context";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 export default function CalendarView() {
 	const { selectedTableType } = useContext(dataTableContext);
 	const { selectedPeriod } = useContext(periodContext);
+	const { t } = useTranslation(["common"]);
 
 	return (
 		<>
@@ -32,7 +33,7 @@ export default function CalendarView() {
 						/>
 					</ParameterToolbarFunctionsProvider>
 				) : (
-					<p>{Translate("Please select period first")}</p>
+					<p>{t("others.select_period")}</p>
 				)}
 			</ApiFunctionsProvider>
 		</>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "~/components/ui/button";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 import TablesView from "~/pages/parameters/tables_view";
 
 interface ParameterPageProps {
@@ -13,6 +13,9 @@ export function ParameterPage({
 	selectedIndex,
 	setSelectedIndex,
 }: ParameterPageProps) {
+
+	const { t } = useTranslation(['common'])
+
 	return (
 		<>
 			<div className="flex h-0 grow flex-col rounded-md border-2">
@@ -20,10 +23,10 @@ export function ParameterPage({
 			</div>
 			<div className="mt-4 flex justify-between">
 				<Button onClick={() => setSelectedIndex(selectedIndex - 1)}>
-					{Translate("previous_step")}
+					{t("button.previous_step")}
 				</Button>
 				<Button onClick={() => setSelectedIndex(selectedIndex + 1)}>
-					{Translate("next_step")}
+					{t("button.next_step")}
 				</Button>
 			</div>
 		</>

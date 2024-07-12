@@ -59,7 +59,7 @@ import {
 	HoverCardTrigger,
 } from "~/components/ui/hover-card";
 import { useState, type ReactElement } from "react";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 type IdentityType = {
 	identity: string;
@@ -99,6 +99,7 @@ export function TeamMemberTable() {
 
 function CompRoleDropdown() {
 	const [open, setOpen] = useState(false);
+	const { t } = useTranslation(['common']);
 	const data: EmployeeInfo[] = [
 		{
 			emp_no: "B09901060",
@@ -234,7 +235,7 @@ function CompRoleDropdown() {
 						// value={commandInputValue}
 					/>
 					<CommandList>
-						<CommandEmpty>{Translate("no data")}</CommandEmpty>
+						<CommandEmpty>{t("table.no_data")}</CommandEmpty>
 						<CommandGroup heading="Employees">
 							<CommandItem value="-" className="hidden" />
 							{data.map((emp: EmployeeInfo, index: number) => {

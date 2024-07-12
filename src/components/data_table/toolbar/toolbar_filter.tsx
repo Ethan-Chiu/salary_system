@@ -1,7 +1,7 @@
 import { type Table } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Input } from "~/components/ui/input";
-import { Translate } from "~/lib/utils/translation";
 
 interface DataTableToolbarProps<TData> {
 	table: Table<TData>;
@@ -13,6 +13,7 @@ export function ToolbarFilter<TData>({
 	filterColumnKey,
 }: DataTableToolbarProps<TData>) {
 	const [filterValue, setFilterValue] = useState("");
+	const { t } = useTranslation(['common']);
 
 	useEffect(() => {
 		if (table) {
@@ -27,7 +28,7 @@ export function ToolbarFilter<TData>({
 
 	return (
 		<Input
-			placeholder={Translate("filter setting...")}
+			placeholder={t("others.filter_setting")}
 			value={filterValue}
 			onChange={(event) => {
 				if (filterColumnKey) {

@@ -2,12 +2,13 @@ import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table";
 import { Overtime } from "~/server/database/entity/UMEDIA/overtime";
 import { api } from "~/utils/api";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 const columns = Object.keys(new Overtime()).map((key) => {
+	const { t } = useTranslation(['common']);
 	return {
 		accessorKey: key,
-		header: Translate(key),
+		header: t(`table.${key}`),
 	};
 });
 

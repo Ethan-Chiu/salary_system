@@ -31,7 +31,7 @@ import GeneralTable from "../components/function_sheet/general_table";
 import { type FieldConfig } from "~/components/ui/auto-form/types";
 import { type ParameterTableEnum } from "../parameter_tables";
 import { useRouter } from "next/router";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
@@ -55,6 +55,7 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 
 	const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 	const [openForm, setOpenForm] = useState(false);
+	const { t } = useTranslation(["common"]);
 
 	function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
 		return Object.fromEntries(
@@ -132,7 +133,7 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 									</Button>
 
 									<Button type="submit">
-										{mode === "create" && Translate("Create")}
+										{mode === "create" && t("button.create")}
 									</Button>
 								</div>
 							</div>
@@ -145,7 +146,7 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 							<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
 								<DialogHeader>
 									<DialogTitle>
-										{Translate("Please check the data.")}
+										{t("others.check_data")}
 									</DialogTitle>
 									<DialogDescription></DialogDescription>
 								</DialogHeader>
@@ -156,7 +157,7 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 											onClick={submitForm}
 											type="submit"
 										>
-											{Translate("Save")}
+											{t("button.save")}
 										</Button>
 									</DialogClose>
 								</DialogFooter>

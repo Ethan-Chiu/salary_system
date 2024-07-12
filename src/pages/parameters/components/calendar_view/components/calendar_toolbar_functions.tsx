@@ -20,7 +20,7 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "~/components/ui/sheet";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 import { ParameterForm } from "../../function_sheet/parameter_form";
 import { getSchema } from "~/pages/parameters/schemas/get_schemas";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
@@ -39,6 +39,7 @@ export function CalendarToolbarFunctions({
 }: CalendarToolbarFunctionsProps) {
 	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
+	const { t } = useTranslation(['nav', 'common']);
 
 	return (
 		<div className={cn(className, "flex h-full items-center")}>
@@ -55,11 +56,11 @@ export function CalendarToolbarFunctions({
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-[120px]">
-						<DropdownMenuLabel>{Translate("Functions")}</DropdownMenuLabel>
+						<DropdownMenuLabel>{t("functions")}</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<CompTriggerItem
 							mode={"create"}
-							itemName={Translate("Create")}
+							itemName={t("button.create")}
 							icon={Plus}
 						/>
 					</DropdownMenuContent>
@@ -68,9 +69,7 @@ export function CalendarToolbarFunctions({
 				<SheetContent className="w-[50%]">
 					<SheetHeader>
 						<SheetTitle>
-							{`${Translate(mode)!}${Translate(
-								"form"
-							)} (${getTableName(tableType)})`}
+							{`${t(`button.${mode}`)!}${t("button.form")} (${getTableName(tableType)})`}
 						</SheetTitle>
 						<SheetDescription>
 							{modeDescription(mode)}

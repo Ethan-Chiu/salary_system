@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
 	SyncDataDisplayModeEnum,
 	syncDataModeString,
@@ -10,7 +11,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "~/components/ui/select";
-import { Translate } from "~/lib/utils/translation";
 
 interface SelectModeComponentProps {
 	mode: SyncDataDisplayModeEnumType;
@@ -21,6 +21,9 @@ export function SelectModeComponent({
 	mode,
 	setMode,
 }: SelectModeComponentProps) {
+
+	const { t } = useTranslation(['common']);
+
 	return (
 		<>
 			<Select value={mode} onValueChange={setMode}>
@@ -31,7 +34,7 @@ export function SelectModeComponent({
 					{Object.values(SyncDataDisplayModeEnum.Values).map(
 						(value) => (
 							<SelectItem key={value} value={value}>
-								{Translate(syncDataModeString(value))}
+								{t(`others.${syncDataModeString(value)}`)}
 							</SelectItem>
 						)
 					)}

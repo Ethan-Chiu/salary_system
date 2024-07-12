@@ -11,7 +11,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 import {
 	Dialog,
@@ -48,6 +48,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 	mode,
 	closeSheet,
 }: EmployeeFormProps<SchemaType>) {
+	const { t } = useTranslation(['common']);
 	const functions = useContext(employeeToolbarFunctionsContext);
 	const { selectedPeriod } = useContext(periodContext);
 
@@ -115,7 +116,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 
 	if (mode === "delete" && onlyOne) {
 		return (
-			<p>{Translate("There's only one data left. Please create a new one before you continue to delete.")}</p>
+			<p>{t("others.delete_warning")}</p>
 		);
 	}
 
@@ -176,12 +177,12 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 								}
 							}}
 						>
-							{Translate("Cancel")}
+							{t("button.cancel")}
 						</Button>
 
 						<Button type="submit">
-							{mode === "create" && Translate("Create")}
-							{mode === "update" && Translate("Update")}
+							{mode === "create" && t("button.Create")}
+							{mode === "update" && t("button.update")}
 						</Button>
 					</div>
 				</div>
@@ -190,14 +191,14 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 			<Dialog open={openDialog} onOpenChange={setOpenDialog}>
 				<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
 					<DialogHeader>
-						<DialogTitle>{Translate("Please check the data.")}</DialogTitle>
+						<DialogTitle>{t("others.check_data")}</DialogTitle>
 						<DialogDescription></DialogDescription>
 					</DialogHeader>
 					<GeneralTable data={formValues} />
 					<DialogFooter>
 						<DialogClose asChild>
 							<Button onClick={submitForm} type="submit">
-								{Translate("Save")}
+								{t("buttton.save")}
 							</Button>
 						</DialogClose>
 					</DialogFooter>
@@ -229,29 +230,30 @@ const CompViewAllDatas = ({
 			value ? value.toString().includes(filterValue) : false
 		);
 	});
+	const { t } = useTranslation(['common']);
 
 	return (
 		<>
 			<div className="flex h-10 items-center justify-between">
 				<Input
 					className="w-1/10 absolute left-4 top-4"
-					placeholder={Translate("filter setting...")}
+					placeholder={t("others.filter_setting")}
 					onChange={(e) => setFilterValue(e.target.value)}
 				></Input>
-				{mode == "auto calculate" && (
+				{mode == "auto_calculate" && (
 					<Dialog>
 						<DialogTrigger asChild>
 							<Button className="absolute right-4 top-4">
-								{Translate("auto calculate")}
+								{t("button.auto_calculate")}
 							</Button>
 						</DialogTrigger>
 						<DialogContent>
 							<DialogHeader>
 								<DialogTitle>
-									{Translate("Confirm Auto Calculate")}
+									{t("others.auto_calculate_confirm")}
 								</DialogTitle>
 								<DialogDescription>
-									{Translate("Please make sure all the data are correct before you click confirm.")}
+									{t("others.confirm_msg")}
 								</DialogDescription>
 							</DialogHeader>
 							<DialogFooter>
@@ -261,7 +263,7 @@ const CompViewAllDatas = ({
 											onAutoCalculate(selectedEmpNoList)
 										}
 									>
-										{Translate("confirm")}
+										{t("button.confirm")}
 									</Button>
 								</DialogClose>
 							</DialogFooter>
@@ -275,7 +277,7 @@ const CompViewAllDatas = ({
 						<TableHeader>
 							<TableRow>
 								<TableHead className="whitespace-nowrap text-center">
-									{mode == "auto calculate" && (<Checkbox
+									{mode == "auto_calculate" && (<Checkbox
 										className="cursor-pointer"
 										checked={
 											selectedEmpNoList.length ===
@@ -302,7 +304,7 @@ const CompViewAllDatas = ({
 													key={key}
 													className="whitespace-nowrap text-center"
 												>
-													{Translate(key)}
+													{t(`table.${key}`)}
 												</TableHead>
 											);
 										}
@@ -312,7 +314,7 @@ const CompViewAllDatas = ({
 										colSpan={5}
 										className="h-24 text-center"
 									>
-										{Translate("no data")}
+										{t(`table.no_data`)}
 									</TableCell>
 								)}
 							</TableRow>
@@ -340,7 +342,7 @@ const CompViewAllDatas = ({
 													}}
 												/>
 											)}
-											{mode === "auto calculate" && (
+											{mode === "auto_calculate" && (
 												<Checkbox
 													className="cursor-pointer"
 													checked={selectedEmpNoList.includes(

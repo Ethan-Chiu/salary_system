@@ -154,6 +154,7 @@
     "history": "History",
     "calendar": "Calendar",
     "key": "Key",
+    "parameters": "Parameters",
     "value": "Value",
     "view": "View",
     "no_data": "No Data",
@@ -179,6 +180,7 @@
   "button": {
     "next_step": "Next Step",
     "previous_step": "Previous Step",
+    "next_page": "Next Page",
     "previous_page": "Previous Page",
     "create": "Create",
     "update": "Update",
@@ -192,18 +194,18 @@
     "ignore": "Ignore"
   },
   "month": {
-    "jan": "Jan",
-    "feb": "Feb",
-    "mar": "Mar",
-    "apr": "Apr",
-    "may": "May",
-    "jun": "Jun",
-    "jul": "Jul",
-    "aug": "Aug",
-    "sep": "Sep",
-    "oct": "Oct",
-    "nov": "Nov",
-    "dec": "Dec"
+    "jan": "01",
+    "feb": "02",
+    "mar": "03",
+    "apr": "04",
+    "may": "05",
+    "jun": "06",
+    "jul": "07",
+    "aug": "08",
+    "sep": "09",
+    "oct": "10",
+    "nov": "11",
+    "dec": "12"
   },
   "day": {
     "sun": "Sun",
@@ -218,6 +220,13 @@
     "now": "Now",
     "year": "Year",
     "month": "Month",
+    "row_template": "$1 Rows",
+    "col_template": "$1 Columns",
+    "page_template": "Page $1 of $2",
+    "data_num_template": "$1 to $2 of $3 data",
+    "period": "Period",
+    "not_set": "Not Set",
+    "select_period": "Please select a Period",
     "visible_columns": "Visible Columns",
     "filter_setting": "Filter Setting...",
     "up_to_date": "Up To Date",
@@ -237,6 +246,7 @@
     "changed_data_msg": "Click the update button to finish the data update.",
     "all_(un)click": "All (Un)Click",
     "search_employee": "Search Employee...",
+    "no_employee_found": "No Employee Found",
     "well_done": "Well Done!",
     "well_done_msg": "You have checked all the changes. Please click update button."
   }

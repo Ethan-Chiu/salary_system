@@ -15,11 +15,10 @@ import {
 	FormMessage,
 } from "~/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
-import { useToast } from "~/components/ui/use-toast";
 import { onPromise } from "~/utils/on_promise";
 import { useTheme } from "next-themes";
 import { useRouter } from 'next/router';
-import { useTranslation } from "react-i18next";
+import i18n from "~/lib/utils/i18n";
 
 const appearanceFormSchema = z.object({
 	theme: z.enum(["light", "dark"], {
@@ -35,45 +34,42 @@ type AppearanceFormValues = z.infer<typeof appearanceFormSchema>;
 
 export function AppearanceForm() {
 	const { setTheme } = useTheme();
-  const router = useRouter();
-  const { pathname, asPath, query } = router;
+    const router = useRouter();
+    const { pathname, asPath, query } = router;
 
-  const locale = router.locale ?? "en";
-  /* console.log(locale) */
-	// This can come from your database or API.
-	const defaultValues: Partial<AppearanceFormValues> = {
-		language: (localStorage.getItem("language") as any) ?? locale,
-		theme: "light",
-	};
+    const locale = router.locale ?? "en";
+    /* console.log(locale) */
+        // This can come from your database or API.
+    const defaultValues: Partial<AppearanceFormValues> = {
+        language: (localStorage.getItem("language") as any) ?? locale,
+        theme: "light",
+    };
 
-	const form = useForm<AppearanceFormValues>({
-		resolver: zodResolver(appearanceFormSchema),
-		defaultValues,
-	});
+    const form = useForm<AppearanceFormValues>({
+        resolver: zodResolver(appearanceFormSchema),
+        defaultValues,
+    });
 
-	const { toast } = useToast();
-
-  const { t } = useTranslation('common')
-
-  const changeLocale = async (locale: string) => {
-    await router.push({ pathname, query }, asPath, { locale: locale });
-  };
+    const changeLocale = async (locale: string) => {
+        await router.push({ pathname, query }, asPath, { locale: locale });
+    };
 
 	async function onSubmit(data: AppearanceFormValues) {
 		localStorage.setItem("language", data.language);
-    document.cookie = `NEXT_LOCALE=${data.language}`;
-		setTheme(data.theme);
-		/* toast({ */
-		/* 	title: "You submitted the following values:", */
-		/* 	description: ( */
-		/* 		<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4"> */
-		/* 			<code className="text-white"> */
-		/* 				{JSON.stringify(data, null, 2)} */
-		/* 			</code> */
-		/* 		</pre> */
-		/* 	), */
-		/* }); */
-    await changeLocale(data.language);
+        i18n.changeLanguage(data.language);
+		document.cookie = `NEXT_LOCALE=${data.language}`;
+			setTheme(data.theme);
+			/* toast({ */
+			/* 	title: "You submitted the following values:", */
+			/* 	description: ( */
+			/* 		<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4"> */
+			/* 			<code className="text-white"> */
+			/* 				{JSON.stringify(data, null, 2)} */
+			/* 			</code> */
+			/* 		</pre> */
+			/* 	), */
+			/* }); */
+		await changeLocale(data.language);
 	}
 
 	return (

@@ -67,7 +67,7 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 	const router = useRouter();
 	const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const { t } = useTranslation(['common', 'nav'])
+	const { t } = useTranslation(['common', 'nav'])
 
 	const { isLoading, isError, data, error } =
 		api.sync.getCandEmployees.useQuery({

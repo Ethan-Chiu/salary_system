@@ -1,7 +1,7 @@
 import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table";
 import { api } from "~/utils/api";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 const columns = [
 	"emp_no",
@@ -21,9 +21,10 @@ const columns = [
 	"license_id",
 	"bank_account",
 ].map((key) => {
+	const { t } = useTranslation(['common']);
 	return {
 		accessorKey: key,
-		header: Translate(key),
+		header: t(`table.${key}`),
 	};
 });
 

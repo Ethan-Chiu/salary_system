@@ -1,9 +1,9 @@
 import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table";
 import { api } from "~/utils/api";
-import { Translate } from "~/lib/utils/translation";
+import i18n from "~/lib/utils/i18n";
 
-const columns = [
+const columns = () => [
 	"emp_no",
 	"emp_name",
 	"position",
@@ -24,7 +24,7 @@ const columns = [
 ].map((key) => {
 	return {
 		accessorKey: key,
-		header: Translate(key),
+		header: i18n.t(`common.table.${key}`),
 	};
 });
 
@@ -40,5 +40,5 @@ export function EmployeeDataTable({ index, globalFilter, period_id }: any) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-	return <DataTable columns={columns} data={data!} />;
+	return <DataTable columns={columns()} data={data!} />;
 }

@@ -7,7 +7,7 @@ import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/compon
 import { type BonusDepartment } from "~/server/database/entity/SALARY/bonus_department";
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 export type RowItem = {
 	department: string;
@@ -20,6 +20,7 @@ const columnHelper = createColumnHelper<RowItem>();
 export const bonus_department_columns = [
 	columnHelper.accessor("department", {
 		header: ({ column }) => {
+			const { t } = useTranslation(["common"]);
 			return (
 				<div className="flex justify-center">
 					<div className="text-center font-medium">
@@ -31,7 +32,7 @@ export const bonus_department_columns = [
 								)
 							}
 						>
-							{Translate("Department")}
+							{t("table.department")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -43,7 +44,10 @@ export const bonus_department_columns = [
 		),
 	}),
 	columnHelper.accessor("multiplier", {
-		header: () => <div className="text-center">{Translate("Multiplier")}</div>,
+		header: () => {
+			const { t } = useTranslation(["common"]);
+			return <div className="text-center">{t("table.multiplier")}</div>
+		},
 		cell: ({ row }) => {
 			return (
 				<div className="flex justify-center">

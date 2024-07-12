@@ -21,7 +21,7 @@ import {
 import { Pen, Trash2 } from "lucide-react";
 import { parameterToolbarFunctionsContext } from "../../function_sheet/parameter_functions_context";
 import { get_date_string } from "~/server/service/helper_function";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 interface DayViewProps {
 	day: Dayjs;
@@ -49,6 +49,7 @@ export default function DayView({ day, rowIdx, target_date }: DayViewProps) {
 	const deleteFunction = mutateFunctions.deleteFunction!;
 
 	const [dayEvents, setDayEvents] = useState<CalendarEventLevelWithID[]>([]);
+	const { t } = useTranslation(['common']);
 
 	useEffect(() => {
 		const events = showEventList.filter(
@@ -100,7 +101,7 @@ export default function DayView({ day, rowIdx, target_date }: DayViewProps) {
 					{/* day of the week */}
 					{rowIdx === 0 && (
 						<p className="mt-1 text-sm">
-							{Translate(day.format("ddd").toUpperCase())}
+							{t(`day.${day.format("ddd").toLowerCase()}`)}
 						</p>
 					)}
 					{/* date */}

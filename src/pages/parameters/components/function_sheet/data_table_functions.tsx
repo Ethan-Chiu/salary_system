@@ -20,7 +20,7 @@ import {
 
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Button } from "~/components/ui/button";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 import { ParameterForm } from "./parameter_form";
 import { TableEnum, getTableName } from "../context/data_table_enum";
 import { getSchema } from "../../schemas/get_schemas";
@@ -29,7 +29,6 @@ import { z } from "zod";
 import { Level } from "~/server/database/entity/SALARY/level";
 import { modeDescription } from "~/lib/utils/helper_function";
 import { literal } from "sequelize";
-
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
 }
@@ -42,6 +41,7 @@ export function DataTableFunctions({
 }: DataTableFunctionsProps) {
 	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
+	const { t } = useTranslation(['nav', 'common']);
 
 	const { isLoading, isError, data, error } =
 		(tableType === "TableLevelRange") ? api.parameters.getCurrentLevel.useQuery()
@@ -83,21 +83,21 @@ export function DataTableFunctions({
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-[120px]">
-						<DropdownMenuLabel>{Translate("Functions")}</DropdownMenuLabel>
+						<DropdownMenuLabel>{t("functions")}</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<CompTriggerItem
 							mode={"update"}
-							itemName={Translate("Update")}
+							itemName={t("button.update")}
 							icon={PenSquare}
 						/>
 						<CompTriggerItem
 							mode={"create"}
-							itemName={Translate("Create")}
+							itemName={t("button.create")}
 							icon={Plus}
 						/>
 						<CompTriggerItem
 							mode={"delete"}
-							itemName={Translate("Delete")}
+							itemName={t("button.delete")}
 							icon={Trash2}
 						/>
 					</DropdownMenuContent>
@@ -106,9 +106,7 @@ export function DataTableFunctions({
 				<SheetContent className="w-[50%]">
 					<SheetHeader>
 						<SheetTitle>
-							{`${Translate(mode)!}${Translate(
-								"form"
-							)} (${getTableName(tableType)})`}
+							{`${t(`button.${mode}`)!}${t("button.form")} (${getTableName(tableType)})`}
 						</SheetTitle>
 						<SheetDescription>
 							{modeDescription(mode)}

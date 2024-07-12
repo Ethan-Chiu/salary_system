@@ -2,12 +2,13 @@ import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table";
 import { Payset } from "~/server/database/entity/UMEDIA/payset";
 import { api } from "~/utils/api";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 const columns = Object.keys(new Payset()).map((key) => {
+	const { t } = useTranslation(['common']);
 	return {
 		accessorKey: key,
-		header: Translate(key),
+		header: t(`table.${key}`),
 	};
 });
 

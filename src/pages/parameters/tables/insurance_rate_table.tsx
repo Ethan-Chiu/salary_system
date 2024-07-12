@@ -16,7 +16,7 @@ import { LoadingSpinner } from "~/components/loading";
 import { formatDate } from "~/lib/utils/format_date";
 import { type TableComponentProps } from "../tables_view";
 import { EmptyTable } from "./empty_table";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 export type RowItem = {
 	parameters: string;
@@ -29,6 +29,7 @@ const columnHelper = createColumnHelper<RowItem>();
 export const insurance_rate_columns = [
 	columnHelper.accessor("parameters", {
 		header: ({ column }) => {
+			const { t } = useTranslation(["common"]);
 			return (
 				<div className="flex justify-center pl-3">
 					<div className="text-center font-medium">
@@ -40,7 +41,7 @@ export const insurance_rate_columns = [
 								)
 							}
 						>
-							{Translate("parameters")}
+							{t("table.parameters")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -52,7 +53,10 @@ export const insurance_rate_columns = [
 		),
 	}),
 	columnHelper.accessor("value", {
-		header: () => <div className="text-center">{Translate("Value")}</div>,
+		header: () => {
+			const { t } = useTranslation(["common"]);
+			return <div className="text-center">{t("table.value")}</div>
+		},
 		cell: ({ row }) => {
 			const value = row.getValue("value");
 			let formatted = "";

@@ -17,7 +17,7 @@ import { ToastAction } from "@radix-ui/react-toast";
 import PeriodSelector from "~/components/period_selector";
 import { Dialog, DialogContent } from "~/components/ui/dialog";
 import PeriodContextProvider from "~/components/context/period_context_provider";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
@@ -39,10 +39,11 @@ const ReportHomePage: NextPageWithLayout = () => {
 	const { selectedPeriod } = useContext(periodContext);
 	const { toast } = useToast();
 	const [open, setOpen] = useState(false);
+	const { t } = useTranslation(['nav', 'common']);
 
 	return (
 		<>
-			<Header title={Translate("reports")} showOptions className="mb-4" />
+			<Header title={t("reports")} showOptions className="mb-4" />
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogContent>
 					<PeriodSelector />
