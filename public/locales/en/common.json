@@ -199,7 +199,8 @@
     "form": "Form",
     "save": "Save",
     "ignore": "Ignore",
-    "select": "Select"
+    "select": "Select",
+    "login": "Login"
   },
   "month": {
     "jan": "01",
@@ -275,6 +276,11 @@
     "calculate_salary": "Calculate Salary",
     "calculate_done": "Calculate Done",
     "sync_error": "There are bugs in the data",
-    "sync_error_msg": "Please resolve these bugs before proceed. You might need to contact the EHR team."
+    "sync_error_msg": "Please resolve these bugs before proceed. You might need to contact the EHR team.",
+    "login": "Login",
+    "user_id": "User ID",
+    "your_employee_id": "Your Employee ID",
+    "password": "Password",
+    "reset_password": "Reset Password"
   }
 }
