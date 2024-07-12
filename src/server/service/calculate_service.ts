@@ -318,7 +318,7 @@ export class CalculateService {
 		holidays_type.map((h: HolidaysType) => {
 			holidays_type_dict[h.pay_id] = h.multiplier;
 			if(h.pay_type === 1) {
-				holidays_type_dict[h.pay_id] *= -1;
+				holidays_type_dict[h.pay_id]! *= -1;
 			}
 		})
 		let leave_deduction = 0;
