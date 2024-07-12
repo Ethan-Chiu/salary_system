@@ -11,7 +11,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 import {
 	Dialog,
@@ -64,6 +64,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	>(getDefaults(formSchema));
 
 	const [openDialog, setOpenDialog] = useState(false);
+	const { t } = useTranslation(["common"]);
 
 	function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
 		return Object.fromEntries(
@@ -111,7 +112,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 
 	if (mode === "delete" && onlyOne) {
 		return (
-			<p>{Translate("There's only one data left. Please create a new one before you continue to delete.")}</p>
+			<p>{t("others.delete_warning")}</p>
 		);
 	}
 
@@ -168,12 +169,12 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 								}
 							}}
 						>
-							{Translate("Cancel")}
+							{t("button.cancel")}
 						</Button>
 
 						<Button type="submit">
-							{mode === "create" && Translate("Create")}
-							{mode === "update" && Translate("Update")}
+							{mode === "create" && t("button.create")}
+							{mode === "update" && t("button.update")}
 						</Button>
 					</div>
 				</div>
@@ -182,14 +183,14 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 			<Dialog open={openDialog} onOpenChange={setOpenDialog}>
 				<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
 					<DialogHeader>
-						<DialogTitle>{Translate("Please check the data.")}</DialogTitle>
+						<DialogTitle>{t("others.check_data")}</DialogTitle>
 						<DialogDescription></DialogDescription>
 					</DialogHeader>
 					<GeneralTable data={formValues} />
 					<DialogFooter>
 						<DialogClose asChild>
 							<Button onClick={submitForm} type="submit">
-								{Translate("Save")}
+								{t("button.save")}
 							</Button>
 						</DialogClose>
 					</DialogFooter>
@@ -210,6 +211,7 @@ const CompViewAllDatas = ({
 	onUpdate: Function;
 	onDelete: Function;
 }) => {
+	const { t } = useTranslation(["common"]);
 	return (
 		<>
 			{dataNoID && (
@@ -226,7 +228,7 @@ const CompViewAllDatas = ({
 													key={key}
 													className="whitespace-nowrap text-center"
 												>
-													{Translate(key)}
+													{t(`table.${key}`)}
 												</TableHead>
 											);
 										}
@@ -236,7 +238,7 @@ const CompViewAllDatas = ({
 										colSpan={5}
 										className="h-24 text-center"
 									>
-										{Translate("no data")}
+										{t('table.no_data')}
 									</TableCell>
 								)}
 							</TableRow>

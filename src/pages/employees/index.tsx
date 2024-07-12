@@ -10,7 +10,7 @@ import { EmployeeTrustTable } from "./tables/employee_trust_table";
 import DataTableContextProvider from "./components/context/data_table_context_provider";
 import dataTableContext from "./components/context/data_table_context";
 import periodContext from "~/components/context/period_context";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
@@ -22,7 +22,7 @@ const PageEmployeesContent = () => {
 	const { selectedPeriod } = useContext(periodContext);
 	function getTable(table_name: string) {
 		if (selectedPeriod == null) {
-			return <p>{Translate("Please select period first")}</p>;
+			return <p>{t("others.select_period")}</p>;
 		}
 		switch (table_name) {
 			case TabOptions[0]:
@@ -47,9 +47,11 @@ const PageEmployeesContent = () => {
 		}
 	}
 
+	const { t } = useTranslation(['nav', 'common']);
+
 	return (
 		<div className="flex h-full w-full flex-col">
-			<Header title={Translate("employees")} showOptions className="mb-4" />
+			<Header title={t("employees")} showOptions className="mb-4" />
 			<div className="m-4 h-0 grow">
 				<Tabs
 					defaultValue={TabOptions[0]}

@@ -16,7 +16,7 @@ import { getTableColumn, getTableMapper } from "../../tables/table_columns";
 import { DataTable } from "./data_table";
 import { is_date_available } from "~/server/service/helper_function";
 import { Badge } from "~/components/ui/badge";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 export default function HistoryView() {
 	const { selectedTableType } = useContext(dataTableContext);
@@ -40,6 +40,7 @@ function CompHistoryView() {
 
 	const [selectedId, setSelectedId] = useState<number>(0);
 	const filterKey = "name";
+	const { t } = useTranslation(['common']);
 
 	useEffect(() => {
 		if (!isLoading && data) {
@@ -88,14 +89,14 @@ function CompHistoryView() {
 							>
 								<div className="m-1 flex flex-wrap items-center justify-center">
 									<div className="flex-1 whitespace-nowrap text-center">
-										{e.start_date ?? Translate("now")}
+										{e.start_date ?? t("others.now")}
 									</div>
 									<ArrowRightCircle
 										size={18}
 										className="mx-2 flex-shrink-0"
 									/>
 									<div className="flex-1 whitespace-nowrap text-center">
-										{e.end_date ?? Translate("now")}
+										{e.end_date ?? t("others.now")}
 									</div>
 								</div>
 								<div className="m-1 flex text-sm">
@@ -104,7 +105,7 @@ function CompHistoryView() {
 										className="mr-2 flex-shrink-0"
 									/>
 									<div className="line-clamp-1 break-all">
-										{Translate("updated by") + " " + e.update_by}
+										{t("table.updated_by") + " " + e.update_by}
 									</div>
 								</div>
 								{is_date_available(
@@ -112,7 +113,7 @@ function CompHistoryView() {
 									e.end_date
 								) && (
 									<div className="absolute -bottom-3 right-2 z-10">
-										<Badge>{Translate("current")}</Badge>
+										<Badge>{t("table.current")}</Badge>
 									</div>
 								)}
 							</div>

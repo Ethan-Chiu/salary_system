@@ -19,7 +19,7 @@ import {
 	type SyncDataDisplayModeEnumType,
 } from "~/components/synchronize/utils/data_display_mode";
 
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 interface EmpTableParameters {
 	empData: Array<DataComparison>;
@@ -27,6 +27,7 @@ interface EmpTableParameters {
 }
 
 export function EmployeeDataChange({ empData, mode }: EmpTableParameters) {
+	const { t } = useTranslation(['common']);
 	return (
 		<>
 			<ScrollArea className="h-full overflow-y-auto border text-center rounded-md">
@@ -34,13 +35,13 @@ export function EmployeeDataChange({ empData, mode }: EmpTableParameters) {
 					<TableHeader className="bg-secondary">
 						<TableRow className="sticky top-0 bg-secondary hover:bg-secondary">
 							<TableHead className="w-1/3 text-center">
-								{Translate("key")}
+								{t("table.key")}
 							</TableHead>
 							<TableHead className="w-1/3 text-center">
-								{Translate("salary_data")}
+								{t("table.salary_data")}
 							</TableHead>
 							<TableHead className="w-1/3 text-center">
-								{Translate("ehr_data")}
+								{t("table.ehr_data")}
 							</TableHead>
 						</TableRow>
 					</TableHeader>
@@ -59,7 +60,7 @@ export function EmployeeDataChange({ empData, mode }: EmpTableParameters) {
 							return (
 								<TableRow key={d.key}>
 									<TableCell className="font-medium">
-										{Translate(d.key)}
+										{t(`table.${d.key}`)}
 									</TableCell>
 									<TableCell
 										className={cn(

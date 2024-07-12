@@ -9,15 +9,16 @@ import { AppearanceForm } from "./components/appearance";
 import { Header } from "~/components/header";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { ChangePasswordForm } from "./components/change_password";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { i18n, locales } from '~/components/lang_config'
 
 const PageSettings: NextPageWithLayout = () => {
+	const { t } = useTranslation(["nav", "common"]);
 	return (
 		<>
-			<Header title={Translate("settings")} showOptions className="mb-4" />
+			<Header title={t("settings")} showOptions className="mb-4" />
 			<div className="m-4">
 				<Tabs defaultValue="profile" className="h-full space-y-6">
 					<div className="space-between flex items-center">

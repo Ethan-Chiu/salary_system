@@ -62,8 +62,7 @@ const PageHome: NextPageWithLayout = () => {
 	const { selectedPeriod, selectedPayDate } = useContext(periodContext);
 	const { toast } = useToast();
 	const [open, setOpen] = useState(false);
-
-  const { t } = useTranslation(['common', 'nav'])
+	const { t } = useTranslation(['common', 'nav'])
   
 	return (
 		<>

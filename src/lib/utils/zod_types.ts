@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { isDateType } from "./check_type";
-import { Translate } from "./translation";
+import i18next from "i18next";
 
 function getTranslate(key: string) {
-	return Translate(key) ?? key;
+	return i18next.t(`table.${key}`) ?? key;
 }
 function getRequiredError(key: string) {
 	return { required_error: getTranslate(key) + " is required." };

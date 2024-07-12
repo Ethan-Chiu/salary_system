@@ -11,7 +11,7 @@ import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import dataTableContext from "../../context/data_table_context";
 import { getTableName } from "../../context/data_table_enum";
 import { getSchema } from "~/pages/parameters/schemas/get_schemas";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 import {
 	Dialog,
 	DialogContent,
@@ -47,6 +47,7 @@ export default function CalendarUpdateEvent<
 	>(getDefaults(formSchema));
 
 	const [openDialog, setOpenDialog] = useState(false);
+	const { t } = useTranslation(["common"]);
 
 	function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
 		return Object.fromEntries(
@@ -93,9 +94,7 @@ export default function CalendarUpdateEvent<
 			<SheetContent className="w-[50%]">
 				<SheetHeader>
 					<SheetTitle>
-						{`${Translate(mode)!}${Translate(
-							"form"
-						)} (${getTableName(selectedTableType)})`}
+						{`${t(`button.${mode}`)!}${t("button.form")} (${getTableName(selectedTableType)})`}
 					</SheetTitle>
 					<SheetDescription>
 						{modeDescription(mode)}
@@ -131,7 +130,7 @@ export default function CalendarUpdateEvent<
 						<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
 							<DialogHeader>
 								<DialogTitle>
-									{Translate("Please check the data.")}
+									{t("others.check_data")}
 								</DialogTitle>
 								<DialogDescription></DialogDescription>
 							</DialogHeader>
@@ -139,7 +138,7 @@ export default function CalendarUpdateEvent<
 							<DialogFooter>
 								<DialogClose asChild>
 									<Button onClick={submitForm} type="submit">
-										{Translate("Save")}
+										{t("button.save")}
 									</Button>
 								</DialogClose>
 							</DialogFooter>

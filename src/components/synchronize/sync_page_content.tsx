@@ -44,7 +44,7 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 	);
 	const [isAllConfirmed, setIsAllConfirmed] = useState<boolean>(false);
 
-  const { t } = useTranslation(['common'])
+	const { t } = useTranslation(['common'])
 
 	useEffect(() => {
 		setDataWithStatus(

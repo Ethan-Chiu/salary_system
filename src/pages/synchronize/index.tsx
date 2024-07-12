@@ -8,7 +8,7 @@ import { Header } from "~/components/header";
 import { SyncPageContent } from "~/components/synchronize/sync_page_content";
 import periodContext from "~/components/context/period_context";
 import { FunctionsEnum } from "~/server/api/types/functions_enum";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
@@ -20,8 +20,9 @@ const PageCheckEHR: NextPageWithLayout = () => {
 
 function SyncPage() {
 	const {selectedPeriod} = useContext(periodContext);
+	const { t } = useTranslation(['nav', 'common']);
 	if (selectedPeriod == null) {
-		return <p>{Translate("Please select period first")}</p>;
+		return <p>{t("others.select_period")}</p>;
 	}
 
 	const { isLoading, isError, data, error } =
@@ -41,7 +42,7 @@ function SyncPage() {
 
 	return data != null ? (
 		<div className="flex h-full w-full flex-col">
-			<Header title={Translate("synchronize")} showOptions className="mb-4" />
+			<Header title={t("synchronize")} showOptions className="mb-4" />
 			<div className="mx-4 flex h-0 grow">
         <div className="w-full flex flex-col mb-4">
           <SyncPageContent data={data} />
@@ -49,7 +50,7 @@ function SyncPage() {
 			</div>
 		</div>
 	) : (
-		<div>{Translate("no data")}</div>
+		<div>{t("table.no_data")}</div>
 	);
 }
 

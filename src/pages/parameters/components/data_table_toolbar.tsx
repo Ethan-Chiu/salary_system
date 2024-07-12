@@ -10,7 +10,7 @@ import { CalendarToolbarFunctions } from "./calendar_view/components/calendar_to
 import { hasHistory } from "./data_table_tabs_config";
 import { ToolbarFilter } from "~/components/data_table/toolbar/toolbar_filter";
 import periodContext from "~/components/context/period_context";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 interface DataTableToolbarProps<TData> {
 	filterColumnKey?: keyof TData;
@@ -25,6 +25,7 @@ export function DataTableToolbar<TData>({
 		useContext(dataTableContext);
 	const { selectedPeriod } = useContext(periodContext);
 	const table = selectedTable?.table;
+	const { t } = useTranslation(["common"]);
 
 	if (!table) {
 		return (
@@ -42,21 +43,21 @@ export function DataTableToolbar<TData>({
 			{showTabs !== false && (
 				<TabsList className="grid h-8 w-96 grid-cols-3">
 					<TabsTrigger value={TabsEnum.Enum.current} className="h-6">
-						{Translate("current")}
+						{t("table.current")}
 					</TabsTrigger>
 					<TabsTrigger
 						disabled={!hasHistory(selectedTableType)}
 						value={TabsEnum.Enum.history}
 						className="h-6"
 					>
-						{Translate("history")}
+						{t("table.history")}
 					</TabsTrigger>
 					<TabsTrigger
 						disabled={!hasHistory(selectedTableType)}
 						value={TabsEnum.Enum.calendar}
 						className="h-6"
 					>
-						{Translate("calendar")} 
+						{t("table.calendar")} 
 					</TabsTrigger>
 				</TabsList>
 			)}

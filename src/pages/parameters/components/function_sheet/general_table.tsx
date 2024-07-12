@@ -8,18 +8,19 @@ import {
 	TableRow,
 } from "~/components/ui/table";
 import { isDateType } from "~/lib/utils/check_type";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 export default function GeneralTable({ data }: { data: Record<string, any> }) {
+	const { t } = useTranslation(["common"]);
 	return (
 		<Table>
 			<TableHeader>
 				<TableRow>
 					<TableHead className="whitespace-nowrap text-center">
-						{Translate("Key")}
+						{t("table.key")}
 					</TableHead>
 					<TableHead className="whitespace-nowrap text-center">
-						{Translate("Value")}
+						{t("table.value")}
 					</TableHead>
 				</TableRow>
 			</TableHeader>
@@ -29,7 +30,7 @@ export default function GeneralTable({ data }: { data: Record<string, any> }) {
 					return (
 						<TableRow key={index.toString()}>
 							<TableCell className="text-center font-medium">
-								{Translate(key)}
+								{t(`table.${key}`)}
 							</TableCell>
 							<TableCell className="text-center font-medium">
 								{isDateType(entry_value)

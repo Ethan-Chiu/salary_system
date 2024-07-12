@@ -17,7 +17,7 @@ export function SyncPage({
 	selectedIndex,
 	setSelectedIndex,
 }: SyncPageProps) {
-  const { t } = useTranslation(['common'])
+	const { t } = useTranslation(['common'])
 
 	const { isLoading, isError, data, error } =
 		api.sync.checkEmployeeData.useQuery({

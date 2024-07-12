@@ -27,7 +27,7 @@ import {
 
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Button } from "~/components/ui/button";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 import {
 	TableEnum,
 	getTableName,
@@ -44,7 +44,7 @@ export type FunctionMode =
 	| "create"
 	| "update"
 	| "delete"
-	| "auto calculate"
+	| "auto_calculate"
 	| "none";
 
 export function DataTableFunctions({
@@ -53,6 +53,7 @@ export function DataTableFunctions({
 }: DataTableFunctionsProps) {
 	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
+	const { t } = useTranslation(['nav', 'common']);
 
 	return (
 		<div className={cn(className, "flex h-full items-center")}>
@@ -69,26 +70,26 @@ export function DataTableFunctions({
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-[150px]">
-						<DropdownMenuLabel>{Translate("Functions")}</DropdownMenuLabel>
+						<DropdownMenuLabel>{t("functions")}</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<CompTriggerItem
 							mode={"update"}
-							itemName={Translate("Update")}
+							itemName={t("button.update")}
 							icon={PenSquare}
 						/>
 						<CompTriggerItem
 							mode={"create"}
-							itemName={Translate("Create")}
+							itemName={t("button.create")}
 							icon={Plus}
 						/>
 						<CompTriggerItem
 							mode={"delete"}
-							itemName={Translate("Delete")}
+							itemName={t("button.delete")}
 							icon={Trash2}
 						/>
 						<CompTriggerItem
-							mode={"auto calculate"}
-							itemName={Translate("Auto Calculate")}
+							mode={"auto_calculate"}
+							itemName={t("button.auto_calculate")}
 							icon={RefreshCcw}
 						/>
 					</DropdownMenuContent>
@@ -97,9 +98,7 @@ export function DataTableFunctions({
 				<SheetContent className="w-[50%]">
 					<SheetHeader>
 						<SheetTitle>
-							{`${Translate(mode)!}${Translate(
-								"form"
-							)} (${getTableName(tableType)})`}
+							{`${t(`button.${mode}`)!}${t("button.form")} (${getTableName(tableType)})`}
 						</SheetTitle>
 						<SheetDescription>
 							{modeDescription(mode)}

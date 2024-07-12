@@ -15,7 +15,7 @@ import { SessionStorage } from "~/utils/session_storage";
 import { Button } from "./ui/button";
 import { DialogClose } from "./ui/dialog";
 import { type Period } from "~/server/database/entity/UMEDIA/period";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 export default function PeriodSelector() {
 	const getPeriod = api.function.getPeriod.useQuery();
@@ -33,12 +33,14 @@ export default function PeriodSelector() {
 		selectedPayDate ?? null
 	);
 
+	const { t } = useTranslation('common')
+
 	return (
 		<div className="flex flex-col items-center">
 			{getPeriod.isFetched ? (
 				<>
 					<div className="flex w-full p-2">
-						<div className="flex-1">{Translate("period")}</div>
+						<div className="flex-1">{t("others.period")}</div>
 						<div className="flex-1">
 							<Select
 								defaultValue={selectedPeriod?.period_name}
@@ -54,11 +56,11 @@ export default function PeriodSelector() {
 								}}
 							>
 								<SelectTrigger className="w-full">
-									<SelectValue placeholder="Select a period" />
+									<SelectValue placeholder={t("others.select_period")} />
 								</SelectTrigger>
 								<SelectContent>
 									<SelectGroup>
-										<SelectLabel>{Translate('period')}</SelectLabel>
+										<SelectLabel>{t('others.period')}</SelectLabel>
 										{getPeriod.data!.map((period_info) => {
 											const original_name = period_info.period_name
 											console.log(original_name)
@@ -71,7 +73,7 @@ export default function PeriodSelector() {
 														original_name
 													}
 												>
-													{`20${original_name.split("-")[1]}年${Translate(original_name.split("-")[0]!)}`}
+													{`20${original_name.split("-")[1]}-${t(`month.${original_name.split("-")[0]!.toLowerCase()}`)}`}
 												</SelectItem>
 											);
 										})}
@@ -81,7 +83,7 @@ export default function PeriodSelector() {
 						</div>
 					</div>
 					<div className="flex w-full p-2">
-						<div className="flex-1">發薪日期</div>
+						<div className="flex-1">{t("table.issue_date")}</div>
 						<div className="flex-1">
 							<Input
 								type="Date"
@@ -111,7 +113,7 @@ export default function PeriodSelector() {
 								}
 							}}
 						>
-							儲存
+							{t("button.save")}
 						</Button>
 					</DialogClose>
 				</>

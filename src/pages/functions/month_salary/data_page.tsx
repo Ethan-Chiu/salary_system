@@ -3,7 +3,7 @@ import { HolidayTable } from "../tables/holiday_table";
 import { OvertimeTable } from "../tables/overtime_table";
 import { PaysetTable } from "../tables/payset_table";
 import { Button } from "~/components/ui/button";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 import { cn } from "~/lib/utils";
 import { api } from "~/utils/api";
 import { FunctionsEnumType } from "~/server/api/types/functions_enum";
@@ -36,6 +36,8 @@ export function DataPage({
 		}
 	}
 
+	const { t } = useTranslation(["common"]);
+
 	return (
 		<>
 			<div className="h-0 grow">
@@ -67,12 +69,12 @@ export function DataPage({
 				<Button
 					onClick={() => setSelectedIndex(selectedIndex - 1)}
 				>
-					{Translate("previous_step")}
+					{t("button.previous_step")}
 				</Button>
 				<Button
 					onClick={() => setSelectedIndex(selectedIndex + 1)}
 				>
-					{Translate("next_step")}
+					{t("button.next_step")}
 				</Button>
 			</div>
 		</>
