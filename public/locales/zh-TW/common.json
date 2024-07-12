@@ -198,7 +198,8 @@
     "form": "表單",
     "save": "儲存",
     "ignore": "忽略",
-    "select": "選擇"
+    "select": "選擇",
+    "login": "登入"
   },
   "month": {
     "jan": "01",
@@ -269,6 +270,11 @@
     "calculate_salary": "薪資計算",
     "calculate_done": "薪資計算完成",
     "sync_error": "有錯誤的資料",
-    "sync_error_msg": "請解決這些錯誤後再進行操作。您可能需要與EHR團隊聯繫。"
+    "sync_error_msg": "請解決這些錯誤後再進行操作。您可能需要與EHR團隊聯繫。",
+    "login": "登入",
+    "user_id": "員工編號",
+    "your_employee_id": "您的員工編號",
+    "password": "密碼",
+    "reset_password": "重設密碼"
   }
 }
