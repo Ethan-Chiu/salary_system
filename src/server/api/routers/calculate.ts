@@ -15,8 +15,8 @@ export const calculateRouter = createTRPCRouter({
 	calculateWeekdayOvertimePay: publicProcedure
 		.input(
 			z.object({
-				emp_no: z.coerce.string(),
-				period_id: z.coerce.number(),
+				emp_no: z.string(),
+				period_id: z.number(),
 			})
 		)
 		.query(async ({ input }) => {
@@ -78,8 +78,8 @@ export const calculateRouter = createTRPCRouter({
 	calculateHolidayOvertimePay: publicProcedure
 		.input(
 			z.object({
-				emp_no: z.coerce.string(),
-				period_id: z.coerce.number(),
+				emp_no: z.string(),
+				period_id: z.number(),
 			})
 		)
 		.query(async ({ input }) => {
@@ -140,8 +140,8 @@ export const calculateRouter = createTRPCRouter({
 		calculateExceedOvertimePay: publicProcedure
 		.input(
 			z.object({
-				emp_no: z.coerce.string(),
-				period_id: z.coerce.number(),
+				emp_no: z.string(),
+				period_id: z.number(),
 			})
 		)
 		.query(async ({ input }) => {
@@ -202,8 +202,8 @@ export const calculateRouter = createTRPCRouter({
 	calculateGrossSalary: publicProcedure
 		.input(
 			z.object({
-				emp_no: z.coerce.string(),
-				period_id: z.coerce.number(),
+				emp_no: z.string(),
+				period_id: z.number(),
 			})
 		)
 		.query(async ({ input }) => {
@@ -231,12 +231,54 @@ export const calculateRouter = createTRPCRouter({
 			}
 			return gross_salary;
 		}),
+	// API for 勞保扣除額
+	calculateLaborInsuranceDeduction: publicProcedure
+		.input(
+			z.object({
+				emp_no: z.string(),
+				period_id: z.number(),
+			})
+		)
+		.query(async ({ input }) => {
+			const calculateService = container.resolve(CalculateService);
+			const employeeDataService = container.resolve(EmployeeDataService);
+			const employee_data = await employeeDataService.getEmployeeDataByEmpNo(
+				input.emp_no
+			);
+			const employeePaymentService = container.resolve(
+				EmployeePaymentService
+			);
+			const employee_payment =
+				await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
+					input.emp_no,
+					input.period_id
+				);
+			const ehrService = container.resolve(EHRService);
+			const payset = (
+				await ehrService.getPaysetByEmpNoList(input.period_id, [
+					input.emp_no,
+				])
+			).findLast((data) => data.emp_no === input.emp_no);
+			const insuranceRateSettingService = container.resolve(
+				InsuranceRateSettingService
+			);
+			const insurance_rate_setting =
+				await insuranceRateSettingService.getCurrentInsuranceRateSetting(
+					input.period_id
+				)
+			const labor_insurance_deduction = await calculateService.getLaborInsuranceDeduction(
+				employee_data!,
+				employee_payment!,
+				payset!,
+				insurance_rate_setting!
+			)
+		}),
 	// API for 請假扣款
 	calculateLeaveDeduction: publicProcedure
 		.input(
 			z.object({
-				emp_no: z.coerce.string(),
-				period_id: z.coerce.number(),
+				emp_no: z.string(),
+				period_id: z.number(),
 			})
 		)
 		.query(async ({ input }) => {
