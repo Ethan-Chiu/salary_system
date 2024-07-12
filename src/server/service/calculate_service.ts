@@ -10,6 +10,7 @@ import { InsuranceRateSetting } from "../database/entity/SALARY/insurance_rate_s
 import { Holiday } from "../database/entity/UMEDIA/holiday";
 import { AttendanceSetting } from "../database/entity/SALARY/attendance_setting";
 import { PayTypeEnum, PayTypeEnumType } from "../api/types/pay_type_enum";
+import { HolidaysType } from "../database/entity/SALARY/holidays_type";
 
 
 
@@ -35,8 +36,10 @@ export class CalculateService {
 	async getWeekdayOvertimePay(
 		employee_data: EmployeeData,
 		employee_payment: EmployeePayment,
-		attendance_setting: AttendanceSetting,
-		overtime: Overtime,
+		overtime_list: Overtime[],
+		payset: Payset,
+		insurance_rate_setting: InsuranceRateSetting,
+		full_attendance_bonus: number
 	): Promise<number> {
 		/*
 				平日加班費 = GetNormalMoney(
@@ -47,36 +50,41 @@ export class CalculateService {
 					加班2_時數
 				)
 		*/
-		const kind1 = employee_data.work_type;
-		const kind2 = employee_data.work_status;
-		const money = employee_payment.base_salary;
-		const t1 = rd("加班1_時數");
-		const T2 = rd("加班2_時數");
-		const SALARY_RATE = rd("最低工資率");
+		// 不確定專業證照津貼要不要加兩次
+		const money = await this.getGrossSalary(employee_payment, payset);
+		const shift_allowance = employee_payment.shift_allowance ?? 0;
+		let hourly_fee = (money+shift_allowance+full_attendance_bonus) / 240;
+		let t1 = 0;
+		let t2 = 0;
+		let t3 = 0;
+		let t4 = 0;
+		let t5 = 0;
+		overtime_list.map((overtime) => {
+			if (overtime.type_name === "平日"){
+				t1 += overtime.hours_1 ?? 0;
+				t2 += overtime.hours_2 ?? 0;
+				t3 += overtime.hours_134 ?? 0;
+				t4 += overtime.hours_167 ?? 0;
+				t5 += overtime.hours_267 ?? 0;
+			}
+		})
 
-		const FOREIGN_RATE1 = attendance_setting.overtime_by_foreign_workers_1;
-		const FOREIGN_RATE2 = attendance_setting.overtime_by_foreign_workers_2;
-		const FOREIGN_RATE3 = attendance_setting.foreign_worker_holiday;
-		const FOREIGN_RATE4 = attendance_setting.overtime_by_foreign_workers_3;
-
-		const LOCAL_RATE1 = attendance_setting.overtime_by_local_workers_1;
-		const LOCAL_RATE2 = attendance_setting.overtime_by_local_workers_2;
-		const LOCAL_RATE3 = attendance_setting.local_worker_holiday;
-		const LOCAL_RATE4 = attendance_setting.overtime_by_local_workers_3;
-
-		if (kind1 === FOREIGN) return Math.round(SALARY_RATE * FOREIGN_RATE1 * t1 + SALARY_RATE * FOREIGN_RATE2 * T2);
-		if (kind2 === LEAVE_MAN)	return 0;
-		if (kind2 === DAY_PAY)	return Math.round(money / 8 * LOCAL_RATE1 * t1 + money / 8 * T2 * LOCAL_RATE2);
-		if (kind2 === FOREIGN)	return Math.round(SALARY_RATE * FOREIGN_RATE1 * t1 + SALARY_RATE * FOREIGN_RATE2 * T2);
-		return Math.round(money / 240 * LOCAL_RATE1 * t1 + money / 240 * T2 * LOCAL_RATE2);
+		if (employee_data.work_type === "外籍勞工"){
+			hourly_fee = insurance_rate_setting.min_wage_rate;
+			return Math.round(hourly_fee * t1 +hourly_fee * t2 *2 +hourly_fee * t3 * 1.34+hourly_fee * t4 *1.67 +hourly_fee * t5 * 2.67);
+		}
+		else
+			return Math.round(hourly_fee * t1 +hourly_fee * t2 *2 +hourly_fee * t3 * 1.34+hourly_fee * t4 *1.67 +hourly_fee * t5 * 2.67);
 	}
 
 	//MARK: 假日加班費
-	async getHollidayOvertimePay(
+	async getHolidayOvertimePay(
 		employee_data: EmployeeData,
 		employee_payment: EmployeePayment,
-		attendance_setting: AttendanceSetting,
-		overtime: Overtime,
+		overtime_list: Overtime[],
+		payset: Payset,
+		insurance_rate_setting: InsuranceRateSetting,
+		full_attendance_bonus: number
 	): Promise<number> {
 		/*
 			假日加班費 = GetVocationMoney(
@@ -89,39 +97,40 @@ export class CalculateService {
 					休加班3_時數
 			)
 		*/
-		const kind1 = employee_data.work_type;
-		const kind2 = employee_data.work_status;
-		const money = rd("應發底薪")+rd("全勤獎金")+rd("輪班津貼")+rd("專業証照津貼");
-		const t1 = rd("假日加班時數")+rd("國加班0_時數")+rd("例加班0_時數")+rd("例假日加班_時數");
-		const T2 = rd("休加班1_時數")+rd("國加班1_時數");
-		const T3 = rd("休加班2_時數")+rd("國加班2_時數");
-		const T4 = rd("休加班3_時數");
-		const SALARY_RATE = rd("最低工資率");
-		
-		const FOREIGN_RATE1 = attendance_setting.overtime_by_foreign_workers_1;
-		const FOREIGN_RATE2 = attendance_setting.overtime_by_foreign_workers_2;
-		const FOREIGN_RATE3 = attendance_setting.foreign_worker_holiday;
-		const FOREIGN_RATE4 = attendance_setting.overtime_by_foreign_workers_3;
-
-		const LOCAL_RATE1 = attendance_setting.overtime_by_local_workers_1;
-		const LOCAL_RATE2 = attendance_setting.overtime_by_local_workers_2;
-		const LOCAL_RATE3 = attendance_setting.local_worker_holiday;
-		const LOCAL_RATE4 = attendance_setting.overtime_by_local_workers_3;
-
-
-		if (kind1 === FOREIGN)	return Math.round(SALARY_RATE * FOREIGN_RATE3 * t1 + SALARY_RATE * FOREIGN_RATE1 * T2 + SALARY_RATE * FOREIGN_RATE2 * T3 + SALARY_RATE * FOREIGN_RATE4 * T4);
-		if (kind2 === LEAVE_MAN)	return 0;
-		if (kind2 === DAY_PAY)	return Math.round(money / 8 * LOCAL_RATE3 * t1);
-		if (kind2 === FOREIGN)	return Math.round(SALARY_RATE * FOREIGN_RATE3 * t1 + SALARY_RATE * FOREIGN_RATE1 * T2 + SALARY_RATE * FOREIGN_RATE2 * T3 + SALARY_RATE * FOREIGN_RATE4 * T4);
-		return Math.round(money / 240 * LOCAL_RATE3 * t1 + money / 240 * LOCAL_RATE1 * T2 + money / 240 * LOCAL_RATE2 * T3 + money / 240 * LOCAL_RATE4 * T4);
+		const money = await this.getGrossSalary(employee_payment, payset);
+		const shift_allowance = employee_payment.shift_allowance ?? 0;
+		let hourly_fee = (money+shift_allowance+full_attendance_bonus) / 240;
+		let t1 = 0;
+		let t2 = 0;
+		let t3 = 0;
+		let t4 = 0;
+		let t5 = 0;
+		overtime_list.map((overtime) => {
+			if (overtime.type_name === "國定假日" || overtime.type_name === "休息日"){
+				t1 += overtime.hours_1 ?? 0;
+				t2 += overtime.hours_2 ?? 0;
+				t3 += overtime.hours_134 ?? 0;
+				t4 += overtime.hours_167 ?? 0;
+				t5 += overtime.hours_267 ?? 0;
+			}
+		})
+		// rate存哪裡？
+		if (employee_data.work_type === "外籍勞工"){
+			hourly_fee = insurance_rate_setting.min_wage_rate;
+			return Math.round(hourly_fee * t1 +hourly_fee * t2 *2 +hourly_fee * t3 * 1.34+hourly_fee * t4 *1.67 +hourly_fee * t5 * 2.67);
+		}
+		else
+			return Math.round(hourly_fee * t1 +hourly_fee * t2 *2 +hourly_fee * t3 * 1.34+hourly_fee * t4 *1.67 +hourly_fee * t5 * 2.67);
 	}	
 	
 	// MARK: 超時加班費
 	async getExceedOvertimePay(
 		employee_data: EmployeeData,
 		employee_payment: EmployeePayment,
-		attendance_setting: AttendanceSetting,
-		overtime: Overtime
+		overtime_list: Overtime[],
+		payset: Payset,
+		insurance_rate_setting: InsuranceRateSetting,
+		full_attendance_bonus: number
 	): Promise<number> {
 		/*
 				超時加班 = GetOverTimeMoney(
@@ -134,37 +143,37 @@ export class CalculateService {
 					休加班稅3_時數
 				)
 		*/
-
-		const kind1 = employee_data.work_type;
-		const kind2 = employee_data.work_status;
-		const money = rd("應發底薪")+rd("全勤獎金")+rd("輪班津貼")+rd("專業証照津貼");
-		const t1 = rd("加班稅1_時數")+rd("休加班稅1_時數")+rd("國加班稅1_時數");	
-		const T2 = rd("加班稅2_時數")+rd("休加班稅2_時數")+rd("國加班稅2_時數");
-		const T3 = rd("例假日加班稅_時數");
-		const T4 = rd("休加班稅3_時數");
-		const SALARY_RATE = rd("最低工資率");
-		
-		const FOREIGN_RATE1 = attendance_setting.overtime_by_foreign_workers_1;
-		const FOREIGN_RATE2 = attendance_setting.overtime_by_foreign_workers_2;
-		const FOREIGN_RATE3 = attendance_setting.foreign_worker_holiday;
-		const FOREIGN_RATE4 = attendance_setting.overtime_by_foreign_workers_3;
-
-		const LOCAL_RATE1 = attendance_setting.overtime_by_local_workers_1;
-		const LOCAL_RATE2 = attendance_setting.overtime_by_local_workers_2;
-		const LOCAL_RATE3 = attendance_setting.local_worker_holiday;
-		const LOCAL_RATE4 = attendance_setting.overtime_by_local_workers_3;
-
-		if (kind1 === FOREIGN)	return Math.round(SALARY_RATE * FOREIGN_RATE1 * t1 + SALARY_RATE * FOREIGN_RATE2 * T2 + SALARY_RATE * FOREIGN_RATE3 * T3 + SALARY_RATE * FOREIGN_RATE4 * T4);
-		if (kind2 === LEAVE_MAN)	return 0;
-		if (kind2 === FOREIGN)	return Math.round(SALARY_RATE * FOREIGN_RATE1 * t1 + SALARY_RATE * FOREIGN_RATE2 * T2 + SALARY_RATE * FOREIGN_RATE3 * T3 + SALARY_RATE * FOREIGN_RATE4 * T4);
-		return Math.round(money / 240 * LOCAL_RATE1 * t1 + money / 240 * LOCAL_RATE2 * T2 + money / 240 * LOCAL_RATE3 * T3 + money / 240 * LOCAL_RATE4 * T4);
+		const money = await this.getGrossSalary(employee_payment, payset);
+		const shift_allowance = employee_payment.shift_allowance ?? 0;
+		let hourly_fee = (money+shift_allowance+full_attendance_bonus) / 240;
+		let t1 = 0;
+		let t2 = 0;
+		let t3 = 0;
+		let t4 = 0;
+		let t5 = 0;
+		overtime_list.map((overtime) => {
+			if (overtime.type_name === "超時加班" ){ //不確定名字
+				t1 += overtime.hours_1 ?? 0;
+				t2 += overtime.hours_2 ?? 0;
+				t3 += overtime.hours_134 ?? 0;
+				t4 += overtime.hours_167 ?? 0;
+				t5 += overtime.hours_267 ?? 0;
+			}
+		})
+		// rate存哪裡？
+		if (employee_data.work_type === "外籍勞工"){
+			hourly_fee = insurance_rate_setting.min_wage_rate;
+			return Math.round(hourly_fee * t1 +hourly_fee * t2 *2 +hourly_fee * t3 * 1.34+hourly_fee * t4 *1.67 +hourly_fee * t5 * 2.67);
+		}
+		else
+			return Math.round(hourly_fee * t1 + hourly_fee * t2 *2 +hourly_fee * t3 * 1.34+hourly_fee * t4 * 1.67 +hourly_fee * t5 * 2.67);
 	}
 	
 
 	//MARK: 應發底薪
 	async getGrossSalary(
 		employee_payment: EmployeePayment,
-		pay_set: Payset
+		payset: Payset
 	): Promise<number> {
 		const gross_salary = (
 			employee_payment.base_salary
@@ -173,7 +182,7 @@ export class CalculateService {
 			+ (employee_payment.professional_cert_allowance ?? 0)
 			+ (employee_payment.occupational_allowance ?? 0)
 			+ (employee_payment.subsidy_allowance ?? 0)
-		) * (pay_set.work_day! / 30)
+		) * (((payset) ? payset.work_day! : 30) / 30)
 		return gross_salary;
 	}
 	//MARK: 勞保扣除額
@@ -208,7 +217,7 @@ export class CalculateService {
 		const kind1 = employee_data.work_type;
 		const kind2 = employee_data.work_status;
 		const hinder_rate = hinderDict[employee_data.disabilty_level ?? "正常"] ?? 1;
-		const old_age_benefit = (true || false);		// old_age_benefit: rd("已領老年給付")
+		const old_age_benefit = (true || false);	//employee_data.received_elderly_benefits;		// old_age_benefit: rd("已領老年給付")
 
 
 		if (old_age_benefit)	return 0;	// 'Jerry 100426 已領老年給付者,員工免付勞保
@@ -289,27 +298,61 @@ export class CalculateService {
 	async getLeaveDeduction(
 		employee_data: EmployeeData,
 		employee_payment: EmployeePayment,
-		holiday: Holiday	// Maybe not this
+		holiday_list: Holiday[],	// Maybe not this
+		payset: Payset,
+		holidays_type: HolidaysType[],
+		insurance_rate_setting: InsuranceRateSetting,
+		full_attendance_bonus: number,
 	): Promise<number> {
 		// UPDATE 薪資查詢 SET 薪資查詢.請假扣款 = GetLeaveMoney(薪資查詢!工作類別,薪資查詢!工作形態,薪資查詢!應發底薪,薪資查詢!補助津貼+薪資查詢!輪班津貼+薪資查詢!全勤獎金+薪資查詢!專業証照津貼,薪資查詢!事假時數,薪資查詢!病假時數)
 		// 薪資查詢.不休假代金 = IIf(薪資查詢!工作類別="外籍勞工",round(GetSALARY_RATE()*(薪資查詢!不休假時數*Getnon_leaving_rate()+薪資查詢!不休假補休1時數*Getnon_leaving_rate1()+薪資查詢!不休假補休2時數*Getnon_leaving_rate2()+薪資查詢!不休假補休3時數*Getnon_leaving_rate3()+薪資查詢!不休假補休4時數*Getnon_leaving_rate4()+薪資查詢!不休假補休5時數*Getnon_leaving_rate5()),0),round(薪資查詢!應發底薪/240*(薪資查詢!不休假時數*Getnon_leaving_rate()+薪資查詢!不休假補休1時數*Getnon_leaving_rate1()+薪資查詢!不休假補休2時數*Getnon_leaving_rate2()+薪資查詢!不休假補休3時數*Getnon_leaving_rate3()+薪資查詢!不休假補休4時數*Getnon_leaving_rate4()+薪資查詢!不休假補休5時數*Getnon_leaving_rate5()),0));
-		const kind1 = employee_data.work_type;
-		const kind2 = employee_data.work_status;
-		const money = rd("應發底薪");
-		const bonus = rd("補助津貼") + rd("輪班津貼") + rd("全勤獎金") + rd("專業証照津貼");
-		const t1 = rd("事假時數"); // 事假時數
-		const T2 = rd("病假時數"); // 病假時數
+		// const kind1 = employee_data.work_type;
+		// const kind2 = employee_data.work_status;
+		const money = await this.getGrossSalary(employee_payment,payset);
+		const shift_allowance = employee_payment.shift_allowance ?? 0;
+		let hourly_fee = (money+shift_allowance+full_attendance_bonus) / 240;
+		interface HolidaysTypeDict {
+			[key: number]: number
+		}
+		let holidays_type_dict : HolidaysTypeDict = {};
+		holidays_type.map((h: HolidaysType) => {
+			holidays_type_dict[h.pay_id] = h.multiplier;
+			if(h.pay_type === 1) {
+				holidays_type_dict[h.pay_id]! *= -1;
+			}
+		})
+		let leave_deduction = 0;
+		holiday_list.forEach(holiday => {
+			leave_deduction +=  (holiday.total_hours ?? 0) * (holidays_type_dict[holiday.pay_order!]!);
+		})
+		if (employee_data.work_type === "外籍勞工"){
+			hourly_fee = insurance_rate_setting.l_i_wage_replacement_rate;
+			return Math.round(hourly_fee * leave_deduction);
+		}
+		else
+			return Math.round(hourly_fee * leave_deduction);
+		// const bonus = rd("補助津貼") + rd("輪班津貼") + rd("全勤獎金") + rd("專業証照津貼");
+		// const t1 = rd("事假時數"); // 事假時數
+		// const T2 = rd("病假時數"); // 病假時數
 
-		const SALARY_RATE = 0;		// 最低工資率
-		if (kind1 === FOREIGN)	return Math.round(SALARY_RATE * t1 + SALARY_RATE / 2 * T2);	
-		if (kind2 === LEAVE_MAN)	return 0;
-		if (kind2 === FOREIGN)	return Math.round(SALARY_RATE * t1 + SALARY_RATE / 2 * T2);
-		return Math.round((money + bonus) / 240 * t1 + (money + bonus) / 240 * T2 / 2);
+		// const SALARY_RATE = rd("最低工資率");		// 最低工資率
+		// if (kind1 === FOREIGN)	return Math.round(SALARY_RATE * t1 + SALARY_RATE / 2 * T2);	
+		// if (kind2 === LEAVE_MAN)	return 0;
+		// if (kind2 === FOREIGN)	return Math.round(SALARY_RATE * t1 + SALARY_RATE / 2 * T2);
+		// return Math.round((money + bonus) / 240 * t1 + (money + bonus) / 240 * T2 / 2);
 	}
 	
 	//MARK: 全勤獎金
-	async getFullAttendanceBonus(): Promise<number> {
-		const full_attendance_bonus = 0;
+	async getFullAttendanceBonus(period_id: number,emp_no: string): Promise<number> {
+		const ehrService = container.resolve(EHRService);
+		const bonusList = await ehrService.getBonusByEmpNoList(period_id,[emp_no]);
+		const full_attendance_bonus_id = (await ehrService.getBonusType()).find((bt) => bt.name === "全勤獎金")?.id!;
+		let full_attendance_bonus = 0;
+		for (const bonus of bonusList){
+			if (bonus.bonus_id === full_attendance_bonus_id){
+				full_attendance_bonus += bonus.amount ?? 0;
+			}
+		}
 		return full_attendance_bonus;
 	}
 	//MARK: 團保費代扣
@@ -343,11 +386,11 @@ export class CalculateService {
 				rd("超時加班") +
 				rd("其他加項稅") +
 				rd("全勤獎金") +
-				 rd("輪班津貼") +
+				rd("輪班津貼") +
 				rd("夜點費") -
 				rd("請假扣款") -
 				rd("特別事假扣款") -
-				rd("其他減項稅")
+				rd("其他減項稅") //expense expense class
 		*/
 		const salary_income_deduction = 0
 		return salary_income_deduction
@@ -625,14 +668,31 @@ export class CalculateService {
 	//MARK: 團保費代扣＿升等
 	// 感覺在這裡: DoCmd.OpenQuery "其他更新", acNormal, acEdit    'Jerry 07/09/03  增加退職所得  23/6/3 增加團保費代扣_升等
 	
-
-	//MARK: 特別事假扣款		
-	// 薪資查詢.特別事假扣款 = GetLeave2Money(薪資查詢!工作類別,薪資查詢!工作形態,薪資查詢!原應發底薪,薪資查詢!補助津貼+薪資查詢!專業証照津貼,薪資查詢!特別事假時數);
+/*
+	//MARK: 特別事假扣款
+	def getSpecialLeavePay(employee_data: EmployeeData): number {
+		let work_type = employee_data.work_type;
+		let work_status = employee_data.work_status;
+		let 
+	// GetLeave2Money(kind1 As String, kind2 As String, money As Long, bouns As Long, t1 As Single)
+    // If kind1 = Foreign_Man Then
+    //    GetLeave2Money = Round(SALARY_RATE * t1, 0)
+    // Else
+    // Select Case kind2
+    //     Case Leave_Man
+    //         GetLeave2Money = 0
+    //     Case Foreign
+    //         GetLeave2Money = Round(SALARY_RATE * t1, 0)
+    //     Case Else
+    //         GetLeave2Money = Round((money + bouns) / 240 * t1, 0)
+    // End Select
+    // End If
+	薪資查詢.特別事假扣款 = GetLeave2Money(薪資查詢!工作類別,薪資查詢!工作形態,薪資查詢!原應發底薪,薪資查詢!補助津貼+薪資查詢!專業証照津貼,薪資查詢!特別事假時數);
 
 
 	//MARK: 實發金額
 }
-
+*/
 
 
 /*
@@ -645,3 +705,4 @@ if (!勞保追加)
 if (!健保追加)
 	建保追加 = False
 */
+}

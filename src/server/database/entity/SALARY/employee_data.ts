@@ -30,6 +30,7 @@ export class EmployeeData extends Model<
 	declare quit_date: string | null;
 	declare license_id: string | null;
 	declare bank_account: string;
+	// declare received_elderly_benefits: boolean;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -110,6 +111,9 @@ EmployeeData.init(
 		license_id: {
 			type: DataTypes.STRING(32),
 		},
+		// received_elderly_benefits: {
+		// 	type: DataTypes.BOOLEAN,
+		// },
 		create_date: {
 			type: DataTypes.DATE,
 		},

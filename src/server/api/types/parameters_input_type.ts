@@ -286,6 +286,7 @@ const EmployeeData = z.object({
 	quit_date: z.string().nullable(),
 	license_id: z.string().nullable(),
 	bank_account: z.string(),
+	// received_elderly_benefits: z.boolean(),
 });
 
 export const createEmployeeDataAPI = EmployeeData;
@@ -294,3 +295,33 @@ export const updateEmployeeDataAPI = EmployeeData.merge(Id).partial();
 export const updateEmployeeDataByEmpNoAPI = EmployeeData.partial();
 export const updateEmployeeDataService = EmployeeData.merge(Id).partial();
 export const updateEmployeeDataByEmpNoService = EmployeeData.partial();
+
+
+
+// MARK: Holidays Type
+const HolidaysType = z.object({
+	pay_id: z.number(),
+	holidays_name: z.string(),
+	multiplier: z.number(),
+	pay_type: z.number()
+});
+export const updateHolidaysTypeInput = z
+	.object({
+		id: z.number(),
+		pay_id: z.number().nullable(),
+		holidays_name: z.string().nullable(),
+		multiplier: z.number().nullable(),
+		pay_type: z.number().nullable()
+	})
+	.partial();
+
+export const createHolidaysTypeAPI =
+	HolidaysType.merge(DateAPI);
+export const createHolidaysTypeService =
+	HolidaysType.merge(DateService);
+export const updateHolidaysTypeAPI = HolidaysType.merge(Id)
+	.merge(DateAPI)
+	.partial();
+export const updateHolidaysTypeService = HolidaysType.merge(Id)
+	.merge(DateService)
+	.partial();

@@ -31,6 +31,7 @@ export class EmployeeDataService {
 		quit_date,
 		license_id,
 		bank_account,
+		// received_elderly_benefits,
 	}: z.infer<typeof createEmployeeDataService>): Promise<EmployeeData> {
 		const newData = await EmployeeData.create({
 			emp_no: emp_no,
@@ -49,6 +50,7 @@ export class EmployeeDataService {
 			quit_date: quit_date,
 			license_id: license_id,
 			bank_account: bank_account,
+			// received_elderly_benefits: received_elderly_benefits,
 			create_by: "system",
 			update_by: "system",
 		});
@@ -100,6 +102,7 @@ export class EmployeeDataService {
 		quit_date: quit_date,
 		license_id: license_id,
 		bank_account: bank_account,
+		// received_elderly_benefits: received_elderly_benefits,
 	}: z.infer<typeof updateEmployeeDataService>): Promise<void> {
 		const employeeData = await this.getEmployeeDataById(id!);
 		if (employeeData == null) {
@@ -138,7 +141,10 @@ export class EmployeeDataService {
 					employeeData.group_insurance_type
 				),
 				department: select_value(department, employeeData.department),
-
+				// received_elderly_benefits: select_value(
+				// 	received_elderly_benefits,
+				// 	employeeData.received_elderly_benefits
+				// ),
 				update_by: "system",
 			},
 			{ where: { id: id } }
@@ -165,6 +171,7 @@ export class EmployeeDataService {
 		quit_date: quit_date,
 		license_id: license_id,
 		bank_account: bank_account,
+		// received_elderly_benefits: received_elderly_benefits,
 	}: z.infer<typeof updateEmployeeDataByEmpNoService>): Promise<void> {
 		const employeeData = await this.getEmployeeDataByEmpNo(emp_no!);
 		if (employeeData == null) {
@@ -203,7 +210,10 @@ export class EmployeeDataService {
 					employeeData.group_insurance_type
 				),
 				department: select_value(department, employeeData.department),
-
+				// received_elderly_benefits: select_value(
+				// 	received_elderly_benefits,
+				// 	employeeData.received_elderly_benefits
+				// ),
 				update_by: "system",
 			},
 			{ where: { emp_no: emp_no } }

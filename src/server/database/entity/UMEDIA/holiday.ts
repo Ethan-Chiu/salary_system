@@ -8,12 +8,12 @@ export class Holiday {
 	declare pay_delay?: number;
 	declare period_name?: string;
 	declare total_hours?: number;
-	declare annual_1?: number;
-	declare compensatory_134?: number;
-	declare compensatory_167?: number;
-	declare compensatory_267?: number;
-	declare compensatory_1?: number;
-	declare compensatory_2?: number;
+	declare annual_1?: number; //不休假
+	declare compensatory_134?: number; //不休假
+	declare compensatory_167?: number; //不休假
+	declare compensatory_267?: number; //不休假
+	declare compensatory_1?: number; //不休假
+	declare compensatory_2?: number; //不休假
 	constructor(
 		period_id?: number,
 		period_name?: string,
