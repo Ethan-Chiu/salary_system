@@ -38,14 +38,12 @@ export default function CalendarHeader({
 			</p>
 
 			<Button variant="outline" size="sm" onClick={handlePrevMonth}>
-				<span className="sr-only">Go to previous month</span>
 				<ChevronLeftIcon className="h-4 w-4" />
 			</Button>
 			<Button variant="outline" size="sm" onClick={handleReset}>
 				{t("table.current")}
 			</Button>
 			<Button variant="outline" size="sm" onClick={handleNextMonth}>
-				<span className="sr-only">Go to next month</span>
 				<ChevronRightIcon className="h-4 w-4" />
 			</Button>
 		</div>

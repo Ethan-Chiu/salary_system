@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { LoadingSpinner } from "~/components/loading";
 import { FunctionsEnumType } from "~/server/api/types/functions_enum";
 import { api } from "~/utils/api";
@@ -32,6 +33,8 @@ function SalaryCalculateContent({
 }) {
     const { isLoading, isError, data, error } = api.calculate.calculateWeekdayOvertimePay.useQuery({ emp_no: emp_no_list[0]!, period_id: period })
 
+    const { t } = useTranslation(['common'])
+
     if (isLoading) {
         return <LoadingSpinner />; // TODO: Loading element with toast
     }
@@ -40,5 +43,5 @@ function SalaryCalculateContent({
         return <span>Error: {error.message}</span>; // TODO: Error element with toast
     }
 
-    return <div>Done</div>
+    return <div>{t("others.calculate_done")}</div>
 }

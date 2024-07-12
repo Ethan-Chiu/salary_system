@@ -15,7 +15,9 @@ import { useTranslation } from "react-i18next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
 
-const TabOptions = ["基本檔案", "薪資檔案", "持股信託"];
+import i18nGlobal from "~/lib/utils/i18n";
+
+const TabOptions = [i18nGlobal.t("common.table_name.employeeData"), i18nGlobal.t("common.table_name.employeePayment"), i18nGlobal.t("common.table_name.employeeTrust")];
 
 const PageEmployeesContent = () => {
 	const { setSelectedTableType } = useContext(dataTableContext);
@@ -102,9 +104,11 @@ const PageEmployees: NextPageWithLayout = () => {
 };
 
 export const getStaticProps = async ({ locale }: { locale: string }) => {
-  return ({props: {
-    ...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
-  }});
+	return ({
+		props: {
+			...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
+		}
+	});
 };
 
 PageEmployees.getLayout = function getLayout(page: ReactElement) {

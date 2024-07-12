@@ -175,7 +175,13 @@
     "levelRange": "Level Range",
     "performanceLevel": "Performance Level",
     "trustMoney": "Trust Money",
-    "basicInfo": "Basic Info"
+    "basicInfo": "Basic Info",
+    "employeeData": "Employee Data",
+    "employeePayment": "Employee Payment",
+    "employeeTrust": "Employee Trust",
+    "holiday": "Holiday",
+    "overtime": "Overtime",
+    "payset": "Payset"
   },
   "button": {
     "next_step": "Next Step",
@@ -191,7 +197,8 @@
     "auto_calculate": "Auto Calculate",
     "form": "Form",
     "save": "Save",
-    "ignore": "Ignore"
+    "ignore": "Ignore",
+    "select": "Select"
   },
   "month": {
     "jan": "01",
@@ -217,6 +224,11 @@
     "sat": "Sat"
   },
   "others": {
+    "month_salary": "Month Salary",
+    "foreign_workers_bonus": "Foreign Workers Bonus",
+    "employee_trust": "Employee Trust",
+    "quarterly_bonus": "Quarterly Bonus",
+    "employee_dividends": "Employee Dividends",
     "now": "Now",
     "year": "Year",
     "month": "Month",
@@ -227,6 +239,7 @@
     "period": "Period",
     "not_set": "Not Set",
     "select_period": "Please select a Period",
+    "select_period_and_issue_date": "Please select a Period and Issue date",
     "visible_columns": "Visible Columns",
     "filter_setting": "Filter Setting...",
     "up_to_date": "Up To Date",
@@ -248,6 +261,14 @@
     "search_employee": "Search Employee...",
     "no_employee_found": "No Employee Found",
     "well_done": "Well Done!",
-    "well_done_msg": "You have checked all the changes. Please click update button."
+    "well_done_msg": "You have checked all the changes. Please click update button.",
+    "sync_employee_data": "Sync Employee Data",
+    "comfirm_employee_list": "Confirm Employee List",
+    "comfirm_data": "Confirm Data",
+    "confirm_parameter": "Confirm Parameter",
+    "calculate_salary": "Calculate Salary",
+    "calculate_done": "Calculate Done",
+    "sync_error": "There are bugs in the data",
+    "sync_error_msg": "Please resolve these bugs before proceed. You might need to contact the EHR team."
   }
 }

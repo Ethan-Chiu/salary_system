@@ -30,6 +30,7 @@ import { FunctionsEnum } from "~/server/api/types/functions_enum";
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
+import { ParameterPage } from "./parameters_page";
 
 type FunctionStepPage = {
 	title: string;
@@ -40,12 +41,13 @@ const MonthSalary: NextPageWithLayout = () => {
 	const { selectedPeriod } = useContext(periodContext);
 
 	const periodId = selectedPeriod?.period_id;
+	const { t } = useTranslation(['common'])
 
 	if (!periodId) {
 		return (
 			<div className="flex h-full flex-col items-center justify-center p-4">
 				<div className="my-6 font-bold ">
-					Please select a period and paydate{" "}
+					{t("others.select_period_and_issue_date")}
 				</div>
 				<Link
 					className={cn(
@@ -54,7 +56,7 @@ const MonthSalary: NextPageWithLayout = () => {
 					)}
 					href="/functions"
 				>
-					Go back
+					{t("button.previous_page")}
 				</Link>
 			</div>
 		);
@@ -85,7 +87,7 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 
 	const pageList: FunctionStepPage[] = [
 		{
-			title: "同步員工資料",
+			title: t("others.sync_employee_data"),
 			page: (
 				<SyncPage
 					key="sync"
@@ -96,7 +98,7 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 			),
 		},
 		{
-			title: "薪資發放名單檢核",
+			title: t("others.comfirm_employee_list"),
 			page: (
 				<EmployeePage
 					key="employee"
@@ -108,7 +110,7 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 			),
 		},
 		{
-			title: "確認資料",
+			title: t("others.comfirm_data"),
 			page: (
 				<DataPage
 					key="data"
@@ -119,19 +121,19 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 				/>
 			),
 		},
-		// {
-		// 	title: "確認參數",
-		// 	page: (
-		// 		<ParameterPage
-		// 			key="parameter"
-		// 			period={periodId}
-		// 			selectedIndex={selectedIndex}
-		// 			setSelectedIndex={setSelectedIndex}
-		// 		/>
-		// 	),
-		// },
 		{
-			title: "薪資計算",
+			title: t("others.confirm_parameter"),
+			page: (
+				<ParameterPage
+					key="parameter"
+					period={periodId}
+					selectedIndex={selectedIndex}
+					setSelectedIndex={setSelectedIndex}
+				/>
+			),
+		},
+		{
+			title: t("others.calculate_salary"),
 			page: (
 				<SalaryCalculatePage
 					key="salary_calculate"
@@ -169,14 +171,12 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 }
 
 function CompAlert({ data }: { data: PaidEmployee[] }) {
+	const { t } = useTranslation(['common'])
 	return (
 		<AlertDialogContent className="w-[90vw]">
 			<AlertDialogHeader>
-				<AlertDialogTitle>There are bugs in the data</AlertDialogTitle>
-				<AlertDialogDescription>
-					Please resolve these bugs before proceed. You might need to
-					contact the EHR team.
-				</AlertDialogDescription>
+				<AlertDialogTitle>{t("other.sync_error")}</AlertDialogTitle>
+				<AlertDialogDescription>{t("other.sync_error_msg")}</AlertDialogDescription>
 			</AlertDialogHeader>
 			<div className="m-4">
 				{data.map((cand) => {
@@ -201,7 +201,7 @@ function CompAlert({ data }: { data: PaidEmployee[] }) {
 				})}
 			</div>
 			<AlertDialogFooter>
-				<AlertDialogAction>Continue</AlertDialogAction>
+				<AlertDialogAction>{t("button.confirm")}</AlertDialogAction>
 			</AlertDialogFooter>
 		</AlertDialogContent>
 	);
@@ -218,8 +218,10 @@ MonthSalary.getLayout = function getLayout(page: React.ReactElement) {
 export default MonthSalary;
 
 export const getStaticProps = async ({ locale }: { locale: string }) => {
-  return ({props: {
-    ...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
-  }});
+	return ({
+		props: {
+			...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
+		}
+	});
 };
 
