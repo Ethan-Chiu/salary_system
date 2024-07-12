@@ -65,7 +65,7 @@ EmployeePayment.init(
 			allowNull: true,
 		},
 		occupational_allowance: {
-			type: DataTypes.STRING(128),
+			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: true,
 		},
 		subsidy_allowance: {

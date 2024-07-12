@@ -3,10 +3,10 @@ import { HolidayTable } from "../tables/holiday_table";
 import { OvertimeTable } from "../tables/overtime_table";
 import { PaysetTable } from "../tables/payset_table";
 import { Button } from "~/components/ui/button";
-import { useTranslation } from "react-i18next";
 import { cn } from "~/lib/utils";
 import { api } from "~/utils/api";
-import { FunctionsEnumType } from "~/server/api/types/functions_enum";
+import { type FunctionsEnumType } from "~/server/api/types/functions_enum";
+import { useTranslation } from "react-i18next";
 import i18n from "~/lib/utils/i18n";
 
 const TabOptions = () => [i18n.t("common.table_name.holiday"), i18n.t("common.table_name.overtime"), i18n.t("common.table_name.payset")];
@@ -22,6 +22,9 @@ export function DataPage({
 	selectedIndex: number;
 	setSelectedIndex: (index: number) => void;
 }) {
+
+  const { t } = useTranslation("common", { keyPrefix: "button" });
+
 	function getTable(table_name: string) {
 		const employee_data_list = api.sync.getPaidEmployees.useQuery({ func }).data
 		const emp_no_list = employee_data_list!.map(emp => emp.emp_no)
@@ -37,8 +40,6 @@ export function DataPage({
 		}
 	}
 
-	const { t } = useTranslation(["common"]);
-
 	return (
 		<>
 			<div className="h-0 grow">
@@ -49,7 +50,7 @@ export function DataPage({
 					<TabsList className={cn(`grid w-full grid-cols-${TabOptions.length}`)}>
 						{TabOptions().map((option) => {
 							return (
-								<TabsTrigger value={option}>
+								<TabsTrigger key={option} value={option}>
 									{option}
 								</TabsTrigger>
 							);
@@ -58,7 +59,7 @@ export function DataPage({
 					<div className="mt-2 h-0 grow">
 						{TabOptions().map((option) => {
 							return (
-								<TabsContent value={option} className="h-full">
+								<TabsContent key={option} value={option} className="h-full">
 									{period > 0 ? getTable(option) : <></>}
 								</TabsContent>
 							);
@@ -70,12 +71,12 @@ export function DataPage({
 				<Button
 					onClick={() => setSelectedIndex(selectedIndex - 1)}
 				>
-					{t("button.previous_step")}
+					{t("previous_step")}
 				</Button>
 				<Button
 					onClick={() => setSelectedIndex(selectedIndex + 1)}
 				>
-					{t("button.next_step")}
+					{t("next_step")}
 				</Button>
 			</div>
 		</>

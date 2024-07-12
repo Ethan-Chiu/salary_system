@@ -1,9 +1,9 @@
 import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table";
 import { api } from "~/utils/api";
-import { useTranslation } from "react-i18next";
+import i18n from "~/lib/utils/i18n";
 
-const columns = [
+const columns = () => [
 	"emp_no",
 	"emp_name",
 	"position",
@@ -21,10 +21,9 @@ const columns = [
 	"license_id",
 	"bank_account",
 ].map((key) => {
-	const { t } = useTranslation(['common']);
 	return {
 		accessorKey: key,
-		header: t(`table.${key}`),
+		header: i18n.t(`common.table.${key}`),
 	};
 });
 
@@ -44,5 +43,5 @@ export function EmployeeDataTable({ func }: EmployeeDataTableProps) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-	return <DataTable columns={columns} data={data} />;
+	return <DataTable columns={columns()} data={data} />;
 }
