@@ -172,10 +172,17 @@
     "bonusPosition": "獎金職等",
     "bonusPositionType": "獎金職級",
     "bonusSeniority": "獎金年資",
+    "level": "級距",
     "levelRange": "級距類別範圍",
     "performanceLevel": "績效等級比例",
     "trustMoney": "信託金",
-    "basicInfo": "基本資訊"
+    "basicInfo": "基本資訊",
+    "employeeData": "基本資料",
+    "employeePayment": "薪資檔案",
+    "employeeTrust": "持股信託",
+    "holiday": "請假",
+    "overtime": "加班",
+    "payset": "工作天數"
   },
   "button": {
     "next_step": "下一步",
@@ -191,7 +198,9 @@
     "auto_calculate": "自動計算",
     "form": "表單",
     "save": "儲存",
-    "ignore": "忽略"
+    "ignore": "忽略",
+    "select": "選擇",
+    "login": "登入"
   },
   "month": {
     "jan": "01",
@@ -216,7 +225,17 @@
     "fri": "五",
     "sat": "六"
   },
+  "sync_state": {
+    "initial": "尚未確認",
+    "checked": "確認更改",
+    "ignored": "暫不修改"
+  },
   "others": {
+    "month_salary": "月薪",
+    "foreign_workers_bonus": "15日外勞獎金",
+    "employee_trust": "持股信託",
+    "quarterly_bonus": "季獎金",
+    "employee_dividends": "員工分紅",
     "now": "現在",
     "year": "年",
     "month": "月",
@@ -227,6 +246,7 @@
     "period": "期別",
     "not_set": "未設定",
     "select_period": "請選擇一個期別",
+    "select_period_and_issue_date": "請選擇一個期別和發薪日期",
     "visible_columns": "顯示欄位",
     "filter_setting": "請輸入搜尋關鍵字...",
     "up_to_date": "已是最新資料",
@@ -248,6 +268,19 @@
     "search_employee": "搜尋員工...",
     "no_employee_found": "未找到符合條件的員工",
     "well_done": "大功告成！",
-    "well_done_msg": "已確認所有變更，請按更新按鈕"
+    "well_done_msg": "已確認所有變更，請按更新按鈕",
+    "sync_employee_data": "同步員工資料",
+    "comfirm_employee_list": "薪資發放名單檢核",
+    "comfirm_data": "確認資料",    
+    "confirm_parameter": "確認參數",
+    "calculate_salary": "薪資計算",
+    "calculate_done": "薪資計算完成",
+    "sync_error": "有錯誤的資料",
+    "sync_error_msg": "請解決這些錯誤後再進行操作。您可能需要與EHR團隊聯繫。",
+    "login": "登入",
+    "user_id": "員工編號",
+    "your_employee_id": "您的員工編號",
+    "password": "密碼",
+    "reset_password": "重設密碼"
   }
 }

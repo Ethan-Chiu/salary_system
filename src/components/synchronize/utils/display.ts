@@ -1,3 +1,4 @@
+import { TFunction } from "i18next";
 import { isDateType } from "~/lib/utils/check_type";
 import { formatDate } from "~/lib/utils/format_date";
 
@@ -15,7 +16,8 @@ export function isValidDateString(input: string): string | undefined {
 }
 
 export const displayData = (
-	data: any
+	data: any,
+  t: TFunction<[string], undefined>
 ) => {
 	if (typeof data === "boolean") return data ? "True" : "False";
 	if (typeof data === "number") return data;
@@ -32,5 +34,5 @@ export const displayData = (
 
 
 	if (data === null)		return "Null";
-	if (data === undefined)		return "No Data";
+	if (data === undefined)		return t("table.no_data");
 };

@@ -1,7 +1,7 @@
 import { cn } from "~/lib/utils";
 import { useState } from "react";
 import {
-	LucideIcon,
+	type LucideIcon,
 	PenSquare,
 	Plus,
 	PlusSquare,
@@ -29,8 +29,8 @@ import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Button } from "~/components/ui/button";
 import { useTranslation } from "react-i18next";
 import {
-	TableEnum,
-	getTableName,
+	type TableEnum,
+	getTableNameKey,
 } from "~/pages/parameters/components/context/data_table_enum";
 import { EmployeeForm } from "./employee_form";
 import { getSchema } from "~/pages/parameters/schemas/get_schemas";
@@ -98,7 +98,7 @@ export function DataTableFunctions({
 				<SheetContent className="w-[50%]">
 					<SheetHeader>
 						<SheetTitle>
-							{`${t(`button.${mode}`)!}${t("button.form")} (${getTableName(tableType)})`}
+							{`${t(`button.${mode}`)!}${t("button.form")} (${getTableNameKey(tableType)})`}
 						</SheetTitle>
 						<SheetDescription>
 							{modeDescription(mode)}

@@ -28,6 +28,7 @@ import { signIn } from "next-auth/react";
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
+import { useTranslation } from "react-i18next";
 
 
 const LoginFormSchema = z.object({
@@ -75,6 +76,8 @@ export default function Login() {
 		[router]
 	);
 
+	const { t } = useTranslation(["common"]);
+
 	return (
 		<PerpageLayout pageTitle="login">
 			<div className="mt-[15vh] flex justify-center align-middle">
@@ -88,7 +91,7 @@ export default function Login() {
 							>
 								<CardHeader>
 									<div className="justify-center">
-										<CardTitle>Login</CardTitle>
+										<CardTitle>{t("others.login")}</CardTitle>
 									</div>
 								</CardHeader>
 								<CardContent className="space-y-2">
@@ -97,15 +100,15 @@ export default function Login() {
 										name="userid"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>User ID</FormLabel>
+												<FormLabel>{t("others.user_id")}</FormLabel>
 												<FormControl>
 													<Input
-														placeholder="user id"
+														placeholder={t("others.user_id")}
 														{...field}
 													/>
 												</FormControl>
 												<FormDescription>
-													Your employee ID
+													{t("others.your_employee_id")}
 												</FormDescription>
 												<FormMessage />
 											</FormItem>
@@ -116,10 +119,10 @@ export default function Login() {
 										name="password"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>Password</FormLabel>
+												<FormLabel>{t("others.password")}</FormLabel>
 												<FormControl>
 													<Input
-														placeholder="password"
+														placeholder={t("others.password")}
 														{...field}
 													/>
 												</FormControl>
@@ -133,7 +136,7 @@ export default function Login() {
 											onClick={() => setForgetPwd(true)}
 											className="text-sm text-muted-foreground"
 										>
-											forget password?
+											{t("others.reset_password")}
 										</button>
 									</div>
 								</CardContent>
@@ -142,7 +145,7 @@ export default function Login() {
 										disabled={form.formState.isSubmitting}
 										type="submit"
 									>
-										LOGIN
+										{t("button.login")}
 									</Button>
 								</CardFooter>
 							</form>
@@ -152,25 +155,25 @@ export default function Login() {
 					<Card className="w-[400px]">
 						<CardHeader>
 							<div className="justify-center">
-								<CardTitle>Forget Password</CardTitle>
+								<CardTitle>{t("others.reset_password")}</CardTitle>
 							</div>
 						</CardHeader>
 						<CardContent className="space-y-2">
 							<div className="space-y-1">
-								<Label htmlFor="name">User ID</Label>
-								<Input id="userid" placeholder="user id" />
+								<Label htmlFor="name">{t("others.user_id")}</Label>
+								<Input id="userid" placeholder={t("others.user_id")} />
 							</div>
 							<div className="pt-4 text-right">
 								<button
 									onClick={() => setForgetPwd(false)}
 									className="text-sm text-muted-foreground"
 								>
-									Login
+									{t("button.login")}
 								</button>
 							</div>
 						</CardContent>
 						<CardFooter className="justify-center">
-							<Button>RESET PASSWORD</Button>
+							<Button>{t("others.reset_password")}</Button>
 						</CardFooter>
 					</Card>
 				)}
