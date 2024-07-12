@@ -1,15 +1,16 @@
-import { Translate } from "./translation";
+import { useTranslation } from "react-i18next";
 
 export function modeDescription(mode: string) {
+    const { t } = useTranslation(['common']);
     switch (mode) {
         case "create":
-            return Translate("Fill in the parameters to create new data.");
+            return t("others.create_msg");
         case "update":
-            return Translate("Please select one data to update.");
+            return t("others.update_msg");
         case "delete":
-            return Translate("Please select one data to delete.");
-        case "auto calculate":
-            return Translate("Please select data to auto calculate.");
+            return t("others.delete_msg");
+        case "auto_calculate":
+            return t("others.auto_calculate_msg");
         default:
             return "";
     }

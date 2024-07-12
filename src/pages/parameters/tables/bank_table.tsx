@@ -9,7 +9,7 @@ import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { formatDate } from "~/lib/utils/format_date";
 import { EmptyTable } from "./empty_table";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 export type RowItem = {
 	bank_name: string;
@@ -26,6 +26,7 @@ const columnHelper = createColumnHelper<RowItem>();
 export const bank_columns = [
 	columnHelper.accessor("bank_name", {
 		header: ({ column }) => {
+			const { t } = useTranslation(["common"]);
 			return (
 				<div className="flex justify-center">
 					<div className="text-center font-medium">
@@ -37,7 +38,7 @@ export const bank_columns = [
 								)
 							}
 						>
-							{Translate("bank_name")}
+							{t("table.bank_name")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -49,7 +50,10 @@ export const bank_columns = [
 		),
 	}),
 	columnHelper.accessor("org_name", {
-		header: () => <div className="text-center">{Translate("org_name")}</div>,
+		header: () => {
+			const { t } = useTranslation(["common"]);
+			return <div className="text-center">{t("table.org_name")}</div>
+		},
 		cell: ({ row }) => {
 			return (
 				<div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>
@@ -57,7 +61,10 @@ export const bank_columns = [
 		},
 	}),
 	columnHelper.accessor("start_date", {
-		header: () => <div className="text-center">{Translate("start_date")}</div>, 
+		header: () => {
+			const { t } = useTranslation(["common"]);
+			return <div className="text-center">{t("table.start_date")}</div>
+		}, 
 		cell: ({ row }) => {
 			return (
 				<div className="text-center font-medium">{`${
@@ -67,7 +74,10 @@ export const bank_columns = [
 		},
 	}),
 	columnHelper.accessor("end_date", {
-		header: () => <div className="text-center">{Translate("end_date")}</div>,
+		header: () => {
+			const { t } = useTranslation(["common"]);
+			return <div className="text-center">{t("table.end_date")}</div>
+		},
 		cell: ({ row }) => {
 			return row.original.end_date ? (
 				<div className="text-center font-medium">{`${

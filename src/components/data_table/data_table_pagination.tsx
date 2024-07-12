@@ -1,6 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { type Table } from "@tanstack/react-table";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import {
 	Select,
@@ -10,7 +11,6 @@ import {
 	SelectValue,
 } from "~/components/ui/select";
 import { cn } from "~/lib/utils";
-import { Translate } from "~/lib/utils/translation";
 
 interface DataTablePaginationProps<TData>
 	extends React.HTMLAttributes<HTMLDivElement> {
@@ -29,6 +29,8 @@ export function DataTablePagination<TData>({
 	const [rowNum, setRowNum] = React.useState(10);
 	const [columnNum, setColumnNum] = React.useState(1);
 
+	const { t } = useTranslation(['common']);
+
 	return (
 		<div
 			className={cn(
@@ -40,7 +42,10 @@ export function DataTablePagination<TData>({
 			<div className="text-sm text-muted-foreground">
 				{
 					<div className="min-w-[100px]">
-						{`第 ${pageIndex * pageSize + 1} 到 ${Math.min((pageIndex + 1) * pageSize, dataNum)} 筆 (共 ${dataNum} 筆)`}
+						{t('others.data_num_template')
+							.replace('$1', (pageIndex * pageSize + 1).toString())
+							.replace('$2', (Math.min((pageIndex + 1) * pageSize, dataNum)).toString())
+							.replace('$3', (dataNum).toString())}
 					</div>
 				}
 			</div>
@@ -63,7 +68,8 @@ export function DataTablePagination<TData>({
 									key={value}
 									value={(value + 1).toString()}
 								>
-									{`${value + 1} 列`}
+									{t('others.row_template')
+										.replace('$1', (value + 1).toString())}
 								</SelectItem>
 							)
 						)}
@@ -87,7 +93,8 @@ export function DataTablePagination<TData>({
 								key={value}
 								value={(value + 1).toString()}
 							>
-								{`每列 ${value + 1} 筆`}
+								{t('others.col_template')
+									.replace('$1', (value + 1).toString())}
 							</SelectItem>
 						))}
 					</SelectContent>
@@ -97,7 +104,9 @@ export function DataTablePagination<TData>({
 			<div className="ml-2 flex justify-end">
 				<div className=" flex items-center space-x-4">
 					<div className="flex w-30 items-center justify-center text-sm font-medium">
-						{`第 ${table.getState().pagination.pageIndex + 1} 頁 (共 ${table.getPageCount()} 頁)`}
+						{t('others.page_template')
+							.replace('$1', (table.getState().pagination.pageIndex + 1).toString())
+							.replace('$2', (table.getPageCount()).toString())}
 					</div>
 					<div className="flex items-center space-x-2">
 						<Button
@@ -108,7 +117,7 @@ export function DataTablePagination<TData>({
 						>
 							<span className="sr-only">Go to previous page</span>
 							<ChevronLeftIcon className="h-4 w-4" />
-							{Translate("Previous")}
+							{t("button.previous_page")}
 						</Button>
 						<Button
 							variant="outline"
@@ -117,7 +126,7 @@ export function DataTablePagination<TData>({
 							disabled={!table.getCanNextPage()}
 						>
 							<span className="sr-only">Go to next page</span>
-							{Translate("Next")}
+							{t("button.next_page")}
 							<ChevronRightIcon className="h-4 w-4" />
 						</Button>
 					</div>

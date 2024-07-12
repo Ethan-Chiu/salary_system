@@ -111,6 +111,7 @@ type SelectItemProp = {
 
 function CompSelectItemWrap(props: PropsWithChildren<SelectItemProp>) {
 	const { selectedPeriod, selectedPayDate } = useContext(periodContext);
+	const { t } = useTranslation(['common']);
 
 	return props.collapsed ? (
 		<TooltipProvider>
@@ -150,7 +151,7 @@ function CompSelectItemWrap(props: PropsWithChildren<SelectItemProp>) {
 						<div className="line-clamp-1 break-all">
 							{selectedPeriod?.period_name && selectedPayDate
 								? selectedPayDate
-								: "未設定完畢"}
+								: t("others.not_set")}
 						</div>
 					</div>
 				</div>
@@ -247,7 +248,7 @@ export function Sidebar({
 	const pathname = usePathname();
 	const { isLoading, data } = api.access.accessByRole.useQuery(); // isError, error
 
-  const { t } = useTranslation(["nav", "common"]);
+	const { t } = useTranslation(["nav", "common"]);
 
 	if (isLoading) {
 		return <></>;

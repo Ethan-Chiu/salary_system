@@ -4,15 +4,16 @@ import { type NextPageWithLayout } from "../_app";
 import React, { type ReactElement } from "react";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import TablesView from "./tables_view";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
 
 const PageParameters: NextPageWithLayout = () => {
+	const { t } = useTranslation("common");
 	return (
 		<div className="flex h-screen flex-col">
-			<Header title={Translate("parameters")} showOptions />
+			<Header title={t("table.parameters")} showOptions />
 
 			<div className="m-4 h-0 grow rounded-md border-2">
 				<TablesView />

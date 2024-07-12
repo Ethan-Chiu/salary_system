@@ -33,8 +33,7 @@ import { type DataComparison } from "~/server/service/sync_service";
 import { type SyncCheckStatusEnumType } from "~/components/synchronize/utils/sync_check_status";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import periodContext from "../context/period_context";
-
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 export interface SyncDataAndStatus {
 	emp_no: string;
@@ -60,8 +59,11 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 	const [showDetails, setShowDetails] = useState<boolean>(true);
 	const [checkedEmps, setCheckedEmps] = useState<Record<string, boolean>>({});
 	const { selectedPeriod } = useContext(periodContext);
+
+	const { t } = useTranslation(['common']);
+
 	if (selectedPeriod == null) {
-		return <p>{Translate("Please select period first")}</p>;
+		return <p>{t("others.select_period")}</p>;
 	}
 
 	useEffect(() => {
@@ -103,15 +105,15 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 						console.log("Show update table dialog");
 					}}
 				>
-					{Translate("Update")}
+					{t("button.update")}
 				</Button>
 			</DialogTrigger>
 			<DialogContent className="w-[90vw] max-w-5xl p-8">
 				<DialogHeader className="mx-4 flex items-center">
 					<div className="mr-auto">
-						<DialogTitle>{Translate("changed_data")}</DialogTitle>
+						<DialogTitle>{t("others.changed_data")}</DialogTitle>
 						<DialogDescription>
-							{Translate("changed_data_msg")}
+							{t("others.changed_data_msg")}
 						</DialogDescription>
 					</div>
 					<div className="ml-auto flex items-center space-x-2">
@@ -120,7 +122,7 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 							checked={showDetails}
 							onCheckedChange={setShowDetails}
 						/>
-						<Label htmlFor="showDetails">{Translate("show_details")}</Label>
+						<Label htmlFor="showDetails">{t("others.show_details")}</Label>
 					</div>
 				</DialogHeader>
 				{/* <ScrollArea className="max-h-[70vh] overflow-y-scroll"> */}
@@ -136,7 +138,7 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 
 				<DialogClose asChild>
 					<Button type="submit" onClick={() => handleUpdate(selectedPeriod.period_id)}>
-						{Translate("Update")}
+						{t("button.update")}
 					</Button>
 				</DialogClose>
 			</DialogContent>
@@ -166,6 +168,8 @@ export function UpdateTable({
 		setCheckedEmps(newChecked);
 	}
 
+	const { t } = useTranslation(['common']);
+
 	return (
 		<>
 			<Table className="border">
@@ -173,25 +177,25 @@ export function UpdateTable({
 					<TableRow className="border">
 						<TableHead className="w-[50px] border text-center whitespace-nowrap">
 							<Button variant={"ghost"} onClick={checkAll}>
-								{Translate("all_(un)click")}
+								{t("others.all_(un)click")}
 							</Button>
 						</TableHead>
 						<TableHead className="border text-center whitespace-nowrap">
-							{Translate("emp_no")}
+							{t("table.emp_no")}
 						</TableHead>
 						<TableHead className="border text-center whitespace-nowrap">
-							{Translate("name")}
+							{t("table.name")}
 						</TableHead>
 						{showDetails && (
 							<>
 								<TableHead className="border text-center whitespace-nowrap">
-									{Translate("key")}
+									{t("table.key")}
 								</TableHead>
 								<TableHead className="border text-center whitespace-nowrap">
-									{Translate("salary_data")}
+									{t("table.salary_data")}
 								</TableHead>
 								<TableHead className="border text-center whitespace-nowrap">
-									{Translate("ehr_data")}
+									{t("table.ehr_data")}
 								</TableHead>
 							</>
 						)}
@@ -204,7 +208,7 @@ export function UpdateTable({
 								colSpan={6}
 								className="border text-center whitespace-nowrap"
 							>
-								{Translate("no data")}
+								{t("table.no_data")}
 							</TableCell>
 						</TableRow>
 					)}
@@ -242,7 +246,7 @@ export function UpdateTable({
 										<>
 											<CustomTableCell className="border text-center whitespace-nowrap">
 												{displayData(
-													Translate(comparisons[0]!.key)
+													t(`table.${comparisons[0]!.key}`)
 												)}
 											</CustomTableCell>
 											<CustomTableCell className="border text-center whitespace-nowrap">
@@ -271,7 +275,7 @@ export function UpdateTable({
 																<>
 																	<CustomTableCell className="border text-center whitespace-nowrap">
 																		{displayData(
-																			Translate(cd.key)
+																			t(`table.${cd.key}`)
 																		)}
 																	</CustomTableCell>
 																	<CustomTableCell className="border text-center whitespace-nowrap">

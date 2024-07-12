@@ -6,7 +6,7 @@ import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import { api } from "~/utils/api";
 import { type FunctionsEnumType } from "~/server/api/types/functions_enum";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "react-i18next";
 
 const TabOptions = ["請假", "加班", "工作天數"];
 
@@ -21,6 +21,7 @@ export function DataPage({
 	selectedIndex: number;
 	setSelectedIndex: (index: number) => void;
 }) {
+
   const { t } = useTranslation("common", { keyPrefix: "button" });
 
 	function getTable(table_name: string) {

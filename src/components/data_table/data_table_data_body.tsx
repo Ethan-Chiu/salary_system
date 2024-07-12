@@ -1,7 +1,7 @@
 import { type Table } from "@tanstack/react-table";
 import { TableBody, TableCell, TableRow } from "~/components/ui/table";
 import { flexRender } from "@tanstack/react-table";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 interface DataTableDataBodyProps<TData> {
 	table: Table<TData>;
@@ -50,10 +50,11 @@ export function DataTableDataBody<TData>({
 }
 
 function CompNoTableRow({ cols }: { cols: number }) {
+	const { t } = useTranslation(['common'])
 	return (
 		<TableRow>
 			<TableCell colSpan={cols} className="h-24 max-w-xs text-center">
-				{Translate("no data")}
+				{t("table.no_data")}
 			</TableCell>
 		</TableRow>
 	);

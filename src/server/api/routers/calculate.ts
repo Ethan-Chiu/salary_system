@@ -15,8 +15,8 @@ export const calculateRouter = createTRPCRouter({
 	calculateWeekdayOvertimePay: publicProcedure
 		.input(
 			z.object({
-				emp_no: z.coerce.string(),
-				period_id: z.coerce.number(),
+				emp_no: z.string(),
+				period_id: z.number(),
 			})
 		)
 		.query(async ({ input }) => {
@@ -46,7 +46,7 @@ export const calculateRouter = createTRPCRouter({
 				await ehrService.getPaysetByEmpNoList(input.period_id, [
 					input.emp_no,
 				])
-			)[0];
+			).findLast((data) => data.emp_no === input.emp_no);
 			const insurance_rate_setting =
 				await insuranceRateSettingService.getCurrentInsuranceRateSetting(
 					input.period_id
@@ -78,8 +78,8 @@ export const calculateRouter = createTRPCRouter({
 	calculateHolidayOvertimePay: publicProcedure
 		.input(
 			z.object({
-				emp_no: z.coerce.string(),
-				period_id: z.coerce.number(),
+				emp_no: z.string(),
+				period_id: z.number(),
 			})
 		)
 		.query(async ({ input }) => {
@@ -109,7 +109,7 @@ export const calculateRouter = createTRPCRouter({
 				await ehrService.getPaysetByEmpNoList(input.period_id, [
 					input.emp_no,
 				])
-			)[0];
+			).findLast((data) => data.emp_no === input.emp_no);
 			const insurance_rate_setting =
 				await insuranceRateSettingService.getCurrentInsuranceRateSetting(
 					input.period_id
@@ -140,8 +140,8 @@ export const calculateRouter = createTRPCRouter({
 		calculateExceedOvertimePay: publicProcedure
 		.input(
 			z.object({
-				emp_no: z.coerce.string(),
-				period_id: z.coerce.number(),
+				emp_no: z.string(),
+				period_id: z.number(),
 			})
 		)
 		.query(async ({ input }) => {
@@ -171,7 +171,7 @@ export const calculateRouter = createTRPCRouter({
 				await ehrService.getPaysetByEmpNoList(input.period_id, [
 					input.emp_no,
 				])
-			)[0];
+			).findLast((data) => data.emp_no === input.emp_no);
 			const insurance_rate_setting =
 				await insuranceRateSettingService.getCurrentInsuranceRateSetting(
 					input.period_id
@@ -199,13 +199,157 @@ export const calculateRouter = createTRPCRouter({
 			return exceed_overtime_pay;
 		}),
 	//API for 應發底薪
-
+	calculateGrossSalary: publicProcedure
+		.input(
+			z.object({
+				emp_no: z.string(),
+				period_id: z.number(),
+			})
+		)
+		.query(async ({ input }) => {
+			const calculateService = container.resolve(CalculateService);
+			const employeePaymentService = container.resolve(
+				EmployeePaymentService
+			);
+			const employee_payment =
+				await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
+					input.emp_no,
+					input.period_id
+				);
+			const ehrService = container.resolve(EHRService);
+			const payset = (
+				await ehrService.getPaysetByEmpNoList(input.period_id, [
+					input.emp_no,
+				])
+			).findLast((data) => data.emp_no === input.emp_no);
+			const gross_salary = await calculateService.getGrossSalary(
+				employee_payment!,
+				payset!,
+			);
+			if (gross_salary == null) {
+				throw new BaseResponseError("Cannot calculate gross salary");
+			}
+			return gross_salary;
+		}),
+	// API for 勞保扣除額
+	calculateLaborInsuranceDeduction: publicProcedure
+		.input(
+			z.object({
+				emp_no: z.string(),
+				period_id: z.number(),
+			})
+		)
+		.query(async ({ input }) => {
+			const calculateService = container.resolve(CalculateService);
+			const employeeDataService = container.resolve(EmployeeDataService);
+			const employee_data = await employeeDataService.getEmployeeDataByEmpNo(
+				input.emp_no
+			);
+			const employeePaymentService = container.resolve(
+				EmployeePaymentService
+			);
+			const employee_payment =
+				await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
+					input.emp_no,
+					input.period_id
+				);
+			const ehrService = container.resolve(EHRService);
+			const payset = (
+				await ehrService.getPaysetByEmpNoList(input.period_id, [
+					input.emp_no,
+				])
+			).findLast((data) => data.emp_no === input.emp_no);
+			const insuranceRateSettingService = container.resolve(
+				InsuranceRateSettingService
+			);
+			const insurance_rate_setting =
+				await insuranceRateSettingService.getCurrentInsuranceRateSetting(
+					input.period_id
+				)
+			const labor_insurance_deduction = await calculateService.getLaborInsuranceDeduction(
+				employee_data!,
+				employee_payment!,
+				payset!,
+				insurance_rate_setting!
+			)
+			return labor_insurance_deduction
+		}),
+	// API for 健保扣除額
+	calculateHealthInsuranceDeduction: publicProcedure
+		.input(
+			z.object({
+				emp_no: z.string(),
+				period_id: z.number(),
+			})
+		)
+		.query(async ({ input }) => {
+			const calculateService = container.resolve(CalculateService);
+			const employeeDataService = container.resolve(EmployeeDataService);
+			const employee_data = await employeeDataService.getEmployeeDataByEmpNo(
+				input.emp_no
+			)
+			const employeePaymentService = container.resolve(
+				EmployeePaymentService
+			);
+			const employee_payment =
+				await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
+					input.emp_no,
+					input.period_id
+				);
+			const ehrService = container.resolve(EHRService);
+			const payset = (
+				await ehrService.getPaysetByEmpNoList(input.period_id, [
+					input.emp_no,
+				])
+			).findLast((data) => data.emp_no === input.emp_no);
+			const insuranceRateSettingService = container.resolve(
+				InsuranceRateSettingService
+			);
+			const insurance_rate_setting =
+				await insuranceRateSettingService.getCurrentInsuranceRateSetting(
+					input.period_id
+				)
+			const health_insurance_deduction = await calculateService.getHealthInsuranceDeduction(
+				employee_data!,
+				employee_payment!,
+				insurance_rate_setting!,
+			)
+			return health_insurance_deduction
+		}),
+	// API for 福利金提撥
+	calculateWelfareDeduction: publicProcedure
+		.input(
+			z.object({
+				emp_no: z.string(),
+				period_id: z.number(),
+			})
+		)
+		.query(async ({ input }) => {
+			const calculateService = container.resolve(CalculateService);
+			const employeeDataService = container.resolve(EmployeeDataService);
+			const employeePaymentService = container.resolve(
+				EmployeePaymentService
+			);
+			
+			const employee_data =
+				await employeeDataService.getEmployeeDataByEmpNo(input.emp_no);
+			const employee_payment =
+				await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
+					input.emp_no,
+					input.period_id
+				);
+			const welfare_deduction = await calculateService.getWelfareDeduction(
+				employee_data!,
+				employee_payment!,
+			)
+			return welfare_deduction
+		}),
 	// API for 請假扣款
 	calculateLeaveDeduction: publicProcedure
 		.input(
 			z.object({
-				emp_no: z.coerce.string(),
-				period_id: z.coerce.number(),
+				emp_no: z.string(),
+				period_id: z.number(),
 			})
 		)
 		.query(async ({ input }) => {

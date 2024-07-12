@@ -12,13 +12,14 @@ import { ParameterForm } from "../../function_sheet/parameter_form";
 import dataTableContext from "../../context/data_table_context";
 import { getTableName } from "../../context/data_table_enum";
 import { getSchema } from "~/pages/parameters/schemas/get_schemas";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 import { modeDescription } from "~/lib/utils/helper_function";
 
 export default function CalendarAddEvent() {
 	const { openSheet, mouseDownDate, mouseUpDate, setOpenSheet, resetMouse } =
 		useContext(calendarContext);
 	const { selectedTableType } = useContext(dataTableContext);
+	const { t } = useTranslation(["common"]);
 
 	const mode = "create";
 
@@ -33,9 +34,7 @@ export default function CalendarAddEvent() {
 			<SheetContent className="w-[50%]">
 				<SheetHeader>
 					<SheetTitle>
-						{`${Translate(mode)!}${Translate(
-							"form"
-						)} (${getTableName(selectedTableType)})`}
+						{`${t(`button.${mode}`)!}${t("button.form")} (${getTableName(selectedTableType)})`}
 					</SheetTitle>
 					<SheetDescription>
 						{modeDescription(mode)}

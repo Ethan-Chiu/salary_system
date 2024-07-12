@@ -7,7 +7,7 @@ import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/compon
 import { LoadingSpinner } from "~/components/loading";
 import { type PerformanceLevel } from "~/server/database/entity/SALARY/performance_level";
 import { type TableComponentProps } from "../tables_view";
-import { Translate } from "~/lib/utils/translation";
+import { useTranslation } from "react-i18next";
 
 export type RowItem = {
 	performance_level: string;
@@ -20,6 +20,7 @@ const columnHelper = createColumnHelper<RowItem>();
 export const performance_level_columns = [
 	columnHelper.accessor("performance_level", {
 		header: ({ column }) => {
+			const { t } = useTranslation(["common"]);
 			return (
 				<div className="flex justify-center">
 					<div className="text-center font-medium">
@@ -31,7 +32,7 @@ export const performance_level_columns = [
 								)
 							}
 						>
-							{Translate("performance_level")}
+							{t("table.performance_level")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -44,6 +45,7 @@ export const performance_level_columns = [
 	}),
 	columnHelper.accessor("multiplier", {
 		header: ({ column }) => {
+			const { t } = useTranslation(["common"]);
 			return (
 				<div className="flex justify-center">
 					<div className="text-center font-medium">
@@ -55,7 +57,7 @@ export const performance_level_columns = [
 								)
 							}
 						>
-							{Translate("multiplier")}
+							{t("table.multiplier")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
