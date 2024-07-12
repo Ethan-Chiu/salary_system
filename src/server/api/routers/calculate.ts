@@ -330,7 +330,6 @@ export const calculateRouter = createTRPCRouter({
 			const employeePaymentService = container.resolve(
 				EmployeePaymentService
 			);
-			
 			const employee_data =
 				await employeeDataService.getEmployeeDataByEmpNo(input.emp_no);
 			const employee_payment =
