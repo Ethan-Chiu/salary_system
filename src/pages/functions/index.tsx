@@ -20,38 +20,37 @@ import { ToastAction } from "~/components/ui/toast";
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
-
-import i18nGlobal from "~/lib/utils/i18n";
+import { type I18nType } from "~/lib/utils/i18n_type";
 
 type FunctionLinkData = CardFunctionData & { url: string | null };
 
-const function_data: () => FunctionLinkData[] = () => [
+const function_data: (t: I18nType) => FunctionLinkData[] = (t) => [
 	{
-		title: i18nGlobal.t("common.others.month_salary"),
+		title: t("common.others.month_salary"),
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 		url: "/functions/month_salary",
 	},
 	{
-		title: i18nGlobal.t("common.others.foreign_workers_bonus"),
+		title: t("common.others.foreign_workers_bonus"),
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 		url: "/functions/month_salary",
 	},
 	{
-		title: i18nGlobal.t("common.others.employee_trust"),
+		title: t("common.others.employee_trust"),
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 		url: null,
 	},
 	{
-		title: i18nGlobal.t("common.others.quarterly_bonus"),
+		title: t("common.others.quarterly_bonus"),
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 		url: null,
 	},
 	{
-		title: i18nGlobal.t("common.others.employee_dividends"),
+		title: t("common.others.employee_dividends"),
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 		url: null,
@@ -79,7 +78,7 @@ const PageHome: NextPageWithLayout = () => {
 				initial="hidden"
 				animate="visible"
 			>
-				{function_data().map((f_data: FunctionLinkData) => (
+				{function_data(t).map((f_data: FunctionLinkData) => (
 					<motion.div
 						key={f_data.title}
 						variants={stagger}

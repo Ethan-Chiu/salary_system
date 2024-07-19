@@ -18,7 +18,6 @@ import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { onPromise } from "~/utils/on_promise";
 import { useTheme } from "next-themes";
 import { useRouter } from 'next/router';
-import i18n from "~/lib/utils/i18n";
 
 const appearanceFormSchema = z.object({
 	theme: z.enum(["light", "dark"], {
@@ -56,7 +55,6 @@ export function AppearanceForm() {
 
 	async function onSubmit(data: AppearanceFormValues) {
 		localStorage.setItem("language", data.language);
-        i18n.changeLanguage(data.language);
 		document.cookie = `NEXT_LOCALE=${data.language}`;
 			setTheme(data.theme);
 			/* toast({ */

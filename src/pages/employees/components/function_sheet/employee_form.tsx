@@ -225,7 +225,7 @@ const CompViewAllDatas = ({
 	const [selectedEmpNoList, setSelectedEmpNoList] = useState<string[]>(
 		dataNoID.map((e) => e.emp_no)
 	);
-	const filteredData = dataNoID?.filter((data: any) => {
+	const filteredData: {emp_no: string}[] = dataNoID?.filter((data: any) => {
 		return Object.values(data).some((value: any) =>
 			value ? value.toString().includes(filterValue) : false
 		);
@@ -320,7 +320,7 @@ const CompViewAllDatas = ({
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{filteredData.map((data: any, index: number) => {
+							{filteredData.map((data, index: number) => {
 								return (
 									<TableRow key={data.emp_no}>
 										<TableCell className="items-center">
@@ -329,7 +329,7 @@ const CompViewAllDatas = ({
 													size={18}
 													className="cursor-pointer"
 													onClick={() => {
-														onUpdate(filteredData[index].emp_no);
+														onUpdate(data.emp_no);
 													}}
 												/>
 											)}
@@ -373,7 +373,7 @@ const CompViewAllDatas = ({
 										</TableCell>
 										{Object.keys(data).map((key) => {
 											return (
-												<TableCell className="text-center font-medium whitespace-nowrap">
+												<TableCell key={data.emp_no} className="text-center font-medium whitespace-nowrap">
 													{data[key]}
 												</TableCell>
 											);

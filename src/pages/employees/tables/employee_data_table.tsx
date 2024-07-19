@@ -1,9 +1,10 @@
 import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table";
 import { api } from "~/utils/api";
-import i18n from "~/lib/utils/i18n";
+import { type I18nType } from "~/lib/utils/i18n_type";
+import { useTranslation } from "react-i18next";
 
-const columns = () => [
+const columns = (t: I18nType ) => [
 	"emp_no",
 	"emp_name",
 	"position",
@@ -24,13 +25,15 @@ const columns = () => [
 ].map((key) => {
 	return {
 		accessorKey: key,
-		header: i18n.t(`common.table.${key}`),
+		header: t(`common.table.${key}`),
 	};
 });
 
 export function EmployeeDataTable({ index, globalFilter, period_id }: any) {
 	const { isLoading, isError, data, error } =
 		api.employeeData.getAllEmployeeDataWithInfo.useQuery({ period_id });
+
+  const { t } = useTranslation(['common']);
 
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast
@@ -40,5 +43,5 @@ export function EmployeeDataTable({ index, globalFilter, period_id }: any) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-	return <DataTable columns={columns()} data={data!} />;
+	return <DataTable columns={columns(t)} data={data} />;
 }

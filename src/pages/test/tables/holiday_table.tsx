@@ -2,12 +2,13 @@ import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table";
 import { Holiday } from "~/server/database/entity/UMEDIA/holiday";
 import { api } from "~/utils/api";
-import i18n from "~/lib/utils/i18n";
+import { type I18nType} from "~/lib/utils/i18n_type";
+import { useTranslation } from "react-i18next";
 
-const columns = () => Object.keys(new Holiday()).map((key) => {
+const columns = (t: I18nType) => Object.keys(new Holiday()).map((key) => {
 	return {
 		accessorKey: key,
-		header: i18n.t(`common.table.${key}`),
+		header: t(`common.table.${key}`),
 	};
 });
 
@@ -23,6 +24,8 @@ export function HolidayTable({ period, emp_no_list }: HolidayTableProps) {
 			emp_no_list: emp_no_list,
 		});
 
+  const { t } = useTranslation(['common']);
+
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast
 	}
@@ -31,5 +34,5 @@ export function HolidayTable({ period, emp_no_list }: HolidayTableProps) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-	return <DataTable columns={columns()} data={data} />;
+	return <DataTable columns={columns(t)} data={data} />;
 }
