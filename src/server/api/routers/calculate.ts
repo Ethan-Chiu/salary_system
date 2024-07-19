@@ -12,7 +12,7 @@ import { HolidaysTypeService } from "~/server/service/holidays_type_service";
 import { ca } from "date-fns/locale";
 
 export const calculateRouter = createTRPCRouter({
-	// API for 平日加班費
+	//MARK: API for 平日加班費
 	calculateWeekdayOvertimePay: publicProcedure
 		.input(
 			z.object({
@@ -75,7 +75,7 @@ export const calculateRouter = createTRPCRouter({
 			return weekday_overtime_pay;
 		}),
 
-	// API for 假日加班費
+	//MARK: API for 假日加班費
 	calculateHolidayOvertimePay: publicProcedure
 		.input(
 			z.object({
@@ -137,7 +137,7 @@ export const calculateRouter = createTRPCRouter({
 			}
 			return holiday_overtime_pay;
 		}),
-	// API for 超時加班
+	//MARK: API for 超時加班
 		calculateExceedOvertimePay: publicProcedure
 		.input(
 			z.object({
@@ -199,7 +199,7 @@ export const calculateRouter = createTRPCRouter({
 			}
 			return exceed_overtime_pay;
 		}),
-	//API for 應發底薪
+	//MARK: API for 應發底薪
 	calculateGrossSalary: publicProcedure
 		.input(
 			z.object({
@@ -232,7 +232,7 @@ export const calculateRouter = createTRPCRouter({
 			}
 			return gross_salary;
 		}),
-	// API for 勞保扣除額
+	//MARK: API for 勞保扣除額
 	calculateLaborInsuranceDeduction: publicProcedure
 		.input(
 			z.object({
@@ -275,7 +275,7 @@ export const calculateRouter = createTRPCRouter({
 			)
 			return labor_insurance_deduction
 		}),
-	// API for 健保扣除額
+	//MARK: API for 健保扣除額
 	calculateHealthInsuranceDeduction: publicProcedure
 		.input(
 			z.object({
@@ -317,7 +317,7 @@ export const calculateRouter = createTRPCRouter({
 			)
 			return health_insurance_deduction
 		}),
-	// API for 福利金提撥
+	//MARK: API for 福利金提撥
 	calculateWelfareDeduction: publicProcedure
 		.input(
 			z.object({
@@ -348,7 +348,7 @@ export const calculateRouter = createTRPCRouter({
 			)
 			return welfare_deduction
 		}),
-	// API for 請假扣款
+	//MARK: API for 請假扣款
 	calculateLeaveDeduction: publicProcedure
 		.input(
 			z.object({
@@ -412,7 +412,7 @@ export const calculateRouter = createTRPCRouter({
 			}
 			return leave_deduction;
 		}),
-	// API for 全勤獎金
+	//MARK: API for 全勤獎金
 	calculateFullAttendanceBonus: publicProcedure
 		.input(
 			z.object({
@@ -427,5 +427,37 @@ export const calculateRouter = createTRPCRouter({
 				input.emp_no
 			)
 			return full_attendance_bonus
+		}),
+	//MARK: API for 團保費代扣
+	calculateGroupInsuranceDeduction: publicProcedure
+		.input(
+			z.object({
+				emp_no: z.string(),
+				period_id: z.number(),
+			})
+		)
+		.query(async ({ input }) => {
+			const calculateService = container.resolve(CalculateService);
+			const groupInsuranceDeduction = await calculateService.getGroupInsuranceDeduction(
+				input.period_id,
+				input.emp_no
+			)
+			return groupInsuranceDeduction
+		}),
+	//MARK: API for 補發薪資
+	calculateReissueSalary: publicProcedure
+		.input(
+			z.object({
+				emp_no: z.string(),
+				period_id: z.number(),
+			})
+		)
+		.query(async ({ input }) => {
+			const calculateService = container.resolve(CalculateService);
+			const reissueSalary = await calculateService.getReissueSalary(
+				input.period_id,
+				input.emp_no
+			)
+			return reissueSalary
 		}),
 });
