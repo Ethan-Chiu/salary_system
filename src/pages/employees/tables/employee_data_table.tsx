@@ -43,5 +43,5 @@ export function EmployeeDataTable({ index, globalFilter, period_id }: any) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-	return <DataTable columns={columns(t)} data={data} />;
+	return <DataTable columns={columns(t)} data={data} initialColumnVisibility={{"month_salary": false}}/>;
 }

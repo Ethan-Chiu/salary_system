@@ -282,6 +282,7 @@
     "user_id": "User ID",
     "your_employee_id": "Your Employee ID",
     "password": "Password",
-    "reset_password": "Reset Password"
+    "reset_password": "Reset Password",
+    "enter_password": "Enter Password"
   }
 }

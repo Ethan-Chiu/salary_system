@@ -282,6 +282,7 @@
     "user_id": "員工編號",
     "your_employee_id": "您的員工編號",
     "password": "密碼",
-    "reset_password": "重設密碼"
+    "reset_password": "重設密碼",
+    "enter_password": "輸入密碼"
   }
 }
