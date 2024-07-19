@@ -41,5 +41,8 @@ export function EmployeePaymentTable({ period_id }: any) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-	return <DataTable columns={columns(t)} data={data!} />;
+  if (data) {
+    return <DataTable columns={columns(t)} data={data} />;
+  }
+  return <div/>
 }
