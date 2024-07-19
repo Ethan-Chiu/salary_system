@@ -70,7 +70,7 @@ export function DataTableFunctions({
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-[150px]">
-						<DropdownMenuLabel>{t("functions")}</DropdownMenuLabel>
+						<DropdownMenuLabel>{t("others.functions")}</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<CompTriggerItem
 							mode={"update"}
@@ -98,7 +98,7 @@ export function DataTableFunctions({
 				<SheetContent className="w-[50%]">
 					<SheetHeader>
 						<SheetTitle>
-							{`${t(`button.${mode}`)!}${t("button.form")} (${getTableNameKey(tableType)})`}
+							{`${t(`button.${mode}`)!}${t("button.form")} (${t(getTableNameKey(tableType))})`}
 						</SheetTitle>
 						<SheetDescription>
 							{modeDescription(mode)}

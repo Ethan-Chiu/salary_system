@@ -93,9 +93,7 @@ export default function CalendarUpdateEvent({}: CalendarUpdateEventProps) {
 			<SheetContent className="w-[50%]">
 				<SheetHeader>
 					<SheetTitle>
-						{`${t(`button.${mode}`)!}${t(
-							"button.form"
-						)} (${t(getTableNameKey(selectedTableType))}`}
+						{`${t(`button.${mode}`)!}${t("button.form")} (${t(getTableNameKey(selectedTableType))}`}
 					</SheetTitle>
 					<SheetDescription>{modeDescription(mode)}</SheetDescription>
 				</SheetHeader>

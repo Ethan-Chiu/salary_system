@@ -32,7 +32,7 @@ export const bonus_position_type_columns = [
 								)
 							}
 						>
-							{t("table.position_Type")}
+							{t("table.position_type")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>

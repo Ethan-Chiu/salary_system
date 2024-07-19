@@ -47,9 +47,9 @@ function getTableName(table: TableEnum) {
 		case "TableBasicInfo":
 			return "basicInfo";
 		case "TableEmployeePayment":
-			return "員工薪資";
+			return "employeePayment";
 		case "TableEmployeeTrust":
-			return "員工信託";
+			return "employeeTrust";
 	}
 }
 
