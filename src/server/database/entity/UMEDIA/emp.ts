@@ -1,3 +1,5 @@
+import { get_date_string } from "~/server/service/helper_function";
+
 export class Emp {
 	// id can be undefined during creation when using `autoIncrement`
 	declare change_flag: string;
@@ -79,9 +81,9 @@ export class Emp {
 
 		// Format the date string from yy-mm-ddThh:mm:ss to yyyy-mm-dd
 		const FORMAT_REGISTRATION_DATE =
-			REGISTRATION_DATE.toISOString().split("T")[0];
+			get_date_string(REGISTRATION_DATE) ;
 		const FORMAT_QUIT_DATE = QUIT_DATE
-			? QUIT_DATE.toISOString().split("T")[0]
+			? get_date_string(QUIT_DATE)
 			: null;
 
 		return new Emp(
