@@ -13,6 +13,11 @@ import { BonusType } from "../database/entity/UMEDIA/bonus_type";
 import { Expense } from "../database/entity/UMEDIA/expense";
 import { ExpenseClass } from "../database/entity/UMEDIA/expense_class";
 
+export type BonusWithType = Omit<Bonus, "bonus_id" | "period_id"> & {
+	period_name: string;
+	bonus_type_name: string;
+};
+
 @injectable()
 export class EHRService {
 	async getPeriod(): Promise<Period[]> {
@@ -38,10 +43,15 @@ export class EHRService {
 		return holidayList;
 	}
 
-	async getHolidayByEmpNoList(period_id: number, emp_no_list: string[]): Promise<Holiday[]> {
+	async getHolidayByEmpNoList(
+		period_id: number,
+		emp_no_list: string[]
+	): Promise<Holiday[]> {
 		const all_holiday = await this.getHoliday(period_id);
-		const filtered_holiday = all_holiday.filter((holiday) => emp_no_list.includes(holiday.emp_no!) );
-		return filtered_holiday
+		const filtered_holiday = all_holiday.filter((holiday) =>
+			emp_no_list.includes(holiday.emp_no!)
+		);
+		return filtered_holiday;
 	}
 
 	async getOvertime(period_id: number): Promise<Overtime[]> {
@@ -59,10 +69,15 @@ export class EHRService {
 		return overtimeList;
 	}
 
-	async getOvertimeByEmpNoList(period_id: number, emp_no_list: string[]): Promise<Overtime[]> {
+	async getOvertimeByEmpNoList(
+		period_id: number,
+		emp_no_list: string[]
+	): Promise<Overtime[]> {
 		const all_overtime = await this.getOvertime(period_id);
-		const filtered_overtime = all_overtime.filter((overtime) => emp_no_list.includes(overtime.emp_no!) );
-		return filtered_overtime
+		const filtered_overtime = all_overtime.filter((overtime) =>
+			emp_no_list.includes(overtime.emp_no!)
+		);
+		return filtered_overtime;
 	}
 
 	async getPayset(period_id: number): Promise<Payset[]> {
@@ -78,10 +93,15 @@ export class EHRService {
 		return paysetList;
 	}
 
-	async getPaysetByEmpNoList(period_id: number, emp_no_list: string[]): Promise<Payset[]> {
+	async getPaysetByEmpNoList(
+		period_id: number,
+		emp_no_list: string[]
+	): Promise<Payset[]> {
 		const all_payset = await this.getPayset(period_id);
-		const filtered_payset = all_payset.filter((payset) => emp_no_list.includes(payset.emp_no!) );
-		return filtered_payset
+		const filtered_payset = all_payset.filter((payset) =>
+			emp_no_list.includes(payset.emp_no!)
+		);
+		return filtered_payset;
 	}
 	async getEmp(period_id: number): Promise<Emp[]> {
 		const dbConnection = container.resolve(Database).connection;
@@ -127,47 +147,79 @@ export class EHRService {
 				type: QueryTypes.SELECT,
 			}
 		);
-		if (dataList.length === 0) {
-			throw new BaseResponseError("Bonus Not Found");
-		}
-		const bonusList : Bonus[] = dataList.map((o) => Bonus.fromDB(o));
+		// if (dataList.length === 0) {
+		// 	throw new BaseResponseError("Bonus Not Found");
+		// }
+		const bonusList: Bonus[] = dataList.map((o) => Bonus.fromDB(o));
 		return bonusList;
 	}
 
-	async getBonusByEmpNoList(period_id: number, emp_no_list: string[]): Promise<Bonus[]> {
+	async getBonusByEmpNoList(
+		period_id: number,
+		emp_no_list: string[]
+	): Promise<Bonus[]> {
 		const all_bonus = await this.getBonus(period_id);
-		const filtered_bonus = all_bonus.filter((bonus) => emp_no_list.includes(bonus.emp_no!) );
-		return filtered_bonus
+		const filtered_bonus = all_bonus.filter((bonus) =>
+			emp_no_list.includes(bonus.emp_no!)
+		);
+		return filtered_bonus;
 	}
 
 	async getBonusType(): Promise<BonusType[]> {
 		const dbConnection = container.resolve(Database).connection;
-		const dataList = await dbConnection.query(
-			this.GET_BONUS_TYPE_QUERY(),
-			{
-				type: QueryTypes.SELECT,
+		const dataList = await dbConnection.query(this.GET_BONUS_TYPE_QUERY(), {
+			type: QueryTypes.SELECT,
+		});
+		const bonusTypeList: BonusType[] = dataList.map((o) =>
+			BonusType.fromDB(o)
+		);
+		return bonusTypeList;
+	}
+	async getBonusWithTypeByEmpNoList(
+		period_id: number,
+		emp_no_list: string[]
+	): Promise<BonusWithType[]> {
+		const all_bonus = await this.getBonus(period_id);
+		const filtered_bonus = all_bonus.filter((bonus) =>
+			emp_no_list.includes(bonus.emp_no!)
+		);
+		const bonusTypeList = await this.getBonusType();
+		const period_name = await this.getPeriodById(period_id).then(
+			(period) => period.period_name
+		);
+		const bonusWithTypeList: BonusWithType[] = filtered_bonus.map(
+			(bonus) => {
+				const bonusTypeName = bonusTypeList.find(
+					(bonusType) => bonusType.id === bonus.bonus_id
+				)?.name;
+				return {
+					...bonus,
+					bonus_type_name: bonusTypeName!,
+					period_name: period_name,
+				};
 			}
 		);
-		const bonusTypeList: BonusType[] = dataList.map((o) => BonusType.fromDB(o));
-		return bonusTypeList;
+		return bonusWithTypeList;
 	}
 
 	async getExpense(): Promise<Expense[]> {
 		const dbConnection = container.resolve(Database).connection;
-		const dataList = await dbConnection.query(
-			this.GET_EXPENSE_QUERY(),
-			{
-				type: QueryTypes.SELECT,
-			}
-		);
+		const dataList = await dbConnection.query(this.GET_EXPENSE_QUERY(), {
+			type: QueryTypes.SELECT,
+		});
 		const expenseList: Expense[] = dataList.map((o) => Expense.fromDB(o));
 		return expenseList;
 	}
 
-	async getExpenseByEmpNoList(period_id: number, emp_no_list: string[]): Promise<Expense[]> {
+	async getExpenseByEmpNoList(
+		period_id: number,
+		emp_no_list: string[]
+	): Promise<Expense[]> {
 		const all_expense = await this.getExpense();
-		const filtered_expense = all_expense.filter((expense) => emp_no_list.includes(expense.emp_no!) );
-		return filtered_expense
+		const filtered_expense = all_expense.filter((expense) =>
+			emp_no_list.includes(expense.emp_no!)
+		);
+		return filtered_expense;
 	}
 	async getExpenseClass(): Promise<ExpenseClass[]> {
 		const dbConnection = container.resolve(Database).connection;
