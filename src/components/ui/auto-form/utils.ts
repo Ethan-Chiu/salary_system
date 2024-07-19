@@ -12,7 +12,7 @@ export type ZodObjectOrWrapped =
  */
 export function beautifyObjectName(string: string) {
 	let output = string.replace(/([A-Z])/g, " $1");
-	output = output.charAt(0).toUpperCase() + output.slice(1);
+	output = output.charAt(0) + output.slice(1);
 	return output;
 }
 

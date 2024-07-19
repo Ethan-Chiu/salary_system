@@ -231,6 +231,7 @@
     "ignored": "Ignored"
   },
   "others": {
+    "functions": "Functions",
     "month_salary": "Month Salary",
     "foreign_workers_bonus": "Foreign Workers Bonus",
     "employee_trust": "Employee Trust",

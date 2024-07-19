@@ -56,7 +56,7 @@ export function CalendarToolbarFunctions({
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-[120px]">
-						<DropdownMenuLabel>{t("functions")}</DropdownMenuLabel>
+						<DropdownMenuLabel>{t("others.functions")}</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<CompTriggerItem
 							mode={"create"}

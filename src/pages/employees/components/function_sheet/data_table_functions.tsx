@@ -70,7 +70,7 @@ export function DataTableFunctions({
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-[150px]">
-						<DropdownMenuLabel>{t("functions")}</DropdownMenuLabel>
+						<DropdownMenuLabel>{t("others.functions")}</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<CompTriggerItem
 							mode={"update"}
