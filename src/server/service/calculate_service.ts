@@ -390,13 +390,13 @@ export class CalculateService {
 				rd("營運積效獎金") + 
 				rd("補發薪資") +
 				rd("超時加班") +
-				rd("其他加項稅") +
+				rd("其他加項稅") +		// ?
 				rd("全勤獎金") +
 				rd("輪班津貼") +
-				rd("夜點費") -
+				rd("夜點費") -			// ?
 				rd("請假扣款") -
-				rd("特別事假扣款") -
-				rd("其他減項稅") //expense expense class
+				rd("特別事假扣款") -	// calc?
+				rd("其他減項稅") 		// ?
 		*/
 		const salary_income_deduction = 0
 		return salary_income_deduction

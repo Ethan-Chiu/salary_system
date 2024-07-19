@@ -19,6 +19,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "~/components/ui/select";
+import { FATable } from "./test_FullAttendance";
 
 export function SelectDemo(props: { updateStateFunction: Function }) {
 	return (
@@ -62,11 +63,10 @@ const TEST: NextPageWithLayout = () => {
 			) : chosenTable === "LD" ? (
 				<LDTable EMP={EMP} period={113} />
 			) : chosenTable === "FA" ? (
-				
-			) (
+				<FATable EMP={EMP} period={113} />	
+			) : (
 				<></>
 			)}
-			;
 			</div>
 			{/* <OvertimeTable />
 		<Separator />
