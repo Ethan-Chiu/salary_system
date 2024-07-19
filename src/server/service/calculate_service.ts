@@ -362,20 +362,44 @@ export class CalculateService {
 		return full_attendance_bonus;
 	}
 	//MARK: 團保費代扣
-	async getGroupInsuranceDeduction(): Promise<number> {
+	async getGroupInsuranceDeduction(period_id: number, emp_no: string): Promise<number> {
 		// 在"其他"這張表裡面
-		const group_insurance_deduction = 0;
+		const ehrService = container.resolve(EHRService);
+		const group_insurance_deduction_id = (await ehrService.getExpenseClass()).find((ec) => ec.name === "團保費代扣")?.id!;
+		const expenseList = await ehrService.getExpenseByEmpNoList(period_id,[emp_no]);
+		let group_insurance_deduction = 0;
+		for (const expense of expenseList){
+			if (expense.id === group_insurance_deduction_id){
+				group_insurance_deduction += expense.amount ?? 0;
+			}
+		}
 		return group_insurance_deduction;
 	}
 	//MARK: 補發薪資
-	async getReissueSalary(): Promise<number> {
+	async getReissueSalary(period_id: number,emp_no: string): Promise<number> {
 		// 在"其他"這張表裡面
-		const reissue_salary = 0;
+		const ehrService = container.resolve(EHRService);
+		const reissue_salary_id = (await ehrService.getExpenseClass()).find((ec) => ec.name === "補發薪資")?.id!;
+		const expenseList = await ehrService.getExpenseByEmpNoList(period_id,[emp_no]);
+		let reissue_salary = 0;
+		for (const expense of expenseList){
+			if (expense.id === reissue_salary_id){
+				reissue_salary += expense.amount ?? 0;
+			}
+		}
 		return reissue_salary;
 	}
 	//MARK: 年終獎金
-	async getYearEndBonus(): Promise<number> {
-		const end_of_year_bonus = 0; // to be checked
+	async getYearEndBonus(period_id:number, emp_no: string): Promise<number> {
+		const ehrService = container.resolve(EHRService);
+		const end_of_year_bonus_id = (await ehrService.getBonusType()).find((bt) => bt.name === "年終獎金")?.id!;
+		const bonusList = await ehrService.getBonusByEmpNoList(period_id,[emp_no]);
+		let end_of_year_bonus = 0;
+		for (const bonus of bonusList){
+			if (bonus.bonus_id === end_of_year_bonus_id){
+				end_of_year_bonus += bonus.amount ?? 0;
+			}
+		}
 		return end_of_year_bonus;
 	}
 
