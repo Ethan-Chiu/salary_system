@@ -10,6 +10,8 @@ import { HIDTable } from "./test_HIdeduction";
 import { GSTable } from "./test_GrossSalary";
 import { LDTable } from "./test_LeaveDeduction";
 
+import { OvertimeTable as EHR_OT } from "./tables/overtime_table";
+
 import {
 	Select,
 	SelectContent,
@@ -68,6 +70,9 @@ const TEST: NextPageWithLayout = () => {
 				<></>
 			)}
 			</div>
+			
+			<EHR_OT period={113} emp_no_list={["F103007"]}/>
+
 			{/* <OvertimeTable />
 		<Separator />
 

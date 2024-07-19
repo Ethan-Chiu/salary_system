@@ -131,8 +131,8 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 			<CompViewAllDatas
 				dataNoID={noIDData}
 				mode={mode}
-				onUpdate={(index: number) => {
-					setSelectedData(data[index]);
+				onUpdate={(emp_no: string) => {
+					setSelectedData(data.findLast((d: any) => d.emp_no === emp_no));
 				}}
 				onDelete={(index: number) => {
 					deleteFunction.mutate({
@@ -322,14 +322,14 @@ const CompViewAllDatas = ({
 						<TableBody>
 							{filteredData.map((data: any, index: number) => {
 								return (
-									<TableRow key={data.id}>
+									<TableRow key={data.emp_no}>
 										<TableCell className="items-center">
 											{mode === "update" && (
 												<PenSquare
 													size={18}
 													className="cursor-pointer"
 													onClick={() => {
-														onUpdate(index);
+														onUpdate(filteredData[index].emp_no);
 													}}
 												/>
 											)}
