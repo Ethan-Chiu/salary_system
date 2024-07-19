@@ -5,9 +5,7 @@ import { BaseResponseError } from "../api/error/BaseResponseError";
 import { check_date, get_date_string, select_value } from "./helper_function";
 import { z } from "zod";
 import {
-	createBankSettingService,
 	createHolidaysTypeService,
-	updateBankSettingService,
     updateHolidaysTypeService,
 } from "../api/types/parameters_input_type";
 import { EHRService } from "./ehr_service";
