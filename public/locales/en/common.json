@@ -161,8 +161,7 @@
     "all": "All",
     "no_month_salary": "No Month Salary",
     "salary_data": "Salary Data",
-    "ehr_data": "Ehr Data",
-    "employees": "Employees"
+    "ehr_data": "Ehr Data"
   },
   "table_name": {
     "attendanceSetting": "Attendance Setting",

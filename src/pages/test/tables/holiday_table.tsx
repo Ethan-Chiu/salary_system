@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 const columns = (t: I18nType) => Object.keys(new Holiday()).map((key) => {
 	return {
 		accessorKey: key,
-		header: t(`common.table.${key}`),
+		header: t(`table.${key}`),
 	};
 });
 

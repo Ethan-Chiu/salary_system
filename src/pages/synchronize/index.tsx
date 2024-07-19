@@ -20,7 +20,7 @@ const PageCheckEHR: NextPageWithLayout = () => {
 
 function SyncPage() {
 	const {selectedPeriod} = useContext(periodContext);
-	const { t } = useTranslation(['nav', 'common']);
+	const { t } = useTranslation(['common', 'nav']);
 	if (selectedPeriod == null) {
 		return <p>{t("others.select_period")}</p>;
 	}
@@ -42,7 +42,7 @@ function SyncPage() {
 
 	return data != null ? (
 		<div className="flex h-full w-full flex-col">
-			<Header title={t("synchronize")} showOptions className="mb-4" />
+			<Header title={t("synchronize", { ns: "nav" })} showOptions className="mb-4" />
 			<div className="mx-4 flex h-0 grow">
         <div className="w-full flex flex-col mb-4">
           <SyncPageContent data={data} />

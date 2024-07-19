@@ -24,7 +24,7 @@ const columns = (t: I18nType) => [
 ].map((key) => {
 	return {
 		accessorKey: key,
-		header: t(`common.table.${key}`),
+		header: t(`table.${key}`),
 	};
 });
 

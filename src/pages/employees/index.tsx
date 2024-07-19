@@ -51,7 +51,7 @@ const PageEmployeesContent = () => {
 
 	return (
 		<div className="flex h-full w-full flex-col">
-			<Header title={t("table.employees")} showOptions className="mb-4" />
+			<Header title={t("employees", { ns: "nav" })} showOptions className="mb-4" />
 			<div className="m-4 h-0 grow">
 				<Tabs
 					defaultValue={tabOptions[0]}

@@ -26,31 +26,31 @@ type FunctionLinkData = CardFunctionData & { url: string | null };
 
 const function_data: (t: I18nType) => FunctionLinkData[] = (t) => [
 	{
-		title: t("common.others.month_salary"),
+		title: t("others.month_salary"),
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 		url: "/functions/month_salary",
 	},
 	{
-		title: t("common.others.foreign_workers_bonus"),
+		title: t("others.foreign_workers_bonus"),
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 		url: "/functions/month_salary",
 	},
 	{
-		title: t("common.others.employee_trust"),
+		title: t("others.employee_trust"),
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 		url: null,
 	},
 	{
-		title: t("common.others.quarterly_bonus"),
+		title: t("others.quarterly_bonus"),
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 		url: null,
 	},
 	{
-		title: t("common.others.employee_dividends"),
+		title: t("others.employee_dividends"),
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 		url: null,
