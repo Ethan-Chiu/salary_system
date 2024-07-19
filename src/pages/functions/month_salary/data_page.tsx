@@ -8,7 +8,7 @@ import { api } from "~/utils/api";
 import { type FunctionsEnumType } from "~/server/api/types/functions_enum";
 import { useTranslation } from "react-i18next";
 
-const TabOptions = ["請假", "加班", "工作天數"];
+const tabOptions = ["table_name.holiday", "table_name.overtime", "table_name.payset"];
 
 export function DataPage({
 	period,
@@ -22,17 +22,17 @@ export function DataPage({
 	setSelectedIndex: (index: number) => void;
 }) {
 
-  const { t } = useTranslation("common", { keyPrefix: "button" });
+  const { t } = useTranslation("common");
 
 	function getTable(table_name: string) {
 		const employee_data_list = api.sync.getPaidEmployees.useQuery({ func }).data
 		const emp_no_list = employee_data_list!.map(emp => emp.emp_no)
 		switch (table_name) {
-			case "請假":
+			case tabOptions[0]:
 				return <HolidayTable period={period} emp_no_list={emp_no_list} />;
-			case "加班":
+			case tabOptions[1]:
 				return <OvertimeTable period={period} emp_no_list={emp_no_list} />;
-			case "工作天數":
+			case tabOptions[2]:
 				return <PaysetTable period={period} emp_no_list={emp_no_list} />;
 			default:
 				return <p>No implement</p>;
@@ -43,20 +43,20 @@ export function DataPage({
 		<>
 			<div className="h-0 grow">
 				<Tabs
-					defaultValue={TabOptions[0]}
+					defaultValue={tabOptions[0]}
 					className="flex h-full w-full flex-col"
 				>
-					<TabsList className={cn(`grid w-full grid-cols-${TabOptions.length}`)}>
-						{TabOptions.map((option) => {
+					<TabsList className={cn(`grid w-full grid-cols-${tabOptions.length}`)}>
+						{tabOptions.map((option) => {
 							return (
 								<TabsTrigger key={option} value={option}>
-									{option}
+									{t(option)}
 								</TabsTrigger>
 							);
 						})}
 					</TabsList>
 					<div className="mt-2 h-0 grow">
-						{TabOptions.map((option) => {
+						{tabOptions.map((option) => {
 							return (
 								<TabsContent key={option} value={option} className="h-full">
 									{period > 0 ? getTable(option) : <></>}
@@ -70,12 +70,12 @@ export function DataPage({
 				<Button
 					onClick={() => setSelectedIndex(selectedIndex - 1)}
 				>
-					{t("previous_step")}
+					{t("button.previous_step")}
 				</Button>
 				<Button
 					onClick={() => setSelectedIndex(selectedIndex + 1)}
 				>
-					{t("next_step")}
+					{t("button.next_step")}
 				</Button>
 			</div>
 		</>

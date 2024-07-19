@@ -41,8 +41,6 @@ import { useTranslation } from "react-i18next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
 
-const { t } = useTranslation(['nav', 'common']);
-
 
 type EmployeeInfo = {
 	username: string;
@@ -57,6 +55,7 @@ type IdentityType = {
 };
 
 const PageRoles: NextPageWithLayout = () => {
+  const { t } = useTranslation(['nav', 'common']);
 	return (
 		<>
 			{/* header */}

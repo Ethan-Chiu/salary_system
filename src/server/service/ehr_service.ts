@@ -10,6 +10,8 @@ import { Emp } from "../database/entity/UMEDIA/emp";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { Bonus } from "../database/entity/UMEDIA/bonus";
 import { BonusType } from "../database/entity/UMEDIA/bonus_type";
+import { Expense } from "../database/entity/UMEDIA/expense";
+import { ExpenseClass } from "../database/entity/UMEDIA/expense_class";
 
 @injectable()
 export class EHRService {
@@ -150,6 +152,37 @@ export class EHRService {
 		return bonusTypeList;
 	}
 
+	async getExpense(): Promise<Expense[]> {
+		const dbConnection = container.resolve(Database).connection;
+		const dataList = await dbConnection.query(
+			this.GET_EXPENSE_QUERY(),
+			{
+				type: QueryTypes.SELECT,
+			}
+		);
+		const expenseList: Expense[] = dataList.map((o) => Expense.fromDB(o));
+		return expenseList;
+	}
+
+	async getExpenseByEmpNoList(period_id: number, emp_no_list: string[]): Promise<Expense[]> {
+		const all_expense = await this.getExpense();
+		const filtered_expense = all_expense.filter((expense) => emp_no_list.includes(expense.emp_no!) );
+		return filtered_expense
+	}
+	async getExpenseClass(): Promise<ExpenseClass[]> {
+		const dbConnection = container.resolve(Database).connection;
+		const dataList = await dbConnection.query(
+			this.GET_EXPENSE_CLASS_QUERY(),
+			{
+				type: QueryTypes.SELECT,
+			}
+		);
+		const expenseClassList: ExpenseClass[] = dataList.map((o) =>
+			ExpenseClass.fromDB(o)
+		);
+		return expenseClassList;
+	}
+
 	private GET_PERIOD_QUERY(): string {
 		return `SELECT "PERIOD_ID", "PERIOD_NAME", "START_DATE", "END_DATE", "STATUS", "ISSUE_DATE" FROM "U_HR_PERIOD" WHERE "U_HR_PERIOD"."STATUS" = 'OPEN'`;
 	}
@@ -178,5 +211,12 @@ export class EHRService {
 	}
 	private GET_BONUS_TYPE_QUERY(): string {
 		return `SELECT * FROM UMEDIA."U_HR_BONUS_TYPE"`;
+	}
+	private GET_EXPENSE_QUERY(): string {
+		return `SELECT * FROM "U_HR_PAYDRAFT_EXPENSE"`;
+	}
+
+	private GET_EXPENSE_CLASS_QUERY(): string {
+		return `SELECT * FROM "U_HR_EXPENSE_CLASS"`;
 	}
 }

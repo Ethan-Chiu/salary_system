@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import DataTableContextProvider from "./components/context/data_table_context_provider";
 import dataTableContext from "./components/context/data_table_context";
-import { getTableName } from "./components/context/data_table_enum";
+import { getTableNameKey } from "./components/context/data_table_enum";
 import { Separator } from "~/components/ui/separator";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import {
@@ -179,7 +179,7 @@ function CompTablesSelector() {
 									className="ml-1 mr-2 flex-shrink-0 cursor-pointer"
 								/>
 								<div className="m-1 line-clamp-1 break-all">
-									{getTableName(table)}
+									{t(getTableNameKey(table))}
 								</div>
 							</div>
 						);
@@ -194,6 +194,8 @@ function CompTableView() {
 	const { selectedTableType } = useContext(dataTableContext);
 	const { selectedPeriod } = useContext(periodContext);
 
+  const { t } = useTranslation(['common']);
+
 	return (
 		<>
 			{ParameterTableEnumValues.filter(
@@ -204,7 +206,7 @@ function CompTableView() {
 						{selectedPeriod ? React.createElement<TableComponentProps>(
 							getTableComponent(selectedTableType).component,
 							{ period_id: selectedPeriod.period_id }
-						) : <p>Please select a period first</p>}
+						) : <p>{t("others.select_period")}</p>}
 					</div>
 				);
 			})}

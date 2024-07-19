@@ -21,36 +21,37 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
 
+import i18nGlobal from "~/lib/utils/i18n";
 
 type FunctionLinkData = CardFunctionData & { url: string | null };
 
-const function_data: FunctionLinkData[] = [
+const function_data: () => FunctionLinkData[] = () => [
 	{
-		title: "月薪",
+		title: i18nGlobal.t("common.others.month_salary"),
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 		url: "/functions/month_salary",
 	},
 	{
-		title: "15日外勞獎金",
+		title: i18nGlobal.t("common.others.foreign_workers_bonus"),
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 		url: "/functions/month_salary",
 	},
 	{
-		title: "持股信託",
+		title: i18nGlobal.t("common.others.employee_trust"),
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 		url: null,
 	},
 	{
-		title: "季獎金",
+		title: i18nGlobal.t("common.others.quarterly_bonus"),
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 		url: null,
 	},
 	{
-		title: "員工分紅",
+		title: i18nGlobal.t("common.others.employee_dividends"),
 		iconPath: "./icons/coins.svg",
 		subscript: "some notes",
 		url: null,
@@ -63,7 +64,7 @@ const PageHome: NextPageWithLayout = () => {
 	const { toast } = useToast();
 	const [open, setOpen] = useState(false);
 	const { t } = useTranslation(['common', 'nav'])
-  
+
 	return (
 		<>
 			<Header title={t("functions", { ns: "nav" })} showOptions className="mb-4" />
@@ -78,7 +79,7 @@ const PageHome: NextPageWithLayout = () => {
 				initial="hidden"
 				animate="visible"
 			>
-				{function_data.map((f_data: FunctionLinkData) => (
+				{function_data().map((f_data: FunctionLinkData) => (
 					<motion.div
 						key={f_data.title}
 						variants={stagger}
@@ -86,9 +87,9 @@ const PageHome: NextPageWithLayout = () => {
 						onClick={() => {
 							if (!selectedPeriod || !selectedPayDate) {
 								toast({
-									title: "period or payDate not selected",
+									title: "",
 									description:
-										"Please select a period and paydate",
+										t("others.select_period_and_issue_date"),
 									action: (
 										<ToastAction
 											altText="Go to select period and paydate"
@@ -96,7 +97,7 @@ const PageHome: NextPageWithLayout = () => {
 												setOpen(true);
 											}}
 										>
-											Select
+											{t("button.select")}
 										</ToastAction>
 									),
 								});
@@ -122,9 +123,11 @@ const PageHome: NextPageWithLayout = () => {
 };
 
 export const getStaticProps = async ({ locale }: { locale: string }) => {
-  return ({props: {
-    ...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
-  }});
+	return ({
+		props: {
+			...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
+		}
+	});
 };
 
 PageHome.getLayout = function getLayout(page: React.ReactElement) {

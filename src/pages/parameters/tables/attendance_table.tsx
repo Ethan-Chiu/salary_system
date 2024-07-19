@@ -11,11 +11,9 @@ import { type AttendanceSetting } from "~/server/database/entity/SALARY/attendan
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { formatDate } from "~/lib/utils/format_date";
-import { useState } from "react";
 import { EmptyTable } from "./empty_table";
-import { EmptyCreate } from "./empty_create";
-import { getSchema } from "../schemas/get_schemas";
 import { useTranslation } from "react-i18next";
+import { type TFunction } from "i18next";
 
 const rowSchema = z.object({
 	parameters: z.string(),
@@ -27,10 +25,9 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-export const attendance_columns = [
+export const attendance_columns = ({t}: {t: TFunction<[string], undefined>}) => [
 	columnHelper.accessor("parameters", {
 		header: ({ column }) => {
-			const { t } = useTranslation(["common"]);
 			return (
 				<div className="flex justify-center">
 					<div className="pl-4 text-center font-medium">
@@ -59,7 +56,6 @@ export const attendance_columns = [
 	}),
 	columnHelper.accessor("value", {
 		header: () => {
-			const { t } = useTranslation(["common"]);
 			return <div className="text-center">{t("table.value")}</div>
 		},
 		cell: ({ row }) => {
@@ -181,6 +177,8 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 		api.parameters.getCurrentAttendanceSetting.useQuery({ period_id });
 	const filterKey: RowItemKey = "parameters";
 
+  const { t } = useTranslation(["common"]);
+
 	if (isLoading) {
 		return (
 			<div className="flex grow items-center justify-center">
@@ -196,18 +194,17 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 		return emptyError ? <EmptyTable err_msg={err_msg} selectedTableType="TableAttendance" /> : <></>;
 	}
 
-
 	return (
 		<>
 			{!viewOnly ? (
 				<DataTableWithFunctions
-					columns={attendance_columns}
+					columns={attendance_columns({t: t})}
 					data={attendanceMapper([data])}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
-					columns={attendance_columns}
+					columns={attendance_columns({t: t})}
 					data={attendanceMapper([data])}
 					filterColumnKey={filterKey}
 				/>

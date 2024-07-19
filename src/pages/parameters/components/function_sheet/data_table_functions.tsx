@@ -1,6 +1,6 @@
 import { cn } from "~/lib/utils";
 import { useState } from "react";
-import { LucideIcon, PenSquare, Plus, PlusSquare, Trash2 } from "lucide-react";
+import { type LucideIcon, PenSquare, Plus, PlusSquare, Trash2 } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
 	DropdownMenu,
@@ -22,13 +22,13 @@ import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Button } from "~/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { ParameterForm } from "./parameter_form";
-import { TableEnum, getTableName } from "../context/data_table_enum";
+import { type TableEnum, getTableNameKey } from "../context/data_table_enum";
 import { getSchema } from "../../schemas/get_schemas";
 import { api } from "~/utils/api";
 import { z } from "zod";
-import { Level } from "~/server/database/entity/SALARY/level";
+import { type Level } from "~/server/database/entity/SALARY/level";
 import { modeDescription } from "~/lib/utils/helper_function";
-import { literal } from "sequelize";
+
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
 }
@@ -41,7 +41,7 @@ export function DataTableFunctions({
 }: DataTableFunctionsProps) {
 	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
-	const { t } = useTranslation(['nav', 'common']);
+	const { t } = useTranslation(['common', 'nav']);
 
 	const { isLoading, isError, data, error } =
 		(tableType === "TableLevelRange") ? api.parameters.getCurrentLevel.useQuery()
@@ -106,7 +106,7 @@ export function DataTableFunctions({
 				<SheetContent className="w-[50%]">
 					<SheetHeader>
 						<SheetTitle>
-							{`${t(`button.${mode}`)!}${t("button.form")} (${getTableName(tableType)})`}
+							{`${t(`button.${mode}`)!}${t( "button.form" )} (${t(getTableNameKey(tableType))})`}
 						</SheetTitle>
 						<SheetDescription>
 							{modeDescription(mode)}
@@ -114,7 +114,7 @@ export function DataTableFunctions({
 					</SheetHeader>
 					<ScrollArea className="h-[85%] w-full">
 						<ParameterForm
-							formSchema={schema!}
+							formSchema={schema}
 							mode={mode}
 							closeSheet={() => setOpen(false)}
 						/>

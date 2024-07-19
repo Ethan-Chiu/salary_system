@@ -17,6 +17,8 @@ import { DataTable } from "./data_table";
 import { is_date_available } from "~/server/service/helper_function";
 import { Badge } from "~/components/ui/badge";
 import { useTranslation } from "react-i18next";
+import { type TRPCClientErrorLike } from "@trpc/client";
+import { type UseTRPCQueryResult } from "@trpc/react-query/shared";
 
 export default function HistoryView() {
 	const { selectedTableType } = useContext(dataTableContext);
@@ -30,11 +32,20 @@ export default function HistoryView() {
 	);
 }
 
+interface historyDataType {
+  id: number;
+  start_date: string;
+  end_date: string;
+  update_by: string;
+}
+
+type queryFunctionType = () => UseTRPCQueryResult<historyDataType[], TRPCClientErrorLike<any>>;
+
 function CompHistoryView() {
 	const { selectedTableType } = useContext(dataTableContext);
 
 	const queryFunctions = useContext(apiFunctionsContext);
-	const queryFunction = queryFunctions.queryFunction!;
+	const queryFunction = queryFunctions.queryFunction! as queryFunctionType;
 
 	const { isLoading, isError, data, error } = queryFunction();
 
@@ -43,10 +54,10 @@ function CompHistoryView() {
 	const { t } = useTranslation(['common']);
 
 	useEffect(() => {
-		if (!isLoading && data) {
-			setSelectedId(data![0]!.id);
+		if (!isLoading && data?.[0]) {
+			setSelectedId(data[0].id);
 		}
-	}, [isLoading]);
+	}, [isLoading, data]);
 
 	if (isLoading) {
 		return (
@@ -124,9 +135,9 @@ function CompHistoryView() {
 			<ResizablePanel defaultSize={75}>
 				{data.filter((e) => e.id === selectedId).length > 0 ? (
 					<DataTable
-						columns={getTableColumn(selectedTableType)}
+						columns={getTableColumn(selectedTableType, t)}
 						data={getTableMapper(selectedTableType)(
-							data.filter((e) => e.id === selectedId)
+							data.filter((e) => e.id === selectedId) as any[]
 						)}
 						filterColumnKey={filterKey}
 					/>

@@ -380,7 +380,15 @@ export class CalculateService {
 	}
 
 	//MARK: 薪資所得扣繳總額
-	async getSalaryIncomeDeduction(): Promise<number> {
+	async getSalaryIncomeDeduction(
+		employee_data : EmployeeData,
+		employee_payment : EmployeePayment,
+		payset : Payset,
+		reissue_salary : number,
+		full_attendance_bonus : number,
+		exceed_overtime_pay : number,
+		leave_deduction : number,
+	): Promise<number> {
 		/* 
 			rd("薪資所得扣繳總額") = 
 				rd("底薪") + 
@@ -398,7 +406,22 @@ export class CalculateService {
 				rd("特別事假扣款") -	// calc?
 				rd("其他減項稅") 		// ?
 		*/
-		const salary_income_deduction = 0
+		const salary_income_deduction = 
+			employee_payment.base_salary +
+			(employee_payment.supervisor_allowance ?? 0) +
+			(employee_payment.occupational_allowance ?? 0) +
+			rd("營運積效獎金") + 
+			reissue_salary +
+			exceed_overtime_pay +
+			rd("其他加項稅") +
+			full_attendance_bonus +
+			(employee_payment.shift_allowance ?? 0) +
+			rd("夜點費") -
+			leave_deduction -
+			rd("特別事假扣款") -
+			rd("其他減項稅")
+
+
 		return salary_income_deduction
 	}
 
@@ -406,6 +429,7 @@ export class CalculateService {
 	async getSalaryIncomeTax(
 		employee_data : EmployeeData,
 		issue_date : Date,
+		salary_income_deduction : number,
 	): Promise<number> {
 		/*
 					rd("薪資所得稅") = FindTex(
@@ -417,7 +441,7 @@ export class CalculateService {
 						rd("工作天數")
 					)
 		*/
-		const Tax = rd("薪資所得扣繳總額");
+		const Tax = salary_income_deduction;
 		const Num = employee_data.dependents;
 		const kind1 = employee_data.work_type;
 		const kind2 = employee_data.work_status;
@@ -502,7 +526,7 @@ export class CalculateService {
 					rd("主管津貼") + 
 					rd("專業証照津貼") + 
 					rd("職務津貼") + 
-					rd("營運積效獎金") + 
+					rd("營運積效獎金") + //在bonus裡 id=2
 					rd("補發薪資") + 
 					rd("超時加班") + 
 					rd("其他加項稅") + 

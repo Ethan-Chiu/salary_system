@@ -60,11 +60,7 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 	const [checkedEmps, setCheckedEmps] = useState<Record<string, boolean>>({});
 	const { selectedPeriod } = useContext(periodContext);
 
-	const { t } = useTranslation(['common']);
-
-	if (selectedPeriod == null) {
-		return <p>{t("others.select_period")}</p>;
-	}
+	const { t } = useTranslation(["common"]);
 
 	useEffect(() => {
 		const checked: Record<string, boolean> = {};
@@ -97,6 +93,10 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 		});
 	}
 
+	if (selectedPeriod == null) {
+		return <p>{t("others.select_period")}</p>;
+	}
+
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
@@ -122,7 +122,9 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 							checked={showDetails}
 							onCheckedChange={setShowDetails}
 						/>
-						<Label htmlFor="showDetails">{t("others.show_details")}</Label>
+						<Label htmlFor="showDetails">
+							{t("others.show_details")}
+						</Label>
 					</div>
 				</DialogHeader>
 				{/* <ScrollArea className="max-h-[70vh] overflow-y-scroll"> */}
@@ -137,7 +139,10 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 				</ScrollArea>
 
 				<DialogClose asChild>
-					<Button type="submit" onClick={() => handleUpdate(selectedPeriod.period_id)}>
+					<Button
+						type="submit"
+						onClick={() => handleUpdate(selectedPeriod.period_id)}
+					>
 						{t("button.update")}
 					</Button>
 				</DialogClose>
@@ -168,33 +173,33 @@ export function UpdateTable({
 		setCheckedEmps(newChecked);
 	}
 
-	const { t } = useTranslation(['common']);
+	const { t } = useTranslation(["common"]);
 
 	return (
 		<>
 			<Table className="border">
 				<TableHeader>
 					<TableRow className="border">
-						<TableHead className="w-[50px] border text-center whitespace-nowrap">
+						<TableHead className="w-[50px] whitespace-nowrap border text-center">
 							<Button variant={"ghost"} onClick={checkAll}>
 								{t("others.all_(un)click")}
 							</Button>
 						</TableHead>
-						<TableHead className="border text-center whitespace-nowrap">
+						<TableHead className="whitespace-nowrap border text-center">
 							{t("table.emp_no")}
 						</TableHead>
-						<TableHead className="border text-center whitespace-nowrap">
+						<TableHead className="whitespace-nowrap border text-center">
 							{t("table.name")}
 						</TableHead>
 						{showDetails && (
 							<>
-								<TableHead className="border text-center whitespace-nowrap">
+								<TableHead className="whitespace-nowrap border text-center">
 									{t("table.key")}
 								</TableHead>
-								<TableHead className="border text-center whitespace-nowrap">
+								<TableHead className="whitespace-nowrap border text-center">
 									{t("table.salary_data")}
 								</TableHead>
-								<TableHead className="border text-center whitespace-nowrap">
+								<TableHead className="whitespace-nowrap border text-center">
 									{t("table.ehr_data")}
 								</TableHead>
 							</>
@@ -206,7 +211,7 @@ export function UpdateTable({
 						<TableRow>
 							<TableCell
 								colSpan={6}
-								className="border text-center whitespace-nowrap"
+								className="whitespace-nowrap border text-center"
 							>
 								{t("table.no_data")}
 							</TableCell>
@@ -219,7 +224,7 @@ export function UpdateTable({
 								<CustomTableRow>
 									<CustomTableCell
 										rowSpan={comparisons.length + 1}
-										className="border text-center whitespace-nowrap"
+										className="whitespace-nowrap border text-center"
 									>
 										<Checkbox
 											checked={checkedEmps[d.emp_no]}
@@ -231,32 +236,40 @@ export function UpdateTable({
 									</CustomTableCell>
 									<CustomTableCell
 										rowSpan={comparisons.length + 1}
-										className="border text-center whitespace-nowrap"
+										className="whitespace-nowrap border text-center"
 									>
 										{d.emp_no}
 									</CustomTableCell>
 									<CustomTableCell
 										rowSpan={comparisons.length + 1}
-										className="border text-center whitespace-nowrap"
+										className="whitespace-nowrap border text-center"
 									>
 										{d.emp_name}
 									</CustomTableCell>
 
 									{showDetails && (
 										<>
-											<CustomTableCell className="border text-center whitespace-nowrap">
+											<CustomTableCell className="whitespace-nowrap border text-center">
 												{displayData(
-													t(`table.${comparisons[0]!.key}`)
+													t(
+														`table.${
+															comparisons[0]!.key
+														}`
+													),
+													t
 												)}
 											</CustomTableCell>
-											<CustomTableCell className="border text-center whitespace-nowrap">
+											<CustomTableCell className="whitespace-nowrap border text-center">
 												{displayData(
-													comparisons[0]!.salary_value
+													comparisons[0]!
+														.salary_value,
+													t
 												)}
 											</CustomTableCell>
-											<CustomTableCell className="border text-center whitespace-nowrap">
+											<CustomTableCell className="whitespace-nowrap border text-center">
 												{displayData(
-													comparisons[0]!.ehr_value
+													comparisons[0]!.ehr_value,
+													t
 												)}
 											</CustomTableCell>
 										</>
@@ -273,19 +286,24 @@ export function UpdateTable({
 														<CustomTableRow>
 															{showDetails && (
 																<>
-																	<CustomTableCell className="border text-center whitespace-nowrap">
+																	<CustomTableCell className="whitespace-nowrap border text-center">
 																		{displayData(
-																			t(`table.${cd.key}`)
+																			t(
+																				`table.${cd.key}`
+																			),
+																			t
 																		)}
 																	</CustomTableCell>
-																	<CustomTableCell className="border text-center whitespace-nowrap">
+																	<CustomTableCell className="whitespace-nowrap border text-center">
 																		{displayData(
-																			cd.salary_value
+																			cd.salary_value,
+																			t
 																		)}
 																	</CustomTableCell>
-																	<CustomTableCell className="border text-center whitespace-nowrap">
+																	<CustomTableCell className="whitespace-nowrap border text-center">
 																		{displayData(
-																			cd.ehr_value
+																			cd.ehr_value,
+																			t
 																		)}
 																	</CustomTableCell>
 																</>
