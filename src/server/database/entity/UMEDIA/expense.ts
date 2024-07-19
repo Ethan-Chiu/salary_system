@@ -61,7 +61,7 @@ export class Expense {
             EMP_NO,
             EMP_NAME,
             ID,
-            AMOUNT,
+            Number(AMOUNT),
             REMARK,
             CREATE_BY,
             CREATE_DATE,
