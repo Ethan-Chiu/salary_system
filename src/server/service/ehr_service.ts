@@ -18,6 +18,11 @@ export type BonusWithType = Omit<Bonus, "bonus_id" | "period_id"> & {
 	bonus_type_name: string;
 };
 
+export type ExpenseWithType = Omit<Expense, "period_id" | "id"> & {
+	period_name: string;
+	expense_type_name: string;
+}
+
 @injectable()
 export class EHRService {
 	async getPeriod(): Promise<Period[]> {
@@ -221,6 +226,31 @@ export class EHRService {
 		);
 		return filtered_expense;
 	}
+	async getExpenseWithTypeByEmpNoList(
+		period_id: number,
+		emp_no_list: string[]
+	): Promise<ExpenseWithType[]> {
+		const all_expense = await this.getExpense();
+		const filtered_expense = all_expense.filter((expense) =>
+			emp_no_list.includes(expense.emp_no!)
+		);
+		const expenseTypeList = await this.getExpenseClass();
+		const period_name = await this.getPeriodById(period_id).then(
+			(period) => period.period_name
+		);
+		const expenseWithTypeList: ExpenseWithType[] = filtered_expense.map(
+			(expense) => {
+				const expenseTypeName = expenseTypeList.find(
+					(expenseType) => expenseType.id === expense.id
+				)?.name;
+				return {
+					...expense,
+					expense_type_name: expenseTypeName!,
+					period_name: period_name,
+				};
+			});
+		return expenseWithTypeList;
+	};
 	async getExpenseClass(): Promise<ExpenseClass[]> {
 		const dbConnection = container.resolve(Database).connection;
 		const dataList = await dbConnection.query(
