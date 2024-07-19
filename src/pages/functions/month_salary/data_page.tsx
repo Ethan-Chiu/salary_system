@@ -2,13 +2,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { HolidayTable } from "../tables/holiday_table";
 import { OvertimeTable } from "../tables/overtime_table";
 import { PaysetTable } from "../tables/payset_table";
+import { BonusTable } from "../tables/bonus_table";
+import { OtherTable } from "../tables/other_table";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import { api } from "~/utils/api";
 import { type FunctionsEnumType } from "~/server/api/types/functions_enum";
 import { useTranslation } from "react-i18next";
 
-const tabOptions = ["table_name.holiday", "table_name.overtime", "table_name.payset"];
+const tabOptions = ["table_name.holiday", "table_name.overtime", "table_name.payset", "table_name.bonus", "table_name.other"];
+const tableOptionsLength = tabOptions.length.toString();
 
 export function DataPage({
 	period,
@@ -34,10 +37,15 @@ export function DataPage({
 				return <OvertimeTable period={period} emp_no_list={emp_no_list} />;
 			case tabOptions[2]:
 				return <PaysetTable period={period} emp_no_list={emp_no_list} />;
+			case tabOptions[3]:
+				return <BonusTable period={period} emp_no_list={emp_no_list} />;
+			case tabOptions[4]:
+				return <OtherTable period={period} emp_no_list={emp_no_list} />;
 			default:
 				return <p>No implement</p>;
 		}
 	}
+
 
 	return (
 		<>
@@ -46,7 +54,7 @@ export function DataPage({
 					defaultValue={tabOptions[0]}
 					className="flex h-full w-full flex-col"
 				>
-					<TabsList className={cn(`grid w-full grid-cols-${tabOptions.length}`)}>
+					<TabsList className={cn(`grid w-full grid-cols-${tableOptionsLength}`)}>
 						{tabOptions.map((option) => {
 							return (
 								<TabsTrigger key={option} value={option}>
