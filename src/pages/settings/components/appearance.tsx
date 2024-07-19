@@ -56,17 +56,7 @@ export function AppearanceForm() {
 	async function onSubmit(data: AppearanceFormValues) {
 		localStorage.setItem("language", data.language);
 		document.cookie = `NEXT_LOCALE=${data.language}`;
-			setTheme(data.theme);
-			/* toast({ */
-			/* 	title: "You submitted the following values:", */
-			/* 	description: ( */
-			/* 		<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4"> */
-			/* 			<code className="text-white"> */
-			/* 				{JSON.stringify(data, null, 2)} */
-			/* 			</code> */
-			/* 		</pre> */
-			/* 	), */
-			/* }); */
+		setTheme(data.theme);
 		await changeLocale(data.language);
 	}
 
@@ -94,8 +84,8 @@ export function AppearanceForm() {
 											)}
 											{...field}
 										>
-											<option value="en">EN</option>
-											<option value="zh-TW">ZH</option>
+											<option value="en">English</option>
+											<option value="zh-TW">繁體中文</option>
 										</select>
 									</FormControl>
 									<ChevronDownIcon className="absolute right-3 top-2.5 h-4 w-4 opacity-50" />

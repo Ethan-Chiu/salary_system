@@ -11,10 +11,9 @@ import {
 import { api } from "~/utils/api"
   
   
-  export function OvertimeTable() {
-
-    const EMP = "F103007";
+  export function OvertimeTable(props: {EMP: string}) {
     
+    const EMP = props.EMP;
     const empdata = api.employeeData.getAllEmployeeData.useQuery()
     const overtime_data1 = api.calculate.calculateWeekdayOvertimePay.useQuery({ emp_no: EMP, period_id: 113 })    
     const overtime_data2 = api.calculate.calculateHolidayOvertimePay.useQuery({ emp_no: EMP, period_id: 113 })    

@@ -168,6 +168,8 @@
     "bankSetting": "銀行",
     "insuranceRateSetting": "勞健保費率",
     "bonusSetting": "獎金",
+    "bonus": "獎金",
+    "other": "其他",
     "bonusDepartmentSetting": "獎金部門",
     "bonusPosition": "獎金職等",
     "bonusPositionType": "獎金職級",
@@ -282,6 +284,7 @@
     "user_id": "員工編號",
     "your_employee_id": "您的員工編號",
     "password": "密碼",
-    "reset_password": "重設密碼"
+    "reset_password": "重設密碼",
+    "enter_password": "輸入密碼"
   }
 }

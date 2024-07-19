@@ -168,6 +168,7 @@
     "bankSetting": "Bank Setting",
     "insuranceRateSetting": "Insurance Rate Setting",
     "bonusSetting": "Bonus Setting",
+    "bonus": "Bonus",
     "bonusDepartmentSetting": "Bonus Department Setting",
     "bonusPosition": "Bonus Position",
     "bonusPositionType": "Bonus Position Type",
@@ -182,6 +183,7 @@
     "employeeTrust": "Employee Trust",
     "holiday": "Holiday",
     "overtime": "Overtime",
+    "other": "Other",
     "payset": "Payset"
   },
   "button": {
@@ -282,6 +284,7 @@
     "user_id": "User ID",
     "your_employee_id": "Your Employee ID",
     "password": "Password",
-    "reset_password": "Reset Password"
+    "reset_password": "Reset Password",
+    "enter_password": "Enter Password"
   }
 }

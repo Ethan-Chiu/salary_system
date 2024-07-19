@@ -43,14 +43,40 @@ export function ChangePasswordForm() {
 	const { data: session } = useSession();
 
 	const changePassword = api.login.changePassword.useMutation();
+	const api_login = api.login.login.useMutation();
 
 	const form = useForm<ChangePasswordFormValues>({
 		resolver: zodResolver(changePasswordFormSchema),
 	});
 
+	async function checkPassword(data: ChangePasswordFormValues) {
+		try {
+			await api_login.mutateAsync({
+				emp_no: session?.user.emp_no!,
+				password: data.old_pw,
+			});
+	
+			if (data.new_pw !== data.new_pw2)
+				return "Confirm of new password fail!";
+			if (data.new_pw === data.old_pw)
+				return "The new password is same as the old one!";
+			return "Seccess"
+		} catch (error) {
+			return "Old password fail!";
+		}
+	}
+
 	async function onSubmit(data: ChangePasswordFormValues) {
 		if (session === null) {
 			void Router.push("/login");
+			return;
+		}
+		const msg = await checkPassword(data)
+		if (msg !== "Seccess") {
+			toast({
+				title: "Update password fail",
+				description: msg,
+			});
 			return;
 		}
 		await changePassword.mutateAsync({
@@ -140,24 +166,3 @@ export function ChangePasswordForm() {
 		</Form>
 	);
 }
-
-// async function checkPassword(data: any) {
-// 	try {
-// 		await api_login.mutateAsync({
-// 			emp_no: session?.user.emp_no!,
-// 			password: data.old_pw,
-// 		});
-
-// 		if (api_login.isError) {
-// 			return api_login.error.message;
-// 		}
-
-// 		if (data.new_pw !== data.new_pw2)
-// 			return "Confirm of new password fail!";
-// 		if (data.new_pw === data.old_pw)
-// 			return "The new password is same as the old one!";
-// 		return "Success";
-// 	} catch (error) {
-// 		return error as string;
-// 	}
-// }

@@ -412,6 +412,7 @@ export class CalculateService {
 		full_attendance_bonus : number,
 		exceed_overtime_pay : number,
 		leave_deduction : number,
+		operational_performance_bonus:number,
 	): Promise<number> {
 		/* 
 			rd("薪資所得扣繳總額") = 
@@ -434,7 +435,7 @@ export class CalculateService {
 			employee_payment.base_salary +
 			(employee_payment.supervisor_allowance ?? 0) +
 			(employee_payment.occupational_allowance ?? 0) +
-			rd("營運積效獎金") + 
+			operational_performance_bonus + 
 			reissue_salary +
 			exceed_overtime_pay +
 			rd("其他加項稅") +
