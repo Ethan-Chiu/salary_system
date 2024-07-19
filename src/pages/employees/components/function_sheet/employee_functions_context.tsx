@@ -1,10 +1,10 @@
-import React, { createContext, PropsWithChildren, useContext } from "react";
+import { createContext, type PropsWithChildren } from "react";
 import { api } from "~/utils/api";
 import {
-	UseTRPCMutationResult,
-	UseTRPCQueryResult,
+	type UseTRPCMutationResult,
+	type UseTRPCQueryResult,
 } from "@trpc/react-query/shared";
-import { EmployeeTableEnum } from "../../employee_tables";
+import { type EmployeeTableEnum } from "../../employee_tables";
 
 interface FunctionsApi {
 	queryFunction: (() => UseTRPCQueryResult<any, any>) | undefined;
@@ -42,29 +42,29 @@ export default function EmployeeToolbarFunctionsProvider({
 	const updateEmployeePayment =
 		api.employeePayment.updateEmployeePayment.useMutation({
 			onSuccess: () => {
-				ctx.employeePayment.getCurrentEmployeePayment.invalidate();
-				ctx.employeePayment.getAllEmployeePayment.invalidate();
+				void ctx.employeePayment.getCurrentEmployeePayment.invalidate();
+				void ctx.employeePayment.getAllEmployeePayment.invalidate();
 			},
 		});
 	const createEmployeePayment =
 		api.employeePayment.createEmployeePayment.useMutation({
 			onSuccess: () => {
-				ctx.employeePayment.getCurrentEmployeePayment.invalidate();
-				ctx.employeePayment.getAllEmployeePayment.invalidate();
+				void ctx.employeePayment.getCurrentEmployeePayment.invalidate();
+				void ctx.employeePayment.getAllEmployeePayment.invalidate();
 			},
 		});
 	const deleteEmployeePayment =
 		api.employeePayment.deleteEmployeePayment.useMutation({
 			onSuccess: () => {
-				ctx.employeePayment.getCurrentEmployeePayment.invalidate();
-				ctx.employeePayment.getAllEmployeePayment.invalidate();
+				void ctx.employeePayment.getCurrentEmployeePayment.invalidate();
+				void ctx.employeePayment.getAllEmployeePayment.invalidate();
 			},
 		});
 	const autoCalculateEmployeePayment =
 		api.employeePayment.autoCalculateEmployeePayment.useMutation({
 			onSuccess: () => {
-				ctx.employeePayment.getCurrentEmployeePayment.invalidate();
-				ctx.employeePayment.getAllEmployeePayment.invalidate();
+				void ctx.employeePayment.getCurrentEmployeePayment.invalidate();
+				void ctx.employeePayment.getAllEmployeePayment.invalidate();
 			},
 		});
 	//#endregion
@@ -75,29 +75,29 @@ export default function EmployeeToolbarFunctionsProvider({
 	const updateEmployeeTrust =
 		api.employeeTrust.updateEmployeeTrust.useMutation({
 			onSuccess: () => {
-				ctx.employeeTrust.getCurrentEmployeeTrust.invalidate();
-				ctx.employeeTrust.getAllEmployeeTrust.invalidate();
+				void ctx.employeeTrust.getCurrentEmployeeTrust.invalidate();
+				void ctx.employeeTrust.getAllEmployeeTrust.invalidate();
 			},
 		});
 	const createEmployeeTrust =
 		api.employeeTrust.createEmployeeTrust.useMutation({
 			onSuccess: () => {
-				ctx.employeeTrust.getCurrentEmployeeTrust.invalidate();
-				ctx.employeeTrust.getAllEmployeeTrust.invalidate();
+				void ctx.employeeTrust.getCurrentEmployeeTrust.invalidate();
+				void ctx.employeeTrust.getAllEmployeeTrust.invalidate();
 			},
 		});
 	const deleteEmployeeTrust =
 		api.employeeTrust.deleteEmployeeTrust.useMutation({
 			onSuccess: () => {
-				ctx.employeeTrust.getCurrentEmployeeTrust.invalidate();
-				ctx.employeeTrust.getAllEmployeeTrust.invalidate();
+				void ctx.employeeTrust.getCurrentEmployeeTrust.invalidate();
+				void ctx.employeeTrust.getAllEmployeeTrust.invalidate();
 			},
 		});
 	const autoCalculateEmployeeTrust =
 		api.employeeTrust.autoCalculateEmployeeTrust.useMutation({
 			onSuccess: () => {
-				ctx.employeeTrust.getCurrentEmployeeTrust.invalidate();
-				ctx.employeeTrust.getAllEmployeeTrust.invalidate();
+				void ctx.employeeTrust.getCurrentEmployeeTrust.invalidate();
+				void ctx.employeeTrust.getAllEmployeeTrust.invalidate();
 			},
 		});
 	//#endregion

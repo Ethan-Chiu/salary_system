@@ -1,7 +1,7 @@
 import AutoForm from "~/components/ui/auto-form";
 import * as z from "zod";
 import { Button } from "~/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
 	Table,
@@ -26,9 +26,9 @@ import {
 import { PenSquare, Trash2 } from "lucide-react";
 
 import { useContext } from "react";
-import { FunctionMode } from "./data_table_functions";
+import { type FunctionMode } from "./data_table_functions";
 import { LoadingSpinner } from "~/components/loading";
-import { FieldConfig } from "~/components/ui/auto-form/types";
+import { type FieldConfig } from "~/components/ui/auto-form/types";
 import { employeeToolbarFunctionsContext } from "./employee_functions_context";
 import GeneralTable from "~/pages/parameters/components/function_sheet/general_table";
 import { Input } from "~/components/ui/input";
@@ -42,13 +42,21 @@ interface EmployeeFormProps<SchemaType extends z.AnyZodObject> {
 	closeSheet: () => void;
 }
 
+interface DataTypeWithoutID {
+	emp_no: string;
+}
+
+interface DataType extends DataTypeWithoutID {
+	id: number;
+}
+
 export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 	formSchema,
 	fieldConfig,
 	mode,
 	closeSheet,
 }: EmployeeFormProps<SchemaType>) {
-	const { t } = useTranslation(['common']);
+	const { t } = useTranslation(["common"]);
 	const functions = useContext(employeeToolbarFunctionsContext);
 	const { selectedPeriod } = useContext(periodContext);
 
@@ -57,12 +65,24 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 	const createFunction = functions.createFunction!;
 	const deleteFunction = functions.deleteFunction!;
 	const autoCalculateFunction = functions.autoCalculateFunction!;
-	const { isLoading, isError, data, error } = queryFunction();
+	const {
+		isLoading,
+		isError,
+		data,
+		error,
+	}: {
+		isLoading: boolean;
+		isError: boolean;
+		data?: DataType | DataType[];
+		error?: { message: string } | null;
+	} = queryFunction();
 
 	const isList = Array.isArray(data);
 	const onlyOne = !(isList && data.length > 1);
 
-	const [selectedData, setSelectedData] = useState(isList ? null : data);
+	const [selectedData, setSelectedData] = useState<DataType | null>(
+		isList ? null : data
+	);
 
 	const [formValues, setFormValues] = useState<
 		Partial<z.infer<z.AnyZodObject>>
@@ -72,11 +92,13 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 
 	function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
 		return Object.fromEntries(
-			Object.entries(schema.shape).map(([key, value]) => {
-				if (value instanceof z.ZodDefault)
-					return [key, value._def.defaultValue()];
-				return [key, undefined];
-			})
+			Object.entries(schema.shape as Record<string, any>).map(
+				([key, value]) => {
+					if (value instanceof z.ZodDefault)
+						return [key, value._def.defaultValue()];
+					return [key, undefined];
+				}
+			)
 		);
 	}
 
@@ -88,6 +110,9 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 					...parsedValues.data,
 				});
 			} else if (mode === "update") {
+				if (!selectedData) {
+					return;
+				}
 				updateFunction.mutate({
 					...parsedValues.data,
 					id: selectedData.id,
@@ -111,20 +136,22 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 	}
 
 	if (isError) {
-		return <span>Error: {error.message}</span>; // TODO: Error element with toast
+		return <span>Error: {error?.message}</span>; // TODO: Error element with toast
 	}
 
 	if (mode === "delete" && onlyOne) {
-		return (
-			<p>{t("others.delete_warning")}</p>
-		);
+		return <p>{t("others.delete_warning")}</p>;
+	}
+
+	if (!data) {
+		return <p>{t("others.no_data")}</p>;
 	}
 
 	// Select one entry
-	if (mode !== "create" && selectedData === null) {
-		const noIDData: any[] = data.map((item: any) => {
+	if (mode !== "create" && isList && selectedData === null) {
+		const noIDData: DataTypeWithoutID[] = data.map((item: any) => {
 			const { ["id"]: id, ...rest } = item;
-			return rest;
+			return rest as DataTypeWithoutID;
 		});
 
 		return (
@@ -132,11 +159,22 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 				dataNoID={noIDData}
 				mode={mode}
 				onUpdate={(emp_no: string) => {
-					setSelectedData(data.findLast((d: any) => d.emp_no === emp_no));
+					const selectedEmp = data.findLast(
+						(d) => d.emp_no === emp_no
+					);
+					if (!selectedEmp) {
+						return;
+					}
+					setSelectedData(selectedEmp);
 				}}
 				onDelete={(index: number) => {
+					const selectedId = data[index]?.id;
+					if (!selectedId) {
+						return;
+					}
+
 					deleteFunction.mutate({
-						id: data[index].id,
+						id: selectedId,
 					});
 				}}
 				onAutoCalculate={(selectedEmpNoList: string[]) => {
@@ -198,7 +236,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 					<DialogFooter>
 						<DialogClose asChild>
 							<Button onClick={submitForm} type="submit">
-								{t("buttton.save")}
+								{t("button.save")}
 							</Button>
 						</DialogClose>
 					</DialogFooter>
@@ -215,22 +253,29 @@ const CompViewAllDatas = ({
 	onDelete,
 	onAutoCalculate,
 }: {
-	dataNoID: any[];
+	dataNoID: DataTypeWithoutID[];
 	mode: FunctionMode;
-	onUpdate: Function;
-	onDelete: Function;
-	onAutoCalculate: Function;
+	onUpdate: (emp_no: string) => void;
+	onDelete: (index: number) => void;
+	onAutoCalculate: (selectedEmpNoList: string[]) => void;
 }) => {
 	const [filterValue, setFilterValue] = useState<string>("");
+	const [filteredDataList, setFilteredDataList] =
+		useState<DataTypeWithoutID[]>(dataNoID);
 	const [selectedEmpNoList, setSelectedEmpNoList] = useState<string[]>(
 		dataNoID.map((e) => e.emp_no)
 	);
-	const filteredData: {emp_no: string}[] = dataNoID?.filter((data: any) => {
-		return Object.values(data).some((value: any) =>
-			value ? value.toString().includes(filterValue) : false
-		);
-	});
-	const { t } = useTranslation(['common']);
+
+	useEffect(() => {
+		const filteredData = dataNoID?.filter((data) => {
+			return Object.values(data).some((value: any) =>
+				value ? value.toString().includes(filterValue) : false
+			);
+		});
+		setFilteredDataList(filteredData);
+	}, [dataNoID, filterValue]);
+
+	const { t } = useTranslation(["common"]);
 
 	return (
 		<>
@@ -271,56 +316,49 @@ const CompViewAllDatas = ({
 					</Dialog>
 				)}
 			</div>
-			{filteredData && (
-				<div className="m-4">
+			<div className="m-4">
+				{filteredDataList.length != 0 && filteredDataList[0] ? (
 					<Table>
 						<TableHeader>
 							<TableRow>
 								<TableHead className="whitespace-nowrap text-center">
-									{mode == "auto_calculate" && (<Checkbox
-										className="cursor-pointer"
-										checked={
-											selectedEmpNoList.length ===
-											dataNoID.length
-										}
-										onCheckedChange={(checked) => {
-											if (checked) {
-												setSelectedEmpNoList(
-													dataNoID.map(
-														(e) => e.emp_no
-													)
-												);
-											} else {
-												setSelectedEmpNoList([]);
+									{mode == "auto_calculate" && (
+										<Checkbox
+											className="cursor-pointer"
+											checked={
+												selectedEmpNoList.length ===
+												dataNoID.length
 											}
-										}}
-									/>)}
+											onCheckedChange={(checked) => {
+												if (checked) {
+													setSelectedEmpNoList(
+														dataNoID.map(
+															(e) => e.emp_no
+														)
+													);
+												} else {
+													setSelectedEmpNoList([]);
+												}
+											}}
+										/>
+									)}
 								</TableHead>
-								{filteredData[0] ? (
-									Object.keys(filteredData[0]).map(
-										(key: string) => {
-											return (
-												<TableHead
-													key={key}
-													className="whitespace-nowrap text-center"
-												>
-													{t(`table.${key}`)}
-												</TableHead>
-											);
-										}
-									)
-								) : (
-									<TableCell
-										colSpan={5}
-										className="h-24 text-center"
-									>
-										{t(`table.no_data`)}
-									</TableCell>
+								{Object.keys(filteredDataList[0]).map(
+									(key: string) => {
+										return (
+											<TableHead
+												key={key}
+												className="whitespace-nowrap text-center"
+											>
+												{t(`table.${key}`)}
+											</TableHead>
+										);
+									}
 								)}
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{filteredData.map((data, index: number) => {
+							{filteredDataList.map((data, index: number) => {
 								return (
 									<TableRow key={data.emp_no}>
 										<TableCell className="items-center">
@@ -373,7 +411,10 @@ const CompViewAllDatas = ({
 										</TableCell>
 										{Object.keys(data).map((key) => {
 											return (
-												<TableCell key={data.emp_no} className="text-center font-medium whitespace-nowrap">
+												<TableCell
+													key={data.emp_no}
+													className="whitespace-nowrap text-center font-medium"
+												>
 													{data[key]}
 												</TableCell>
 											);
@@ -383,8 +424,10 @@ const CompViewAllDatas = ({
 							})}
 						</TableBody>
 					</Table>
-				</div>
-			)}
+				) : (
+					<div className="m-4"> {t("table.no_data")} </div>
+				)}
+			</div>
 		</>
 	);
 };

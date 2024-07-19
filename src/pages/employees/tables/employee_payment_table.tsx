@@ -1,36 +1,37 @@
 import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table_update";
 import { api } from "~/utils/api";
-import { I18nType } from "~/lib/utils/i18n_type";
+import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
 
-const columns = (t: I18nType) => [
-	"emp_no",
-	"base_salary",
-	"food_allowance",
-	"supervisor_allowance",
-	"occupational_allowance",
-	"subsidy_allowance",
-	"professional_cert_allowance",
-	"l_r_self",
-	"l_i",
-	"h_i",
-	"l_r",
-	"occupational_injury",
-	"start_date",
-	"end_date",
-].map((key) => {
-	return {
-		accessorKey: key,
-		header: t(`table.${key}`),
-	};
-});
+const columns = (t: I18nType) =>
+	[
+		"emp_no",
+		"base_salary",
+		"food_allowance",
+		"supervisor_allowance",
+		"occupational_allowance",
+		"subsidy_allowance",
+		"professional_cert_allowance",
+		"l_r_self",
+		"l_i",
+		"h_i",
+		"l_r",
+		"occupational_injury",
+		"start_date",
+		"end_date",
+	].map((key) => {
+		return {
+			accessorKey: key,
+			header: t(`table.${key}`),
+		};
+	});
 
-export function EmployeePaymentTable({ index, globalFilter, period_id }: any) {
+export function EmployeePaymentTable({ period_id }: any) {
 	const { isLoading, isError, data, error } =
 		api.employeePayment.getCurrentEmployeePayment.useQuery({ period_id });
 
-	const { t } = useTranslation(['common']);
+	const { t } = useTranslation(["common"]);
 
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast

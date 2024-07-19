@@ -1,7 +1,7 @@
 import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table_update";
 import { api } from "~/utils/api";
-import { I18nType } from "~/lib/utils/i18n_type";
+import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
 
 const columns = (t: I18nType) => [
