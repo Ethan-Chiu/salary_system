@@ -33,13 +33,15 @@ import { useTranslation } from "react-i18next";
 
 const LoginFormSchema = z.object({
 	userid: z.string(),
-	password: z.string().min(1, { message: "enter password" }),
+	password: z.string().min(1, { message: "others.enter_password" }),
 });
 
 export default function Login() {
 	const [forgetPwd, setForgetPwd] = useState(false);
 
 	const router = useRouter();
+
+	const { t } = useTranslation(["common"]);
 
 	const form = useForm<z.infer<typeof LoginFormSchema>>({
 		resolver: zodResolver(LoginFormSchema),
@@ -75,8 +77,6 @@ export default function Login() {
 		},
 		[router]
 	);
-
-	const { t } = useTranslation(["common"]);
 
 	return (
 		<PerpageLayout pageTitle="login">

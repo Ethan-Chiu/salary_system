@@ -22,6 +22,7 @@ interface DataTableStandardStateProps<TData, P> {
 	WrappedComponent: ComponentType<WithTableProps<Table<TData>, P>>;
 	onUpdate?: (table: Table<TData>) => void;
 	props: P;
+	initialColumnVisibility?: VisibilityState;
 }
 
 export function WithDataTableStandardState<TData, P>({
@@ -30,10 +31,11 @@ export function WithDataTableStandardState<TData, P>({
 	WrappedComponent,
 	onUpdate,
 	props,
+	initialColumnVisibility = {},
 }: DataTableStandardStateProps<TData, P>) {
 	const [rowSelection, setRowSelection] = useState({});
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-		{}
+		initialColumnVisibility
 	);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [sorting, setSorting] = useState<SortingState>([]);

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { type ColumnDef, type Table } from "@tanstack/react-table";
+import { VisibilityState, type ColumnDef, type Table } from "@tanstack/react-table";
 import { Separator } from "~/components/ui/separator";
 
 import { DataTablePagination } from "~/components/data_table/data_table_pagination";
@@ -11,18 +11,21 @@ interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
 	data: TData[];
 	filterColumnKey?: keyof TData;
+	initialColumnVisibility?: VisibilityState;
 }
 
 export function DataTable<TData>({
 	columns,
 	data,
 	filterColumnKey,
+	initialColumnVisibility,
 }: DataTableProps<TData>) {
 	return WithDataTableStandardState({
 		columns: columns,
 		data,
 		props: { filterColumnKey },
 		WrappedComponent: DataTableContent,
+		initialColumnVisibility,
 	});
 }
 

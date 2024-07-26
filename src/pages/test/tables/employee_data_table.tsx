@@ -46,5 +46,8 @@ export function EmployeeDataTable({ func }: EmployeeDataTableProps) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-	return <DataTable columns={columns(t)} data={data} />;
+  if (data) {
+    return <DataTable columns={columns(t)} data={data} />;
+  }
+  return <div/>;
 }

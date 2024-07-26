@@ -3,7 +3,7 @@ import { type Table, type ColumnDef } from "@tanstack/react-table";
 
 import { Separator } from "~/components/ui/separator";
 
-import { DataTableToolbar } from "./data_table_toolbar_update";
+import { DataTableToolbarUpdate } from "./data_table_toolbar_update";
 import { DataTablePagination } from "~/components/data_table/data_table_pagination";
 import { DataTableStandardBody } from "~/components/data_table/default/data_table_standard_body";
 import { WithDataTableStandardState } from "~/components/data_table/default/data_table_standard_state";
@@ -38,7 +38,7 @@ function DataTableContent<TData>({
 
 	return (
 		<div className="flex h-full w-full flex-col rounded-md border">
-			<DataTableToolbar table={table} filterColumnKey={filterColumnKey} />
+			<DataTableToolbarUpdate table={table} filterColumnKey={filterColumnKey} />
 			<Separator />
 			<div className="h-0 flex-grow">
 				<DataTableStandardBody table={table} dataPerRow={dataPerRow} />
