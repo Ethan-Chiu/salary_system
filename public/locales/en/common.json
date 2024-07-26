@@ -161,7 +161,11 @@
     "all": "All",
     "no_month_salary": "No Month Salary",
     "salary_data": "Salary Data",
-    "ehr_data": "Ehr Data"
+    "ehr_data": "Ehr Data",
+    "remark": "Remark",
+    "amount": "Amount",
+    "expense_type_name": "Expense Type Name",
+    "bonus_type_name": "Bonus Type Name"
   },
   "table_name": {
     "attendanceSetting": "Attendance Setting",

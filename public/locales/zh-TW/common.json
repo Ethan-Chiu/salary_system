@@ -161,7 +161,11 @@
     "all": "全部",
     "no_month_salary": "未發放月薪",
     "salary_data": "當前資料",
-    "ehr_data": "更新資料"
+    "ehr_data": "更新資料",
+    "remark": "備註",
+    "amount": "金額",
+    "expense_type_name": "費用類別名稱",
+    "bonus_type_name": "獎金類別名稱"
   },
   "table_name": {
     "attendanceSetting": "請假加班",
