@@ -244,10 +244,12 @@ export class TransactionService {
 		);
 		const l_r_self = employee_payment!.l_r_self;
 		const parking_fee = await calculateService.getParkingFee(
-			
+			period_id,
+			emp_no,
 		);
 		const brokerage_fee = await calculateService.getBrokerageFee(
-			
+			period_id,
+			emp_no,
 		);
 		const salary_range = await calculateService.getSalaryRange(
 			
@@ -264,9 +266,9 @@ export class TransactionService {
 				
 			);
 		note = note;
-		const bank_account_1 = employee_acount![0]?.bank_account!;
-		const bank_account_2 = employee_acount![1]?.bank_account!;
-		const foreign_currency_account =
+		const bank_account_1 = employee_data!.bank_account;
+		// const bank_account_2 = employee_acount![1]?.bank_account!;
+		// const foreign_currency_account =
 			""
 		const bonus_ratio = bonus_setting!.fixed_multiplier;
 		const annual_days_in_service = payset!.work_day!;
@@ -380,8 +382,8 @@ export class TransactionService {
 			mid_autumn_festival_bonus, // 中秋獎金
 			note, // 備註
 			bank_account_1, // 帳號1
-			bank_account_2, // 帳號2
-			foreign_currency_account, // 外幣帳號
+			// bank_account_2, // 帳號2
+			// foreign_currency_account, // 外幣帳號
 			bonus_ratio, // 獎金比率
 			annual_days_in_service, // 年度在職天數
 			l_r_contribution, // 勞退金提撥

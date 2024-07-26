@@ -79,8 +79,8 @@ export class Transaction extends Model<
 	declare mid_autumn_festival_bonus: number; // 中秋獎金
 	declare note: string; // 備註
 	declare bank_account_1: string; // 帳號1
-	declare bank_account_2: string; // 帳號2
-	declare foreign_currency_account: string; // 外幣帳號
+	// declare bank_account_2: string; // 帳號2
+	// declare foreign_currency_account: string; // 外幣帳號
 	declare bonus_ratio: number; // 獎金比率
 	declare annual_days_in_service: number; // 年度在職天數
 	declare l_r_contribution: number; // 勞退金提撥
@@ -370,14 +370,14 @@ Transaction.init(
 			type: DataTypes.STRING(128),
 			comment: "帳號1",
 		},
-		bank_account_2: {
-			type: DataTypes.STRING(128),
-			comment: "帳號2",
-		},
-		foreign_currency_account: {
-			type: DataTypes.STRING(128),
-			comment: "外幣帳號",
-		},
+		// bank_account_2: {
+		// 	type: DataTypes.STRING(128),
+		// 	comment: "帳號2",
+		// },
+		// foreign_currency_account: {
+		// 	type: DataTypes.STRING(128),
+		// 	comment: "外幣帳號",
+		// },
 		bonus_ratio: {
 			type: DataTypes.INTEGER,
 			comment: "獎金比率",
