@@ -16,7 +16,7 @@ export const transactionRouter = createTRPCRouter({
 			if (transactions == null) {
 				throw new BaseResponseError("Transactions does not exist");
 			}
-			return transactions;
+			return [{name: "transactions", data: transactions}]; 
 		}),
 
 	createTransaction: publicProcedure
