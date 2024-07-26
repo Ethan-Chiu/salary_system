@@ -36,7 +36,7 @@ export function EmployeeDataTable({ func }: EmployeeDataTableProps) {
 	const { isLoading, isError, data, error } =
 		api.sync.getPaidEmployees.useQuery({ func });
 
-  const { t } = useTranslation(['common']);
+	const { t } = useTranslation(['common']);
 
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast
@@ -46,8 +46,8 @@ export function EmployeeDataTable({ func }: EmployeeDataTableProps) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-  if (data) {
-    return <DataTable columns={columns(t)} data={data} />;
-  }
-  return <div/>;
+	if (data) {
+		return <DataTable columns={columns(t)} data={data} />;
+	}
+	return <div />;
 }

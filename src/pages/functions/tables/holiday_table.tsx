@@ -2,7 +2,7 @@ import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table";
 import { Holiday } from "~/server/database/entity/UMEDIA/holiday";
 import { api } from "~/utils/api";
-import { type I18nType} from "~/lib/utils/i18n_type";
+import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
 
 const columns = (t: I18nType) => Object.keys(new Holiday()).map((key) => {
@@ -24,7 +24,7 @@ export function HolidayTable({ period, emp_no_list }: HolidayTableProps) {
 			emp_no_list: emp_no_list,
 		});
 
-  const { t } = useTranslation(['common']);
+	const { t } = useTranslation(['common']);
 
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast
@@ -34,8 +34,8 @@ export function HolidayTable({ period, emp_no_list }: HolidayTableProps) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-  if (data) {
-    return <DataTable columns={columns(t)} data={data} />;
-  }
-  return <div/>;
+	if (data) {
+		return <DataTable columns={columns(t)} data={data} />;
+	}
+	return <div />;
 }

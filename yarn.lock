@@ -540,7 +540,7 @@
 
 "@esbuild/win32-x64@0.18.20":
   version "0.18.20"
-  resolved "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.18.20.tgz"
+  resolved "https://registry.yarnpkg.com/@esbuild/win32-x64/-/win32-x64-0.18.20.tgz#786c5f41f043b07afb1af37683d7c33668858f6d"
   integrity sha512-kTdfRcSiDfQca/y9QIkng02avJ+NCaQvrMejlsB3RRv5sE9rRoeBPISaZpKxHELzRxZyLvNts1P27W3wV+8geQ==
 
 "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.3.0":
@@ -1971,7 +1971,7 @@
 
 "@trpc-playground/html@1.0.4":
   version "1.0.4"
-  resolved "https://registry.npmjs.org/@trpc-playground/html/-/html-1.0.4.tgz"
+  resolved "https://registry.yarnpkg.com/@trpc-playground/html/-/html-1.0.4.tgz#c450c17b117dbfe645c8c4b96af94c8ac59a1bbb"
   integrity sha512-HVnqaUXxEJJcrAHvVgivwtZFqTE6NNxXxrXEnd+rCxun97xnZknwdiTxq69wQEsZYxPrgtwPmO/nAEZL8AReWg==
   dependencies:
     vite "^4.0.1"
@@ -1979,7 +1979,7 @@
 
 "@trpc-playground/types@1.0.0":
   version "1.0.0"
-  resolved "https://registry.npmjs.org/@trpc-playground/types/-/types-1.0.0.tgz"
+  resolved "https://registry.yarnpkg.com/@trpc-playground/types/-/types-1.0.0.tgz#0dd4077a2c4ecfa3f3f34b3a5d91a74a3d45fdd8"
   integrity sha512-Ap5aNaVlglfM9WLkPLKF2rHDZ8CwHcqK32A8YaqTyHUuoEFTSOh6oSgVU6Cv8toxClKiTXFvbWmE4aZxIoh4Zg==
   dependencies:
     ts-essentials "^9.3.0"
@@ -3127,7 +3127,7 @@ commander@11.1.0:
 
 commander@^2.20.3:
   version "2.20.3"
-  resolved "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
 
 commander@^4.0.0:
@@ -3276,7 +3276,7 @@ cssesc@^3.0.0:
 
 cssfilter@0.0.10:
   version "0.0.10"
-  resolved "https://registry.npmjs.org/cssfilter/-/cssfilter-0.0.10.tgz"
+  resolved "https://registry.yarnpkg.com/cssfilter/-/cssfilter-0.0.10.tgz#c6d2672632a2e5c83e013e6864a42ce8defd20ae"
   integrity sha512-FAaLDaplstoRsDR8XGYH51znUN0UY7nMc6Z9/fvE8EXGwvJE9hu7W2vHwx1+bd6gCYnln9nLbzxFTrcO9YQDZw==
 
 csstype@^3.0.2:
@@ -3603,7 +3603,7 @@ es-to-primitive@^1.2.1:
 
 esbuild@^0.18.10:
   version "0.18.20"
-  resolved "https://registry.npmjs.org/esbuild/-/esbuild-0.18.20.tgz"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.18.20.tgz#4709f5a34801b43b799ab7d6d82f7284a9b7a7a6"
   integrity sha512-ceqxoedUrcayh7Y7ZX6NdbbDzGROiyVBgC4PriJThBKSVPWnnFHZAkfI1lJT8QFkOwH4qOS2SJkS4wvpGl8BpA==
   optionalDependencies:
     "@esbuild/android-arm" "0.18.20"
@@ -5420,7 +5420,7 @@ lodash.uniq@^4.5.0:
 
 lodash@^4.17.21:
   version "4.17.21"
-  resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 log-update@^6.0.0:
@@ -6459,7 +6459,7 @@ rimraf@^3.0.0, rimraf@^3.0.2:
 
 rollup@^3.27.1:
   version "3.29.4"
-  resolved "https://registry.npmjs.org/rollup/-/rollup-3.29.4.tgz"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-3.29.4.tgz#4d70c0f9834146df8705bfb69a9a19c9e1109981"
   integrity sha512-oWzmBZwvYrU0iJHtDmhsm662rC15FRXmcjCk1xD771dFDx5jJ02ufAQQTn0etB2emNk4J9EZg/yWKpsn9BWGRw==
   optionalDependencies:
     fsevents "~2.3.2"
@@ -6992,7 +6992,7 @@ tr46@~0.0.3:
 
 trpc-playground@^1.0.4:
   version "1.0.4"
-  resolved "https://registry.npmjs.org/trpc-playground/-/trpc-playground-1.0.4.tgz"
+  resolved "https://registry.yarnpkg.com/trpc-playground/-/trpc-playground-1.0.4.tgz#48fa26695545f1c6ff21800829301a9c780800cd"
   integrity sha512-6nVf1o2LNoo1g6oTS24yajoH7xV4CFjxGAbAH7qLXqa3yo9qB5QHsWLbrm1hNt51SyCG++P0zHJaCdVfgvEVDg==
   dependencies:
     "@trpc-playground/html" "1.0.4"
@@ -7012,9 +7012,9 @@ ts-essentials@^7.0.3:
   integrity sha512-8+gr5+lqO3G84KdiTSMRLtuyJ+nTBVRKuCrK4lidMPdVeEp0uqC875uE5NMcaA7YYMN7XsNiFQuMvasF8HT/xQ==
 
 ts-essentials@^9.3.0:
-  version "9.4.1"
-  resolved "https://registry.npmjs.org/ts-essentials/-/ts-essentials-9.4.1.tgz"
-  integrity sha512-oke0rI2EN9pzHsesdmrOrnqv1eQODmJpd/noJjwj2ZPC3Z4N2wbjrOEqnsEgmvlO2+4fBb0a794DCna2elEVIQ==
+  version "9.4.2"
+  resolved "https://registry.yarnpkg.com/ts-essentials/-/ts-essentials-9.4.2.tgz#6d4bd23b46b61bf3e031816cc887e839eb62c33c"
+  integrity sha512-mB/cDhOvD7pg3YCLk2rOtejHjjdSi9in/IBYE13S+8WA5FBSraYf4V/ws55uvs0IvQ/l0wBOlXy5yBNZ9Bl8ZQ==
 
 ts-interface-checker@^0.1.9:
   version "0.1.13"
@@ -7228,7 +7228,7 @@ util-deprecate@^1.0.1, util-deprecate@^1.0.2, util-deprecate@~1.0.1:
 
 uttp@^0.1.3:
   version "0.1.3"
-  resolved "https://registry.npmjs.org/uttp/-/uttp-0.1.3.tgz"
+  resolved "https://registry.yarnpkg.com/uttp/-/uttp-0.1.3.tgz#d45c55babaadb844b407629c3c5c7670a0ccaf1f"
   integrity sha512-LWRHPNmivLr/4rTt3CXVtQfWdhzoN7OQwBPHfcsYGffeFo9a8/CtDxtl3xcVR965paRjLr3Ocxs/shwyjPzE2Q==
 
 uuid@^8.3.0, uuid@^8.3.2:
@@ -7256,9 +7256,9 @@ validator@^13.9.0:
   integrity sha512-Ii+sehpSfZy+At5nPdnyMhx78fEoPDkR2XW/zimHEL3MyGJQOCQ7WeP20jPYRz7ZCpcKLB21NxuXHF3bxjStBQ==
 
 vite@^4.0.1:
-  version "4.5.1"
-  resolved "https://registry.npmjs.org/vite/-/vite-4.5.1.tgz"
-  integrity sha512-AXXFaAJ8yebyqzoNB9fu2pHoo/nWX+xZlaRwoeYUxEqBO+Zj4msE5G+BhGBll9lYEKv9Hfks52PAF2X7qDYXQA==
+  version "4.5.3"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-4.5.3.tgz#d88a4529ea58bae97294c7e2e6f0eab39a50fb1a"
+  integrity sha512-kQL23kMeX92v3ph7IauVkXkikdDRsYMGTVl5KY2E9OY4ONLvkHf04MDTbnfo6NKxZiDLWzVpP5oTa8hQD8U3dg==
   dependencies:
     esbuild "^0.18.10"
     postcss "^8.4.27"
@@ -7430,9 +7430,9 @@ xmlchars@^2.2.0:
   integrity sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==
 
 xss@^1.0.14:
-  version "1.0.14"
-  resolved "https://registry.npmjs.org/xss/-/xss-1.0.14.tgz"
-  integrity sha512-og7TEJhXvn1a7kzZGQ7ETjdQVS2UfZyTlsEdDOqvQF7GoxNfY+0YLCzBy1kPdsDDx4QuNAonQPddpsn6Xl/7sw==
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/xss/-/xss-1.0.15.tgz#96a0e13886f0661063028b410ed1b18670f4e59a"
+  integrity sha512-FVdlVVC67WOIPvfOwhoMETV72f6GbW7aOabBC3WxN/oUdoEMDyLz4OgRv5/gck2ZeNqEQu+Tb0kloovXOfpYVg==
   dependencies:
     commander "^2.20.3"
     cssfilter "0.0.10"
@@ -7501,7 +7501,7 @@ zip-stream@^4.1.0:
 
 zod-to-ts@^1.1.2:
   version "1.2.0"
-  resolved "https://registry.npmjs.org/zod-to-ts/-/zod-to-ts-1.2.0.tgz"
+  resolved "https://registry.yarnpkg.com/zod-to-ts/-/zod-to-ts-1.2.0.tgz#873a2fd8242d7b649237be97e0c64d7954ae0c51"
   integrity sha512-x30XE43V+InwGpvTySRNz9kB7qFU8DlyEy7BsSTCHPH1R0QasMmHWZDCzYm6bVXtj/9NNJAZF3jW8rzFvH5OFA==
 
 zod@^3.22.4:

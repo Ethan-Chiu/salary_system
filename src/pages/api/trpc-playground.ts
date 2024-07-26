@@ -1,6 +1,7 @@
 import { type NextApiHandler } from "next";
 import { nextHandler } from "trpc-playground/handlers/next";
 import { appRouter } from "~/server/api/root";
+import { zodResolveTypes } from './trpc-playground-fix' // 👈 Import zodResolveTypes from gist file
 
 const setupHandler = nextHandler({
 	router: appRouter,
@@ -8,6 +9,7 @@ const setupHandler = nextHandler({
 	trpcApiEndpoint: "/api/trpc",
 	playgroundEndpoint: "/api/trpc-playground",
 	// uncomment this if you're using superjson
+  resolveTypes: zodResolveTypes, // 👈 Pass in the updated zodResolveTypes function with the fixes to resolveTypes option
 	request: {
 		superjson: true,
 	},
