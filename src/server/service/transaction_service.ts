@@ -304,7 +304,7 @@ export class TransactionService {
 		const org_trust_reserve = employee_trust!.org_trust_reserve;
 		const org_special_trust_incent =
 			employee_trust!.org_special_trust_incent;
-		const group_insurance_deduction_promotion =
+		const g_i_deduction_promotion =
 			await calculateService.getGroupInsuranceDeductionPromotion(
 				
 			);
@@ -401,7 +401,7 @@ export class TransactionService {
 			emp_special_trust_incent, // 特別信託獎勵金_員工
 			org_trust_reserve, // 公司獎勵金
 			org_special_trust_incent, // 特別信託獎勵金_公司
-			group_insurance_deduction_promotion, // 團保費代扣_升等
+			g_i_deduction_promotion, // 團保費代扣_升等
 			special_leave_deduction, // 特別事假扣款
 			special_leave, // 特別事假
 			full_attendance_personal_leave: full_attendance_special_leave, // 有全勤事假

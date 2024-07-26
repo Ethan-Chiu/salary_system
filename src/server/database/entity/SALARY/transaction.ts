@@ -98,7 +98,7 @@ export class Transaction extends Model<
 	declare emp_special_trust_incent: number; // 特別信託獎勵金_員工
 	declare org_trust_reserve: number; // 公司獎勵金
 	declare org_special_trust_incent: number; // 特別信託獎勵金_公司
-	declare group_insurance_deduction_promotion: number; // 團保費代扣_升等
+	declare g_i_deduction_promotion: number; // 團保費代扣_升等
 	declare special_leave_deduction: number; // 特別事假扣款
 	declare special_leave: number; // 特別事假
 	declare full_attendance_personal_leave: number; // 有全勤事假
@@ -446,7 +446,7 @@ Transaction.init(
 			type: DataTypes.INTEGER,
 			comment: "特別信託獎勵金_公司",
 		},
-		group_insurance_deduction_promotion: {
+		g_i_deduction_promotion: {
 			type: DataTypes.INTEGER,
 			comment: "團保費代扣_升等",
 		},
