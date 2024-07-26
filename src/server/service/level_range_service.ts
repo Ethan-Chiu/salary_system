@@ -10,12 +10,12 @@ import { Level } from "../database/entity/SALARY/level";
 export class LevelRangeService {
 	async createLevelRange({
 		type,
-		level_start,
+		level_start_id,
 		level_end_id,
 	}: LevelRangeCreateType): Promise<LevelRange> {
 		const newData = await LevelRange.create({
 			type: type,
-			level_start: level_start,
+			level_start_id: level_start_id,
 			level_end_id: level_end_id,
 			create_by: "system",
 			update_by: "system",

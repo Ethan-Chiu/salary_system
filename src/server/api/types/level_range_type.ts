@@ -10,7 +10,7 @@ const LevelRange = z.object({
 
 const createLevelRange = z.object({
   type: z.string(),
-  level_start: z.number(),
+  level_start_id: z.number(),
   level_end_id: z.number(),
 })
 

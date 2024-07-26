@@ -14,7 +14,13 @@ Level.hasMany(LevelRange, {
   as: 'level_ranges' // this determines the name in `associations`!
 });
 
-LevelRange.hasOne(Level, {
+LevelRange.belongsTo(Level, {
   foreignKey: 'id',
   as: 'level_end' // this determines the name in `associations`!
 });
+
+/* LevelRange.belongsTo(Level, { */
+/*   sourceKey: 'level_start_id', */
+/*   foreignKey: 'id', */
+/*   as: 'level_start' // this determines the name in `associations`! */
+/* }); */

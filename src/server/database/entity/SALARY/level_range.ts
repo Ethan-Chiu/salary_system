@@ -18,7 +18,9 @@ export class LevelRange extends Model<
 	declare id: CreationOptional<number>;
 
 	declare type: string;
-	declare level_start: number;
+
+  declare level_start_id: ForeignKey<Level['id']>;
+	declare level_start?: NonAttribute<Level>;
 
   declare level_end_id: ForeignKey<Level['id']>;
   declare level_end?: NonAttribute<Level>;
@@ -44,11 +46,11 @@ export function initLevelRange(sequelize: Sequelize) {
         type: DataTypes.STRING(32),
         allowNull: false,
       },
-      level_start: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        unique: false,
-        allowNull: false,
-      },
+      /* level_start: { */
+      /*   type: DataTypes.INTEGER.UNSIGNED, */
+      /*   unique: false, */
+      /*   allowNull: false, */
+      /* }, */
       /* level_end: { */
       /*   type: DataTypes.INTEGER.UNSIGNED, */
       /*   unique: false, */
