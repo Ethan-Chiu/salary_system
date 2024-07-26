@@ -11,7 +11,6 @@ import { type FunctionsEnumType } from "~/server/api/types/functions_enum";
 import { useTranslation } from "react-i18next";
 
 const tabOptions = ["table_name.holiday", "table_name.overtime", "table_name.payset", "table_name.bonus", "table_name.other"];
-const tableOptionsLength = tabOptions.length.toString();
 
 export function DataPage({
 	period,
@@ -54,7 +53,7 @@ export function DataPage({
 					defaultValue={tabOptions[0]}
 					className="flex h-full w-full flex-col"
 				>
-					<TabsList className={cn(`grid w-full grid-cols-${tableOptionsLength}`)}>
+					<TabsList className={cn(`grid grid-cols-5`)}>
 						{tabOptions.map((option) => {
 							return (
 								<TabsTrigger key={option} value={option}>

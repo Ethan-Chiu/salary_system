@@ -20,8 +20,10 @@ export function SalaryCalculatePage({
     if (isError) {
         return <span>Error: {error.message}</span>; // TODO: Error element with toast
     }
-
-    return <SalaryCalculateContent period={period} emp_no_list={data.map(emp => emp.emp_no)} />
+    if (data) {
+        return <SalaryCalculateContent period={period} emp_no_list={data.map(emp => emp.emp_no)} />
+    }
+    return <div />
 }
 
 function SalaryCalculateContent({
