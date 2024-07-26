@@ -56,7 +56,7 @@ export class Transaction extends Model<
 	// declare non_leave: string; // 不休假
 	// declare non_leave_hours: number; // 不休假時數
 	declare non_leave_compensation: number; // 不休假代金
-	declare total_income_tax: number; // 薪資所得扣繳總額
+	declare salary_income_deduction: number; // 薪資所得扣繳總額
 	declare taxable_subtotal: number; // 課稅小計
 	declare non_taxable_subtotal: number; // 非課說小計
 	declare deduction_subtotal: number; // 減項小計
@@ -69,7 +69,7 @@ export class Transaction extends Model<
 	// declare additional_h_i: number; // 健保追加
 	declare other_addition_tax: number; // 其他加項稅
 	declare other_deduction_tax: number; // 其他減項稅
-	declare income_tax_withheld: number; // 所得稅代扣
+	declare income_tax_deduction: number; // 所得稅代扣
 	declare l_r_self: number; // 勞退金自提
 	declare parking_fee: number; // 停車費
 	declare brokerage_fee: number; // 仲介費
@@ -84,7 +84,7 @@ export class Transaction extends Model<
 	declare bonus_ratio: number; // 獎金比率
 	declare annual_days_in_service: number; // 年度在職天數
 	declare l_r_contribution: number; // 勞退金提撥
-	declare old_system_l_r_contribution: number; // 勞退金提撥_舊制
+	declare old_l_r_contribution: number; // 勞退金提撥_舊制
 	declare seniority: number; // 年資
 	declare assessment_rate: number; // 考核比率
 	declare assessment_bonus: number; // 考核獎金
@@ -92,7 +92,7 @@ export class Transaction extends Model<
 	declare disabilty_level: string | null; // 殘障等級
 	declare retirement_income: number; // 退職所得
 	declare received_elderly_benefits: boolean; // 已領老年給付
-	declare v_2_h_i: string; // 二代健保
+	declare v_2_h_i: number; // 二代健保
 	declare has_trust: boolean; // 持股信託_YN
 	declare emp_trust_reserve: number; // 員工信託提存金
 	declare emp_special_trust_incent: number; // 特別信託獎勵金_員工
@@ -278,7 +278,7 @@ Transaction.init(
 			type: DataTypes.INTEGER,
 			comment: "不休假代金",
 		},
-		total_income_tax: {
+		salary_income_deduction: {
 			type: DataTypes.INTEGER,
 			comment: "薪資所得扣繳總額",
 		},
@@ -330,7 +330,7 @@ Transaction.init(
 			type: DataTypes.INTEGER,
 			comment: "其他減項稅",
 		},
-		income_tax_withheld: {
+		income_tax_deduction: {
 			type: DataTypes.INTEGER,
 			comment: "所得稅代扣",
 		},
@@ -390,7 +390,7 @@ Transaction.init(
 			type: DataTypes.INTEGER,
 			comment: "勞退金提撥",
 		},
-		old_system_l_r_contribution: {
+		old_l_r_contribution: {
 			type: DataTypes.INTEGER,
 			comment: "勞退金提撥_舊制",
 		},
@@ -423,7 +423,7 @@ Transaction.init(
 			comment: "已領老年給付",
 		},
 		v_2_h_i: {
-			type: DataTypes.STRING(128),
+			type: DataTypes.INTEGER,
 			comment: "二代健保",
 		},
 		has_trust: {
