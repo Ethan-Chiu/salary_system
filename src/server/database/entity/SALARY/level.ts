@@ -4,9 +4,13 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
+    Sequelize,
+    NonAttribute,
+    Association,
 } from "sequelize";
 import { container } from "tsyringe";
 import { Database } from "../../client";
+import { LevelRange } from "./level_range";
 
 export class Level extends Model<
 	InferAttributes<Level>,
@@ -23,41 +27,48 @@ export class Level extends Model<
 	// updatedAt can be undefined during creation
 	declare update_date: CreationOptional<Date>;
 	declare update_by: string;
+
+  declare level_ranges?: NonAttribute<LevelRange[]>;
+  declare static associations: {
+    level_ranges: Association<Level, LevelRange>;
+  };
 }
 
-const sequelize = container.resolve(Database).connection;
+/* const sequelize = container.resolve(Database).connection; */
 
-Level.init(
-	{
-		id: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			autoIncrement: true,
-			primaryKey: true,
-		},
-		level: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			unique: false,
-			allowNull: false,
-		},
-		create_date: {
-			type: DataTypes.DATE,
-		},
-		create_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-		update_date: {
-			type: DataTypes.DATE,
-		},
-		update_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-	},
-	{
-		sequelize,
-		tableName: "U_LEVEL",
-		createdAt: "create_date",
-		updatedAt: "update_date",
-	}
-);
+export function initLevel(sequelize: Sequelize) {
+  Level.init(
+    {
+      id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      level: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        unique: false,
+        allowNull: false,
+      },
+      create_date: {
+        type: DataTypes.DATE,
+      },
+      create_by: {
+        type: DataTypes.STRING(128),
+        allowNull: false,
+      },
+      update_date: {
+        type: DataTypes.DATE,
+      },
+      update_by: {
+        type: DataTypes.STRING(128),
+        allowNull: false,
+      },
+    },
+    {
+      sequelize,
+      tableName: "U_LEVEL",
+      createdAt: "create_date",
+      updatedAt: "update_date",
+    }
+  );
+}
