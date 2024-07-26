@@ -53,6 +53,7 @@ interface ExcelSheetWithColor {
 
 interface ExcelViewerProps {
 	original_sheets: ExcelSheet[];
+	filter_component: JSX.Element;
 }
 
 interface Block {
@@ -143,7 +144,7 @@ const handleExportExcel = async (
 	URL.revokeObjectURL(url);
 };
 
-const ExcelViewer: React.FC<ExcelViewerProps> = ({ original_sheets }) => {
+const ExcelViewer: React.FC<ExcelViewerProps> = ({ original_sheets, filter_component }) => {
 	const [mode, setMode] = useState("view");
 	const [selectedCell, setSelectedCell] = useState<{
 		rowIndex: number;
@@ -323,7 +324,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ original_sheets }) => {
 										(cell, index) => (
 											<th
 												key={index}
-												className={`inset-0 border border-zinc-950 px-4 py-2`}
+												className={`inset-0 border border-zinc-950 px-4 py-2 leading-6 truncate`}
 												style={{
 													backgroundColor:
 														cell.backgroundColor,
@@ -349,7 +350,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ original_sheets }) => {
 											{row.map((cell, cellIndex) => (
 												<td
 													key={cellIndex}
-													className={`relative px-4 py-2 ${formatColor(
+													className={`relative px-4 py-2 leading-6 truncate ${formatColor(
 														cell.textColor,
 														"text"
 													)} ${formatColor(
@@ -567,8 +568,9 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ original_sheets }) => {
 	return (
 		<>
 			<div className="full-w mb-4 grid grid-cols-4">
-				<div>
+				<div className="flex space-x-4">
 					<SelectSheetComponent />
+					{filter_component}
 				</div>
 				<div className="col-start-4 flex items-center justify-end">
 					<ColorControlComponent />

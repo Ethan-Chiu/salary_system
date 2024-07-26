@@ -11,7 +11,7 @@ import { type FunctionsEnumType } from "~/server/api/types/functions_enum";
 import { useTranslation } from "react-i18next";
 
 const tabOptions = ["table_name.holiday", "table_name.overtime", "table_name.payset", "table_name.bonus", "table_name.other"];
-const tableOptionsLength = tabOptions.length.toString();
+const tableOptionsLength = tabOptions.length;
 
 export function DataPage({
 	period,

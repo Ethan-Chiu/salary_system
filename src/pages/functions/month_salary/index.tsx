@@ -165,7 +165,7 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 					{pageList[selectedIndex]?.page ?? <></>}
 				</div>
 			</div>
-			<CompAlert data={data} />
+			<CompAlert data={data!} />
 		</AlertDialog>
 	);
 }
