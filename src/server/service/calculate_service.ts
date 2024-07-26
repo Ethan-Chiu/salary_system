@@ -403,11 +403,25 @@ export class CalculateService {
 		return end_of_year_bonus;
 	}
 
+	//MARK: 營運績效獎金
+	async getOperationalPerformanceBonus(period_id:number, emp_no: string): Promise<number> {
+		const ehrService = container.resolve(EHRService);
+		const operational_performance_bonus_id = (await ehrService.getBonusType()).find((bt) => bt.name === "營運績效獎金")?.id!;
+		const bonusList = await ehrService.getBonusByEmpNoList(period_id,[emp_no]);
+		let operational_performance_bonus = 0;
+		for (const bonus of bonusList){
+			if (bonus.bonus_id === operational_performance_bonus_id){
+				operational_performance_bonus += bonus.amount ?? 0;
+			}
+		}
+		return operational_performance_bonus;
+	}
+
 	//MARK: 薪資所得扣繳總額
 	async getSalaryIncomeDeduction(
-		employee_data : EmployeeData,
+		// employee_data : EmployeeData,
 		employee_payment : EmployeePayment,
-		payset : Payset,
+		// payset : Payset,
 		reissue_salary : number,
 		full_attendance_bonus : number,
 		exceed_overtime_pay : number,
@@ -449,7 +463,10 @@ export class CalculateService {
 
 		return salary_income_deduction
 	}
-
+	//MARK: 工資墊償
+	async getSalaryAdvance(): Promise<number> {
+		return 0
+	}
 	//MARK: 薪資所得稅
 	async getSalaryIncomeTax(
 		employee_data : EmployeeData,
@@ -521,15 +538,19 @@ export class CalculateService {
 		return bonus_tax;
 	}
 	//MARK: 不休假代金
-	async getUnpaidLeaveDeduction(): Promise<number> {
-		const unpaid_leave_deduction = 0
-		return unpaid_leave_deduction
+	async getNonLeaveCompensation(period_id: number,emp_no: string): Promise<number> {
+		
+		return 0;
 	}
-
+	//MARK: 課稅所得
+	async getTaxableIncome(): Promise<number> {
+		return 9487;
+	}
 	//MARK: 課稅小計
-	async getTaxSummary(
+	async getTaxableSubtotal(
 		pay_type: PayTypeEnumType,
 	): Promise<number> {
+		return 0;
 		if (pay_type === PayTypeEnum.Enum.month_salary) {
 			/*
 					rd("課稅小計") = 
@@ -574,15 +595,40 @@ export class CalculateService {
 
 		return 0;
 	}
+	//MARK: 其他減項
+	async getOtherDeduction(): Promise<number> {
+		const other_deduction = 0
+		return other_deduction
+	}
+	//MARK: 其他加項
+	async getOtherAddition(): Promise<number> {
+		const other_addition = 0
+		return other_addition
+	}
+	//MARK: 其他加項稅
+	async getOtherAdditionTax(): Promise<number> {
+		const other_addition_tax = 0
+		return other_addition_tax
+	}
+	//MARK: 其他減項稅
+	async getOtherDeductionTax(): Promise<number> {
+		const other_deduction_tax = 0
+		return other_deduction_tax
+	}
+	//MARK: 伙食扣款
+	async getMealDeduction(): Promise<number> {
+		const meal_deduction = 0
+		return meal_deduction
+	}
 	//MARK: 非課稅小計
-	async getNonTaxSummary(): Promise<number> {
-		const non_tax_summary = 0
-		return non_tax_summary
+	async getNonTaxableSubtotal(): Promise<number> {
+		const non_taxable_subtotal = 0
+		return non_taxable_subtotal
 	}
 	//MARK: 減項小計
-	async getDeductionSummary(): Promise<number> {
-		const deduction_summary = 0
-		return deduction_summary
+	async getDeductionSubtotal(): Promise<number> {
+		const deduction_subtotal = 0
+		return deduction_subtotal
 	}
 	//MARK: 勞保費
 	async getLaborInsurance(
@@ -621,11 +667,32 @@ export class CalculateService {
 
 		throw new Error("No Implement");
 	}
+	//MARK: 停車費
+	async getParkingFee(): Promise<number> {
+		const parking_fee = 0
+		return parking_fee
+	}
+	//MARK: 仲介費
+	async getBrokerageFee(): Promise<number> {
+		const brokerage_fee = 0
+		return brokerage_fee
+	}
 	//MARK: 所得稅代扣
+	async getIncomeTaxDeduction(): Promise<number> {
+		const income_tax_deduction = 0
+		return income_tax_deduction
+	}
 	//MARK: 勞退金自提		
 	//MARK: 薪資區隔
+	async getSalaryRange(): Promise<string> {
+		const salary_range = "0"
+		return salary_range
+	}
 	//MARK: 薪資總額
-	
+	async getTotalSalary(): Promise<number> {
+		const total_salary = 0
+		return total_salary
+	}
 	//MARK: 勞退金提撥
 	async getLaborRetirementContribution(
 		employee_data: EmployeeData,
@@ -657,8 +724,13 @@ export class CalculateService {
 
 		return Math.round(Math.round(money * 0.06));
 	}
+	//MARK: 勞退金提撥_舊制
+	async getOldLaborRetirementContribution(): Promise<number> {
+		const old_labor_retirement_contribution = 0
+		return old_labor_retirement_contribution
+	}
 	//MARK: 二代健保
-	async urdaizienbow(): Promise<number> {
+	async getSecondGenerationHealthInsurance(): Promise<number> {
 	/*
 	rd("二代健保") = 0
         
@@ -722,13 +794,31 @@ export class CalculateService {
 	//MARK: 特別信託獎勵金＿公司
 	//MARK: 團保費代扣＿升等
 	// 感覺在這裡: DoCmd.OpenQuery "其他更新", acNormal, acEdit    'Jerry 07/09/03  增加退職所得  23/6/3 增加團保費代扣_升等
-	
-/*
+	async getGroupInsuranceDeductionPromotion(): Promise<number> {
+		return 0;
+	}
+	//MARK: 退職所得
+	async getRetirementIncome(): Promise<number> {
+		return 0;
+	}
+	//MARK: 端午獎金
+	async getDragonBoatFestivalBonus(): Promise<number> {
+		return 0;
+	}
+	//MARK: 中秋獎金
+	async getMidAutumnFestivalBonus(): Promise<number> {
+		return 0;
+	}
+	//MARK: 考核獎金
+	async getAssessmentBonus(): Promise<number> {
+		return 0;
+	}
 	//MARK: 特別事假扣款
-	def getSpecialLeavePay(employee_data: EmployeeData): number {
-		let work_type = employee_data.work_type;
-		let work_status = employee_data.work_status;
-		let 
+	async getSpecialLeaveDeduction(employee_data: EmployeeData): Promise<number> {
+		return 0;
+		// let work_type = employee_data.work_type;
+		// let work_status = employee_data.work_status;
+		// let 
 	// GetLeave2Money(kind1 As String, kind2 As String, money As Long, bouns As Long, t1 As Single)
     // If kind1 = Foreign_Man Then
     //    GetLeave2Money = Round(SALARY_RATE * t1, 0)
@@ -742,12 +832,15 @@ export class CalculateService {
     //         GetLeave2Money = Round((money + bouns) / 240 * t1, 0)
     // End Select
     // End If
-	薪資查詢.特別事假扣款 = GetLeave2Money(薪資查詢!工作類別,薪資查詢!工作形態,薪資查詢!原應發底薪,薪資查詢!補助津貼+薪資查詢!專業証照津貼,薪資查詢!特別事假時數);
-
+		// 薪資查詢.特別事假扣款 = GetLeave2Money(薪資查詢!工作類別,薪資查詢!工作形態,薪資查詢!原應發底薪,薪資查詢!補助津貼+薪資查詢!專業証照津貼,薪資查詢!特別事假時數);
+	}
 
 	//MARK: 實發金額
-}
-*/
+	async getNetSalary(): Promise<number> {
+		return 0;
+	}
+
+
 
 
 /*
