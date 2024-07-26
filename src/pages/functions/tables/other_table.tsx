@@ -1,28 +1,20 @@
 import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table";
+import { ExpenseWithType } from "~/server/service/ehr_service";
 import { api } from "~/utils/api";
 import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
 
 const columns = (t: I18nType) =>
 	[
+		"period_name",
 		"emp_no",
 		"emp_name",
-		"position",
-		"position_type",
-		"group_insurance_type",
-		"department",
-		"work_type",
-		"work_status",
-		"disabilty_level",
-		"sex_type",
-		"dependents",
-		"healthcare_dependents",
-		"registration_date",
-		"quit_date",
-		"license_id",
-		"bank_account",
-		"month_salary",
+		"kind",
+		"expense_type_name",
+		"amount",
+		"remark",
+		"pay_delay"
 	].map((key) => {
 		return {
 			accessorKey: key,
@@ -30,9 +22,23 @@ const columns = (t: I18nType) =>
 		};
 	});
 
-export function EmployeeDataTable({ period_id }: any) {
+interface OtherTableProps {
+	period: number;
+	emp_no_list: string[];
+}
+
+export function OtherTable({ period, emp_no_list }: OtherTableProps) {
+	// const { isLoading, isError, data, error } =
+	// 	api.function.getBonusWithTypeByEmpList.useQuery({
+	// 		period_id: period,
+	// 		emp_no_list: emp_no_list,
+	// 	});
+
 	const { isLoading, isError, data, error } =
-		api.employeeData.getAllEmployeeDataWithInfo.useQuery({ period_id });
+		api.function.getExpenseWithTypeByEmpList.useQuery({
+			period_id: 114,
+			emp_no_list: ["F103007"],
+		});
 
 	const { t } = useTranslation(["common"]);
 
@@ -44,15 +50,5 @@ export function EmployeeDataTable({ period_id }: any) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-	if (data) {
-		return (
-			<DataTable
-				columns={columns(t)}
-				data={data}
-				initialColumnVisibility={{ month_salary: false }}
-			/>
-		);
-	}
-
-	return <div> </div>;
+	return <DataTable columns={columns(t)} data={data} />;
 }

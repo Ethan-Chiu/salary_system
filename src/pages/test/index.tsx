@@ -9,6 +9,7 @@ import { Separator } from "~/components/ui/separator";
 import { HIDTable } from "./test_HIdeduction";
 import { GSTable } from "./test_GrossSalary";
 import { LDTable } from "./test_LeaveDeduction";
+import { GIDTable } from "./test_GroupInsuranceDeduction";
 
 import { OvertimeTable as EHR_OT } from "./tables/overtime_table";
 
@@ -23,12 +24,12 @@ import {
 } from "~/components/ui/select";
 import { FATable } from "./test_FullAttendance";
 
-export function SelectDemo(props: { updateStateFunction: Function }) {
+export function SelectTable(props: { updateStateFunction: Function }) {
 	return (
 		<div className="m-4">
 			<Select onValueChange={(value) => props.updateStateFunction(value)}>
 				<SelectTrigger className="w-[180px]">
-					<SelectValue defaultValue={"OT"} />
+					<SelectValue defaultValue={"OT"} placeholder={"加班費"}/>
 				</SelectTrigger>
 				<SelectContent>
 					<SelectGroup>
@@ -39,6 +40,26 @@ export function SelectDemo(props: { updateStateFunction: Function }) {
 						<SelectItem value="GS">應發底薪</SelectItem>
 						<SelectItem value="LD">請假扣款</SelectItem>
 						<SelectItem value="FA">全勤獎金</SelectItem>
+						<SelectItem value="GID">團保費代扣</SelectItem>
+					</SelectGroup>
+				</SelectContent>
+			</Select>
+		</div>
+	);
+}
+
+export function SelectEMP(props: { updateStateFunction: Function }) {
+	return (
+		<div className="m-4">
+			<Select onValueChange={(value) => props.updateStateFunction(value)}>
+				<SelectTrigger className="w-[180px]">
+					<SelectValue defaultValue={"F103007"} placeholder={"F103007"}/>
+				</SelectTrigger>
+				<SelectContent>
+					<SelectGroup>
+						<SelectLabel>員工</SelectLabel>
+						<SelectItem value="F103007">F103007</SelectItem>
+						<SelectItem value="U094001">U094001</SelectItem>
 					</SelectGroup>
 				</SelectContent>
 			</Select>
@@ -47,17 +68,21 @@ export function SelectDemo(props: { updateStateFunction: Function }) {
 }
 
 const TEST: NextPageWithLayout = () => {
-	const EMP = "F103007";
+	// const EMP = "F103007";
+	const [EMP, setEMP] = useState("F103007");
 	const [chosenTable, setChosenTable] = useState("OT");
 	return (
 		<>
 			<Header title={"TEST"} showOptions />
-			<SelectDemo updateStateFunction={setChosenTable} />
+			<div className="m-4 flex">
+				<SelectTable updateStateFunction={setChosenTable} />
+				<SelectEMP updateStateFunction={setEMP} />
+			</div>
 			<div className="m-6">
 			{chosenTable === "OT" ? (
-				<OvertimeTable />
+				<OvertimeTable EMP={EMP}  />
 			) : chosenTable === "LID" ? (
-				<LIDTable />
+				<LIDTable EMP={EMP}  />
 			) : chosenTable === "HID" ? (
 				<HIDTable EMP={EMP} />
 			) : chosenTable === "GS" ? (
@@ -66,12 +91,14 @@ const TEST: NextPageWithLayout = () => {
 				<LDTable EMP={EMP} period={113} />
 			) : chosenTable === "FA" ? (
 				<FATable EMP={EMP} period={113} />	
+			) : chosenTable === "GID" ? (
+				<GIDTable EMP={EMP} period={113} />	
 			) : (
 				<></>
 			)}
 			</div>
 			
-			<EHR_OT period={113} emp_no_list={["F103007"]}/>
+			{/* <EHR_OT period={113} emp_no_list={["F103007"]}/> */}
 
 			{/* <OvertimeTable />
 		<Separator />

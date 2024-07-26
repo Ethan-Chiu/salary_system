@@ -12,7 +12,7 @@ interface DataTableToolbarProps<TData> {
 	filterColumnKey?: keyof TData;
 }
 
-export function DataTableToolbar<TData>({
+export function DataTableToolbarUpdate<TData>({
 	table,
 	filterColumnKey,
 }: DataTableToolbarProps<TData>) {
