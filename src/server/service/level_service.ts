@@ -39,7 +39,7 @@ export class LevelService {
 	}
 
 	async getAllLevel(): Promise<Level[]> {
-		const level = await Level.findAll({order: [['level', 'asc']] });
+		const level = await Level.findAll({order: [['level', 'asc']], include: ['level_ranges']});
 		return level;
 	}
 

@@ -14,3 +14,7 @@ Level.hasMany(LevelRange, {
   as: 'level_ranges' // this determines the name in `associations`!
 });
 
+LevelRange.hasOne(Level, {
+  foreignKey: 'id',
+  as: 'level_end' // this determines the name in `associations`!
+});
