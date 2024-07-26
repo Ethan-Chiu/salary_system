@@ -22,7 +22,7 @@ export const transactionRouter = createTRPCRouter({
 	createTransaction: publicProcedure
 		.input(
 			z.object({
-				emp_no: z.string(),
+				emp_no_list: z.string().array(),
 				period_id: z.number(),
 				issue_date: z.string(),
 				pay_type: z.string(),
@@ -31,14 +31,15 @@ export const transactionRouter = createTRPCRouter({
 		)
 		.mutation(async ({ input }) => {
 			const transactionService = container.resolve(TransactionService);
-			const newdata = await transactionService.createTransaction(
-				input.emp_no,
-                input.period_id,
-                input.issue_date,
-                input.pay_type as PayTypeEnumType,
-                input.note,
-			);
-			return newdata;
+            for (const emp_no of input.emp_no_list) {
+                const newdata = await transactionService.createTransaction(
+                    emp_no,
+                    input.period_id,
+                    input.issue_date,
+                    input.pay_type as PayTypeEnumType,
+                    input.note,
+                );
+            }
 		}),
 
 	
