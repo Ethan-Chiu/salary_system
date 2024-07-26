@@ -79,8 +79,8 @@ export class Transaction extends Model<
 	declare mid_autumn_festival_bonus: number; // 中秋獎金
 	declare note: string; // 備註
 	declare bank_account_1: string; // 帳號1
-	declare bank_account_2: string; // 帳號2
-	declare foreign_currency_account: string; // 外幣帳號
+	// declare bank_account_2: string; // 帳號2
+	// declare foreign_currency_account: string; // 外幣帳號
 	declare bonus_ratio: number; // 獎金比率
 	declare annual_days_in_service: number; // 年度在職天數
 	declare l_r_contribution: number; // 勞退金提撥
@@ -98,7 +98,7 @@ export class Transaction extends Model<
 	declare emp_special_trust_incent: number; // 特別信託獎勵金_員工
 	declare org_trust_reserve: number; // 公司獎勵金
 	declare org_special_trust_incent: number; // 特別信託獎勵金_公司
-	declare group_insurance_deduction_promotion: number; // 團保費代扣_升等
+	declare g_i_deduction_promotion: number; // 團保費代扣_升等
 	declare special_leave_deduction: number; // 特別事假扣款
 	declare special_leave: number; // 特別事假
 	declare full_attendance_personal_leave: number; // 有全勤事假
@@ -370,14 +370,14 @@ Transaction.init(
 			type: DataTypes.STRING(128),
 			comment: "帳號1",
 		},
-		bank_account_2: {
-			type: DataTypes.STRING(128),
-			comment: "帳號2",
-		},
-		foreign_currency_account: {
-			type: DataTypes.STRING(128),
-			comment: "外幣帳號",
-		},
+		// bank_account_2: {
+		// 	type: DataTypes.STRING(128),
+		// 	comment: "帳號2",
+		// },
+		// foreign_currency_account: {
+		// 	type: DataTypes.STRING(128),
+		// 	comment: "外幣帳號",
+		// },
 		bonus_ratio: {
 			type: DataTypes.INTEGER,
 			comment: "獎金比率",
@@ -446,7 +446,7 @@ Transaction.init(
 			type: DataTypes.INTEGER,
 			comment: "特別信託獎勵金_公司",
 		},
-		group_insurance_deduction_promotion: {
+		g_i_deduction_promotion: {
 			type: DataTypes.INTEGER,
 			comment: "團保費代扣_升等",
 		},

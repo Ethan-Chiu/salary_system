@@ -9,6 +9,7 @@ import { employeeDataRouter } from "./routers/employee_data";
 import { employeePaymentRouter } from "./routers/employee_payment";
 import { employeeTrustRouter } from "./routers/employee_trust";
 import { calculateRouter } from "./routers/calculate";
+import { transactionRouter } from "./routers/transaction";
 
 /**
  * This is the primary router for your server.
@@ -26,6 +27,7 @@ export const appRouter = createTRPCRouter({
 	employeeTrust: employeeTrustRouter,
 	sync: syncRouter,
 	calculate: calculateRouter,
+	transaction: transactionRouter,
 });
 
 // export type definition of API

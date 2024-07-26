@@ -668,14 +668,32 @@ export class CalculateService {
 		throw new Error("No Implement");
 	}
 	//MARK: 停車費
-	async getParkingFee(): Promise<number> {
-		const parking_fee = 0
-		return parking_fee
+	async getParkingFee(period_id: number,emp_no: string): Promise<number> {
+		// const parking_fee = 0
+		// return parking_fee
+		const ehrService = container.resolve(EHRService);
+		const parking_fee_id = (await ehrService.getExpenseClass()).find((ec) => ec.name === "停車費")?.id!;
+		const expenseList = await ehrService.getExpenseByEmpNoList(period_id,[emp_no]);
+		let parking_fee = 0;
+		for (const expense of expenseList){
+			if (expense.id === parking_fee_id){
+				parking_fee += expense.amount ?? 0;
+			}
+		}
+		return parking_fee;
 	}
 	//MARK: 仲介費
-	async getBrokerageFee(): Promise<number> {
-		const brokerage_fee = 0
-		return brokerage_fee
+	async getBrokerageFee(period_id: number,emp_no: string): Promise<number> {
+		const ehrService = container.resolve(EHRService);
+		const brokerage_fee_id = (await ehrService.getExpenseClass()).find((ec) => ec.name === "仲介費")?.id!;
+		const expenseList = await ehrService.getExpenseByEmpNoList(period_id,[emp_no]);
+		let brokerage_fee = 0;
+		for (const expense of expenseList){
+			if (expense.id === brokerage_fee_id){
+				brokerage_fee += expense.amount ?? 0;
+			}
+		}
+		return brokerage_fee;
 	}
 	//MARK: 所得稅代扣
 	async getIncomeTaxDeduction(): Promise<number> {
