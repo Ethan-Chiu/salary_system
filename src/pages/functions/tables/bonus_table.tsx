@@ -49,11 +49,8 @@ export function BonusTable({ period, emp_no_list }: BonusTableProps) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-	console.log(
-		"Bonus Data: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-	);
-	console.log(data);
-	console.log(columns(t));
-
-	return <DataTable columns={columns(t)} data={data} />;
+	if (data) {
+		return <DataTable columns={columns(t)} data={data} />;
+	}
+	return <div />;
 }
