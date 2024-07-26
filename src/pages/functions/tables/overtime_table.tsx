@@ -2,7 +2,7 @@ import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table";
 import { Overtime } from "~/server/database/entity/UMEDIA/overtime";
 import { api } from "~/utils/api";
-import { type I18nType} from "~/lib/utils/i18n_type";
+import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
 
 const columns = (t: I18nType) => Object.keys(new Overtime()).map((key) => {
@@ -24,8 +24,8 @@ export function OvertimeTable({ period, emp_no_list }: OvertimeTableProps) {
 			emp_no_list: emp_no_list,
 		});
 
-  const { t } = useTranslation(['common']);
-  
+	const { t } = useTranslation(['common']);
+
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast
 	}
@@ -34,8 +34,8 @@ export function OvertimeTable({ period, emp_no_list }: OvertimeTableProps) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-  if (data) {
-    return <DataTable columns={columns(t)} data={data} />;
-  }
-  return <div/>;
+	if (data) {
+		return <DataTable columns={columns(t)} data={data} />;
+	}
+	return <div />;
 }

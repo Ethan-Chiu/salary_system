@@ -147,6 +147,11 @@
     "work_day": "Work Day",
     "li_day": "Li Day",
     "delay_count": "Delay Count",
+    "remark": "Remark",
+    "amount": "Amount",
+    "expense_type_name": "Expense Type Name",
+    "bonus_type_name": "Bonus Type Name",
+    "kind": "Kind",
     "tables": "Tables",
     "previous": "Previous",
     "next": "Next",
@@ -161,11 +166,7 @@
     "all": "All",
     "no_month_salary": "No Month Salary",
     "salary_data": "Salary Data",
-    "ehr_data": "Ehr Data",
-    "remark": "Remark",
-    "amount": "Amount",
-    "expense_type_name": "Expense Type Name",
-    "bonus_type_name": "Bonus Type Name"
+    "ehr_data": "Ehr Data"
   },
   "table_name": {
     "attendanceSetting": "Attendance Setting",
