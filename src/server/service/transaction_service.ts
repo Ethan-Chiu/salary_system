@@ -113,6 +113,14 @@ export class TransactionService {
 		const food_allowance = employee_payment!.food_allowance;
 		const base_salary = employee_payment!.base_salary;
 		// MARK: Calculated Results
+		const other_deduction_tax = await calculateService.getOtherDeductionTax(
+			period_id,
+			emp_no
+		);
+		const special_leave_deduction =
+			await calculateService.getSpecialLeaveDeduction(
+				employee_data!,
+			);
 		const gross_salary = await calculateService.getGrossSalary(
 			employee_payment!,
 			payset!
@@ -181,6 +189,8 @@ export class TransactionService {
 			leave_deduction!,
 			operational_performance_bonus,
 			other_addition_tax,
+			special_leave_deduction,
+			other_deduction_tax,
 		)
 		const group_insurance_deduction =
 			await calculateService.getGroupInsuranceDeduction( period_id, emp_no );
@@ -211,11 +221,22 @@ export class TransactionService {
 		const shift_allowance = employee_payment!.shift_allowance;
 		const non_leave_compensation =
 			await calculateService.getNonLeaveCompensation(
-				period_id,
-				emp_no,
+				holiday_list!,
+				holidays_type
 			);
+		const end_of_year_bonus = await calculateService.getYearEndBonus(
+			period_id,
+			emp_no
+		)
 		const taxable_subtotal = await calculateService.getTaxableSubtotal(
 			pay_type,
+			employee_payment!,
+			operational_performance_bonus,
+			reissue_salary,
+			exceed_overtime_pay,
+			other_addition_tax,
+			full_attendance_bonus,
+			end_of_year_bonus
 		);
 		const non_taxable_subtotal =
 			await calculateService.getNonTaxableSubtotal();
@@ -240,10 +261,7 @@ export class TransactionService {
 			// payset!
 		);
 		
-		const other_deduction_tax = await calculateService.getOtherDeductionTax(
-			period_id,
-			emp_no
-		);
+		
 		const income_tax_deduction = await calculateService.getIncomeTaxDeduction(
 			period_id,
 			emp_no
@@ -282,7 +300,8 @@ export class TransactionService {
 		const annual_days_in_service = 365; // MARK: 年度在職天數不知道在哪
 		const l_r_contribution =
 			await calculateService.getLaborRetirementContribution(
-				employee_data!
+				employee_data!,
+				employee_payment!,
 			);
 		const old_l_r_contribution =
 			await calculateService.getOldLaborRetirementContribution(
@@ -314,12 +333,10 @@ export class TransactionService {
 			employee_trust!.org_special_trust_incent;
 		const g_i_deduction_promotion =
 			await calculateService.getGroupInsuranceDeductionPromotion(
-				
+				period_id,
+				emp_no
 			);
-		const special_leave_deduction =
-			await calculateService.getSpecialLeaveDeduction(
-				employee_data!,
-			);
+		
 		const special_leave = 0;
 		const full_attendance_special_leave =
 			0;
