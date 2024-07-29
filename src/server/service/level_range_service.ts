@@ -1,29 +1,25 @@
 import { injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
-import { z } from "zod";
-import {
-	createLevelRangeService,
-	updateLevelRangeService,
-} from "../api/types/parameters_input_type";
+import { type z } from "zod";
 import { LevelRange } from "../database/entity/SALARY/level_range";
 import { select_value } from "./helper_function";
+import { type updateLevelRangeService, type LevelRangeCreateType } from "../api/types/level_range_type";
+import { Level } from "../database/entity/SALARY/level";
 
 @injectable()
 export class LevelRangeService {
-	constructor() {}
-
 	async createLevelRange({
 		type,
-		level_start,
-		level_end,
-	}: z.infer<typeof createLevelRangeService>): Promise<LevelRange> {
+		level_start_id,
+		level_end_id,
+	}: LevelRangeCreateType): Promise<LevelRange> {
 		const newData = await LevelRange.create({
 			type: type,
-			level_start: level_start,
-			level_end: level_end,
 			create_by: "system",
 			update_by: "system",
-		});
+		}, {
+
+      });
 		return newData;
 	}
 
@@ -32,6 +28,7 @@ export class LevelRangeService {
 			where: {
 				id: id,
 			},
+      include: [{'all': true}]
 		});
 		return levelRange;
 	}
@@ -42,7 +39,7 @@ export class LevelRangeService {
 	}
 
 	async getAllLevelRange(): Promise<LevelRange[]> {
-		const levelRange = await LevelRange.findAll();
+		const levelRange = await LevelRange.findAll({include: {model: Level, as: 'level_end'}});
 		return levelRange;
 	}
 

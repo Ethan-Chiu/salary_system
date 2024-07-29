@@ -4,25 +4,15 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
-  type Sequelize,
-  NonAttribute,
-  ForeignKey,
+    Sequelize,
 } from "sequelize";
-import { Level } from "./level";
 
-export class LevelRange extends Model<
-	InferAttributes<LevelRange>,
-	InferCreationAttributes<LevelRange>
+export class LevelRangeLevel extends Model<
+	InferAttributes<LevelRangeLevel>,
+	InferCreationAttributes<LevelRangeLevel>
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-
-	declare type: string;
-
- /*  declare level_start_id: ForeignKey<Level['id']>; */
-	/* declare level_start?: NonAttribute<Level>; */
- /*  declare level_end_id: ForeignKey<Level['id']>; */
- /*  declare level_end?: NonAttribute<Level>; */
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -33,28 +23,16 @@ export class LevelRange extends Model<
 	declare update_by: string;
 }
 
-export function initLevelRange(sequelize: Sequelize) {
-  LevelRange.init(
+/* const sequelize = container.resolve(Database).connection; */
+
+export function initLevelRangeLevel(sequelize: Sequelize) {
+  LevelRangeLevel.init(
     {
       id: {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
       },
-      type: {
-        type: DataTypes.STRING(32),
-        allowNull: false,
-      },
-      /* level_start: { */
-      /*   type: DataTypes.INTEGER.UNSIGNED, */
-      /*   unique: false, */
-      /*   allowNull: false, */
-      /* }, */
-      /* level_end: { */
-      /*   type: DataTypes.INTEGER.UNSIGNED, */
-      /*   unique: false, */
-      /*   allowNull: false, */
-      /* }, */
       create_date: {
         type: DataTypes.DATE,
       },
@@ -72,7 +50,7 @@ export function initLevelRange(sequelize: Sequelize) {
     },
     {
       sequelize,
-      tableName: "U_LEVEL_RANGE",
+      tableName: "U_LEVEL_RANGE_LEVEL",
       createdAt: "create_date",
       updatedAt: "update_date",
     }
