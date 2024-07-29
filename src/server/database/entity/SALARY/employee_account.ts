@@ -4,9 +4,8 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
+	Sequelize,
 } from "sequelize";
-import { container } from "tsyringe";
-import { Database } from "../../client";
 
 export class EmployeeAccount extends Model<
 	InferAttributes<EmployeeAccount>,
@@ -27,47 +26,47 @@ export class EmployeeAccount extends Model<
 	declare update_by: string;
 }
 
-const sequelize = container.resolve(Database).connection;
-
-EmployeeAccount.init(
-	{
-		id: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			autoIncrement: true,
-			primaryKey: true,
+export function initEmployeeAccount(sequelize: Sequelize) {
+	EmployeeAccount.init(
+		{
+			id: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				autoIncrement: true,
+				primaryKey: true,
+			},
+			emp_no: {
+				type: DataTypes.STRING(32),
+				allowNull: false,
+			},
+			bank_account: {
+				type: DataTypes.STRING(32),
+				allowNull: false,
+			},
+			ratio: {
+				type: DataTypes.FLOAT,
+				unique: false,
+				allowNull: false,
+			},
+			create_date: {
+				type: DataTypes.DATE,
+			},
+			create_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			update_date: {
+				type: DataTypes.DATE,
+			},
+			update_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
 		},
-		emp_no: {
-			type: DataTypes.STRING(32),
-			allowNull: false,
-		},
-		bank_account: {
-			type: DataTypes.STRING(32),
-			allowNull: false,
-		},
-		ratio: {
-			type: DataTypes.FLOAT,
-			unique: false,
-			allowNull: false,
-		},
-		create_date: {
-			type: DataTypes.DATE,
-		},
-		create_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-		update_date: {
-			type: DataTypes.DATE,
-		},
-		update_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-	},
-	{
-		sequelize,
-		tableName: "U_EMPLOYEE_ACCOUNT",
-		createdAt: "create_date",
-		updatedAt: "update_date",
-	}
-);
+		{
+			sequelize,
+			tableName: "U_EMPLOYEE_ACCOUNT",
+			createdAt: "create_date",
+			updatedAt: "update_date",
+		}
+	);
+}

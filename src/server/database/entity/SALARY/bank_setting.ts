@@ -4,9 +4,8 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
+	Sequelize,
 } from "sequelize";
-import { container } from "tsyringe";
-import { Database } from "../../client";
 
 export class BankSetting extends Model<
 	InferAttributes<BankSetting>,
@@ -30,62 +29,62 @@ export class BankSetting extends Model<
 	declare update_by: string;
 }
 
-const sequelize = container.resolve(Database).connection;
-
-BankSetting.init(
-	{
-		id: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			autoIncrement: true,
-			primaryKey: true,
+export function initBankSetting(sequelize: Sequelize) {
+	BankSetting.init(
+		{
+			id: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				autoIncrement: true,
+				primaryKey: true,
+			},
+			bank_code: {
+				type: new DataTypes.STRING(128),
+				unique: false,
+				allowNull: false,
+			},
+			bank_name: {
+				type: new DataTypes.STRING(128),
+				unique: false,
+				allowNull: false,
+			},
+			org_code: {
+				type: new DataTypes.STRING(128),
+				unique: false,
+				allowNull: false,
+			},
+			org_name: {
+				type: new DataTypes.STRING(128),
+				unique: false,
+				allowNull: false,
+			},
+			start_date: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			end_date: {
+				type: DataTypes.STRING(128),
+				allowNull: true,
+			},
+			create_date: {
+				type: DataTypes.DATE,
+			},
+			create_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			update_date: {
+				type: DataTypes.DATE,
+			},
+			update_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
 		},
-		bank_code: {
-			type: new DataTypes.STRING(128),
-			unique: false,
-			allowNull: false,
-		},
-		bank_name: {
-			type: new DataTypes.STRING(128),
-			unique: false,
-			allowNull: false,
-		},
-		org_code: {
-			type: new DataTypes.STRING(128),
-			unique: false,
-			allowNull: false,
-		},
-		org_name: {
-			type: new DataTypes.STRING(128),
-			unique: false,
-			allowNull: false,
-		},
-		start_date: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-		end_date: {
-			type: DataTypes.STRING(128),
-			allowNull: true,
-		},
-		create_date: {
-			type: DataTypes.DATE,
-		},
-		create_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-		update_date: {
-			type: DataTypes.DATE,
-		},
-		update_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-	},
-	{
-		sequelize,
-		tableName: "U_BANK_SETTING",
-		createdAt: "create_date",
-		updatedAt: "update_date",
-	}
-);
+		{
+			sequelize,
+			tableName: "U_BANK_SETTING",
+			createdAt: "create_date",
+			updatedAt: "update_date",
+		}
+	);
+}

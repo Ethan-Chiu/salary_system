@@ -4,9 +4,8 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
+	Sequelize,
 } from "sequelize";
-import { container } from "tsyringe";
-import { Database } from "../../client";
 
 export class BonusPositionType extends Model<
 	InferAttributes<BonusPositionType>,
@@ -26,44 +25,44 @@ export class BonusPositionType extends Model<
 	declare update_by: string;
 }
 
-const sequelize = container.resolve(Database).connection;
-
-BonusPositionType.init(
-	{
-		id: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			autoIncrement: true,
-			primaryKey: true,
+export function initBonusPositionType(sequelize: Sequelize) {
+	BonusPositionType.init(
+		{
+			id: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				autoIncrement: true,
+				primaryKey: true,
+			},
+			position_type: {
+				type: new DataTypes.STRING(2),
+				unique: false,
+				allowNull: false,
+			},
+			multiplier: {
+				type: DataTypes.FLOAT,
+				unique: false,
+				allowNull: false,
+			},
+			create_date: {
+				type: DataTypes.DATE,
+			},
+			create_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			update_date: {
+				type: DataTypes.DATE,
+			},
+			update_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
 		},
-		position_type: {
-			type: new DataTypes.STRING(2),
-			unique: false,
-			allowNull: false,
-		},
-		multiplier: {
-			type: DataTypes.FLOAT,
-			unique: false,
-			allowNull: false,
-		},
-		create_date: {
-			type: DataTypes.DATE,
-		},
-		create_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-		update_date: {
-			type: DataTypes.DATE,
-		},
-		update_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-	},
-	{
-		sequelize,
-		tableName: "U_BONUS_POSITION_TYPE",
-		createdAt: "create_date",
-		updatedAt: "update_date",
-	}
-);
+		{
+			sequelize,
+			tableName: "U_BONUS_POSITION_TYPE",
+			createdAt: "create_date",
+			updatedAt: "update_date",
+		}
+	);
+}

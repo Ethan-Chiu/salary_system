@@ -4,9 +4,8 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
+	Sequelize,
 } from "sequelize";
-import { container } from "tsyringe";
-import { Database } from "../../client";
 
 export class EmployeeTrust extends Model<
 	InferAttributes<EmployeeTrust>,
@@ -31,62 +30,62 @@ export class EmployeeTrust extends Model<
 	declare update_by: string;
 }
 
-const sequelize = container.resolve(Database).connection;
-
-EmployeeTrust.init(
-	{
-		id: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			autoIncrement: true,
-			primaryKey: true,
+export function initEmployeeTrust(sequelize: Sequelize) {
+	EmployeeTrust.init(
+		{
+			id: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				autoIncrement: true,
+				primaryKey: true,
+			},
+			emp_no: {
+				type: DataTypes.STRING(32),
+				allowNull: false,
+			},
+			emp_trust_reserve: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				allowNull: false,
+			},
+			org_trust_reserve: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				allowNull: false,
+			},
+			emp_special_trust_incent: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				allowNull: false,
+			},
+			org_special_trust_incent: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				allowNull: false,
+			},
+			start_date: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			end_date: {
+				type: DataTypes.STRING(128),
+				allowNull: true,
+			},
+			create_date: {
+				type: DataTypes.DATE,
+			},
+			create_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			update_date: {
+				type: DataTypes.DATE,
+			},
+			update_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
 		},
-		emp_no: {
-			type: DataTypes.STRING(32),
-			allowNull: false,
-		},
-		emp_trust_reserve: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
-		},
-		org_trust_reserve: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
-		},
-		emp_special_trust_incent: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
-		},
-		org_special_trust_incent: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
-		},
-		start_date: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-		end_date: {
-			type: DataTypes.STRING(128),
-			allowNull: true,
-		},
-		create_date: {
-			type: DataTypes.DATE,
-		},
-		create_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-		update_date: {
-			type: DataTypes.DATE,
-		},
-		update_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-	},
-	{
-		sequelize,
-		tableName: "U_EMPLOYEE_TRUST",
-		createdAt: "create_date",
-		updatedAt: "update_date",
-	}
-);
+		{
+			sequelize,
+			tableName: "U_EMPLOYEE_TRUST",
+			createdAt: "create_date",
+			updatedAt: "update_date",
+		}
+	);
+}

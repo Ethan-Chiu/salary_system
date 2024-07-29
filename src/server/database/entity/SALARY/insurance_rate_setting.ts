@@ -4,9 +4,8 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
+	Sequelize,
 } from "sequelize";
-import { container } from "tsyringe";
-import { Database } from "../../client";
 
 export class InsuranceRateSetting extends Model<
 	InferAttributes<InsuranceRateSetting>,
@@ -35,87 +34,87 @@ export class InsuranceRateSetting extends Model<
 	declare update_by: string;
 }
 
-const sequelize = container.resolve(Database).connection;
-
-InsuranceRateSetting.init(
-	{
-		id: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			autoIncrement: true,
-			primaryKey: true,
+export function initInsuranceRateSetting(sequelize: Sequelize) {
+	InsuranceRateSetting.init(
+		{
+			id: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				autoIncrement: true,
+				primaryKey: true,
+			},
+			min_wage_rate: {
+				type: DataTypes.FLOAT,
+				unique: false,
+				allowNull: false,
+			},
+			l_i_accident_rate: {
+				type: DataTypes.FLOAT,
+				unique: false,
+				allowNull: false,
+			},
+			l_i_employment_pay_rate: {
+				type: DataTypes.FLOAT,
+				unique: false,
+				allowNull: false,
+			},
+			l_i_occupational_injury_rate: {
+				type: DataTypes.FLOAT,
+				unique: false,
+				allowNull: false,
+			},
+			l_i_wage_replacement_rate: {
+				type: DataTypes.FLOAT,
+				unique: false,
+				allowNull: false,
+			},
+			h_i_standard_rate: {
+				type: DataTypes.FLOAT,
+				unique: false,
+				allowNull: false,
+			},
+			h_i_avg_dependents_count: {
+				type: DataTypes.FLOAT,
+				unique: false,
+				allowNull: false,
+			},
+			v2_h_i_supp_pay_rate: {
+				type: DataTypes.FLOAT,
+				unique: false,
+				allowNull: false,
+			},
+			v2_h_i_deduction_tsx_thres: {
+				type: DataTypes.FLOAT,
+				unique: false,
+				allowNull: false,
+			},
+			start_date: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			end_date: {
+				type: DataTypes.STRING(128),
+				allowNull: true,
+			},
+			create_date: {
+				type: DataTypes.DATE,
+			},
+			create_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			update_date: {
+				type: DataTypes.DATE,
+			},
+			update_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
 		},
-		min_wage_rate: {
-			type: DataTypes.FLOAT,
-			unique: false,
-			allowNull: false,
-		},
-		l_i_accident_rate: {
-			type: DataTypes.FLOAT,
-			unique: false,
-			allowNull: false,
-		},
-		l_i_employment_pay_rate: {
-			type: DataTypes.FLOAT,
-			unique: false,
-			allowNull: false,
-		},
-		l_i_occupational_injury_rate: {
-			type: DataTypes.FLOAT,
-			unique: false,
-			allowNull: false,
-		},
-		l_i_wage_replacement_rate: {
-			type: DataTypes.FLOAT,
-			unique: false,
-			allowNull: false,
-		},
-		h_i_standard_rate: {
-			type: DataTypes.FLOAT,
-			unique: false,
-			allowNull: false,
-		},
-		h_i_avg_dependents_count: {
-			type: DataTypes.FLOAT,
-			unique: false,
-			allowNull: false,
-		},
-		v2_h_i_supp_pay_rate: {
-			type: DataTypes.FLOAT,
-			unique: false,
-			allowNull: false,
-		},
-		v2_h_i_deduction_tsx_thres: {
-			type: DataTypes.FLOAT,
-			unique: false,
-			allowNull: false,
-		},
-		start_date: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-		end_date: {
-			type: DataTypes.STRING(128),
-			allowNull: true,
-		},
-		create_date: {
-			type: DataTypes.DATE,
-		},
-		create_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-		update_date: {
-			type: DataTypes.DATE,
-		},
-		update_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-	},
-	{
-		sequelize,
-		tableName: "U_INSURANCE_RATE_SETTING",
-		createdAt: "create_date",
-		updatedAt: "update_date",
-	}
-);
+		{
+			sequelize,
+			tableName: "U_INSURANCE_RATE_SETTING",
+			createdAt: "create_date",
+			updatedAt: "update_date",
+		}
+	);
+}
