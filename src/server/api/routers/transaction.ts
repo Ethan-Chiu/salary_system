@@ -31,17 +31,16 @@ export const transactionRouter = createTRPCRouter({
 		)
 		.mutation(async ({ input }) => {
 			const transactionService = container.resolve(TransactionService);
-			const exist_transaction =
+			for (const emp_no of input.emp_no_list) {
+				const exist_transaction =
 				await transactionService.getUniqueTransaction(
 					input.period_id,
-					input.emp_no_list[0]!,
+					emp_no,
 					input.pay_type as PayTypeEnumType
 				);
-			if (exist_transaction != null) {
-				transactionService.deleteTransaction(exist_transaction.id);
-			}
-
-			for (const emp_no of input.emp_no_list) {
+				if (exist_transaction != null) {
+					transactionService.deleteTransaction(exist_transaction.id);
+				}
 				const newdata = await transactionService.createTransaction(
 					emp_no,
 					input.period_id,
