@@ -275,7 +275,7 @@ export class TransactionService {
 		// const foreign_currency_account =
 			""
 		const bonus_ratio = bonus_setting!.fixed_multiplier;
-		const annual_days_in_service = payset!.work_day!;
+		const annual_days_in_service = 365; // MARK: 年度在職天數不知道在哪
 		const l_r_contribution =
 			await calculateService.getLaborRetirementContribution(
 				employee_data!
