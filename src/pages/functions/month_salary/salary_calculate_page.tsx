@@ -7,6 +7,15 @@ import { api } from "~/utils/api";
 import { useEffect } from "react";
 import { Period } from "~/server/database/entity/UMEDIA/period";
 
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "~/components/ui/card";
+import { Button } from "~/components/ui/button";
+
 export function SalaryCalculatePage({
     period,
     func,
@@ -48,17 +57,44 @@ function SalaryCalculateContent({
     })
 
     useEffect(() => {
-        try {
-            createTransaction.mutate({ emp_no_list: emp_no_list, period_id: period.period_id, issue_date: period.issue_date, pay_type: "month_salary", note: "計算月薪"});   
-        }
-        catch (error) {
-            console.log(error)
-        }
+        // createTransaction.mutate({ emp_no_list: emp_no_list, period_id: period.period_id, issue_date: period.issue_date, pay_type: "month_salary", note: "計算月薪"});   
     }, []);
 
     const { t } = useTranslation(['common'])
 
+
+    const [start, setStart] = React.useState(false);
+
+    function StartCalculate() {
+		return (
+			<div className="h-0 w-full flex-grow flex justify-center items-center">
+				<Card className="text-center w-1/2">
+					<CardHeader className="p-2 pt-0 md:p-4">
+						<CardTitle className="p-4">{t("others.start_calculate_month_salary")}</CardTitle>
+						{/* <CardDescription></CardDescription> */}
+					</CardHeader>
+					<CardContent className="p-2 pt-0 md:p-4 md:pt-0">
+                        <Button
+                            onClick={() => {
+                            setStart(true);
+                            createTransaction.mutate({ emp_no_list: emp_no_list, period_id: period.period_id, issue_date: period.issue_date, pay_type: "month_salary", note: "計算月薪"});
+                        }}> {t("others.start_calculate_month_salary_button")} </Button>
+					</CardContent>
+				</Card>
+			</div>
+		);
+	}
+
+    if (!start) {
+        return <StartCalculate />
+    }
+
+    if (createTransaction.isSuccess) {
+        return <div>{t("others.calculate_done")}</div>
+    }
+
     if (createTransaction.isPending) {
+        console.log("Pending...")
         return <LoadingSpinner />; // TODO: Loading element with toast
     }
 
@@ -66,5 +102,5 @@ function SalaryCalculateContent({
         return <span>Error: {createTransaction.error.message}</span>; // TODO: Error element with toast
     }
 
-    return <div>{t("others.calculate_done")}</div>
+    return <></>
 }

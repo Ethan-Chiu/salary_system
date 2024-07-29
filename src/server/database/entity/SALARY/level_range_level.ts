@@ -48,7 +48,7 @@ export function initLevelRangeLevel(sequelize: Sequelize) {
         },
         {
             sequelize,
-            tableName: "U_LEVEL_RANGE_LEVEL",
+            tableName: "R",
             createdAt: "create_date",
             updatedAt: "update_date",
         }

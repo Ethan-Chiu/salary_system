@@ -60,127 +60,123 @@ function ExportPage() {
 		period_id: selectedPeriod?.period_id ?? 0
 	});
 
+	console.log(getExcelA.data);
 
+	// const incomeDatas = [
+	// 	{
+	// 		name: "Sheet1",
+	// 		data: [
+	// 			{ base_salary: "John", Age: 25, City: "New York" },
+	// 			{ base_salary: "Alice", Age: 30, City: "San Francisco" },
+	// 			{ base_salary: "Bob", Age: 22, City: "Los Angeles" },
+	// 			{ base_salary: "Eva", Age: 28, City: "Chicago" },
+	// 			// Add more rows as needed
+	// 		],
+	// 	},
+	// 	{
+	// 		name: "Sheet2",
+	// 		data: [
+	// 			{ Product: "Laptop", Price: 1200, Stock: 10 },
+	// 			{ Product: "Phone", Price: 800, Stock: 20 },
+	// 			// Add more rows as needed
+	// 		],
+	// 	},
+	// 	// Add more sheets as needed
+	// ];
 
-	const incomeDatas = [
-		{
-			name: "Sheet1",
-			data: [
-				{ base_salary: "John", Age: 25, City: "New York" },
-				{ base_salary: "Alice", Age: 30, City: "San Francisco" },
-				{ base_salary: "Bob", Age: 22, City: "Los Angeles" },
-				{ base_salary: "Eva", Age: 28, City: "Chicago" },
-				// Add more rows as needed
-			],
-		},
-		{
-			name: "Sheet2",
-			data: [
-				{ Product: "Laptop", Price: 1200, Stock: 10 },
-				{ Product: "Phone", Price: 800, Stock: 20 },
-				// Add more rows as needed
-			],
-		},
-		// Add more sheets as needed
-	];
+	// const [showKeys, setShowKeys] = useState({
+	// 	"transaction": {
+	// 		"emp_no": true,
 
-	const [showKeys, setShowKeys] = useState({
-		Sheet1: {
-			base_salary: true,
-			Age: true,
-			City: true,
-		},
-		Sheet2: {
-			Product: true,
-			Price: true,
-		}
-	});
+	// 	}
+	// });
 
-	function changeShowKeys(sheetName: string, newDict: any) {
-		setShowKeys({ ...showKeys, [sheetName]: newDict });
-	}
+	// function changeShowKeys(sheetName: string, newDict: any) {
+	// 	setShowKeys({ ...showKeys, [sheetName]: newDict });
+	// }
 	
-	function getPseudoDatas(showKeys: any) 
-	{
-		return (getExcelA.isFetched ? (getExcelA.data ?? []) : []).map((sheetData) => {
-			const sheetName = sheetData.name;
-			const data = sheetData.data;
-			const keys = Object.keys((showKeys as any)[sheetName]).filter((key: string) => (showKeys as any)[sheetName][key]);
-			const pseudoData = data.map((row: any) => {
-				const pseudoRow: Record<string, string> = {};
-				keys!.forEach((key) => {
-					pseudoRow[key] = row[key];
-				});
-				return pseudoRow;
-			});
-			return { name: sheetName, data: pseudoData };
-		});
-	}
+	// function getPseudoDatas(showKeys: any) 
+	// {
+	// 	return (getExcelA.isFetched ? (getExcelA.data ?? []) : []).map((sheetData) => {
+	// 		console.log(sheetData);
+	// 		const sheetName = sheetData.name;
+	// 		const data = sheetData.data;
+	// 		const keys = Object.keys((showKeys as any)[sheetName]).filter((key: string) => (showKeys as any)[sheetName][key]);
+	// 		const pseudoData = data.map((row: any) => {
+	// 			const pseudoRow: Record<string, string> = {};
+	// 			keys!.forEach((key) => {
+	// 				pseudoRow[key] = row[key];
+	// 			});
+	// 			return pseudoRow;
+	// 		});
+	// 		return { name: sheetName, data: pseudoData };
+	// 	});
+	// }
 
-	const [pseudoDatas, setPseudoDatas] = useState(getPseudoDatas(showKeys));
+	// const [pseudoDatas, setPseudoDatas] = useState(getExcelA.data);
 
 	// const getExcelA = {
 	// 	isFetched: true,
 	// 	data: pseudoDatas,
 	// };
 
-	function createSchema() {
-		const keys = Object.keys(showKeys["Sheet1"]!);
-		const schemaShape = keys.reduce((acc: any, key) => {
-			if ((Object.keys(showKeys["Sheet1"]!)).includes(key)) {
-				acc[key] = z.boolean().optional().default(true);
-			}
-			else {
-				acc[key] = z.boolean().optional().default(false);
-			}
-			return acc;
-		}, {});
-		const schema = z.object(schemaShape);
-		return schema;
-	}
+	// function createSchema() {
+	// 	const keys = Object.keys(getExcelA.data!.findLast((sheet) => sheet.name == "transaction")!.data[0]);
+	// 	const schemaShape = keys.reduce((acc: any, key) => {
+	// 		if ((Object.keys(pseudoDatas!["transaction"]!)).includes(key)) {
+	// 			acc[key] = z.boolean().optional().default(true);
+	// 		}
+	// 		else {
+	// 			acc[key] = z.boolean().optional().default(false);
+	// 		}
+	// 		return acc;
+	// 	}, {});
+	// 	const schema = z.object(schemaShape);
+	// 	return schema;
+	// }
 
-	function FilterComponent() {
-		const [formValues, setFormValues] = useState(
-			getDefaults(createSchema())
-		)
-		const [open, setOpen] = useState(false);
-		return <></>
-		return (
-			<>
-				<Sheet open={open} onOpenChange={setOpen}>
-					<SheetTrigger asChild>
-						<Button variant="outline">Keys</Button>
-					</SheetTrigger>
-					<SheetContent className="w-[40%]">
-						<SheetHeader>
-							<SheetTitle>Set show keys</SheetTitle>
-							<SheetDescription>
-								Show some keys in the excel table
-							</SheetDescription>
-						</SheetHeader>
-						<ScrollArea className="h-[85%] w-full">
-							<AutoForm 
-								formSchema={createSchema()}
-								values={formValues}
-								onValuesChange={setFormValues}
-								onSubmit={(data) => {
-									setOpen(false)
-									changeShowKeys("Sheet1", data);
-									setPseudoDatas(getPseudoDatas({ ...showKeys, Sheet1: data }));
-								}}
-							>			
-							<Button>
-								Submit
-							</Button>				
-							</AutoForm>
-							<ScrollBar orientation="horizontal" />
-						</ScrollArea>
+	// function FilterComponent() {
+	// 	const [formValues, setFormValues] = useState(
+	// 		getDefaults(createSchema())
+	// 	)
+	// 	const [open, setOpen] = useState(false);
+	// 	return <></>
+	// 	return (
+	// 		<>
+	// 			<Sheet open={open} onOpenChange={setOpen}>
+	// 				<SheetTrigger asChild>
+	// 					<Button variant="outline">Keys</Button>
+	// 				</SheetTrigger>
+	// 				<SheetContent className="w-[40%]">
+	// 					<SheetHeader>
+	// 						<SheetTitle>Set show keys</SheetTitle>
+	// 						<SheetDescription>
+	// 							Show some keys in the excel table
+	// 						</SheetDescription>
+	// 					</SheetHeader>
+	// 					<ScrollArea className="h-[85%] w-full">
+	// 						<AutoForm 
+	// 							formSchema={createSchema()}
+	// 							values={formValues}
+	// 							onValuesChange={setFormValues}
+	// 							onSubmit={(data) => {
+	// 								setOpen(false)
+	// 								changeShowKeys("Sheet1", data);
+	// 								setPseudoDatas(getPseudoDatas({ ...showKeys, Sheet1: data }));
+	// 							}}
+	// 						>			
+	// 						<Button>
+	// 							Submit
+	// 						</Button>				
+	// 						</AutoForm>
+	// 						<ScrollBar orientation="horizontal" />
+	// 					</ScrollArea>
 						
-					</SheetContent>
-				</Sheet>
-			</>
-		);
-	}
+	// 				</SheetContent>
+	// 			</Sheet>
+	// 		</>
+	// 	);
+	// }
 
 	return (
 		<>
@@ -188,8 +184,8 @@ function ExportPage() {
 				<>
 					<div className="grow">
 						<ExcelViewer
-							original_sheets={getExcelData(pseudoDatas)}
-							filter_component={<FilterComponent />}
+							original_sheets={getExcelData(getExcelA.data!)}
+							filter_component={<></>}
 						/>
 					</div>
 				</>
@@ -199,12 +195,12 @@ function ExportPage() {
 				</div>
 			)}
 
-			<Button onClick={() => {
-				console.log(showKeys)
-				console.log(pseudoDatas)
+			{/* <Button onClick={() => {
+				// console.log(showKeys)
+				// console.log(pseudoDatas)
 			}}>
 				Console.log
-			</Button>
+			</Button> */}
 		</>
 	);
 }
