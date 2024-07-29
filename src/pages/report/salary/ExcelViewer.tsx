@@ -29,6 +29,8 @@ import { Button } from "~/components/ui/button";
 import { Baseline, PaintBucket } from "lucide-react";
 import { ColorPickerWrapper } from "./ColorPickerWrapper";
 
+import { useTranslation } from "react-i18next";
+
 const DEFAULT_TEXT_COLOR = "#000000";
 const DEFAULT_BACKGROUND_COLOR = "#ffffff";
 const DEFAULT_HEADER_BACKGROUND_COLOR = "#909090";
@@ -155,6 +157,8 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ original_sheets, filter_compo
 	const [lastValidSheets, setLastValidSheets] = useState<
 		ExcelSheetWithColor[]
 	>([]);
+
+	const { t } = useTranslation(["common"]);
 
 	useEffect(() => {
 		let tmpSheets: ExcelSheetWithColor[] = [];
@@ -335,7 +339,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ original_sheets, filter_compo
 														color: cell.textColor,
 													}}
 												>
-													{cell.content}
+													{t(`table.${cell.content}`)}
 												</div>
 											</th>
 										)

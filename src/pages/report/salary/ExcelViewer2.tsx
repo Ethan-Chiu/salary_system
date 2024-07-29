@@ -14,6 +14,8 @@ import {
 } from "~/components/ui/select";
 import { Baseline, PaintBucket } from "lucide-react";
 
+import { useTranslation } from "react-i18next";
+
 interface ExcelSheet {
 	sheetName: string;
 	data: string[][];
@@ -71,6 +73,8 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ sheets }) => {
 		colIndex: number;
 	}>({ rowIndex: -1, colIndex: -1 });
 
+	const { t } = useTranslation(['nav', 'common']);
+
 	interface ColorBlock {
 		textColor: string;
 		backgroundColor: string;
@@ -97,7 +101,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ sheets }) => {
 				});
 			});
 		});
-		console.log(defaultBlockProps);
+		// console.log(defaultBlockProps);
 		setBlockProps(defaultBlockProps);
 	}, []);
 
@@ -264,18 +268,18 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ sheets }) => {
 															colIndex
 															? "1.5px solid #0000ff"
 															: "1.3px solid #dddddd";
-													console.log(excelData);
-													console.log(
-														blockProps![
-															selectedSheetIndex
-														]![rowIndex]
-													);
-													console.log(
-														"%d, %d, %d",
-														selectedSheetIndex,
-														rowIndex,
-														colIndex
-													);
+													// console.log(excelData);
+													// console.log(
+													// 	blockProps![
+													// 		selectedSheetIndex
+													// 	]![rowIndex]
+													// );
+													// console.log(
+													// 	"%d, %d, %d",
+													// 	selectedSheetIndex,
+													// 	rowIndex,
+													// 	colIndex
+													// );
 													// let backgroundColor = blockProps![selectedSheetIndex]![rowIndex]![colIndex]!.backgroundColor;
 													let textColor =
 														blockProps![
