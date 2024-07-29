@@ -245,7 +245,8 @@ export class TransactionService {
 			emp_no
 		);
 		const income_tax_deduction = await calculateService.getIncomeTaxDeduction(
-			
+			period_id,
+			emp_no
 		);
 		const l_r_self = employee_payment!.l_r_self;
 		const parking_fee = await calculateService.getParkingFee(
@@ -260,7 +261,9 @@ export class TransactionService {
 			
 		);
 		const total_salary = await calculateService.getTotalSalary(
-		
+			employee_data!,
+			employee_payment!,
+			full_attendance_bonus
 		);
 		const dragon_boat_festival_bonus =
 			await calculateService.getDragonBoatFestivalBonus(
@@ -432,5 +435,18 @@ export class TransactionService {
 			},
 		});
 		return transactions;
+	}
+	async getUniqueTransaction(period_id: number, emp_no: string, pay_type: PayTypeEnumType): Promise<Transaction | null> {
+		const transaction = await Transaction.findOne({
+			where: {
+				period_id: period_id,
+				emp_no: emp_no,
+				pay_type: pay_type,
+			},
+		});
+		return transaction;
+	}
+	async deleteTransaction(transaction_id: number): Promise<void> {
+		await Transaction.destroy({ where: { id: transaction_id } });
 	}
 }

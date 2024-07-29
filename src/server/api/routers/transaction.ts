@@ -16,7 +16,7 @@ export const transactionRouter = createTRPCRouter({
 			if (transactions == null) {
 				throw new BaseResponseError("Transactions does not exist");
 			}
-			return [{name: "transactions", data: transactions}]; 
+			return [{ name: "transactions", data: transactions }];
 		}),
 
 	createTransaction: publicProcedure
@@ -31,16 +31,24 @@ export const transactionRouter = createTRPCRouter({
 		)
 		.mutation(async ({ input }) => {
 			const transactionService = container.resolve(TransactionService);
-            for (const emp_no of input.emp_no_list) {
-                const newdata = await transactionService.createTransaction(
-                    emp_no,
-                    input.period_id,
-                    input.issue_date,
-                    input.pay_type as PayTypeEnumType,
-                    input.note,
-                );
-            }
-		}),
+			const exist_transaction =
+				await transactionService.getUniqueTransaction(
+					input.period_id,
+					input.emp_no_list[0]!,
+					input.pay_type as PayTypeEnumType
+				);
+			if (exist_transaction != null) {
+				transactionService.deleteTransaction(exist_transaction.id);
+			}
 
-	
+			for (const emp_no of input.emp_no_list) {
+				const newdata = await transactionService.createTransaction(
+					emp_no,
+					input.period_id,
+					input.issue_date,
+					input.pay_type as PayTypeEnumType,
+					input.note
+				);
+			}
+		}),
 });

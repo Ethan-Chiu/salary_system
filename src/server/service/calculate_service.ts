@@ -583,9 +583,9 @@ export class CalculateService {
 			full_attendance_bonus +
 			(employee_payment.shift_allowance ?? 0) +
 			// rd("夜點費") -
-			leave_deduction //-
-			// rd("特別事假扣款") -
-			// rd("其他減項稅");
+			leave_deduction; //-
+		// rd("特別事假扣款") -
+		// rd("其他減項稅");
 
 		return salary_income_deduction;
 	}
@@ -617,7 +617,7 @@ export class CalculateService {
 		const Entity = rd("入境日期");
 		const Day = rd("工作天數");			// no use in prev salary system code
 		*/
-		const taxi: any[] = []//[rd("扣繳稅額")]; // Maybe a list
+		const taxi: any[] = []; //[rd("扣繳稅額")]; // Maybe a list
 
 		const START_WORK_DAY = new Date(employee_data.registration_date);
 		const PAY_DATE = issue_date;
@@ -745,7 +745,10 @@ export class CalculateService {
 		return 0;
 	}
 	//MARK: 其他減項 （待確認邏輯）
-	async getOtherDeduction(period_id: number, emp_no: string): Promise<number> {
+	async getOtherDeduction(
+		period_id: number,
+		emp_no: string
+	): Promise<number> {
 		const ehrService = container.resolve(EHRService);
 		let other_deduction_ids = (await ehrService.getExpenseClass())
 			.filter((ec) => ec.other_less === 1)
@@ -802,7 +805,10 @@ export class CalculateService {
 		return other_addition_tax;
 	}
 	//MARK: 其他減項稅 （待確認邏輯）
-	async getOtherDeductionTax(period_id: number, emp_no: string): Promise<number> {
+	async getOtherDeductionTax(
+		period_id: number,
+		emp_no: string
+	): Promise<number> {
 		const ehrService = container.resolve(EHRService);
 		let other_deduction_tax_ids = (await ehrService.getExpenseClass())
 			.filter((ec) => ec.other_less === 1 && ec.other_tax === 1)
@@ -904,19 +910,63 @@ export class CalculateService {
 		return brokerage_fee;
 	}
 	//MARK: 所得稅代扣
-	async getIncomeTaxDeduction(): Promise<number> {
-		const income_tax_deduction = 0;
+	async getIncomeTaxDeduction(
+		period_id: number,
+		emp_no: string
+	): Promise<number> {
+		const ehrService = container.resolve(EHRService);
+		const income_tax_deduction_id = (
+			await ehrService.getExpenseClass()
+		).find((ec) => ec.name === "所得稅代扣")?.id!;
+		const expenseList = await ehrService.getExpenseByEmpNoList(period_id, [
+			emp_no,
+		]);
+		let income_tax_deduction = 0;
+		for (const expense of expenseList) {
+			if (expense.id === income_tax_deduction_id) {
+				income_tax_deduction += expense.amount ?? 0;
+			}
+		}
 		return income_tax_deduction;
 	}
 	//MARK: 勞退金自提
+	async getLRSelf(period_id: number, emp_no: string): Promise<number> {
+		const ehrService = container.resolve(EHRService);
+		const l_r_self_id = (await ehrService.getExpenseClass()).find(
+			(ec) => ec.name === "勞退金自提"
+		);
+		const expenseList = await ehrService.getExpenseByEmpNoList(period_id, [
+			emp_no,
+		]);
+		let l_r_self = 0;
+		for (const expense of expenseList) {
+			if (expense.id === l_r_self_id) {
+				l_r_self += expense.amount ?? 0;
+			}
+		}
+		return l_r_self;
+	}
 	//MARK: 薪資區隔
 	async getSalaryRange(): Promise<string> {
 		const salary_range = "0";
 		return salary_range;
 	}
 	//MARK: 薪資總額
-	async getTotalSalary(): Promise<number> {
-		const total_salary = 0;
+	async getTotalSalary(
+		employee_data: EmployeeData,
+		employee_payment: EmployeePayment,
+		full_attendance_bonus: number,
+	): Promise<number> {
+		// rd("底薪") + rd("伙食津貼") + rd("主管津貼") + rd("專業証照津貼") + rd("職務津貼") + rd("補助津貼") + rd("全勤獎金") + rd("輪班津貼")'Jerry 06/06/07 職災保險匯出
+		const total_salary =
+			employee_payment.base_salary +
+			(employee_payment.food_allowance ?? 0)+
+			(employee_payment.supervisor_allowance ?? 0)+
+			(employee_payment.professional_cert_allowance ?? 0)+
+			(employee_payment.occupational_allowance ?? 0)+
+			(employee_payment.subsidy_allowance ?? 0)+
+			full_attendance_bonus +
+			(employee_payment.shift_allowance ?? 0);
 		return total_salary;
 	}
 	//MARK: 勞退金提撥
@@ -932,11 +982,11 @@ export class CalculateService {
 				CheckNull(rd("勞保天數"), 30)
 			) 'Jerry 07/07/24 加勞保天數計算
 		*/
-		const money = 0//rd("勞退");
+		const money = 0; //rd("勞退");
 		const kind1 = employee_data.work_type;
 		const kind2 = employee_data.work_status;
-		const Normalday = 30//rd("工作天數");
-		const PartTimeDay = 30//rd("勞保天數");
+		const Normalday = 30; //rd("工作天數");
+		const PartTimeDay = 30; //rd("勞保天數");
 
 		if (kind1 === FOREIGN) return 0;
 		if (kind2 === BOSS) return 0;
