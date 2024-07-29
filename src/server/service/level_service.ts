@@ -11,7 +11,7 @@ import { Op } from "sequelize";
 
 @injectable()
 export class LevelService {
-	constructor() {}
+	constructor() { }
 
 	async createLevel({
 		level,
@@ -33,13 +33,23 @@ export class LevelService {
 		return level;
 	}
 
+	async getLevelByLevel(level: number): Promise<Level | null> {
+		const _level = await Level.findOne({
+			where: {
+				level: level,
+			},
+		});
+
+		return _level;
+	}
+
 	async getCurrentLevel(): Promise<Level[]> {
 		const level = await this.getAllLevel();
 		return level;
 	}
 
 	async getAllLevel(): Promise<Level[]> {
-		const level = await Level.findAll({order: [['level', 'asc']], include: ['level_ranges']});
+		const level = await Level.findAll({ order: [['level', 'asc']] });
 		return level;
 	}
 
@@ -95,8 +105,8 @@ export class LevelService {
 			targetLevel.level < minLevel.level
 				? minLevel
 				: targetLevel.level > maxLevel.level
-				? maxLevel
-				: targetLevel;
+					? maxLevel
+					: targetLevel;
 		return level;
 	}
 }

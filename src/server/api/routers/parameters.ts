@@ -40,6 +40,7 @@ import { LevelService } from "~/server/service/level_service";
 import { PerformanceLevelService } from "~/server/service/performance_level_service";
 import { TrustMoneyService } from "~/server/service/trust_money_service";
 import { createLevelRangeAPI, updateLevelRangeAPI } from "../types/level_range_type";
+import { LevelRangeMapper } from "~/server/database/mapper/level_range_mapper";
 
 export const parametersRouter = createTRPCRouter({
 	createBankSetting: publicProcedure
@@ -519,33 +520,42 @@ export const parametersRouter = createTRPCRouter({
 		.input(createLevelRangeAPI)
 		.mutation(async ({ input }) => {
 			const levelRangeService = container.resolve(LevelRangeService);
-			const newdata = await levelRangeService.createLevelRange(input);
-			return newdata;
+			const levelRangeMapper = container.resolve(LevelRangeMapper);
+			const levelRange = await levelRangeMapper.getLevelRange(input);
+			const newdata = await levelRangeService.createLevelRange(levelRange);
+			const levelRangeFE = await levelRangeMapper.getLevelRangeFE(newdata)
+			return levelRangeFE;
 		}),
 
 	getCurrentLevelRange: publicProcedure.query(async () => {
 		const levelRangeService = container.resolve(LevelRangeService);
+		const levelRangeMapper = container.resolve(LevelRangeMapper);
 		const levelRange = await levelRangeService.getCurrentLevelRange();
 		if (levelRange == null) {
 			throw new BaseResponseError("LevelRange does not exist");
 		}
-		return levelRange;
+		const levelRangeFE = await Promise.all(levelRange.map(async e => await levelRangeMapper.getLevelRangeFE(e)))
+		return levelRangeFE;
 	}),
 
 	getAllLevelRange: publicProcedure.query(async () => {
 		const levelRangeService = container.resolve(LevelRangeService);
+		const levelRangeMapper = container.resolve(LevelRangeMapper);
 		const levelRange = await levelRangeService.getAllLevelRange();
 		if (levelRange == null) {
 			throw new BaseResponseError("LevelRange does not exist");
 		}
-		return levelRange;
+		const levelRangeFE = await Promise.all(levelRange.map(async e => await levelRangeMapper.getLevelRangeFE(e)))
+		return levelRangeFE;
 	}),
 
 	updateLevelRange: publicProcedure
 		.input(updateLevelRangeAPI)
 		.mutation(async ({ input }) => {
 			const levelRangeService = container.resolve(LevelRangeService);
-			const newdata = await levelRangeService.updateLevelRange(input);
+			const levelRangeMapper = container.resolve(LevelRangeMapper);
+			const levelRange = await levelRangeMapper.getLevelRangeNullable(input);
+			const newdata = await levelRangeService.updateLevelRange(levelRange);
 			return newdata;
 		}),
 

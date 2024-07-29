@@ -1,8 +1,7 @@
 import { container } from "tsyringe";
 import { Database } from "./client";
-import { LevelRange, initLevelRange } from "./entity/SALARY/level_range";
-import { Level, initLevel } from "./entity/SALARY/level";
-import { LevelRangeLevel, initLevelRangeLevel } from "./entity/SALARY/level_range_level";
+import { initLevelRange } from "./entity/SALARY/level_range";
+import { initLevel } from "./entity/SALARY/level";
 import { initAccessSetting } from "./entity/SALARY/access_setting";
 import { initAttendanceSetting } from "./entity/SALARY/attendance_setting";
 import { initBankSetting } from "./entity/SALARY/bank_setting";
@@ -40,13 +39,9 @@ initEmployeePayment(sequelize);
 initEmployeeTrust(sequelize);
 initHolidaysType(sequelize);
 initInsuranceRateSetting(sequelize);
-initLevelRangeLevel(sequelize);
 initLevelRange(sequelize);
 initLevel(sequelize);
 initPerformanceLevel(sequelize);
 initTransaction(sequelize);
 initTrustMoney(sequelize);
 initUser(sequelize);
-
-Level.belongsToMany(LevelRange, { through: LevelRangeLevel })
-LevelRange.belongsToMany(Level, { through: LevelRangeLevel })

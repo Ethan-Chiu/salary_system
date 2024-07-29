@@ -1,10 +1,10 @@
-import { injectable } from "tsyringe";
+import { container, injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { type z } from "zod";
 import { LevelRange } from "../database/entity/SALARY/level_range";
 import { select_value } from "./helper_function";
-import { type updateLevelRangeService, type LevelRangeCreateType } from "../api/types/level_range_type";
-import { Level } from "../database/entity/SALARY/level";
+import { type createLevelRangeService, type updateLevelRangeService } from "../api/types/level_range_type";
+import { LevelService } from "./level_service";
 
 @injectable()
 export class LevelRangeService {
@@ -12,14 +12,15 @@ export class LevelRangeService {
 		type,
 		level_start_id,
 		level_end_id,
-	}: LevelRangeCreateType): Promise<LevelRange> {
+	}: z.infer<typeof createLevelRangeService>): Promise<LevelRange> {
 		const newData = await LevelRange.create({
 			type: type,
+			level_start_id: level_start_id,
+			level_end_id: level_end_id,
 			create_by: "system",
 			update_by: "system",
-		}, {
+		});
 
-      });
 		return newData;
 	}
 
@@ -27,8 +28,7 @@ export class LevelRangeService {
 		const levelRange = await LevelRange.findOne({
 			where: {
 				id: id,
-			},
-      include: [{'all': true}]
+			}
 		});
 		return levelRange;
 	}
@@ -39,15 +39,15 @@ export class LevelRangeService {
 	}
 
 	async getAllLevelRange(): Promise<LevelRange[]> {
-		const levelRange = await LevelRange.findAll({include: {model: Level, as: 'level_end'}});
+		const levelRange = await LevelRange.findAll();
 		return levelRange;
 	}
 
 	async updateLevelRange({
 		id,
 		type,
-		level_start,
-		level_end,
+		level_start_id,
+		level_end_id,
 	}: z.infer<typeof updateLevelRangeService>): Promise<void> {
 		const levelRange = await this.getLevelRangeById(id!);
 		if (levelRange == null) {
@@ -57,8 +57,8 @@ export class LevelRangeService {
 		const affectedCount = await LevelRange.update(
 			{
 				type: select_value(type, levelRange.type),
-				level_start: select_value(level_start, levelRange.level_start),
-				level_end: select_value(level_end, levelRange.level_end),
+				level_start_id: select_value(level_start_id, levelRange.level_start_id),
+				level_end_id: select_value(level_end_id, levelRange.level_end_id),
 				update_by: "system",
 			},
 			{ where: { id: id } }

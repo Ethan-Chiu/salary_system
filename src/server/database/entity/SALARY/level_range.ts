@@ -14,6 +14,8 @@ export class LevelRange extends Model<
     // id can be undefined during creation when using `autoIncrement`
     declare id: CreationOptional<number>;
     declare type: string;
+    declare level_start_id: number;
+    declare level_end_id: number;
 
     // timestamps!
     // createdAt can be undefined during creation
@@ -34,6 +36,14 @@ export function initLevelRange(sequelize: Sequelize) {
             },
             type: {
                 type: DataTypes.STRING(32),
+                allowNull: false,
+            },
+            level_start_id: {
+                type: DataTypes.INTEGER.UNSIGNED,
+                allowNull: false,
+            },
+            level_end_id: {
+                type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
             },
             create_date: {
