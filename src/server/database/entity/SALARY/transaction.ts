@@ -419,7 +419,7 @@ Transaction.init(
 			comment: "退職所得",
 		},
 		received_elderly_benefits: {
-			type: DataTypes.STRING(128),
+			type: DataTypes.BOOLEAN,
 			comment: "已領老年給付",
 		},
 		v_2_h_i: {
