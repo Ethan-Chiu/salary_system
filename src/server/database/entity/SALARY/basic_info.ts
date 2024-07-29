@@ -4,9 +4,8 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
+	Sequelize,
 } from "sequelize";
-import { container } from "tsyringe";
-import { Database } from "../../client";
 
 export class BasicInfo extends Model<
 	InferAttributes<BasicInfo>,
@@ -26,43 +25,43 @@ export class BasicInfo extends Model<
 	declare update_by: string;
 }
 
-const sequelize = container.resolve(Database).connection;
-
-BasicInfo.init(
-	{
-		id: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			autoIncrement: true,
-			primaryKey: true,
+export function initBasicInfo(sequelize: Sequelize) {
+	BasicInfo.init(
+		{
+			id: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				autoIncrement: true,
+				primaryKey: true,
+			},
+			issue_date: {
+				type: DataTypes.DATE,
+				allowNull: false,
+			},
+			announcement: {
+				type: new DataTypes.STRING(512),
+				unique: false,
+				allowNull: true,
+			},
+			create_date: {
+				type: DataTypes.DATE,
+			},
+			create_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			update_date: {
+				type: DataTypes.DATE,
+			},
+			update_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
 		},
-		issue_date: {
-			type: DataTypes.DATE,
-			allowNull: false,
-		},
-		announcement: {
-			type: new DataTypes.STRING(512),
-			unique: false,
-			allowNull: true,
-		},
-		create_date: {
-			type: DataTypes.DATE,
-		},
-		create_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-		update_date: {
-			type: DataTypes.DATE,
-		},
-		update_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-	},
-	{
-		sequelize,
-		tableName: "U_BASIC_INFO",
-		createdAt: "create_date",
-		updatedAt: "update_date",
-	}
-);
+		{
+			sequelize,
+			tableName: "U_BASIC_INFO",
+			createdAt: "create_date",
+			updatedAt: "update_date",
+		}
+	);
+}

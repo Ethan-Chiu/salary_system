@@ -4,9 +4,8 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
+	Sequelize,
 } from "sequelize";
-import { container } from "tsyringe";
-import { Database } from "../../client";
 
 export class AccessSetting extends Model<
 	InferAttributes<AccessSetting>,
@@ -30,55 +29,55 @@ export class AccessSetting extends Model<
 	declare update_by: string;
 }
 
-const sequelize = container.resolve(Database).connection;
-
-AccessSetting.init(
-	{
-		id: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			autoIncrement: true,
-			primaryKey: true,
+export function initAccessSetting(sequelize: Sequelize) {
+	AccessSetting.init(
+		{
+			id: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				autoIncrement: true,
+				primaryKey: true,
+			},
+			auth_l: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				allowNull: false,
+				unique: true,
+			},
+			actions: {
+				type: DataTypes.BOOLEAN,
+				allowNull: false,
+			},
+			report: {
+				type: DataTypes.BOOLEAN,
+				allowNull: false,
+			},
+			roles: {
+				type: DataTypes.BOOLEAN,
+				allowNull: false,
+			},
+			settings: {
+				type: DataTypes.BOOLEAN,
+				allowNull: false,
+			},
+			create_date: {
+				type: DataTypes.DATE,
+			},
+			create_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			update_date: {
+				type: DataTypes.DATE,
+			},
+			update_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
 		},
-		auth_l: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
-			unique: true,
-		},
-		actions: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-		},
-		report: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-		},
-		roles: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-		},
-		settings: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-		},
-		create_date: {
-			type: DataTypes.DATE,
-		},
-		create_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-		update_date: {
-			type: DataTypes.DATE,
-		},
-		update_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-	},
-	{
-		sequelize,
-		tableName: "U_ACCESS_SETTING",
-		createdAt: "create_date",
-		updatedAt: "update_date",
-	}
-);
+		{
+			sequelize,
+			tableName: "U_ACCESS_SETTING",
+			createdAt: "create_date",
+			updatedAt: "update_date",
+		}
+	);
+}

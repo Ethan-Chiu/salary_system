@@ -4,9 +4,8 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
+	Sequelize,
 } from "sequelize";
-import { container } from "tsyringe";
-import { Database } from "../../client";
 
 export class HolidaysType extends Model<
 	InferAttributes<HolidaysType>,
@@ -27,50 +26,50 @@ export class HolidaysType extends Model<
 	declare update_by: string;
 }
 
-const sequelize = container.resolve(Database).connection;
-
-HolidaysType.init(
-	{
-		id: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			autoIncrement: true,
-			primaryKey: true,
+export function initHolidaysType(sequelize: Sequelize) {
+	HolidaysType.init(
+		{
+			id: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				autoIncrement: true,
+				primaryKey: true,
+			},
+			pay_id: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				allowNull: false,
+			},
+			holidays_name: {
+				type: DataTypes.STRING(32),
+				allowNull: false,
+			},
+			multiplier: {
+				type: DataTypes.FLOAT,
+				allowNull: false,
+			},
+			pay_type: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				allowNull: false,
+			},
+			create_date: {
+				type: DataTypes.DATE,
+			},
+			create_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			update_date: {
+				type: DataTypes.DATE,
+			},
+			update_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
 		},
-        pay_id: {
-            type: DataTypes.INTEGER.UNSIGNED,
-            allowNull: false,
-        },
-        holidays_name: {
-            type: DataTypes.STRING(32),
-            allowNull: false,
-        },
-        multiplier: {
-            type: DataTypes.FLOAT,
-            allowNull: false,
-        },
-        pay_type: {
-            type: DataTypes.INTEGER.UNSIGNED,
-            allowNull: false,
-        },
-		create_date: {
-			type: DataTypes.DATE,
-		},
-		create_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-		update_date: {
-			type: DataTypes.DATE,
-		},
-		update_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-	},
-	{
-		sequelize,
-		tableName: "U_HOLIDAYS_TYPE",
-		createdAt: "create_date",
-		updatedAt: "update_date",
-	}
-);
+		{
+			sequelize,
+			tableName: "U_HOLIDAYS_TYPE",
+			createdAt: "create_date",
+			updatedAt: "update_date",
+		}
+	);
+}

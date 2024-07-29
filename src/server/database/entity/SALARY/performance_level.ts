@@ -4,9 +4,8 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
+	Sequelize,
 } from "sequelize";
-import { container } from "tsyringe";
-import { Database } from "../../client";
 
 export class PerformanceLevel extends Model<
 	InferAttributes<PerformanceLevel>,
@@ -26,43 +25,43 @@ export class PerformanceLevel extends Model<
 	declare update_by: string;
 }
 
-const sequelize = container.resolve(Database).connection;
-
-PerformanceLevel.init(
-	{
-		id: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			autoIncrement: true,
-			primaryKey: true,
+export function initPerformanceLevel(sequelize: Sequelize) {
+	PerformanceLevel.init(
+		{
+			id: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				autoIncrement: true,
+				primaryKey: true,
+			},
+			performance_level: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			multiplier: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				unique: false,
+				allowNull: false,
+			},
+			create_date: {
+				type: DataTypes.DATE,
+			},
+			create_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			update_date: {
+				type: DataTypes.DATE,
+			},
+			update_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
 		},
-		performance_level: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-		multiplier: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			unique: false,
-			allowNull: false,
-		},
-		create_date: {
-			type: DataTypes.DATE,
-		},
-		create_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-		update_date: {
-			type: DataTypes.DATE,
-		},
-		update_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-	},
-	{
-		sequelize,
-		tableName: "U_PERFORMANCE_LEVEL",
-		createdAt: "create_date",
-		updatedAt: "update_date",
-	}
-);
+		{
+			sequelize,
+			tableName: "U_PERFORMANCE_LEVEL",
+			createdAt: "create_date",
+			updatedAt: "update_date",
+		}
+	);
+}

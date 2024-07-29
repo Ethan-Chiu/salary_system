@@ -4,9 +4,8 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
+	Sequelize,
 } from "sequelize";
-import { container } from "tsyringe";
-import { Database } from "../../client";
 
 export class BonusSetting extends Model<
 	InferAttributes<BonusSetting>,
@@ -28,51 +27,51 @@ export class BonusSetting extends Model<
 	declare update_by: string;
 }
 
-const sequelize = container.resolve(Database).connection;
-
-BonusSetting.init(
-	{
-		id: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			autoIncrement: true,
-			primaryKey: true,
+export function initBonusSetting(sequelize: Sequelize) {
+	BonusSetting.init(
+		{
+			id: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				autoIncrement: true,
+				primaryKey: true,
+			},
+			fixed_multiplier: {
+				type: DataTypes.FLOAT,
+				unique: false,
+				allowNull: false,
+			},
+			criterion_date: {
+				type: DataTypes.DATE,
+				allowNull: false,
+			},
+			base_on: {
+				type: DataTypes.STRING(32),
+				allowNull: false,
+			},
+			type: {
+				type: DataTypes.STRING(32),
+				allowNull: false,
+			},
+			create_date: {
+				type: DataTypes.DATE,
+			},
+			create_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			update_date: {
+				type: DataTypes.DATE,
+			},
+			update_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
 		},
-		fixed_multiplier: {
-			type: DataTypes.FLOAT,
-			unique: false,
-			allowNull: false,
-		},
-		criterion_date: {
-			type: DataTypes.DATE,
-			allowNull: false,
-		},
-		base_on: {
-			type: DataTypes.STRING(32),
-			allowNull: false,
-		},
-		type: {
-			type: DataTypes.STRING(32),
-			allowNull: false,
-		},
-		create_date: {
-			type: DataTypes.DATE,
-		},
-		create_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-		update_date: {
-			type: DataTypes.DATE,
-		},
-		update_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-	},
-	{
-		sequelize,
-		tableName: "U_BONUS_SETTING",
-		createdAt: "create_date",
-		updatedAt: "update_date",
-	}
-);
+		{
+			sequelize,
+			tableName: "U_BONUS_SETTING",
+			createdAt: "create_date",
+			updatedAt: "update_date",
+		}
+	);
+}

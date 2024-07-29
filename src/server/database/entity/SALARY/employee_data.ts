@@ -4,9 +4,8 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
+	Sequelize,
 } from "sequelize";
-import { container } from "tsyringe";
-import { Database } from "../../client";
 
 export class EmployeeData extends Model<
 	InferAttributes<EmployeeData>,
@@ -41,98 +40,95 @@ export class EmployeeData extends Model<
 	declare update_by: string;
 }
 
-const sequelize = container.resolve(Database).connection;
-
-EmployeeData.init(
-	{
-		id: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			autoIncrement: true,
-			primaryKey: true,
+export function initEmployeeData(sequelize: Sequelize) {
+	EmployeeData.init(
+		{
+			id: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				autoIncrement: true,
+				primaryKey: true,
+			},
+			emp_no: {
+				type: DataTypes.STRING(32),
+				allowNull: false,
+			},
+			emp_name: {
+				type: DataTypes.STRING(32),
+				allowNull: false,
+			},
+			work_type: {
+				type: DataTypes.STRING(32),
+				allowNull: false,
+			},
+			work_status: {
+				type: DataTypes.STRING(32),
+				allowNull: false,
+			},
+			disabilty_level: {
+				type: DataTypes.STRING,
+			},
+			department: {
+				type: DataTypes.STRING(32),
+				allowNull: false,
+			},
+			position: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				allowNull: false,
+			},
+			position_type: {
+				type: DataTypes.STRING(2),
+				allowNull: false,
+			},
+			sex_type: {
+				type: DataTypes.STRING(32),
+				allowNull: false,
+			},
+			group_insurance_type: {
+				type: DataTypes.STRING(32),
+				allowNull: false,
+			},
+			dependents: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				allowNull: true,
+			},
+			healthcare_dependents: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				allowNull: true,
+			},
+			registration_date: {
+				type: DataTypes.STRING(32),
+				allowNull: false,
+			},
+			bank_account: {
+				type: DataTypes.STRING(32),
+			},
+			quit_date: {
+				type: DataTypes.STRING(32),
+				allowNull: true,
+			},
+			license_id: {
+				type: DataTypes.STRING(32),
+			},
+			create_date: {
+				type: DataTypes.DATE,
+			},
+			create_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			update_date: {
+				type: DataTypes.DATE,
+			},
+			update_by: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
 		},
-		emp_no: {
-			type: DataTypes.STRING(32),
-			allowNull: false,
-		},
-		emp_name: {
-			type: DataTypes.STRING(32),
-			allowNull: false,
-		},
-		work_type: {
-			type: DataTypes.STRING(32),
-			allowNull: false,
-		},
-		work_status: {
-			type: DataTypes.STRING(32),
-			allowNull: false,
-		},
-		disabilty_level: {
-			type: DataTypes.STRING,
-		},
-		department: {
-			type: DataTypes.STRING(32),
-			allowNull: false,
-		},
-		position: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
-		},
-		position_type: {
-			type: DataTypes.STRING(2),
-			allowNull: false,
-		},
-		sex_type: {
-			type: DataTypes.STRING(32),
-			allowNull: false,
-		},
-		group_insurance_type: {
-			type: DataTypes.STRING(32),
-			allowNull: false,
-		},
-		dependents: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: true,
-		},
-		healthcare_dependents: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: true,
-		},
-		registration_date: {
-			type: DataTypes.STRING(32),
-			allowNull: false,
-		},
-		bank_account: {
-			type: DataTypes.STRING(32),
-		},
-		quit_date: {
-			type: DataTypes.STRING(32),
-			allowNull: true,
-		},
-		license_id: {
-			type: DataTypes.STRING(32),
-		},
-		// received_elderly_benefits: {
-		// 	type: DataTypes.BOOLEAN,
-		// },
-		create_date: {
-			type: DataTypes.DATE,
-		},
-		create_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-		update_date: {
-			type: DataTypes.DATE,
-		},
-		update_by: {
-			type: DataTypes.STRING(128),
-			allowNull: false,
-		},
-	},
-	{
-		sequelize,
-		tableName: "U_EMPLOYEE_DATA",
-		createdAt: "create_date",
-		updatedAt: "update_date",
-	}
-);
+		{
+			sequelize,
+			tableName: "U_EMPLOYEE_DATA",
+			createdAt: "create_date",
+			updatedAt: "update_date",
+		}
+	);
+}
