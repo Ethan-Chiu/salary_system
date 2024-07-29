@@ -28,10 +28,10 @@ export class Level extends Model<
 	declare update_date: CreationOptional<Date>;
 	declare update_by: string;
 
-  declare level_ranges?: NonAttribute<LevelRange[]>;
-  declare static associations: {
-    level_ranges: Association<Level, LevelRange>;
-  };
+  /* declare level_ranges?: NonAttribute<LevelRange[]>; */
+  /* declare static associations: { */
+  /*   level_ranges: Association<Level, LevelRange>; */
+  /* }; */
 }
 
 /* const sequelize = container.resolve(Database).connection; */

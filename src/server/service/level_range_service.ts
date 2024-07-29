@@ -15,11 +15,11 @@ export class LevelRangeService {
 	}: LevelRangeCreateType): Promise<LevelRange> {
 		const newData = await LevelRange.create({
 			type: type,
-			level_start_id: level_start_id,
-			level_end_id: level_end_id,
 			create_by: "system",
 			update_by: "system",
-		});
+		}, {
+
+      });
 		return newData;
 	}
 
