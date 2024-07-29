@@ -9,7 +9,7 @@ import { AttendanceSettingService } from "~/server/service/attendance_setting_se
 import { EHRService } from "~/server/service/ehr_service";
 import { InsuranceRateSettingService } from "~/server/service/insurance_rate_setting_service";
 import { HolidaysTypeService } from "~/server/service/holidays_type_service";
-import { ca } from "date-fns/locale";
+
 
 export const calculateRouter = createTRPCRouter({
 	//MARK: API for 平日加班費
@@ -341,10 +341,14 @@ export const calculateRouter = createTRPCRouter({
 			const full_attendance_bonus = (
 				await calculateService.getFullAttendanceBonus(input.period_id, input.emp_no)
 			)
+			const operational_performance_bonus = (
+				await calculateService.getOperationalPerformanceBonus(input.period_id, input.emp_no)
+			)
 			const welfare_deduction = await calculateService.getWelfareDeduction(
 				employee_data!,
 				employee_payment!,
 				full_attendance_bonus!,
+				operational_performance_bonus!
 			)
 			return welfare_deduction
 		}),
