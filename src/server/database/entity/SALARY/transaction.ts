@@ -425,7 +425,7 @@ export function initTransaction(sequelize: Sequelize) {
 				comment: "二代健保",
 			},
 			has_trust: {
-				type: DataTypes.STRING(128),
+				type: DataTypes.BOOLEAN,
 				comment: "持股信託_YN",
 			},
 			emp_trust_reserve: {
