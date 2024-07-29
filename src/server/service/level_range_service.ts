@@ -39,7 +39,7 @@ export class LevelRangeService {
 	}
 
 	async getAllLevelRange(): Promise<LevelRange[]> {
-		const levelRange = await LevelRange.findAll();
+		const levelRange = await LevelRange.findAll({ raw: true });
 		return levelRange;
 	}
 
