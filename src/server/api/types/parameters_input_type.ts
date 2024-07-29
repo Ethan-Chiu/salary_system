@@ -1,24 +1,6 @@
 import { z } from "zod";
 
-const Id = z.object({
-	id: z.number(),
-});
-
-const DateAPI = z.object({
-	start_date: z.date().nullable(),
-	end_date: z.date().nullable(),
-});
-
-const DateService = z.object({
-	start_date: z.string().nullable(),
-	end_date: z.string().nullable(),
-});
-
-const User = z.object({
-	emp_no: z.string(),
-	password: z.string(),
-	auth_l: z.number(),
-});
+import { Id, DateAPI, DateService, User } from "./common_type";
 
 export const createUserAPI = User.merge(DateAPI);
 export const createUserService = User.merge(DateService);
@@ -172,16 +154,6 @@ export const createBonusSettingService = BonusSetting;
 export const updateBonusSettingAPI = BonusSetting.merge(Id).partial();
 export const updateBonusSettingService = BonusSetting.merge(Id).partial();
 
-const LevelRange = z.object({
-	type: z.string(),
-	level_start: z.number(),
-	level_end: z.number(),
-});
-
-export const createLevelRangeAPI = LevelRange;
-export const createLevelRangeService = LevelRange;
-export const updateLevelRangeAPI = LevelRange.merge(Id).partial();
-export const updateLevelRangeService = LevelRange.merge(Id).partial();
 
 const Level = z.object({
 	level: z.number(),

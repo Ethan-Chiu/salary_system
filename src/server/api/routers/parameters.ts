@@ -12,7 +12,6 @@ import {
 	createBonusSettingAPI,
 	createInsuranceRateSettingAPI,
 	createLevelAPI,
-	createLevelRangeAPI,
 	createPerformanceLevelAPI,
 	createTrustMoneyAPI,
 	updateAttendanceSettingAPI,
@@ -24,7 +23,6 @@ import {
 	updateBonusSettingAPI,
 	updateInsuranceRateSettingAPI,
 	updateLevelAPI,
-	updateLevelRangeAPI,
 	updatePerformanceLevelAPI,
 	updateTrustMoneyAPI,
 } from "../types/parameters_input_type";
@@ -41,6 +39,7 @@ import { LevelRangeService } from "~/server/service/level_range_service";
 import { LevelService } from "~/server/service/level_service";
 import { PerformanceLevelService } from "~/server/service/performance_level_service";
 import { TrustMoneyService } from "~/server/service/trust_money_service";
+import { createLevelRangeAPI, updateLevelRangeAPI } from "../types/level_range_type";
 
 export const parametersRouter = createTRPCRouter({
 	createBankSetting: publicProcedure

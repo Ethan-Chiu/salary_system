@@ -31,6 +31,7 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
 import { ParameterPage } from "./parameters_page";
+import { Period } from "~/server/database/entity/UMEDIA/period";
 
 type FunctionStepPage = {
 	title: string;
@@ -62,10 +63,11 @@ const MonthSalary: NextPageWithLayout = () => {
 		);
 	}
 
-	return <MonthSalaryContent periodId={periodId} />;
+	return <MonthSalaryContent period={selectedPeriod} />;
 };
 
-function MonthSalaryContent({ periodId }: { periodId: number }) {
+function MonthSalaryContent({ period }: { period: Period }) {
+	const periodId = period.period_id;
 	const router = useRouter();
 	const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -137,7 +139,7 @@ function MonthSalaryContent({ periodId }: { periodId: number }) {
 			page: (
 				<SalaryCalculatePage
 					key="salary_calculate"
-					period={periodId}
+					period={period}
 					func={FunctionsEnum.enum.month_salary}
 				/>
 			),
