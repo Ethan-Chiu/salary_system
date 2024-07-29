@@ -93,7 +93,7 @@ export class TransactionService {
 			period_id,
 			emp_no
 		);
-		// MARK: Calculated Results
+		
 		period_id = period_id;
 		issue_date = issue_date;
 		pay_type = pay_type;
@@ -112,6 +112,7 @@ export class TransactionService {
 			employee_payment!.professional_cert_allowance;
 		const food_allowance = employee_payment!.food_allowance;
 		const base_salary = employee_payment!.base_salary;
+		// MARK: Calculated Results
 		const gross_salary = await calculateService.getGrossSalary(
 			employee_payment!,
 			payset!
