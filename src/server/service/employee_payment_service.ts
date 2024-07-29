@@ -11,6 +11,7 @@ import { Op } from "sequelize";
 import { EHRService } from "./ehr_service";
 import { LevelRangeService } from "./level_range_service";
 import { LevelService } from "./level_service";
+import { LevelRangeMapper } from "../database/mapper/level_range_mapper";
 
 @injectable()
 export class EmployeePaymentService {
@@ -235,13 +236,15 @@ export class EmployeePaymentService {
 			}
 			const levelRangeList = await levelRangeService.getAllLevelRange();
 			const salary =
-				employeePayment.base_salary + employeePayment.food_allowance;
+				employeePayment.base_salary + (employeePayment.food_allowance ?? 0);
 			let result = [];
 			for (const levelRange of levelRangeList) {
+				const levelRangeMapper = container.resolve(LevelRangeMapper);
+				const levelRangeFE = await levelRangeMapper.getLevelRangeFE(levelRange)
 				const level = await leveService.getLevelBySalary(
 					salary,
-					levelRange.level_start,
-					levelRange.level_end
+					levelRangeFE.level_start,
+					levelRangeFE.level_end
 				);
 				result.push({
 					type: levelRange.type,

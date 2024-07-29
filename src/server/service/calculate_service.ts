@@ -592,6 +592,10 @@ export class CalculateService {
 	}
 	//MARK: 工資墊償
 	async getSalaryAdvance(): Promise<number> {
+		// 外勞
+		// rd("工資墊償") = Round(rd("勞保") * wci_apf * rd("勞保天數") / 30, 1) + Round(rd("勞保") * wci_apf * rd("勞保追加") / 30, 1)  'Jerry 20220823工資墊償基金分開計算
+		// 本勞
+		// rd("工資墊償") = Round(rd("勞保") * wci_apf * rd("勞保天數") / 30, 3) + Round(rd("勞保") * wci_apf * rd("勞保追加") / 30, 3)  'Jerry 20220823工資墊償基金分開計算
 		return 0;
 	}
 	//MARK: 薪資所得稅
@@ -690,6 +694,8 @@ export class CalculateService {
 	}
 	//MARK: 課稅所得
 	async getTaxableIncome(): Promise<number> {
+		// rd("課稅所得") = rd("底薪") + rd("主管津貼") + rd("專業証照津貼") + rd("職務津貼") + rd("超時加班")
+		//     'Jerry 07/01/05 取消"超時加班"==> 改為"職務津貼"
 		return 9487;
 	}
 	//MARK: 課稅小計
@@ -701,7 +707,7 @@ export class CalculateService {
 		exceed_overtime_pay: number,
 		other_addition_tax: number,
 		full_attendance_bonus: number,
-		end_of_year_bonus: number,
+		end_of_year_bonus: number
 	): Promise<number> {
 		return 0;
 		if (pay_type === PayTypeEnum.Enum.month_salary) {
@@ -721,6 +727,7 @@ export class CalculateService {
 						rd("績效獎金") + 
 						rd("專案獎金")
 			*/
+			// [底薪]+[主管津貼]+[職務津貼]+CheckNull(獎金!積效獎金,0)+CheckNull(獎金!年終獎金,0)+CheckNull(其他!補發薪資,0)+[超時加班]+CheckNull(其他!其他加項稅,0)+CheckNull(獎金!全勤獎金,0)+[輪班津貼]+CheckNull(定存款!夜點費,0) AS 課稅小計,
 			return (
 				employee_payment.base_salary +
 				(employee_payment.supervisor_allowance ?? 0) +
@@ -766,7 +773,7 @@ export class CalculateService {
 
 		return 0;
 	}
-	//MARK: 其他減項 （待確認邏輯）
+	//MARK: 其他減項?
 	async getOtherDeduction(
 		period_id: number,
 		emp_no: string
@@ -786,7 +793,7 @@ export class CalculateService {
 		}
 		return other_deduction;
 	}
-	//MARK: 其他加項 （待確認邏輯）
+	//MARK: 其他加項?
 	async getOtherAddition(period_id: number, emp_no: string): Promise<number> {
 		const ehrService = container.resolve(EHRService);
 		let other_addition_ids = (await ehrService.getExpenseClass())
@@ -803,7 +810,7 @@ export class CalculateService {
 		}
 		return other_addition;
 	}
-	//MARK: 其他加項稅  （待確認邏輯）
+	//MARK: 其他加項稅 ?
 	async getOtherAdditionTax(
 		period_id: number,
 		emp_no: string
@@ -826,7 +833,7 @@ export class CalculateService {
 		}
 		return other_addition_tax;
 	}
-	//MARK: 其他減項稅 （待確認邏輯）
+	//MARK: 其他減項稅 ?
 	async getOtherDeductionTax(
 		period_id: number,
 		emp_no: string
@@ -846,32 +853,58 @@ export class CalculateService {
 		}
 		return other_deduction_tax;
 	}
-	//MARK: 伙食扣款
+	//MARK: 伙食扣款？
 	async getMealDeduction(): Promise<number> {
 		const meal_deduction = 0;
 		return meal_deduction;
 	}
 	//MARK: 非課稅小計
-	async getNonTaxableSubtotal(): Promise<number> {
-		const non_taxable_subtotal = 0;
+	async getNonTaxableSubtotal(
+		employee_payment: EmployeePayment,
+		weekday_overtime_pay: number,
+		holiday_overtime_pay: number,
+		non_leave_compensation: number,
+		other_addition: number
+	): Promise<number> {
+		// 薪資查詢.非課說小計 = 薪資查詢!伙食津貼+薪資查詢!平日加班費+薪資查詢!假日加班費+薪資查詢!補助津貼+薪資查詢!不休假代金+薪資查詢!其他加項,
+		const non_taxable_subtotal =
+			(employee_payment.food_allowance ?? 0) +
+			weekday_overtime_pay +
+			holiday_overtime_pay +
+			(employee_payment.subsidy_allowance ?? 0) +
+			non_leave_compensation +
+			other_addition;
 		return non_taxable_subtotal;
 	}
 	//MARK: 減項小計
 	async getDeductionSubtotal(): Promise<number> {
+		// If PayType = Moon_Pay Then
+		// rd("減項小計") = rd("薪資所得稅") + rd("獎金所得稅") + rd("福利金提撥") + rd("勞保扣除額") + rd("健保扣除額") + rd("團保費代扣") + rd("團保費代扣_升等") + _
+		//                      rd("請假扣款") + rd("特別事假扣款") + rd("伙食扣款") + rd("其他減項") + rd("其他減項稅") + rd("股票貸款") + rd("車輛貸款") + _
+		//                      rd("所得稅代扣") + rd("勞退金自提") + rd("停車費") + rd("仲介費") + rd("二代健保")                                                             'Jerry 112/06/03 for 團保費代扣_升等 & 特別事假扣款
+		// If rd("持股信託") = True Then
+		// rd("減項小計") = rd("減項小計") + rd("員工提存金") + rd("特別獎勵金_員工")
+		// ElseIf PayType = OverTime_Pay Then
+		// rd("減項小計") = rd("薪資所得稅") + rd("二代健保") + rd("其他減項") + rd("其他減項稅") 'hm 20201023
+		// ElseIf (PayType = Award_1_Pay Or PayType = Award_2_Pay Or PayType = YearEnd_Pay Or PayType = YearResult_Pay Or PayType = Project_Pay Or PayType = DS_Pay) Then
+		// rd("減項小計") = rd("獎金所得稅") + rd("其他減項稅") + rd("二代健保")
+		// rd("薪資所得扣繳總額") = rd("課稅小計")   'Jerry 07/04/25  for 扣繳憑單 and 財務部報稅用
+		// ElseIf PayType = Non_Leaving_Pay Then  '2017/01/09 單獨發放不休假代金
+		// rd("非課說小計") = rd("不休假代金")
 		const deduction_subtotal = 0;
 		return deduction_subtotal;
 	}
 	//MARK: 勞保費
-	async getLaborInsurance(
+	async getLaborInsurancePay(
 		employee_payment: EmployeePayment
 	): Promise<number> {
-		return employee_payment.l_i;
+		return 0;
 	}
 	//MARK: 健保費
-	async getHealthInsurance(
+	async getHealthInsurancePay(
 		employee_payment: EmployeePayment
 	): Promise<number> {
-		return employee_payment.h_i;
+		return 0;
 	}
 	//MARK: 團保費
 	async getGroupInsurancePay(employee_data: EmployeeData): Promise<number> {
@@ -968,14 +1001,13 @@ export class CalculateService {
 		}
 		return l_r_self;
 	}
-	//MARK: 薪資區隔
+	//MARK: 薪資區隔?
 	async getSalaryRange(): Promise<string> {
 		const salary_range = "0";
 		return salary_range;
 	}
 	//MARK: 薪資總額
 	async getTotalSalary(
-		employee_data: EmployeeData,
 		employee_payment: EmployeePayment,
 		full_attendance_bonus: number
 	): Promise<number> {
@@ -1032,7 +1064,7 @@ export class CalculateService {
 
 		return Math.round(Math.round(money * 0.06));
 	}
-	//MARK: 勞退金提撥_舊制
+	//MARK: 勞退金提撥_舊制?
 	async getOldLaborRetirementContribution(): Promise<number> {
 		const old_labor_retirement_contribution = 0;
 		return old_labor_retirement_contribution;
@@ -1095,14 +1127,16 @@ export class CalculateService {
 		return 0;
 	}
 
-	
 	//MARK: 團保費代扣＿升等
 	// 感覺在這裡: DoCmd.OpenQuery "其他更新", acNormal, acEdit    'Jerry 07/09/03  增加退職所得  23/6/3 增加團保費代扣_升等
-	async getGroupInsuranceDeductionPromotion(period_id: number, emp_no: string): Promise<number> {
+	async getGroupInsuranceDeductionPromotion(
+		period_id: number,
+		emp_no: string
+	): Promise<number> {
 		const ehrService = container.resolve(EHRService);
-		const g_i_deduction_promotion_id = (await ehrService.getExpenseClass()).find(
-			(ec) => ec.name === "團保代扣-升等"
-		);
+		const g_i_deduction_promotion_id = (
+			await ehrService.getExpenseClass()
+		).find((ec) => ec.name === "團保代扣-升等");
 		const expenseList = await ehrService.getExpenseByEmpNoList(period_id, [
 			emp_no,
 		]);
@@ -1114,7 +1148,7 @@ export class CalculateService {
 		}
 		return group_insurance_deduction_promotion;
 	}
-	//MARK: 退職所得
+	//MARK: 退職所得?
 	async getRetirementIncome(): Promise<number> {
 		return 0;
 	}
@@ -1155,7 +1189,16 @@ export class CalculateService {
 	}
 
 	//MARK: 實發金額
-	async getNetSalary(): Promise<number> {
+	async getNetSalary(pay_type: PayTypeEnumType,taxable_subtotal: number,non_taxable_subtotal: number,deduction_subtotal: number): Promise<number> {
+		// If (PayType = Moon_Pay Or PayType = OverTime_Pay) Then    'Jerry 10/011/10 只有15日另發加班,才需要計算                                                       'Jerry 06/05/19
+		// rd("實發金額") = rd("課稅小計") + rd("非課說小計") - rd("減項小計")                 'Jerry 06/05/19
+		// ElseIf (PayType = Award_1_Pay Or PayType = Award_2_Pay Or PayType = YearEnd_Pay Or PayType = YearResult_Pay Or PayType = Project_Pay Or PayType = DS_Pay) Then 'Jerry 06/05/19 , 06/06/08 ,07/08/26增加 Project_Pay, 10/02/03增加 YearResult_Pay,2014/7/24 增加DS_PAY
+		//    rd("實發金額") = rd("課稅小計") - rd("減項小計")                                    'Jerry 06/05/19
+		// End
+		if (pay_type === "month_salary") {
+			const net_salary = taxable_subtotal + non_taxable_subtotal - deduction_subtotal;
+			return net_salary;
+		}
 		return 0;
 	}
 
