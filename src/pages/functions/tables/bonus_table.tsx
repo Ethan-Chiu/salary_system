@@ -35,8 +35,8 @@ export function BonusTable({ period, emp_no_list }: BonusTableProps) {
 
 	const { isLoading, isError, data, error } =
 		api.function.getBonusWithTypeByEmpList.useQuery({
-			period_id: 114,
-			emp_no_list: ["F103007"],
+			period_id: period,
+			emp_no_list: emp_no_list,
 		});
 
 	const { t } = useTranslation(["common"]);

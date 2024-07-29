@@ -36,8 +36,8 @@ export function OtherTable({ period, emp_no_list }: OtherTableProps) {
 
 	const { isLoading, isError, data, error } =
 		api.function.getExpenseWithTypeByEmpList.useQuery({
-			period_id: 114,
-			emp_no_list: ["F103007"],
+			period_id: period,
+			emp_no_list: emp_no_list,
 		});
 
 	const { t } = useTranslation(["common"]);

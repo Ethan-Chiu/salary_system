@@ -28,6 +28,8 @@ import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import AutoForm from "~/components/ui/auto-form";
 import { z } from 'zod';
 
+import { api } from "~/utils/api";
+
 const Salary: NextPageWithLayout = () => {
 	return (
 		<>
@@ -53,6 +55,13 @@ function ExportPage() {
 	// const getExcelA = api.function.getExcelA.useQuery();
 	const { selectedPeriod } = useContext(periodContext);
 	console.log(selectedPeriod);
+
+	const getExcelA = api.transaction.getAllTransaction.useQuery({
+		period_id: selectedPeriod?.period_id ?? 0
+	});
+
+
+
 	const incomeDatas = [
 		{
 			name: "Sheet1",
@@ -93,7 +102,7 @@ function ExportPage() {
 	
 	function getPseudoDatas(showKeys: any) 
 	{
-		return incomeDatas.map((sheetData) => {
+		return (getExcelA.isFetched ? (getExcelA.data ?? []) : []).map((sheetData) => {
 			const sheetName = sheetData.name;
 			const data = sheetData.data;
 			const keys = Object.keys((showKeys as any)[sheetName]).filter((key: string) => (showKeys as any)[sheetName][key]);
@@ -110,10 +119,10 @@ function ExportPage() {
 
 	const [pseudoDatas, setPseudoDatas] = useState(getPseudoDatas(showKeys));
 
-	const getExcelA = {
-		isFetched: true,
-		data: pseudoDatas,
-	};
+	// const getExcelA = {
+	// 	isFetched: true,
+	// 	data: pseudoDatas,
+	// };
 
 	function createSchema() {
 		const keys = Object.keys(showKeys["Sheet1"]!);

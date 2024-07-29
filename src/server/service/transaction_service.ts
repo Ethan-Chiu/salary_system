@@ -24,7 +24,7 @@ export class TransactionService {
 		pay_type: PayTypeEnumType,
 		note: string
 	) {
-		// Service
+		// MARK: Service
 		const employeeDataService = container.resolve(EmployeeDataService);
 		const employeePaymentService = container.resolve(
 			EmployeePaymentService
@@ -42,7 +42,7 @@ export class TransactionService {
 			InsuranceRateSettingService
 		);
 		const holidaysTypeService = container.resolve(HolidaysTypeService);
-		// Data
+		// MARK: Data
 		const payset = (
 			await ehrService.getPaysetByEmpNoList(period_id, [emp_no])
 		)[0];
@@ -89,7 +89,11 @@ export class TransactionService {
 			period_id,
 			emp_no
 		)
-		// Variable
+		const other_addition_tax = await calculateService.getOtherAdditionTax(
+			period_id,
+			emp_no
+		);
+		// MARK: Calculated Results
 		period_id = period_id;
 		issue_date = issue_date;
 		pay_type = pay_type;
@@ -128,6 +132,7 @@ export class TransactionService {
 			employee_data!,
 			employee_payment!,
 			full_attendance_bonus,
+			operational_performance_bonus
 		);
 		const subsidy_allowance = employee_payment!.subsidy_allowance;
 		const weekday_overtime_pay =
@@ -173,27 +178,27 @@ export class TransactionService {
 			full_attendance_bonus!,
 			exceed_overtime_pay!,
 			leave_deduction!,
-			operational_performance_bonus
+			operational_performance_bonus,
+			other_addition_tax,
 		)
 		const group_insurance_deduction =
 			await calculateService.getGroupInsuranceDeduction( period_id, emp_no );
 		// const retroactive_salary = await calculateService.getRetroactiveDeduction(gross_salary, payset!);
 		const other_deduction = await calculateService.getOtherDeduction(
-			// gross_salary,
-			// payset!
+			period_id,
+			emp_no
 		);
 		const other_addition = await calculateService.getOtherAddition(
-			// gross_salary,
-			// payset!
+			period_id,
+			emp_no
 		);
 		const meal_deduction = await calculateService.getMealDeduction(
-			// gross_salary,
-			// payset!
+			// period_id,
+			// emp_no
 		);
 		const taxable_income = await calculateService.getTaxableIncome(
-			// gross_salary,
-			// payset!
-			// pay_type
+			// period_id,
+			// emp_no
 		);
 		const income_tax = await calculateService.getSalaryIncomeTax(
 			employee_data!,
@@ -233,11 +238,10 @@ export class TransactionService {
 			// gross_salary,
 			// payset!
 		);
-		const other_addition_tax = await calculateService.getOtherAdditionTax(
-			
-		);
+		
 		const other_deduction_tax = await calculateService.getOtherDeductionTax(
-			
+			period_id,
+			emp_no
 		);
 		const income_tax_deduction = await calculateService.getIncomeTaxDeduction(
 			
@@ -271,7 +275,7 @@ export class TransactionService {
 		// const foreign_currency_account =
 			""
 		const bonus_ratio = bonus_setting!.fixed_multiplier;
-		const annual_days_in_service = payset!.work_day!;
+		const annual_days_in_service = 365; // MARK: 年度在職天數不知道在哪
 		const l_r_contribution =
 			await calculateService.getLaborRetirementContribution(
 				employee_data!
