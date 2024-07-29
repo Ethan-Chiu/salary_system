@@ -34,6 +34,7 @@ const CONTRACT = "約聘人員";
 
 
 const rd = (key: string) => {throw new Error("Should change 'rd' to your functions")};
+// function rd(key: string) {return 0;}
 	
 @injectable()
 export class CalculateService {
