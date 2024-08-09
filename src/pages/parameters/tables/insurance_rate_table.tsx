@@ -172,13 +172,13 @@ export function InsuranceRateTable({
 			{!viewOnly ? (
 				<DataTableWithFunctions
 					columns={insurance_rate_columns}
-					data={insuranceRateMapper([data])}
+					data={insuranceRateMapper([data!])}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
 					columns={insurance_rate_columns}
-					data={insuranceRateMapper([data])}
+					data={insuranceRateMapper([data!])}
 					filterColumnKey={filterKey}
 				/>
 			)}

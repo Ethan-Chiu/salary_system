@@ -139,48 +139,16 @@ export function BonusTable({ viewOnly }: BonusTableProps) {
 			{!viewOnly ? (
 				<DataTableWithFunctions
 					columns={bonus_columns}
-					data={bonusMapper([data])}
+					data={bonusMapper([data!])}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
 					columns={bonus_columns}
-					data={bonusMapper([data])}
+					data={bonusMapper([data!])}
 					filterColumnKey={filterKey}
 				/>
 			)}
 		</>
 	);
-
-	// useMemo(() => {
-	// 	table.getColumn(filter_key)?.setFilterValue(globalFilter);
-	// }, [globalFilter]);
 }
-
-// export function EmptyTable({ err_msg }: { err_msg: string }) {
-// 	const selectedTableType = "TableBonusSetting";
-// 	const [alertOpen, setAlertOpen] = useState(true);
-// 	return (
-// 		<>
-// 			<div className="flex grow items-center justify-center">
-// 				<div className="text-center">
-// 					<p>{err_msg}</p>
-// 					<Button
-// 						variant={"ghost"}
-// 						onClick={() => setAlertOpen(true)}
-// 					>
-// 						Create
-// 					</Button>
-// 				</div>
-// 				<EmptyCreate
-// 					formSchema={getSchema(selectedTableType)}
-// 					onClose={() => undefined}
-// 					selectedTableType={selectedTableType}
-// 					err_msg={err_msg}
-// 					alertOpen={alertOpen}
-// 					setAlertOpen={setAlertOpen}
-// 				/>
-// 			</div>
-// 		</>
-// 	);
-// }

@@ -81,6 +81,9 @@ export class EmployeePaymentService {
 					],
 				},
 			},
+			order: [
+				["emp_no", "ASC"]
+			]
 		});
 		return employeePayment;
 	}
@@ -105,6 +108,9 @@ export class EmployeePaymentService {
 					],
 				},
 			},
+			order: [
+				["emp_no", "ASC"]
+			]
 		});
 		return employeePayment;
 	}
@@ -133,7 +139,11 @@ export class EmployeePaymentService {
 		return employeePayment;
 	}
 	async getAllEmployeePayment(): Promise<EmployeePayment[]> {
-		const employeePayment = await EmployeePayment.findAll();
+		const employeePayment = await EmployeePayment.findAll({
+			order: [
+				["emp_no", "ASC"]
+			]
+		});
 		return employeePayment;
 	}
 
@@ -293,7 +303,7 @@ export class EmployeePaymentService {
 			if (
 				end_date_string != new_end_date_string &&
 				employeePaymentList[i]!.dataValues.emp_no ==
-					employeePaymentList[i + 1]!.dataValues.emp_no
+				employeePaymentList[i + 1]!.dataValues.emp_no
 			) {
 				await this.updateEmployeePayment({
 					id: employeePaymentList[i]!.dataValues.id,

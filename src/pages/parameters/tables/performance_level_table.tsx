@@ -111,13 +111,13 @@ export function PerformanceLevelTable({
 			{!viewOnly ? (
 				<DataTableWithFunctions
 					columns={performance_level_columns}
-					data={performaceLevelMapper(data)}
+					data={performaceLevelMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
 					columns={performance_level_columns}
-					data={performaceLevelMapper(data)}
+					data={performaceLevelMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
 			)}

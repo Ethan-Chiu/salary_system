@@ -99,13 +99,13 @@ export function BonusPositionTypeTable({
 			{!viewOnly ? (
 				<DataTableWithFunctions
 					columns={bonus_position_type_columns}
-					data={bonusPositionTypeMapper(data)}
+					data={bonusPositionTypeMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
 					columns={bonus_position_type_columns}
-					data={bonusPositionTypeMapper(data)}
+					data={bonusPositionTypeMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
 			)}

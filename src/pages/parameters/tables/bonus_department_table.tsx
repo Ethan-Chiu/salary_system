@@ -97,13 +97,13 @@ export function BonusDepartmentTable({ viewOnly }: BonusDepartmentTableProps) {
 			{!viewOnly ? (
 				<DataTableWithFunctions
 					columns={bonus_department_columns}
-					data={bonusDepartmentMapper(data)}
+					data={bonusDepartmentMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
 					columns={bonus_department_columns}
-					data={bonusDepartmentMapper(data)}
+					data={bonusDepartmentMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
 			)}

@@ -66,6 +66,9 @@ export class EmployeeTrustService {
 					],
 				},
 			},
+			order: [
+				['emp_no', 'ASC']
+			],
 		});
 		return employeeTrust;
 	}
@@ -116,7 +119,11 @@ export class EmployeeTrustService {
 	}
 
 	async getAllEmployeeTrust(): Promise<EmployeeTrust[]> {
-		const employeeTrust = await EmployeeTrust.findAll();
+		const employeeTrust = await EmployeeTrust.findAll({
+			order: [
+				['emp_no', 'ASC']
+			],
+		});
 		return employeeTrust;
 	}
 

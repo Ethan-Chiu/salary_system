@@ -3,6 +3,7 @@ import { z } from "zod";
 import { BaseResponseError } from "~/server/api/error/BaseResponseError";
 import { createLevelRangeAPI, createLevelRangeService, updateLevelRangeAPI, updateLevelRangeService } from "~/server/api/types/level_range_type";
 import { LevelService } from "~/server/service/level_service";
+import { convertDatePropertiesToISOString, deleteProperties } from "./helper_function";
 
 @injectable()
 export class LevelRangeMapper {
@@ -20,7 +21,7 @@ export class LevelRangeMapper {
             level_end_id: level_end.id,
         }
 
-        return levelRange
+        return convertDatePropertiesToISOString(levelRange)
     }
 
     async getLevelRangeFE(level_range: z.infer<typeof createLevelRangeService>): Promise<z.infer<typeof createLevelRangeAPI>> {
@@ -37,7 +38,7 @@ export class LevelRangeMapper {
             level_end: level_end.level,
         }
 
-        return levelRangeFE
+        return convertDatePropertiesToISOString(deleteProperties(levelRangeFE, ["level_start_id", "level_end_id"]))
     }
 
     async getLevelRangeNullable(level_range_FE: z.infer<typeof updateLevelRangeAPI>): Promise<z.infer<typeof updateLevelRangeService>> {
@@ -54,6 +55,6 @@ export class LevelRangeMapper {
             level_end_id: level_end.id,
         }
 
-        return levelRange
+        return convertDatePropertiesToISOString(levelRange)
     }
 }

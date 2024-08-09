@@ -96,20 +96,16 @@ export function BonusPositionTable({ viewOnly }: BonusPositionTableProps) {
 			{!viewOnly ? (
 				<DataTableWithFunctions
 					columns={bonus_position_columns}
-					data={bonusPositionMapper(data)}
+					data={bonusPositionMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
 					columns={bonus_position_columns}
-					data={bonusPositionMapper(data)}
+					data={bonusPositionMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
 			)}
 		</>
 	);
-
-	// useMemo(() => {
-	// 	table.getColumn(filter_key)?.setFilterValue(globalFilter);
-	// }, [globalFilter]);
 }

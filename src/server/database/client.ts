@@ -50,7 +50,6 @@ export class Database {
 			config.username,
 			config.password,
 			{
-				// query: { raw: true },
 				dialect: "oracle",
 				host: config.host,
 				port: config.port,

@@ -68,7 +68,12 @@ export const level_range_columns = [
 	}),
 ];
 
-export function levelRangeMapper(levelRangeData: LevelRange[]): RowItem[] {
+export function levelRangeMapper(levelRangeData: {
+    type: string;
+    level_start: number;
+    level_end: number;
+}[]): RowItem[] {
+	console.log(levelRangeData);
 	return levelRangeData.map((d) => {
 		return {
 			type: d.type,
@@ -106,13 +111,13 @@ export function LevelRangeTable({ viewOnly }: LevelRangeTableProps) {
 			{!viewOnly ? (
 				<DataTableWithFunctions
 					columns={level_range_columns}
-					data={levelRangeMapper(data)}
+					data={levelRangeMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
 					columns={level_range_columns}
-					data={levelRangeMapper(data)}
+					data={levelRangeMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
 			)}

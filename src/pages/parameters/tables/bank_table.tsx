@@ -134,13 +134,13 @@ export function BankTable({ period_id, viewOnly }: BankTableProps) {
 			{!viewOnly ? (
 				<DataTableWithFunctions
 					columns={bank_columns}
-					data={bankSettingMapper(data)}
+					data={bankSettingMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
 					columns={bank_columns}
-					data={bankSettingMapper(data)}
+					data={bankSettingMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
 			)}

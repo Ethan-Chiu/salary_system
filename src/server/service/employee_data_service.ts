@@ -75,12 +75,15 @@ export class EmployeeDataService {
 	}
 
 	async getCurrentEmployeeData(): Promise<EmployeeData[]> {
-		const employeeData = await EmployeeData.findAll({});
+		const employeeData = await this.getAllEmployeeData();
 		return employeeData;
 	}
 
 	async getAllEmployeeData(): Promise<EmployeeData[]> {
-		const employeeData = await EmployeeData.findAll({ raw: true });
+		const employeeData = await EmployeeData.findAll({ 
+			raw: true,
+			order: [['emp_no', 'ASC']]
+		});
 		return employeeData;
 	}
 

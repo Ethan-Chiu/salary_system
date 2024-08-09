@@ -43,9 +43,7 @@ export function DataTableFunctions({
 	const [mode, setMode] = useState<FunctionMode>("none");
 	const { t } = useTranslation(['common', 'nav']);
 
-	const { isLoading, isError, data, error } =
-		(tableType === "TableLevelRange") ? api.parameters.getCurrentLevel.useQuery()
-			: { isLoading: false, isError: false, data: { data: [] }, error: null };
+	const { isLoading, isError, data, error } = api.parameters.getCurrentLevel.useQuery();
 
 	// ========================= Additional Condition for Schema =====================================
 	let schema = getSchema(tableType);

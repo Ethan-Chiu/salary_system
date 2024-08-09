@@ -199,13 +199,13 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 			{!viewOnly ? (
 				<DataTableWithFunctions
 					columns={attendance_columns({t: t})}
-					data={attendanceMapper([data])}
+					data={attendanceMapper([data!])}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
 					columns={attendance_columns({t: t})}
-					data={attendanceMapper([data])}
+					data={attendanceMapper([data!])}
 					filterColumnKey={filterKey}
 				/>
 			)}

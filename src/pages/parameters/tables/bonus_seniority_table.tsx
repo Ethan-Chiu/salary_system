@@ -96,13 +96,13 @@ export function BonusSeniorityTable({ viewOnly }: BonusSeniorityTableProps) {
 			{!viewOnly ? (
 				<DataTableWithFunctions
 					columns={bonus_seniority_columns}
-					data={bonusSeniorityMapper(data)}
+					data={bonusSeniorityMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
 					columns={bonus_seniority_columns}
-					data={bonusSeniorityMapper(data)}
+					data={bonusSeniorityMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
 			)}

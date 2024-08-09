@@ -80,13 +80,13 @@ export function LevelTable({ viewOnly }: LevelTableProps) {
 			{!viewOnly ? (
 				<DataTableWithFunctions
 					columns={level_columns}
-					data={levelMapper(data)}
+					data={levelMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
 					columns={level_columns}
-					data={levelMapper(data)}
+					data={levelMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
 			)}
