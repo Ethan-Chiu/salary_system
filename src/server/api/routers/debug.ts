@@ -10,6 +10,7 @@ import { Database } from "~/server/database/client";
 import { RolesEnum } from "../types/role_type";
 import { accessiblePages } from "../types/access_page_type";
 import { AccessService } from "~/server/service/access_service";
+import { HolidaysTypeService } from "~/server/service/holidays_type_service";
 
 export const debugRouter = createTRPCRouter({
 	syncDb: publicProcedure
@@ -70,4 +71,20 @@ export const debugRouter = createTRPCRouter({
 			const accessService = container.resolve(AccessService);
 			await accessService.createAccessData(input.role, input.access);
 		}),
+
+	createHolidaysType: publicProcedure
+		.input(
+			z.object({
+				pay_id: z.number(),
+				holidays_name: z.string(),
+				multiplier: z.number(),
+				pay_type: z.number(),
+				start_date: z.string(),
+				end_date: z.string(),
+			})
+		)
+		.mutation(async ({ input }) => {
+			const holidaysTypeService = container.resolve(HolidaysTypeService);
+			await holidaysTypeService.createHolidaysType(input);
+		})
 });

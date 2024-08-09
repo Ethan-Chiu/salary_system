@@ -680,7 +680,7 @@ export class CalculateService {
 	): Promise<number> {
 		const non_leave_comp_id = holidays_type.find(
 			(h) => h.holidays_name === "不休假"
-		)!.id;
+		)!.pay_id;
 		const multiplier = holidays_type.find(
 			(h) => h.holidays_name === "不休假"
 		)!.multiplier;
