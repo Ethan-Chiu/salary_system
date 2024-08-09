@@ -269,11 +269,14 @@ export class TransactionService {
 		const group_insurance_pay = await calculateService.getGroupInsurancePay(
 			employee_data!
 		);
-		const net_salary = await calculateService
-			.getNetSalary
+		const net_salary = await calculateService.getNetSalary(
 			// gross_salary,
 			// payset!
-			(pay_type,taxable_subtotal,non_taxable_subtotal,deduction_subtotal);
+			pay_type,
+			taxable_subtotal,
+			non_taxable_subtotal,
+			deduction_subtotal
+		);
 
 		const income_tax_deduction =
 			await calculateService.getIncomeTaxDeduction(period_id, emp_no);

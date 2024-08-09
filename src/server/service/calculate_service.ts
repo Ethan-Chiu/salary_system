@@ -596,7 +596,7 @@ export class CalculateService {
 		// rd("工資墊償") = Round(rd("勞保") * wci_apf * rd("勞保天數") / 30, 1) + Round(rd("勞保") * wci_apf * rd("勞保追加") / 30, 1)  'Jerry 20220823工資墊償基金分開計算
 		// 本勞
 		// rd("工資墊償") = Round(rd("勞保") * wci_apf * rd("勞保天數") / 30, 3) + Round(rd("勞保") * wci_apf * rd("勞保追加") / 30, 3)  'Jerry 20220823工資墊償基金分開計算
-		return 0;
+		return -1;
 	}
 	//MARK: 薪資所得稅
 	async getSalaryIncomeTax(
@@ -670,7 +670,7 @@ export class CalculateService {
 	}
 	//MARK: 獎金所得稅
 	async getBonusTax(): Promise<number> {
-		const bonus_tax = 0;
+		const bonus_tax = -1;
 		return bonus_tax;
 	}
 	//MARK: 不休假代金
@@ -680,7 +680,7 @@ export class CalculateService {
 	): Promise<number> {
 		const non_leave_comp_id = holidays_type.find(
 			(h) => h.holidays_name === "不休假"
-		)!.id;
+		)!.pay_id;
 		const multiplier = holidays_type.find(
 			(h) => h.holidays_name === "不休假"
 		)!.multiplier;
@@ -696,7 +696,7 @@ export class CalculateService {
 	async getTaxableIncome(): Promise<number> {
 		// rd("課稅所得") = rd("底薪") + rd("主管津貼") + rd("專業証照津貼") + rd("職務津貼") + rd("超時加班")
 		//     'Jerry 07/01/05 取消"超時加班"==> 改為"職務津貼"
-		return 9487;
+		return -1;
 	}
 	//MARK: 課稅小計
 	async getTaxableSubtotal(
@@ -709,7 +709,7 @@ export class CalculateService {
 		full_attendance_bonus: number,
 		end_of_year_bonus: number
 	): Promise<number> {
-		return 0;
+		return -1;
 		if (pay_type === PayTypeEnum.Enum.month_salary) {
 			/*
 					rd("課稅小計") = 
@@ -855,7 +855,7 @@ export class CalculateService {
 	}
 	//MARK: 伙食扣款？
 	async getMealDeduction(): Promise<number> {
-		const meal_deduction = 0;
+		const meal_deduction = -1;
 		return meal_deduction;
 	}
 	//MARK: 非課稅小計
@@ -891,20 +891,20 @@ export class CalculateService {
 		// rd("薪資所得扣繳總額") = rd("課稅小計")   'Jerry 07/04/25  for 扣繳憑單 and 財務部報稅用
 		// ElseIf PayType = Non_Leaving_Pay Then  '2017/01/09 單獨發放不休假代金
 		// rd("非課說小計") = rd("不休假代金")
-		const deduction_subtotal = 0;
+		const deduction_subtotal = -1;
 		return deduction_subtotal;
 	}
 	//MARK: 勞保費
 	async getLaborInsurancePay(
 		employee_payment: EmployeePayment
 	): Promise<number> {
-		return 0;
+		return -1;
 	}
 	//MARK: 健保費
 	async getHealthInsurancePay(
 		employee_payment: EmployeePayment
 	): Promise<number> {
-		return 0;
+		return -1;
 	}
 	//MARK: 團保費
 	async getGroupInsurancePay(employee_data: EmployeeData): Promise<number> {
@@ -1003,7 +1003,7 @@ export class CalculateService {
 	}
 	//MARK: 薪資區隔?
 	async getSalaryRange(): Promise<string> {
-		const salary_range = "0";
+		const salary_range = "-1";
 		return salary_range;
 	}
 	//MARK: 薪資總額
@@ -1066,7 +1066,7 @@ export class CalculateService {
 	}
 	//MARK: 勞退金提撥_舊制?
 	async getOldLaborRetirementContribution(): Promise<number> {
-		const old_labor_retirement_contribution = 0;
+		const old_labor_retirement_contribution = -1;
 		return old_labor_retirement_contribution;
 	}
 	//MARK: 二代健保
@@ -1124,7 +1124,7 @@ export class CalculateService {
             '2014/04/16
         End If
 	 */
-		return 0;
+		return -1;
 	}
 
 	//MARK: 團保費代扣＿升等
@@ -1150,25 +1150,25 @@ export class CalculateService {
 	}
 	//MARK: 退職所得?
 	async getRetirementIncome(): Promise<number> {
-		return 0;
+		return -1;
 	}
 	//MARK: 端午獎金
 	async getDragonBoatFestivalBonus(): Promise<number> {
-		return 0;
+		return -1;
 	}
 	//MARK: 中秋獎金
 	async getMidAutumnFestivalBonus(): Promise<number> {
-		return 0;
+		return -1;
 	}
 	//MARK: 考核獎金
 	async getAssessmentBonus(): Promise<number> {
-		return 0;
+		return -1;
 	}
 	//MARK: 特別事假扣款
 	async getSpecialLeaveDeduction(
 		employee_data: EmployeeData
 	): Promise<number> {
-		return 0;
+		return -1;
 		// let work_type = employee_data.work_type;
 		// let work_status = employee_data.work_status;
 		// let
@@ -1199,7 +1199,7 @@ export class CalculateService {
 			const net_salary = taxable_subtotal + non_taxable_subtotal - deduction_subtotal;
 			return net_salary;
 		}
-		return 0;
+		return -1;
 	}
 
 	/*
