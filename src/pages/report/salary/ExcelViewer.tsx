@@ -38,11 +38,6 @@ const formatColor = (colorCode: string, colorMode: "text" | "background") => {
 	return colorMode == "text" ? `text-[${colorCode}]` : `bg-[${colorCode}]`;
 };
 
-function test() {
-	// for me to test color code
-	return <p className="text-[#7e7b7b]"></p>;
-}
-
 interface ExcelSheet {
 	sheetName: string;
 	data: string[][];
@@ -272,11 +267,15 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 			}
 		});
 
-		return query === "content"
-			? selectedBlock!.content
-			: query === "textColor"
-			? selectedBlock!.textColor
-			: selectedBlock!.backgroundColor;
+		const toReturn = query === "content"
+						? selectedBlock!.content
+						: query === "textColor"
+						? selectedBlock!.textColor
+						: selectedBlock!.backgroundColor;
+
+		console.log("selected Block: ", selectedBlock!.content, selectedBlock!.textColor, selectedBlock!.backgroundColor);
+
+		return toReturn;
 	}
 
 	function changeSheets(
@@ -420,12 +419,12 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 					</PopoverTrigger>
 					<PopoverContent className="w-auto p-0">
 						<ColorPickerWrapper
-							initialColor={getTableContent(
-								"textColor",
-								selectedSheetIndex,
-								selectedCell.rowIndex,
-								selectedCell.colIndex
-							)}
+							initialColor={
+								sheets[selectedSheetIndex]!.data.findLast((rows, r_idx) => 
+									r_idx === selectedCell.rowIndex)?.findLast((cols, c_idx) => 
+									c_idx === selectedCell.colIndex)?.backgroundColor ?? "#FFFFFF"
+							}
+							
 							setFinalColor={(newColor: string) => {
 								changeSheets(
 									selectedSheetIndex,
@@ -455,12 +454,11 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 					</PopoverTrigger>
 					<PopoverContent className="w-auto p-0">
 						<ColorPickerWrapper
-							initialColor={getTableContent(
-								"textColor",
-								selectedSheetIndex,
-								selectedCell.rowIndex,
-								selectedCell.colIndex
-							)}
+							initialColor={
+								sheets[selectedSheetIndex]!.data.findLast((rows, r_idx) => 
+								r_idx === selectedCell.rowIndex)?.findLast((cols, c_idx) => 
+								c_idx === selectedCell.colIndex)?.textColor ?? "#FFFFFF"
+							}
 							setFinalColor={(newColor: string) => {
 								changeSheets(
 									selectedSheetIndex,

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import ColorPicker from "@rc-component/color-picker";
 import "@rc-component/color-picker/assets/index.css";
@@ -33,11 +33,18 @@ export function ColorPickerWrapper({
 	setFinalColor,
 }: ColorPickerWrapperProps) {
 	const [color, setColor] = useState(initialColor);
+
+	useEffect(() => {
+		console.log(initialColor);
+		setColor(initialColor);
+	}, [initialColor]);
+
 	return (
 		<div className="flex flex-col items-center">
 			<ColorPicker
-				// defaultValue={color}
-				// value={color}
+				defaultValue={initialColor}
+				// defaultValue={"#000099"}
+				value={color}
 				onChange={(c) => {
 					setColor(floatToHexColor({ r: c.r, g: c.g, b: c.b }));
 				}}
