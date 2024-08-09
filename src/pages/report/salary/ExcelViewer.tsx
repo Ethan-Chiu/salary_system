@@ -189,7 +189,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ original_sheets, filter_compo
 			});
 		});
 		setSheets(tmpSheets);
-	}, []);
+	}, [original_sheets]);
 
 	const setSelectedIndexWithName = (queryName: string) => {
 		let selectedIndex = -1;

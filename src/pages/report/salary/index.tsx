@@ -30,11 +30,14 @@ import { z } from 'zod';
 
 import { api } from "~/utils/api";
 
+import { useTranslation } from "next-i18next";
+
 const Salary: NextPageWithLayout = () => {
+	const { t } = useTranslation("common");
 	return (
 		<>
 			<div className="flex h-full flex-col p-4">
-				<Header title="salary report" showOptions className="mb-4" />
+				<Header title={t("transaction.month_salary_report")} showOptions className="mb-4" />
 				<ExportPage />
 			</div>
 		</>
@@ -42,9 +45,10 @@ const Salary: NextPageWithLayout = () => {
 };
 
 Salary.getLayout = function getLayout(page: React.ReactElement) {
+	const { t } = useTranslation("common");
 	return (
 		<RootLayout>
-			<PerpageLayoutNav pageTitle="reports">{page}</PerpageLayoutNav>
+			<PerpageLayoutNav pageTitle={t("transaction.month_salary_report")}>{page}</PerpageLayoutNav>
 		</RootLayout>
 	);
 };
@@ -54,129 +58,106 @@ export default Salary;
 function ExportPage() {
 	// const getExcelA = api.function.getExcelA.useQuery();
 	const { selectedPeriod } = useContext(periodContext);
-	console.log(selectedPeriod);
 
 	const getExcelA = api.transaction.getAllTransaction.useQuery({
 		period_id: selectedPeriod?.period_id ?? 0
 	});
 
+	const [toExcludedColumns, setToExcludedColumns] = useState([
+		"id", "create_by", "create_date", "update_by", "update_date"
+	]);
+
+	const [toDisplayData, setToDisplayData] = useState<any>(null);
+
 	console.log(getExcelA.data);
-
-	// const incomeDatas = [
-	// 	{
-	// 		name: "Sheet1",
-	// 		data: [
-	// 			{ base_salary: "John", Age: 25, City: "New York" },
-	// 			{ base_salary: "Alice", Age: 30, City: "San Francisco" },
-	// 			{ base_salary: "Bob", Age: 22, City: "Los Angeles" },
-	// 			{ base_salary: "Eva", Age: 28, City: "Chicago" },
-	// 			// Add more rows as needed
-	// 		],
-	// 	},
-	// 	{
-	// 		name: "Sheet2",
-	// 		data: [
-	// 			{ Product: "Laptop", Price: 1200, Stock: 10 },
-	// 			{ Product: "Phone", Price: 800, Stock: 20 },
-	// 			// Add more rows as needed
-	// 		],
-	// 	},
-	// 	// Add more sheets as needed
-	// ];
-
-	// const [showKeys, setShowKeys] = useState({
-	// 	"transaction": {
-	// 		"emp_no": true,
-
-	// 	}
-	// });
-
-	// function changeShowKeys(sheetName: string, newDict: any) {
-	// 	setShowKeys({ ...showKeys, [sheetName]: newDict });
-	// }
 	
-	// function getPseudoDatas(showKeys: any) 
-	// {
-	// 	return (getExcelA.isFetched ? (getExcelA.data ?? []) : []).map((sheetData) => {
-	// 		console.log(sheetData);
-	// 		const sheetName = sheetData.name;
-	// 		const data = sheetData.data;
-	// 		const keys = Object.keys((showKeys as any)[sheetName]).filter((key: string) => (showKeys as any)[sheetName][key]);
-	// 		const pseudoData = data.map((row: any) => {
-	// 			const pseudoRow: Record<string, string> = {};
-	// 			keys!.forEach((key) => {
-	// 				pseudoRow[key] = row[key];
-	// 			});
-	// 			return pseudoRow;
-	// 		});
-	// 		return { name: sheetName, data: pseudoData };
-	// 	});
-	// }
+	function ExcludeDataColumn(dataList: any, excludedColumns: Array<string>) {
+		interface keyValuePair {
+			[key: string]: any;
+		}
+		return dataList.map((data: any) => {
+			const sheetName = data.name;
+			const sheetData = data.data.map((row: keyValuePair) => {
+				const newRow: keyValuePair = {};
+				Object.keys(row).forEach((key) => {
+					if (!excludedColumns.includes(key)) {
+						newRow[key] = row[key];
+					}
+				});
+				return newRow;
+			});
+			return {
+				name: sheetName,
+				data: sheetData,
+			};
+		})
+	}
 
-	// const [pseudoDatas, setPseudoDatas] = useState(getExcelA.data);
+	function createSchema() {
+		const keys = (getExcelA.isFetched) ? Object.keys(
+			getExcelA!.data!.map((sheet: any) => sheet.data[0])[0]
+		) : [];
+		const schemaShape = keys.reduce((acc: any, key) => {
+			if (toExcludedColumns.includes(key)) {
+				acc[key] = z.boolean().optional().default(false);
+			}
+			else {
+				acc[key] = z.boolean().optional().default(true);
+			}
+			return acc;
+		}, {});
+		const schema = z.object(schemaShape);
+		return schema;
+	}
 
-	// const getExcelA = {
-	// 	isFetched: true,
-	// 	data: pseudoDatas,
-	// };
-
-	// function createSchema() {
-	// 	const keys = Object.keys(getExcelA.data!.findLast((sheet) => sheet.name == "transaction")!.data[0]);
-	// 	const schemaShape = keys.reduce((acc: any, key) => {
-	// 		if ((Object.keys(pseudoDatas!["transaction"]!)).includes(key)) {
-	// 			acc[key] = z.boolean().optional().default(true);
-	// 		}
-	// 		else {
-	// 			acc[key] = z.boolean().optional().default(false);
-	// 		}
-	// 		return acc;
-	// 	}, {});
-	// 	const schema = z.object(schemaShape);
-	// 	return schema;
-	// }
-
-	// function FilterComponent() {
-	// 	const [formValues, setFormValues] = useState(
-	// 		getDefaults(createSchema())
-	// 	)
-	// 	const [open, setOpen] = useState(false);
-	// 	return <></>
-	// 	return (
-	// 		<>
-	// 			<Sheet open={open} onOpenChange={setOpen}>
-	// 				<SheetTrigger asChild>
-	// 					<Button variant="outline">Keys</Button>
-	// 				</SheetTrigger>
-	// 				<SheetContent className="w-[40%]">
-	// 					<SheetHeader>
-	// 						<SheetTitle>Set show keys</SheetTitle>
-	// 						<SheetDescription>
-	// 							Show some keys in the excel table
-	// 						</SheetDescription>
-	// 					</SheetHeader>
-	// 					<ScrollArea className="h-[85%] w-full">
-	// 						<AutoForm 
-	// 							formSchema={createSchema()}
-	// 							values={formValues}
-	// 							onValuesChange={setFormValues}
-	// 							onSubmit={(data) => {
-	// 								setOpen(false)
-	// 								changeShowKeys("Sheet1", data);
-	// 								setPseudoDatas(getPseudoDatas({ ...showKeys, Sheet1: data }));
-	// 							}}
-	// 						>			
-	// 						<Button>
-	// 							Submit
-	// 						</Button>				
-	// 						</AutoForm>
-	// 						<ScrollBar orientation="horizontal" />
-	// 					</ScrollArea>
+	function FilterComponent() {
+		const [formValues, setFormValues] = useState(
+			getDefaults(createSchema())
+		)
+		const [open, setOpen] = useState(false);
+		return (
+			<>
+				<Sheet open={open} onOpenChange={setOpen}>
+					<SheetTrigger asChild>
+						<Button variant="outline">Keys</Button>
+					</SheetTrigger>
+					<SheetContent className="w-[40%]">
+						<SheetHeader>
+							<SheetTitle>Set show keys</SheetTitle>
+							<SheetDescription>
+								Show some keys in the excel table
+							</SheetDescription>
+						</SheetHeader>
+						<ScrollArea className="h-[85%] w-full">
+							<AutoForm 
+								formSchema={createSchema()}
+								values={formValues}
+								onValuesChange={setFormValues}
+								onSubmit={(data) => {
+									setOpen(false)
+									// changeShowKeys("Sheet1", data);
+									let newExcludedColumns = [];
+									for (const [key, value] of Object.entries(data)) {
+										if (!value) newExcludedColumns.push(key);
+									}
+									setToExcludedColumns(newExcludedColumns);
+									setToDisplayData(
+										getExcelData(ExcludeDataColumn(getExcelA.data!, newExcludedColumns))
+									);
+								}}
+							>			
+							<Button>
+								Submit
+							</Button>				
+							</AutoForm>
+							<ScrollBar orientation="horizontal" />
+						</ScrollArea>
 						
-	// 				</SheetContent>
-	// 			</Sheet>
-	// 		</>
-	// 	);
-	// }
+					</SheetContent>
+				</Sheet>
+			</>
+		);
+	}
 
 	return (
 		<>
@@ -184,8 +165,10 @@ function ExportPage() {
 				<>
 					<div className="grow">
 						<ExcelViewer
-							original_sheets={getExcelData(getExcelA.data!)}
-							filter_component={<></>}
+							original_sheets={
+								toDisplayData ?? getExcelData(ExcludeDataColumn(getExcelA.data!, toExcludedColumns))
+							}
+							filter_component={<FilterComponent />}
 						/>
 					</div>
 				</>
@@ -196,8 +179,15 @@ function ExportPage() {
 			)}
 
 			{/* <Button onClick={() => {
-				// console.log(showKeys)
-				// console.log(pseudoDatas)
+				setToExcludedColumns([]);
+				setToDisplayData(getExcelData(ExcludeDataColumn(getExcelA.data!, [])));
+			}}>
+				Set
+			</Button>
+			<br></br>
+			<Button onClick={() => {
+				console.log("ToExcludedColumns", toExcludedColumns);
+				console.log("ToDisplayData", toDisplayData);
 			}}>
 				Console.log
 			</Button> */}
