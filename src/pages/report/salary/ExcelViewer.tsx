@@ -55,6 +55,8 @@ interface ExcelSheetWithColor {
 
 interface ExcelViewerProps {
 	original_sheets: ExcelSheet[];
+	selectedSheetIndex: number;
+	setSelectedSheetIndex: (index: number) => void;
 	filter_component: JSX.Element;
 }
 
@@ -146,13 +148,18 @@ const handleExportExcel = async (
 	URL.revokeObjectURL(url);
 };
 
-const ExcelViewer: React.FC<ExcelViewerProps> = ({ original_sheets, filter_component }) => {
+const ExcelViewer: React.FC<ExcelViewerProps> = ({ 
+	original_sheets,
+	selectedSheetIndex,
+	setSelectedSheetIndex,
+	filter_component,
+}) => {
 	const [mode, setMode] = useState("view");
 	const [selectedCell, setSelectedCell] = useState<{
 		rowIndex: number;
 		colIndex: number;
 	}>({ rowIndex: -1, colIndex: -1 });
-	const [selectedSheetIndex, setSelectedSheetIndex] = useState(0);
+	
 	const [sheets, setSheets] = useState<ExcelSheetWithColor[]>([]);
 	const [lastValidSheets, setLastValidSheets] = useState<
 		ExcelSheetWithColor[]
@@ -518,7 +525,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ original_sheets, filter_compo
 	}
 
 	function DownloadButton() {
-		const [filename, setFilename] = useState("test");
+		const [filename, setFilename] = useState("transaction");
 		return (
 			<div className={mode != "view" ? "cursor-not-allowed" : ""}>
 				<Dialog>

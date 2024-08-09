@@ -62,6 +62,7 @@ function ExportPage() {
 	const getExcelA = api.transaction.getAllTransaction.useQuery({
 		period_id: selectedPeriod?.period_id ?? 0
 	});
+	const [selectedSheetIndex, setSelectedSheetIndex] = useState(0);
 
 	const [toExcludedColumns, setToExcludedColumns] = useState([
 		"id", "create_by", "create_date", "update_by", "update_date"
@@ -95,7 +96,7 @@ function ExportPage() {
 
 	function createSchema() {
 		const keys = (getExcelA.isFetched) ? Object.keys(
-			getExcelA!.data!.map((sheet: any) => sheet.data[0])[0]
+			getExcelA!.data!.map((sheet: any) => sheet.data[0])[selectedSheetIndex]
 		) : [];
 		const schemaShape = keys.reduce((acc: any, key) => {
 			if (toExcludedColumns.includes(key)) {
@@ -169,6 +170,8 @@ function ExportPage() {
 								toDisplayData ?? getExcelData(ExcludeDataColumn(getExcelA.data!, toExcludedColumns))
 							}
 							filter_component={<FilterComponent />}
+							selectedSheetIndex={selectedSheetIndex}
+							setSelectedSheetIndex={setSelectedSheetIndex}
 						/>
 					</div>
 				</>
