@@ -237,6 +237,9 @@
     "checked": "確認更改",
     "ignored": "暫不修改"
   },
+  "transaction": {
+    "month_salary_report": "月薪報表"
+  },
   "others": {
     "functions": "功能",
     "month_salary": "月薪",

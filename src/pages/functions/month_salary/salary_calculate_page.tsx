@@ -51,8 +51,9 @@ function SalaryCalculateContent({
         onSuccess: () => {
             console.log("success")
         },
-        onError: () => {
+        onError: (error) => {
             console.log("error")
+            console.log(error)
         }
     })
 
