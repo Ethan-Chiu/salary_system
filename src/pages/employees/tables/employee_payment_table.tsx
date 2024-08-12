@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 const columns = (t: I18nType) =>
 	[
 		"emp_no",
+		"emp_name",
+		"department",
 		"base_salary",
 		"food_allowance",
 		"supervisor_allowance",

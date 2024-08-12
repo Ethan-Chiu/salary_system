@@ -2,15 +2,12 @@ import { container, injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { check_date, get_date_string, select_value } from "./helper_function";
 import { type z } from "zod";
-import {
-	type createEmployeeTrustService,
-	type updateEmployeeTrustService,
-} from "../api/types/parameters_input_type";
 import { Op } from "sequelize";
 import { EmployeeTrust } from "../database/entity/SALARY/employee_trust";
 import { EHRService } from "./ehr_service";
 import { EmployeeDataService } from "./employee_data_service";
 import { TrustMoneyService } from "./trust_money_service";
+import { createEmployeeTrustService, updateEmployeeTrustService } from "../api/types/employee_trust";
 
 @injectable()
 export class EmployeeTrustService {
@@ -37,7 +34,7 @@ export class EmployeeTrustService {
 			end_date: end_date,
 			create_by: "system",
 			update_by: "system",
-		});
+		}, { raw: true });
 		return newData;
 	}
 
@@ -69,6 +66,7 @@ export class EmployeeTrustService {
 			order: [
 				['emp_no', 'ASC']
 			],
+			raw: true
 		});
 		return employeeTrust;
 	}
@@ -89,7 +87,7 @@ export class EmployeeTrustService {
 						{ [Op.eq]: null },
 					],
 				},
-			},
+			}
 		});
 		return employeeTrust;
 	}
@@ -123,6 +121,7 @@ export class EmployeeTrustService {
 			order: [
 				['emp_no', 'ASC']
 			],
+			raw: true
 		});
 		return employeeTrust;
 	}

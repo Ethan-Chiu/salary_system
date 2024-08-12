@@ -199,47 +199,6 @@ export const createEmployeeAccountAPI = EmployeeAccount;
 export const createEmployeeAccountService = EmployeeAccount;
 export const updateEmployeeAccountAPI = EmployeeAccount.merge(Id).partial();
 export const updateEmployeeAccountService = EmployeeAccount.merge(Id).partial();
-//MARK:payment
-const EmployeePayment = z.object({
-	emp_no: z.string(),
-	base_salary: z.number(),
-	food_allowance: z.number(),
-	supervisor_allowance: z.number(),
-	occupational_allowance: z.number(),
-	subsidy_allowance: z.number(),
-	professional_cert_allowance: z.number(),
-	l_r_self: z.number(),
-	l_i: z.number(),
-	h_i: z.number(),
-	l_r: z.number(),
-	occupational_injury: z.number(),
-});
-
-export const createEmployeePaymentAPI = EmployeePayment.merge(DateAPI);
-export const createEmployeePaymentService = EmployeePayment.merge(DateService);
-export const updateEmployeePaymentAPI = EmployeePayment.merge(Id)
-	.merge(DateAPI)
-	.partial();
-export const updateEmployeePaymentService = EmployeePayment.merge(Id)
-	.merge(DateService)
-	.partial();
-//MARK:employee_trust
-const EmployeeTrust = z.object({
-	emp_no: z.string(),
-	emp_trust_reserve: z.number(),
-	org_trust_reserve: z.number(),
-	emp_special_trust_incent: z.number(),
-	org_special_trust_incent: z.number(),
-});
-
-export const createEmployeeTrustAPI = EmployeeTrust.merge(DateAPI);
-export const createEmployeeTrustService = EmployeeTrust.merge(DateService);
-export const updateEmployeeTrustAPI = EmployeeTrust.merge(Id)
-	.merge(DateAPI)
-	.partial();
-export const updateEmployeeTrustService = EmployeeTrust.merge(Id)
-	.merge(DateService)
-	.partial();
 //MARK:employee_data
 const EmployeeData = z.object({
 	emp_no: z.string(),

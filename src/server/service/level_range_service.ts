@@ -1,10 +1,9 @@
-import { container, injectable } from "tsyringe";
+import { injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { type z } from "zod";
 import { LevelRange } from "../database/entity/SALARY/level_range";
 import { select_value } from "./helper_function";
 import { type createLevelRangeService, type updateLevelRangeService } from "../api/types/level_range_type";
-import { LevelService } from "./level_service";
 
 @injectable()
 export class LevelRangeService {
@@ -19,7 +18,7 @@ export class LevelRangeService {
 			level_end_id: level_end_id,
 			create_by: "system",
 			update_by: "system",
-		});
+		}, { raw: true });
 
 		return newData;
 	}
@@ -28,7 +27,7 @@ export class LevelRangeService {
 		const levelRange = await LevelRange.findOne({
 			where: {
 				id: id,
-			}
+			},
 		});
 		return levelRange;
 	}

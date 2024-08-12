@@ -14,6 +14,11 @@ export const DateService = z.object({
 	end_date: z.string().nullable(),
 });
 
+export const EmpData = z.object({
+	emp_name: z.string(),
+	department: z.string(),
+});
+
 export const User = z.object({
 	emp_no: z.string(),
 	password: z.string(),

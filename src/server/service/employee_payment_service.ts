@@ -2,16 +2,13 @@ import { container, injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { check_date, get_date_string, select_value } from "./helper_function";
 import { type z } from "zod";
-import {
-	type createEmployeePaymentService,
-	type updateEmployeePaymentService,
-} from "../api/types/parameters_input_type";
 import { EmployeePayment } from "../database/entity/SALARY/employee_payment";
 import { Op } from "sequelize";
 import { EHRService } from "./ehr_service";
 import { LevelRangeService } from "./level_range_service";
 import { LevelService } from "./level_service";
 import { LevelRangeMapper } from "../database/mapper/level_range_mapper";
+import { createEmployeePaymentService, updateEmployeePaymentService } from "../api/types/employee_payment_type";
 
 @injectable()
 export class EmployeePaymentService {
@@ -50,7 +47,7 @@ export class EmployeePaymentService {
 			end_date: end_date,
 			create_by: "system",
 			update_by: "system",
-		});
+		}, { raw: true });
 		return newData;
 	}
 
@@ -83,7 +80,8 @@ export class EmployeePaymentService {
 			},
 			order: [
 				["emp_no", "ASC"]
-			]
+			],
+			raw: true
 		});
 		return employeePayment;
 	}
@@ -142,7 +140,8 @@ export class EmployeePaymentService {
 		const employeePayment = await EmployeePayment.findAll({
 			order: [
 				["emp_no", "ASC"]
-			]
+			],
+			raw: true
 		});
 		return employeePayment;
 	}
