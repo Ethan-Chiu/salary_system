@@ -72,7 +72,7 @@ export class Transaction extends Model<
 	declare l_r_self: number; // 勞退金自提
 	declare parking_fee: number; // 停車費
 	declare brokerage_fee: number; // 仲介費
-	declare salary_range: string; // 薪資區隔
+	declare salary_range: number; // 薪資區隔
 	declare total_salary: number; // 薪資總額
 	declare dragon_boat_festival_bonus: number; // 端午獎金
 	declare mid_autumn_festival_bonus: number; // 中秋獎金
@@ -345,7 +345,7 @@ export function initTransaction(sequelize: Sequelize) {
 				comment: "仲介費",
 			},
 			salary_range: {
-				type: DataTypes.STRING(128),
+				type: DataTypes.INTEGER,
 				comment: "薪資區隔",
 			},
 			total_salary: {

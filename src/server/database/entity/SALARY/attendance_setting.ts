@@ -13,22 +13,26 @@ export class AttendanceSetting extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-	declare personal_leave_deduction: number;
-	declare sick_leave_deduction: number;
-	declare rate_of_unpaid_leave: number;
-	declare unpaid_leave_compensatory_1: number;
-	declare unpaid_leave_compensatory_2: number;
-	declare unpaid_leave_compensatory_3: number;
-	declare unpaid_leave_compensatory_4: number;
-	declare unpaid_leave_compensatory_5: number;
+	// declare personal_leave_deduction: number;
+	// declare sick_leave_deduction: number;
+	// declare rate_of_unpaid_leave: number;
+	// declare unpaid_leave_compensatory_1: number;
+	// declare unpaid_leave_compensatory_2: number;
+	// declare unpaid_leave_compensatory_3: number;
+	// declare unpaid_leave_compensatory_4: number;
+	// declare unpaid_leave_compensatory_5: number;
 	declare overtime_by_local_workers_1: number;
 	declare overtime_by_local_workers_2: number;
 	declare overtime_by_local_workers_3: number;
-	declare local_worker_holiday: number;
+	declare overtime_by_local_workers_4: number;
+	declare overtime_by_local_workers_5: number;
+	// declare local_worker_holiday: number;
 	declare overtime_by_foreign_workers_1: number;
 	declare overtime_by_foreign_workers_2: number;
 	declare overtime_by_foreign_workers_3: number;
-	declare foreign_worker_holiday: number;
+	declare overtime_by_foreign_workers_4: number;
+	declare overtime_by_foreign_workers_5: number;
+	// declare foreign_worker_holiday: number;
 	declare start_date: string;
 	declare end_date: string | null;
 
@@ -49,46 +53,46 @@ export function initAttendanceSetting(sequelize: Sequelize) {
 				autoIncrement: true,
 				primaryKey: true,
 			},
-			personal_leave_deduction: {
-				type: DataTypes.FLOAT,
-				unique: false,
-				allowNull: false,
-			},
-			sick_leave_deduction: {
-				type: DataTypes.FLOAT,
-				unique: false,
-				allowNull: false,
-			},
-			rate_of_unpaid_leave: {
-				type: DataTypes.FLOAT,
-				unique: false,
-				allowNull: false,
-			},
-			unpaid_leave_compensatory_1: {
-				type: DataTypes.FLOAT,
-				unique: false,
-				allowNull: false,
-			},
-			unpaid_leave_compensatory_2: {
-				type: DataTypes.FLOAT,
-				unique: false,
-				allowNull: false,
-			},
-			unpaid_leave_compensatory_3: {
-				type: DataTypes.FLOAT,
-				unique: false,
-				allowNull: false,
-			},
-			unpaid_leave_compensatory_4: {
-				type: DataTypes.FLOAT,
-				unique: false,
-				allowNull: false,
-			},
-			unpaid_leave_compensatory_5: {
-				type: DataTypes.FLOAT,
-				unique: false,
-				allowNull: false,
-			},
+			// personal_leave_deduction: {
+			// 	type: DataTypes.FLOAT,
+			// 	unique: false,
+			// 	allowNull: false,
+			// },
+			// sick_leave_deduction: {
+			// 	type: DataTypes.FLOAT,
+			// 	unique: false,
+			// 	allowNull: false,
+			// },
+			// rate_of_unpaid_leave: {
+			// 	type: DataTypes.FLOAT,
+			// 	unique: false,
+			// 	allowNull: false,
+			// },
+			// unpaid_leave_compensatory_1: {
+			// 	type: DataTypes.FLOAT,
+			// 	unique: false,
+			// 	allowNull: false,
+			// },
+			// unpaid_leave_compensatory_2: {
+			// 	type: DataTypes.FLOAT,
+			// 	unique: false,
+			// 	allowNull: false,
+			// },
+			// unpaid_leave_compensatory_3: {
+			// 	type: DataTypes.FLOAT,
+			// 	unique: false,
+			// 	allowNull: false,
+			// },
+			// unpaid_leave_compensatory_4: {
+			// 	type: DataTypes.FLOAT,
+			// 	unique: false,
+			// 	allowNull: false,
+			// },
+			// unpaid_leave_compensatory_5: {
+			// 	type: DataTypes.FLOAT,
+			// 	unique: false,
+			// 	allowNull: false,
+			// },
 			overtime_by_local_workers_1: {
 				type: DataTypes.FLOAT,
 				unique: false,
@@ -104,11 +108,21 @@ export function initAttendanceSetting(sequelize: Sequelize) {
 				unique: false,
 				allowNull: false,
 			},
-			local_worker_holiday: {
+			overtime_by_local_workers_4: {
 				type: DataTypes.FLOAT,
 				unique: false,
 				allowNull: false,
 			},
+			overtime_by_local_workers_5: {
+				type: DataTypes.FLOAT,
+				unique: false,
+				allowNull: false,
+			},
+			// local_worker_holiday: {
+			// 	type: DataTypes.FLOAT,
+			// 	unique: false,
+			// 	allowNull: false,
+			// },
 			overtime_by_foreign_workers_1: {
 				type: DataTypes.FLOAT,
 				unique: false,
@@ -124,11 +138,21 @@ export function initAttendanceSetting(sequelize: Sequelize) {
 				unique: false,
 				allowNull: false,
 			},
-			foreign_worker_holiday: {
+			overtime_by_foreign_workers_4: {
 				type: DataTypes.FLOAT,
 				unique: false,
 				allowNull: false,
 			},
+			overtime_by_foreign_workers_5: {
+				type: DataTypes.FLOAT,
+				unique: false,
+				allowNull: false,
+			},
+			// foreign_worker_holiday: {
+			// 	type: DataTypes.FLOAT,
+			// 	unique: false,
+			// 	allowNull: false,
+			// },
 			start_date: {
 				type: DataTypes.STRING(128),
 				allowNull: false,

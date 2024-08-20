@@ -90,7 +90,8 @@ export class TransactionService {
 		const operational_performance_bonus =
 			await calculateService.getOperationalPerformanceBonus(
 				period_id,
-				emp_no
+				emp_no,
+				pay_type
 			);
 		const other_addition_tax = await calculateService.getOtherAdditionTax(
 			period_id,
@@ -120,12 +121,20 @@ export class TransactionService {
 			period_id,
 			emp_no
 		);
-		const special_leave_deduction =
-			await calculateService.getSpecialLeaveDeduction(employee_data!);
 		const gross_salary = await calculateService.getGrossSalary(
 			employee_payment!,
 			payset!
 		);
+		const special_leave_deduction =
+			await calculateService.getSpecialLeaveDeduction(
+				employee_data!,
+				holidays_type,
+				holiday_list,
+				gross_salary,
+				employee_payment!,
+				insurance_rate_setting!
+			);
+
 		const l_i_deduction = await calculateService.getLaborInsuranceDeduction(
 			employee_data!,
 			employee_payment!,
@@ -138,12 +147,13 @@ export class TransactionService {
 				employee_payment!,
 				insurance_rate_setting!
 			);
-		const welfare_contribution = await calculateService.getWelfareDeduction(
-			employee_data!,
-			employee_payment!,
-			full_attendance_bonus,
-			operational_performance_bonus
-		);
+		const welfare_contribution =
+			await calculateService.getWelfareContribution(
+				employee_data!,
+				employee_payment!,
+				full_attendance_bonus,
+				operational_performance_bonus
+			);
 		const subsidy_allowance = employee_payment!.subsidy_allowance;
 		const weekday_overtime_pay =
 			await calculateService.getWeekdayOvertimePay(
@@ -152,7 +162,8 @@ export class TransactionService {
 				overtime_list,
 				payset!,
 				insurance_rate_setting!,
-				full_attendance_bonus
+				full_attendance_bonus,
+				pay_type
 			);
 		const holiday_overtime_pay =
 			await calculateService.getHolidayOvertimePay(
@@ -161,7 +172,8 @@ export class TransactionService {
 				overtime_list,
 				payset!,
 				insurance_rate_setting!,
-				full_attendance_bonus!
+				full_attendance_bonus!,
+				pay_type
 			); // change name
 		const leave_deduction = await calculateService.getLeaveDeduction(
 			employee_data!,
@@ -178,7 +190,8 @@ export class TransactionService {
 			overtime_list!,
 			payset!,
 			insurance_rate_setting!,
-			full_attendance_bonus
+			full_attendance_bonus,
+			pay_type
 		);
 		const salary_income_deduction =
 			await calculateService.getSalaryIncomeDeduction(
@@ -212,15 +225,16 @@ export class TransactionService {
 			.getMealDeduction
 			// period_id,
 			// emp_no
-			();
-		const taxable_income = await calculateService
-			.getTaxableIncome
+			(period_id, emp_no);
+		const taxable_income = await calculateService.getTaxableIncome(
 			// period_id,
 			// emp_no
-			();
+			employee_payment!,
+			exceed_overtime_pay
+		);
 		const income_tax = await calculateService.getSalaryIncomeTax(
 			employee_data!,
-			new Date(issue_date),
+			issue_date,
 			salary_income_deduction
 		);
 		const bonus_tax = await calculateService.getBonusTax();
@@ -253,8 +267,12 @@ export class TransactionService {
 				non_leave_compensation,
 				other_addition
 			);
-		const deduction_subtotal =
-			await calculateService.getDeductionSubtotal();
+		const salary_income_tax = await calculateService.getSalaryIncomeTax(
+			employee_data!,
+			issue_date,
+			salary_income_deduction
+		);
+
 		const l_i_pay = await calculateService.getLaborInsurancePay(
 			employee_payment!
 		);
@@ -269,14 +287,6 @@ export class TransactionService {
 		const group_insurance_pay = await calculateService.getGroupInsurancePay(
 			employee_data!
 		);
-		const net_salary = await calculateService.getNetSalary(
-			// gross_salary,
-			// payset!
-			pay_type,
-			taxable_subtotal,
-			non_taxable_subtotal,
-			deduction_subtotal
-		);
 
 		const income_tax_deduction =
 			await calculateService.getIncomeTaxDeduction(period_id, emp_no);
@@ -289,10 +299,12 @@ export class TransactionService {
 			period_id,
 			emp_no
 		);
-		const salary_range = await calculateService.getSalaryRange();
 		const total_salary = await calculateService.getTotalSalary(
 			employee_payment!,
 			full_attendance_bonus
+		);
+		const salary_range = await calculateService.getSalaryRange(
+			total_salary
 		);
 		const dragon_boat_festival_bonus =
 			await calculateService.getDragonBoatFestivalBonus();
@@ -301,8 +313,7 @@ export class TransactionService {
 		note = note;
 		const bank_account_1 = employee_data!.bank_account;
 		// const bank_account_2 = employee_acount![1]?.bank_account!;
-		// const foreign_currency_account =
-		("");
+		// const foreign_currency_account =("");
 		const bonus_ratio = bonus_setting!.fixed_multiplier;
 		const annual_days_in_service = 365; // MARK: 年度在職天數不知道在哪
 		const l_r_contribution =
@@ -318,7 +329,10 @@ export class TransactionService {
 		const probation_period_over = false;
 
 		const disabilty_level = employee_data!.disabilty_level;
-		const retirement_income = await calculateService.getRetirementIncome();
+		const retirement_income = await calculateService.getRetirementIncome(
+			period_id,
+			emp_no
+		);
 		const received_elderly_benefits = false;
 		const v_2_h_i =
 			await calculateService.getSecondGenerationHealthInsurance();
@@ -334,99 +348,128 @@ export class TransactionService {
 				period_id,
 				emp_no
 			);
-
-		const special_leave = 0;
-		const full_attendance_special_leave = 0;
-		const full_attendance_sick_leave = 0;
+		const deduction_subtotal = await calculateService.getDeductionSubtotal(
+			pay_type,
+			salary_income_tax,
+			bonus_tax,
+			welfare_contribution,
+			l_i_deduction,
+			h_i_deduction,
+			group_insurance_deduction,
+			g_i_deduction_promotion,
+			leave_deduction,
+			special_leave_deduction,
+			other_deduction,
+			other_deduction_tax,
+			income_tax_deduction,
+			l_r_self,
+			parking_fee,
+			brokerage_fee,
+			v_2_h_i
+		);
+		const net_salary = await calculateService.getNetSalary(
+			// gross_salary,
+			// payset!
+			pay_type,
+			taxable_subtotal,
+			non_taxable_subtotal,
+			deduction_subtotal
+		);
+		const special_leave = await calculateService.getSpecialLeave(
+			holiday_list,
+			holidays_type
+		);
+		const full_attendance_personal_leave =
+			await calculateService.getFullAtendancePersonalLeave(
+				holiday_list,
+				holidays_type
+			);
+		const full_attendance_sick_leave =
+			await calculateService.getFullAtendanceSickLeave(
+				holiday_list,
+				holidays_type
+			);
 		const newTransaction = await Transaction.create({
-			period_id,
-			issue_date, // 發薪日期
-			pay_type, // 發薪別
-			department, // 部門
-			emp_no, // 員工編號
-			work_status, // 工作形態
-			position, // 職等
-			dependents, // 扶養人數
-			healthcare_dependents, // 健保眷口數
-			// 勞工相關信息
-			l_i, // 勞保
-			h_i, // 健保
-			l_r, // 勞退
-			occupational_injury, // 職災
-			supervisor_allowance, // 主管津貼
-			professional_cert_allowance, // 專業証照津貼
-			base_salary, // 底薪
-			food_allowance, // 伙食津貼
-			gross_salary, // 應發底薪
-			l_i_deduction, // 勞保扣除額
-			h_i_deduction, // 健保扣除額
-			welfare_contribution, // 福利金提撥
-			subsidy_allowance, // 補助津貼
-			weekday_overtime_pay, // 平日加班費
-			holiday_overtime_pay, // 假日加班費
-			leave_deduction, // 請假扣款
-			exceed_overtime_pay, // 超時加班
-			full_attendance_bonus, // 全勤獎金
-			group_insurance_deduction, // 團保費代扣
-			// retroactive_salary, // 補發薪資
-			other_deduction, // 其他減項
-			other_addition, // 其他加項
-			meal_deduction, // 伙食扣款
-			taxable_income, // 課稅所得
-			income_tax, // 薪資所得稅
-			bonus_tax, // 獎金所得稅
-			occupational_allowance, // 職務津貼
-			shift_allowance, // 輪班津貼
-			// non_leave, // 不休假
-			// non_leave_hours, // 不休假時數
-			non_leave_compensation, // 不休假代金
-			salary_income_deduction, // 薪資所得扣繳總額
-			taxable_subtotal, // 課稅小計
-			non_taxable_subtotal, // 非課稅小計
-			deduction_subtotal, // 減項小計
-			l_i_pay, // 勞保費
-			salary_advance, // 工資墊償
-			h_i_pay, // 健保費
-			group_insurance_pay, // 團保費
-			net_salary, // 實發金額
-			// additional_l_i, // 勞保追加
-			// additional_h_i, // 健保追加
-			other_addition_tax, // 其他加項稅
-			other_deduction_tax, // 其他減項稅
-			income_tax_deduction, // 所得稅代扣
-			l_r_self, // 勞退金自提
-			parking_fee, // 停車費
-			brokerage_fee, // 仲介費
-			salary_range, // 薪資區隔
-			total_salary, // 薪資總額
-			dragon_boat_festival_bonus, // 端午獎金
-			mid_autumn_festival_bonus, // 中秋獎金
-			note, // 備註
-			bank_account_1, // 帳號1
-			// bank_account_2, // 帳號2
-			// foreign_currency_account, // 外幣帳號
-			bonus_ratio, // 獎金比率
-			annual_days_in_service, // 年度在職天數
-			l_r_contribution, // 勞退金提撥
-			old_l_r_contribution, // 勞退金提撥_舊制
-			seniority, // 年資
-			assessment_rate, // 考核比率
-			assessment_bonus, // 考核獎金
-			probation_period_over, // 試用期滿
-			disabilty_level, // 殘障等級
-			retirement_income, // 退職所得
-			received_elderly_benefits, // 已領老年給付
-			v_2_h_i, // 二代健保
-			has_trust, // 持股信託_YN
-			emp_trust_reserve, // 員工信託提存金
-			emp_special_trust_incent, // 特別信託獎勵金_員工
-			org_trust_reserve, // 公司獎勵金
-			org_special_trust_incent, // 特別信託獎勵金_公司
-			g_i_deduction_promotion, // 團保費代扣_升等
-			special_leave_deduction, // 特別事假扣款
-			special_leave, // 特別事假
-			full_attendance_personal_leave: full_attendance_special_leave, // 有全勤事假
-			full_attendance_sick_leave, // 有全勤病假
+			period_id: period_id,
+			issue_date: issue_date, // 發薪日期
+			pay_type: pay_type, // 發薪別
+			department: department, // 部門
+			emp_no: emp_no, // 員工編號
+			work_status: work_status, // 工作形態
+			position: position, // 職等
+			dependents: dependents, // 扶養人數
+			healthcare_dependents: healthcare_dependents, // 健保眷口數
+			l_i: l_i, // 勞保
+			h_i: h_i, // 健保
+			l_r: l_r, // 勞退
+			occupational_injury: occupational_injury, // 職災
+			supervisor_allowance: supervisor_allowance, // 主管津貼
+			professional_cert_allowance: professional_cert_allowance, // 專業証照津貼
+			base_salary: base_salary, // 底薪
+			food_allowance: food_allowance, // 伙食津貼
+			gross_salary: gross_salary, // 應發底薪
+			l_i_deduction: l_i_deduction, // 勞保扣除額
+			h_i_deduction: h_i_deduction, // 健保扣除額
+			welfare_contribution: welfare_contribution, // 福利金提撥
+			subsidy_allowance: subsidy_allowance, // 補助津貼
+			weekday_overtime_pay: weekday_overtime_pay, // 平日加班費
+			holiday_overtime_pay: holiday_overtime_pay, // 假日加班費
+			leave_deduction: leave_deduction, // 請假扣款
+			exceed_overtime_pay: exceed_overtime_pay, // 超時加班
+			full_attendance_bonus: full_attendance_bonus, // 全勤獎金
+			group_insurance_deduction: group_insurance_deduction, // 團保費代扣
+			other_deduction: other_deduction, // 其他減項
+			other_addition: other_addition, // 其他加項
+			meal_deduction: meal_deduction, // 伙食扣款
+			taxable_income: taxable_income, // 課稅所得
+			income_tax: income_tax, // 薪資所得稅
+			bonus_tax: bonus_tax, // 獎金所得稅
+			occupational_allowance: occupational_allowance, // 職務津貼
+			shift_allowance: shift_allowance, // 輪班津貼
+			non_leave_compensation: non_leave_compensation, // 不休假代金
+			salary_income_deduction: salary_income_deduction, // 薪資所得扣繳總額
+			taxable_subtotal: taxable_subtotal, // 課稅小計
+			non_taxable_subtotal: non_taxable_subtotal, // 非課稅小計
+			deduction_subtotal: deduction_subtotal, // 減項小計
+			l_i_pay: l_i_pay, // 勞保費
+			salary_advance: salary_advance, // 工資墊償
+			h_i_pay: h_i_pay, // 健保費
+			group_insurance_pay: group_insurance_pay, // 團保費
+			net_salary: net_salary, // 實發金額
+			other_addition_tax: other_addition_tax, // 其他加項稅
+			other_deduction_tax: other_deduction_tax, // 其他減項稅
+			income_tax_deduction: income_tax_deduction, // 所得稅代扣
+			l_r_self: l_r_self, // 勞退金自提
+			parking_fee: parking_fee, // 停車費
+			brokerage_fee: brokerage_fee, // 仲介費
+			salary_range: salary_range, // 薪資區隔
+			total_salary: total_salary, // 薪資總額
+			dragon_boat_festival_bonus: dragon_boat_festival_bonus, // 端午獎金
+			mid_autumn_festival_bonus: mid_autumn_festival_bonus, // 中秋獎金
+			note: note, // 備註
+			bank_account_1: bank_account_1, // 帳號1
+			bonus_ratio: bonus_ratio, // 獎金比率
+			annual_days_in_service: annual_days_in_service, // 年度在職天數
+			l_r_contribution: l_r_contribution, // 勞退金提撥
+			old_l_r_contribution: old_l_r_contribution, // 勞退金提撥_舊制
+			seniority: seniority, // 年資
+			assessment_rate: assessment_rate, // 考核比率
+			assessment_bonus: assessment_bonus, // 考核獎金
+			probation_period_over: probation_period_over, // 試用期滿
+			disabilty_level: disabilty_level, // 殘障等級
+			retirement_income: retirement_income, // 退職所得
+			received_elderly_benefits: received_elderly_benefits, // 已領老年給付
+			v_2_h_i: v_2_h_i, // 二代健保
+			has_trust: has_trust, // 持股信託_YN
+			emp_trust_reserve: emp_trust_reserve, // 員工信託提存金
+			emp_special_trust_incent: emp_special_trust_incent, // 特別信託獎勵金_員工
+			org_trust_reserve: org_trust_reserve, // 公司獎勵金
+			org_special_trust_incent: org_special_trust_incent, // 特別信託獎勵金_公司
+			g_i_deduction_promotion: g_i_deduction_promotion, // 團保費代扣_升等
+			special_leave_deduction: special_leave_deduction, // 特別事假扣款
+			special_leave: special_leave, // 特別事假
+			full_attendance_personal_leave: full_attendance_personal_leave, // 有全勤事假
+			full_attendance_sick_leave: full_attendance_sick_leave, // 有全勤病假
 			create_by: "system",
 			update_by: "system",
 		});

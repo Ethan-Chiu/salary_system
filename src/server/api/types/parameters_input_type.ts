@@ -24,22 +24,26 @@ export const updateBankSettingService = BankSetting.merge(Id)
 	.partial();
 
 const AttendanceSetting = z.object({
-	personal_leave_deduction: z.number(),
-	sick_leave_deduction: z.number(),
-	rate_of_unpaid_leave: z.number(),
-	unpaid_leave_compensatory_1: z.number(),
-	unpaid_leave_compensatory_2: z.number(),
-	unpaid_leave_compensatory_3: z.number(),
-	unpaid_leave_compensatory_4: z.number(),
-	unpaid_leave_compensatory_5: z.number(),
+	// personal_leave_deduction: z.number(),
+	// sick_leave_deduction: z.number(),
+	// rate_of_unpaid_leave: z.number(),
+	// unpaid_leave_compensatory_1: z.number(),
+	// unpaid_leave_compensatory_2: z.number(),
+	// unpaid_leave_compensatory_3: z.number(),
+	// unpaid_leave_compensatory_4: z.number(),
+	// unpaid_leave_compensatory_5: z.number(),
 	overtime_by_local_workers_1: z.number(),
 	overtime_by_local_workers_2: z.number(),
 	overtime_by_local_workers_3: z.number(),
-	local_worker_holiday: z.number(),
+	overtime_by_local_workers_4: z.number(),
+	overtime_by_local_workers_5: z.number(),
+	// local_worker_holiday: z.number(),
 	overtime_by_foreign_workers_1: z.number(),
 	overtime_by_foreign_workers_2: z.number(),
 	overtime_by_foreign_workers_3: z.number(),
-	foreign_worker_holiday: z.number(),
+	overtime_by_foreign_workers_4: z.number(),
+	overtime_by_foreign_workers_5: z.number(),
+	// foreign_worker_holiday: z.number(),
 });
 
 export const createAttendanceSettingAPI = AttendanceSetting.merge(DateAPI);

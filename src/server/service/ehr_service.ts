@@ -12,6 +12,8 @@ import { Bonus } from "../database/entity/UMEDIA/bonus";
 import { BonusType } from "../database/entity/UMEDIA/bonus_type";
 import { Expense } from "../database/entity/UMEDIA/expense";
 import { ExpenseClass } from "../database/entity/UMEDIA/expense_class";
+import { AllowanceType } from "../database/entity/UMEDIA/allowance_type";
+import { Allowance } from "../database/entity/UMEDIA/allowance";
 
 export type BonusWithType = Omit<Bonus, "bonus_id" | "period_id"> & {
 	period_name: string;
@@ -207,9 +209,9 @@ export class EHRService {
 		return bonusWithTypeList;
 	}
 
-	async getExpense(): Promise<Expense[]> {
+	async getExpense(period_id: number): Promise<Expense[]> {
 		const dbConnection = container.resolve(Database).connection;
-		const dataList = await dbConnection.query(this.GET_EXPENSE_QUERY(), {
+		const dataList = await dbConnection.query(this.GET_EXPENSE_QUERY(period_id), {
 			type: QueryTypes.SELECT,
 		});
 		const expenseList: Expense[] = dataList.map((o) => Expense.fromDB(o));
@@ -220,7 +222,7 @@ export class EHRService {
 		period_id: number,
 		emp_no_list: string[]
 	): Promise<Expense[]> {
-		const all_expense = await this.getExpense();
+		const all_expense = await this.getExpense(period_id);
 		const filtered_expense = all_expense.filter((expense) =>
 			emp_no_list.includes(expense.emp_no!)
 		);
@@ -230,7 +232,7 @@ export class EHRService {
 		period_id: number,
 		emp_no_list: string[]
 	): Promise<ExpenseWithType[]> {
-		const all_expense = await this.getExpense();
+		const all_expense = await this.getExpense(period_id);
 		const filtered_expense = all_expense.filter((expense) =>
 			emp_no_list.includes(expense.emp_no!)
 		);
@@ -265,6 +267,34 @@ export class EHRService {
 		return expenseClassList;
 	}
 
+	async getAllowanceType(): Promise<AllowanceType[]> {
+		const dbConnection = container.resolve(Database).connection;
+		const dataList = await dbConnection.query(
+			this.GET_ALLOWANCE_TYPE_QUERY(),
+			{
+				type: QueryTypes.SELECT,
+			}
+		);
+		const allowanceTypeList: AllowanceType[] = dataList.map((o) =>
+			AllowanceType.fromDB(o)
+		);
+		return allowanceTypeList;
+	}
+
+	async getAllowance(period_id: number): Promise<Allowance[]> {
+		const dbConnection = container.resolve(Database).connection;
+		const dataList = await dbConnection.query(
+			this.GET_ALLOWANCE_QUERY(period_id),
+			{
+				type: QueryTypes.SELECT,
+			}
+		);
+		const allowanceList: Allowance[] = dataList.map((o) =>
+			Allowance.fromDB(o)
+		);
+		return allowanceList;
+	}
+
 	private GET_PERIOD_QUERY(): string {
 		return `SELECT "PERIOD_ID", "PERIOD_NAME", "START_DATE", "END_DATE", "STATUS", "ISSUE_DATE" FROM "U_HR_PERIOD" WHERE "U_HR_PERIOD"."STATUS" = 'OPEN'`;
 	}
@@ -294,11 +324,17 @@ export class EHRService {
 	private GET_BONUS_TYPE_QUERY(): string {
 		return `SELECT * FROM UMEDIA."U_HR_BONUS_TYPE"`;
 	}
-	private GET_EXPENSE_QUERY(): string {
-		return `SELECT * FROM "U_HR_PAYDRAFT_EXPENSE"`;
+	private GET_EXPENSE_QUERY(period_id: number): string {
+		return `SELECT * FROM "U_HR_PAYDRAFT_EXPENSE" WHERE "U_HR_PAYDRAFT_EXPENSE"."PERIOD_ID" = '${period_id}'`;
 	}
 
 	private GET_EXPENSE_CLASS_QUERY(): string {
 		return `SELECT * FROM "U_HR_EXPENSE_CLASS"`;
+	}
+	private GET_ALLOWANCE_TYPE_QUERY(): string {
+		return `SELECT * FROM "U_HR_ALLOWANCE_TYPE"`;
+	}
+	private GET_ALLOWANCE_QUERY(period_id: number): string {
+		return `SELECT * FROM "U_HR_PAYDRAFT_ALLOWANCE" WHERE "U_HR_PAYDRAFT_ALLOWANCE"."PERIOD_ID" = '${period_id}'`;
 	}
 }

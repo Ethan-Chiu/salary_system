@@ -9,13 +9,11 @@ import { container, injectable } from "tsyringe";
 import { Op } from "sequelize";
 import { EmployeeData } from "../database/entity/SALARY/employee_data";
 import { EmployeePayment } from "../database/entity/SALARY/employee_payment";
-import { Period } from "../database/entity/UMEDIA/period";
 import { EHRService } from "./ehr_service";
 import { Overtime } from "../database/entity/UMEDIA/overtime";
 import { Payset } from "../database/entity/UMEDIA/payset";
 import { InsuranceRateSetting } from "../database/entity/SALARY/insurance_rate_setting";
 import { Holiday } from "../database/entity/UMEDIA/holiday";
-import { AttendanceSetting } from "../database/entity/SALARY/attendance_setting";
 import { PayTypeEnum, PayTypeEnumType } from "../api/types/pay_type_enum";
 import { HolidaysType } from "../database/entity/SALARY/holidays_type";
 
@@ -45,7 +43,8 @@ export class CalculateService {
 		overtime_list: Overtime[],
 		payset: Payset,
 		insurance_rate_setting: InsuranceRateSetting,
-		full_attendance_bonus: number
+		full_attendance_bonus: number,
+		pay_type: PayTypeEnumType
 	): Promise<number> {
 		/*
 				平日加班費 = GetNormalMoney(
@@ -57,6 +56,10 @@ export class CalculateService {
 				)
 		*/
 		// 不確定專業證照津貼要不要加兩次
+		let pay = 1; // 1 五日 2 15日
+		if (pay_type === PayTypeEnum.enum.foreign_15_bonus) {
+			pay = 2;
+		}
 		const money = await this.getGrossSalary(employee_payment, payset);
 		const shift_allowance = employee_payment.shift_allowance ?? 0;
 		let hourly_fee =
@@ -67,11 +70,11 @@ export class CalculateService {
 		let t4 = 0;
 		let t5 = 0;
 		overtime_list.map((overtime) => {
-			if (overtime.type_name === "平日") {
+			if (overtime.type_name === "平日" && overtime.pay === pay) {
 				t1 += overtime.hours_1 ?? 0;
-				t2 += overtime.hours_2 ?? 0;
-				t3 += overtime.hours_134 ?? 0;
-				t4 += overtime.hours_167 ?? 0;
+				t2 += overtime.hours_134 ?? 0;
+				t3 += overtime.hours_167 ?? 0;
+				t4 += overtime.hours_2 ?? 0;
 				t5 += overtime.hours_267 ?? 0;
 			}
 		});
@@ -80,17 +83,17 @@ export class CalculateService {
 			hourly_fee = insurance_rate_setting.min_wage_rate;
 			return Math.round(
 				hourly_fee * t1 +
-					hourly_fee * t2 * 2 +
-					hourly_fee * t3 * 1.34 +
-					hourly_fee * t4 * 1.67 +
+					hourly_fee * t2 * 1.34 +
+					hourly_fee * t3 * 1.67 +
+					hourly_fee * t4 * 2 +
 					hourly_fee * t5 * 2.67
 			);
 		} else
 			return Math.round(
 				hourly_fee * t1 +
-					hourly_fee * t2 * 2 +
-					hourly_fee * t3 * 1.34 +
-					hourly_fee * t4 * 1.67 +
+					hourly_fee * t2 * 1.34 +
+					hourly_fee * t3 * 1.67 +
+					hourly_fee * t4 * 2 +
 					hourly_fee * t5 * 2.67
 			);
 	}
@@ -102,7 +105,8 @@ export class CalculateService {
 		overtime_list: Overtime[],
 		payset: Payset,
 		insurance_rate_setting: InsuranceRateSetting,
-		full_attendance_bonus: number
+		full_attendance_bonus: number,
+		pay_type: PayTypeEnumType
 	): Promise<number> {
 		/*
 			假日加班費 = GetVocationMoney(
@@ -115,6 +119,10 @@ export class CalculateService {
 					休加班3_時數
 			)
 		*/
+		let pay = 1; // 1 五日 2 15日
+		if (pay_type === PayTypeEnum.enum.foreign_15_bonus) {
+			pay = 2;
+		}
 		const money = await this.getGrossSalary(employee_payment, payset);
 		const shift_allowance = employee_payment.shift_allowance ?? 0;
 		let hourly_fee =
@@ -126,13 +134,14 @@ export class CalculateService {
 		let t5 = 0;
 		overtime_list.map((overtime) => {
 			if (
-				overtime.type_name === "國定假日" ||
-				overtime.type_name === "休息日"
+				(overtime.type_name === "國定假日" ||
+					overtime.type_name === "休息日") &&
+				overtime.pay === pay
 			) {
 				t1 += overtime.hours_1 ?? 0;
-				t2 += overtime.hours_2 ?? 0;
-				t3 += overtime.hours_134 ?? 0;
-				t4 += overtime.hours_167 ?? 0;
+				t2 += overtime.hours_134 ?? 0;
+				t3 += overtime.hours_167 ?? 0;
+				t4 += overtime.hours_2 ?? 0;
 				t5 += overtime.hours_267 ?? 0;
 			}
 		});
@@ -141,17 +150,17 @@ export class CalculateService {
 			hourly_fee = insurance_rate_setting.min_wage_rate;
 			return Math.round(
 				hourly_fee * t1 +
-					hourly_fee * t2 * 2 +
-					hourly_fee * t3 * 1.34 +
-					hourly_fee * t4 * 1.67 +
+					hourly_fee * t2 * 1.34 +
+					hourly_fee * t3 * 1.67 +
+					hourly_fee * t4 * 2 +
 					hourly_fee * t5 * 2.67
 			);
 		} else
 			return Math.round(
 				hourly_fee * t1 +
-					hourly_fee * t2 * 2 +
-					hourly_fee * t3 * 1.34 +
-					hourly_fee * t4 * 1.67 +
+					hourly_fee * t2 * 1.34 +
+					hourly_fee * t3 * 1.67 +
+					hourly_fee * t4 * 2 +
 					hourly_fee * t5 * 2.67
 			);
 	}
@@ -163,7 +172,8 @@ export class CalculateService {
 		overtime_list: Overtime[],
 		payset: Payset,
 		insurance_rate_setting: InsuranceRateSetting,
-		full_attendance_bonus: number
+		full_attendance_bonus: number,
+		pay_type: PayTypeEnumType
 	): Promise<number> {
 		/*
 				超時加班 = GetOverTimeMoney(
@@ -176,6 +186,10 @@ export class CalculateService {
 					休加班稅3_時數
 				)
 		*/
+		let pay = 1; // 1 五日 2 15日
+		if (pay_type === PayTypeEnum.enum.foreign_15_bonus) {
+			pay = 2;
+		}
 		const money = await this.getGrossSalary(employee_payment, payset);
 		const shift_allowance = employee_payment.shift_allowance ?? 0;
 		let hourly_fee =
@@ -184,34 +198,30 @@ export class CalculateService {
 		let t2 = 0;
 		let t3 = 0;
 		let t4 = 0;
-		let t5 = 0;
 		overtime_list.map((overtime) => {
-			if (overtime.type_name === "超時加班") {
+			if (overtime.type_name === "超時加班" && overtime.pay === pay) {
 				//不確定名字
-				t1 += overtime.hours_1 ?? 0;
-				t2 += overtime.hours_2 ?? 0;
-				t3 += overtime.hours_134 ?? 0;
-				t4 += overtime.hours_167 ?? 0;
-				t5 += overtime.hours_267 ?? 0;
+				t1 += overtime.hours_134_TAX ?? 0;
+				t2 += overtime.hours_167_TAX ?? 0;
+				t3 += overtime.hours_2_TAX ?? 0;
+				t4 += overtime.hours_267_TAX ?? 0;
 			}
 		});
 		// rate存哪裡？
 		if (employee_data.work_type === "外籍勞工") {
 			hourly_fee = insurance_rate_setting.min_wage_rate;
 			return Math.round(
-				hourly_fee * t1 +
-					hourly_fee * t2 * 2 +
-					hourly_fee * t3 * 1.34 +
-					hourly_fee * t4 * 1.67 +
-					hourly_fee * t5 * 2.67
+				hourly_fee * t1 * 1.34 +
+					hourly_fee * t2 * 1.67 +
+					hourly_fee * t3 * 2 +
+					hourly_fee * t4 * 2.67
 			);
 		} else
 			return Math.round(
-				hourly_fee * t1 +
-					hourly_fee * t2 * 2 +
-					hourly_fee * t3 * 1.34 +
-					hourly_fee * t4 * 1.67 +
-					hourly_fee * t5 * 2.67
+				hourly_fee * t1 * 1.34 +
+					hourly_fee * t2 * 1.67 +
+					hourly_fee * t3 * 2 +
+					hourly_fee * t4 * 2.67
 			);
 	}
 
@@ -369,7 +379,7 @@ export class CalculateService {
 		return 0;
 	}
 	//MARK:福利金提撥
-	async getWelfareDeduction(
+	async getWelfareContribution(
 		employee_data: EmployeeData,
 		employee_payment: EmployeePayment,
 		full_attendance_bonus: number,
@@ -475,9 +485,9 @@ export class CalculateService {
 		const group_insurance_deduction_id = (
 			await ehrService.getExpenseClass()
 		).find((ec) => ec.name === "團保費代扣")?.id!;
-		const expenseList = await ehrService.getExpenseByEmpNoList(period_id, [
-			emp_no,
-		]);
+		const expenseList = (
+			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
+		).filter((e) => e.kind === 2);
 		let group_insurance_deduction = 0;
 		for (const expense of expenseList) {
 			if (expense.id === group_insurance_deduction_id) {
@@ -493,9 +503,9 @@ export class CalculateService {
 		const reissue_salary_id = (await ehrService.getExpenseClass()).find(
 			(ec) => ec.name === "補發薪資"
 		)?.id!;
-		const expenseList = await ehrService.getExpenseByEmpNoList(period_id, [
-			emp_no,
-		]);
+		const expenseList = (
+			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
+		).filter((e) => e.kind === 2);
 		let reissue_salary = 0;
 		for (const expense of expenseList) {
 			if (expense.id === reissue_salary_id) {
@@ -506,6 +516,28 @@ export class CalculateService {
 	}
 	//MARK: 年終獎金
 	async getYearEndBonus(period_id: number, emp_no: string): Promise<number> {
+		// 		=======年終獎金計算=========090121
+
+		//         If PayType = YearEnd_Pay Then
+		//            If rd("端午獎金") > 0 And rd("中秋獎金") > 0 And rd("試用期滿") = True Then       '端午,中秋皆發
+		//               rd("年終獎金") = rd("年度在職天數") / 365 * (rd("底薪") + rd("伙食津貼") + rd("主管津貼") + rd("職務津貼") + rd("補助津貼")) * rd("獎金比率") - _
+		//                                (1 - (rd("年度在職天數") / 365)) * (rd("底薪") + rd("伙食津貼") + rd("主管津貼") + rd("專業証照津貼") + rd("職務津貼") + rd("補助津貼")) * 1
+
+		//            ElseIf rd("端午獎金") = 0 And rd("中秋獎金") > 0 And rd("試用期滿") = True Then    '端午沒發,中秋皆發
+		//               rd("年終獎金") = rd("年度在職天數") / 365 * (rd("底薪") + rd("伙食津貼") + rd("主管津貼") + rd("專業証照津貼") + rd("職務津貼") + rd("補助津貼")) * rd("獎金比率") + _
+		//                                rd("年度在職天數") / 365 * (rd("底薪") + rd("伙食津貼") + rd("主管津貼") + rd("專業証照津貼") + rd("職務津貼") + rd("補助津貼")) * 0.5 - _
+		//                                (1 - (rd("年度在職天數") / 365)) * (rd("底薪") + rd("伙食津貼") + rd("主管津貼") + rd("專業証照津貼") + rd("職務津貼") + rd("補助津貼")) * 0.5
+
+		//            ElseIf rd("端午獎金") = 0 And rd("中秋獎金") = 0 And rd("試用期滿") = True Then   '端午,中秋皆沒發
+		//               rd("年終獎金") = rd("年度在職天數") / 365 * (rd("底薪") + rd("伙食津貼") + rd("主管津貼") + rd("專業証照津貼") + rd("職務津貼") + rd("補助津貼")) * rd("獎金比率") + _
+		//                                rd("年度在職天數") / 365 * (rd("底薪") + rd("伙食津貼") + rd("主管津貼") + rd("專業証照津貼") + rd("職務津貼") + rd("補助津貼")) * 1
+
+		//            ElseIf rd("端午獎金") = 0 And rd("中秋獎金") = 0 And rd("試用期滿") = False Then   '端午,中秋皆沒發
+		//               rd("年終獎金") = rd("年度在職天數") / 365 * (rd("底薪") + rd("伙食津貼") + rd("主管津貼") + rd("專業証照津貼") + rd("職務津貼") + rd("補助津貼")) * rd("獎金比率")
+		//            End If
+		//         End If
+
+		// '============================
 		const ehrService = container.resolve(EHRService);
 		const end_of_year_bonus_id = (await ehrService.getBonusType()).find(
 			(bt) => bt.name === "年終獎金"
@@ -525,22 +557,25 @@ export class CalculateService {
 	//MARK: 營運績效獎金
 	async getOperationalPerformanceBonus(
 		period_id: number,
-		emp_no: string
+		emp_no: string,
+		pay_type: PayTypeEnumType
 	): Promise<number> {
-		const ehrService = container.resolve(EHRService);
-		const operational_performance_bonus_id = (
-			await ehrService.getBonusType()
-		).find((bt) => bt.name === "營運績效獎金")?.id!;
-		const bonusList = await ehrService.getBonusByEmpNoList(period_id, [
-			emp_no,
-		]);
-		let operational_performance_bonus = 0;
-		for (const bonus of bonusList) {
-			if (bonus.bonus_id === operational_performance_bonus_id) {
-				operational_performance_bonus += bonus.amount ?? 0;
+		if (pay_type === PayTypeEnum.enum.foreign_15_bonus) {
+			const ehrService = container.resolve(EHRService);
+			const operational_performance_bonus_id = (
+				await ehrService.getBonusType()
+			).find((bt) => bt.name === "營運績效獎金")?.id!;
+			const bonusList = await ehrService.getBonusByEmpNoList(period_id, [
+				emp_no,
+			]);
+			let operational_performance_bonus = 0;
+			for (const bonus of bonusList) {
+				if (bonus.bonus_id === operational_performance_bonus_id) {
+					operational_performance_bonus += bonus.amount ?? 0;
+				}
 			}
-		}
-		return operational_performance_bonus;
+			return operational_performance_bonus;
+		} else return 0;
 	}
 
 	//MARK: 薪資所得扣繳總額
@@ -583,10 +618,11 @@ export class CalculateService {
 			exceed_overtime_pay +
 			other_addition_tax +
 			full_attendance_bonus +
-			(employee_payment.shift_allowance ?? 0) +
+			(employee_payment.shift_allowance ?? 0) - //+
 			// rd("夜點費") -
-			leave_deduction;
-		-special_leave_deduction - other_deduction_tax;
+			leave_deduction -
+			special_leave_deduction -
+			other_deduction_tax;
 
 		return salary_income_deduction;
 	}
@@ -601,7 +637,7 @@ export class CalculateService {
 	//MARK: 薪資所得稅
 	async getSalaryIncomeTax(
 		employee_data: EmployeeData,
-		issue_date: Date,
+		issue_date: string,
 		salary_income_deduction: number
 	): Promise<number> {
 		/*
@@ -625,7 +661,7 @@ export class CalculateService {
 		const taxi: any[] = []; //[rd("扣繳稅額")]; // Maybe a list
 
 		const START_WORK_DAY = new Date(employee_data.registration_date);
-		const PAY_DATE = issue_date;
+		const PAY_DATE = new Date(issue_date);
 
 		const differenceInMilliseconds =
 			START_WORK_DAY.getTime() - PAY_DATE.getTime();
@@ -693,10 +729,19 @@ export class CalculateService {
 		return non_leave_compensation;
 	}
 	//MARK: 課稅所得
-	async getTaxableIncome(): Promise<number> {
+	async getTaxableIncome(
+		employee_payment: EmployeePayment,
+		exceed_overtime_pay: number
+	): Promise<number> {
 		// rd("課稅所得") = rd("底薪") + rd("主管津貼") + rd("專業証照津貼") + rd("職務津貼") + rd("超時加班")
 		//     'Jerry 07/01/05 取消"超時加班"==> 改為"職務津貼"
-		return -1;
+		const taxable_income =
+			employee_payment.base_salary +
+			(employee_payment.supervisor_allowance ?? 0) +
+			(employee_payment.professional_cert_allowance ?? 0) +
+			(employee_payment.occupational_allowance ?? 0) +
+			exceed_overtime_pay;
+		return taxable_income;
 	}
 	//MARK: 課稅小計
 	async getTaxableSubtotal(
@@ -709,7 +754,7 @@ export class CalculateService {
 		full_attendance_bonus: number,
 		end_of_year_bonus: number
 	): Promise<number> {
-		return -1;
+		// return -1;
 		if (pay_type === PayTypeEnum.Enum.month_salary) {
 			/*
 					rd("課稅小計") = 
@@ -738,10 +783,10 @@ export class CalculateService {
 				exceed_overtime_pay +
 				other_addition_tax +
 				full_attendance_bonus +
-				(employee_payment.shift_allowance ?? 0) +
+				(employee_payment.shift_allowance ?? 0) //+
 				// rd("夜點費") +
-				rd("績效獎金") +
-				rd("專案獎金")
+				// rd("績效獎金") +
+				// rd("專案獎金")
 			);
 		}
 		if (pay_type === rd("加班費")) {
@@ -782,9 +827,9 @@ export class CalculateService {
 		let other_deduction_ids = (await ehrService.getExpenseClass())
 			.filter((ec) => ec.other_less === 1)
 			.map((ec) => ec.id);
-		const expenseList = await ehrService.getExpenseByEmpNoList(period_id, [
-			emp_no,
-		]);
+		const expenseList = (
+			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
+		).filter((e) => e.kind === 2);
 		let other_deduction = 0;
 		for (const expense of expenseList) {
 			if (other_deduction_ids.includes(expense.id)) {
@@ -796,12 +841,12 @@ export class CalculateService {
 	//MARK: 其他加項?
 	async getOtherAddition(period_id: number, emp_no: string): Promise<number> {
 		const ehrService = container.resolve(EHRService);
-		let other_addition_ids = (await ehrService.getExpenseClass())
-			.filter((ec) => ec.other_less === 0)
-			.map((ec) => ec.id);
-		const expenseList = await ehrService.getExpenseByEmpNoList(period_id, [
-			emp_no,
-		]);
+		let other_addition_ids = (await ehrService.getAllowanceType())
+			.filter((at) => at.other_add === 1)
+			.map((at) => at.id);
+		const expenseList = (
+			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
+		).filter((e) => e.kind === 1);
 		let other_addition = 0;
 		for (const expense of expenseList) {
 			if (other_addition_ids.includes(expense.id)) {
@@ -818,13 +863,13 @@ export class CalculateService {
 		// const other_addition_tax = 0
 		// return other_addition_tax
 		const ehrService = container.resolve(EHRService);
-		let other_addition_tax_ids = (await ehrService.getExpenseClass())
-			.filter((ec) => ec.other_less === 0 && ec.other_tax === 1)
-			.map((ec) => ec.id);
+		let other_addition_tax_ids = (await ehrService.getAllowanceType())
+			.filter((at) => at.other_add === 1 && at.other_tax === 1)
+			.map((at) => at.id);
 
-		const expenseList = await ehrService.getExpenseByEmpNoList(period_id, [
-			emp_no,
-		]);
+		const expenseList = (
+			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
+		).filter((e) => e.kind === 1);
 		let other_addition_tax = 0;
 		for (const expense of expenseList) {
 			if (other_addition_tax_ids.includes(expense.id)) {
@@ -842,9 +887,9 @@ export class CalculateService {
 		let other_deduction_tax_ids = (await ehrService.getExpenseClass())
 			.filter((ec) => ec.other_less === 1 && ec.other_tax === 1)
 			.map((ec) => ec.id);
-		const expenseList = await ehrService.getExpenseByEmpNoList(period_id, [
-			emp_no,
-		]);
+		const expenseList = (
+			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
+		).filter((e) => e.kind === 2);
 		let other_deduction_tax = 0;
 		for (const expense of expenseList) {
 			if (other_deduction_tax_ids.includes(expense.id)) {
@@ -853,9 +898,21 @@ export class CalculateService {
 		}
 		return other_deduction_tax;
 	}
-	//MARK: 伙食扣款？
-	async getMealDeduction(): Promise<number> {
-		const meal_deduction = -1;
+	//MARK: 住宿代扣款（舊伙食扣款）
+	async getMealDeduction(period_id: number, emp_no: string): Promise<number> {
+		const ehrService = container.resolve(EHRService);
+		const meal_deduction_id = (await ehrService.getExpenseClass()).find(
+			(ec) => ec.name === "住宿代扣款"
+		)?.id;
+		const expenseList = (
+			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
+		).filter((e) => e.kind === 2);
+		let meal_deduction = 0;
+		for (const expense of expenseList) {
+			if (expense.id === meal_deduction_id) {
+				meal_deduction += expense.amount ?? 0;
+			}
+		}
 		return meal_deduction;
 	}
 	//MARK: 非課稅小計
@@ -877,7 +934,25 @@ export class CalculateService {
 		return non_taxable_subtotal;
 	}
 	//MARK: 減項小計
-	async getDeductionSubtotal(): Promise<number> {
+	async getDeductionSubtotal(
+		pay_type: PayTypeEnumType,
+		salary_income_tax: number,
+		bonus_tax: number,
+		welfare_contribution: number,
+		l_i_deduction: number,
+		h_i_deduction: number,
+		group_insurance_deduction: number,
+		group_insurance_deduction_promotion: number,
+		leave_deduction: number,
+		special_leave_deduction: number,
+		other_deduction: number,
+		other_deduction_tax: number,
+		income_tax_deduction: number,
+		l_r_self: number,
+		parking_fee: number,
+		brokerage_fee: number,
+		v_2_h_i: number
+	): Promise<number> {
 		// If PayType = Moon_Pay Then
 		// rd("減項小計") = rd("薪資所得稅") + rd("獎金所得稅") + rd("福利金提撥") + rd("勞保扣除額") + rd("健保扣除額") + rd("團保費代扣") + rd("團保費代扣_升等") + _
 		//                      rd("請假扣款") + rd("特別事假扣款") + rd("伙食扣款") + rd("其他減項") + rd("其他減項稅") + rd("股票貸款") + rd("車輛貸款") + _
@@ -891,8 +966,38 @@ export class CalculateService {
 		// rd("薪資所得扣繳總額") = rd("課稅小計")   'Jerry 07/04/25  for 扣繳憑單 and 財務部報稅用
 		// ElseIf PayType = Non_Leaving_Pay Then  '2017/01/09 單獨發放不休假代金
 		// rd("非課說小計") = rd("不休假代金")
-		const deduction_subtotal = -1;
-		return deduction_subtotal;
+		if (pay_type === PayTypeEnum.Enum.month_salary) {
+			const deduction_subtotal =
+				salary_income_tax +
+				bonus_tax +
+				welfare_contribution +
+				l_i_deduction +
+				h_i_deduction +
+				group_insurance_deduction +
+				group_insurance_deduction_promotion +
+				leave_deduction +
+				special_leave_deduction +
+				// rd("伙食扣款") +
+				other_deduction +
+				other_deduction_tax +
+				// rd("股票貸款") +
+				// rd("車輛貸款") +
+				income_tax_deduction +
+				l_r_self +
+				parking_fee +
+				brokerage_fee +
+				v_2_h_i;
+			return deduction_subtotal;
+		} else if (pay_type === PayTypeEnum.Enum.foreign_15_bonus) {
+			//MARK: 不確定加班費等於15日？
+			const deduction_subtotal =
+				salary_income_tax +
+				v_2_h_i +
+				other_deduction +
+				other_deduction_tax;
+			return deduction_subtotal;
+		}
+		return -1;
 	}
 	//MARK: 勞保費
 	async getLaborInsurancePay(
@@ -930,15 +1035,13 @@ export class CalculateService {
 	}
 	//MARK: 停車費
 	async getParkingFee(period_id: number, emp_no: string): Promise<number> {
-		// const parking_fee = 0
-		// return parking_fee
 		const ehrService = container.resolve(EHRService);
 		const parking_fee_id = (await ehrService.getExpenseClass()).find(
 			(ec) => ec.name === "停車費"
 		)?.id!;
-		const expenseList = await ehrService.getExpenseByEmpNoList(period_id, [
-			emp_no,
-		]);
+		const expenseList = (
+			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
+		).filter((e) => e.kind === 2);
 		let parking_fee = 0;
 		for (const expense of expenseList) {
 			if (expense.id === parking_fee_id) {
@@ -953,9 +1056,9 @@ export class CalculateService {
 		const brokerage_fee_id = (await ehrService.getExpenseClass()).find(
 			(ec) => ec.name === "仲介費"
 		)?.id!;
-		const expenseList = await ehrService.getExpenseByEmpNoList(period_id, [
-			emp_no,
-		]);
+		const expenseList = (
+			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
+		).filter((e) => e.kind === 2);
 		let brokerage_fee = 0;
 		for (const expense of expenseList) {
 			if (expense.id === brokerage_fee_id) {
@@ -973,9 +1076,9 @@ export class CalculateService {
 		const income_tax_deduction_id = (
 			await ehrService.getExpenseClass()
 		).find((ec) => ec.name === "所得稅代扣")?.id!;
-		const expenseList = await ehrService.getExpenseByEmpNoList(period_id, [
-			emp_no,
-		]);
+		const expenseList = (
+			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
+		).filter((e) => e.kind === 2);
 		let income_tax_deduction = 0;
 		for (const expense of expenseList) {
 			if (expense.id === income_tax_deduction_id) {
@@ -985,26 +1088,56 @@ export class CalculateService {
 		return income_tax_deduction;
 	}
 	//MARK: 勞退金自提
-	async getLRSelf(period_id: number, emp_no: string): Promise<number> {
-		const ehrService = container.resolve(EHRService);
-		const l_r_self_id = (await ehrService.getExpenseClass()).find(
-			(ec) => ec.name === "勞退金自提"
-		);
-		const expenseList = await ehrService.getExpenseByEmpNoList(period_id, [
-			emp_no,
-		]);
-		let l_r_self = 0;
-		for (const expense of expenseList) {
-			if (expense.id === l_r_self_id) {
-				l_r_self += expense.amount ?? 0;
-			}
-		}
-		return l_r_self;
+	// 勞退級距＊勞退自提%
+	async getLRSelf(employee_payment: EmployeePayment): Promise<number> {
+		return employee_payment.l_r * employee_payment.l_r_self;
+		// const ehrService = container.resolve(EHRService);
+		// const l_r_self_id = (await ehrService.getExpenseClass()).find(
+		// 	(ec) => ec.name === "勞退金自提"
+		// )?.id!;
+		// const expenseList = await ehrService.getExpenseByEmpNoList(period_id, [
+		// 	emp_no,
+		// ]);
+		// let l_r_self = 0;
+		// for (const expense of expenseList) {
+		// 	if (expense.id === l_r_self_id) {
+		// 		l_r_self += expense.amount ?? 0;
+		// 	}
+		// }
+		// return l_r_self;
 	}
 	//MARK: 薪資區隔?
-	async getSalaryRange(): Promise<string> {
-		const salary_range = "-1";
-		return salary_range;
+	async getSalaryRange(total_salary: number): Promise<number> {
+		// 		Function Insurance_level(ByVal Insurance As Long)
+		//     If Insurance <= 72800 Then
+		//        Insurance_level = 72800                               'Jerry 2007/01/04 42000改為43900 '2016.6.23 改為45800
+		//     ElseIf Insurance > 72800 And Insurance <= 100000 Then    'Jerry 2022/07/01 45800改為72800
+		//        Insurance_level = 100000
+		//     ElseIf Insurance > 100000 And Insurance <= 170000 Then
+		//        Insurance_level = 170000
+		//     ElseIf Insurance > 170000 And Insurance <= 250000 Then
+		//        Insurance_level = 250000
+		//     ElseIf Insurance > 250000 And Insurance <= 1000000 Then
+		//        Insurance_level = 1000000
+		//     ElseIf Insurance > 1000000 Then
+		//        Insurance_level = 1000001
+		//     End If
+		// End Function
+		if (total_salary <= 72800) {
+			return 72800;
+		} else if (total_salary > 72800 && total_salary <= 100000) {
+			return 100000;
+		} else if (total_salary > 100000 && total_salary <= 170000) {
+			return 170000;
+		} else if (total_salary > 170000 && total_salary <= 250000) {
+			return 250000;
+		} else if (total_salary > 250000 && total_salary <= 1000000) {
+			return 1000000;
+		} else if (total_salary > 1000000) {
+			return 1000001;
+		} else {
+			throw new Error("No Implement in 'getSalaryRange'");
+		}
 	}
 	//MARK: 薪資總額
 	async getTotalSalary(
@@ -1066,6 +1199,33 @@ export class CalculateService {
 	}
 	//MARK: 勞退金提撥_舊制?
 	async getOldLaborRetirementContribution(): Promise<number> {
+		// 		'公司付勞退金提撥_舊制
+		// Function ComRetire_old(ByVal On_Board As Date, ByVal money As Long, ByVal kind1 As String, ByVal kind2 As String, Normalday As Byte, PartTimeDay As Byte)  'Jerry 08/04/01
+		//   Dim Check_Date
+		// '  Check_Date = DateSerial(Year(2005), Month(7), Day(1))
+
+		//      If kind1 = Foreign_Man Then
+		//         'ComRetire_old = 0 '2014/1/15 外籍勞工從事一般員工, 也要提撥勞退(舊)
+		//        Select Case kind2
+		//            Case Normal_Man
+		//                ComRetire_old = Round(Round(money * 0.02, 0), 0)
+		//            Case Else
+		//                ComRetire_old = 0
+		//        End Select
+		//      Else
+		//        If On_Board < DateValue("2005 / 7 / 1") Then
+		//             Select Case kind2
+		//                 Case BOSS, Foreign, Professor, Leave_Man
+		//                     ComRetire_old = 0
+		//                 Case New_Man, Will_Leave, PartTime_1, PartTime_2, Contract
+		//                     ComRetire_old = Round(Round(money * PartTimeDay / 30 * 0.02, 0), 0)
+		//                 Case Else
+		//                     ComRetire_old = Round(Round(money * 0.02, 0), 0)
+
+		//             End Select
+		//        End If
+		//     End If
+		// End Function
 		const old_labor_retirement_contribution = -1;
 		return old_labor_retirement_contribution;
 	}
@@ -1127,7 +1287,7 @@ export class CalculateService {
 		return -1;
 	}
 
-	//MARK: 團保費代扣＿升等
+	//MARK: 團保費代扣＿升等;
 	// 感覺在這裡: DoCmd.OpenQuery "其他更新", acNormal, acEdit    'Jerry 07/09/03  增加退職所得  23/6/3 增加團保費代扣_升等
 	async getGroupInsuranceDeductionPromotion(
 		period_id: number,
@@ -1136,10 +1296,10 @@ export class CalculateService {
 		const ehrService = container.resolve(EHRService);
 		const g_i_deduction_promotion_id = (
 			await ehrService.getExpenseClass()
-		).find((ec) => ec.name === "團保代扣-升等");
-		const expenseList = await ehrService.getExpenseByEmpNoList(period_id, [
-			emp_no,
-		]);
+		).find((ec) => ec.name === "團保代扣-升等")?.id!;
+		const expenseList = (
+			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
+		).filter((e) => e.kind === 2);
 		let group_insurance_deduction_promotion = 0;
 		for (const expense of expenseList) {
 			if (expense.id === g_i_deduction_promotion_id) {
@@ -1148,9 +1308,25 @@ export class CalculateService {
 		}
 		return group_insurance_deduction_promotion;
 	}
-	//MARK: 退職所得?
-	async getRetirementIncome(): Promise<number> {
-		return -1;
+	//MARK: 退職所得
+	async getRetirementIncome(
+		period_id: number,
+		emp_no: string
+	): Promise<number> {
+		const ehrService = container.resolve(EHRService);
+		const retirement_income_id = (await ehrService.getExpenseClass()).find(
+			(ec) => ec.name === "退職所得"
+		)?.id!;
+		const expenseList = (
+			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
+		).filter((e) => e.kind === 2);
+		let retirement_income = 0;
+		for (const expense of expenseList) {
+			if (expense.id === retirement_income_id) {
+				retirement_income += expense.amount ?? 0;
+			}
+		}
+		return retirement_income;
 	}
 	//MARK: 端午獎金
 	async getDragonBoatFestivalBonus(): Promise<number> {
@@ -1166,40 +1342,128 @@ export class CalculateService {
 	}
 	//MARK: 特別事假扣款
 	async getSpecialLeaveDeduction(
-		employee_data: EmployeeData
+		employee_data: EmployeeData,
+		holidays_type: HolidaysType[],
+		holiday_list: Holiday[],
+		gross_salary: number,
+		employee_payment: EmployeePayment,
+		insurance_rate_setting: InsuranceRateSetting
 	): Promise<number> {
-		return -1;
-		// let work_type = employee_data.work_type;
-		// let work_status = employee_data.work_status;
-		// let
-		// GetLeave2Money(kind1 As String, kind2 As String, money As Long, bouns As Long, t1 As Single)
-		// If kind1 = Foreign_Man Then
-		//    GetLeave2Money = Round(SALARY_RATE * t1, 0)
-		// Else
-		// Select Case kind2
-		//     Case Leave_Man
-		//         GetLeave2Money = 0
-		//     Case Foreign
-		//         GetLeave2Money = Round(SALARY_RATE * t1, 0)
-		//     Case Else
-		//         GetLeave2Money = Round((money + bouns) / 240 * t1, 0)
-		// End Select
-		// End If
+		// 		'特別事假扣款:
+		// Function GetLeave2Money(kind1 As String, kind2 As String, money As Long, bouns As Long, t1 As Single)
+		//     If kind1 = Foreign_Man Then
+		//        GetLeave2Money = Round(SALARY_RATE * t1, 0)
+		//     Else
+		//     Select Case kind2
+		//         Case Leave_Man
+		//             GetLeave2Money = 0
+		//         Case Foreign
+		//             GetLeave2Money = Round(SALARY_RATE * t1, 0)
+		//         Case Else
+		//             GetLeave2Money = Round((money + bouns) / 240 * t1, 0)
+		//     End Select
+		//     End If
+		// End Function
 		// 薪資查詢.特別事假扣款 = GetLeave2Money(薪資查詢!工作類別,薪資查詢!工作形態,薪資查詢!原應發底薪,薪資查詢!補助津貼+薪資查詢!專業証照津貼,薪資查詢!特別事假時數);
+		const kind1 = employee_data.work_type;
+		const kind2 = employee_data.work_status;
+		const special_leave_id = holidays_type.find(
+			(ht) => ht.holidays_name === "特別事假"
+		)?.pay_id;
+		let t1 = 0;
+		const hourly_fee =
+			(gross_salary +
+				(employee_payment.subsidy_allowance ?? 0) +
+				(employee_payment.professional_cert_allowance ?? 0)) /
+			240;
+		for (const h of holiday_list) {
+			if (h.pay_order === special_leave_id) {
+				t1 += h.total_hours ?? 0;
+			}
+		}
+		if (kind1 === FOREIGN) {
+			return Math.round(
+				insurance_rate_setting.l_i_wage_replacement_rate * t1
+			);
+		} else {
+			if (kind2 === LEAVE_MAN) {
+				return 0;
+			} else if (kind2 === FOREIGN) {
+				return Math.round(
+					insurance_rate_setting.l_i_wage_replacement_rate * t1
+				);
+			} else {
+				return Math.round(hourly_fee * t1);
+			}
+		}
 	}
 
 	//MARK: 實發金額
-	async getNetSalary(pay_type: PayTypeEnumType,taxable_subtotal: number,non_taxable_subtotal: number,deduction_subtotal: number): Promise<number> {
+	async getNetSalary(
+		pay_type: PayTypeEnumType,
+		taxable_subtotal: number,
+		non_taxable_subtotal: number,
+		deduction_subtotal: number
+	): Promise<number> {
 		// If (PayType = Moon_Pay Or PayType = OverTime_Pay) Then    'Jerry 10/011/10 只有15日另發加班,才需要計算                                                       'Jerry 06/05/19
 		// rd("實發金額") = rd("課稅小計") + rd("非課說小計") - rd("減項小計")                 'Jerry 06/05/19
 		// ElseIf (PayType = Award_1_Pay Or PayType = Award_2_Pay Or PayType = YearEnd_Pay Or PayType = YearResult_Pay Or PayType = Project_Pay Or PayType = DS_Pay) Then 'Jerry 06/05/19 , 06/06/08 ,07/08/26增加 Project_Pay, 10/02/03增加 YearResult_Pay,2014/7/24 增加DS_PAY
 		//    rd("實發金額") = rd("課稅小計") - rd("減項小計")                                    'Jerry 06/05/19
 		// End
-		if (pay_type === "month_salary") {
-			const net_salary = taxable_subtotal + non_taxable_subtotal - deduction_subtotal;
+		if (pay_type === PayTypeEnum.Enum.month_salary) {
+			const net_salary =
+				taxable_subtotal + non_taxable_subtotal - deduction_subtotal;
 			return net_salary;
 		}
 		return -1;
+	}
+	//MARK: 特別事假
+	async getSpecialLeave(
+		holiday_list: Holiday[],
+		holidays_type: HolidaysType[]
+	): Promise<number> {
+		const special_leave_id = holidays_type.find(
+			(ht) => ht.holidays_name === "特別事假"
+		)?.pay_id;
+		let special_leave = 0;
+		holiday_list.map((h) => {
+			if (h.pay_order === special_leave_id) {
+				special_leave += h.total_hours ?? 0;
+			}
+		});
+		return special_leave;
+	}
+	//MARK: 有全勤事假
+	async getFullAtendancePersonalLeave(
+		holiday_list: Holiday[],
+		holidays_type: HolidaysType[]
+	): Promise<number> {
+		const full_attendance_personal_leave_id = holidays_type.find(
+			(ht) => ht.holidays_name === "有全勤事假"
+		)?.pay_id;
+		let full_attendance_personal_leave = 0;
+		holiday_list.map((h) => {
+			if (h.pay_order === full_attendance_personal_leave_id) {
+				full_attendance_personal_leave += h.total_hours ?? 0;
+			}
+		});
+		return full_attendance_personal_leave;
+	}
+	//MARK: 有全勤病假
+	async getFullAtendanceSickLeave(
+		holiday_list: Holiday[],
+		holidays_type: HolidaysType[]
+	): Promise<number> {
+		const full_attendance_sick_leave_id = holidays_type.find(
+			(ht) => ht.holidays_name === "有全勤病假"
+		)?.pay_id;
+		let full_attendance_sick_leave = 0;
+		holiday_list.map((h) => {
+			if (h.pay_order === full_attendance_sick_leave_id) {
+				full_attendance_sick_leave += h.total_hours ?? 0;
+			}
+		});
+		return full_attendance_sick_leave;
 	}
 
 	/*
