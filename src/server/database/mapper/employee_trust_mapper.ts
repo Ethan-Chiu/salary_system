@@ -3,7 +3,7 @@ import { z } from "zod";
 import { BaseResponseError } from "~/server/api/error/BaseResponseError";
 import { EmployeeTrust, EmployeeTrustFE, updateEmployeeTrustAPI, updateEmployeeTrustService } from "~/server/api/types/employee_trust";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
-import { convertDatePropertiesToISOString } from "./helper_function";
+import { convertDatePropertiesToISOString, deleteProperties } from "./helper_function";
 import { CryptoHelper } from "~/lib/utils/crypto";
 
 @injectable()
@@ -37,7 +37,7 @@ export class EmployeeTrustMapper {
             department: employee.department,
         })
 
-        return employeeTrustFE
+        return deleteProperties(employeeTrustFE, ["emp_trust_reserve_enc", "org_trust_reserve_enc", "emp_special_trust_incent_enc", "org_special_trust_incent_enc"])
     }
 
     async getEmployeeTrustNullable(employee_trust: z.infer<typeof updateEmployeeTrustAPI>): Promise<z.infer<typeof updateEmployeeTrustService>> {
