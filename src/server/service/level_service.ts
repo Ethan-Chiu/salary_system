@@ -85,28 +85,24 @@ export class LevelService {
 
 	async getLevelBySalary(
 		salary: number,
-		level_start: number,
-		level_end: number
+		level_start_id: number,
+		level_end_id: number
 	): Promise<Level> {
-		const levelList = await Level.findAll({
-			where: {
-				level: {
-					[Op.gte]: salary,
-				},
-			},
-		});
-		const minLevel = await this.getLevelById(level_start);
-		const maxLevel = await this.getLevelById(level_end);
+		const minLevel = await this.getLevelById(level_start_id);
+		const maxLevel = await this.getLevelById(level_end_id);
 		if (minLevel == null || maxLevel == null) {
 			throw new BaseResponseError("Level does not exist");
 		}
-		const targetLevel = levelList.sort((a, b) => a.level - b.level)[0]!;
-		const level =
-			targetLevel.level < minLevel.level
-				? minLevel
-				: targetLevel.level > maxLevel.level
-					? maxLevel
-					: targetLevel;
-		return level;
+		const levelList = await Level.findAll({
+			where: {
+				level: {
+					[Op.gte]: minLevel.level,
+					[Op.lte]: maxLevel.level,
+				},
+			},
+			order: [["level", "ASC"]]
+		});
+		const targetLevel = levelList.find((level) => level.level > salary);
+		return targetLevel ?? levelList[levelList.length - 1]!;
 	}
 }

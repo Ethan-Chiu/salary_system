@@ -80,9 +80,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 	const isList = Array.isArray(data);
 	const onlyOne = !(isList && data.length > 1);
 
-	const [selectedData, setSelectedData] = useState<DataType | null>(
-		isList ? null : data
-	);
+	const [selectedData, setSelectedData] = useState(isList ? null : data);
 
 	const [formValues, setFormValues] = useState<
 		Partial<z.infer<z.AnyZodObject>>
@@ -253,7 +251,7 @@ const CompViewAllDatas = ({
 	onDelete,
 	onAutoCalculate,
 }: {
-	dataNoID: DataTypeWithoutID[];
+	dataNoID: any[];
 	mode: FunctionMode;
 	onUpdate: (emp_no: string) => void;
 	onDelete: (index: number) => void;
@@ -261,7 +259,7 @@ const CompViewAllDatas = ({
 }) => {
 	const [filterValue, setFilterValue] = useState<string>("");
 	const [filteredDataList, setFilteredDataList] =
-		useState<DataTypeWithoutID[]>(dataNoID);
+		useState(dataNoID);
 	const [selectedEmpNoList, setSelectedEmpNoList] = useState<string[]>(
 		dataNoID.map((e) => e.emp_no)
 	);

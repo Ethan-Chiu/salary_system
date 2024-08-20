@@ -30,6 +30,8 @@ export default function ApiFunctionsProvider({
 	const getInsuranceRateSetting = () =>
 		api.parameters.getAllInsuranceRateSetting.useQuery();
 
+	const getTrustMoney = () => api.parameters.getAllTrustMoney.useQuery();
+
 	const getBonusSetting = () => api.parameters.getAllBonusSetting.useQuery();
 
 	const getBonusDepartment = () =>
@@ -62,6 +64,9 @@ export default function ApiFunctionsProvider({
 		},
 		TableInsurance: {
 			queryFunction: getInsuranceRateSetting,
+		},
+		TableTrustMoney: {
+			queryFunction: getTrustMoney,
 		},
 		TableBonusSetting: {
 			queryFunction: getBonusSetting,

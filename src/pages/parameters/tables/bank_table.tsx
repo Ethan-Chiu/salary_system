@@ -45,44 +45,39 @@ export const bank_columns = [
 				</div>
 			);
 		},
-		cell: ({ row }) => (
-			<div className="lowercase">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
-		),
+		cell: ({ row }) =>
+			<div className="text-center font-medium">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
+		,
 	}),
 	columnHelper.accessor("org_name", {
 		header: () => {
 			const { t } = useTranslation(["common"]);
-			return <div className="text-center">{t("table.org_name")}</div>
+			return <div className="text-center font-medium">{t("table.org_name")}</div>
 		},
-		cell: ({ row }) => {
-			return (
-				<div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>
-			);
-		},
+		cell: ({ row }) =>
+			<div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>
+		,
 	}),
 	columnHelper.accessor("start_date", {
 		header: () => {
 			const { t } = useTranslation(["common"]);
-			return <div className="text-center">{t("table.start_date")}</div>
-		}, 
+			return <div className="text-center font-medium">{t("table.start_date")}</div>
+		},
 		cell: ({ row }) => {
 			return (
-				<div className="text-center font-medium">{`${
-					row.original.start_date
-				}`}</div>
+				<div className="text-center font-medium">{`${row.original.start_date
+					}`}</div>
 			);
 		},
 	}),
 	columnHelper.accessor("end_date", {
 		header: () => {
 			const { t } = useTranslation(["common"]);
-			return <div className="text-center">{t("table.end_date")}</div>
+			return <div className="text-center font-medium">{t("table.end_date")}</div>
 		},
 		cell: ({ row }) => {
 			return row.original.end_date ? (
-				<div className="text-center font-medium">{`${
-					row.original.end_date
-				}`}</div>
+				<div className="text-center font-medium">{`${row.original.end_date}`}</div>
 			) : (
 				<div className="text-center font-medium"></div>
 			);

@@ -22,6 +22,8 @@ export function getSchema(table: TableEnum) {
 			return bankSchema;
 		case "TableInsurance":
 			return insuranceSchema;
+		case "TableTrustMoney":
+			return trustMoneySchema;
 		// bonus
 		case "TableBonusSetting":
 			return bonusSchema;

@@ -7,24 +7,20 @@ import { Op } from "sequelize";
 import { EHRService } from "./ehr_service";
 import { LevelRangeService } from "./level_range_service";
 import { LevelService } from "./level_service";
-import { LevelRangeMapper } from "../database/mapper/level_range_mapper";
 import { createEmployeePaymentService, updateEmployeePaymentService } from "../api/types/employee_payment_type";
+import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
 
 @injectable()
 export class EmployeePaymentService {
 	async createEmployeePayment({
 		emp_no,
-		base_salary,
-		food_allowance,
-		supervisor_allowance,
-		occupational_allowance,
-		subsidy_allowance,
-		professional_cert_allowance,
-		l_r_self,
-		l_i,
-		h_i,
-		l_r,
-		occupational_injury,
+		base_salary_enc,
+		food_allowance_enc,
+		l_r_self_enc,
+		l_i_enc,
+		h_i_enc,
+		l_r_enc,
+		occupational_injury_enc,
 		start_date,
 		end_date,
 	}: z.infer<typeof createEmployeePaymentService>): Promise<EmployeePayment> {
@@ -32,17 +28,13 @@ export class EmployeePaymentService {
 		check_date(start_date, end_date, current_date_string);
 		const newData = await EmployeePayment.create({
 			emp_no: emp_no,
-			base_salary: base_salary,
-			food_allowance: food_allowance,
-			supervisor_allowance: supervisor_allowance,
-			occupational_allowance: occupational_allowance,
-			subsidy_allowance: subsidy_allowance,
-			professional_cert_allowance: professional_cert_allowance,
-			l_r_self: l_r_self,
-			l_i: l_i,
-			h_i: h_i,
-			l_r: l_r,
-			occupational_injury: occupational_injury,
+			base_salary_enc: base_salary_enc,
+			food_allowance_enc: food_allowance_enc,
+			l_r_self_enc: l_r_self_enc,
+			l_i_enc: l_i_enc,
+			h_i_enc: h_i_enc,
+			l_r_enc: l_r_enc,
+			occupational_injury_enc: occupational_injury_enc,
 			start_date: start_date ?? current_date_string,
 			end_date: end_date,
 			create_by: "system",
@@ -149,17 +141,13 @@ export class EmployeePaymentService {
 	async updateEmployeePayment({
 		id,
 		emp_no,
-		base_salary,
-		food_allowance,
-		supervisor_allowance,
-		occupational_allowance,
-		subsidy_allowance,
-		professional_cert_allowance,
-		l_r_self,
-		l_i,
-		h_i,
-		l_r,
-		occupational_injury,
+		base_salary_enc,
+		food_allowance_enc,
+		l_r_self_enc,
+		l_i_enc,
+		h_i_enc,
+		l_r_enc,
+		occupational_injury_enc,
 		start_date,
 		end_date,
 	}: z.infer<typeof updateEmployeePaymentService>): Promise<void> {
@@ -170,40 +158,27 @@ export class EmployeePaymentService {
 		const affectedCount = await EmployeePayment.update(
 			{
 				emp_no: select_value(emp_no, employeePayment.emp_no),
-				base_salary: select_value(
-					base_salary,
-					employeePayment.base_salary
+				base_salary_enc: select_value(
+					base_salary_enc,
+					employeePayment.base_salary_enc
 				),
-				food_allowance: select_value(
-					food_allowance,
-					employeePayment.food_allowance
+				food_allowance_enc: select_value(
+					food_allowance_enc,
+					employeePayment.food_allowance_enc
 				),
-				supervisor_allowance: select_value(
-					supervisor_allowance,
-					employeePayment.supervisor_allowance
+				l_r_self_enc: select_value(
+					l_r_self_enc,
+					employeePayment.l_r_self_enc
 				),
-				occupational_allowance: select_value(occupational_allowance, employeePayment.occupational_allowance),
-				subsidy_allowance: select_value(
-					subsidy_allowance,
-					employeePayment.subsidy_allowance
+				l_i_enc: select_value(l_i_enc, employeePayment.l_i_enc),
+				h_i_enc: select_value(h_i_enc, employeePayment.h_i_enc),
+				l_r_enc: select_value(
+					l_r_enc,
+					employeePayment.l_r_enc
 				),
-				professional_cert_allowance: select_value(
-					professional_cert_allowance,
-					employeePayment.professional_cert_allowance
-				),
-				l_r_self: select_value(
-					l_r_self,
-					employeePayment.l_r_self
-				),
-				l_i: select_value(l_i, employeePayment.l_i),
-				h_i: select_value(h_i, employeePayment.h_i),
-				l_r: select_value(
-					l_r,
-					employeePayment.l_r
-				),
-				occupational_injury: select_value(
-					occupational_injury,
-					employeePayment.occupational_injury
+				occupational_injury_enc: select_value(
+					occupational_injury_enc,
+					employeePayment.occupational_injury_enc
 				),
 				start_date: select_value(
 					start_date,
@@ -234,6 +209,7 @@ export class EmployeePaymentService {
 	): Promise<void> {
 		const levelRangeService = container.resolve(LevelRangeService);
 		const leveService = container.resolve(LevelService);
+		const employeePaymentMapper = container.resolve(EmployeePaymentMapper);
 
 		emp_no_list.forEach(async (emp_no: string) => {
 			const employeePayment = await this.getCurrentEmployeePaymentByEmpNo(
@@ -243,34 +219,36 @@ export class EmployeePaymentService {
 			if (employeePayment == null) {
 				throw new BaseResponseError("Employee Payment does not exist");
 			}
+			const employeePaymentFE = await employeePaymentMapper.getEmployeePaymentFE(employeePayment);
 			const levelRangeList = await levelRangeService.getAllLevelRange();
 			const salary =
-				employeePayment.base_salary + (employeePayment.food_allowance ?? 0);
+				employeePaymentFE.base_salary + (employeePaymentFE.food_allowance ?? 0);
 			let result = [];
 			for (const levelRange of levelRangeList) {
-				const levelRangeMapper = container.resolve(LevelRangeMapper);
-				const levelRangeFE = await levelRangeMapper.getLevelRangeFE(levelRange)
 				const level = await leveService.getLevelBySalary(
 					salary,
-					levelRangeFE.level_start,
-					levelRangeFE.level_end
+					levelRange.level_start_id,
+					levelRange.level_end_id
 				);
 				result.push({
 					type: levelRange.type,
 					level: level.level,
 				});
 			}
+			const updatedEmployeePayment = await employeePaymentMapper.getEmployeePayment({
+				...employeePaymentFE,
+				l_i: result.find((r) => r.type === "勞保")?.level ?? 0,
+				h_i: result.find((r) => r.type === "健保")?.level ?? 0,
+				l_r: result.find((r) => r.type === "勞退")?.level ?? 0,
+				occupational_injury: result.find((r) => r.type === "職災")?.level ?? 0,
+			});
 
 			const affectedCount = await EmployeePayment.update(
 				{
-					l_i: result.find((r) => r.type === "l_i")?.level ?? 0,
-					h_i: result.find((r) => r.type === "h_i")?.level ?? 0,
-					l_r:
-						result.find((r) => r.type === "l_r")
-							?.level ?? 0,
-					occupational_injury:
-						result.find((r) => r.type === "occupational_injury")
-							?.level ?? 0,
+					l_i_enc: updatedEmployeePayment.l_i_enc,
+					h_i_enc: updatedEmployeePayment.h_i_enc,
+					l_r_enc: updatedEmployeePayment.l_r_enc,
+					occupational_injury_enc: updatedEmployeePayment.occupational_injury_enc,
 					update_by: "system",
 				},
 				{ where: { emp_no: emp_no } }

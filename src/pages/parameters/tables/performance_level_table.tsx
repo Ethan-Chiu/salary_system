@@ -40,7 +40,7 @@ export const performance_level_columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="lowercase">{`${row.original.performance_level}`}</div>
+			<div className="text-center font-medium">{`${row.original.performance_level}`}</div>
 		),
 	}),
 	columnHelper.accessor("multiplier", {
@@ -65,7 +65,7 @@ export const performance_level_columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="lowercase">{`${row.original.multiplier}`}</div>
+			<div className="text-center font-medium">{`${row.original.multiplier}`}</div>
 		),
 	}),
 ];

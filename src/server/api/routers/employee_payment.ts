@@ -3,7 +3,6 @@ import { container } from "tsyringe";
 import { BaseResponseError } from "../error/BaseResponseError";
 import { z } from "zod";
 import { EmployeePaymentService } from "~/server/service/employee_payment_service";
-import { get_date_string } from "~/server/service/helper_function";
 import { createEmployeePaymentAPI, updateEmployeePaymentAPI } from "../types/employee_payment_type";
 import { EmployeePaymentMapper } from "~/server/database/mapper/employee_payment_mapper";
 
@@ -41,15 +40,8 @@ export const employeePaymentRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const employeePaymentService = container.resolve(EmployeePaymentService);
 			const employeePaymentMapper = container.resolve(EmployeePaymentMapper);
-			const newdata = await employeePaymentService.createEmployeePayment({
-				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
-			});
+			const employeePayment = await employeePaymentMapper.getEmployeePayment(input);
+			const newdata = await employeePaymentService.createEmployeePayment(employeePayment);
 			await employeePaymentService.rescheduleEmployeePayment();
 			const employeePaymentFE = await employeePaymentMapper.getEmployeePaymentFE(newdata);
 			return employeePaymentFE;
@@ -58,18 +50,10 @@ export const employeePaymentRouter = createTRPCRouter({
 	updateEmployeePayment: publicProcedure
 		.input(updateEmployeePaymentAPI)
 		.mutation(async ({ input }) => {
-			const employeePaymentService = container.resolve(
-				EmployeePaymentService
-			);
-			await employeePaymentService.updateEmployeePayment({
-				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
-			});
+			const employeePaymentService = container.resolve(EmployeePaymentService);
+			const employeePaymentMapper = container.resolve(EmployeePaymentMapper);
+			const employeePayment = await employeePaymentMapper.getEmployeePaymentNullable(input);
+			await employeePaymentService.updateEmployeePayment(employeePayment);
 			await employeePaymentService.rescheduleEmployeePayment();
 		}),
 

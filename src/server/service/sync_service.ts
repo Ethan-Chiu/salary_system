@@ -8,6 +8,8 @@ import { EmployeePaymentService } from "./employee_payment_service";
 import { EmployeeTrustService } from "./employee_trust_service";
 import { type Exact } from "~/utils/exact_type";
 import { FunctionsEnum, type FunctionsEnumType } from "../api/types/functions_enum";
+import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
+import { EmployeeTrustMapper } from "../database/mapper/employee_trust_mapper";
 
 export interface DataComparison<ValueT = any> {
 	key: string;
@@ -230,7 +232,7 @@ export class SyncService {
 				updated_all_emps.map(async (emp) => {
 					let msg = "";
 					switch (
-						emp.work_status // 根據工作狀態生成不同的消息
+					emp.work_status // 根據工作狀態生成不同的消息
 					) {
 						case "一般員工":
 							// 檢查不合理的離職日期
@@ -426,6 +428,8 @@ export class SyncService {
 			EmployeePaymentService
 		);
 		const employee_trust_setvice = container.resolve(EmployeeTrustService);
+		const employee_payment_mapper = container.resolve(EmployeePaymentMapper);
+		const employee_trust_mapper = container.resolve(EmployeeTrustMapper);
 		updatedDatas.map(async (updatedData) => {
 			if (!salary_emp_no_list.includes(updatedData.emp_no)) {
 				await employee_data_service.createEmployeeData(updatedData);
@@ -433,33 +437,28 @@ export class SyncService {
 					emp_no: updatedData.emp_no,
 					base_salary: 0,
 					food_allowance: 0,
-					supervisor_allowance: 0,
-					occupational_allowance: 0,
-					subsidy_allowance: 0,
-					professional_cert_allowance: 0,
 					l_r_self: 0,
 					l_i: 0,
 					h_i: 0,
 					l_r: 0,
 					occupational_injury: 0,
-					start_date: updatedData.registration_date,
+					start_date: new Date(updatedData.registration_date),
 					end_date: null,
 				};
-				await employee_payment_service.createEmployeePayment(
-					payment_input
-				);
+				const employee_payment = await employee_payment_mapper.getEmployeePayment(payment_input)
+				await employee_payment_service.createEmployeePayment(employee_payment);
+
 				const employee_trust_input = {
 					emp_no: updatedData.emp_no,
 					emp_trust_reserve: 0,
 					org_trust_reserve: 0,
 					emp_special_trust_incent: 0,
 					org_special_trust_incent: 0,
-					start_date: updatedData.registration_date,
+					start_date: new Date(updatedData.registration_date),
 					end_date: null,
 				};
-				await employee_trust_setvice.createEmployeeTrust(
-					employee_trust_input
-				);
+				const employee_trust = await employee_trust_mapper.getEmployeeTrust(employee_trust_input);
+				await employee_trust_setvice.createEmployeeTrust(employee_trust);
 			} else
 				await employee_data_service.updateEmployeeDataByEmpNo(
 					updatedData

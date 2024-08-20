@@ -39,13 +39,13 @@ export const bonus_seniority_columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="lowercase">{row.getValue("seniority")}</div>
+			<div className="text-center font-medium">{row.getValue("seniority")}</div>
 		),
 	}),
 	columnHelper.accessor("multiplier", {
 		header: () => {
 			const { t } = useTranslation(["common"]);
-			return <div className="text-center">{t("table.multiplier")}</div>
+			return <div className="text-center font-medium">{t("table.multiplier")}</div>
 		}, 
 		cell: ({ row }) => {
 			return (

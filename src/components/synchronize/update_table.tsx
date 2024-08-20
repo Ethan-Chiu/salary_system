@@ -211,7 +211,7 @@ export function UpdateTable({
 						<TableRow>
 							<TableCell
 								colSpan={6}
-								className="whitespace-nowrap border text-center"
+								className="whitespace-nowrap border text-center font-medium"
 							>
 								{t("table.no_data")}
 							</TableCell>

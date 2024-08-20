@@ -9,6 +9,7 @@ export const ParameterTableEnumValues = [
 	"TableAttendance",
 	"TableBankSetting",
 	"TableInsurance",
+	"TableTrustMoney",
 	"TableLevel",
 	"TableLevelRange",
 	"TableBonusSetting",

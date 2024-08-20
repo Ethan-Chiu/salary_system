@@ -40,14 +40,14 @@ export const bonus_department_columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="lowercase">{row.getValue("department")}</div>
+			<div className="text-center font-medium">{row.getValue("department")}</div>
 		),
 	}),
 	columnHelper.accessor("multiplier", {
 		header: () => {
 			const { t } = useTranslation(["common"]);
-			return <div className="text-center">{t("table.multiplier")}</div>
-		},
+			return <div className="text-center font-medium">{t("table.multiplier")}</div>
+		}, 
 		cell: ({ row }) => {
 			return (
 				<div className="flex justify-center">

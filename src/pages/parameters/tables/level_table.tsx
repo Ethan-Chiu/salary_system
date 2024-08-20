@@ -39,7 +39,7 @@ export const level_columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="lowercase">{`${row.original.level}`}</div>
+			<div className="text-center font-medium">{`${row.original.level}`}</div>
 		),
 	}),
 ];

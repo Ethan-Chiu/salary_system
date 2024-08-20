@@ -14,10 +14,10 @@ export class EmployeeTrust extends Model<
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
 	declare emp_no: string;
-	declare emp_trust_reserve: number;
-	declare org_trust_reserve: number;
-	declare emp_special_trust_incent: number;
-	declare org_special_trust_incent: number;
+	declare emp_trust_reserve_enc: string;
+	declare org_trust_reserve_enc: string;
+	declare emp_special_trust_incent_enc: string;
+	declare org_special_trust_incent_enc: string;
 	declare start_date: string;
 	declare end_date: string | null;
 
@@ -42,20 +42,20 @@ export function initEmployeeTrust(sequelize: Sequelize) {
 				type: DataTypes.STRING(32),
 				allowNull: false,
 			},
-			emp_trust_reserve: {
-				type: DataTypes.INTEGER.UNSIGNED,
+			emp_trust_reserve_enc: {
+				type: DataTypes.STRING(128),
 				allowNull: false,
 			},
-			org_trust_reserve: {
-				type: DataTypes.INTEGER.UNSIGNED,
+			org_trust_reserve_enc: {
+				type: DataTypes.STRING(128),
 				allowNull: false,
 			},
-			emp_special_trust_incent: {
-				type: DataTypes.INTEGER.UNSIGNED,
+			emp_special_trust_incent_enc: {
+				type: DataTypes.STRING(128),
 				allowNull: false,
 			},
-			org_special_trust_incent: {
-				type: DataTypes.INTEGER.UNSIGNED,
+			org_special_trust_incent_enc: {
+				type: DataTypes.STRING(128),
 				allowNull: false,
 			},
 			start_date: {

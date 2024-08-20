@@ -53,7 +53,7 @@ function CompNoTableRow({ cols }: { cols: number }) {
 	const { t } = useTranslation(['common'])
 	return (
 		<TableRow>
-			<TableCell colSpan={cols} className="h-24 max-w-xs text-center">
+			<TableCell colSpan={cols} className="h-24 max-w-xs text-center font-medium">
 				{t("table.no_data")}
 			</TableCell>
 		</TableRow>

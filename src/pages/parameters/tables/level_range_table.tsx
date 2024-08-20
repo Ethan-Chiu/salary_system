@@ -41,13 +41,13 @@ export const level_range_columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="lowercase">{`${row.original.type}`}</div>
+			<div className="text-center font-medium">{`${row.original.type}`}</div>
 		),
 	}),
 	columnHelper.accessor("level_start", {
 		header: () => {
 			const { t } = useTranslation(["common"]);
-			return <div className="text-center">{t("table.level_start")}</div>
+			return <div className="text-center font-medium">{t("table.level_start")}</div>
 		},
 		cell: ({ row }) => {
 			return (
