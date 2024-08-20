@@ -16,6 +16,7 @@ import { InsuranceRateSetting } from "../database/entity/SALARY/insurance_rate_s
 import { Holiday } from "../database/entity/UMEDIA/holiday";
 import { PayTypeEnum, PayTypeEnumType } from "../api/types/pay_type_enum";
 import { HolidaysType } from "../database/entity/SALARY/holidays_type";
+import { util } from "zod";
 
 const FOREIGN = "外籍勞工";
 const PROFESSOR = "顧問";
@@ -27,11 +28,13 @@ const LEAVE_MAN = "離職人員";
 const PARTTIME1 = "工讀生";
 const PARTTIME2 = "建教生";
 const CONTRACT = "約聘人員";
-
+const NORMAL_MAN = "一般員工";
 const rd = (key: string) => {
 	throw new Error("Should change 'rd' to your functions");
 };
-
+function Round(num: number, decimals: number = 0): number {
+	return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+}
 @injectable()
 export class CalculateService {
 	constructor() {}
@@ -79,9 +82,9 @@ export class CalculateService {
 			}
 		});
 
-		if (employee_data.work_type === "外籍勞工") {
+		if (employee_data.work_type === FOREIGN) {
 			hourly_fee = insurance_rate_setting.min_wage_rate;
-			return Math.round(
+			return Round(
 				hourly_fee * t1 +
 					hourly_fee * t2 * 1.34 +
 					hourly_fee * t3 * 1.67 +
@@ -89,7 +92,7 @@ export class CalculateService {
 					hourly_fee * t5 * 2.67
 			);
 		} else
-			return Math.round(
+			return Round(
 				hourly_fee * t1 +
 					hourly_fee * t2 * 1.34 +
 					hourly_fee * t3 * 1.67 +
@@ -146,9 +149,9 @@ export class CalculateService {
 			}
 		});
 		// rate存哪裡？
-		if (employee_data.work_type === "外籍勞工") {
+		if (employee_data.work_type === FOREIGN) {
 			hourly_fee = insurance_rate_setting.min_wage_rate;
-			return Math.round(
+			return Round(
 				hourly_fee * t1 +
 					hourly_fee * t2 * 1.34 +
 					hourly_fee * t3 * 1.67 +
@@ -156,7 +159,7 @@ export class CalculateService {
 					hourly_fee * t5 * 2.67
 			);
 		} else
-			return Math.round(
+			return Round(
 				hourly_fee * t1 +
 					hourly_fee * t2 * 1.34 +
 					hourly_fee * t3 * 1.67 +
@@ -208,16 +211,16 @@ export class CalculateService {
 			}
 		});
 		// rate存哪裡？
-		if (employee_data.work_type === "外籍勞工") {
+		if (employee_data.work_type === FOREIGN) {
 			hourly_fee = insurance_rate_setting.min_wage_rate;
-			return Math.round(
+			return Round(
 				hourly_fee * t1 * 1.34 +
 					hourly_fee * t2 * 1.67 +
 					hourly_fee * t3 * 2 +
 					hourly_fee * t4 * 2.67
 			);
 		} else
-			return Math.round(
+			return Round(
 				hourly_fee * t1 * 1.34 +
 					hourly_fee * t2 * 1.67 +
 					hourly_fee * t3 * 2 +
@@ -277,24 +280,22 @@ export class CalculateService {
 
 		// if (old_age_benefit)	return 0;	// 'Jerry 100426 已領老年給付者,員工免付勞保
 
-		if (kind1 === "外籍勞工" || kind2 === FOREIGN)
-			return Math.round(
-				Math.round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30) *
+		if (kind1 === FOREIGN || kind2 === FOREIGN)
+			return Round(
+				Round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30) *
 					hinder_rate
 			); // 'Jerry 2023/04/06 由工作天數改為加勞保天數計算
 		if (kind2 === PROFESSOR) return 0;
 		if (kind2 === BOSS)
 			return (
-				Math.round(
-					Math.round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30)
-				) * hinder_rate
+				Round(Round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30)) *
+				hinder_rate
 			); //   'Jerry 10/04/26 由工作天數改為加勞保天數計算
 		if (kind2 === DAY_PAY)
 			return (
-				Math.round(
-					Math.round(
-						(Tax * wci_normal * 0.200001 * PartTimeDay) / 30
-					) + Math.round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
+				Round(
+					Round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30) +
+						Round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
 				) * hinder_rate
 			);
 		if (
@@ -305,17 +306,16 @@ export class CalculateService {
 			kind2 == CONTRACT
 		)
 			return (
-				Math.round(
-					Math.round(
-						(Tax * wci_normal * 0.200001 * PartTimeDay) / 30
-					) + Math.round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
+				Round(
+					Round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30) +
+						Round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
 				) * hinder_rate
 			); // 'Jerry 07/07/19 由工作天數改為加勞保天數計算
 
 		return (
-			Math.round(
-				Math.round(Tax * wci_normal * 0.200001) +
-					Math.round(Tax * wci_ji * 0.200001)
+			Round(
+				Round(Tax * wci_normal * 0.200001) +
+					Round(Tax * wci_ji * 0.200001)
 			) * hinder_rate
 		);
 	}
@@ -348,14 +348,14 @@ export class CalculateService {
 				return 0;
 			if (kind === BOSS)
 				return (
-					(Math.round(Math.round(Tax * nhi_rate) * (Peop + 1)) +
-						Math.round(Math.round(Tax * nhi_rate) * exePep)) *
+					(Round(Round(Tax * nhi_rate) * (Peop + 1)) +
+						Round(Round(Tax * nhi_rate) * exePep)) *
 					hinder_rate *
 					2
 				);
 			return (
-				(Math.round(Math.round(Tax * nhi_rate * 0.3) * (Peop + 1)) +
-					Math.round(Math.round(Tax * nhi_rate * 0.3) * exePep)) *
+				(Round(Round(Tax * nhi_rate * 0.3) * (Peop + 1)) +
+					Round(Round(Tax * nhi_rate * 0.3) * exePep)) *
 				hinder_rate *
 				2
 			);
@@ -365,13 +365,13 @@ export class CalculateService {
 				return 0;
 			if (kind === BOSS)
 				return (
-					(Math.round(Math.round(Tax * nhi_rate) * (Peop + 1)) +
-						Math.round(Math.round(Tax * nhi_rate) * exePep)) *
+					(Round(Round(Tax * nhi_rate) * (Peop + 1)) +
+						Round(Round(Tax * nhi_rate) * exePep)) *
 					hinder_rate
 				);
 			return (
-				(Math.round(Tax * nhi_rate * 0.3) * (Peop + 1) +
-					Math.round(Tax * nhi_rate * 0.3) * exePep) *
+				(Round(Tax * nhi_rate * 0.3) * (Peop + 1) +
+					Round(Tax * nhi_rate * 0.3) * exePep) *
 				hinder_rate
 			);
 		}
@@ -394,7 +394,7 @@ export class CalculateService {
 		const Fulltime = full_attendance_bonus ?? 0;
 
 		if (kind1 === FOREIGN)
-			return Math.round((money + food + Effect + Fulltime) * 0.005);
+			return Round((money + food + Effect + Fulltime) * 0.005);
 		if (kind2 === LEAVE_MAN) return 0;
 		if (kind2 === PROFESSOR) return 0;
 		if (kind2 === PARTTIME1) return 0;
@@ -402,9 +402,9 @@ export class CalculateService {
 		if (kind2 === CONTRACT) return 0;
 		if (kind2 === DAY_PAY) return 0;
 		if (kind2 === FOREIGN)
-			return Math.round((money + food + Effect + Fulltime) * 0.005);
+			return Round((money + food + Effect + Fulltime) * 0.005);
 
-		return Math.round((money + food) * 0.005);
+		return Round((money + food) * 0.005);
 	}
 	//MARK: 請假扣款
 	async getLeaveDeduction(
@@ -440,10 +440,10 @@ export class CalculateService {
 				(holiday.total_hours ?? 0) *
 				holidays_type_dict[holiday.pay_order!]!;
 		});
-		if (employee_data.work_type === "外籍勞工") {
+		if (employee_data.work_type === FOREIGN) {
 			hourly_fee = insurance_rate_setting.l_i_wage_replacement_rate;
-			return Math.round(hourly_fee * leave_deduction);
-		} else return Math.round(hourly_fee * leave_deduction);
+			return Round(hourly_fee * leave_deduction);
+		} else return Round(hourly_fee * leave_deduction);
 		// const bonus = rd("補助津貼") + rd("輪班津貼") + rd("全勤獎金") + rd("專業証照津貼");
 		// const t1 = rd("事假時數"); // 事假時數
 		// const T2 = rd("病假時數"); // 病假時數
@@ -627,11 +627,49 @@ export class CalculateService {
 		return salary_income_deduction;
 	}
 	//MARK: 工資墊償
-	async getSalaryAdvance(): Promise<number> {
-		// 外勞
-		// rd("工資墊償") = Round(rd("勞保") * wci_apf * rd("勞保天數") / 30, 1) + Round(rd("勞保") * wci_apf * rd("勞保追加") / 30, 1)  'Jerry 20220823工資墊償基金分開計算
-		// 本勞
-		// rd("工資墊償") = Round(rd("勞保") * wci_apf * rd("勞保天數") / 30, 3) + Round(rd("勞保") * wci_apf * rd("勞保追加") / 30, 3)  'Jerry 20220823工資墊償基金分開計算
+	async getSalaryAdvance(
+		pay_type: PayTypeEnumType,
+		payset: Payset | undefined,
+		employee_payment: EmployeePayment,
+		insurance_rate_setting: InsuranceRateSetting,
+		employee_data: EmployeeData
+	): Promise<number> {
+		const l_i = employee_payment.l_i;
+		const wci_apf = insurance_rate_setting.l_i_wage_replacement_rate;
+		const l_i_day = payset?.li_day ?? 30;
+		const additional_l_i = 0;
+		const work_type = employee_data.work_type;
+		const work_status = employee_data.work_status;
+
+		if (pay_type === PayTypeEnum.Enum.month_salary) {
+			if (work_type === FOREIGN) {
+				return (
+					Round((l_i * wci_apf * l_i_day) / 30, 1) +
+					Round((l_i * wci_apf * additional_l_i) / 30, 1)
+				); //'Jerry 20220823工資墊償基金分開計算
+			} else if (employee_data.work_status === BOSS) {
+				return (
+					Round((l_i * wci_apf * l_i_day) / 30, 3) +
+					Round((l_i * wci_apf * additional_l_i) / 30, 3)
+				); //'Jerry 20220823工資墊償基金分開計算
+			} else if (
+				work_status === PARTTIME1 ||
+				work_status === PARTTIME2 ||
+				work_status === CONTRACT ||
+				work_status === NEWBIE ||
+				work_status === WILL_LEAVE
+			) {
+				return (
+					Round((l_i * wci_apf * l_i_day) / 30, 1) +
+					Round((l_i * wci_apf * additional_l_i) / 30, 1)
+				); //'Jerry 20220823工資墊償基金分開計算
+			} else {
+				return (
+					Round((l_i * wci_apf * l_i_day) / 30, 1) +
+					Round((l_i * wci_apf * additional_l_i) / 30, 1)
+				); //'Jerry 20220823工資墊償基金分開計算
+			}
+		}
 		return -1;
 	}
 	//MARK: 薪資所得稅
@@ -672,19 +710,19 @@ export class CalculateService {
 		// Jerry 07/01/31 主要區別外籍勞工 同時也是當月離職人員的算法會與間接人員計計算邏輯衝突,因此以工作類別區分外籍勞工
 		if (kind1 === FOREIGN) {
 			// Jerry 07/09/21  15840 ==> 17280   09/4/28 17280 ==> 25920
-			if (differenceInDays > 183) return Math.round(Tax * 0.06);
+			if (differenceInDays > 183) return Round(Tax * 0.06);
 			else {
-				if (Tax < 25920) return Math.round(Tax * 0.06);
-				else return Math.round(Tax * 0.2);
+				if (Tax < 25920) return Round(Tax * 0.06);
+				else return Round(Tax * 0.2);
 			}
 		}
 
 		if (kind2 === LEAVE_MAN) return 0;
 		if (kind2 === FOREIGN) {
-			if (differenceInDays > 183) return Math.round(Tax * 0.06);
+			if (differenceInDays > 183) return Round(Tax * 0.06);
 			else {
-				if (Tax < 25920) return Math.round(Tax * 0.06);
-				else return Math.round(Tax * 0.2);
+				if (Tax < 25920) return Round(Tax * 0.06);
+				else return Round(Tax * 0.2);
 			}
 		}
 
@@ -696,13 +734,13 @@ export class CalculateService {
 					Num == item.扶養親屬
 				) {
 					if (kind2 === NEWBIE || kind2 === WILL_LEAVE)
-						return Math.round(item.扣繳稅額);
+						return Round(item.扣繳稅額);
 					else return item.扣繳稅額;
 				}
 			});
 		}
 
-		return Math.round(Tax * 0.06);
+		return Round(Tax * 0.06);
 	}
 	//MARK: 獎金所得稅
 	async getBonusTax(): Promise<number> {
@@ -1001,15 +1039,172 @@ export class CalculateService {
 	}
 	//MARK: 勞保費
 	async getLaborInsurancePay(
-		employee_payment: EmployeePayment
+		employee_payment: EmployeePayment,
+		employee_data: EmployeeData,
+		insurance_rate_setting: InsuranceRateSetting,
+		payset: Payset | undefined,
+		received_elderly_benefits: boolean,
+		pay_type: PayTypeEnumType
 	): Promise<number> {
+		// 有追加
+		// 外勞
+		//  x1 = Round(Round(rd("勞保") * wci_normal * 0.700001 * rd("勞保天數") / 30, 0) + Round(rd("職災") * wci_oi * rd("勞保天數") / 30, 0), 0) 'Jerry 20220823工資墊償基金分開計算
+		//  x2 = Round(Round(rd("勞保") * wci_normal * 0.700001 * rd("勞保追加") / 30, 0) + Round(rd("職災") * wci_oi * rd("勞保追加") / 30, 0), 0) 'Jerry 20220823工資墊償基金分開計算
+		// 總經理
+		// x1 = Round(Round(rd("勞保") * wci_normal * 0.700001 * rd("勞保天數") / 30, 0) + Round(rd("職災") * wci_oi * rd("勞保天數") / 30, 0), 0) 'Jerry 20220823工資墊償基金分開計算
+		// x2 = Round(Round(rd("勞保") * wci_normal * 0.700001 * rd("勞保追加") / 30, 0) + Round(rd("職災") * wci_oi * rd("勞保追加") / 30, 0), 0) 'Jerry 20220823工資墊償基金分開計算
+		// ElseIf (rd("工作形態") = "工讀生" Or rd("工作形態") = "建教生" Or rd("工作形態") = "約聘人員" Or rd("工作形態") = "當月新進人員" Or rd("工作形態") = "當月離職人員_破月")
+		// x1 = Round(Round(rd("勞保") * wci_normal * 0.700001 * rd("勞保天數") / 30, 0) + Round(rd("勞保") * wci_ji * 0.700001 * rd("勞保天數") / 30, 0) + Round(rd("職災") * wci_oi * rd("勞保天數") / 30, 0), 0) 'Jerry 20220823工資墊償基金分開計算
+		//  x2 = Round(Round(rd("勞保") * wci_normal * 0.700001 * rd("勞保追加") / 30, 0) + Round(rd("勞保") * wci_ji * 0.700001 * rd("勞保追加") / 30, 0) + Round(rd("職災") * wci_oi * rd("勞保追加") / 30, 0), 0) 'Jerry 20220823工資墊償基金分開計算
+		// else
+		// x1 = Round(Round(rd("勞保") * wci_normal * 0.700001 * rd("勞保天數") / 30, 0) + Round(rd("勞保") * wci_ji * 0.700001 * rd("勞保天數") / 30, 0) + Round(rd("職災") * wci_oi * rd("勞保天數") / 30, 0), 0) 'Jerry 20220823工資墊償基金分開計算
+		// x2 = Round(Round(rd("勞保") * wci_normal * 0.700001 * rd("勞保追加") / 30, 0) + Round(rd("勞保") * wci_ji * 0.700001 * rd("勞保追加") / 30, 0) + Round(rd("職災") * wci_oi * rd("勞保追加") / 30, 0), 0) 'Jerry 20220823工資墊償基金分開計算
+		// If rd("已領老年給付") = True Then
+		//        'x1 = Round(rd("勞保") * 0.0009 * rd("勞保天數") / 30, 0) 'Jerry 100426 已領老年給付者,公司付員工職災保險
+		//        'x2 = Round(rd("勞保") * 0.0009 * rd("勞保追加") / 30, 0) 'Jerry 100426 已領老年給付者,公司付員工職災保險
+		//        'x1 = Round(rd("勞保") * wci_oi * rd("勞保天數") / 30, 0) 'Jerry 100426 已領老年給付者,公司付員工職災保險
+		//        'x2 = Round(rd("勞保") * wci_oi * rd("勞保追加") / 30, 0) 'Jerry 100426 已領老年給付者,公司付員工職災保險
+
+		//        x1 = Round(rd("職災") * wci_oi * rd("勞保天數") / 30, 0) ''hm 20220526增加職災級距
+		//        x2 = Round(rd("職災") * wci_oi * rd("勞保追加") / 30, 0) ''hm 20220526增加職災級距
+
+		//        rd("勞保費") = x1 + x2
+		//     End If
+		const wci_normal = insurance_rate_setting.l_i_accident_rate; // 勞工保險普通事故險
+		const wci_oi = insurance_rate_setting.l_i_occupational_injury_rate; // 勞工保險職災保險率
+		const l_i_day = payset?.li_day ?? 30;
+		const l_i = employee_payment.l_i;
+		const occupational_injury = employee_payment.occupational_injury;
+		const additional_l_i = 0;
+		const work_type = employee_data.work_type; //工作類別
+		const work_status = employee_data.work_status; //工作型態
+		const wci_ji = insurance_rate_setting.l_i_employment_pay_rate; // 勞工保險就業保險率
+		if (pay_type === PayTypeEnum.Enum.month_salary) {
+			if (received_elderly_benefits) {
+				const x1 = Round((occupational_injury * wci_oi * l_i_day) / 30);
+				const x2 = Round(
+					(occupational_injury * wci_oi * additional_l_i) / 30
+				);
+				return x1 + x2;
+			}
+			if (work_type === FOREIGN) {
+				const x1 = Round(
+					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
+						Round((occupational_injury * wci_oi * l_i_day) / 30)
+				); //'Jerry 20220823工資墊償基金分開計算
+				const x2 = Round(
+					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
+						Round(
+							(occupational_injury * wci_oi * additional_l_i) / 30
+						)
+				); //'Jerry 20220823工資墊償基金分開計算
+				return x1 + x2;
+			} else if (employee_data.work_status === BOSS) {
+				const x1 = Round(
+					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
+						Round((occupational_injury * wci_oi * l_i_day) / 30)
+				); //'Jerry 20220823工資墊償基金分開計算
+				const x2 = Round(
+					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
+						Round(
+							(occupational_injury * wci_oi * additional_l_i) / 30
+						)
+				); //'Jerry 20220823工資墊償基金分開計算
+				return x1 + x2;
+			} else if (
+				work_status === PARTTIME1 ||
+				work_status === PARTTIME2 ||
+				work_status === CONTRACT ||
+				work_status === NEWBIE ||
+				work_status === WILL_LEAVE
+			) {
+				const x1 = Round(
+					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
+						Round((l_i * 0.700001 * wci_ji * l_i_day) / 30) +
+						Round((occupational_injury * wci_oi * l_i_day) / 30)
+				); //'Jerry 20220823工資墊償基金分開計算
+				const x2 = Round(
+					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
+						Round((l_i * wci_ji * 0.700001 * additional_l_i) / 30) +
+						Round(
+							(occupational_injury * wci_oi * additional_l_i) / 30
+						)
+				); //'Jerry 20220823工資墊償基金分開計算
+				return x1 + x2;
+			} else {
+				const x1 = Round(
+					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
+						Round((l_i * wci_ji * 0.700001 * l_i_day) / 30) +
+						Round((occupational_injury * wci_oi * l_i_day) / 30)
+				);
+				const x2 = Round(
+					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
+						Round((l_i * wci_ji * 0.700001 * additional_l_i) / 30) +
+						Round(
+							(occupational_injury * wci_oi * additional_l_i) / 30
+						)
+				); //'Jerry 20220823工資墊償基金分開計算
+				return x1 + x2;
+			}
+		}
 		return -1;
 	}
 	//MARK: 健保費
 	async getHealthInsurancePay(
-		employee_payment: EmployeePayment
+		employee_payment: EmployeePayment,
+		employee_data: EmployeeData,
+		insurance_rate_setting: InsuranceRateSetting
 	): Promise<number> {
-		return -1;
+		// 		'公司付健保費(外籍勞工算法同本國籍)
+		// Function ComHel(ByVal money As Long, ByVal kind As String, ByVal HelAdd_YN As String)
+		//  If HelAdd_YN = True Then
+		//     Select Case kind
+		//         Case Leave_Man, BOSS, Professor, Will_Leave   'Jerry 06/07/28 改為PartTime(工讀生)要扣健保費,若不扣時,健保額度輸入0即可
+		//             ComHel = 0
+		//         Case Else
+		//             ComHel = Round(money * nhi_rate * 0.6 * (1 + nhi_people), 0) * 2
+		//     End Select
+		//  End If
+
+		//  If HelAdd_YN = False Then
+		//     Select Case kind
+		//         Case Leave_Man, BOSS, Professor, Will_Leave   'Jerry 06/07/28 改為PartTime(工讀生)要扣健保費,若不扣時,健保額度輸入0即可
+		//             ComHel = 0
+		//         Case Else
+		//             ComHel = Round(money * nhi_rate * 0.6 * (1 + nhi_people), 0)
+		//     End Select
+		//  End If
+
+		// End Function
+		const money = employee_payment.h_i;
+		const kind = employee_data.work_status;
+		const HelAdd_YN = false; // 建保追加 => 似乎bang不見了
+		const nhi_rate = insurance_rate_setting.h_i_standard_rate; // 健保一般保費費率 : 應該是這個
+		const nhi_people = employee_data.healthcare_dependents ?? 0;
+
+		if (HelAdd_YN) {
+			if (
+				kind === LEAVE_MAN ||
+				kind === BOSS ||
+				kind === PROFESSOR ||
+				kind === WILL_LEAVE
+			) {
+				return 0;
+			} else {
+				return Round(money * nhi_rate * 0.6 * (1 + nhi_people)) * 2;
+			}
+		} else {
+			if (
+				kind === LEAVE_MAN ||
+				kind === BOSS ||
+				kind === PROFESSOR ||
+				kind === WILL_LEAVE
+			) {
+				return 0;
+			} else {
+				return Round(money * nhi_rate * 0.6 * (1 + nhi_people));
+			}
+		}
 	}
 	//MARK: 團保費
 	async getGroupInsurancePay(employee_data: EmployeeData): Promise<number> {
@@ -1192,13 +1387,18 @@ export class CalculateService {
 				DAY_PAY,
 			].includes(kind2)
 		) {
-			return Math.round(Math.round(((money * PartTimeDay) / 30) * 0.06)); // Jerry 07/07/24 由工作天數改為加勞保天數計算
+			return Round(Round(((money * PartTimeDay) / 30) * 0.06)); // Jerry 07/07/24 由工作天數改為加勞保天數計算
 		}
 
-		return Math.round(Math.round(money * 0.06));
+		return Round(Round(money * 0.06));
 	}
 	//MARK: 勞退金提撥_舊制?
-	async getOldLaborRetirementContribution(): Promise<number> {
+	async getOldLaborRetirementContribution(
+		employee_data: EmployeeData,
+		taxable_subtotal: number,
+		non_taxable_subtotal: number,
+		payset: Payset | undefined
+	): Promise<number> {
 		// 		'公司付勞退金提撥_舊制
 		// Function ComRetire_old(ByVal On_Board As Date, ByVal money As Long, ByVal kind1 As String, ByVal kind2 As String, Normalday As Byte, PartTimeDay As Byte)  'Jerry 08/04/01
 		//   Dim Check_Date
@@ -1226,8 +1426,36 @@ export class CalculateService {
 		//        End If
 		//     End If
 		// End Function
-		const old_labor_retirement_contribution = -1;
-		return old_labor_retirement_contribution;
+		const On_Board = employee_data.registration_date;
+		const kind1 = employee_data.work_type;
+		const kind2 = employee_data.work_status;
+		const money = taxable_subtotal + non_taxable_subtotal;
+		const l_i_day = payset?.li_day ?? 30;
+
+		if (kind1 === FOREIGN)
+			if (kind2 === NORMAL_MAN) {
+				//         'ComRetire_old = 0 '2014/1/15 外籍勞工從事一般員工, 也要提撥勞退(舊)
+				return Round(Round(money * 0.02, 0), 0);
+			} else return 0;
+		else if (On_Board < "2005-7-1"){
+			if (
+				kind2 === BOSS ||
+				kind2 === FOREIGN ||
+				kind2 === PROFESSOR ||
+				kind2 === LEAVE_MAN
+			) {
+				return 0;
+			} else if (
+				kind2 === NEWBIE ||
+				kind2 === WILL_LEAVE ||
+				kind2 === PARTTIME1 ||
+				kind2 === PARTTIME2 ||
+				kind2 === CONTRACT
+			)
+				return Round(Round(((money * l_i_day) / 30) * 0.02, 0), 0);
+			else return Round(Round(money * 0.02, 0), 0);
+		}
+		return 0;
 	}
 	//MARK: 二代健保
 	async getSecondGenerationHealthInsurance(): Promise<number> {
@@ -1382,18 +1610,16 @@ export class CalculateService {
 			}
 		}
 		if (kind1 === FOREIGN) {
-			return Math.round(
-				insurance_rate_setting.l_i_wage_replacement_rate * t1
-			);
+			return Round(insurance_rate_setting.l_i_wage_replacement_rate * t1);
 		} else {
 			if (kind2 === LEAVE_MAN) {
 				return 0;
 			} else if (kind2 === FOREIGN) {
-				return Math.round(
+				return Round(
 					insurance_rate_setting.l_i_wage_replacement_rate * t1
 				);
 			} else {
-				return Math.round(hourly_fee * t1);
+				return Round(hourly_fee * t1);
 			}
 		}
 	}
