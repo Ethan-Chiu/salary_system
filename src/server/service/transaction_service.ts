@@ -116,6 +116,7 @@ export class TransactionService {
 			employee_payment!.professional_cert_allowance;
 		const food_allowance = employee_payment!.food_allowance;
 		const base_salary = employee_payment!.base_salary;
+		const received_elderly_benefits = false;
 		// MARK: Calculated Results
 		const other_deduction_tax = await calculateService.getOtherDeductionTax(
 			period_id,
@@ -221,11 +222,12 @@ export class TransactionService {
 			period_id,
 			emp_no
 		);
-		const meal_deduction = await calculateService
-			.getMealDeduction
+		const meal_deduction = await calculateService.getMealDeduction(
 			// period_id,
 			// emp_no
-			(period_id, emp_no);
+			period_id,
+			emp_no
+		);
 		const taxable_income = await calculateService.getTaxableIncome(
 			// period_id,
 			// emp_no
@@ -274,15 +276,24 @@ export class TransactionService {
 		);
 
 		const l_i_pay = await calculateService.getLaborInsurancePay(
-			employee_payment!
+			employee_payment!,
+			employee_data!,
+			insurance_rate_setting!,
+			payset,
+			received_elderly_benefits,
+			pay_type
 		);
-		const salary_advance = await calculateService
-			.getSalaryAdvance
-			// gross_salary,
-			// payset!
-			();
+		const salary_advance = await calculateService.getSalaryAdvance(
+			pay_type,
+			payset,
+			employee_payment!,
+			insurance_rate_setting!,
+			employee_data!
+		);
 		const h_i_pay = await calculateService.getHealthInsurancePay(
-			employee_payment!
+			employee_payment!,
+			employee_data!,
+			insurance_rate_setting!
 		);
 		const group_insurance_pay = await calculateService.getGroupInsurancePay(
 			employee_data!
@@ -322,7 +333,12 @@ export class TransactionService {
 				employee_payment!
 			);
 		const old_l_r_contribution =
-			await calculateService.getOldLaborRetirementContribution();
+			await calculateService.getOldLaborRetirementContribution(
+				employee_data!,
+				taxable_subtotal,
+				non_taxable_subtotal,
+				payset
+			);
 		const seniority = 0;
 		const assessment_rate = 0;
 		const assessment_bonus = await calculateService.getAssessmentBonus();
@@ -333,7 +349,7 @@ export class TransactionService {
 			period_id,
 			emp_no
 		);
-		const received_elderly_benefits = false;
+
 		const v_2_h_i =
 			await calculateService.getSecondGenerationHealthInsurance();
 		const has_trust = true; // todo
