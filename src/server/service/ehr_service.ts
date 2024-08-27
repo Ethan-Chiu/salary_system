@@ -115,20 +115,6 @@ export class EHRService {
 		let dataList = await dbConnection.query(this.GET_EMP_QUERY(period_id), {
 			type: QueryTypes.SELECT,
 		});
-
-		function dropColumns(objects: any[], columnsToRemove: any[]) {
-			return objects.map((obj) => {
-				const modifiedObject = { ...obj };
-				columnsToRemove.forEach(
-					(column) => delete modifiedObject[column]
-				);
-				return modifiedObject;
-			});
-		}
-
-		// Specify the columns you want to drop
-		const columnsToRemove = ["PERIOD_ID", "CHANGE_DATE", "CHANGE_MEMO"];
-		dataList = dropColumns(dataList, columnsToRemove);
 		const empList: Emp[] = dataList.map(Emp.fromDB);
 		return empList;
 	}
