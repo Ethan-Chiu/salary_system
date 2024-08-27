@@ -16,6 +16,9 @@ export class EmployeePaymentService {
 		emp_no,
 		base_salary_enc,
 		food_allowance_enc,
+		supervisor_allowance_enc,
+		occupational_allowance_enc,
+		subsidy_allowance_enc,
 		l_r_self_enc,
 		l_i_enc,
 		h_i_enc,
@@ -30,6 +33,9 @@ export class EmployeePaymentService {
 			emp_no: emp_no,
 			base_salary_enc: base_salary_enc,
 			food_allowance_enc: food_allowance_enc,
+			supervisor_allowance_enc,
+			occupational_allowance_enc,
+			subsidy_allowance_enc,
 			l_r_self_enc: l_r_self_enc,
 			l_i_enc: l_i_enc,
 			h_i_enc: h_i_enc,
@@ -143,6 +149,9 @@ export class EmployeePaymentService {
 		emp_no,
 		base_salary_enc,
 		food_allowance_enc,
+		supervisor_allowance_enc,
+		occupational_allowance_enc,
+		subsidy_allowance_enc,
 		l_r_self_enc,
 		l_i_enc,
 		h_i_enc,
@@ -165,6 +174,18 @@ export class EmployeePaymentService {
 				food_allowance_enc: select_value(
 					food_allowance_enc,
 					employeePayment.food_allowance_enc
+				),
+				supervisor_allowance_enc: select_value(
+					supervisor_allowance_enc,
+					employeePayment.supervisor_allowance_enc
+				),
+				occupational_allowance_enc: select_value(
+					occupational_allowance_enc,
+					employeePayment.occupational_allowance_enc
+				),
+				subsidy_allowance_enc: select_value(
+					subsidy_allowance_enc,
+					employeePayment.subsidy_allowance_enc
 				),
 				l_r_self_enc: select_value(
 					l_r_self_enc,

@@ -295,6 +295,22 @@ export class EHRService {
 		return allowanceList;
 	}
 
+	async getTargetAllowance(allowance_list: Allowance[], allowance_type_list: AllowanceType[], emp_no: string, type_name: string) {
+		const target_allowance_type = allowance_type_list.find((allowance_type) => allowance_type.name === type_name);
+		if (!target_allowance_type) {
+			throw new BaseResponseError("Allowance Type Not Found");
+		}
+		const target_allowance = allowance_list.filter((allowance) => allowance.emp_no === emp_no && allowance.allowance_id === target_allowance_type.id);
+		if (target_allowance.length === 0) {
+			return 0;
+		}
+		let amount = 0
+		target_allowance.forEach((allowance) => {
+			amount += allowance.amount!;
+		});
+		return amount;
+	}
+
 	private GET_PERIOD_QUERY(): string {
 		return `SELECT "PERIOD_ID", "PERIOD_NAME", "START_DATE", "END_DATE", "STATUS", "ISSUE_DATE" FROM "U_HR_PERIOD" WHERE "U_HR_PERIOD"."STATUS" = 'OPEN'`;
 	}
