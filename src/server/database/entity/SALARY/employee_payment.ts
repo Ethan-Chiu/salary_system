@@ -16,6 +16,9 @@ export class EmployeePayment extends Model<
 	declare emp_no: string;
 	declare base_salary_enc: string;
 	declare food_allowance_enc: string;
+	declare supervisor_allowance_enc: string;
+	declare occupational_allowance_enc: string;
+	declare subsidy_allowance_enc: string;
 	declare l_r_self_enc: string;
 	declare l_i_enc: string;
 	declare h_i_enc: string;
@@ -50,6 +53,18 @@ export function initEmployeePayment(sequelize: Sequelize) {
 				allowNull: false,
 			},
 			food_allowance_enc: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			supervisor_allowance_enc: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			occupational_allowance_enc: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			subsidy_allowance_enc: {
 				type: DataTypes.STRING(128),
 				allowNull: false,
 			},
