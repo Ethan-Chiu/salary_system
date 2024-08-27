@@ -41,12 +41,14 @@ export class CalculateService {
 	// MARK: 平日加班費
 	async getWeekdayOvertimePay(
 		employee_data: EmployeeData,
-		employee_payment: z.infer<z.infer<typeof EmployeePaymentFE>>,
+		employee_payment: z.infer<typeof EmployeePaymentFE>,
 		overtime_list: Overtime[],
 		payset: Payset,
 		insurance_rate_setting: InsuranceRateSetting,
 		full_attendance_bonus: number,
-		pay_type: PayTypeEnumType
+		pay_type: PayTypeEnumType,
+		shift_allowance: number,
+		gross_salary: number,
 	): Promise<number> {
 		/*
 				平日加班費 = GetNormalMoney(
@@ -62,10 +64,10 @@ export class CalculateService {
 		if (pay_type === PayTypeEnum.enum.foreign_15_bonus) {
 			pay = 2;
 		}
-		const money = await this.getGrossSalary(employee_payment, payset);
-		const shift_allowance = employee_payment.shift_allowance ?? 0;
+		// const gross_salary = await this.getGrossSalary(employee_payment, payset);
+		// const shift_allowance = employee_payment.shift_allowance ?? 0;
 		let hourly_fee =
-			(money + shift_allowance + full_attendance_bonus) / 240;
+			(gross_salary + shift_allowance + full_attendance_bonus) / 240;
 		let t1 = 0;
 		let t2 = 0;
 		let t3 = 0;
@@ -108,7 +110,9 @@ export class CalculateService {
 		payset: Payset,
 		insurance_rate_setting: InsuranceRateSetting,
 		full_attendance_bonus: number,
-		pay_type: PayTypeEnumType
+		pay_type: PayTypeEnumType,
+		shift_allowance: number,
+		gross_salary: number
 	): Promise<number> {
 		/*
 			假日加班費 = GetVocationMoney(
@@ -125,10 +129,10 @@ export class CalculateService {
 		if (pay_type === PayTypeEnum.enum.foreign_15_bonus) {
 			pay = 2;
 		}
-		const money = await this.getGrossSalary(employee_payment, payset);
-		const shift_allowance = employee_payment.shift_allowance ?? 0;
+		// const gross_salary = await this.getGrossSalary(employee_payment, payset);
+		// const shift_allowance = employee_payment.shift_allowance ?? 0;
 		let hourly_fee =
-			(money + shift_allowance + full_attendance_bonus) / 240;
+			(gross_salary + shift_allowance + full_attendance_bonus) / 240;
 		let t1 = 0;
 		let t2 = 0;
 		let t3 = 0;
@@ -175,7 +179,9 @@ export class CalculateService {
 		payset: Payset,
 		insurance_rate_setting: InsuranceRateSetting,
 		full_attendance_bonus: number,
-		pay_type: PayTypeEnumType
+		pay_type: PayTypeEnumType,
+		shift_allowance: number,
+		gross_salary: number
 	): Promise<number> {
 		/*
 				超時加班 = GetOverTimeMoney(
@@ -192,10 +198,10 @@ export class CalculateService {
 		if (pay_type === PayTypeEnum.enum.foreign_15_bonus) {
 			pay = 2;
 		}
-		const money = await this.getGrossSalary(employee_payment, payset);
-		const shift_allowance = employee_payment.shift_allowance ?? 0;
+		// const money = await this.getGrossSalary(employee_payment, payset);
+		// const shift_allowance = employee_payment.shift_allowance ?? 0;
 		let hourly_fee =
-			(money + shift_allowance + full_attendance_bonus) / 240;
+			(gross_salary + shift_allowance + full_attendance_bonus) / 240;
 		let t1 = 0;
 		let t2 = 0;
 		let t3 = 0;
@@ -230,14 +236,15 @@ export class CalculateService {
 	//MARK: 應發底薪
 	async getGrossSalary(
 		employee_payment: z.infer<typeof EmployeePaymentFE>,
-		payset: Payset
+		payset: Payset,
+		professional_cert_allowance: number,
 	): Promise<number> {
 		const gross_salary =
 			(employee_payment.base_salary +
 				(employee_payment.food_allowance ?? 0) +
 				(employee_payment.supervisor_allowance ?? 0) +
-				(employee_payment.professional_cert_allowance ?? 0) +
-				(Number(employee_payment.occupational_allowance) ?? 0) +
+				(professional_cert_allowance) +
+				(employee_payment.occupational_allowance ?? 0) +
 				(employee_payment.subsidy_allowance ?? 0)) *
 			((payset ? payset.work_day! : 30) / 30);
 		return gross_salary;
@@ -413,16 +420,18 @@ export class CalculateService {
 		payset: Payset,
 		holidays_type: HolidaysType[],
 		insurance_rate_setting: InsuranceRateSetting,
-		full_attendance_bonus: number
+		full_attendance_bonus: number,
+		shift_allowance: number,
+		gross_salary: number,
 	): Promise<number> {
 		// UPDATE 薪資查詢 SET 薪資查詢.請假扣款 = GetLeaveMoney(薪資查詢!工作類別,薪資查詢!工作形態,薪資查詢!應發底薪,薪資查詢!補助津貼+薪資查詢!輪班津貼+薪資查詢!全勤獎金+薪資查詢!專業証照津貼,薪資查詢!事假時數,薪資查詢!病假時數)
 		// 薪資查詢.不休假代金 = IIf(薪資查詢!工作類別="外籍勞工",round(GetSALARY_RATE()*(薪資查詢!不休假時數*Getnon_leaving_rate()+薪資查詢!不休假補休1時數*Getnon_leaving_rate1()+薪資查詢!不休假補休2時數*Getnon_leaving_rate2()+薪資查詢!不休假補休3時數*Getnon_leaving_rate3()+薪資查詢!不休假補休4時數*Getnon_leaving_rate4()+薪資查詢!不休假補休5時數*Getnon_leaving_rate5()),0),round(薪資查詢!應發底薪/240*(薪資查詢!不休假時數*Getnon_leaving_rate()+薪資查詢!不休假補休1時數*Getnon_leaving_rate1()+薪資查詢!不休假補休2時數*Getnon_leaving_rate2()+薪資查詢!不休假補休3時數*Getnon_leaving_rate3()+薪資查詢!不休假補休4時數*Getnon_leaving_rate4()+薪資查詢!不休假補休5時數*Getnon_leaving_rate5()),0));
 		// const kind1 = employee_data.work_type;
 		// const kind2 = employee_data.work_status;
-		const money = await this.getGrossSalary(employee_payment, payset);
-		const shift_allowance = employee_payment.shift_allowance ?? 0;
+		// const gross_salary = await this.getGrossSalary(employee_payment, payset);
+		// const shift_allowance = employee_payment.shift_allowance ?? 0;
 		let hourly_fee =
-			(money + shift_allowance + full_attendance_bonus) / 240;
+			(gross_salary + shift_allowance + full_attendance_bonus) / 240;
 		interface HolidaysTypeDict {
 			[key: number]: number;
 		}
