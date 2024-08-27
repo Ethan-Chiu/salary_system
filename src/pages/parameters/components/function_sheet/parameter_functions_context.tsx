@@ -108,6 +108,32 @@ export default function ParameterToolbarFunctionsProvider({
 		});
 	//#endregion
 
+	//#region <TrustMoneySetting>
+	const getTrustMoneySetting = () =>
+		api.parameters.getCurrentTrustMoney.useQuery();
+	const updateTrustMoneySetting =
+		api.parameters.updateTrustMoney.useMutation({
+			onSuccess: () => {
+				ctx.parameters.getCurrentTrustMoney.invalidate();
+				ctx.parameters.getAllTrustMoney.invalidate();
+			},
+		});
+	const createTrustMoneySetting =
+		api.parameters.createTrustMoney.useMutation({
+			onSuccess: () => {
+				ctx.parameters.getCurrentTrustMoney.invalidate();
+				ctx.parameters.getAllTrustMoney.invalidate();
+			},
+		});
+	const deleteTrustMoneySetting =
+		api.parameters.deleteTrustMoney.useMutation({
+			onSuccess: () => {
+				ctx.parameters.getCurrentTrustMoney.invalidate();
+				ctx.parameters.getAllTrustMoney.invalidate();
+			},
+		});
+	//#endregion
+
 	//#region <BonusSetting>
 	const getBonusSetting = () =>
 		api.parameters.getCurrentBonusSetting.useQuery();
@@ -311,6 +337,12 @@ export default function ParameterToolbarFunctionsProvider({
 			updateFunction: updateInsuranceRateSetting,
 			createFunction: createInsuranceRateSetting,
 			deleteFunction: deleteInsuranceRateSetting,
+		},
+		TableTrustMoney: {
+			queryFunction: getTrustMoneySetting,
+			updateFunction: updateTrustMoneySetting,
+			createFunction: createTrustMoneySetting,
+			deleteFunction: deleteTrustMoneySetting,
 		},
 		TableBonusSetting: {
 			queryFunction: getBonusSetting,

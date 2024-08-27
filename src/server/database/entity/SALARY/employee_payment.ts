@@ -14,18 +14,13 @@ export class EmployeePayment extends Model<
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
 	declare emp_no: string;
-	declare base_salary: number;
-	declare food_allowance: number | null;
-	declare supervisor_allowance: number | null;
-	declare occupational_allowance: number | null;
-	declare subsidy_allowance: number | null;
-	declare shift_allowance: number | null;
-	declare professional_cert_allowance: number | null;
-	declare l_r_self: number;
-	declare l_i: number;
-	declare h_i: number;
-	declare l_r: number;
-	declare occupational_injury: number;
+	declare base_salary_enc: string;
+	declare food_allowance_enc: string;
+	declare l_r_self_enc: string;
+	declare l_i_enc: string;
+	declare h_i_enc: string;
+	declare l_r_enc: string;
+	declare occupational_injury_enc: string;
 	declare start_date: string;
 	declare end_date: string | null;
 
@@ -50,52 +45,32 @@ export function initEmployeePayment(sequelize: Sequelize) {
 				type: DataTypes.STRING(32),
 				allowNull: false,
 			},
-			base_salary: {
-				type: DataTypes.INTEGER.UNSIGNED,
+			base_salary_enc: {
+				type: DataTypes.STRING(128),
 				allowNull: false,
 			},
-			food_allowance: {
-				type: DataTypes.INTEGER.UNSIGNED,
-				allowNull: true,
-			},
-			supervisor_allowance: {
-				type: DataTypes.INTEGER.UNSIGNED,
-				allowNull: true,
-			},
-			occupational_allowance: {
-				type: DataTypes.INTEGER.UNSIGNED,
-				allowNull: true,
-			},
-			subsidy_allowance: {
-				type: DataTypes.INTEGER.UNSIGNED,
-				allowNull: true,
-			},
-			shift_allowance: {
-				type: DataTypes.INTEGER.UNSIGNED,
-				allowNull: true,
-			},
-			professional_cert_allowance: {
-				type: DataTypes.INTEGER.UNSIGNED,
-				allowNull: true,
-			},
-			l_r_self: {
-				type: DataTypes.INTEGER.UNSIGNED,
+			food_allowance_enc: {
+				type: DataTypes.STRING(128),
 				allowNull: false,
 			},
-			l_i: {
-				type: DataTypes.INTEGER.UNSIGNED,
+			l_r_self_enc: {
+				type: DataTypes.STRING(128),
 				allowNull: false,
 			},
-			h_i: {
-				type: DataTypes.INTEGER.UNSIGNED,
+			l_i_enc: {
+				type: DataTypes.STRING(128),
 				allowNull: false,
 			},
-			l_r: {
-				type: DataTypes.INTEGER.UNSIGNED,
+			h_i_enc: {
+				type: DataTypes.STRING(128),
 				allowNull: false,
 			},
-			occupational_injury: {
-				type: DataTypes.INTEGER.UNSIGNED,
+			l_r_enc: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			occupational_injury_enc: {
+				type: DataTypes.STRING(128),
 				allowNull: false,
 			},
 			start_date: {

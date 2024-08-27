@@ -15,21 +15,22 @@ import { i18n, locales } from '~/components/lang_config'
 
 
 const PageCheckEHR: NextPageWithLayout = () => {
+	const {selectedPeriod} = useContext(periodContext);
+	const { t } = useTranslation(['common', 'nav']);
+	if (selectedPeriod == null) {
+		return <p>{t("others.select_period")}</p>;
+	}
 	return <SyncPage />;
 };
 
 function SyncPage() {
 	const {selectedPeriod} = useContext(periodContext);
 	const { t } = useTranslation(['common', 'nav']);
-	if (selectedPeriod == null) {
-		return <p>{t("others.select_period")}</p>;
-	}
 
 	const { isLoading, isError, data, error } =
 		api.sync.checkEmployeeData.useQuery({
 			func: FunctionsEnum.Enum.month_salary,
-			// func: "month_salary",
-			period: selectedPeriod.period_id,
+			period: selectedPeriod!.period_id,
 		});
 
 	if (isLoading) {

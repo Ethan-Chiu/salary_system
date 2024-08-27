@@ -3,19 +3,23 @@ import { DateAPI, DateService, EmpData, Id } from "./common_type";
 
 export const EmployeeTrust = z.object({
 	emp_no: z.string(),
+	emp_trust_reserve_enc: z.string(),
+	org_trust_reserve_enc: z.string(),
+	emp_special_trust_incent_enc: z.string(),
+	org_special_trust_incent_enc: z.string(),
+}).merge(DateService);
+
+export const EmployeeTrustFE = z.object({
+	emp_no: z.string(),
 	emp_trust_reserve: z.number(),
 	org_trust_reserve: z.number(),
 	emp_special_trust_incent: z.number(),
 	org_special_trust_incent: z.number(),
-});
+}).merge(EmpData).merge(DateAPI);
 
-export const EmployeeTrustFE = EmployeeTrust.merge(EmpData);
-
-export const createEmployeeTrustAPI = EmployeeTrust.merge(DateAPI);
-export const createEmployeeTrustService = EmployeeTrust.merge(DateService);
-export const updateEmployeeTrustAPI = EmployeeTrust.merge(Id)
-	.merge(DateAPI)
+export const createEmployeeTrustAPI = EmployeeTrustFE;
+export const createEmployeeTrustService = EmployeeTrust;
+export const updateEmployeeTrustAPI = EmployeeTrustFE.merge(Id)
 	.partial();
 export const updateEmployeeTrustService = EmployeeTrust.merge(Id)
-	.merge(DateService)
 	.partial();

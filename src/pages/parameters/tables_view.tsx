@@ -21,6 +21,7 @@ import {
 	Clock,
 	CreditCard,
 	Key,
+	Landmark,
 	type LucideIcon,
 	Table,
 	TrendingUp,
@@ -40,6 +41,7 @@ import { LevelRangeTable } from "./tables/level_range_table";
 import { LevelTable } from "./tables/level_table";
 import { PerformanceLevelTable } from "./tables/performance_level_table";
 import { useTranslation } from "react-i18next";
+import { TrustMoneyTable } from "./tables/trust_money_table";
 
 export type TableComponentProps = {
 	period_id: number;
@@ -69,6 +71,11 @@ function getTableComponent(
 			return {
 				component: InsuranceRateTable,
 				icon: ActivitySquare,
+			};
+		case "TableTrustMoney":
+			return {
+				component: TrustMoneyTable,
+				icon: Landmark,
 			};
 		case "TableBonusSetting":
 			return {
@@ -194,7 +201,7 @@ function CompTableView() {
 	const { selectedTableType } = useContext(dataTableContext);
 	const { selectedPeriod } = useContext(periodContext);
 
-  const { t } = useTranslation(['common']);
+	const { t } = useTranslation(['common']);
 
 	return (
 		<>

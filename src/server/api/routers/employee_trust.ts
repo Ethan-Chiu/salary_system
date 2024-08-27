@@ -40,15 +40,8 @@ export const employeeTrustRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const employeeTrustService = container.resolve(EmployeeTrustService);
 			const employeeTrustMapper = container.resolve(EmployeeTrustMapper);
-			const newdata = await employeeTrustService.createEmployeeTrust({
-				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
-			});
+			const employeeTrust = await employeeTrustMapper.getEmployeeTrust(input);
+			const newdata = await employeeTrustService.createEmployeeTrust(employeeTrust);
 			await employeeTrustService.rescheduleEmployeeTrust();
 			const employeeTrustFE = await employeeTrustMapper.getEmployeeTrustFE(newdata);
 			return employeeTrustFE;
@@ -59,15 +52,9 @@ export const employeeTrustRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const employeeTrustService =
 				container.resolve(EmployeeTrustService);
-			await employeeTrustService.updateEmployeeTrust({
-				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
-			});
+			const employeeTrustMapper = container.resolve(EmployeeTrustMapper);
+			const employeeTrust = await employeeTrustMapper.getEmployeeTrustNullable(input);
+			await employeeTrustService.updateEmployeeTrust(employeeTrust);
 			await employeeTrustService.rescheduleEmployeeTrust();
 		}),
 

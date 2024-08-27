@@ -2,6 +2,7 @@ export const TableEnumValues = [
 	"TableAttendance",
 	"TableBankSetting",
 	"TableInsurance",
+	"TableTrustMoney",
 	"TableBonusSetting",
 	"TableBonusDepartment",
 	"TableBonusPosition",
@@ -26,10 +27,12 @@ function getTableName(table: TableEnum) {
 			return "bankSetting";
 		case "TableInsurance":
 			return "insuranceRateSetting";
+		case "TableTrustMoney":
+			return "trustMoney";
 		case "TableBonusSetting":
 			return "bonusSetting";
 		case "TableBonusDepartment":
-			return "bonusDepartmentSetting";
+			return "bonusDepartment";
 		case "TableBonusPosition":
 			return "bonusPosition";
 		case "TableBonusPositionType":

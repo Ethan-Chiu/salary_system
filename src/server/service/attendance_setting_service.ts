@@ -183,6 +183,14 @@ export class AttendanceSettingService {
 					overtime_by_local_workers_3,
 					attendance_setting.overtime_by_local_workers_3
 				),
+				overtime_by_local_workers_4: select_value(
+					overtime_by_local_workers_4,
+					attendance_setting.overtime_by_local_workers_4
+				),
+				overtime_by_local_workers_5: select_value(
+					overtime_by_local_workers_5,
+					attendance_setting.overtime_by_local_workers_5
+				),
 				// local_worker_holiday: select_value(
 				// 	local_worker_holiday,
 				// 	attendance_setting.local_worker_holiday

@@ -46,7 +46,7 @@ export const bonus_position_type_columns = [
 	columnHelper.accessor("multiplier", {
 		header: () => {
 			const { t } = useTranslation(["common"]);
-			return <div className="text-center">{t("table.multiplier")}</div>
+			return <div className="text-center font-medium">{t("table.multiplier")}</div>
 		}, 
 		cell: ({ row }) => {
 			return (

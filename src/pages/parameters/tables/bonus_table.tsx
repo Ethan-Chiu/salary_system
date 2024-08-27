@@ -54,7 +54,7 @@ export const bonus_columns = [
 	columnHelper.accessor("value", {
 		header: () => {
 			const { t } = useTranslation(["common"]);
-			return <div className="text-center">{t("table.value")}</div>
+			return <div className="text-center font-medium">{t("table.value")}</div>
 		},
 		cell: ({ row }) => {
 			const value = row.getValue("value");

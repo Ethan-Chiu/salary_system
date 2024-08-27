@@ -177,7 +177,7 @@ export function Translate(word: string) {
 		if (word === "bankSetting") return "銀行";
 		if (word === "insuranceRateSetting") return "勞健保費率";
 		if (word === "bonusSetting") return "獎金";
-		if (word === "bonusDepartmentSetting") return "獎金部門";
+		if (word === "bonusDepartment") return "獎金部門";
 		if (word === "bonusPosition") return "獎金職等";
 		if (word === "bonusPositionType") return "獎金職級";
 		if (word === "bonusSeniority") return "獎金年資";

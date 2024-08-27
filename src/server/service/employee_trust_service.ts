@@ -8,6 +8,7 @@ import { EHRService } from "./ehr_service";
 import { EmployeeDataService } from "./employee_data_service";
 import { TrustMoneyService } from "./trust_money_service";
 import { createEmployeeTrustService, updateEmployeeTrustService } from "../api/types/employee_trust";
+import { EmployeeTrustMapper } from "../database/mapper/employee_trust_mapper";
 
 @injectable()
 export class EmployeeTrustService {
@@ -15,10 +16,10 @@ export class EmployeeTrustService {
 
 	async createEmployeeTrust({
 		emp_no,
-		emp_trust_reserve,
-		org_trust_reserve,
-		emp_special_trust_incent,
-		org_special_trust_incent,
+		emp_trust_reserve_enc,
+		org_trust_reserve_enc,
+		emp_special_trust_incent_enc,
+		org_special_trust_incent_enc,
 		start_date,
 		end_date,
 	}: z.infer<typeof createEmployeeTrustService>): Promise<EmployeeTrust> {
@@ -26,10 +27,10 @@ export class EmployeeTrustService {
 		check_date(start_date, end_date, current_date_string);
 		const newData = await EmployeeTrust.create({
 			emp_no: emp_no,
-			emp_trust_reserve: emp_trust_reserve,
-			org_trust_reserve: org_trust_reserve,
-			emp_special_trust_incent: emp_special_trust_incent,
-			org_special_trust_incent: org_special_trust_incent,
+			emp_trust_reserve_enc: emp_trust_reserve_enc,
+			org_trust_reserve_enc: org_trust_reserve_enc,
+			emp_special_trust_incent_enc: emp_special_trust_incent_enc,
+			org_special_trust_incent_enc: org_special_trust_incent_enc,
 			start_date: start_date ?? current_date_string,
 			end_date: end_date,
 			create_by: "system",
@@ -129,10 +130,10 @@ export class EmployeeTrustService {
 	async updateEmployeeTrust({
 		id,
 		emp_no,
-		emp_trust_reserve,
-		org_trust_reserve,
-		emp_special_trust_incent,
-		org_special_trust_incent,
+		emp_trust_reserve_enc,
+		org_trust_reserve_enc,
+		emp_special_trust_incent_enc,
+		org_special_trust_incent_enc,
 		start_date,
 		end_date,
 	}: z.infer<typeof updateEmployeeTrustService>): Promise<void> {
@@ -143,21 +144,21 @@ export class EmployeeTrustService {
 		const affectedCount = await EmployeeTrust.update(
 			{
 				emp_no: select_value(emp_no, employeeTrust.emp_no),
-				emp_trust_reserve: select_value(
-					emp_trust_reserve,
-					employeeTrust.emp_trust_reserve
+				emp_trust_reserve_enc: select_value(
+					emp_trust_reserve_enc,
+					employeeTrust.emp_trust_reserve_enc
 				),
-				org_trust_reserve: select_value(
-					org_trust_reserve,
-					employeeTrust.org_trust_reserve
+				org_trust_reserve_enc: select_value(
+					org_trust_reserve_enc,
+					employeeTrust.org_trust_reserve_enc
 				),
-				emp_special_trust_incent: select_value(
-					emp_special_trust_incent,
-					employeeTrust.emp_special_trust_incent
+				emp_special_trust_incent_enc: select_value(
+					emp_special_trust_incent_enc,
+					employeeTrust.emp_special_trust_incent_enc
 				),
-				org_special_trust_incent: select_value(
-					org_special_trust_incent,
-					employeeTrust.org_special_trust_incent
+				org_special_trust_incent_enc: select_value(
+					org_special_trust_incent_enc,
+					employeeTrust.org_special_trust_incent_enc
 				),
 				start_date: select_value(start_date, employeeTrust.start_date),
 				end_date: select_value(end_date, employeeTrust.end_date),
@@ -200,7 +201,7 @@ export class EmployeeTrustService {
 			if (
 				end_date_string != new_end_date_string &&
 				employeeTrustList[i]!.dataValues.emp_no ==
-					employeeTrustList[i + 1]!.dataValues.emp_no
+				employeeTrustList[i + 1]!.dataValues.emp_no
 			) {
 				await this.updateEmployeeTrust({
 					id: employeeTrustList[i]!.dataValues.id,
@@ -215,6 +216,7 @@ export class EmployeeTrustService {
 	): Promise<void> {
 		const employee_data_service = container.resolve(EmployeeDataService);
 		const trust_money_service = container.resolve(TrustMoneyService);
+		const employee_trust_mapper = container.resolve(EmployeeTrustMapper);
 
 		emp_no_list.forEach(async (emp_no: string) => {
 			const employeeTrust = await this.getCurrentEmployeeTrustByEmpNo(
@@ -238,18 +240,26 @@ export class EmployeeTrustService {
 				throw new BaseResponseError("Trust money does not exist");
 			}
 
+			const employeeTrustFE = await employee_trust_mapper.getEmployeeTrustFE(employeeTrust);
+			const updatedEmployeeTrust = await employee_trust_mapper.getEmployeeTrust({
+				...employeeTrustFE,
+				emp_trust_reserve:
+					trust_money.emp_trust_reserve_limit ??
+					trust_money.org_trust_reserve_limit,
+				org_trust_reserve: trust_money.org_trust_reserve_limit,
+				emp_special_trust_incent:
+					trust_money.emp_special_trust_incent_limit ??
+					trust_money.org_special_trust_incent_limit,
+				org_special_trust_incent:
+					trust_money.org_special_trust_incent_limit,
+			});
+
 			const affectedCount = await EmployeeTrust.update(
 				{
-					emp_trust_reserve:
-						trust_money.emp_trust_reserve_limit ??
-						trust_money.org_trust_reserve_limit,
-					org_trust_reserve: trust_money.org_trust_reserve_limit,
-					emp_special_trust_incent:
-						trust_money.emp_special_trust_incent_limit ??
-						trust_money.org_special_trust_incent_limit,
-					org_special_trust_incent:
-						trust_money.org_special_trust_incent_limit,
-					update_by: "system",
+					emp_trust_reserve_enc: updatedEmployeeTrust.emp_trust_reserve_enc,
+					org_trust_reserve_enc: updatedEmployeeTrust.org_trust_reserve_enc,
+					emp_special_trust_incent_enc: updatedEmployeeTrust.emp_special_trust_incent_enc,
+					org_special_trust_incent_enc: updatedEmployeeTrust.org_special_trust_incent_enc,
 				},
 				{ where: { emp_no: emp_no } }
 			);

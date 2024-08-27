@@ -30,7 +30,7 @@ export const attendance_columns = ({t}: {t: TFunction<[string], undefined>}) => 
 		header: ({ column }) => {
 			return (
 				<div className="flex justify-center">
-					<div className="pl-4 text-center font-medium">
+					<div className="text-center font-medium">
 						<Button
 							variant="ghost"
 							onClick={() =>
@@ -56,7 +56,7 @@ export const attendance_columns = ({t}: {t: TFunction<[string], undefined>}) => 
 	}),
 	columnHelper.accessor("value", {
 		header: () => {
-			return <div className="text-center">{t("table.value")}</div>
+			return <div className="text-center font-medium">{t("table.value")}</div>
 		},
 		cell: ({ row }) => {
 			const value = row.getValue("value");
@@ -84,38 +84,6 @@ export function attendanceMapper(
 	const data = attendanceData[0]!;
 	return [
 		{
-			parameters: "事假扣薪",
-			value: data.personal_leave_deduction,
-		},
-		{
-			parameters: "病假扣薪",
-			value: data.sick_leave_deduction,
-		},
-		{
-			parameters: "不休假代金比率",
-			value: data.rate_of_unpaid_leave,
-		},
-		{
-			parameters: "不休假-補休1",
-			value: data.unpaid_leave_compensatory_1,
-		},
-		{
-			parameters: "不休假-補休2",
-			value: data.unpaid_leave_compensatory_2,
-		},
-		{
-			parameters: "不休假-補休3",
-			value: data.unpaid_leave_compensatory_3,
-		},
-		{
-			parameters: "不休假-補休4",
-			value: data.unpaid_leave_compensatory_4,
-		},
-		{
-			parameters: "不休假-補休5",
-			value: data.unpaid_leave_compensatory_5,
-		},
-		{
 			parameters: "本勞加班1",
 			value: data.overtime_by_local_workers_1,
 		},
@@ -128,8 +96,12 @@ export function attendanceMapper(
 			value: data.overtime_by_local_workers_3,
 		},
 		{
-			parameters: "本勞假日",
-			value: data.local_worker_holiday,
+			parameters: "本勞加班4",
+			value: data.overtime_by_local_workers_4,
+		},
+		{
+			parameters: "本勞加班5",
+			value: data.overtime_by_local_workers_5,
 		},
 		{
 			parameters: "外勞加班1",
@@ -144,8 +116,12 @@ export function attendanceMapper(
 			value: data.overtime_by_foreign_workers_3,
 		},
 		{
-			parameters: "外勞假日",
-			value: data.foreign_worker_holiday,
+			parameters: "外勞加班4",
+			value: data.overtime_by_foreign_workers_4,
+		},
+		{
+			parameters: "外勞加班5",
+			value: data.overtime_by_foreign_workers_5,
 		},
 		{
 			parameters: c_StartDateStr,

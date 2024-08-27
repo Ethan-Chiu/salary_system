@@ -49,13 +49,13 @@ export const insurance_rate_columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="lowercase">{row.getValue("parameters")}</div>
+			<div className="text-center font-medium">{row.getValue("parameters")}</div>
 		),
 	}),
 	columnHelper.accessor("value", {
 		header: () => {
 			const { t } = useTranslation(["common"]);
-			return <div className="text-center">{t("table.value")}</div>
+			return <div className="text-center font-medium">{t("table.value")}</div>
 		},
 		cell: ({ row }) => {
 			const value = row.getValue("value");
