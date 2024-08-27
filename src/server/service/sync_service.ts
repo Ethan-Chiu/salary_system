@@ -68,7 +68,7 @@ export class SyncService {
 			else return "past";
 		} else return "past";
 	}
-
+	// 將EHR資料格式轉換為Salary資料格式
 	empToEmployee(ehr_data: Emp) {
 		const salary_data = new EmployeeData();
 		salary_data.emp_no = ehr_data.emp_no!;
