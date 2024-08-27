@@ -3,7 +3,6 @@ import { container } from "tsyringe";
 import { BaseResponseError } from "../error/BaseResponseError";
 import { z } from "zod";
 import { EmployeeTrustService } from "~/server/service/employee_trust_service";
-import { get_date_string } from "~/server/service/helper_function";
 import { createEmployeeTrustAPI, updateEmployeeTrustAPI } from "../types/employee_trust";
 import { EmployeeTrustMapper } from "~/server/database/mapper/employee_trust_mapper";
 
