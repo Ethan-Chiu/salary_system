@@ -6,9 +6,7 @@
 
 */
 import { container, injectable } from "tsyringe";
-import { Op } from "sequelize";
 import { EmployeeData } from "../database/entity/SALARY/employee_data";
-import { EmployeePayment } from "../database/entity/SALARY/employee_payment";
 import { EHRService } from "./ehr_service";
 import { Overtime } from "../database/entity/UMEDIA/overtime";
 import { Payset } from "../database/entity/UMEDIA/payset";
@@ -16,7 +14,8 @@ import { InsuranceRateSetting } from "../database/entity/SALARY/insurance_rate_s
 import { Holiday } from "../database/entity/UMEDIA/holiday";
 import { PayTypeEnum, PayTypeEnumType } from "../api/types/pay_type_enum";
 import { HolidaysType } from "../database/entity/SALARY/holidays_type";
-import { util } from "zod";
+import { EmployeePaymentFE } from "../api/types/employee_payment_type";
+import { z } from "zod";
 
 const FOREIGN = "外籍勞工";
 const PROFESSOR = "顧問";
@@ -37,12 +36,12 @@ function Round(num: number, decimals: number = 0): number {
 }
 @injectable()
 export class CalculateService {
-	constructor() {}
+	constructor() { }
 
 	// MARK: 平日加班費
 	async getWeekdayOvertimePay(
 		employee_data: EmployeeData,
-		employee_payment: EmployeePayment,
+		employee_payment: z.infer<z.infer<typeof EmployeePaymentFE>>,
 		overtime_list: Overtime[],
 		payset: Payset,
 		insurance_rate_setting: InsuranceRateSetting,
@@ -86,25 +85,25 @@ export class CalculateService {
 			hourly_fee = insurance_rate_setting.min_wage_rate;
 			return Round(
 				hourly_fee * t1 +
-					hourly_fee * t2 * 1.34 +
-					hourly_fee * t3 * 1.67 +
-					hourly_fee * t4 * 2 +
-					hourly_fee * t5 * 2.67
+				hourly_fee * t2 * 1.34 +
+				hourly_fee * t3 * 1.67 +
+				hourly_fee * t4 * 2 +
+				hourly_fee * t5 * 2.67
 			);
 		} else
 			return Round(
 				hourly_fee * t1 +
-					hourly_fee * t2 * 1.34 +
-					hourly_fee * t3 * 1.67 +
-					hourly_fee * t4 * 2 +
-					hourly_fee * t5 * 2.67
+				hourly_fee * t2 * 1.34 +
+				hourly_fee * t3 * 1.67 +
+				hourly_fee * t4 * 2 +
+				hourly_fee * t5 * 2.67
 			);
 	}
 
 	//MARK: 假日加班費
 	async getHolidayOvertimePay(
 		employee_data: EmployeeData,
-		employee_payment: EmployeePayment,
+		employee_payment: z.infer<typeof EmployeePaymentFE>,
 		overtime_list: Overtime[],
 		payset: Payset,
 		insurance_rate_setting: InsuranceRateSetting,
@@ -153,25 +152,25 @@ export class CalculateService {
 			hourly_fee = insurance_rate_setting.min_wage_rate;
 			return Round(
 				hourly_fee * t1 +
-					hourly_fee * t2 * 1.34 +
-					hourly_fee * t3 * 1.67 +
-					hourly_fee * t4 * 2 +
-					hourly_fee * t5 * 2.67
+				hourly_fee * t2 * 1.34 +
+				hourly_fee * t3 * 1.67 +
+				hourly_fee * t4 * 2 +
+				hourly_fee * t5 * 2.67
 			);
 		} else
 			return Round(
 				hourly_fee * t1 +
-					hourly_fee * t2 * 1.34 +
-					hourly_fee * t3 * 1.67 +
-					hourly_fee * t4 * 2 +
-					hourly_fee * t5 * 2.67
+				hourly_fee * t2 * 1.34 +
+				hourly_fee * t3 * 1.67 +
+				hourly_fee * t4 * 2 +
+				hourly_fee * t5 * 2.67
 			);
 	}
 
 	// MARK: 超時加班費
 	async getExceedOvertimePay(
 		employee_data: EmployeeData,
-		employee_payment: EmployeePayment,
+		employee_payment: z.infer<typeof EmployeePaymentFE>,
 		overtime_list: Overtime[],
 		payset: Payset,
 		insurance_rate_setting: InsuranceRateSetting,
@@ -215,22 +214,22 @@ export class CalculateService {
 			hourly_fee = insurance_rate_setting.min_wage_rate;
 			return Round(
 				hourly_fee * t1 * 1.34 +
-					hourly_fee * t2 * 1.67 +
-					hourly_fee * t3 * 2 +
-					hourly_fee * t4 * 2.67
+				hourly_fee * t2 * 1.67 +
+				hourly_fee * t3 * 2 +
+				hourly_fee * t4 * 2.67
 			);
 		} else
 			return Round(
 				hourly_fee * t1 * 1.34 +
-					hourly_fee * t2 * 1.67 +
-					hourly_fee * t3 * 2 +
-					hourly_fee * t4 * 2.67
+				hourly_fee * t2 * 1.67 +
+				hourly_fee * t3 * 2 +
+				hourly_fee * t4 * 2.67
 			);
 	}
 
 	//MARK: 應發底薪
 	async getGrossSalary(
-		employee_payment: EmployeePayment,
+		employee_payment: z.infer<typeof EmployeePaymentFE>,
 		payset: Payset
 	): Promise<number> {
 		const gross_salary =
@@ -246,7 +245,7 @@ export class CalculateService {
 	//MARK: 勞保扣除額
 	async getLaborInsuranceDeduction(
 		employee_data: EmployeeData,
-		employee_payment: EmployeePayment,
+		employee_payment: z.infer<typeof EmployeePaymentFE>,
 		payset: Payset,
 		insuranceRateSetting: InsuranceRateSetting
 	): Promise<number> {
@@ -283,7 +282,7 @@ export class CalculateService {
 		if (kind1 === FOREIGN || kind2 === FOREIGN)
 			return Round(
 				Round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30) *
-					hinder_rate
+				hinder_rate
 			); // 'Jerry 2023/04/06 由工作天數改為加勞保天數計算
 		if (kind2 === PROFESSOR) return 0;
 		if (kind2 === BOSS)
@@ -295,7 +294,7 @@ export class CalculateService {
 			return (
 				Round(
 					Round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30) +
-						Round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
+					Round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
 				) * hinder_rate
 			);
 		if (
@@ -308,21 +307,21 @@ export class CalculateService {
 			return (
 				Round(
 					Round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30) +
-						Round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
+					Round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
 				) * hinder_rate
 			); // 'Jerry 07/07/19 由工作天數改為加勞保天數計算
 
 		return (
 			Round(
 				Round(Tax * wci_normal * 0.200001) +
-					Round(Tax * wci_ji * 0.200001)
+				Round(Tax * wci_ji * 0.200001)
 			) * hinder_rate
 		);
 	}
 	//MARK: 健保扣除額
 	async getHealthInsuranceDeduction(
 		employee_data: EmployeeData,
-		employee_payment: EmployeePayment,
+		employee_payment: z.infer<typeof EmployeePaymentFE>,
 		insurance_rate_setting: InsuranceRateSetting
 	): Promise<number> {
 		// rd("健保扣除額") = CalacHelTax(rd("健保"), rd("健保眷口數"), rd("工作形態"), CheckNull(rd("殘障等級"), "正常"), 0, rd("健保追加"))   'Jerry 07/03/30 加入殘障等級計算  , 07/11/26 增加健保追加計算
@@ -381,7 +380,7 @@ export class CalculateService {
 	//MARK:福利金提撥
 	async getWelfareContribution(
 		employee_data: EmployeeData,
-		employee_payment: EmployeePayment,
+		employee_payment: z.infer<typeof EmployeePaymentFE>,
 		full_attendance_bonus: number,
 		operational_performance_bonus: number
 	): Promise<number> {
@@ -409,7 +408,7 @@ export class CalculateService {
 	//MARK: 請假扣款
 	async getLeaveDeduction(
 		employee_data: EmployeeData,
-		employee_payment: EmployeePayment,
+		employee_payment: z.infer<typeof EmployeePaymentFE>,
 		holiday_list: Holiday[], // Maybe not this
 		payset: Payset,
 		holidays_type: HolidaysType[],
@@ -581,7 +580,7 @@ export class CalculateService {
 	//MARK: 薪資所得扣繳總額
 	async getSalaryIncomeDeduction(
 		// employee_data : EmployeeData,
-		employee_payment: EmployeePayment,
+		employee_payment: z.infer<typeof EmployeePaymentFE>,
 		// payset : Payset,
 		reissue_salary: number,
 		full_attendance_bonus: number,
@@ -630,7 +629,7 @@ export class CalculateService {
 	async getSalaryAdvance(
 		pay_type: PayTypeEnumType,
 		payset: Payset | undefined,
-		employee_payment: EmployeePayment,
+		employee_payment: z.infer<typeof EmployeePaymentFE>,
 		insurance_rate_setting: InsuranceRateSetting,
 		employee_data: EmployeeData
 	): Promise<number> {
@@ -768,7 +767,7 @@ export class CalculateService {
 	}
 	//MARK: 課稅所得
 	async getTaxableIncome(
-		employee_payment: EmployeePayment,
+		employee_payment: z.infer<typeof EmployeePaymentFE>,
 		exceed_overtime_pay: number
 	): Promise<number> {
 		// rd("課稅所得") = rd("底薪") + rd("主管津貼") + rd("專業証照津貼") + rd("職務津貼") + rd("超時加班")
@@ -784,7 +783,7 @@ export class CalculateService {
 	//MARK: 課稅小計
 	async getTaxableSubtotal(
 		pay_type: PayTypeEnumType,
-		employee_payment: EmployeePayment,
+		employee_payment: z.infer<typeof EmployeePaymentFE>,
 		operational_performance_bonus: number,
 		reissue_salary: number,
 		exceed_overtime_pay: number,
@@ -955,7 +954,7 @@ export class CalculateService {
 	}
 	//MARK: 非課稅小計
 	async getNonTaxableSubtotal(
-		employee_payment: EmployeePayment,
+		employee_payment: z.infer<typeof EmployeePaymentFE>,
 		weekday_overtime_pay: number,
 		holiday_overtime_pay: number,
 		non_leave_compensation: number,
@@ -1039,7 +1038,7 @@ export class CalculateService {
 	}
 	//MARK: 勞保費
 	async getLaborInsurancePay(
-		employee_payment: EmployeePayment,
+		employee_payment: z.infer<typeof EmployeePaymentFE>,
 		employee_data: EmployeeData,
 		insurance_rate_setting: InsuranceRateSetting,
 		payset: Payset | undefined,
@@ -1090,25 +1089,25 @@ export class CalculateService {
 			if (work_type === FOREIGN) {
 				const x1 = Round(
 					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
-						Round((occupational_injury * wci_oi * l_i_day) / 30)
+					Round((occupational_injury * wci_oi * l_i_day) / 30)
 				); //'Jerry 20220823工資墊償基金分開計算
 				const x2 = Round(
 					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
-						Round(
-							(occupational_injury * wci_oi * additional_l_i) / 30
-						)
+					Round(
+						(occupational_injury * wci_oi * additional_l_i) / 30
+					)
 				); //'Jerry 20220823工資墊償基金分開計算
 				return x1 + x2;
 			} else if (employee_data.work_status === BOSS) {
 				const x1 = Round(
 					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
-						Round((occupational_injury * wci_oi * l_i_day) / 30)
+					Round((occupational_injury * wci_oi * l_i_day) / 30)
 				); //'Jerry 20220823工資墊償基金分開計算
 				const x2 = Round(
 					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
-						Round(
-							(occupational_injury * wci_oi * additional_l_i) / 30
-						)
+					Round(
+						(occupational_injury * wci_oi * additional_l_i) / 30
+					)
 				); //'Jerry 20220823工資墊償基金分開計算
 				return x1 + x2;
 			} else if (
@@ -1120,29 +1119,29 @@ export class CalculateService {
 			) {
 				const x1 = Round(
 					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
-						Round((l_i * 0.700001 * wci_ji * l_i_day) / 30) +
-						Round((occupational_injury * wci_oi * l_i_day) / 30)
+					Round((l_i * 0.700001 * wci_ji * l_i_day) / 30) +
+					Round((occupational_injury * wci_oi * l_i_day) / 30)
 				); //'Jerry 20220823工資墊償基金分開計算
 				const x2 = Round(
 					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
-						Round((l_i * wci_ji * 0.700001 * additional_l_i) / 30) +
-						Round(
-							(occupational_injury * wci_oi * additional_l_i) / 30
-						)
+					Round((l_i * wci_ji * 0.700001 * additional_l_i) / 30) +
+					Round(
+						(occupational_injury * wci_oi * additional_l_i) / 30
+					)
 				); //'Jerry 20220823工資墊償基金分開計算
 				return x1 + x2;
 			} else {
 				const x1 = Round(
 					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
-						Round((l_i * wci_ji * 0.700001 * l_i_day) / 30) +
-						Round((occupational_injury * wci_oi * l_i_day) / 30)
+					Round((l_i * wci_ji * 0.700001 * l_i_day) / 30) +
+					Round((occupational_injury * wci_oi * l_i_day) / 30)
 				);
 				const x2 = Round(
 					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
-						Round((l_i * wci_ji * 0.700001 * additional_l_i) / 30) +
-						Round(
-							(occupational_injury * wci_oi * additional_l_i) / 30
-						)
+					Round((l_i * wci_ji * 0.700001 * additional_l_i) / 30) +
+					Round(
+						(occupational_injury * wci_oi * additional_l_i) / 30
+					)
 				); //'Jerry 20220823工資墊償基金分開計算
 				return x1 + x2;
 			}
@@ -1151,7 +1150,7 @@ export class CalculateService {
 	}
 	//MARK: 健保費
 	async getHealthInsurancePay(
-		employee_payment: EmployeePayment,
+		employee_payment: z.infer<typeof EmployeePaymentFE>,
 		employee_data: EmployeeData,
 		insurance_rate_setting: InsuranceRateSetting
 	): Promise<number> {
@@ -1284,7 +1283,7 @@ export class CalculateService {
 	}
 	//MARK: 勞退金自提
 	// 勞退級距＊勞退自提%
-	async getLRSelf(employee_payment: EmployeePayment): Promise<number> {
+	async getLRSelf(employee_payment: z.infer<typeof EmployeePaymentFE>): Promise<number> {
 		return employee_payment.l_r * employee_payment.l_r_self;
 		// const ehrService = container.resolve(EHRService);
 		// const l_r_self_id = (await ehrService.getExpenseClass()).find(
@@ -1336,7 +1335,7 @@ export class CalculateService {
 	}
 	//MARK: 薪資總額
 	async getTotalSalary(
-		employee_payment: EmployeePayment,
+		employee_payment: z.infer<typeof EmployeePaymentFE>,
 		full_attendance_bonus: number
 	): Promise<number> {
 		// rd("底薪") + rd("伙食津貼") + rd("主管津貼") + rd("專業証照津貼") + rd("職務津貼") + rd("補助津貼") + rd("全勤獎金") + rd("輪班津貼")'Jerry 06/06/07 職災保險匯出
@@ -1354,7 +1353,7 @@ export class CalculateService {
 	//MARK: 勞退金提撥
 	async getLaborRetirementContribution(
 		employee_data: EmployeeData,
-		employee_payment: EmployeePayment
+		employee_payment: z.infer<typeof EmployeePaymentFE>
 	): Promise<number> {
 		/*
 			rd("勞退金提撥") = ComRetire(
@@ -1437,7 +1436,7 @@ export class CalculateService {
 				//         'ComRetire_old = 0 '2014/1/15 外籍勞工從事一般員工, 也要提撥勞退(舊)
 				return Round(Round(money * 0.02, 0), 0);
 			} else return 0;
-		else if (On_Board < "2005-7-1"){
+		else if (On_Board < "2005-7-1") {
 			if (
 				kind2 === BOSS ||
 				kind2 === FOREIGN ||
@@ -1461,56 +1460,56 @@ export class CalculateService {
 	async getSecondGenerationHealthInsurance(): Promise<number> {
 		/*
 	rd("二代健保") = 0
-        
-        If PayType = DS_Pay Then ' 董監事 2014/7/24
-        
-            If rd("營運積效獎金") + rd("專案獎金") > nhi_2nd_per Then  'hm20160128
-                rd("二代健保") = (rd("營運積效獎金") + rd("專案獎金")) * nhi_2nd_rate 'hm20160128
-                rd.Update
-                rd.edit
-            End If
-        
-        Else
-        
-             '計算二代健保補充保費 '2014/04/16
-            If rd("年終獎金") > 0 Or rd("年終積效獎金") > 0 Or rd("營運積效獎金") > 0 Or rd("績效獎金") > 0 Or rd("專案獎金") > 0 Or rd("公司獎勵金") > 0 Or rd("特別獎勵金_公司") > 0 Then
-                '本次獎金
-                bonus = rd("年終獎金") + rd("年終積效獎金") + rd("營運積效獎金") + rd("績效獎金") + rd("專案獎金") + rd("公司獎勵金") + rd("特別獎勵金_公司")
-                'MsgBox bonus
-                
-                Set kkk = CurrentDb.OpenRecordset("select 發薪日期 from 系統預設值")
-                
-                Do Until kkk.EOF
-                    current_year = Year(kkk("發薪日期"))
-                    kkk.MoveNext
-                Loop
-                    
+	    
+		If PayType = DS_Pay Then ' 董監事 2014/7/24
+	    
+			If rd("營運積效獎金") + rd("專案獎金") > nhi_2nd_per Then  'hm20160128
+				rd("二代健保") = (rd("營運積效獎金") + rd("專案獎金")) * nhi_2nd_rate 'hm20160128
+				rd.Update
+				rd.edit
+			End If
+	    
+		Else
+	    
+			 '計算二代健保補充保費 '2014/04/16
+			If rd("年終獎金") > 0 Or rd("年終積效獎金") > 0 Or rd("營運積效獎金") > 0 Or rd("績效獎金") > 0 Or rd("專案獎金") > 0 Or rd("公司獎勵金") > 0 Or rd("特別獎勵金_公司") > 0 Then
+				'本次獎金
+				bonus = rd("年終獎金") + rd("年終積效獎金") + rd("營運積效獎金") + rd("績效獎金") + rd("專案獎金") + rd("公司獎勵金") + rd("特別獎勵金_公司")
+				'MsgBox bonus
+			    
+				Set kkk = CurrentDb.OpenRecordset("select 發薪日期 from 系統預設值")
+			    
+				Do Until kkk.EOF
+					current_year = Year(kkk("發薪日期"))
+					kkk.MoveNext
+				Loop
+				    
     
-                Set re2 = CurrentDb.OpenRecordset("select *  from 累計獎金金額 " & "where 員工編號 = '" & rd("員工編號") & "' and 年度 =" & current_year)
-                total_bonus = 0
-                Do Until re2.EOF
-                    total_bonus = re2("累計金額")
-                    re2.MoveNext
-                Loop
+				Set re2 = CurrentDb.OpenRecordset("select *  from 累計獎金金額 " & "where 員工編號 = '" & rd("員工編號") & "' and 年度 =" & current_year)
+				total_bonus = 0
+				Do Until re2.EOF
+					total_bonus = re2("累計金額")
+					re2.MoveNext
+				Loop
     
-                total_bonus = total_bonus + bonus
-                over_amt = total_bonus - rd("健保") * nhi_2nd_mitiple 'hm20160128
+				total_bonus = total_bonus + bonus
+				over_amt = total_bonus - rd("健保") * nhi_2nd_mitiple 'hm20160128
     
-                If over_amt > 0 Then
-                'over_amt & bonus 二者取小的*2% =補充保除費
-                    If over_amt < bonus Then
-                        rd("二代健保") = over_amt * nhi_2nd_rate 'hm20160128
-                    Else
-                        rd("二代健保") = bonus * nhi_2nd_rate 'hm20160128
-                   End If
-                   'MsgBox rd("二代健保")
-                    rd.Update
-                    rd.edit
-                End If
+				If over_amt > 0 Then
+				'over_amt & bonus 二者取小的*2% =補充保除費
+					If over_amt < bonus Then
+						rd("二代健保") = over_amt * nhi_2nd_rate 'hm20160128
+					Else
+						rd("二代健保") = bonus * nhi_2nd_rate 'hm20160128
+				   End If
+				   'MsgBox rd("二代健保")
+					rd.Update
+					rd.edit
+				End If
     
-            End If
-            '2014/04/16
-        End If
+			End If
+			'2014/04/16
+		End If
 	 */
 		return -1;
 	}
@@ -1574,7 +1573,7 @@ export class CalculateService {
 		holidays_type: HolidaysType[],
 		holiday_list: Holiday[],
 		gross_salary: number,
-		employee_payment: EmployeePayment,
+		employee_payment: z.infer<typeof EmployeePaymentFE>,
 		insurance_rate_setting: InsuranceRateSetting
 	): Promise<number> {
 		// 		'特別事假扣款:
