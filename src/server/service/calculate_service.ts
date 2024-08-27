@@ -449,9 +449,11 @@ export class CalculateService {
 				holidays_type_dict[holiday.pay_order!]!;
 		});
 		if (employee_data.work_type === FOREIGN) {
-			hourly_fee = insurance_rate_setting.l_i_wage_replacement_rate;
+			hourly_fee = insurance_rate_setting.min_wage_rate;
 			return Round(hourly_fee * leave_deduction);
-		} else return Round(hourly_fee * leave_deduction);
+		} else {
+			return Round(hourly_fee * leave_deduction);
+		}
 		// const bonus = rd("補助津貼") + rd("輪班津貼") + rd("全勤獎金") + rd("專業証照津貼");
 		// const t1 = rd("事假時數"); // 事假時數
 		// const T2 = rd("病假時數"); // 病假時數

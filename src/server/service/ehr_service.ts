@@ -96,7 +96,7 @@ export class EHRService {
 			}
 		);
 		const paysetList: Payset[] = dataList.map((o) => Payset.fromDB(o));
-
+		
 		return paysetList;
 	}
 
