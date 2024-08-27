@@ -598,7 +598,8 @@ export class CalculateService {
 		operational_performance_bonus: number,
 		other_addition_tax: number,
 		special_leave_deduction: number,
-		other_deduction_tax: number
+		other_deduction_tax: number,
+		shift_allowance: number
 	): Promise<number> {
 		/* 
 			rd("薪資所得扣繳總額") = 
@@ -626,7 +627,7 @@ export class CalculateService {
 			exceed_overtime_pay +
 			other_addition_tax +
 			full_attendance_bonus +
-			(employee_payment_fe.shift_allowance ?? 0) - //+
+			(shift_allowance ?? 0) - //+
 			// rd("夜點費") -
 			leave_deduction -
 			special_leave_deduction -
@@ -777,14 +778,15 @@ export class CalculateService {
 	//MARK: 課稅所得
 	async getTaxableIncome(
 		employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
-		exceed_overtime_pay: number
+		exceed_overtime_pay: number,
+		professional_cert_allowance: number
 	): Promise<number> {
 		// rd("課稅所得") = rd("底薪") + rd("主管津貼") + rd("專業証照津貼") + rd("職務津貼") + rd("超時加班")
 		//     'Jerry 07/01/05 取消"超時加班"==> 改為"職務津貼"
 		const taxable_income =
 			employee_payment_fe.base_salary +
 			(employee_payment_fe.supervisor_allowance ?? 0) +
-			(employee_payment_fe.professional_cert_allowance ?? 0) +
+			(professional_cert_allowance ?? 0) +
 			(employee_payment_fe.occupational_allowance ?? 0) +
 			exceed_overtime_pay;
 		return taxable_income;
@@ -798,7 +800,9 @@ export class CalculateService {
 		exceed_overtime_pay: number,
 		other_addition_tax: number,
 		full_attendance_bonus: number,
-		end_of_year_bonus: number
+		end_of_year_bonus: number,
+		professional_cert_allowance: number,
+		shift_allowance: number
 	): Promise<number> {
 		// return -1;
 		if (pay_type === PayTypeEnum.Enum.month_salary) {
@@ -822,14 +826,14 @@ export class CalculateService {
 			return (
 				employee_payment_fe.base_salary +
 				(employee_payment_fe.supervisor_allowance ?? 0) +
-				(employee_payment_fe.professional_cert_allowance ?? 0) +
+				(professional_cert_allowance ?? 0) +
 				(employee_payment_fe.occupational_allowance ?? 0) +
 				operational_performance_bonus + //在bonus裡 id=2
 				reissue_salary +
 				exceed_overtime_pay +
 				other_addition_tax +
 				full_attendance_bonus +
-				(employee_payment_fe.shift_allowance ?? 0) //+
+				(shift_allowance ?? 0) //+
 				// rd("夜點費") +
 				// rd("績效獎金") +
 				// rd("專案獎金")
@@ -1345,18 +1349,20 @@ export class CalculateService {
 	//MARK: 薪資總額
 	async getTotalSalary(
 		employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
-		full_attendance_bonus: number
+		full_attendance_bonus: number,
+		professional_cert_allowance: number,
+		shift_allowance: number
 	): Promise<number> {
 		// rd("底薪") + rd("伙食津貼") + rd("主管津貼") + rd("專業証照津貼") + rd("職務津貼") + rd("補助津貼") + rd("全勤獎金") + rd("輪班津貼")'Jerry 06/06/07 職災保險匯出
 		const total_salary =
 			employee_payment_fe.base_salary +
 			(employee_payment_fe.food_allowance ?? 0) +
 			(employee_payment_fe.supervisor_allowance ?? 0) +
-			(employee_payment_fe.professional_cert_allowance ?? 0) +
+			(professional_cert_allowance ?? 0) +
 			(employee_payment_fe.occupational_allowance ?? 0) +
 			(employee_payment_fe.subsidy_allowance ?? 0) +
 			full_attendance_bonus +
-			(employee_payment_fe.shift_allowance ?? 0);
+			(shift_allowance ?? 0);
 		return total_salary;
 	}
 	//MARK: 勞退金提撥
@@ -1583,7 +1589,8 @@ export class CalculateService {
 		holiday_list: Holiday[],
 		gross_salary: number,
 		employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
-		insurance_rate_setting: InsuranceRateSetting
+		insurance_rate_setting: InsuranceRateSetting,
+		professional_cert_allowance: number
 	): Promise<number> {
 		// 		'特別事假扣款:
 		// Function GetLeave2Money(kind1 As String, kind2 As String, money As Long, bouns As Long, t1 As Single)
@@ -1610,7 +1617,7 @@ export class CalculateService {
 		const hourly_fee =
 			(gross_salary +
 				(employee_payment_fe.subsidy_allowance ?? 0) +
-				(employee_payment_fe.professional_cert_allowance ?? 0)) /
+				(professional_cert_allowance ?? 0)) /
 			240;
 		for (const h of holiday_list) {
 			if (h.pay_order === special_leave_id) {

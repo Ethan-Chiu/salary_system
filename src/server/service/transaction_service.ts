@@ -1,5 +1,5 @@
 import { container, injectable } from "tsyringe";
-import { } from "../api/types/parameters_input_type";
+import {} from "../api/types/parameters_input_type";
 import { Transaction } from "../database/entity/SALARY/transaction";
 import { EmployeeDataService } from "./employee_data_service";
 import { EmployeePaymentService } from "./employee_payment_service";
@@ -45,6 +45,8 @@ export class TransactionService {
 		const employeePaymentMapper = container.resolve(EmployeePaymentMapper);
 		const employeeTrustMapper = container.resolve(EmployeeTrustMapper);
 		// MARK: Data
+		const allowance_list = await ehrService.getAllowance(period_id);
+		const allowance_type_list = await ehrService.getAllowanceType();
 		const payset = (
 			await ehrService.getPaysetByEmpNoList(period_id, [emp_no])
 		)[0];
@@ -59,12 +61,11 @@ export class TransactionService {
 			);
 
 		if (employee_payment == null) {
-			throw new BaseResponseError("Employee Payment does not exist")
+			throw new BaseResponseError("Employee Payment does not exist");
 		}
 
-		const employee_payment_fe = await employeePaymentMapper.getEmployeePaymentFE(
-			employee_payment
-		);
+		const employee_payment_fe =
+			await employeePaymentMapper.getEmployeePaymentFE(employee_payment);
 
 		const bonus_setting =
 			await bonusSettingService.getCurrentBonusSetting();
@@ -75,9 +76,9 @@ export class TransactionService {
 				emp_no,
 				period_id
 			);
-		
+
 		if (employee_trust == null) {
-			throw new BaseResponseError("Employee Trust does not exist")
+			throw new BaseResponseError("Employee Trust does not exist");
 		}
 
 		const employee_trust_fe = await employeeTrustMapper.getEmployeeTrustFE(
@@ -132,8 +133,18 @@ export class TransactionService {
 		const l_r = employee_payment_fe!.l_r;
 		const occupational_injury = employee_payment_fe!.occupational_injury;
 		const supervisor_allowance = employee_payment_fe!.supervisor_allowance;
-		const professional_cert_allowance =
-			employee_payment_fe!.professional_cert_allowance;
+		const shift_allowance = await ehrService.getTargetAllowance(
+			allowance_list,
+			allowance_type_list,
+			emp_no,
+			"輪班津貼"
+		);
+		const professional_cert_allowance = await ehrService.getTargetAllowance(
+			allowance_list,
+			allowance_type_list,
+			emp_no,
+			"證照津貼"
+		);
 		const food_allowance = employee_payment_fe!.food_allowance;
 		const base_salary = employee_payment_fe!.base_salary;
 		const received_elderly_benefits = false;
@@ -144,7 +155,8 @@ export class TransactionService {
 		);
 		const gross_salary = await calculateService.getGrossSalary(
 			employee_payment_fe!,
-			payset!
+			payset!,
+			professional_cert_allowance
 		);
 		const special_leave_deduction =
 			await calculateService.getSpecialLeaveDeduction(
@@ -153,7 +165,8 @@ export class TransactionService {
 				holiday_list,
 				gross_salary,
 				employee_payment_fe!,
-				insurance_rate_setting!
+				insurance_rate_setting!,
+				professional_cert_allowance
 			);
 
 		const l_i_deduction = await calculateService.getLaborInsuranceDeduction(
@@ -184,7 +197,9 @@ export class TransactionService {
 				payset!,
 				insurance_rate_setting!,
 				full_attendance_bonus,
-				pay_type
+				pay_type,
+				shift_allowance,
+				gross_salary
 			);
 		const holiday_overtime_pay =
 			await calculateService.getHolidayOvertimePay(
@@ -194,7 +209,9 @@ export class TransactionService {
 				payset!,
 				insurance_rate_setting!,
 				full_attendance_bonus!,
-				pay_type
+				pay_type,
+				shift_allowance,
+				gross_salary
 			); // change name
 		const leave_deduction = await calculateService.getLeaveDeduction(
 			employee_data!,
@@ -203,7 +220,9 @@ export class TransactionService {
 			payset!,
 			holidays_type,
 			insurance_rate_setting!,
-			full_attendance_bonus
+			full_attendance_bonus,
+			shift_allowance,
+			gross_salary
 		);
 		const exceed_overtime_pay = await calculateService.getExceedOvertimePay(
 			employee_data!,
@@ -212,7 +231,9 @@ export class TransactionService {
 			payset!,
 			insurance_rate_setting!,
 			full_attendance_bonus,
-			pay_type
+			pay_type,
+			shift_allowance,
+			gross_salary
 		);
 		const salary_income_deduction =
 			await calculateService.getSalaryIncomeDeduction(
@@ -226,7 +247,8 @@ export class TransactionService {
 				operational_performance_bonus,
 				other_addition_tax,
 				special_leave_deduction,
-				other_deduction_tax
+				other_deduction_tax,
+				shift_allowance
 			);
 		const group_insurance_deduction =
 			await calculateService.getGroupInsuranceDeduction(
@@ -252,7 +274,8 @@ export class TransactionService {
 			// period_id,
 			// emp_no
 			employee_payment_fe!,
-			exceed_overtime_pay
+			exceed_overtime_pay,
+			professional_cert_allowance
 		);
 		const income_tax = await calculateService.getSalaryIncomeTax(
 			employee_data!,
@@ -260,8 +283,9 @@ export class TransactionService {
 			salary_income_deduction
 		);
 		const bonus_tax = await calculateService.getBonusTax();
-		const occupational_allowance = employee_payment_fe!.occupational_allowance;
-		const shift_allowance = employee_payment_fe!.shift_allowance;
+		const occupational_allowance =
+			employee_payment_fe!.occupational_allowance;
+		
 		const non_leave_compensation =
 			await calculateService.getNonLeaveCompensation(
 				holiday_list!,
@@ -279,7 +303,9 @@ export class TransactionService {
 			exceed_overtime_pay,
 			other_addition_tax,
 			full_attendance_bonus,
-			end_of_year_bonus
+			end_of_year_bonus,
+			professional_cert_allowance,
+			shift_allowance
 		);
 		const non_taxable_subtotal =
 			await calculateService.getNonTaxableSubtotal(
@@ -332,7 +358,9 @@ export class TransactionService {
 		);
 		const total_salary = await calculateService.getTotalSalary(
 			employee_payment_fe!,
-			full_attendance_bonus
+			full_attendance_bonus,
+			professional_cert_allowance,
+			shift_allowance
 		);
 		const salary_range = await calculateService.getSalaryRange(
 			total_salary
