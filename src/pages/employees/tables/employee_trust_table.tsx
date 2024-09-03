@@ -8,6 +8,8 @@ const columns = (t: I18nType) =>
 	[
 		"emp_no",
 		"emp_name",
+		"position",
+		"position_type",
 		"department",
 		"emp_trust_reserve",
 		"org_trust_reserve",

@@ -10,7 +10,6 @@ import { CryptoHelper } from "~/lib/utils/crypto";
 export class EmployeePaymentMapper {
     async getEmployeePayment(employee_payment: z.infer<typeof EmployeePaymentFE>): Promise<z.infer<typeof EmployeePayment>> {
         const employeePayment: z.infer<typeof EmployeePayment> = convertDatePropertiesToISOString({
-            ...employee_payment,
             base_salary_enc: CryptoHelper.encrypt(employee_payment.base_salary.toString()),
             food_allowance_enc: CryptoHelper.encrypt(employee_payment.food_allowance.toString()),
             supervisor_allowance_enc: CryptoHelper.encrypt(employee_payment.supervisor_allowance.toString()),
@@ -21,6 +20,7 @@ export class EmployeePaymentMapper {
             h_i_enc: CryptoHelper.encrypt(employee_payment.h_i.toString()),
             l_r_enc: CryptoHelper.encrypt(employee_payment.l_r.toString()),
             occupational_injury_enc: CryptoHelper.encrypt(employee_payment.occupational_injury.toString()),
+            ...employee_payment,
         })
 
         return employeePayment
@@ -34,8 +34,9 @@ export class EmployeePaymentMapper {
         }
 
         const employeePaymentFE: z.infer<typeof EmployeePaymentFE> = convertDatePropertiesToISOString({
-            ...employee_payment,
             emp_name: employee.emp_name,
+            position: employee.position,
+            position_type: employee.position_type,
             department: employee.department,
             base_salary: Number(CryptoHelper.decrypt(employee_payment.base_salary_enc)),
             food_allowance: Number(CryptoHelper.decrypt(employee_payment.food_allowance_enc)),
@@ -47,14 +48,14 @@ export class EmployeePaymentMapper {
             h_i: Number(CryptoHelper.decrypt(employee_payment.h_i_enc)),
             l_r: Number(CryptoHelper.decrypt(employee_payment.l_r_enc)),
             occupational_injury: Number(CryptoHelper.decrypt(employee_payment.occupational_injury_enc)),
+            ...employee_payment,
         })
 
-        return deleteProperties(employeePaymentFE, ["base_salary_enc", "food_allowance_enc", "l_r_self_enc", "l_i_enc", "h_i_enc", "l_r_enc", "occupational_injury_enc"])
+        return deleteProperties(employeePaymentFE, ["base_salary_enc", "supervisor_allowance_enc", "occupational_allowance_enc", "subsidy_allowance_enc", "food_allowance_enc", "l_r_self_enc", "l_i_enc", "h_i_enc", "l_r_enc", "occupational_injury_enc"])
     }
 
     async getEmployeePaymentNullable(employee_payment: z.infer<typeof updateEmployeePaymentAPI>): Promise<z.infer<typeof updateEmployeePaymentService>> {
         const employeePayment: z.infer<typeof EmployeePayment> = convertDatePropertiesToISOString({
-            ...employee_payment,
             base_salary_enc: employee_payment.base_salary != undefined ? CryptoHelper.encrypt(employee_payment.base_salary.toString()) : undefined,
             food_allowance_enc: employee_payment.food_allowance != undefined ? CryptoHelper.encrypt(employee_payment.food_allowance.toString()) : undefined,
             supervisor_allowance_enc: employee_payment.supervisor_allowance != undefined ? CryptoHelper.encrypt(employee_payment.supervisor_allowance.toString()) : undefined,
@@ -65,6 +66,7 @@ export class EmployeePaymentMapper {
             h_i_enc: employee_payment.h_i != undefined ? CryptoHelper.encrypt(employee_payment.h_i.toString()) : undefined,
             l_r_enc: employee_payment.l_r != undefined ? CryptoHelper.encrypt(employee_payment.l_r.toString()) : undefined,
             occupational_injury_enc: employee_payment.occupational_injury != undefined ? CryptoHelper.encrypt(employee_payment.occupational_injury.toString()) : undefined,
+            ...employee_payment,
         })
 
         return employeePayment

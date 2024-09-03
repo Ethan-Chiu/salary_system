@@ -40,7 +40,7 @@ export class Bonus {
             EMP_NO,
             EMP_NAME,
             BONUS_ID,
-            AMOUNT,
+            Number(AMOUNT),
             PAY,
             REMARK
 		);

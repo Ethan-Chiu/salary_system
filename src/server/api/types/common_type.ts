@@ -17,6 +17,8 @@ export const DateService = z.object({
 export const EmpData = z.object({
 	emp_name: z.string(),
 	department: z.string(),
+	position: z.number(),
+	position_type: z.string(),
 }).partial();
 
 export const User = z.object({

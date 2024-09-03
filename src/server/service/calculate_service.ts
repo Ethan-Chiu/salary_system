@@ -16,6 +16,7 @@ import { PayTypeEnum, PayTypeEnumType } from "../api/types/pay_type_enum";
 import { HolidaysType } from "../database/entity/SALARY/holidays_type";
 import { EmployeePaymentFE } from "../api/types/employee_payment_type";
 import { z } from "zod";
+import { Round } from "./helper_function";
 
 const FOREIGN = "外籍勞工";
 const PROFESSOR = "顧問";
@@ -31,9 +32,6 @@ const NORMAL_MAN = "一般員工";
 const rd = (key: string) => {
 	throw new Error("Should change 'rd' to your functions");
 };
-function Round(num: number, decimals: number = 0): number {
-	return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
-}
 @injectable()
 export class CalculateService {
 	constructor() { }
