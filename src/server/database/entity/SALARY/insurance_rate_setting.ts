@@ -22,6 +22,7 @@ export class InsuranceRateSetting extends Model<
 	declare h_i_avg_dependents_count: number;
 	declare v2_h_i_supp_pay_rate: number;
 	declare v2_h_i_deduction_tsx_thres: number;
+	// 少一個二代健保倍數
 	declare start_date: string;
 	declare end_date: string | null;
 

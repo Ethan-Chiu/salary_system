@@ -170,7 +170,18 @@
     "all": "全部",
     "no_month_salary": "未發放月薪",
     "salary_data": "當前資料",
-    "ehr_data": "更新資料"
+    "ehr_data": "更新資料",
+    "l_i_deduction": "勞保扣除額",
+    "h_i_deduction": "健保扣除額",
+    "welfare_contribution": "福利金提撥",
+    "weekday_overtime_pay": "平日加班費",
+    "holiday_overtime_pay": "假日加班費",
+    "leave_deduction": "請假扣款",
+    "exceed_overtime_pay": "超時加班費",
+    "full_attendance_bonus": "全勤獎金",
+    "group_insurance_deduction": "團保費代扣",
+    "other_deduction": "其他扣款",
+    "gross_salary": "應發底薪"
   },
   "table_name": {
     "attendanceSetting": "請假加班",
