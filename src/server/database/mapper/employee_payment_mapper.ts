@@ -35,7 +35,7 @@ export class EmployeePaymentMapper {
             throw new BaseResponseError("Employee does not exist")
         }
 
-        const employeePaymentFE: z.infer<typeof EmployeePaymentFE> = EmployeePaymentFE.parse(
+        const employeePaymentFE: z.infer<typeof EmployeePaymentFE> =
             convertDatePropertiesToISOString({
                 emp_name: employee.emp_name,
                 position: employee.position,
@@ -53,7 +53,6 @@ export class EmployeePaymentMapper {
                 occupational_injury: Number(CryptoHelper.decrypt(employee_payment.occupational_injury_enc)),
                 ...employee_payment,
             })
-        )
 
         return deleteProperties(employeePaymentFE, ["base_salary_enc", "supervisor_allowance_enc", "occupational_allowance_enc", "subsidy_allowance_enc", "food_allowance_enc", "l_r_self_enc", "l_i_enc", "h_i_enc", "l_r_enc", "occupational_injury_enc"])
     }

@@ -53,7 +53,7 @@ export default function Login() {
 
 	const onSubmit = useCallback(
 		async (data: z.infer<typeof LoginFormSchema>) => {
-			const res = await signIn("Credentials", {
+			const res = await signIn("credentials", {
 				username: data.userid,
 				password: data.password,
 				callbackUrl: "/",
