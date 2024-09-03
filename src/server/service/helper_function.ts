@@ -42,3 +42,7 @@ export function is_date_available(
 export function select_value(newData: any, oldData: any) {
 	return newData !== undefined ? newData : oldData;
 }
+
+export function Round(num: number, decimals: number = 0): number {
+	return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+}

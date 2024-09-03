@@ -8,6 +8,8 @@ const columns = (t: I18nType) =>
 	[
 		"emp_no",
 		"emp_name",
+		"position",
+		"position_type",
 		"department",
 		"base_salary",
 		"food_allowance",

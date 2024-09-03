@@ -16,9 +16,9 @@ export class LevelRangeMapper {
         }
 
         const levelRange: z.infer<typeof LevelRange> = {
-            ...level_range_FE,
             level_start_id: level_start.id,
             level_end_id: level_end.id,
+            ...level_range_FE,
         }
 
         return convertDatePropertiesToISOString(levelRange)
@@ -33,9 +33,9 @@ export class LevelRangeMapper {
         }
 
         const levelRangeFE: z.infer<typeof LevelRangeFE> = {
-            ...level_range,
             level_start: level_start.level,
             level_end: level_end.level,
+            ...level_range,
         }
 
         return convertDatePropertiesToISOString(deleteProperties(levelRangeFE, ["level_start_id", "level_end_id"]))
@@ -50,9 +50,9 @@ export class LevelRangeMapper {
         }
 
         const levelRange: z.infer<typeof updateLevelRangeService> = {
-            ...level_range_FE,
             level_start_id: level_start.id,
             level_end_id: level_end.id,
+            ...level_range_FE,
         }
 
         return convertDatePropertiesToISOString(levelRange)

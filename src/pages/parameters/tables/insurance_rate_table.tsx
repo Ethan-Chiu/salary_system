@@ -17,6 +17,7 @@ import { formatDate } from "~/lib/utils/format_date";
 import { type TableComponentProps } from "../tables_view";
 import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
+import { Round } from "~/server/service/helper_function";
 
 export type RowItem = {
 	parameters: string;
@@ -61,7 +62,7 @@ export const insurance_rate_columns = [
 			const value = row.getValue("value");
 			let formatted = "";
 			if (isNumber(value))
-				formatted = parseFloat(row.getValue("value")).toString();
+				formatted = Round(parseFloat(row.getValue("value")), 2).toString();
 			else if (isString(value)) formatted = row.getValue("value");
 			else if (isDateType(value)) {
 				if (value) {
