@@ -5,8 +5,8 @@ export const Id = z.object({
 });
 
 export const DateAPI = z.object({
-	start_date: z.date().nullable(),
-	end_date: z.date().nullable(),
+	start_date: z.date().nullable() || z.string().nullable(),
+	end_date: z.date().nullable() || z.string().nullable(),
 });
 
 export const DateService = z.object({

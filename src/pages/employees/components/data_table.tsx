@@ -1,5 +1,5 @@
 import * as React from "react";
-import { VisibilityState, type ColumnDef, type Table } from "@tanstack/react-table";
+import { type VisibilityState, type ColumnDef, type Table } from "@tanstack/react-table";
 import { Separator } from "~/components/ui/separator";
 
 import { DataTablePagination } from "~/components/data_table/data_table_pagination";

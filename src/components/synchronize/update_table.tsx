@@ -70,11 +70,11 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 		setCheckedEmps(checked);
 	}, [data]);
 
-	const router = useRouter();
+	const ctx = api.useUtils();
 
 	const { mutate } = api.sync.synchronize.useMutation({
 		onSuccess: () => {
-			router.reload();
+			void ctx.sync.checkEmployeeData.invalidate();
 		},
 	});
 

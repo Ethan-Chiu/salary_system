@@ -34,7 +34,7 @@ export default function EmployeeToolbarFunctionsProvider({
 	tableType,
 	period_id,
 }: PropsWithChildren<ToolbarFunctionsProviderProps>) {
-	const ctx = api.useContext();
+	const ctx = api.useUtils();
 
 	//#region <EmployeePayment>
 	const getEmployeePayment = () =>

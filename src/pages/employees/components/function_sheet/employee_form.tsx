@@ -180,6 +180,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 						period_id: selectedPeriod!.period_id,
 						emp_no_list: selectedEmpNoList,
 					});
+					closeSheet();
 				}}
 			/>
 		);
@@ -302,9 +303,7 @@ const CompViewAllDatas = ({
 							<DialogFooter>
 								<DialogClose>
 									<Button
-										onClick={() =>
-											onAutoCalculate(selectedEmpNoList)
-										}
+										onClick={() => onAutoCalculate(selectedEmpNoList)}
 									>
 										{t("button.confirm")}
 									</Button>
@@ -410,7 +409,7 @@ const CompViewAllDatas = ({
 										{Object.keys(data).map((key) => {
 											return (
 												<TableCell
-													key={data.emp_no}
+													key={key}
 													className="whitespace-nowrap text-center font-medium"
 												>
 													{data[key]}

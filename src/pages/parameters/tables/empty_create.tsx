@@ -73,7 +73,6 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 		const parsedValues = formSchema.safeParse(formValues);
 		if (parsedValues.success) {
 			if (mode === "create") {
-				console.log(parsedValues.data);
 				createFunction.mutate({
 					...parsedValues.data,
 				});
@@ -92,8 +91,6 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 			setOpenConfirmDialog(true);
 		}
 	};
-
-	console.log(openConfirmDialog);
 
 	// Create or update an entry
 	return (

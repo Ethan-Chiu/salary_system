@@ -1,7 +1,7 @@
 import React, { useState, type PropsWithChildren } from "react";
 import dataTableContext from "./data_table_context";
 import {
-	EmployeeTableEnum,
+	type EmployeeTableEnum,
 	EmployeeTableEnumValues,
 } from "../../employee_tables";
 

@@ -63,7 +63,6 @@ export function WithDataTableStandardState<TData, P>({
 	});
 
 	useEffect(() => {
-		console.log("data table use effect");
 		onUpdate && onUpdate(table);
 	}, [columnVisibility, table]);
 

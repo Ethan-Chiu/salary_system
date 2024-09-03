@@ -298,16 +298,27 @@ export class EmployeePaymentService {
 			const new_end_date_string = get_date_string(
 				new Date(start_date.setDate(start_date.getDate() - 1))
 			);
-			if (
-				end_date_string != new_end_date_string &&
-				employeePaymentList[i]!.dataValues.emp_no ==
-				employeePaymentList[i + 1]!.dataValues.emp_no
-			) {
+			if (employeePaymentList[i]!.dataValues.emp_no ==
+				employeePaymentList[i + 1]!.dataValues.emp_no) {
+					if (
+						end_date_string != new_end_date_string
+					) {
+						await this.updateEmployeePayment({
+							id: employeePaymentList[i]!.dataValues.id,
+							end_date: new_end_date_string,
+						});
+					}
+			}
+			else {
 				await this.updateEmployeePayment({
 					id: employeePaymentList[i]!.dataValues.id,
-					end_date: new_end_date_string,
+					end_date: null,
 				});
 			}
 		}
+		await this.updateEmployeePayment({
+			id: employeePaymentList[employeePaymentList.length - 1]!.dataValues.id,
+			end_date: null,
+		});
 	}
 }

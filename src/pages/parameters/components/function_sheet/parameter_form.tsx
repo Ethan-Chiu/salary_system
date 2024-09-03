@@ -269,7 +269,6 @@ const CompViewAllDatas = ({
 											)}
 										</TableCell>
 										{Object.keys(data).map((key, index) => {
-											console.log(data[key]);
 											return (
 												<TableCell className="text-center font-medium whitespace-nowrap">
 													{/* {isDate(data[key]) ? data[key].toDateString() : data[key]} */}

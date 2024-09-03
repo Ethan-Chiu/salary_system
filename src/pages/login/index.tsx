@@ -28,7 +28,7 @@ import { signIn } from "next-auth/react";
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
 
 const LoginFormSchema = z.object({
