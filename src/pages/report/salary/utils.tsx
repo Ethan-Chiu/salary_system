@@ -22,7 +22,6 @@ export function getExcelData(Alldatas: any[]) {
             rows.unshift(columns);
             excelData.push({ sheetName: name, data: rows });
         } catch (e) {
-            console.log(e);
             excelData.push({
                 sheetName: name,
                 data: [

@@ -100,7 +100,6 @@ const handleExportExcel = async (
 			sheetdata.data.forEach((row: Block[], ri: number) => {
 				row.forEach((cellProps: Block, ci: number) => {
 					const cellName = getCellName(ri, ci);
-					console.log(cellName);
 					const cell = worksheet.getCell(cellName);
 
 					// Set text color
@@ -317,7 +316,6 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 				data: tmpSheetData,
 			});
 		});
-		console.log(tmpSheets);
 		setSheets(tmpSheets);
 	}
 
@@ -513,7 +511,6 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 								colIndex: -1,
 							});
 						}
-						console.log(sheets);
 					}}
 				>
 					{mode === "view" ? "Edit" : "Done"}
