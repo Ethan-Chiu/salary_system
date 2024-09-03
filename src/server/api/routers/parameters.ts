@@ -41,6 +41,7 @@ import { PerformanceLevelService } from "~/server/service/performance_level_serv
 import { TrustMoneyService } from "~/server/service/trust_money_service";
 import { createLevelRangeAPI, updateLevelRangeAPI } from "../types/level_range_type";
 import { LevelRangeMapper } from "~/server/database/mapper/level_range_mapper";
+import { roundProperties } from "~/server/database/mapper/helper_function";
 
 export const parametersRouter = createTRPCRouter({
 	createBankSetting: publicProcedure
@@ -118,7 +119,8 @@ export const parametersRouter = createTRPCRouter({
 			if (attendanceSetting == null) {
 				throw new BaseResponseError("AttendanceSetting does not exist");
 			}
-			return attendanceSetting;
+			
+			return roundProperties(attendanceSetting, 2);
 		}),
 
 	getAllAttendanceSetting: publicProcedure.query(async () => {
@@ -128,7 +130,7 @@ export const parametersRouter = createTRPCRouter({
 		if (attendanceSetting.length == 0) {
 			throw new BaseResponseError("AttendanceSetting does not exist");
 		}
-		return attendanceSetting;
+		return attendanceSetting.map(e => roundProperties(e, 2));
 	}),
 
 	createAttendanceSetting: publicProcedure
@@ -193,7 +195,7 @@ export const parametersRouter = createTRPCRouter({
 					"InsuranceRateSetting does not exist"
 				);
 			}
-			return insuranceRateSetting;
+			return roundProperties(insuranceRateSetting, 2);
 		}),
 
 	getAllInsuranceRateSetting: publicProcedure.query(async () => {
@@ -205,7 +207,7 @@ export const parametersRouter = createTRPCRouter({
 		if (insuranceRateSetting.length == 0) {
 			throw new BaseResponseError("InsuranceRateSetting does not exist");
 		}
-		return insuranceRateSetting;
+		return insuranceRateSetting.map(e => roundProperties(e, 2));
 	}),
 
 	createInsuranceRateSetting: publicProcedure
