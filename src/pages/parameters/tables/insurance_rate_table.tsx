@@ -62,7 +62,7 @@ export const insurance_rate_columns = [
 			const value = row.getValue("value");
 			let formatted = "";
 			if (isNumber(value))
-				formatted = Round(parseFloat(row.getValue("value")), 2).toString();
+				formatted = parseFloat(row.getValue("value")).toString();
 			else if (isString(value)) formatted = row.getValue("value");
 			else if (isDateType(value)) {
 				if (value) {

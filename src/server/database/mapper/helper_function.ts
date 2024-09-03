@@ -1,4 +1,4 @@
-import { get_date_string } from "~/server/service/helper_function";
+import { get_date_string, Round } from "~/server/service/helper_function";
 
 export function convertDatePropertiesToISOString<T extends object>(obj: T): T {
     for (const prop in obj) {
@@ -18,6 +18,15 @@ export function deleteProperties<T extends object>(obj: T, props: string[]): T {
       if (Object.prototype.hasOwnProperty.call(obj, prop)) {
         delete obj[prop as keyof T];
       }
+    }
+    return obj;
+}
+
+export function roundProperties(obj: any, decimal: number): any {
+    for (const prop in obj["dataValues"]) {
+        if (obj["dataValues"].hasOwnProperty(prop) && typeof obj["dataValues"][prop] === "number") {
+            obj["dataValues"][prop] = Round(obj["dataValues"][prop], decimal);
+        }
     }
     return obj;
 }

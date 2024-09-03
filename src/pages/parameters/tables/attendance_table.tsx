@@ -14,7 +14,6 @@ import { formatDate } from "~/lib/utils/format_date";
 import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
-import { Round } from "~/server/service/helper_function";
 
 const rowSchema = z.object({
 	parameters: z.string(),
@@ -63,7 +62,7 @@ export const attendance_columns = ({t}: {t: TFunction<[string], undefined>}) => 
 			const value = row.getValue("value");
 			let formatted = "";
 			if (isNumber(value))
-				formatted = Round(parseFloat(row.getValue("value")), 2).toString();
+				formatted = parseFloat(row.getValue("value")).toString();
 			else if (isString(value)) formatted = row.getValue("value");
 			else if (isDateType(value)) {
 				if (value) {
