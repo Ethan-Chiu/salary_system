@@ -22,10 +22,11 @@ export function deleteProperties<T extends object>(obj: T, props: string[]): T {
     return obj;
 }
 
-export function roundProperties(obj: any, decimal: number): any {
-    for (const prop in obj["dataValues"]) {
-        if (obj["dataValues"].hasOwnProperty(prop) && typeof obj["dataValues"][prop] === "number") {
-            obj["dataValues"][prop] = Round(obj["dataValues"][prop], decimal);
+export function roundProperties<T extends object>(obj: T, decimal: number): T {
+    const dateValueObj = obj["dataValues" as keyof T];
+    for (const prop in dateValueObj) {
+        if (Object.prototype.hasOwnProperty.call(dateValueObj, prop) && typeof dateValueObj[prop] === "number") {
+            (dateValueObj[prop] as unknown) = Round(dateValueObj[prop] as number, decimal);
         }
     }
     return obj;
