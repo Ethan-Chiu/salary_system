@@ -11,6 +11,7 @@ import { RolesEnum } from "../types/role_type";
 import { accessiblePages } from "../types/access_page_type";
 import { AccessService } from "~/server/service/access_service";
 import { HolidaysTypeService } from "~/server/service/holidays_type_service";
+import { Transaction } from "~/server/database/entity/SALARY/transaction";
 
 export const debugRouter = createTRPCRouter({
 	syncDb: publicProcedure
@@ -30,6 +31,31 @@ export const debugRouter = createTRPCRouter({
 					await database.sync({ alter: true });
 				}
 				await database.sync();
+
+				return {
+					msg: "All models were synchronized successfully.",
+				};
+			} catch (e) {
+				return {
+					msg: `error ${(e as Error).message}`,
+				};
+			}
+		}),
+	syncTransaction: publicProcedure
+		.input(
+			z.object({
+				force: z.boolean().nullable(),
+				alter: z.boolean().nullable(),
+			})
+		)
+		.query(async ({ input }) => {
+			try {
+				if (input.force) {
+					await Transaction.sync({ force: true });
+				} else if (input.alter) {
+					await Transaction.sync({ alter: true });
+				}
+				await Transaction.sync();
 
 				return {
 					msg: "All models were synchronized successfully.",
@@ -86,5 +112,5 @@ export const debugRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const holidaysTypeService = container.resolve(HolidaysTypeService);
 			await holidaysTypeService.createHolidaysType(input);
-		})
+		}),
 });

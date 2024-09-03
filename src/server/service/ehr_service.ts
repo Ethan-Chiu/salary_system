@@ -23,7 +23,7 @@ export type BonusWithType = Omit<Bonus, "bonus_id" | "period_id"> & {
 export type ExpenseWithType = Omit<Expense, "period_id" | "id"> & {
 	period_name: string;
 	expense_type_name: string;
-}
+};
 
 @injectable()
 export class EHRService {
@@ -96,7 +96,7 @@ export class EHRService {
 			}
 		);
 		const paysetList: Payset[] = dataList.map((o) => Payset.fromDB(o));
-		
+
 		return paysetList;
 	}
 
@@ -197,9 +197,12 @@ export class EHRService {
 
 	async getExpense(period_id: number): Promise<Expense[]> {
 		const dbConnection = container.resolve(Database).connection;
-		const dataList = await dbConnection.query(this.GET_EXPENSE_QUERY(period_id), {
-			type: QueryTypes.SELECT,
-		});
+		const dataList = await dbConnection.query(
+			this.GET_EXPENSE_QUERY(period_id),
+			{
+				type: QueryTypes.SELECT,
+			}
+		);
 		const expenseList: Expense[] = dataList.map((o) => Expense.fromDB(o));
 		return expenseList;
 	}
@@ -223,22 +226,35 @@ export class EHRService {
 			emp_no_list.includes(expense.emp_no!)
 		);
 		const expenseTypeList = await this.getExpenseClass();
+		const allowance_type_list = await this.getAllowanceType();
 		const period_name = await this.getPeriodById(period_id).then(
 			(period) => period.period_name
 		);
 		const expenseWithTypeList: ExpenseWithType[] = filtered_expense.map(
 			(expense) => {
-				const expenseTypeName = expenseTypeList.find(
-					(expenseType) => expenseType.id === expense.id
-				)?.name;
-				return {
-					...expense,
-					expense_type_name: expenseTypeName!,
-					period_name: period_name,
-				};
-			});
+				if (expense.kind === 1) {
+					const allowanceTypeName = allowance_type_list.find(
+						(allowanceType) => allowanceType.id === expense.id
+					)?.name;
+					return {
+						...expense,
+						expense_type_name: allowanceTypeName!,
+						period_name: period_name,
+					};
+				} else {
+					const expenseTypeName = expenseTypeList.find(
+						(expenseType) => expenseType.id === expense.id
+					)?.name;
+					return {
+						...expense,
+						expense_type_name: expenseTypeName!,
+						period_name: period_name,
+					};
+				}
+			}
+		);
 		return expenseWithTypeList;
-	};
+	}
 	async getExpenseClass(): Promise<ExpenseClass[]> {
 		const dbConnection = container.resolve(Database).connection;
 		const dataList = await dbConnection.query(
@@ -281,16 +297,27 @@ export class EHRService {
 		return allowanceList;
 	}
 
-	async getTargetAllowance(allowance_list: Allowance[], allowance_type_list: AllowanceType[], emp_no: string, type_name: string) {
-		const target_allowance_type = allowance_type_list.find((allowance_type) => allowance_type.name === type_name);
+	async getTargetAllowance(
+		allowance_list: Allowance[],
+		allowance_type_list: AllowanceType[],
+		emp_no: string,
+		type_name: string
+	) {
+		const target_allowance_type = allowance_type_list.find(
+			(allowance_type) => allowance_type.name === type_name
+		);
 		if (!target_allowance_type) {
 			throw new BaseResponseError("Allowance Type Not Found");
 		}
-		const target_allowance = allowance_list.filter((allowance) => allowance.emp_no === emp_no && allowance.allowance_id === target_allowance_type.id);
+		const target_allowance = allowance_list.filter(
+			(allowance) =>
+				allowance.emp_no === emp_no &&
+				allowance.allowance_id === target_allowance_type.id
+		);
 		if (target_allowance.length === 0) {
 			return 0;
 		}
-		let amount = 0
+		let amount = 0;
 		target_allowance.forEach((allowance) => {
 			amount += allowance.amount!;
 		});

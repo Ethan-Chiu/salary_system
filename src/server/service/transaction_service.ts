@@ -124,8 +124,10 @@ export class TransactionService {
 		pay_type = pay_type;
 		const department = employee_data!.department;
 		emp_no = emp_no;
+		const work_type = employee_data!.work_type;
 		const work_status = employee_data!.work_status;
 		const position = employee_data!.position;
+		const group_insurance_type = employee_data!.group_insurance_type;
 		const dependents = employee_data!.dependents;
 		const healthcare_dependents = employee_data!.healthcare_dependents;
 		const l_i = employee_payment_fe!.l_i;
@@ -148,6 +150,7 @@ export class TransactionService {
 		const food_allowance = employee_payment_fe!.food_allowance;
 		const base_salary = employee_payment_fe!.base_salary;
 		const received_elderly_benefits = false;
+		const long_service_allowance = 0; //Todo
 		// MARK: Calculated Results
 		const other_deduction_tax = await calculateService.getOtherDeductionTax(
 			period_id,
@@ -307,13 +310,20 @@ export class TransactionService {
 			professional_cert_allowance,
 			shift_allowance
 		);
+		const retirement_income = await calculateService.getRetirementIncome(
+			period_id,
+			emp_no
+		);
 		const non_taxable_subtotal =
 			await calculateService.getNonTaxableSubtotal(
 				employee_payment_fe!,
 				weekday_overtime_pay,
 				holiday_overtime_pay,
 				non_leave_compensation,
-				other_addition
+				other_addition,
+				retirement_income,
+				period_id,
+				emp_no
 			);
 		const salary_income_tax = await calculateService.getSalaryIncomeTax(
 			employee_data!,
@@ -393,10 +403,7 @@ export class TransactionService {
 		const probation_period_over = false;
 
 		const disabilty_level = employee_data!.disabilty_level;
-		const retirement_income = await calculateService.getRetirementIncome(
-			period_id,
-			emp_no
-		);
+		
 
 		const v_2_h_i =
 			await calculateService.getSecondGenerationHealthInsurance();
@@ -429,7 +436,8 @@ export class TransactionService {
 			l_r_self,
 			parking_fee,
 			brokerage_fee,
-			v_2_h_i
+			v_2_h_i,
+			meal_deduction
 		);
 		const net_salary = await calculateService.getNetSalary(
 			// gross_salary,
@@ -459,8 +467,10 @@ export class TransactionService {
 			pay_type: pay_type, // 發薪別
 			department: department, // 部門
 			emp_no: emp_no, // 員工編號
+			work_type: work_type, // 工作類別
 			work_status: work_status, // 工作形態
 			position: position, // 職等
+			group_insurance_type: group_insurance_type, // 團保類別
 			dependents: dependents, // 扶養人數
 			healthcare_dependents: healthcare_dependents, // 健保眷口數
 			l_i: l_i, // 勞保
@@ -534,6 +544,7 @@ export class TransactionService {
 			special_leave: special_leave, // 特別事假
 			full_attendance_personal_leave: full_attendance_personal_leave, // 有全勤事假
 			full_attendance_sick_leave: full_attendance_sick_leave, // 有全勤病假
+			long_service_allowance: long_service_allowance, // 久任津貼
 			create_by: "system",
 			update_by: "system",
 		});

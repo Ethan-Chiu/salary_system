@@ -18,8 +18,10 @@ export class Transaction extends Model<
 	declare pay_type: string; // 發薪別
 	declare department: string; // 部門
 	declare emp_no: string; // 員工編號
+	declare work_type: string; // 工作類別
 	declare work_status: string; // 工作形態
 	declare position: number; // 職等
+	declare group_insurance_type: string; // 團保類別
 	declare dependents: number | null; // 扶養人數
 	declare healthcare_dependents: number | null; // 健保眷口數
 
@@ -102,6 +104,7 @@ export class Transaction extends Model<
 	declare special_leave: number; // 特別事假
 	declare full_attendance_personal_leave: number; // 有全勤事假
 	declare full_attendance_sick_leave: number; // 有全勤病假
+	declare long_service_allowance: number; //久任津貼
 	declare create_date: CreationOptional<Date>; // 建立日期
 	declare create_by: string; // 建立者
 	declare update_date: CreationOptional<Date>; // 更新日期
@@ -136,6 +139,10 @@ export function initTransaction(sequelize: Sequelize) {
 				type: DataTypes.STRING(128),
 				comment: "員工編號",
 			},
+			work_type: {
+				type: DataTypes.STRING(128),
+				comment: "工作類別",
+			},
 			work_status: {
 				type: DataTypes.STRING(128),
 				comment: "工作形態",
@@ -143,6 +150,10 @@ export function initTransaction(sequelize: Sequelize) {
 			position: {
 				type: DataTypes.INTEGER,
 				comment: "職等",
+			},
+			group_insurance_type: {
+				type: DataTypes.STRING(128),
+				comment: "團保類別",
 			},
 			dependents: {
 				type: DataTypes.INTEGER,
@@ -463,6 +474,10 @@ export function initTransaction(sequelize: Sequelize) {
 			full_attendance_sick_leave: {
 				type: DataTypes.INTEGER,
 				comment: "有全勤病假",
+			},
+			long_service_allowance: {
+				type: DataTypes.INTEGER,
+				comment: "久任津貼",
 			},
 			create_date: {
 				type: DataTypes.DATE,
