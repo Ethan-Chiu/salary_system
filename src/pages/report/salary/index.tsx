@@ -69,8 +69,6 @@ function ExportPage() {
 	]);
 
 	const [toDisplayData, setToDisplayData] = useState<any>(null);
-
-	console.log(getExcelA.data);
 	
 	function ExcludeDataColumn(dataList: any, excludedColumns: Array<string>) {
 		interface keyValuePair {

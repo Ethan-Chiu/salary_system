@@ -199,16 +199,28 @@ export class EmployeeTrustService {
 				new Date(start_date.setDate(start_date.getDate() - 1))
 			);
 			if (
-				end_date_string != new_end_date_string &&
 				employeeTrustList[i]!.dataValues.emp_no ==
 				employeeTrustList[i + 1]!.dataValues.emp_no
 			) {
+				if (end_date_string != new_end_date_string) {
+					await this.updateEmployeeTrust({
+						id: employeeTrustList[i]!.dataValues.id,
+						end_date: new_end_date_string,
+					});
+				}
+			}
+			else {
 				await this.updateEmployeeTrust({
 					id: employeeTrustList[i]!.dataValues.id,
-					end_date: new_end_date_string,
+					end_date: null,
 				});
 			}
 		}
+
+		await this.updateEmployeeTrust({
+			id: employeeTrustList[employeeTrustList.length - 1]!.dataValues.id,
+			end_date: null,
+		});
 	}
 	async autoCalculateEmployeeTrust(
 		period_id: number,

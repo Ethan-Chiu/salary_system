@@ -73,7 +73,6 @@ export function levelRangeMapper(levelRangeData: {
     level_start: number;
     level_end: number;
 }[]): RowItem[] {
-	console.log(levelRangeData);
 	return levelRangeData.map((d) => {
 		return {
 			type: d.type,

@@ -16,7 +16,6 @@ export function LanguageSelector() {
 	async function setLanguage(language: string) {
 		localStorage.setItem("language", language);
 		document.cookie = `NEXT_LOCALE=${language}`;
-		console.log(document.cookie);
 		await router.push({ pathname, query }, asPath, { locale: language });
 	}
 

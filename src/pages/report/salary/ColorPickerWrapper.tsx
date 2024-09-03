@@ -35,7 +35,6 @@ export function ColorPickerWrapper({
 	const [color, setColor] = useState(initialColor);
 
 	useEffect(() => {
-		console.log(initialColor);
 		setColor(initialColor);
 	}, [initialColor]);
 

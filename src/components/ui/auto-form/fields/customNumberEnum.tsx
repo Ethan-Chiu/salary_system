@@ -46,7 +46,6 @@ export default function AutoFormNumberEnum({
 					value={field.value}
 					defaultValue={""}
 					onChange={(e) => {
-						console.log(e.target.value)
 						field.onChange(Number(e.target.value));
 					}}
 					className="hidden"

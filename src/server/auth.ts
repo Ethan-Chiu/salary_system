@@ -146,7 +146,6 @@ export const authOptions: NextAuthOptions = {
 
 				const parseRole = RolesEnum.safeParse(user.auth_l);
 				if (!parseRole.success) {
-					console.log(parseRole.error);
 					throw new BaseResponseError(
 						`Internal Error: Wrong user role`
 					);
