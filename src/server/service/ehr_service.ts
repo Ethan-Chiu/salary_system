@@ -83,7 +83,7 @@ export class EHRService {
 		const holidayWithTypeList: HolidayWithType[] = filtered_holiday.map(
 			(holiday) => {
 				const holidayTypeName = holidays_type.find(
-					(holidayType) => holidayType.id === holiday.pay_order
+					(holidayType) => holidayType.pay_id === holiday.pay_order
 				)?.holidays_name;
 				return {
 					...holiday,
