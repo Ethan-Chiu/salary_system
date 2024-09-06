@@ -29,12 +29,6 @@ interface BonusTableProps {
 }
 
 export function BonusTable({ period, emp_no_list, pay_type }: BonusTableProps) {
-	// const { isLoading, isError, data, error } =
-	// 	api.function.getBonusWithTypeByEmpList.useQuery({
-	// 		period_id: period,
-	// 		emp_no_list: emp_no_list,
-	// 	});
-
 	const { isLoading, isError, data, error } =
 		api.function.getBonusWithTypeByEmpNoList.useQuery({
 			period_id: period,

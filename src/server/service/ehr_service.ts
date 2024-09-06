@@ -27,6 +27,11 @@ export type ExpenseWithType = Omit<Expense, "period_id" | "id"> & {
 	expense_type_name: string;
 };
 
+export type AllowanceWithType = Omit<Allowance, "period_id" | "allowance_id"> & {
+	period_name: string;
+	allowance_type_name: string;
+};
+
 export type HolidayWithType = Omit<Holiday, "pay_order"> & {
 	holiday_type_name: string;
 };
@@ -194,12 +199,12 @@ export class EHRService {
 		// 	throw new BaseResponseError("Bonus Not Found");
 		// }
 		const bonusList: Bonus[] = dataList.map((o) => Bonus.fromDB(o))
-		.sort((a, b) => {
-			if (a.emp_no === b.emp_no) {
-				return a.bonus_id! - b.bonus_id!;
-			}
-			return a.emp_no!.localeCompare(b.emp_no!);
-		});
+			.sort((a, b) => {
+				if (a.emp_no === b.emp_no) {
+					return a.bonus_id! - b.bonus_id!;
+				}
+				return a.emp_no!.localeCompare(b.emp_no!);
+			});
 
 		return bonusList;
 	}
@@ -265,12 +270,15 @@ export class EHRService {
 			}
 		);
 		const expenseList: Expense[] = dataList.map((o) => Expense.fromDB(o))
-		.sort((a, b) => {
-			if (a.emp_no === b.emp_no) {
-				return a.id! - b.id!;
-			}
-			return a.emp_no!.localeCompare(b.emp_no!);
-		});
+			.sort((a, b) => {
+				if (a.emp_no === b.emp_no) {
+					if (a.kind === b.kind) {
+						return a.id! - b.id!;
+					}
+					return a.kind! - b.kind!;
+				}
+				return a.emp_no!.localeCompare(b.emp_no!);
+			});
 		return expenseList;
 	}
 
@@ -334,6 +342,33 @@ export class EHRService {
 			ExpenseClass.fromDB(o)
 		);
 		return expenseClassList;
+	}
+
+	async getAllowanceWithTypeByEmpNoList(
+		period_id: number,
+		emp_no_list: string[]
+	): Promise<AllowanceWithType[]> {
+		const all_allowance = await this.getAllowance(period_id);
+		const filtered_allowance = all_allowance.filter((allowance) =>
+			emp_no_list.includes(allowance.emp_no!)
+		);
+		const allowance_type_list = await this.getAllowanceType();
+		const period_name = await this.getPeriodById(period_id).then(
+			(period) => period.period_name
+		);
+		const allowanceWithTypeList: AllowanceWithType[] = filtered_allowance.map(
+			(allowance) => {
+				const allowanceTypeName = allowance_type_list.find(
+					(allowanceType) => allowanceType.id === allowance.allowance_id
+				)?.name;
+				return {
+					...allowance,
+					allowance_type_name: allowanceTypeName!,
+					period_name: period_name,
+				};
+			}
+		);
+		return allowanceWithTypeList;
 	}
 
 	async getAllowanceType(): Promise<AllowanceType[]> {
