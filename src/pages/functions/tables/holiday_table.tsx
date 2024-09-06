@@ -5,7 +5,26 @@ import { api } from "~/utils/api";
 import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
 
-const columns = (t: I18nType) => Object.keys(new Holiday()).map((key) => {
+import { Button } from "~/components/ui/button";
+
+const columns = (t: I18nType) => [
+	"period_id",
+	"period_name",
+	"emp_no",
+	"emp_name",
+	// "pay_order",
+	"holiday_type_name",
+	"pay_period",
+	"pay_delay",
+	"total_hours",
+	// "annual_1",
+	// "compensatory_134",
+	// "compensatory_167",
+	// "compensatory_267",
+	// "compensatory_1",
+	// "compensatory_2"
+].map((key) => {
+	// Object.keys(new Holiday()).concat("holiday_type_name")
 	return {
 		accessorKey: key,
 		header: t(`table.${key}`),
@@ -19,7 +38,7 @@ interface HolidayTableProps {
 
 export function HolidayTable({ period, emp_no_list }: HolidayTableProps) {
 	const { isLoading, isError, data, error } =
-		api.function.getHolidayByEmpList.useQuery({
+		api.function.getHolidayWithTypeByEmpList.useQuery({
 			period_id: period,
 			emp_no_list: emp_no_list,
 		});
@@ -35,7 +54,9 @@ export function HolidayTable({ period, emp_no_list }: HolidayTableProps) {
 	}
 
 	if (data) {
-		return <DataTable columns={columns(t)} data={data} />;
+		return <>
+			<DataTable columns={columns(t)} data={data} />
+		</>
 	}
 	return <div />;
 }
