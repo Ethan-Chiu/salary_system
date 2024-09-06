@@ -252,7 +252,7 @@ export class EmployeeTrustService {
 				throw new BaseResponseError("Trust money does not exist");
 			}
 
-			const employeeTrustFE = await employee_trust_mapper.getEmployeeTrustFE(employeeTrust);
+			const employeeTrustFE = await employee_trust_mapper.getEmployeeTrustFE(employeeTrust.dataValues);
 			const updatedEmployeeTrust = await employee_trust_mapper.getEmployeeTrust({
 				...employeeTrustFE,
 				emp_trust_reserve:
