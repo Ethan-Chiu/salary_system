@@ -244,7 +244,7 @@ export class EmployeePaymentService {
 			const employeePaymentFE = await employeePaymentMapper.getEmployeePaymentFE(employeePayment.dataValues);
 			const levelRangeList = await levelRangeService.getAllLevelRange();
 			const salary =
-				employeePaymentFE.base_salary + (employeePaymentFE.food_allowance ?? 0);
+				employeePaymentFE.base_salary + (employeePaymentFE.food_allowance ?? 0) + (employeePaymentFE.supervisor_allowance ?? 0) + (employeePaymentFE.occupational_allowance ?? 0) + (employeePaymentFE.subsidy_allowance ?? 0);
 			let result = [];
 			for (const levelRange of levelRangeList) {
 				const level = await levelService.getLevelBySalary(
