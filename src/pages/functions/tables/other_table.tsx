@@ -28,12 +28,6 @@ interface OtherTableProps {
 }
 
 export function OtherTable({ period, emp_no_list }: OtherTableProps) {
-	// const { isLoading, isError, data, error } =
-	// 	api.function.getBonusWithTypeByEmpList.useQuery({
-	// 		period_id: period,
-	// 		emp_no_list: emp_no_list,
-	// 	});
-
 	const { isLoading, isError, data, error } =
 		api.function.getExpenseWithTypeByEmpNoList.useQuery({
 			period_id: period,

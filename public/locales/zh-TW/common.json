@@ -156,6 +156,7 @@
     "expense_type_name": "費用類別名稱",
     "bonus_type_name": "獎金類別名稱",
     "holiday_type_name": "假日類別名稱",
+    "allowance_type_name": "工作津貼類別名稱",
     "kind": "類型",
     "tables": "表格",
     "previous": "上一頁",
@@ -190,7 +191,6 @@
     "insuranceRateSetting": "勞健保費率",
     "bonusSetting": "獎金",
     "bonus": "獎金",
-    "other": "其他",
     "bonusDepartment": "獎金部門",
     "bonusPosition": "獎金職等",
     "bonusPositionType": "獎金職級",
@@ -203,8 +203,10 @@
     "employeeData": "基本資料",
     "employeePayment": "薪資檔案",
     "employeeTrust": "持股信託",
+    "allowance": "工作津貼",
     "holiday": "請假",
     "overtime": "加班",
+    "other": "其他",
     "payset": "工作天數"
   },
   "button": {
