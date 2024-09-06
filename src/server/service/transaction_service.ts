@@ -1,5 +1,5 @@
 import { container, injectable } from "tsyringe";
-import {} from "../api/types/parameters_input_type";
+import { } from "../api/types/parameters_input_type";
 import { Transaction } from "../database/entity/SALARY/transaction";
 import { EmployeeDataService } from "./employee_data_service";
 import { EmployeePaymentService } from "./employee_payment_service";
@@ -91,7 +91,8 @@ export class TransactionService {
 			);
 		const overtime_list = await ehrService.getOvertimeByEmpNoList(
 			period_id,
-			[emp_no]
+			[emp_no],
+			pay_type
 		);
 		const insurance_rate_setting =
 			await insuranceRateSettingService.getCurrentInsuranceRateSetting(
@@ -288,7 +289,7 @@ export class TransactionService {
 		const bonus_tax = await calculateService.getBonusTax();
 		const occupational_allowance =
 			employee_payment_fe!.occupational_allowance;
-		
+
 		const non_leave_compensation =
 			await calculateService.getNonLeaveCompensation(
 				holiday_list!,
@@ -403,7 +404,7 @@ export class TransactionService {
 		const probation_period_over = false;
 
 		const disabilty_level = employee_data!.disabilty_level;
-		
+
 
 		const v_2_h_i =
 			await calculateService.getSecondGenerationHealthInsurance();

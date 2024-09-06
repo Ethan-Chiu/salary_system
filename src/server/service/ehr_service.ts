@@ -15,6 +15,7 @@ import { ExpenseClass } from "../database/entity/UMEDIA/expense_class";
 import { AllowanceType } from "../database/entity/UMEDIA/allowance_type";
 import { Allowance } from "../database/entity/UMEDIA/allowance";
 import { HolidaysTypeService } from "./holidays_type_service";
+import { PayTypeEnum, PayTypeEnumType } from "../api/types/pay_type_enum";
 
 export type BonusWithType = Omit<Bonus, "bonus_id" | "period_id"> & {
 	period_name: string;
@@ -100,26 +101,33 @@ export class EHRService {
 		return holidayWithTypeList;
 	}
 
-	async getOvertime(period_id: number): Promise<Overtime[]> {
+	async getOvertime(period_id: number, pay: number): Promise<Overtime[]> {
 		const dbConnection = container.resolve(Database).connection;
 		const dataList = await dbConnection.query(
-			this.GET_OVERTIME_QUERY(period_id),
+			this.GET_OVERTIME_QUERY(period_id, pay),
 			{
 				type: QueryTypes.SELECT,
 			}
 		);
 		const overtimeList: Overtime[] = dataList.map((o) =>
 			Overtime.fromDB(o)
-		);
+		).sort((a, b) => {
+			if (a.emp_no === b.emp_no) {
+				return a.type_name!.localeCompare(b.type_name!);
+			}
+			return a.emp_no!.localeCompare(b.emp_no!);
+		})
 
 		return overtimeList;
 	}
 
 	async getOvertimeByEmpNoList(
 		period_id: number,
-		emp_no_list: string[]
+		emp_no_list: string[],
+		pay_type: PayTypeEnumType,
 	): Promise<Overtime[]> {
-		const all_overtime = await this.getOvertime(period_id);
+		const pay = pay_type === PayTypeEnum.Enum.foreign_15_bonus ? 2 : 1;
+		const all_overtime = await this.getOvertime(period_id, pay);
 		const filtered_overtime = all_overtime.filter((overtime) =>
 			emp_no_list.includes(overtime.emp_no!)
 		);
@@ -371,8 +379,8 @@ export class EHRService {
 		return `SELECT * FROM "U_HR_PAYDRAFT_HOLIDAYS_V" WHERE "U_HR_PAYDRAFT_HOLIDAYS_V"."PERIOD_ID" = '${period_id}'`;
 	}
 
-	private GET_OVERTIME_QUERY(period_id: number): string {
-		return `SELECT * FROM "U_HR_PAYDRAFT_OVERTIME_V" WHERE "U_HR_PAYDRAFT_OVERTIME_V"."PERIOD_ID" = '${period_id}'`;
+	private GET_OVERTIME_QUERY(period_id: number, pay: number): string {
+		return `SELECT * FROM "U_HR_PAYDRAFT_OVERTIME_V" WHERE "U_HR_PAYDRAFT_OVERTIME_V"."PERIOD_ID" = '${period_id}' AND "U_HR_PAYDRAFT_OVERTIME_V"."PAY" = '${pay}'`;
 	}
 
 	private GET_PAYSET_QUERY(period_id: number): string {

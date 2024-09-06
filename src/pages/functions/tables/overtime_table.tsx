@@ -15,13 +15,15 @@ const columns = (t: I18nType) => Object.keys(new Overtime()).map((key) => {
 interface OvertimeTableProps {
 	period: number;
 	emp_no_list: string[];
+	pay_type: string;
 }
 
-export function OvertimeTable({ period, emp_no_list }: OvertimeTableProps) {
+export function OvertimeTable({ period, emp_no_list, pay_type }: OvertimeTableProps) {
 	const { isLoading, isError, data, error } =
-		api.function.getOvertimeByEmpList.useQuery({
+		api.function.getOvertimeByEmpNoList.useQuery({
 			period_id: period,
 			emp_no_list: emp_no_list,
+			pay_type: pay_type,
 		});
 
 	const { t } = useTranslation(['common']);

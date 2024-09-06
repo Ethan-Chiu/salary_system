@@ -9,6 +9,7 @@ import { cn } from "~/lib/utils";
 import { api } from "~/utils/api";
 import { type FunctionsEnumType } from "~/server/api/types/functions_enum";
 import { useTranslation } from "react-i18next";
+import { PayTypeEnum } from "~/server/api/types/pay_type_enum";
 
 const tabOptions = ["table_name.holiday", "table_name.overtime", "table_name.payset", "table_name.bonus", "table_name.other"];
 
@@ -24,7 +25,7 @@ export function DataPage({
 	setSelectedIndex: (index: number) => void;
 }) {
 
-  const { t } = useTranslation("common");
+	const { t } = useTranslation("common");
 
 	function getTable(table_name: string) {
 		const employee_data_list = api.sync.getPaidEmployees.useQuery({ func }).data
@@ -33,7 +34,7 @@ export function DataPage({
 			case tabOptions[0]:
 				return <HolidayTable period={period} emp_no_list={emp_no_list} />;
 			case tabOptions[1]:
-				return <OvertimeTable period={period} emp_no_list={emp_no_list} />;
+				return <OvertimeTable period={period} emp_no_list={emp_no_list} pay_type={PayTypeEnum.Enum.month_salary} />;
 			case tabOptions[2]:
 				return <PaysetTable period={period} emp_no_list={emp_no_list} />;
 			case tabOptions[3]:

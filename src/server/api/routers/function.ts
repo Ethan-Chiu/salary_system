@@ -4,6 +4,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { EHRService } from "~/server/service/ehr_service";
 import { ExcelService } from "~/server/service/excel_service";
+import { PayTypeEnumType } from "../types/pay_type_enum";
 
 export const functionRouter = createTRPCRouter({
 	getPeriod: publicProcedure.query(async () => {
@@ -29,11 +30,11 @@ export const functionRouter = createTRPCRouter({
 			return holiday_with_type_list;
 		}),
 
-	getOvertimeByEmpList: publicProcedure
-		.input(z.object({ period_id: z.number(), emp_no_list: z.string().array() }))
+	getOvertimeByEmpNoList: publicProcedure
+		.input(z.object({ period_id: z.number(), emp_no_list: z.string().array(), pay_type: z.string() }))
 		.query(async ({ input }) => {
 			const ehrService = container.resolve(EHRService);
-			const overtime = await ehrService.getOvertimeByEmpNoList(input.period_id, input.emp_no_list);
+			const overtime = await ehrService.getOvertimeByEmpNoList(input.period_id, input.emp_no_list, input.pay_type as PayTypeEnumType);
 
 			return overtime;
 		}),
