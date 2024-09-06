@@ -19,7 +19,7 @@ interface PaysetTableProps {
 
 export function PaysetTable({ period, emp_no_list }: PaysetTableProps) {
 	const { isLoading, isError, data, error } =
-		api.function.getPaysetByEmpList.useQuery({
+		api.function.getPaysetByEmpNoList.useQuery({
 			period_id: period,
 			emp_no_list: emp_no_list,
 		});

@@ -3,7 +3,7 @@ import { container } from "tsyringe";
 import { BaseResponseError } from "../error/BaseResponseError";
 import { z } from "zod";
 import { TransactionService } from "~/server/service/transaction_service";
-import { PayTypeEnumType } from "~/server/api/types/pay_type_enum";
+import { PayTypeEnum } from "~/server/api/types/pay_type_enum";
 
 export const transactionRouter = createTRPCRouter({
 	getAllTransaction: publicProcedure
@@ -25,7 +25,7 @@ export const transactionRouter = createTRPCRouter({
 				emp_no_list: z.string().array(),
 				period_id: z.number(),
 				issue_date: z.string(),
-				pay_type: z.string(),
+				pay_type: PayTypeEnum,
 				note: z.string(),
 			})
 		)
@@ -36,7 +36,7 @@ export const transactionRouter = createTRPCRouter({
 				await transactionService.getUniqueTransaction(
 					input.period_id,
 					emp_no,
-					input.pay_type as PayTypeEnumType
+					input.pay_type
 				);
 				if (exist_transaction != null) {
 					transactionService.deleteTransaction(exist_transaction.id);
@@ -45,7 +45,7 @@ export const transactionRouter = createTRPCRouter({
 					emp_no,
 					input.period_id,
 					input.issue_date,
-					input.pay_type as PayTypeEnumType,
+					input.pay_type,
 					input.note
 				);
 			}
