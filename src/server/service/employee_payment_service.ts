@@ -9,6 +9,7 @@ import { LevelRangeService } from "./level_range_service";
 import { LevelService } from "./level_service";
 import { createEmployeePaymentService, updateEmployeePaymentService } from "../api/types/employee_payment_type";
 import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
+import { EmployeeDataService } from "./employee_data_service";
 
 @injectable()
 export class EmployeePaymentService {
@@ -229,7 +230,8 @@ export class EmployeePaymentService {
 		emp_no_list: string[]
 	): Promise<void> {
 		const levelRangeService = container.resolve(LevelRangeService);
-		const leveService = container.resolve(LevelService);
+		const levelService = container.resolve(LevelService);
+		const employeeDataService = container.resolve(EmployeeDataService);
 		const employeePaymentMapper = container.resolve(EmployeePaymentMapper);
 		emp_no_list.forEach(async (emp_no: string) => {
 			const employeePayment = await this.getCurrentEmployeePaymentByEmpNo(
@@ -245,7 +247,7 @@ export class EmployeePaymentService {
 				employeePaymentFE.base_salary + (employeePaymentFE.food_allowance ?? 0);
 			let result = [];
 			for (const levelRange of levelRangeList) {
-				const level = await leveService.getLevelBySalary(
+				const level = await levelService.getLevelBySalary(
 					salary,
 					levelRange.level_start_id,
 					levelRange.level_end_id
@@ -255,11 +257,15 @@ export class EmployeePaymentService {
 					level: level.level,
 				});
 			}
+			const employeeData = await employeeDataService.getEmployeeDataByEmpNo(emp_no);
+			if (employeeData == null) {
+				throw new BaseResponseError("Employee Data does not exist");
+			}
 			const updatedEmployeePayment = await employeePaymentMapper.getEmployeePayment({
 				...employeePaymentFE,
 				l_i: result.find((r) => r.type === "勞保")?.level ?? 0,
 				h_i: result.find((r) => r.type === "健保")?.level ?? 0,
-				l_r: result.find((r) => r.type === "勞退")?.level ?? 0,
+				l_r: employeeData.work_type != "外籍勞工" ? result.find((r) => r.type === "勞退")?.level ?? 0 : 0,
 				occupational_injury: result.find((r) => r.type === "職災")?.level ?? 0,
 			});
 

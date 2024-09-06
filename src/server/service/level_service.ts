@@ -102,7 +102,7 @@ export class LevelService {
 			},
 			order: [["level", "ASC"]]
 		});
-		const targetLevel = levelList.find((level) => level.level > salary);
+		const targetLevel = levelList.find((level) => level.level >= salary);
 		return targetLevel ?? levelList[levelList.length - 1]!;
 	}
 }
