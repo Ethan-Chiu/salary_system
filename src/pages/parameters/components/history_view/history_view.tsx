@@ -1,4 +1,4 @@
-import { ArrowRightCircle, GitCommitVertical } from "lucide-react";
+import { ArrowRightCircle, GitCommitHorizontal, GitCommitVertical } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import { LoadingSpinner } from "~/components/loading";
 import {
@@ -75,7 +75,7 @@ function CompHistoryView() {
 		<ResizablePanelGroup direction="horizontal">
 			<ResizablePanel defaultSize={25} minSize={15}>
 				<ScrollArea className="h-full">
-					{data
+					{data!
 						.sort((a, b) => {
 							if (a.start_date == null) {
 								return -1;
@@ -111,7 +111,7 @@ function CompHistoryView() {
 									</div>
 								</div>
 								<div className="m-1 flex text-sm">
-									<GitCommitVertical
+									<GitCommitHorizontal
 										size={18}
 										className="mr-2 flex-shrink-0"
 									/>
@@ -133,11 +133,11 @@ function CompHistoryView() {
 			</ResizablePanel>
 			<ResizableHandle />
 			<ResizablePanel defaultSize={75}>
-				{data.filter((e) => e.id === selectedId).length > 0 ? (
+				{data!.filter((e) => e.id === selectedId).length > 0 ? (
 					<DataTable
 						columns={getTableColumn(selectedTableType, t)}
 						data={getTableMapper(selectedTableType)(
-							data.filter((e) => e.id === selectedId) as any[]
+							data!.filter((e) => e.id === selectedId) as any[]
 						)}
 						filterColumnKey={filterKey}
 					/>
