@@ -55,7 +55,6 @@ export function HolidayTable({ period, emp_no_list }: HolidayTableProps) {
 
 	if (data) {
 		return <>
-			<Button onClick={() => {console.log(data)}}>print</Button>
 			<DataTable columns={columns(t)} data={data} />
 		</>
 	}
