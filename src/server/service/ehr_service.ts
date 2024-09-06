@@ -91,7 +91,12 @@ export class EHRService {
 					period_name: period_name,
 				};
 			}
-		);
+		).sort((a, b) => {
+			if (a.emp_no === b.emp_no) {
+				return a.pay_order! - b.pay_order!;
+			}
+			return a.emp_no!.localeCompare(b.emp_no!);
+		})
 		return holidayWithTypeList;
 	}
 
