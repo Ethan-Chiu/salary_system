@@ -51,7 +51,13 @@ export class EHRService {
 				type: QueryTypes.SELECT,
 			}
 		);
-		const holidayList: Holiday[] = dataList.map((o) => Holiday.fromDB(o));
+		const holidayList: Holiday[] = dataList.map((o) => Holiday.fromDB(o))
+			.sort((a, b) => {
+				if (a.emp_no === b.emp_no) {
+					return a.pay_order! - b.pay_order!;
+				}
+				return a.emp_no!.localeCompare(b.emp_no!);
+			});
 
 		return holidayList;
 	}
@@ -92,12 +98,7 @@ export class EHRService {
 					period_name: period_name,
 				};
 			}
-		).sort((a, b) => {
-			if (a.emp_no === b.emp_no) {
-				return a.pay_order! - b.pay_order!;
-			}
-			return a.emp_no!.localeCompare(b.emp_no!);
-		})
+		)
 		return holidayWithTypeList;
 	}
 
@@ -109,14 +110,13 @@ export class EHRService {
 				type: QueryTypes.SELECT,
 			}
 		);
-		const overtimeList: Overtime[] = dataList.map((o) =>
-			Overtime.fromDB(o)
-		).sort((a, b) => {
-			if (a.emp_no === b.emp_no) {
-				return a.type_name!.localeCompare(b.type_name!);
-			}
-			return a.emp_no!.localeCompare(b.emp_no!);
-		})
+		const overtimeList: Overtime[] = dataList.map((o) => Overtime.fromDB(o))
+			.sort((a, b) => {
+				if (a.emp_no === b.emp_no) {
+					return a.type_name!.localeCompare(b.type_name!);
+				}
+				return a.emp_no!.localeCompare(b.emp_no!);
+			})
 
 		return overtimeList;
 	}
@@ -142,7 +142,10 @@ export class EHRService {
 				type: QueryTypes.SELECT,
 			}
 		);
-		const paysetList: Payset[] = dataList.map((o) => Payset.fromDB(o));
+		const paysetList: Payset[] = dataList.map((o) => Payset.fromDB(o))
+			.sort((a, b) => {
+				return a.emp_no!.localeCompare(b.emp_no!);
+			});
 
 		return paysetList;
 	}
@@ -179,10 +182,10 @@ export class EHRService {
 		return Period.fromDB(dataList[0]!);
 	}
 
-	async getBonus(period_id: number): Promise<Bonus[]> {
+	async getBonus(period_id: number, pay: number): Promise<Bonus[]> {
 		const dbConnection = container.resolve(Database).connection;
 		const dataList = await dbConnection.query(
-			this.GET_BONUS_QUERY(period_id),
+			this.GET_BONUS_QUERY(period_id, pay),
 			{
 				type: QueryTypes.SELECT,
 			}
@@ -190,15 +193,24 @@ export class EHRService {
 		// if (dataList.length === 0) {
 		// 	throw new BaseResponseError("Bonus Not Found");
 		// }
-		const bonusList: Bonus[] = dataList.map((o) => Bonus.fromDB(o));
+		const bonusList: Bonus[] = dataList.map((o) => Bonus.fromDB(o))
+		.sort((a, b) => {
+			if (a.emp_no === b.emp_no) {
+				return a.bonus_id! - b.bonus_id!;
+			}
+			return a.emp_no!.localeCompare(b.emp_no!);
+		});
+
 		return bonusList;
 	}
 
 	async getBonusByEmpNoList(
 		period_id: number,
-		emp_no_list: string[]
+		emp_no_list: string[],
+		pay_type: PayTypeEnumType
 	): Promise<Bonus[]> {
-		const all_bonus = await this.getBonus(period_id);
+		const pay = pay_type === "foreign_15_bonus" ? 2 : 1;
+		const all_bonus = await this.getBonus(period_id, pay);
 		const filtered_bonus = all_bonus.filter((bonus) =>
 			emp_no_list.includes(bonus.emp_no!)
 		);
@@ -217,9 +229,11 @@ export class EHRService {
 	}
 	async getBonusWithTypeByEmpNoList(
 		period_id: number,
-		emp_no_list: string[]
+		emp_no_list: string[],
+		pay_type: PayTypeEnumType
 	): Promise<BonusWithType[]> {
-		const all_bonus = await this.getBonus(period_id);
+		const pay = pay_type === "foreign_15_bonus" ? 2 : 1;
+		const all_bonus = await this.getBonus(period_id, pay);
 		const filtered_bonus = all_bonus.filter((bonus) =>
 			emp_no_list.includes(bonus.emp_no!)
 		);
@@ -250,7 +264,13 @@ export class EHRService {
 				type: QueryTypes.SELECT,
 			}
 		);
-		const expenseList: Expense[] = dataList.map((o) => Expense.fromDB(o));
+		const expenseList: Expense[] = dataList.map((o) => Expense.fromDB(o))
+		.sort((a, b) => {
+			if (a.emp_no === b.emp_no) {
+				return a.id! - b.id!;
+			}
+			return a.emp_no!.localeCompare(b.emp_no!);
+		});
 		return expenseList;
 	}
 
@@ -394,8 +414,8 @@ export class EHRService {
 	private GET_PERIOD_BY_ID_QUERY(period_id: number): string {
 		return `SELECT "PERIOD_ID", "PERIOD_NAME", "START_DATE", "END_DATE", "STATUS", "ISSUE_DATE" FROM "U_HR_PERIOD" WHERE "U_HR_PERIOD"."PERIOD_ID" = '${period_id}'`;
 	}
-	private GET_BONUS_QUERY(period_id: number): string {
-		return `SELECT * FROM "U_HR_PAYDRAFT_BONUS" WHERE "U_HR_PAYDRAFT_BONUS"."PERIOD_ID" = '${period_id}'`;
+	private GET_BONUS_QUERY(period_id: number, pay: number): string {
+		return `SELECT * FROM "U_HR_PAYDRAFT_BONUS" WHERE "U_HR_PAYDRAFT_BONUS"."PERIOD_ID" = '${period_id}' AND "U_HR_PAYDRAFT_BONUS"."PAY" = '${pay}'`;
 	}
 	private GET_BONUS_TYPE_QUERY(): string {
 		return `SELECT * FROM UMEDIA."U_HR_BONUS_TYPE"`;

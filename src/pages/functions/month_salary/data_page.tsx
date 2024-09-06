@@ -38,7 +38,7 @@ export function DataPage({
 			case tabOptions[2]:
 				return <PaysetTable period={period} emp_no_list={emp_no_list} />;
 			case tabOptions[3]:
-				return <BonusTable period={period} emp_no_list={emp_no_list} />;
+				return <BonusTable period={period} emp_no_list={emp_no_list} pay_type={PayTypeEnum.Enum.month_salary} />;
 			case tabOptions[4]:
 				return <OtherTable period={period} emp_no_list={emp_no_list} />;
 			default:

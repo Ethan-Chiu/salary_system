@@ -35,7 +35,7 @@ export function OtherTable({ period, emp_no_list }: OtherTableProps) {
 	// 	});
 
 	const { isLoading, isError, data, error } =
-		api.function.getExpenseWithTypeByEmpList.useQuery({
+		api.function.getExpenseWithTypeByEmpNoList.useQuery({
 			period_id: period,
 			emp_no_list: emp_no_list,
 		});

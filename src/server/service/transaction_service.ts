@@ -102,7 +102,7 @@ export class TransactionService {
 			emp_no,
 		]);
 		const full_attendance_bonus =
-			await calculateService.getFullAttendanceBonus(period_id, emp_no);
+			await calculateService.getFullAttendanceBonus(period_id, emp_no, pay_type);
 		const holidays_type =
 			await holidaysTypeService.getCurrentHolidaysType();
 		const reissue_salary = await calculateService.getReissueSalary(
@@ -297,7 +297,8 @@ export class TransactionService {
 			);
 		const end_of_year_bonus = await calculateService.getYearEndBonus(
 			period_id,
-			emp_no
+			emp_no,
+			pay_type
 		);
 		const taxable_subtotal = await calculateService.getTaxableSubtotal(
 			pay_type,

@@ -19,7 +19,7 @@ interface HolidayTableProps {
 
 export function HolidayTable({ period, emp_no_list }: HolidayTableProps) {
 	const { isLoading, isError, data, error } =
-		api.function.getHolidayWithTypeByEmpList.useQuery({
+		api.function.getHolidayWithTypeByEmpNoList.useQuery({
 			period_id: period,
 			emp_no_list: emp_no_list,
 		});

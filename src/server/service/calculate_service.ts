@@ -34,7 +34,7 @@ const rd = (key: string) => {
 };
 @injectable()
 export class CalculateService {
-	constructor() {}
+	constructor() { }
 
 	// MARK: 平日加班費
 	async getWeekdayOvertimePay(
@@ -85,18 +85,18 @@ export class CalculateService {
 			hourly_fee = insurance_rate_setting.min_wage_rate;
 			return Round(
 				hourly_fee * t1 +
-					hourly_fee * t2 * 1.34 +
-					hourly_fee * t3 * 1.67 +
-					hourly_fee * t4 * 2 +
-					hourly_fee * t5 * 2.67
+				hourly_fee * t2 * 1.34 +
+				hourly_fee * t3 * 1.67 +
+				hourly_fee * t4 * 2 +
+				hourly_fee * t5 * 2.67
 			);
 		} else
 			return Round(
 				hourly_fee * t1 +
-					hourly_fee * t2 * 1.34 +
-					hourly_fee * t3 * 1.67 +
-					hourly_fee * t4 * 2 +
-					hourly_fee * t5 * 2.67
+				hourly_fee * t2 * 1.34 +
+				hourly_fee * t3 * 1.67 +
+				hourly_fee * t4 * 2 +
+				hourly_fee * t5 * 2.67
 			);
 	}
 
@@ -154,18 +154,18 @@ export class CalculateService {
 			hourly_fee = insurance_rate_setting.min_wage_rate;
 			return Round(
 				hourly_fee * t1 +
-					hourly_fee * t2 * 1.34 +
-					hourly_fee * t3 * 1.67 +
-					hourly_fee * t4 * 2 +
-					hourly_fee * t5 * 2.67
+				hourly_fee * t2 * 1.34 +
+				hourly_fee * t3 * 1.67 +
+				hourly_fee * t4 * 2 +
+				hourly_fee * t5 * 2.67
 			);
 		} else
 			return Round(
 				hourly_fee * t1 +
-					hourly_fee * t2 * 1.34 +
-					hourly_fee * t3 * 1.67 +
-					hourly_fee * t4 * 2 +
-					hourly_fee * t5 * 2.67
+				hourly_fee * t2 * 1.34 +
+				hourly_fee * t3 * 1.67 +
+				hourly_fee * t4 * 2 +
+				hourly_fee * t5 * 2.67
 			);
 	}
 
@@ -218,16 +218,16 @@ export class CalculateService {
 			hourly_fee = insurance_rate_setting.min_wage_rate;
 			return Round(
 				hourly_fee * t1 * 1.34 +
-					hourly_fee * t2 * 1.67 +
-					hourly_fee * t3 * 2 +
-					hourly_fee * t4 * 2.67
+				hourly_fee * t2 * 1.67 +
+				hourly_fee * t3 * 2 +
+				hourly_fee * t4 * 2.67
 			);
 		} else
 			return Round(
 				hourly_fee * t1 * 1.34 +
-					hourly_fee * t2 * 1.67 +
-					hourly_fee * t3 * 2 +
-					hourly_fee * t4 * 2.67
+				hourly_fee * t2 * 1.67 +
+				hourly_fee * t3 * 2 +
+				hourly_fee * t4 * 2.67
 			);
 	}
 
@@ -287,7 +287,7 @@ export class CalculateService {
 		if (kind1 === FOREIGN || kind2 === FOREIGN)
 			return Round(
 				Round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30) *
-					hinder_rate
+				hinder_rate
 			); // 'Jerry 2023/04/06 由工作天數改為加勞保天數計算
 		if (kind2 === PROFESSOR) return 0;
 		if (kind2 === BOSS)
@@ -299,7 +299,7 @@ export class CalculateService {
 			return (
 				Round(
 					Round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30) +
-						Round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
+					Round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
 				) * hinder_rate
 			);
 		if (
@@ -312,14 +312,14 @@ export class CalculateService {
 			return (
 				Round(
 					Round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30) +
-						Round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
+					Round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
 				) * hinder_rate
 			); // 'Jerry 07/07/19 由工作天數改為加勞保天數計算
 
 		return (
 			Round(
 				Round(Tax * wci_normal * 0.200001) +
-					Round(Tax * wci_ji * 0.200001)
+				Round(Tax * wci_ji * 0.200001)
 			) * hinder_rate
 		);
 	}
@@ -468,12 +468,11 @@ export class CalculateService {
 	//MARK: 全勤獎金
 	async getFullAttendanceBonus(
 		period_id: number,
-		emp_no: string
+		emp_no: string,
+		pay_type: PayTypeEnumType
 	): Promise<number> {
 		const ehrService = container.resolve(EHRService);
-		const bonusList = await ehrService.getBonusByEmpNoList(period_id, [
-			emp_no,
-		]);
+		const bonusList = await ehrService.getBonusByEmpNoList(period_id, [emp_no], pay_type);
 		const full_attendance_bonus_id = (await ehrService.getBonusType()).find(
 			(bt) => bt.name === "全勤獎金"
 		)?.id!;
@@ -527,7 +526,7 @@ export class CalculateService {
 		return reissue_salary;
 	}
 	//MARK: 年終獎金
-	async getYearEndBonus(period_id: number, emp_no: string): Promise<number> {
+	async getYearEndBonus(period_id: number, emp_no: string, pay_set: PayTypeEnumType): Promise<number> {
 		// 		=======年終獎金計算=========090121
 
 		//         If PayType = YearEnd_Pay Then
@@ -554,9 +553,7 @@ export class CalculateService {
 		const end_of_year_bonus_id = (await ehrService.getBonusType()).find(
 			(bt) => bt.name === "年終獎金"
 		)?.id!;
-		const bonusList = await ehrService.getBonusByEmpNoList(period_id, [
-			emp_no,
-		]);
+		const bonusList = await ehrService.getBonusByEmpNoList(period_id, [emp_no], pay_set);
 		let end_of_year_bonus = 0;
 		for (const bonus of bonusList) {
 			if (bonus.bonus_id === end_of_year_bonus_id) {
@@ -577,9 +574,7 @@ export class CalculateService {
 			const operational_performance_bonus_id = (
 				await ehrService.getBonusType()
 			).find((bt) => bt.name === "營運績效獎金")?.id!;
-			const bonusList = await ehrService.getBonusByEmpNoList(period_id, [
-				emp_no,
-			]);
+			const bonusList = await ehrService.getBonusByEmpNoList(period_id, [emp_no], pay_type);
 			let operational_performance_bonus = 0;
 			for (const bonus of bonusList) {
 				if (bonus.bonus_id === operational_performance_bonus_id) {
@@ -1133,25 +1128,25 @@ export class CalculateService {
 			if (work_type === FOREIGN) {
 				const x1 = Round(
 					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
-						Round((occupational_injury * wci_oi * l_i_day) / 30)
+					Round((occupational_injury * wci_oi * l_i_day) / 30)
 				); //'Jerry 20220823工資墊償基金分開計算
 				const x2 = Round(
 					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
-						Round(
-							(occupational_injury * wci_oi * additional_l_i) / 30
-						)
+					Round(
+						(occupational_injury * wci_oi * additional_l_i) / 30
+					)
 				); //'Jerry 20220823工資墊償基金分開計算
 				return x1 + x2;
 			} else if (employee_data.work_status === BOSS) {
 				const x1 = Round(
 					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
-						Round((occupational_injury * wci_oi * l_i_day) / 30)
+					Round((occupational_injury * wci_oi * l_i_day) / 30)
 				); //'Jerry 20220823工資墊償基金分開計算
 				const x2 = Round(
 					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
-						Round(
-							(occupational_injury * wci_oi * additional_l_i) / 30
-						)
+					Round(
+						(occupational_injury * wci_oi * additional_l_i) / 30
+					)
 				); //'Jerry 20220823工資墊償基金分開計算
 				return x1 + x2;
 			} else if (
@@ -1163,29 +1158,29 @@ export class CalculateService {
 			) {
 				const x1 = Round(
 					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
-						Round((l_i * 0.700001 * wci_ji * l_i_day) / 30) +
-						Round((occupational_injury * wci_oi * l_i_day) / 30)
+					Round((l_i * 0.700001 * wci_ji * l_i_day) / 30) +
+					Round((occupational_injury * wci_oi * l_i_day) / 30)
 				); //'Jerry 20220823工資墊償基金分開計算
 				const x2 = Round(
 					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
-						Round((l_i * wci_ji * 0.700001 * additional_l_i) / 30) +
-						Round(
-							(occupational_injury * wci_oi * additional_l_i) / 30
-						)
+					Round((l_i * wci_ji * 0.700001 * additional_l_i) / 30) +
+					Round(
+						(occupational_injury * wci_oi * additional_l_i) / 30
+					)
 				); //'Jerry 20220823工資墊償基金分開計算
 				return x1 + x2;
 			} else {
 				const x1 = Round(
 					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
-						Round((l_i * wci_ji * 0.700001 * l_i_day) / 30) +
-						Round((occupational_injury * wci_oi * l_i_day) / 30)
+					Round((l_i * wci_ji * 0.700001 * l_i_day) / 30) +
+					Round((occupational_injury * wci_oi * l_i_day) / 30)
 				);
 				const x2 = Round(
 					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
-						Round((l_i * wci_ji * 0.700001 * additional_l_i) / 30) +
-						Round(
-							(occupational_injury * wci_oi * additional_l_i) / 30
-						)
+					Round((l_i * wci_ji * 0.700001 * additional_l_i) / 30) +
+					Round(
+						(occupational_injury * wci_oi * additional_l_i) / 30
+					)
 				); //'Jerry 20220823工資墊償基金分開計算
 				return x1 + x2;
 			}
@@ -1223,7 +1218,7 @@ export class CalculateService {
 		const kind = employee_data.work_status;
 		const HelAdd_YN = false; // 建保追加 => 似乎bang不見了
 		const nhi_rate = insurance_rate_setting.h_i_standard_rate; // 健保一般保費費率 : 應該是這個
-		const nhi_people = insurance_rate_setting.h_i_avg_dependents_count; 
+		const nhi_people = insurance_rate_setting.h_i_avg_dependents_count;
 
 		if (HelAdd_YN) {
 			if (
