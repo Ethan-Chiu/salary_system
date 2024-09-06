@@ -45,7 +45,7 @@ export class EmployeeTrustMapper {
     }
 
     async getEmployeeTrustNullable(employee_trust: z.infer<typeof updateEmployeeTrustAPI>): Promise<z.infer<typeof updateEmployeeTrustService>> {
-        const employeeTrust: z.infer<typeof EmployeeTrust> = EmployeeTrust.parse(
+        const employeeTrust: z.infer<typeof updateEmployeeTrustService> = updateEmployeeTrustService.parse(
             convertDatePropertiesToISOString({
                 emp_trust_reserve_enc: employee_trust.emp_trust_reserve != undefined ? CryptoHelper.encrypt(employee_trust.emp_trust_reserve.toString()) : undefined,
                 org_trust_reserve_enc: employee_trust.org_trust_reserve != undefined ? CryptoHelper.encrypt(employee_trust.org_trust_reserve.toString()) : undefined,

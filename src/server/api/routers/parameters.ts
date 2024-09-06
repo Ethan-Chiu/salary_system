@@ -120,7 +120,7 @@ export const parametersRouter = createTRPCRouter({
 				throw new BaseResponseError("AttendanceSetting does not exist");
 			}
 			
-			return roundProperties(attendanceSetting, 2);
+			return roundProperties(attendanceSetting, 4);
 		}),
 
 	getAllAttendanceSetting: publicProcedure.query(async () => {
@@ -130,7 +130,7 @@ export const parametersRouter = createTRPCRouter({
 		if (attendanceSetting.length == 0) {
 			throw new BaseResponseError("AttendanceSetting does not exist");
 		}
-		return attendanceSetting.map(e => roundProperties(e, 2));
+		return attendanceSetting.map(e => roundProperties(e, 4));
 	}),
 
 	createAttendanceSetting: publicProcedure
@@ -195,7 +195,7 @@ export const parametersRouter = createTRPCRouter({
 					"InsuranceRateSetting does not exist"
 				);
 			}
-			return roundProperties(insuranceRateSetting, 2);
+			return roundProperties(insuranceRateSetting, 4);
 		}),
 
 	getAllInsuranceRateSetting: publicProcedure.query(async () => {
@@ -207,7 +207,7 @@ export const parametersRouter = createTRPCRouter({
 		if (insuranceRateSetting.length == 0) {
 			throw new BaseResponseError("InsuranceRateSetting does not exist");
 		}
-		return insuranceRateSetting.map(e => roundProperties(e, 2));
+		return insuranceRateSetting.map(e => roundProperties(e, 4));
 	}),
 
 	createInsuranceRateSetting: publicProcedure

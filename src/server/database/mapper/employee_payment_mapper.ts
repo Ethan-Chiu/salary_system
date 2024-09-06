@@ -1,7 +1,7 @@
 import { container, injectable } from "tsyringe";
 import { type z } from "zod";
 import { BaseResponseError } from "~/server/api/error/BaseResponseError";
-import { EmployeePayment, EmployeePaymentFE, type updateEmployeePaymentAPI, type updateEmployeePaymentService } from "~/server/api/types/employee_payment_type";
+import { EmployeePayment, EmployeePaymentFE, updateEmployeePaymentService, type updateEmployeePaymentAPI } from "~/server/api/types/employee_payment_type";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { convertDatePropertiesToISOString, deleteProperties } from "./helper_function";
 import { CryptoHelper } from "~/lib/utils/crypto";
@@ -58,7 +58,7 @@ export class EmployeePaymentMapper {
     }
 
     async getEmployeePaymentNullable(employee_payment: z.infer<typeof updateEmployeePaymentAPI>): Promise<z.infer<typeof updateEmployeePaymentService>> {
-        const employeePayment: z.infer<typeof EmployeePayment> = EmployeePayment.parse(
+        const employeePayment: z.infer<typeof updateEmployeePaymentService> = updateEmployeePaymentService.parse(
             convertDatePropertiesToISOString({
                 base_salary_enc: employee_payment.base_salary != undefined ? CryptoHelper.encrypt(employee_payment.base_salary.toString()) : undefined,
                 food_allowance_enc: employee_payment.food_allowance != undefined ? CryptoHelper.encrypt(employee_payment.food_allowance.toString()) : undefined,
