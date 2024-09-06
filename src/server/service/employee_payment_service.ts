@@ -231,7 +231,6 @@ export class EmployeePaymentService {
 		const levelRangeService = container.resolve(LevelRangeService);
 		const leveService = container.resolve(LevelService);
 		const employeePaymentMapper = container.resolve(EmployeePaymentMapper);
-
 		emp_no_list.forEach(async (emp_no: string) => {
 			const employeePayment = await this.getCurrentEmployeePaymentByEmpNo(
 				emp_no,
@@ -240,7 +239,7 @@ export class EmployeePaymentService {
 			if (employeePayment == null) {
 				throw new BaseResponseError("Employee Payment does not exist");
 			}
-			const employeePaymentFE = await employeePaymentMapper.getEmployeePaymentFE(employeePayment);
+			const employeePaymentFE = await employeePaymentMapper.getEmployeePaymentFE(employeePayment.dataValues);
 			const levelRangeList = await levelRangeService.getAllLevelRange();
 			const salary =
 				employeePaymentFE.base_salary + (employeePaymentFE.food_allowance ?? 0);
