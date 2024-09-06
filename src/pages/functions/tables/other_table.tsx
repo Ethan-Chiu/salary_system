@@ -11,6 +11,7 @@ const columns = (t: I18nType) =>
 		"emp_no",
 		"emp_name",
 		"kind",
+		"id",
 		"expense_type_name",
 		"amount",
 		"remark",

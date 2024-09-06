@@ -913,7 +913,7 @@ export class CalculateService {
 		// return other_addition_tax
 		const ehrService = container.resolve(EHRService);
 		let other_addition_tax_ids = (await ehrService.getAllowanceType())
-			.filter((at) => at.other_add === 1 && at.other_tax === 1)
+			.filter((at) => at.other_tax === 1)
 			.map((at) => at.id);
 
 		const expenseList = (
@@ -934,7 +934,7 @@ export class CalculateService {
 	): Promise<number> {
 		const ehrService = container.resolve(EHRService);
 		let other_deduction_tax_ids = (await ehrService.getExpenseClass())
-			.filter((ec) => ec.other_less === 1 && ec.other_tax === 1)
+			.filter((ec) => ec.other_tax === 1)
 			.map((ec) => ec.id);
 		const expenseList = (
 			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])

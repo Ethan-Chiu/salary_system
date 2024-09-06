@@ -311,6 +311,7 @@
     "reset_password": "重設密碼",
     "enter_password": "輸入密碼",
     "start_calculate_month_salary": "月薪計算",
-    "start_calculate_month_salary_button": "開始計算"
+    "start_calculate_month_salary_button": "開始計算",
+    "Null": "沒有資料"
   }
 }
