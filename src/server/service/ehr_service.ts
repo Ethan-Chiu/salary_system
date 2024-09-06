@@ -14,6 +14,7 @@ import { Expense } from "../database/entity/UMEDIA/expense";
 import { ExpenseClass } from "../database/entity/UMEDIA/expense_class";
 import { AllowanceType } from "../database/entity/UMEDIA/allowance_type";
 import { Allowance } from "../database/entity/UMEDIA/allowance";
+import { HolidaysTypeService } from "./holidays_type_service";
 
 export type BonusWithType = Omit<Bonus, "bonus_id" | "period_id"> & {
 	period_name: string;
@@ -23,6 +24,10 @@ export type BonusWithType = Omit<Bonus, "bonus_id" | "period_id"> & {
 export type ExpenseWithType = Omit<Expense, "period_id" | "id"> & {
 	period_name: string;
 	expense_type_name: string;
+};
+
+export type HolidayWithType = Omit<Holiday, "pay_order"> & {
+	holiday_type_name: string;
 };
 
 @injectable()
@@ -59,6 +64,35 @@ export class EHRService {
 			emp_no_list.includes(holiday.emp_no!)
 		);
 		return filtered_holiday;
+	}
+
+	async getHolidayWithTypeByEmpNoList(
+		period_id: number,
+		emp_no_list: string[]
+	): Promise<HolidayWithType[]> {
+		const all_holiday = await this.getHoliday(period_id);
+		const holidaysTypeService = container.resolve(HolidaysTypeService);
+		const holidays_type =
+			await holidaysTypeService.getCurrentHolidaysType();
+		const filtered_holiday = all_holiday.filter((holiday) =>
+			emp_no_list.includes(holiday.emp_no!)
+		);
+		const period_name = await this.getPeriodById(period_id).then(
+			(period) => period.period_name
+		);
+		const holidayWithTypeList: HolidayWithType[] = filtered_holiday.map(
+			(holiday) => {
+				const holidayTypeName = holidays_type.find(
+					(holidayType) => holidayType.id === holiday.pay_order
+				)?.holidays_name;
+				return {
+					...holiday,
+					holiday_type_name: holidayTypeName!,
+					period_name: period_name,
+				};
+			}
+		);
+		return holidayWithTypeList;
 	}
 
 	async getOvertime(period_id: number): Promise<Overtime[]> {

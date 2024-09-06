@@ -1223,7 +1223,7 @@ export class CalculateService {
 		const kind = employee_data.work_status;
 		const HelAdd_YN = false; // 建保追加 => 似乎bang不見了
 		const nhi_rate = insurance_rate_setting.h_i_standard_rate; // 健保一般保費費率 : 應該是這個
-		const nhi_people = employee_data.healthcare_dependents ?? 0;
+		const nhi_people = insurance_rate_setting.h_i_avg_dependents_count; 
 
 		if (HelAdd_YN) {
 			if (
@@ -1245,6 +1245,9 @@ export class CalculateService {
 			) {
 				return 0;
 			} else {
+				console.log("\n\n\n\n\n\n\nmoney: ", money)
+				console.log("nhi_rate: ", nhi_rate)
+				console.log("\n\n\n\n\n\n\n")
 				return Round(money * nhi_rate * 0.6 * (1 + nhi_people));
 			}
 		}

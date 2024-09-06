@@ -21,6 +21,13 @@ export const functionRouter = createTRPCRouter({
 
 			return holiday;
 		}),
+	getHolidayWithTypeByEmpList: publicProcedure
+		.input(z.object({ period_id: z.number(), emp_no_list: z.string().array() }))
+		.query(async ({ input }) => {
+			const ehrService = container.resolve(EHRService);
+			const holiday_with_type_list = await ehrService.getHolidayWithTypeByEmpNoList(input.period_id, input.emp_no_list);
+			return holiday_with_type_list;
+		}),
 
 	getOvertimeByEmpList: publicProcedure
 		.input(z.object({ period_id: z.number(), emp_no_list: z.string().array() }))
