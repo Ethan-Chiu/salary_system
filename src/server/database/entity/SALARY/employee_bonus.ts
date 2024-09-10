@@ -8,16 +8,18 @@ import {
 } from "sequelize";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 
-export class BonusPositionType extends Model<
-	InferAttributes<BonusPositionType>,
-	InferCreationAttributes<BonusPositionType>
+export class EmployeeBonus extends Model<
+	InferAttributes<EmployeeBonus>,
+	InferCreationAttributes<EmployeeBonus>
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
 	declare period_id: number;
     declare bonus_type: BonusTypeEnumType;
-	declare position_type: string;
-	declare multiplier: number;
+	declare emp_no: string;
+	declare budget_amount: number;
+	declare superviser_amount: number;
+	declare final_amount: number;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -28,8 +30,8 @@ export class BonusPositionType extends Model<
 	declare update_by: string;
 }
 
-export function initBonusPositionType(sequelize: Sequelize) {
-	BonusPositionType.init(
+export function initEmployeeBonus(sequelize: Sequelize) {
+	EmployeeBonus.init(
 		{
 			id: {
 				type: DataTypes.INTEGER.UNSIGNED,
@@ -44,15 +46,21 @@ export function initBonusPositionType(sequelize: Sequelize) {
 				type: new DataTypes.STRING(32),
 				allowNull: false,
 			},
-			position_type: {
-				type: new DataTypes.STRING(2),
-				unique: false,
+			emp_no: {
+				type: new DataTypes.STRING(32),
 				allowNull: false,
 			},
-			multiplier: {
+			budget_amount: {
 				type: DataTypes.FLOAT,
-				unique: false,
 				allowNull: false,
+			},
+			superviser_amount: {
+				type: DataTypes.FLOAT,
+				allowNull: true,
+			},
+			final_amount: {
+				type: DataTypes.FLOAT,
+				allowNull: true,
 			},
 			create_date: {
 				type: DataTypes.DATE,
@@ -71,7 +79,7 @@ export function initBonusPositionType(sequelize: Sequelize) {
 		},
 		{
 			sequelize,
-			tableName: "U_BONUS_POSITION_TYPE",
+			tableName: "U_EMPLOYEE_BONUS",
 			createdAt: "create_date",
 			updatedAt: "update_date",
 		}

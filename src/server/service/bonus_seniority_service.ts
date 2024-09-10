@@ -13,10 +13,14 @@ export class BonusSeniorityService {
 	constructor() {}
 
 	async createBonusSeniority({
+		period_id,
+		bonus_type,
 		seniority,
 		multiplier,
 	}: z.infer<typeof createBonusSeniorityService>): Promise<BonusSeniority> {
 		const newData = await BonusSeniority.create({
+			period_id: period_id,
+			bonus_type: bonus_type,
 			seniority: seniority,
 			multiplier: multiplier,
 			create_by: "system",

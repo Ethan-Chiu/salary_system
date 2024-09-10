@@ -64,8 +64,9 @@ export class TransactionService {
 			throw new BaseResponseError("Employee Payment does not exist");
 		}
 
-		const employee_payment_fe = await calculateService.discountedPayment(
-			await employeePaymentMapper.getEmployeePaymentFE(employee_payment),
+		const employee_payment_fe = await employeePaymentMapper.getEmployeePaymentFE(employee_payment)
+		const discounted_employee_payment_fe = await calculateService.discountedPayment(
+			employee_payment_fe,
 			payset
 		);
 
@@ -137,11 +138,11 @@ export class TransactionService {
 		const group_insurance_type = employee_data!.group_insurance_type;
 		const dependents = employee_data!.dependents;
 		const healthcare_dependents = employee_data!.healthcare_dependents;
-		const l_i = employee_payment_fe!.l_i;
-		const h_i = employee_payment_fe!.h_i;
-		const l_r = employee_payment_fe!.l_r;
-		const occupational_injury = employee_payment_fe!.occupational_injury;
-		const supervisor_allowance = employee_payment_fe!.supervisor_allowance;
+		const l_i = discounted_employee_payment_fe!.l_i;
+		const h_i = discounted_employee_payment_fe!.h_i;
+		const l_r = discounted_employee_payment_fe!.l_r;
+		const occupational_injury = discounted_employee_payment_fe!.occupational_injury;
+		const supervisor_allowance = discounted_employee_payment_fe!.supervisor_allowance;
 		const shift_allowance = await ehrService.getTargetAllowance(
 			allowance_list,
 			allowance_type_list,
@@ -157,8 +158,8 @@ export class TransactionService {
 			)) *
 				(payset ? payset.work_day! : 30)) /
 			30;
-		const food_allowance = employee_payment_fe!.food_allowance;
-		const base_salary = employee_payment_fe!.base_salary;
+		const food_allowance = discounted_employee_payment_fe!.food_allowance;
+		const base_salary = discounted_employee_payment_fe!.base_salary;
 		const received_elderly_benefits = false;
 		const long_service_allowance = 0; //Todo
 		// MARK: Calculated Results
@@ -175,41 +176,50 @@ export class TransactionService {
 			employee_data!,
 			operational_performance_bonus
 		);
+		const discounted_gross_salary = await calculateService.getGrossSalary(
+			discounted_employee_payment_fe!,
+			payset!,
+			professional_cert_allowance,
+			pay_type,
+			full_attendance_bonus,
+			employee_data!,
+			operational_performance_bonus
+		)
 		const special_leave_deduction =
 			await calculateService.getSpecialLeaveDeduction(
 				employee_data!,
 				holidays_type,
 				holiday_list,
 				gross_salary,
-				employee_payment_fe!,
+				discounted_employee_payment_fe!,
 				insurance_rate_setting!,
 				professional_cert_allowance
 			);
 
 		const l_i_deduction = await calculateService.getLaborInsuranceDeduction(
 			employee_data!,
-			employee_payment_fe!,
+			discounted_employee_payment_fe!,
 			payset!,
 			insurance_rate_setting!
 		);
 		const h_i_deduction =
 			await calculateService.getHealthInsuranceDeduction(
 				employee_data!,
-				employee_payment_fe!,
+				discounted_employee_payment_fe!,
 				insurance_rate_setting!
 			);
 		const welfare_contribution =
 			await calculateService.getWelfareContribution(
 				employee_data!,
-				employee_payment_fe!,
+				discounted_employee_payment_fe!,
 				full_attendance_bonus,
 				operational_performance_bonus
 			);
-		const subsidy_allowance = employee_payment_fe!.subsidy_allowance;
+		const subsidy_allowance = discounted_employee_payment_fe!.subsidy_allowance;
 		const weekday_overtime_pay =
 			await calculateService.getWeekdayOvertimePay(
 				employee_data!,
-				employee_payment_fe!,
+				discounted_employee_payment_fe!,
 				overtime_list,
 				payset!,
 				insurance_rate_setting!,
@@ -222,7 +232,7 @@ export class TransactionService {
 		const holiday_overtime_pay =
 			await calculateService.getHolidayOvertimePay(
 				employee_data!,
-				employee_payment_fe!,
+				discounted_employee_payment_fe!,
 				overtime_list,
 				payset!,
 				insurance_rate_setting!,
@@ -234,7 +244,7 @@ export class TransactionService {
 			); // change name
 		const leave_deduction = await calculateService.getLeaveDeduction(
 			employee_data!,
-			employee_payment_fe!,
+			discounted_employee_payment_fe!,
 			holiday_list!,
 			payset!,
 			holidays_type,
@@ -245,7 +255,7 @@ export class TransactionService {
 		);
 		const exceed_overtime_pay = await calculateService.getExceedOvertimePay(
 			employee_data!,
-			employee_payment_fe!,
+			discounted_employee_payment_fe!,
 			overtime_list!,
 			payset!,
 			insurance_rate_setting!,
@@ -258,7 +268,7 @@ export class TransactionService {
 		const salary_income_deduction =
 			await calculateService.getSalaryIncomeDeduction(
 				// employee_data!,
-				employee_payment_fe!,
+				discounted_employee_payment_fe!,
 				// payset!,
 				reissue_salary!,
 				full_attendance_bonus!,
@@ -293,7 +303,7 @@ export class TransactionService {
 		const taxable_income = await calculateService.getTaxableIncome(
 			// period_id,
 			// emp_no
-			employee_payment_fe!,
+			discounted_employee_payment_fe!,
 			exceed_overtime_pay,
 			professional_cert_allowance
 		);
@@ -304,14 +314,15 @@ export class TransactionService {
 		);
 		const bonus_tax = await calculateService.getBonusTax();
 		const occupational_allowance =
-			employee_payment_fe!.occupational_allowance;
+			discounted_employee_payment_fe!.occupational_allowance;
 
 		const non_leave_compensation =
 			await calculateService.getNonLeaveCompensation(
 				holiday_list!,
 				holidays_type,
 				gross_salary,
-				insurance_rate_setting
+				insurance_rate_setting!,
+				employee_data!,
 			);
 		const end_of_year_bonus = await calculateService.getYearEndBonus(
 			period_id,
@@ -320,7 +331,7 @@ export class TransactionService {
 		);
 		const taxable_subtotal = await calculateService.getTaxableSubtotal(
 			pay_type,
-			employee_payment_fe!,
+			discounted_employee_payment_fe!,
 			operational_performance_bonus,
 			reissue_salary,
 			exceed_overtime_pay,
@@ -336,7 +347,7 @@ export class TransactionService {
 		);
 		const non_taxable_subtotal =
 			await calculateService.getNonTaxableSubtotal(
-				employee_payment_fe!,
+				discounted_employee_payment_fe!,
 				weekday_overtime_pay,
 				holiday_overtime_pay,
 				non_leave_compensation,
@@ -352,7 +363,7 @@ export class TransactionService {
 		);
 
 		const l_i_pay = await calculateService.getLaborInsurancePay(
-			employee_payment_fe!,
+			discounted_employee_payment_fe!,
 			employee_data!,
 			insurance_rate_setting!,
 			payset,
@@ -362,12 +373,12 @@ export class TransactionService {
 		const salary_advance = await calculateService.getSalaryAdvance(
 			pay_type,
 			payset,
-			employee_payment_fe!,
+			discounted_employee_payment_fe!,
 			insurance_rate_setting!,
 			employee_data!
 		);
 		const h_i_pay = await calculateService.getHealthInsurancePay(
-			employee_payment_fe!,
+			discounted_employee_payment_fe!,
 			employee_data!,
 			insurance_rate_setting!
 		);
@@ -377,7 +388,7 @@ export class TransactionService {
 
 		const income_tax_deduction =
 			await calculateService.getIncomeTaxDeduction(period_id, emp_no);
-		const l_r_self = employee_payment_fe!.l_r_self;
+		const l_r_self = discounted_employee_payment_fe!.l_r_self;
 		const parking_fee = await calculateService.getParkingFee(
 			period_id,
 			emp_no
@@ -387,7 +398,7 @@ export class TransactionService {
 			emp_no
 		);
 		const total_salary = await calculateService.getTotalSalary(
-			employee_payment_fe!,
+			discounted_employee_payment_fe!,
 			full_attendance_bonus,
 			professional_cert_allowance,
 			shift_allowance
@@ -408,7 +419,7 @@ export class TransactionService {
 		const l_r_contribution =
 			await calculateService.getLaborRetirementContribution(
 				employee_data!,
-				employee_payment_fe!
+				discounted_employee_payment_fe!
 			);
 		const old_l_r_contribution =
 			await calculateService.getOldLaborRetirementContribution(
@@ -500,7 +511,7 @@ export class TransactionService {
 			professional_cert_allowance: professional_cert_allowance, // 專業証照津貼
 			base_salary: base_salary, // 底薪
 			food_allowance: food_allowance, // 伙食津貼
-			gross_salary: gross_salary, // 應發底薪
+			gross_salary: discounted_gross_salary, // 應發底薪
 			l_i_deduction: l_i_deduction, // 勞保扣除額
 			h_i_deduction: h_i_deduction, // 健保扣除額
 			welfare_contribution: welfare_contribution, // 福利金提撥

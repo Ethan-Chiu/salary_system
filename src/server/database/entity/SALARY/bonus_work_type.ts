@@ -8,15 +8,15 @@ import {
 } from "sequelize";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 
-export class BonusPositionType extends Model<
-	InferAttributes<BonusPositionType>,
-	InferCreationAttributes<BonusPositionType>
+export class BonusWorkType extends Model<
+	InferAttributes<BonusWorkType>,
+	InferCreationAttributes<BonusWorkType>
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-	declare period_id: number;
+    declare period_id: number;
     declare bonus_type: BonusTypeEnumType;
-	declare position_type: string;
+	declare work_type: string;
 	declare multiplier: number;
 
 	// timestamps!
@@ -28,24 +28,24 @@ export class BonusPositionType extends Model<
 	declare update_by: string;
 }
 
-export function initBonusPositionType(sequelize: Sequelize) {
-	BonusPositionType.init(
+export function initBonusWorkType(sequelize: Sequelize) {
+	BonusWorkType.init(
 		{
 			id: {
 				type: DataTypes.INTEGER.UNSIGNED,
 				autoIncrement: true,
 				primaryKey: true,
 			},
-			period_id: {
-				type: DataTypes.INTEGER.UNSIGNED,
-				allowNull: false,
-			},
-			bonus_type: {
-				type: new DataTypes.STRING(32),
-				allowNull: false,
-			},
-			position_type: {
-				type: new DataTypes.STRING(2),
+            period_id: {
+                type: DataTypes.INTEGER.UNSIGNED,
+                allowNull: false,
+            },
+            bonus_type: {
+                type: new DataTypes.STRING(32),
+                allowNull: false,
+            },
+			work_type: {
+				type: new DataTypes.STRING(512),
 				unique: false,
 				allowNull: false,
 			},
@@ -71,7 +71,7 @@ export function initBonusPositionType(sequelize: Sequelize) {
 		},
 		{
 			sequelize,
-			tableName: "U_BONUS_POSITION_TYPE",
+			tableName: "U_BONUS_WORKTYPE",
 			createdAt: "create_date",
 			updatedAt: "update_date",
 		}

@@ -13,6 +13,8 @@ export class BonusDepartment extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
+	declare period_id: number;
+    declare bonus_type: bonusTypeEnumType;
 	declare department: string;
 	declare multiplier: number;
 
@@ -32,6 +34,14 @@ export function initBonusDepartment(sequelize: Sequelize) {
 				type: DataTypes.INTEGER.UNSIGNED,
 				autoIncrement: true,
 				primaryKey: true,
+			},
+			period_id: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				allowNull: false,
+			},
+			bonus_type: {
+				type: new DataTypes.STRING(32),
+				allowNull: false,
 			},
 			department: {
 				type: new DataTypes.STRING(512),

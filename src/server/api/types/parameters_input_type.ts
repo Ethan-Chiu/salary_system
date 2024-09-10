@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { Id, DateAPI, DateService, User } from "./common_type";
+import { BonusTypeEnum } from "./bonus_type_enum";
 
 export const createUserAPI = User.merge(DateAPI);
 export const createUserService = User.merge(DateService);
@@ -105,7 +106,22 @@ export const updateInsuranceRateSettingService = InsuranceRateSetting.merge(Id)
 	.merge(DateService)
 	.partial();
 
+const BonusWorkType = z.object({
+	period_id: z.number(),
+	bonus_type: BonusTypeEnum,
+	work_type: z.number(),
+	multiplier: z.number(),
+});
+
+export const createWorkTypeAPI = BonusWorkType;
+export const createWorkTypeService = BonusWorkType;
+export const updateWorkTypeAPI = BonusWorkType.merge(Id).partial();
+export const updateWorkTypeService = BonusWorkType.merge(Id).partial();
+
+	
 const BonusDepartment = z.object({
+	period_id: z.number(),
+	bonus_type: BonusTypeEnum,
 	department: z.string(),
 	multiplier: z.number(),
 });
@@ -116,6 +132,8 @@ export const updateBonusDepartmentAPI = BonusDepartment.merge(Id).partial();
 export const updateBonusDepartmentService = BonusDepartment.merge(Id).partial();
 
 const BonusPosition = z.object({
+	period_id: z.number(),
+	bonus_type: BonusTypeEnum,
 	position: z.number(),
 	multiplier: z.number(),
 });
@@ -126,6 +144,8 @@ export const updateBonusPositionAPI = BonusPosition.merge(Id).partial();
 export const updateBonusPositionService = BonusPosition.merge(Id).partial();
 
 const BonusPositionType = z.object({
+	period_id: z.number(),
+	bonus_type: BonusTypeEnum,
 	position_type: z.string(),
 	multiplier: z.number(),
 });
@@ -137,6 +157,8 @@ export const updateBonusPositionTypeService =
 	BonusPositionType.merge(Id).partial();
 
 const BonusSeniority = z.object({
+	period_id: z.number(),
+	bonus_type: BonusTypeEnum,
 	seniority: z.number(),
 	multiplier: z.number(),
 });
@@ -231,6 +253,21 @@ export const updateEmployeeDataByEmpNoAPI = EmployeeData.partial();
 export const updateEmployeeDataService = EmployeeData.merge(Id).partial();
 export const updateEmployeeDataByEmpNoService = EmployeeData.partial();
 
+const EmployeeBonus = z.object({
+	period_id: z.number(),
+	bonus_type: BonusTypeEnum,
+	emp_no: z.string(),
+	budget_amount: z.number(),
+	superviser_amount: z.number(),
+	final_amount: z.number(),
+});
+
+export const createEmployeeBonusAPI = EmployeeBonus;
+export const createEmployeeBonusService = EmployeeBonus;
+export const updateEmployeeBonusAPI = EmployeeBonus.merge(Id).partial();
+export const updateEmployeeBonusByEmpNoAPI = EmployeeBonus.partial();
+export const updateEmployeeBonusService = EmployeeBonus.merge(Id).partial();
+export const updateEmployeeBonusByEmpNoService = EmployeeBonus.partial();
 
 
 // MARK: Holidays Type
