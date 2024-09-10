@@ -17,9 +17,11 @@ export class EmployeeBonus extends Model<
 	declare period_id: number;
     declare bonus_type: BonusTypeEnumType;
 	declare emp_no: string;
-	declare budget_amount: number;
-	declare superviser_amount: number;
-	declare final_amount: number;
+	declare multiplier: number|null;
+	declare fixed_amount: number|null;
+	declare budget_amount: number|null;
+	declare superviser_amount: number|null;
+	declare final_amount: number|null;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -50,9 +52,17 @@ export function initEmployeeBonus(sequelize: Sequelize) {
 				type: new DataTypes.STRING(32),
 				allowNull: false,
 			},
+			multiplier: {
+				type: DataTypes.FLOAT,
+				allowNull: true,
+			},
+			fixed_amount: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				allowNull: true,
+			},
 			budget_amount: {
 				type: DataTypes.FLOAT,
-				allowNull: false,
+				allowNull: true,
 			},
 			superviser_amount: {
 				type: DataTypes.FLOAT,

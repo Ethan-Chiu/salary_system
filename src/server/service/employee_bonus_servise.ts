@@ -7,6 +7,7 @@ import {
 import { EmployeeBonus } from "../database/entity/SALARY/employee_bonus";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { select_value } from "./helper_function";
+import { BonusTypeEnumType } from "../api/types/bonus_type_enum";
 
 @injectable()
 export class EmployeeBonusService {
@@ -31,7 +32,20 @@ export class EmployeeBonusService {
 		});
 		return newData;
     }
-
+    async createEmployeeBonusByEmpNoList(period_id: number, bonus_type: BonusTypeEnumType, emp_no_list: string[]) {
+        emp_no_list.forEach(async (emp_no) => {
+            await this.createEmployeeBonus({
+                period_id: period_id,
+                bonus_type: bonus_type,
+                emp_no: emp_no,
+                multiplier: null,
+                fixed_amount: null,
+                budget_amount: null,
+                superviser_amount: null,
+                final_amount: null,
+            });
+        })
+    }
     async getEmployeeBonusByEmpNo(emp_no: string) {
         const result = await EmployeeBonus.findOne({
             where: {
