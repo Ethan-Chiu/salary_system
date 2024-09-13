@@ -179,13 +179,13 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 					});
 				}}
 				onAutoCalculate={async (selectedEmpNoList: string[]) => {
+					closeSheet();
 					await autoCalculateFunction.mutateAsync({
 						period_id: selectedPeriod!.period_id,
 						emp_no_list: selectedEmpNoList,
 					}, {onSuccess: () => {refetch();}}).then(() => {
 						refetch();
 					});
-					closeSheet();
 				}}
 			/>
 		);

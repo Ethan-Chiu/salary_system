@@ -44,11 +44,9 @@ const columns = (t: I18nType) =>
 
 export function EmployeePaymentTable({ period_id }: any) {
 
-	const [val, setVal] = useState(true);
-
 	const { isLoading, isFetched, isError, data, error, refetch, isStale, status } =
 		api.employeePayment.getCurrentEmployeePayment.useQuery({ period_id }, {
-			staleTime: 10000
+			
 		});
 
 	const { t } = useTranslation(["common"]);
@@ -67,11 +65,11 @@ export function EmployeePaymentTable({ period_id }: any) {
 	if (data) {
 		return (
 			<>
-				<Button className="" onClick={() => {
-					// refetch();
+				{/* <Button className="" onClick={() => {
+					refetch();
 				}} ref={refetch_button}>
 						refetch
-				</Button>
+				</Button> */}
 				<employeePaymentRefetchContext.Provider
 					value={() => {
 						// if (isStale) refetch();

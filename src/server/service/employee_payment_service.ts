@@ -278,6 +278,29 @@ export class EmployeePaymentService {
 				occupational_injury: result.find((r) => r.type === "職災")?.level ?? 0,
 			});
 
+			// const affectedCount = await EmployeePayment.update(
+			// 	{
+			// 		// emp_no: select_value(emp_no, employeePayment.emp_no),
+			// 		// base_salary_enc: 	employeePayment.base_salary_enc,
+			// 		// food_allowance_enc:	employeePayment.food_allowance_enc,
+			// 		// supervisor_allowance_enc:	employeePayment.supervisor_allowance_enc,
+			// 		// occupational_allowance_enc:	employeePayment.occupational_allowance_enc,
+			// 		// subsidy_allowance_enc: 		employeePayment.subsidy_allowance_enc,
+			// 		// l_r_self_enc: 				employeePayment.l_r_self_enc,
+			// 		l_i_enc: select_value(updatedEmployeePayment.l_i_enc, employeePayment.l_i_enc),
+			// 		h_i_enc: select_value(updatedEmployeePayment.h_i_enc, employeePayment.h_i_enc),
+			// 		l_r_enc: select_value(updatedEmployeePayment.l_r_enc, employeePayment.l_r_enc),
+			// 		// occupational_injury_enc: select_value(
+			// 		// 	updatedEmployeePayment.occupational_injury_enc,
+			// 		// 	employeePayment.occupational_injury_enc
+			// 		// ),
+			// 		// start_date: 			 employeePayment.start_date,
+			// 		// end_date: 				 employeePayment.end_date,
+			// 		update_by: "system",
+			// 	},
+			// 	{ where: { emp_no: emp_no } }
+			// );
+
 			const affectedCount = await EmployeePayment.update(
 				{
 					l_i_enc: updatedEmployeePayment.l_i_enc,
@@ -288,6 +311,7 @@ export class EmployeePaymentService {
 				},
 				{ where: { emp_no: emp_no } }
 			);
+			
 			if (affectedCount[0] == 0) {
 				throw new BaseResponseError("Update error");
 			}
