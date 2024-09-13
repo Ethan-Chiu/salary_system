@@ -279,7 +279,8 @@ export class TransactionService {
 				other_addition_tax,
 				special_leave_deduction,
 				other_deduction_tax,
-				shift_allowance
+				shift_allowance,
+				professional_cert_allowance,
 			);
 		const group_insurance_deduction =
 			await calculateService.getGroupInsuranceDeduction(

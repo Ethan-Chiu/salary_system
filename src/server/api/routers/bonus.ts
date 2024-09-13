@@ -10,6 +10,7 @@ import { BonusDepartmentService } from "~/server/service/bonus_department_servic
 import { BonusPositionTypeService } from "~/server/service/bonus_position_type_service";
 import { BonusPositionService } from "~/server/service/bonus_position_service";
 import { get } from "http";
+import { updateBonusDepartmentAPI } from "../types/parameters_input_type";
 // 改Enum
 export const bonusRouter = createTRPCRouter({
     getAllEmpBonus: publicProcedure
@@ -99,6 +100,106 @@ export const bonusRouter = createTRPCRouter({
         .mutation(async ({ input }) => {
             const bonusPositionService = container.resolve(BonusPositionService);
             const result = await bonusPositionService.createBonusPosition(input);
+            return result;
+        }),
+    updateBonusWorkType: publicProcedure
+        .input(z.object({
+            id: z.number(),
+            work_type: z.string(),
+            multiplier: z.number(),
+        }))
+        .mutation(async ({ input }) => {
+            const bonusWorkTypeService = container.resolve(BonusWorkTypeService);
+            const result = await bonusWorkTypeService.updateBonusWorkType(input);
+            return result;
+        }),
+    updateBonusSeniority: publicProcedure
+        .input(z.object({
+            id: z.number(),
+            seniority: z.number(),
+            multiplier: z.number(),
+        }))
+        .mutation(async ({ input }) => {
+            const bonusSeniorityService = container.resolve(BonusSeniorityService);
+            const result = await bonusSeniorityService.updateBonusSeniority(input);
+            return result;
+        }),
+    updateBonusDepartment: publicProcedure
+        .input(z.object({
+            id: z.number(),
+            department: z.string(),
+            multiplier: z.number(),
+        }))
+        .mutation(async ({ input }) => {
+            const bonusDepartmentService = container.resolve(BonusDepartmentService);
+            const result = await bonusDepartmentService.updateBonusDepartment(input);
+            return result;
+        }),
+    updateBonusPositionType: publicProcedure
+        .input(z.object({
+            id: z.number(),
+            position_type: z.string(),
+            multiplier: z.number(),
+        }))
+        .mutation(async ({ input }) => {
+            const bonusPositionTypeService = container.resolve(BonusPositionTypeService);
+            const result = await bonusPositionTypeService.updateBonusPositionType(input);
+            return result;
+        }),
+    updateBonusPosition: publicProcedure
+        .input(z.object({
+            id: z.number(),
+            position: z.number(),
+            multiplier: z.number(),
+        }))
+        .mutation(async ({ input }) => {
+            const bonusPositionService = container.resolve(BonusPositionService);
+            const result = await bonusPositionService.updateBonusPosition(input);
+            return result;
+        }),
+    deleteBonusWorkType: publicProcedure
+        .input(z.object({
+            id: z.number(),
+        }))
+        .mutation(async ({ input }) => {
+            const bonusWorkTypeService = container.resolve(BonusWorkTypeService);
+            const result = await bonusWorkTypeService.deleteBonusWorkType(input.id);
+            return result;
+        }),
+    deleteBonusSeniority: publicProcedure
+        .input(z.object({
+            id: z.number(),
+        }))
+        .mutation(async ({ input }) => {
+            const bonusSeniorityService = container.resolve(BonusSeniorityService);
+            const result = await bonusSeniorityService.deleteBonusSeniority(input.id);
+            return result;
+        }),
+    deleteBonusDepartment: publicProcedure
+        .input(z.object({
+            id: z.number(),
+        }))
+        .mutation(async ({ input }) => {
+            const bonusDepartmentService = container.resolve(BonusDepartmentService);
+            const result = await bonusDepartmentService.deleteBonusDepartment(input.id);
+            return result;
+        }),
+    deleteBonusPositionType: publicProcedure
+        .input(z.object({
+            id: z.number(),
+        }))
+        .mutation(async ({ input }) => {
+            const bonusPositionTypeService = container.resolve(BonusPositionTypeService);
+            const result = await bonusPositionTypeService.deleteBonusPositionType(input.id);
+            return result;
+        }),
+    deleteBonusPosition: publicProcedure
+        .input(z.object({
+            id: z.number(),
+        }))
+        .mutation(async ({ input }) => {
+            const bonusPositionService = container.resolve(BonusPositionService);
+            const result = await bonusPositionService.deleteBonusPosition(input.id);
             return result;
         }),
 })

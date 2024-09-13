@@ -679,6 +679,7 @@ export class CalculateService {
 		const salary_income_deduction =
 			discounted_employee_payment_fe.base_salary +
 			(discounted_employee_payment_fe.supervisor_allowance ?? 0) +
+			professional_cert_allowance +
 			(discounted_employee_payment_fe.occupational_allowance ?? 0) +
 			operational_performance_bonus +
 			reissue_salary +
@@ -1370,7 +1371,7 @@ export class CalculateService {
 		}
 		return brokerage_fee;
 	}
-	//MARK: 所得稅代扣
+	//MARK: 所得稅代扣 可能要查表
 	async getIncomeTaxDeduction(
 		period_id: number,
 		emp_no: string
