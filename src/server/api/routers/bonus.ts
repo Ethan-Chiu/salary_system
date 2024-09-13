@@ -1,17 +1,13 @@
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { container } from "tsyringe";
-import { BaseResponseError } from "../error/BaseResponseError";
 import { z } from "zod";
 import { EmployeeBonusService } from "~/server/service/employee_bonus_servise";
 import { BonusTypeEnum } from "../types/bonus_type_enum";
 import { EmployeeData } from "~/server/database/entity/SALARY/employee_data";
-import { BonusWorkType } from "~/server/database/entity/SALARY/bonus_work_type";
 import { BonusWorkTypeService } from "~/server/service/bonus_work_type_service";
 import { BonusSeniorityService } from "~/server/service/bonus_seniority_service";
-import { create } from "domain";
 import { BonusDepartmentService } from "~/server/service/bonus_department_service";
 import { BonusPositionTypeService } from "~/server/service/bonus_position_type_service";
-import { createBonusPositionAPI } from "../types/parameters_input_type";
 import { BonusPositionService } from "~/server/service/bonus_position_service";
 
 export const bonusRouter = createTRPCRouter({
@@ -29,7 +25,8 @@ export const bonusRouter = createTRPCRouter({
         }))
         .mutation(async ({ input }) => {
             const bonusService = container.resolve(EmployeeBonusService);
-            const all_emp_no_list = (await EmployeeData.findAll({ attributes: ['emp_no','work_status'], 
+            const all_emp_no_list = (await EmployeeData.findAll({
+                attributes: ['emp_no', 'work_status'],
             })).filter((emp) => emp.work_status != "離職人員").map((emp) => emp.emp_no);
             const result = await bonusService.createEmployeeBonusByEmpNoList(input.period_id, input.bonus_type, all_emp_no_list);
             return result;

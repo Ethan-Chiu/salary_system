@@ -7,6 +7,7 @@ export const TABLE_INSURANCE = t("table_name.insuranceRateSetting");
 
 // bonus
 export const TABLE_BONUS_SETTING = t("table_name.bonusSetting");
+export const TABLE_BONUS_WORK_TYPE = t("table_name.bonusWorkType");
 export const TABLE_BONUS_DEPARTMENT = t("table_name.bonusDepartment");
 export const TABLE_BONUS_POSITION = t("table_name.bonusPosition");
 export const TABLE_BONUS_POSITION_TYPE = t("table_name.bonusPositionType");

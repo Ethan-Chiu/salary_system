@@ -22,6 +22,9 @@ export default function ApiFunctionsProvider({
 	children,
 	selectedTableType,
 }: PropsWithChildren<ApiFunctionsProviderProps>) {
+	const getBonusWorkType = () =>
+		api.parameters.getAllBonusWorkType.useQuery();
+
 	const getBonusDepartment = () =>
 		api.parameters.getAllBonusDepartment.useQuery();
 
@@ -38,6 +41,9 @@ export default function ApiFunctionsProvider({
 		// TableBonusSetting: {
 		// 	queryFunction: getBonusSetting,
 		// },
+		TableBonusWorkType: {
+			queryFunction: getBonusWorkType,
+		},
 		TableBonusDepartment: {
 			queryFunction: getBonusDepartment,
 		},
