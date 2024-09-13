@@ -33,126 +33,48 @@ export default function BonusToolbarFunctionsProvider({
 }: PropsWithChildren<ToolbarFunctionsProviderProps>) {
 	const ctx = api.useUtils();
 
-	//#region <AttendanceSetting>
-	const getAttendanceSetting = () =>
-		api.parameters.getCurrentAttendanceSetting.useQuery({ period_id });
-	const updateAttendanceSetting =
-		api.parameters.updateAttendanceSetting.useMutation({
-			onSuccess: () => {
-				ctx.parameters.getCurrentAttendanceSetting.invalidate();
-				ctx.parameters.getAllAttendanceSetting.invalidate();
-			},
-		});
-	const createAttendanceSetting =
-		api.parameters.createAttendanceSetting.useMutation({
-			onSuccess: () => {
-				ctx.parameters.getCurrentAttendanceSetting.invalidate();
-				ctx.parameters.getAllAttendanceSetting.invalidate();
-			},
-		});
-	const deleteAttendanceSetting =
-		api.parameters.deleteAttendanceSetting.useMutation({
-			onSuccess: () => {
-				ctx.parameters.getCurrentAttendanceSetting.invalidate();
-				ctx.parameters.getAllAttendanceSetting.invalidate();
-			},
-		});
-	//#endregion
+	// //#region <BonusSetting>
+	// const getBonusSetting = () =>
+	// 	api.parameters.getCurrentBonusSetting.useQuery();
+	// const updateBonusSetting = api.parameters.updateBonusSetting.useMutation({
+	// 	onSuccess: () => {
+	// 		ctx.parameters.getCurrentBonusSetting.invalidate();
+	// 		ctx.parameters.getAllBonusSetting.invalidate();
+	// 	},
+	// });
+	// const createBonusSetting = api.parameters.createBonusSetting.useMutation({
+	// 	onSuccess: () => {
+	// 		ctx.parameters.getCurrentBonusSetting.invalidate();
+	// 		ctx.parameters.getAllBonusSetting.invalidate();
+	// 	},
+	// });
+	// const deleteBonusSetting = api.parameters.deleteBonusSetting.useMutation({
+	// 	onSuccess: () => {
+	// 		ctx.parameters.getCurrentBonusSetting.invalidate();
+	// 		ctx.parameters.getAllBonusSetting.invalidate();
+	// 	},
+	// });
+	// //#endregion
 
-	//#region <BankSetting>
-	const getBankSetting = () =>
-		api.parameters.getCurrentBankSetting.useQuery({ period_id });
-	const updateBankSetting = api.parameters.updateBankSetting.useMutation({
+	//#region <BonusWorkType>
+	const getBonusWorkType = () =>
+		api.parameters.getCurrentBonusWorkType.useQuery();
+	const updateBonusWorkType = api.parameters.updateBonusWorkType.useMutation({
 		onSuccess: () => {
-			ctx.parameters.getCurrentBankSetting.invalidate();
-			ctx.parameters.getAllBankSetting.invalidate();
+			ctx.parameters.getCurrentBonusWorkType.invalidate();
+			ctx.parameters.getAllBonusWorkType.invalidate();
 		},
 	});
-	const createBankSetting = api.parameters.createBankSetting.useMutation({
+	const createBonusWorkType = api.parameters.createBonusWorkType.useMutation({
 		onSuccess: () => {
-			ctx.parameters.getCurrentBankSetting.invalidate();
-			ctx.parameters.getAllBankSetting.invalidate();
+			ctx.parameters.getCurrentBonusWorkType.invalidate();
+			ctx.parameters.getAllBonusWorkType.invalidate();
 		},
 	});
-	const deleteBankSetting = api.parameters.deleteBankSetting.useMutation({
+	const deleteBonusWorkType = api.parameters.deleteBonusWorkType.useMutation({
 		onSuccess: () => {
-			ctx.parameters.getCurrentBankSetting.invalidate();
-			ctx.parameters.getAllBankSetting.invalidate();
-		},
-	});
-	//#endregion
-
-	//#region <InsuranceSetting>
-	const getInsuranceRateSetting = () =>
-		api.parameters.getCurrentInsuranceRateSetting.useQuery({ period_id });
-	const updateInsuranceRateSetting =
-		api.parameters.updateInsuranceRateSetting.useMutation({
-			onSuccess: () => {
-				ctx.parameters.getCurrentInsuranceRateSetting.invalidate();
-				ctx.parameters.getAllInsuranceRateSetting.invalidate();
-			},
-		});
-	const createInsuranceRateSetting =
-		api.parameters.createInsuranceRateSetting.useMutation({
-			onSuccess: () => {
-				ctx.parameters.getCurrentInsuranceRateSetting.invalidate();
-				ctx.parameters.getAllInsuranceRateSetting.invalidate();
-			},
-		});
-	const deleteInsuranceRateSetting =
-		api.parameters.deleteInsuranceRateSetting.useMutation({
-			onSuccess: () => {
-				ctx.parameters.getCurrentInsuranceRateSetting.invalidate();
-				ctx.parameters.getAllInsuranceRateSetting.invalidate();
-			},
-		});
-	//#endregion
-
-	//#region <TrustMoneySetting>
-	const getTrustMoneySetting = () =>
-		api.parameters.getCurrentTrustMoney.useQuery();
-	const updateTrustMoneySetting =
-		api.parameters.updateTrustMoney.useMutation({
-			onSuccess: () => {
-				ctx.parameters.getCurrentTrustMoney.invalidate();
-				ctx.parameters.getAllTrustMoney.invalidate();
-			},
-		});
-	const createTrustMoneySetting =
-		api.parameters.createTrustMoney.useMutation({
-			onSuccess: () => {
-				ctx.parameters.getCurrentTrustMoney.invalidate();
-				ctx.parameters.getAllTrustMoney.invalidate();
-			},
-		});
-	const deleteTrustMoneySetting =
-		api.parameters.deleteTrustMoney.useMutation({
-			onSuccess: () => {
-				ctx.parameters.getCurrentTrustMoney.invalidate();
-				ctx.parameters.getAllTrustMoney.invalidate();
-			},
-		});
-	//#endregion
-
-	//#region <BonusSetting>
-	const getBonusSetting = () =>
-		api.parameters.getCurrentBonusSetting.useQuery();
-	const updateBonusSetting = api.parameters.updateBonusSetting.useMutation({
-		onSuccess: () => {
-			ctx.parameters.getCurrentBonusSetting.invalidate();
-			ctx.parameters.getAllBonusSetting.invalidate();
-		},
-	});
-	const createBonusSetting = api.parameters.createBonusSetting.useMutation({
-		onSuccess: () => {
-			ctx.parameters.getCurrentBonusSetting.invalidate();
-			ctx.parameters.getAllBonusSetting.invalidate();
-		},
-	});
-	const deleteBonusSetting = api.parameters.deleteBonusSetting.useMutation({
-		onSuccess: () => {
-			ctx.parameters.getCurrentBonusSetting.invalidate();
-			ctx.parameters.getAllBonusSetting.invalidate();
+			ctx.parameters.getCurrentBonusWorkType.invalidate();
+			ctx.parameters.getAllBonusWorkType.invalidate();
 		},
 	});
 	//#endregion
@@ -256,68 +178,33 @@ export default function BonusToolbarFunctionsProvider({
 				ctx.parameters.getAllBonusSeniority.invalidate();
 			},
 		});
-
-	const getLevel = () => api.parameters.getCurrentLevel.useQuery();
-	const updateLevel = api.parameters.updateLevel.useMutation({
-		onSuccess: () => {
-			ctx.parameters.getCurrentLevel.invalidate();
-			ctx.parameters.getAllLevel.invalidate();
-		},
-	});
-	const createLevel = api.parameters.createLevel.useMutation({
-		onSuccess: () => {
-			ctx.parameters.getCurrentLevel.invalidate();
-			ctx.parameters.getAllLevel.invalidate();
-		},
-	});
-	const deleteLevel = api.parameters.deleteLevel.useMutation({
-		onSuccess: () => {
-			ctx.parameters.getCurrentLevel.invalidate();
-			ctx.parameters.getAllLevel.invalidate();
-		},
-	});
-	const getLevelRange = () => api.parameters.getCurrentLevelRange.useQuery();
-	const updateLevelRange = api.parameters.updateLevelRange.useMutation({
-		onSuccess: () => {
-			ctx.parameters.getCurrentLevelRange.invalidate();
-			ctx.parameters.getAllLevelRange.invalidate();
-		},
-	});
-	const createLevelRange = api.parameters.createLevelRange.useMutation({
-		onSuccess: () => {
-			ctx.parameters.getCurrentLevelRange.invalidate();
-			ctx.parameters.getAllLevelRange.invalidate();
-		},
-	});
-	const deleteLevelRange = api.parameters.deleteLevelRange.useMutation({
-		onSuccess: () => {
-			ctx.parameters.getCurrentLevelRange.invalidate();
-			ctx.parameters.getAllLevelRange.invalidate();
-		},
-	});
-	const getPerformanceLevel = () =>
-		api.parameters.getCurrentPerformanceLevel.useQuery();
-	const updatePerformanceLevel =
-		api.parameters.updatePerformanceLevel.useMutation({
-			onSuccess: () => {
-				ctx.parameters.getCurrentPerformanceLevel.invalidate();
-				ctx.parameters.getAllPerformanceLevel.invalidate();
-			},
-		});
-	const createPerformanceLevel =
-		api.parameters.createPerformanceLevel.useMutation({
-			onSuccess: () => {
-				ctx.parameters.getCurrentPerformanceLevel.invalidate();
-				ctx.parameters.getAllPerformanceLevel.invalidate();
-			},
-		});
-	const deletePerformanceLevel =
-		api.parameters.deletePerformanceLevel.useMutation({
-			onSuccess: () => {
-				ctx.parameters.getCurrentPerformanceLevel.invalidate();
-				ctx.parameters.getAllPerformanceLevel.invalidate();
-			},
-		});
+	//#endregion
+	
+	// //#region <PerformanceLevel>
+	// const getPerformanceLevel = () =>
+	// 	api.parameters.getCurrentPerformanceLevel.useQuery();
+	// const updatePerformanceLevel =
+	// 	api.parameters.updatePerformanceLevel.useMutation({
+	// 		onSuccess: () => {
+	// 			ctx.parameters.getCurrentPerformanceLevel.invalidate();
+	// 			ctx.parameters.getAllPerformanceLevel.invalidate();
+	// 		},
+	// 	});
+	// const createPerformanceLevel =
+	// 	api.parameters.createPerformanceLevel.useMutation({
+	// 		onSuccess: () => {
+	// 			ctx.parameters.getCurrentPerformanceLevel.invalidate();
+	// 			ctx.parameters.getAllPerformanceLevel.invalidate();
+	// 		},
+	// 	});
+	// const deletePerformanceLevel =
+	// 	api.parameters.deletePerformanceLevel.useMutation({
+	// 		onSuccess: () => {
+	// 			ctx.parameters.getCurrentPerformanceLevel.invalidate();
+	// 			ctx.parameters.getAllPerformanceLevel.invalidate();
+	// 		},
+	// 	});
+	// //#endregion
 
 	const functionsDictionary: Record<BonusTableEnum, FunctionsApi> = {
 		// TableBonusSetting: {
@@ -326,6 +213,12 @@ export default function BonusToolbarFunctionsProvider({
 		// 	createFunction: createBonusSetting,
 		// 	deleteFunction: deleteBonusSetting,
 		// },
+		TableBonusWorkType: {
+			queryFunction: getBonusWorkType,
+			updateFunction: updateBonusWorkType,
+			createFunction: createBonusWorkType,
+			deleteFunction: deleteBonusWorkType,
+		},
 		TableBonusDepartment: {
 			queryFunction: getBonusDepartment,
 			updateFunction: updateBonusDepartment,

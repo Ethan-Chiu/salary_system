@@ -24,6 +24,7 @@ import { BonusDepartmentTable } from "./tables/bonus_department_table";
 import { BonusPositionTable } from "./tables/bonus_position_table";
 import { BonusPositionTypeTable } from "./tables/bonus_position_type_table";
 import { BonusSeniorityTable } from "./tables/bonus_seniority_table";
+import { BonusWorkTypeTable } from "./tables/bonus_work_type_table";
 
 export type TableComponentProps = {
     period_id: number;
@@ -39,6 +40,11 @@ function getTableComponent(
     table: BonusTableEnum,
 ): TableComponent {
     switch (table) {
+        case "TableBonusWorkType":
+            return {
+                component: BonusWorkTypeTable,
+                icon: Key,
+            };
         case "TableBonusDepartment":
             return {
                 component: BonusDepartmentTable,
