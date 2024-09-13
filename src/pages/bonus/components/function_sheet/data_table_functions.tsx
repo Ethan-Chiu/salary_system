@@ -90,7 +90,7 @@ export function DataTableFunctions({
 							{modeDescription(mode)}
 						</SheetDescription>
 					</SheetHeader>
-					<ScrollArea className="h-[85%] w-full">
+					<ScrollArea className="h-full w-full">
 						<BonusForm
 							formSchema={schema}
 							mode={mode}

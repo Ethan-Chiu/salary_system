@@ -34,7 +34,7 @@ const rd = (key: string) => {
 };
 @injectable()
 export class CalculateService {
-	constructor() {}
+	constructor() { }
 
 	// MARK: 平日加班費
 	async getWeekdayOvertimePay(
@@ -91,17 +91,17 @@ export class CalculateService {
 			return Round(
 				// hourly_fee * t1 +
 				hourly_fee * t2 * 1.34 +
-					hourly_fee * t3 * 1.67 +
-					hourly_fee * t4 * 2 +
-					hourly_fee * t5 * 2.67
+				hourly_fee * t3 * 1.67 +
+				hourly_fee * t4 * 2 +
+				hourly_fee * t5 * 2.67
 			);
 		} else
 			return Round(
 				// hourly_fee * t1 +
 				hourly_fee * t2 * 1.34 +
-					hourly_fee * t3 * 1.67 +
-					hourly_fee * t4 * 2 +
-					hourly_fee * t5 * 2.67
+				hourly_fee * t3 * 1.67 +
+				hourly_fee * t4 * 2 +
+				hourly_fee * t5 * 2.67
 			);
 	}
 	//MARK: 假日加班費
@@ -238,16 +238,16 @@ export class CalculateService {
 			hourly_fee = insurance_rate_setting.min_wage_rate;
 			return Round(
 				hourly_fee * t1 * 1.34 +
-					hourly_fee * t2 * 1.67 +
-					hourly_fee * t3 * 2 +
-					hourly_fee * t4 * 2.67
+				hourly_fee * t2 * 1.67 +
+				hourly_fee * t3 * 2 +
+				hourly_fee * t4 * 2.67
 			);
 		} else
 			return Round(
 				hourly_fee * t1 * 1.34 +
-					hourly_fee * t2 * 1.67 +
-					hourly_fee * t3 * 2 +
-					hourly_fee * t4 * 2.67
+				hourly_fee * t2 * 1.67 +
+				hourly_fee * t3 * 2 +
+				hourly_fee * t4 * 2.67
 			);
 	}
 	//MARK: 應發底薪
@@ -326,7 +326,7 @@ export class CalculateService {
 		if (kind1 === FOREIGN || kind2 === FOREIGN)
 			return Round(
 				Round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30) *
-					hinder_rate
+				hinder_rate
 			); // 'Jerry 2023/04/06 由工作天數改為加勞保天數計算
 		if (kind2 === PROFESSOR) return 0;
 		if (kind2 === BOSS)
@@ -338,7 +338,7 @@ export class CalculateService {
 			return (
 				Round(
 					Round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30) +
-						Round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
+					Round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
 				) * hinder_rate
 			);
 		if (
@@ -351,14 +351,14 @@ export class CalculateService {
 			return (
 				Round(
 					Round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30) +
-						Round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
+					Round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
 				) * hinder_rate
 			); // 'Jerry 07/07/19 由工作天數改為加勞保天數計算
 
 		return (
 			Round(
 				Round(Tax * wci_normal * 0.200001) +
-					Round(Tax * wci_ji * 0.200001)
+				Round(Tax * wci_ji * 0.200001)
 			) * hinder_rate
 		);
 	}
@@ -473,6 +473,9 @@ export class CalculateService {
 		interface HolidaysTypeDict {
 			[key: number]: number;
 		}
+		const special_leave_id = holidays_type.find(
+			(ht) => ht.holidays_name === "特別事假"
+		)?.pay_id;
 		let holidays_type_dict: HolidaysTypeDict = {};
 		holidays_type.map((h: HolidaysType) => {
 			holidays_type_dict[h.pay_id] = h.multiplier;
@@ -482,6 +485,7 @@ export class CalculateService {
 		});
 		let leave_deduction = 0;
 		holiday_list.forEach((holiday) => {
+			if (holiday.pay_order === special_leave_id) return;
 			leave_deduction +=
 				(holiday.total_hours ?? 0) *
 				holidays_type_dict[holiday.pay_order!]!;
@@ -679,6 +683,7 @@ export class CalculateService {
 		const salary_income_deduction =
 			discounted_employee_payment_fe.base_salary +
 			(discounted_employee_payment_fe.supervisor_allowance ?? 0) +
+			professional_cert_allowance +
 			(discounted_employee_payment_fe.occupational_allowance ?? 0) +
 			operational_performance_bonus +
 			reissue_salary +
@@ -831,14 +836,14 @@ export class CalculateService {
 		let non_leave_compensation = 0;
 		holiday_list.map((h) => {
 			if (h.pay_order === non_leave_comp_id) {
-				non_leave_compensation +=  (h.total_hours ?? 0);
+				non_leave_compensation += (h.total_hours ?? 0);
 			}
 		});
 		if (employee_data.work_type === FOREIGN) {
-			return non_leave_compensation*insurance_rate_setting.min_wage_rate;
+			return non_leave_compensation * insurance_rate_setting.min_wage_rate;
 		}
-		else{
-			return non_leave_compensation*gross_salary/240;
+		else {
+			return non_leave_compensation * gross_salary / 240;
 		}
 	}
 	//MARK: 課稅所得
@@ -1195,25 +1200,25 @@ export class CalculateService {
 			if (work_type === FOREIGN) {
 				const x1 = Round(
 					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
-						Round((occupational_injury * wci_oi * l_i_day) / 30)
+					Round((occupational_injury * wci_oi * l_i_day) / 30)
 				); //'Jerry 20220823工資墊償基金分開計算
 				const x2 = Round(
 					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
-						Round(
-							(occupational_injury * wci_oi * additional_l_i) / 30
-						)
+					Round(
+						(occupational_injury * wci_oi * additional_l_i) / 30
+					)
 				); //'Jerry 20220823工資墊償基金分開計算
 				return x1 + x2;
 			} else if (employee_data.work_status === BOSS) {
 				const x1 = Round(
 					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
-						Round((occupational_injury * wci_oi * l_i_day) / 30)
+					Round((occupational_injury * wci_oi * l_i_day) / 30)
 				); //'Jerry 20220823工資墊償基金分開計算
 				const x2 = Round(
 					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
-						Round(
-							(occupational_injury * wci_oi * additional_l_i) / 30
-						)
+					Round(
+						(occupational_injury * wci_oi * additional_l_i) / 30
+					)
 				); //'Jerry 20220823工資墊償基金分開計算
 				return x1 + x2;
 			} else if (
@@ -1225,29 +1230,29 @@ export class CalculateService {
 			) {
 				const x1 = Round(
 					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
-						Round((l_i * 0.700001 * wci_ji * l_i_day) / 30) +
-						Round((occupational_injury * wci_oi * l_i_day) / 30)
+					Round((l_i * 0.700001 * wci_ji * l_i_day) / 30) +
+					Round((occupational_injury * wci_oi * l_i_day) / 30)
 				); //'Jerry 20220823工資墊償基金分開計算
 				const x2 = Round(
 					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
-						Round((l_i * wci_ji * 0.700001 * additional_l_i) / 30) +
-						Round(
-							(occupational_injury * wci_oi * additional_l_i) / 30
-						)
+					Round((l_i * wci_ji * 0.700001 * additional_l_i) / 30) +
+					Round(
+						(occupational_injury * wci_oi * additional_l_i) / 30
+					)
 				); //'Jerry 20220823工資墊償基金分開計算
 				return x1 + x2;
 			} else {
 				const x1 = Round(
 					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
-						Round((l_i * wci_ji * 0.700001 * l_i_day) / 30) +
-						Round((occupational_injury * wci_oi * l_i_day) / 30)
+					Round((l_i * wci_ji * 0.700001 * l_i_day) / 30) +
+					Round((occupational_injury * wci_oi * l_i_day) / 30)
 				);
 				const x2 = Round(
 					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
-						Round((l_i * wci_ji * 0.700001 * additional_l_i) / 30) +
-						Round(
-							(occupational_injury * wci_oi * additional_l_i) / 30
-						)
+					Round((l_i * wci_ji * 0.700001 * additional_l_i) / 30) +
+					Round(
+						(occupational_injury * wci_oi * additional_l_i) / 30
+					)
 				); //'Jerry 20220823工資墊償基金分開計算
 				return x1 + x2;
 			}
@@ -1307,9 +1312,6 @@ export class CalculateService {
 			) {
 				return 0;
 			} else {
-				console.log("\n\n\n\n\n\n\nmoney: ", money);
-				console.log("nhi_rate: ", nhi_rate);
-				console.log("\n\n\n\n\n\n\n");
 				return Round(money * nhi_rate * 0.6 * (1 + nhi_people));
 			}
 		}
@@ -1713,10 +1715,7 @@ export class CalculateService {
 		)?.pay_id;
 		let t1 = 0;
 		const hourly_fee =
-			(gross_salary +
-				(discounted_employee_payment_fe.subsidy_allowance ?? 0) +
-				(professional_cert_allowance ?? 0)) /
-			240;
+			(gross_salary + (professional_cert_allowance ?? 0)) / 240;
 		for (const h of holiday_list) {
 			if (h.pay_order === special_leave_id) {
 				t1 += h.total_hours ?? 0;

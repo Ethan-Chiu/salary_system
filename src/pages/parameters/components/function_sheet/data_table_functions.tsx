@@ -53,7 +53,7 @@ export function DataTableFunctions({
 			return <></>;
 		}
 		else {
-			const levelOptions: Array<z.ZodLiteral<number>> = 
+			const levelOptions: Array<z.ZodLiteral<number>> =
 				(data as Level[]).map((d: Level) => {
 					return z.literal(d.level);
 				})
@@ -110,27 +110,28 @@ export function DataTableFunctions({
 				<SheetContent className="w-[50%]">
 					<SheetHeader>
 						<SheetTitle>
-							{`${t(`button.${mode}`)!}${t( "button.form" )} (${t(getTableNameKey(tableType))})`}
+							{`${t(`button.${mode}`)!}${t("button.form")} (${t(getTableNameKey(tableType))})`}
 						</SheetTitle>
 						<SheetDescription>
 							{modeDescription(mode)}
 						</SheetDescription>
 					</SheetHeader>
-					<ScrollArea className="h-[85%] w-full">
-						{mode == "batch_create" ? 
-							<LevelBatchCreateForm
-								formSchema={z.object({content: z.array(schema)})}
+					{mode == "batch_create" ?
+						<LevelBatchCreateForm
+							formSchema={z.object({ content: z.array(schema) })}
+							mode={mode}
+							closeSheet={() => setOpen(false)}
+						/>
+						:
+						<ScrollArea className="h-full w-full">
+							<ParameterForm
+								formSchema={schema}
 								mode={mode}
 								closeSheet={() => setOpen(false)}
 							/>
-						:
-						 <ParameterForm
-							formSchema={schema}
-							mode={mode}
-							closeSheet={() => setOpen(false)}
-						/>}
-						<ScrollBar orientation="horizontal" />
-					</ScrollArea>
+							<ScrollBar orientation="horizontal" />
+						</ScrollArea>
+					}
 				</SheetContent>
 			</Sheet>
 		</div>

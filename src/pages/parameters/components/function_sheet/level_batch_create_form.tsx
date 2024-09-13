@@ -31,7 +31,6 @@ import { FunctionMode } from "./data_table_functions";
 import GeneralTable from "./general_table";
 import { LoadingSpinner } from "~/components/loading";
 import { FieldConfig } from "~/components/ui/auto-form/types";
-import isDate from "date-fns/isDate";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "~/components/ui/input";
@@ -142,8 +141,8 @@ export function LevelBatchCreateForm<SchemaType extends z.AnyZodObject>({
 			name: "levels",
 		});
 
-		const onSubmit = async(data: FormValues) => {
-			data.levels.map(async(l) => {
+		const onSubmit = async (data: FormValues) => {
+			data.levels.map(async (l) => {
 				await createFunction.mutateAsync(l);
 			})
 			closeSheet();
@@ -151,65 +150,63 @@ export function LevelBatchCreateForm<SchemaType extends z.AnyZodObject>({
 
 		return (
 			<>
-			  <Separator />
-			  <br />
-			  <form onSubmit={handleSubmit(onSubmit)}>
-				<div className="flex flex-col h-[74vh]"> {/* Set the height for the form */}
-				  
-				  {/* Scrollable Area */}
-				  <div className="flex-grow overflow-y-auto space-y-4 px-4"> 
-					{fields.map((field, index) => (
-					  <div className="flex items-center gap-4 w-full" key={field.id}>
-						{/* Level Input */}
-						<div className="flex flex-row items-center justify-between w-full gap-4">
-						  <Label className="min-w-[50px]"> {t("table.level")} </Label>
-						  <Input
-							className="flex-grow"
-							type="number"
-							{...register(`levels.${index}.level` as const)}
-						  />
-						  <button
-							type="button"
-							onClick={() => remove(index)}
-							className="text-red-500"
-						  >
-							<Trash2 className="h-5 w-5" />
-						  </button>
+				<Separator />
+				<form onSubmit={handleSubmit(onSubmit)} className="h-full">
+					<div className="flex flex-col h-full"> {/* Set the height for the form */}
+
+						{/* Scrollable Area */}
+						<div className="flex-grow overflow-y-auto space-y-4 p-4">
+							{fields.map((field, index) => (
+								<div className="flex items-center gap-4 w-full" key={field.id}>
+									{/* Level Input */}
+									<div className="flex flex-row items-center justify-between w-full gap-4">
+										<Label className="min-w-[50px]"> {t("table.level")} </Label>
+										<Input
+											className="flex-grow"
+											type="number"
+											{...register(`levels.${index}.level` as const)}
+										/>
+										<button
+											type="button"
+											onClick={() => remove(index)}
+											className="text-red-500"
+										>
+											<Trash2 className="h-5 w-5" />
+										</button>
+									</div>
+								</div>
+							))}
+							{/* Add Row Button (Scrolls with the rows) */}
+							<Button
+								type={"button"}
+								variant={"outline"}
+								onClick={() => append({ level: 0 })}
+								className="w-full"
+							>
+								{t("button.create")}
+							</Button>
 						</div>
-					  </div>
-					))}
-		  
-					{/* Add Row Button (Scrolls with the rows) */}
-					<Button
-					  type={"button"}
-					  variant={"outline"}
-					  onClick={() => append({ level: 0 })}
-					  className="w-full"
-					>
-					  {t("button.create")}
-					</Button>
-				  </div>
-		  
-				  {/* Fixed Cancel and Submit Buttons (Outside of Scrollable Area) */}
-				  <div className="flex justify-between px-4 py-4 bg-white">
-					{/* Cancel Button */}
-					<Button
-					  variant={"destructive"}
-					  onClick={() => closeSheet()}
-					>
-					  {t("button.cancel")}
-					</Button>
-					{/* Submit Button */}
-					<Button type="submit">
-					  {t("button.batch_create")}
-					</Button>
-				  </div>
-				</div>
-			  </form>
+
+						{/* Fixed Cancel and Submit Buttons (Outside of Scrollable Area) */}
+						<div className="flex justify-between pb-6 bg-white">
+							{/* Cancel Button */}
+							<Button
+								variant={"destructive"}
+								onClick={() => closeSheet()}
+							>
+								{t("button.cancel")}
+							</Button>
+							{/* Submit Button */}
+							<Button type="submit">
+								{t("button.batch_create")}
+							</Button>
+						</div>
+					</div>
+				</form>
 			</>
-		  );
-		  
-		  
+		);
+
+
 	}
 
 	// Create or update an entry
