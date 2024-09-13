@@ -9,8 +9,10 @@ import { cn } from "~/lib/utils";
 import { api } from "~/utils/api";
 import { type FunctionsEnumType } from "~/server/api/types/functions_enum";
 import { useTranslation } from "react-i18next";
+import { PayTypeEnum } from "~/server/api/types/pay_type_enum";
+import { AllowanceTable } from "../tables/allowance_table";
 
-const tabOptions = ["table_name.holiday", "table_name.overtime", "table_name.payset", "table_name.bonus", "table_name.other"];
+const tabOptions = ["table_name.allowance", "table_name.overtime", "table_name.holiday", "table_name.other", "table_name.bonus", "table_name.payset"];
 
 export function DataPage({
 	period,
@@ -24,22 +26,24 @@ export function DataPage({
 	setSelectedIndex: (index: number) => void;
 }) {
 
-  const { t } = useTranslation("common");
+	const { t } = useTranslation("common");
 
 	function getTable(table_name: string) {
 		const employee_data_list = api.sync.getPaidEmployees.useQuery({ func }).data
 		const emp_no_list = employee_data_list!.map(emp => emp.emp_no)
 		switch (table_name) {
 			case tabOptions[0]:
-				return <HolidayTable period={period} emp_no_list={emp_no_list} />;
+				return <AllowanceTable period={period} emp_no_list={emp_no_list} />;
 			case tabOptions[1]:
-				return <OvertimeTable period={period} emp_no_list={emp_no_list} />;
+				return <OvertimeTable period={period} emp_no_list={emp_no_list} pay_type={PayTypeEnum.Enum.month_salary} />;
 			case tabOptions[2]:
-				return <PaysetTable period={period} emp_no_list={emp_no_list} />;
+				return <HolidayTable period={period} emp_no_list={emp_no_list} />;
 			case tabOptions[3]:
-				return <BonusTable period={period} emp_no_list={emp_no_list} />;
-			case tabOptions[4]:
 				return <OtherTable period={period} emp_no_list={emp_no_list} />;
+			case tabOptions[4]:
+				return <BonusTable period={period} emp_no_list={emp_no_list} pay_type={PayTypeEnum.Enum.month_salary} />;
+			case tabOptions[5]:
+				return <PaysetTable period={period} emp_no_list={emp_no_list} />;
 			default:
 				return <p>No implement</p>;
 		}
@@ -53,7 +57,7 @@ export function DataPage({
 					defaultValue={tabOptions[0]}
 					className="flex h-full w-full flex-col"
 				>
-					<TabsList className={cn(`grid grid-cols-5`)}>
+					<TabsList className={cn(`grid grid-cols-6`)}>
 						{tabOptions.map((option) => {
 							return (
 								<TabsTrigger key={option} value={option}>

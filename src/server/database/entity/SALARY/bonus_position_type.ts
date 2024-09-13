@@ -6,6 +6,7 @@ import {
 	type CreationOptional,
 	Sequelize,
 } from "sequelize";
+import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 
 export class BonusPositionType extends Model<
 	InferAttributes<BonusPositionType>,
@@ -13,6 +14,8 @@ export class BonusPositionType extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
+	declare period_id: number;
+    declare bonus_type: BonusTypeEnumType;
 	declare position_type: string;
 	declare multiplier: number;
 
@@ -32,6 +35,14 @@ export function initBonusPositionType(sequelize: Sequelize) {
 				type: DataTypes.INTEGER.UNSIGNED,
 				autoIncrement: true,
 				primaryKey: true,
+			},
+			period_id: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				allowNull: false,
+			},
+			bonus_type: {
+				type: new DataTypes.STRING(32),
+				allowNull: false,
 			},
 			position_type: {
 				type: new DataTypes.STRING(2),

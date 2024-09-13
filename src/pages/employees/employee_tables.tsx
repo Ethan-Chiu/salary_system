@@ -1,4 +1,5 @@
-import { type TableEnum } from "../parameters/components/context/data_table_enum";
+import { TableEnum } from "./components/context/data_table_enum";
+
 
 export type EmployeeTableEnum = Extract<
 	TableEnum,

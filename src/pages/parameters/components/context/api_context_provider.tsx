@@ -32,28 +32,11 @@ export default function ApiFunctionsProvider({
 
 	const getTrustMoney = () => api.parameters.getAllTrustMoney.useQuery();
 
-	const getBonusSetting = () => api.parameters.getAllBonusSetting.useQuery();
-
-	const getBonusDepartment = () =>
-		api.parameters.getAllBonusDepartment.useQuery();
-
-	const getBonusPosition = () =>
-		api.parameters.getAllBonusPosition.useQuery();
-
-	const getBonusPositionType = () =>
-		api.parameters.getAllBonusPositionType.useQuery();
-
-	const getBonusSeniority = () =>
-		api.parameters.getAllBonusSeniority.useQuery();
-
 	const getLevelRange = () => 
 		api.parameters.getAllLevelRange.useQuery();
 	
 	const getLevel = () => 
 		api.parameters.getAllLevel.useQuery();
-
-	const getPerformanceLevel = () =>
-		api.parameters.getAllPerformanceLevel.useQuery();
 
 	const functionsDictionary: Record<ParameterTableEnum, QueryFunctionsApi> = {
 		TableAttendance: {
@@ -68,29 +51,11 @@ export default function ApiFunctionsProvider({
 		TableTrustMoney: {
 			queryFunction: getTrustMoney,
 		},
-		TableBonusSetting: {
-			queryFunction: getBonusSetting,
-		},
-		TableBonusDepartment: {
-			queryFunction: getBonusDepartment,
-		},
-		TableBonusPosition: {
-			queryFunction: getBonusPosition,
-		},
-		TableBonusPositionType: {
-			queryFunction: getBonusPositionType,
-		},
-		TableBonusSeniority: {
-			queryFunction: getBonusSeniority,
-		},
 		TableLevelRange: {
 			queryFunction: getLevelRange,
 		},
 		TableLevel: {
 			queryFunction: getLevel,
-		},
-		TablePerformanceLevel: {
-			queryFunction: getPerformanceLevel,
 		},
 	};
 

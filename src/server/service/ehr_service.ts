@@ -15,6 +15,7 @@ import { ExpenseClass } from "../database/entity/UMEDIA/expense_class";
 import { AllowanceType } from "../database/entity/UMEDIA/allowance_type";
 import { Allowance } from "../database/entity/UMEDIA/allowance";
 import { HolidaysTypeService } from "./holidays_type_service";
+import { PayTypeEnum, PayTypeEnumType } from "../api/types/pay_type_enum";
 
 export type BonusWithType = Omit<Bonus, "bonus_id" | "period_id"> & {
 	period_name: string;
@@ -24,6 +25,11 @@ export type BonusWithType = Omit<Bonus, "bonus_id" | "period_id"> & {
 export type ExpenseWithType = Omit<Expense, "period_id" | "id"> & {
 	period_name: string;
 	expense_type_name: string;
+};
+
+export type AllowanceWithType = Omit<Allowance, "period_id" | "allowance_id"> & {
+	period_name: string;
+	allowance_type_name: string;
 };
 
 export type HolidayWithType = Omit<Holiday, "pay_order"> & {
@@ -50,7 +56,13 @@ export class EHRService {
 				type: QueryTypes.SELECT,
 			}
 		);
-		const holidayList: Holiday[] = dataList.map((o) => Holiday.fromDB(o));
+		const holidayList: Holiday[] = dataList.map((o) => Holiday.fromDB(o))
+			.sort((a, b) => {
+				if (a.emp_no === b.emp_no) {
+					return a.pay_order! - b.pay_order!;
+				}
+				return a.emp_no!.localeCompare(b.emp_no!);
+			});
 
 		return holidayList;
 	}
@@ -83,7 +95,7 @@ export class EHRService {
 		const holidayWithTypeList: HolidayWithType[] = filtered_holiday.map(
 			(holiday) => {
 				const holidayTypeName = holidays_type.find(
-					(holidayType) => holidayType.id === holiday.pay_order
+					(holidayType) => holidayType.pay_id === holiday.pay_order
 				)?.holidays_name;
 				return {
 					...holiday,
@@ -91,30 +103,36 @@ export class EHRService {
 					period_name: period_name,
 				};
 			}
-		);
+		)
 		return holidayWithTypeList;
 	}
 
-	async getOvertime(period_id: number): Promise<Overtime[]> {
+	async getOvertime(period_id: number, pay: number): Promise<Overtime[]> {
 		const dbConnection = container.resolve(Database).connection;
 		const dataList = await dbConnection.query(
-			this.GET_OVERTIME_QUERY(period_id),
+			this.GET_OVERTIME_QUERY(period_id, pay),
 			{
 				type: QueryTypes.SELECT,
 			}
 		);
-		const overtimeList: Overtime[] = dataList.map((o) =>
-			Overtime.fromDB(o)
-		);
+		const overtimeList: Overtime[] = dataList.map((o) => Overtime.fromDB(o))
+			.sort((a, b) => {
+				if (a.emp_no === b.emp_no) {
+					return a.type_name!.localeCompare(b.type_name!);
+				}
+				return a.emp_no!.localeCompare(b.emp_no!);
+			})
 
 		return overtimeList;
 	}
 
 	async getOvertimeByEmpNoList(
 		period_id: number,
-		emp_no_list: string[]
+		emp_no_list: string[],
+		pay_type: PayTypeEnumType,
 	): Promise<Overtime[]> {
-		const all_overtime = await this.getOvertime(period_id);
+		const pay = pay_type === PayTypeEnum.Enum.foreign_15_bonus ? 2 : 1;
+		const all_overtime = await this.getOvertime(period_id, pay);
 		const filtered_overtime = all_overtime.filter((overtime) =>
 			emp_no_list.includes(overtime.emp_no!)
 		);
@@ -129,7 +147,10 @@ export class EHRService {
 				type: QueryTypes.SELECT,
 			}
 		);
-		const paysetList: Payset[] = dataList.map((o) => Payset.fromDB(o));
+		const paysetList: Payset[] = dataList.map((o) => Payset.fromDB(o))
+			.sort((a, b) => {
+				return a.emp_no!.localeCompare(b.emp_no!);
+			});
 
 		return paysetList;
 	}
@@ -166,10 +187,10 @@ export class EHRService {
 		return Period.fromDB(dataList[0]!);
 	}
 
-	async getBonus(period_id: number): Promise<Bonus[]> {
+	async getBonus(period_id: number, pay: number): Promise<Bonus[]> {
 		const dbConnection = container.resolve(Database).connection;
 		const dataList = await dbConnection.query(
-			this.GET_BONUS_QUERY(period_id),
+			this.GET_BONUS_QUERY(period_id, pay),
 			{
 				type: QueryTypes.SELECT,
 			}
@@ -177,15 +198,24 @@ export class EHRService {
 		// if (dataList.length === 0) {
 		// 	throw new BaseResponseError("Bonus Not Found");
 		// }
-		const bonusList: Bonus[] = dataList.map((o) => Bonus.fromDB(o));
+		const bonusList: Bonus[] = dataList.map((o) => Bonus.fromDB(o))
+			.sort((a, b) => {
+				if (a.emp_no === b.emp_no) {
+					return a.bonus_id! - b.bonus_id!;
+				}
+				return a.emp_no!.localeCompare(b.emp_no!);
+			});
+
 		return bonusList;
 	}
 
 	async getBonusByEmpNoList(
 		period_id: number,
-		emp_no_list: string[]
+		emp_no_list: string[],
+		pay_type: PayTypeEnumType
 	): Promise<Bonus[]> {
-		const all_bonus = await this.getBonus(period_id);
+		const pay = pay_type === "foreign_15_bonus" ? 2 : 1;
+		const all_bonus = await this.getBonus(period_id, pay);
 		const filtered_bonus = all_bonus.filter((bonus) =>
 			emp_no_list.includes(bonus.emp_no!)
 		);
@@ -204,9 +234,11 @@ export class EHRService {
 	}
 	async getBonusWithTypeByEmpNoList(
 		period_id: number,
-		emp_no_list: string[]
+		emp_no_list: string[],
+		pay_type: PayTypeEnumType
 	): Promise<BonusWithType[]> {
-		const all_bonus = await this.getBonus(period_id);
+		const pay = pay_type === "foreign_15_bonus" ? 2 : 1;
+		const all_bonus = await this.getBonus(period_id, pay);
 		const filtered_bonus = all_bonus.filter((bonus) =>
 			emp_no_list.includes(bonus.emp_no!)
 		);
@@ -237,7 +269,16 @@ export class EHRService {
 				type: QueryTypes.SELECT,
 			}
 		);
-		const expenseList: Expense[] = dataList.map((o) => Expense.fromDB(o));
+		const expenseList: Expense[] = dataList.map((o) => Expense.fromDB(o))
+			.sort((a, b) => {
+				if (a.emp_no === b.emp_no) {
+					if (a.kind === b.kind) {
+						return a.id! - b.id!;
+					}
+					return a.kind! - b.kind!;
+				}
+				return a.emp_no!.localeCompare(b.emp_no!);
+			});
 		return expenseList;
 	}
 
@@ -303,6 +344,33 @@ export class EHRService {
 		return expenseClassList;
 	}
 
+	async getAllowanceWithTypeByEmpNoList(
+		period_id: number,
+		emp_no_list: string[]
+	): Promise<AllowanceWithType[]> {
+		const all_allowance = await this.getAllowance(period_id);
+		const filtered_allowance = all_allowance.filter((allowance) =>
+			emp_no_list.includes(allowance.emp_no!)
+		);
+		const allowance_type_list = await this.getAllowanceType();
+		const period_name = await this.getPeriodById(period_id).then(
+			(period) => period.period_name
+		);
+		const allowanceWithTypeList: AllowanceWithType[] = filtered_allowance.map(
+			(allowance) => {
+				const allowanceTypeName = allowance_type_list.find(
+					(allowanceType) => allowanceType.id === allowance.allowance_id
+				)?.name;
+				return {
+					...allowance,
+					allowance_type_name: allowanceTypeName!,
+					period_name: period_name,
+				};
+			}
+		);
+		return allowanceWithTypeList;
+	}
+
 	async getAllowanceType(): Promise<AllowanceType[]> {
 		const dbConnection = container.resolve(Database).connection;
 		const dataList = await dbConnection.query(
@@ -366,8 +434,8 @@ export class EHRService {
 		return `SELECT * FROM "U_HR_PAYDRAFT_HOLIDAYS_V" WHERE "U_HR_PAYDRAFT_HOLIDAYS_V"."PERIOD_ID" = '${period_id}'`;
 	}
 
-	private GET_OVERTIME_QUERY(period_id: number): string {
-		return `SELECT * FROM "U_HR_PAYDRAFT_OVERTIME_V" WHERE "U_HR_PAYDRAFT_OVERTIME_V"."PERIOD_ID" = '${period_id}'`;
+	private GET_OVERTIME_QUERY(period_id: number, pay: number): string {
+		return `SELECT * FROM "U_HR_PAYDRAFT_OVERTIME_V" WHERE "U_HR_PAYDRAFT_OVERTIME_V"."PERIOD_ID" = '${period_id}' AND "U_HR_PAYDRAFT_OVERTIME_V"."PAY" = '${pay}'`;
 	}
 
 	private GET_PAYSET_QUERY(period_id: number): string {
@@ -381,8 +449,8 @@ export class EHRService {
 	private GET_PERIOD_BY_ID_QUERY(period_id: number): string {
 		return `SELECT "PERIOD_ID", "PERIOD_NAME", "START_DATE", "END_DATE", "STATUS", "ISSUE_DATE" FROM "U_HR_PERIOD" WHERE "U_HR_PERIOD"."PERIOD_ID" = '${period_id}'`;
 	}
-	private GET_BONUS_QUERY(period_id: number): string {
-		return `SELECT * FROM "U_HR_PAYDRAFT_BONUS" WHERE "U_HR_PAYDRAFT_BONUS"."PERIOD_ID" = '${period_id}'`;
+	private GET_BONUS_QUERY(period_id: number, pay: number): string {
+		return `SELECT * FROM "U_HR_PAYDRAFT_BONUS" WHERE "U_HR_PAYDRAFT_BONUS"."PERIOD_ID" = '${period_id}' AND "U_HR_PAYDRAFT_BONUS"."PAY" = '${pay}'`;
 	}
 	private GET_BONUS_TYPE_QUERY(): string {
 		return `SELECT * FROM UMEDIA."U_HR_BONUS_TYPE"`;

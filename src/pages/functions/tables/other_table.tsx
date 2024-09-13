@@ -11,6 +11,7 @@ const columns = (t: I18nType) =>
 		"emp_no",
 		"emp_name",
 		"kind",
+		"id",
 		"expense_type_name",
 		"amount",
 		"remark",
@@ -28,14 +29,8 @@ interface OtherTableProps {
 }
 
 export function OtherTable({ period, emp_no_list }: OtherTableProps) {
-	// const { isLoading, isError, data, error } =
-	// 	api.function.getBonusWithTypeByEmpList.useQuery({
-	// 		period_id: period,
-	// 		emp_no_list: emp_no_list,
-	// 	});
-
 	const { isLoading, isError, data, error } =
-		api.function.getExpenseWithTypeByEmpList.useQuery({
+		api.function.getExpenseWithTypeByEmpNoList.useQuery({
 			period_id: period,
 			emp_no_list: emp_no_list,
 		});

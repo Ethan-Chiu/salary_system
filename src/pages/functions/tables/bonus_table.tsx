@@ -4,6 +4,7 @@ import { BonusWithType } from "~/server/service/ehr_service";
 import { api } from "~/utils/api";
 import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
+import { PayTypeEnumType } from "~/server/api/types/pay_type_enum";
 
 const columns = (t: I18nType) =>
 	[
@@ -24,19 +25,15 @@ const columns = (t: I18nType) =>
 interface BonusTableProps {
 	period: number;
 	emp_no_list: string[];
+	pay_type: PayTypeEnumType;
 }
 
-export function BonusTable({ period, emp_no_list }: BonusTableProps) {
-	// const { isLoading, isError, data, error } =
-	// 	api.function.getBonusWithTypeByEmpList.useQuery({
-	// 		period_id: period,
-	// 		emp_no_list: emp_no_list,
-	// 	});
-
+export function BonusTable({ period, emp_no_list, pay_type }: BonusTableProps) {
 	const { isLoading, isError, data, error } =
-		api.function.getBonusWithTypeByEmpList.useQuery({
+		api.function.getBonusWithTypeByEmpNoList.useQuery({
 			period_id: period,
 			emp_no_list: emp_no_list,
+			pay_type: pay_type,
 		});
 
 	const { t } = useTranslation(["common"]);

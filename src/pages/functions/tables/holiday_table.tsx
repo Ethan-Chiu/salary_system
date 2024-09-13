@@ -11,8 +11,8 @@ const columns = (t: I18nType) => [
 	"period_id",
 	"period_name",
 	"emp_no",
+	"pay_order",
 	"emp_name",
-	// "pay_order",
 	"holiday_type_name",
 	"pay_period",
 	"pay_delay",
@@ -38,7 +38,7 @@ interface HolidayTableProps {
 
 export function HolidayTable({ period, emp_no_list }: HolidayTableProps) {
 	const { isLoading, isError, data, error } =
-		api.function.getHolidayWithTypeByEmpList.useQuery({
+		api.function.getHolidayWithTypeByEmpNoList.useQuery({
 			period_id: period,
 			emp_no_list: emp_no_list,
 		});

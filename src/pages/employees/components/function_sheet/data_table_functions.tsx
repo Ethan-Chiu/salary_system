@@ -31,9 +31,9 @@ import { useTranslation } from "react-i18next";
 import {
 	type TableEnum,
 	getTableNameKey,
-} from "~/pages/parameters/components/context/data_table_enum";
+} from "~/pages/employees/components/context/data_table_enum";
 import { EmployeeForm } from "./employee_form";
-import { getSchema } from "~/pages/parameters/schemas/get_schemas";
+import { getSchema } from "~/pages/employees/schemas/get_schemas";
 import { modeDescription } from "~/lib/utils/helper_function";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
