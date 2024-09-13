@@ -109,14 +109,14 @@ export const updateInsuranceRateSettingService = InsuranceRateSetting.merge(Id)
 const BonusWorkType = z.object({
 	period_id: z.number(),
 	bonus_type: BonusTypeEnum,
-	work_type: z.number(),
+	work_type: z.string(),
 	multiplier: z.number(),
 });
 
-export const createWorkTypeAPI = BonusWorkType;
-export const createWorkTypeService = BonusWorkType;
-export const updateWorkTypeAPI = BonusWorkType.merge(Id).partial();
-export const updateWorkTypeService = BonusWorkType.merge(Id).partial();
+export const createBonusWorkTypeAPI = BonusWorkType;
+export const createBonusWorkTypeService = BonusWorkType;
+export const updateBonusWorkTypeAPI = BonusWorkType.merge(Id).partial();
+export const updateBonusWorkTypeService = BonusWorkType.merge(Id).partial();
 
 	
 const BonusDepartment = z.object({
@@ -257,9 +257,11 @@ const EmployeeBonus = z.object({
 	period_id: z.number(),
 	bonus_type: BonusTypeEnum,
 	emp_no: z.string(),
-	budget_amount: z.number(),
-	superviser_amount: z.number(),
-	final_amount: z.number(),
+	multiplier: z.number().nullable(),
+	fixed_amount: z.number().nullable(),
+	budget_amount: z.number().nullable(),
+	superviser_amount: z.number().nullable(),
+	final_amount: z.number().nullable(),
 });
 
 export const createEmployeeBonusAPI = EmployeeBonus;
