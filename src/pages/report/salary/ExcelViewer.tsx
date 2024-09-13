@@ -63,7 +63,8 @@ interface Block {
 
 const handleExportExcel = async (
 	datas: ExcelSheetWithColor[],
-	filename: string
+	filename: string,
+	Translate: (key: string) => string
 ) => {
 	const workbook = new ExcelJS.Workbook();
 
@@ -93,7 +94,12 @@ const handleExportExcel = async (
 			);
 			try {
 				sheetdata.data.map((row: Block[], i: number) => {
-					worksheet.addRow(row.map((cell: Block) => cell.content));
+					if (i === 0) {
+						worksheet.addRow(row.map((cell: Block) => Translate(`table.${cell.content}`)));
+					}
+					else {
+						worksheet.addRow(row.map((cell: Block) => cell.content));
+					}
 				});
 			} catch {}
 
@@ -558,7 +564,8 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 								onClick={() =>
 									handleExportExcel(
 										sheets,
-										`${filename}.xlsx`
+										`${filename}.xlsx`,
+										t
 									)
 								}
 							>

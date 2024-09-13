@@ -1,13 +1,6 @@
 import { cn } from "~/lib/utils";
 import { useState } from "react";
-import {
-	type LucideIcon,
-	PenSquare,
-	Plus,
-	PlusSquare,
-	RefreshCcw,
-	Trash2,
-} from "lucide-react";
+import { type LucideIcon, PenSquare, Plus, PlusSquare, Trash2 } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
 	DropdownMenu,
@@ -28,24 +21,17 @@ import {
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Button } from "~/components/ui/button";
 import { useTranslation } from "react-i18next";
-import {
-	type TableEnum,
-	getTableNameKey,
-} from "~/pages/employees/components/context/data_table_enum";
-import { EmployeeForm } from "./employee_form";
-import { getSchema } from "~/pages/employees/schemas/get_schemas";
+import { BonusForm } from "./bonus_form";
+import { type TableEnum, getTableNameKey } from "../context/data_table_enum";
+import { getSchema } from "../../schemas/get_schemas";
+import { api } from "~/utils/api";
 import { modeDescription } from "~/lib/utils/helper_function";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
 }
 
-export type FunctionMode =
-	| "create"
-	| "update"
-	| "delete"
-	| "auto_calculate"
-	| "none";
+export type FunctionMode = "create" | "update" | "delete" | "none";
 
 export function DataTableFunctions({
 	tableType,
@@ -54,6 +40,11 @@ export function DataTableFunctions({
 	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
 	const { t } = useTranslation(['common', 'nav']);
+
+	const { isLoading, isError, data, error } = api.parameters.getCurrentLevel.useQuery();
+
+	// ========================= Additional Condition for Schema =====================================
+	let schema = getSchema(tableType);
 
 	return (
 		<div className={cn(className, "flex h-full items-center")}>
@@ -69,7 +60,7 @@ export function DataTableFunctions({
 							<PlusSquare className="cursor-pointer stroke-[1.5]" />
 						</Button>
 					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end" className="w-[150px]">
+					<DropdownMenuContent align="end" className="w-[120px]">
 						<DropdownMenuLabel>{t("others.functions")}</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<CompTriggerItem
@@ -87,26 +78,21 @@ export function DataTableFunctions({
 							itemName={t("button.delete")}
 							icon={Trash2}
 						/>
-						<CompTriggerItem
-							mode={"auto_calculate"}
-							itemName={t("button.auto_calculate")}
-							icon={RefreshCcw}
-						/>
 					</DropdownMenuContent>
 				</DropdownMenu>
 				{/* Sheet */}
 				<SheetContent className="w-[50%]">
 					<SheetHeader>
 						<SheetTitle>
-							{`${t(`button.${mode}`)!}${t("button.form")} (${t(getTableNameKey(tableType))})`}
+							{`${t(`button.${mode}`)!}${t( "button.form" )} (${t(getTableNameKey(tableType))})`}
 						</SheetTitle>
 						<SheetDescription>
 							{modeDescription(mode)}
 						</SheetDescription>
 					</SheetHeader>
 					<ScrollArea className="h-[85%] w-full">
-						<EmployeeForm
-							formSchema={getSchema(tableType)!}
+						<BonusForm
+							formSchema={schema}
 							mode={mode}
 							closeSheet={() => setOpen(false)}
 						/>

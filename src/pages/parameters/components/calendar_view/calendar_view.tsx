@@ -60,7 +60,7 @@ function CompCalendarContent({ target_date }: { target_date: string }) {
 	}
 
 	return (
-		<CalendarContextProvider data={data} target_date={target_date}>
+		<CalendarContextProvider data={data!} target_date={target_date}>
 			<CompCalendarView target_date={target_date} />
 		</CalendarContextProvider>
 	);

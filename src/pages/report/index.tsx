@@ -16,18 +16,18 @@ import { useToast } from "~/components/ui/use-toast";
 import { ToastAction } from "@radix-ui/react-toast";
 import PeriodSelector from "~/components/period_selector";
 import { Dialog, DialogContent } from "~/components/ui/dialog";
-import PeriodContextProvider from "~/components/context/period_context_provider";
 import { useTranslation } from "react-i18next";
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
+import { I18nType } from "~/lib/utils/i18n_type";
 
 
 type FunctionLinkData = CardFunctionData & { url: string | null };
 
-const function_data: FunctionLinkData[] = [
+const function_data: (t: I18nType) => FunctionLinkData[] = (t) => [
 	{
-		title: "薪資異動檔",
+		title: t("others.transaction"),
 		iconPath: "./icons/coins.svg",
 		subscript: "salary report",
 		url: "/report/salary",
@@ -39,11 +39,11 @@ const ReportHomePage: NextPageWithLayout = () => {
 	const { selectedPeriod } = useContext(periodContext);
 	const { toast } = useToast();
 	const [open, setOpen] = useState(false);
-	const { t } = useTranslation(['nav', 'common']);
+	const { t } = useTranslation(['common', 'nav']);
 
 	return (
 		<>
-			<Header title={t("reports")} showOptions className="mb-4" />
+			<Header title={t("reports", {ns: "nav"})} showOptions className="mb-4" />
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogContent>
 					<PeriodSelector />
@@ -55,7 +55,7 @@ const ReportHomePage: NextPageWithLayout = () => {
 				initial="hidden"
 				animate="visible"
 			>
-				{function_data.map((f_data: FunctionLinkData) => (
+				{function_data(t).map((f_data: FunctionLinkData) => (
 					<motion.div
 						key={f_data.title}
 						variants={stagger}

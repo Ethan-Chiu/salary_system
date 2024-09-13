@@ -30,10 +30,11 @@ import { type FunctionMode } from "./data_table_functions";
 import { LoadingSpinner } from "~/components/loading";
 import { type FieldConfig } from "~/components/ui/auto-form/types";
 import { employeeToolbarFunctionsContext } from "./employee_functions_context";
-import GeneralTable from "~/pages/parameters/components/function_sheet/general_table";
+import GeneralTable from "~/pages/employees/components/function_sheet/general_table";
 import { Input } from "~/components/ui/input";
 import { Checkbox } from "~/components/ui/checkbox";
 import periodContext from "~/components/context/period_context";
+import employeePaymentRefetchContext from "../context/employee_payment_context";
 
 interface EmployeeFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
@@ -145,6 +146,8 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 		return <p>{t("others.no_data")}</p>;
 	}
 
+	const refetch = useContext(employeePaymentRefetchContext);
+
 	// Select one entry
 	if (mode !== "create" && isList && selectedData === null) {
 		const noIDData: DataTypeWithoutID[] = data.map((item: any) => {
@@ -175,12 +178,14 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 						id: selectedId,
 					});
 				}}
-				onAutoCalculate={(selectedEmpNoList: string[]) => {
-					autoCalculateFunction.mutate({
+				onAutoCalculate={async (selectedEmpNoList: string[]) => {
+					closeSheet();
+					await autoCalculateFunction.mutateAsync({
 						period_id: selectedPeriod!.period_id,
 						emp_no_list: selectedEmpNoList,
+					}, {onSuccess: () => {refetch();}}).then(() => {
+						refetch();
 					});
-					closeSheet();
 				}}
 			/>
 		);

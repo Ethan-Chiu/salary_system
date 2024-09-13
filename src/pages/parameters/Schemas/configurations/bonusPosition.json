@@ -1,8 +1,0 @@
-{
-	"position": {
-		"type": "number"
-	},
-	"multiplier": {
-		"type": "number"
-	}
-}
