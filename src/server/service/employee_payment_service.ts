@@ -59,6 +59,15 @@ export class EmployeePaymentService {
 		return employeePayment;
 	}
 
+	async getEmployeePaymentByEmpNo(emp_no: string): Promise<EmployeePayment | null> {
+		const employeePayment = await EmployeePayment.findOne({
+			where: {
+				emp_no: emp_no,
+			},
+		});
+		return employeePayment;
+	}
+
 	async getCurrentEmployeePayment(
 		period_id: number
 	): Promise<EmployeePayment[]> {

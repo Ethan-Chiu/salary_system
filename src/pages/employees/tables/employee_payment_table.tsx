@@ -4,6 +4,18 @@ import { api } from "~/utils/api";
 import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
 
+import {
+	useContext,
+	createContext,
+	useEffect,
+	useState,
+	createRef,
+} from "react";
+import employeePaymentRefetchContext from "../components/context/employee_payment_context";
+import { Button } from "~/components/ui/button";
+import { useQueryClient } from "@tanstack/react-query";
+import { employeeToolbarFunctionsContext } from "../components/function_sheet/employee_functions_context";
+
 const columns = (t: I18nType) =>
 	[
 		"emp_no",
@@ -31,8 +43,13 @@ const columns = (t: I18nType) =>
 	});
 
 export function EmployeePaymentTable({ period_id }: any) {
-	const { isLoading, isError, data, error } =
-		api.employeePayment.getCurrentEmployeePayment.useQuery({ period_id });
+
+	const [val, setVal] = useState(true);
+
+	const { isLoading, isFetched, isError, data, error, refetch, isStale, status } =
+		api.employeePayment.getCurrentEmployeePayment.useQuery({ period_id }, {
+			staleTime: 10000
+		});
 
 	const { t } = useTranslation(["common"]);
 
@@ -44,8 +61,31 @@ export function EmployeePaymentTable({ period_id }: any) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-  if (data) {
-    return <DataTable columns={columns(t)} data={data} />;
-  }
-  return <div/>
+	const refetch_button = createRef<HTMLButtonElement>();
+
+
+	if (data) {
+		return (
+			<>
+				<Button className="" onClick={() => {
+					// refetch();
+				}} ref={refetch_button}>
+						refetch
+				</Button>
+				<employeePaymentRefetchContext.Provider
+					value={() => {
+						// if (isStale) refetch();
+						refetch();
+					}}
+				>
+					{isFetched ? (
+						<DataTable columns={columns(t)} data={data} />
+					) : (
+						<LoadingSpinner />
+					)}
+				</employeePaymentRefetchContext.Provider>
+			</>
+		);
+	}
+	return <div />;
 }
