@@ -87,22 +87,22 @@ export class EmployeeBonusService {
         return result;
     }   
     async getCandidateEmployeeBonus(period_id: number, bonus_type: BonusTypeEnumType) {
-        const all_emp_no_list = await this.getEmployeeBonusByBonusType(period_id,bonus_type);
+        const all_emp_bonus_list = await this.getEmployeeBonusByBonusType(period_id,bonus_type);
         const bonus_work_type_service = container.resolve(BonusWorkTypeService);
         const bonus_position_service = container.resolve(BonusPositionService);
         const bonus_position_type_service = container.resolve(BonusPositionTypeService);
         const bonus_seniority_service = container.resolve(BonusSeniorityService);
         const bonus_department_service = container.resolve(BonusDepartmentService);
-        // const bonus_work_type_list = await bonus_work_type_service.getBonusWorkTypeByBonusType(period_id,bonus_type);
-        // const bonus_position_list = await bonus_position_service.getBonusPositionByBonusType(period_id,bonus_type);
-        // const bonus_position_type_list = await bonus_position_type_service.getBonusPositionTypeByBonusType(period_id,bonus_type);
-        // const bonus_seniority_list = await bonus_seniority_service.getBonusSeniorityByBonusType(period_id,bonus_type);
-        // const bonus_department_list = await bonus_department_service.getBonusDepartmentByBonusType(period_id,bonus_type);
+        const bonus_work_type_list = await bonus_work_type_service.getBonusWorkTypeByBonusType(period_id,bonus_type);
+        const bonus_position_list = await bonus_position_service.getBonusPositionByBonusType(period_id,bonus_type);
+        const bonus_position_type_list = await bonus_position_type_service.getBonusPositionTypeByBonusType(period_id,bonus_type);
+        const bonus_seniority_list = await bonus_seniority_service.getBonusSeniorityByBonusType(period_id,bonus_type);
+        const bonus_department_list = await bonus_department_service.getBonusDepartmentByBonusType(period_id,bonus_type);
         const employee_data_service = container.resolve(EmployeeDataService);
-        all_emp_no_list.forEach((emp_bonus) => {
-            const employee_data = employee_data_service.getEmployeeDataByEmpNo(emp_bonus.emp_no);
-
+        const candidatelist = all_emp_bonus_list.filter(async (emp) => {
+            let employee_data = await employee_data_service.getEmployeeDataByEmpNo(emp.emp_no);
         })
+        
     }
     async deleteEmployeeBonus(id: number) {
         const result = await EmployeeBonus.destroy({

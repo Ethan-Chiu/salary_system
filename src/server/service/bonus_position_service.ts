@@ -48,7 +48,16 @@ export class BonusPositionService {
 		})
 		return bonusPosition;
 	}
-
+	async getMultiplier(period_id: number, bonus_type: BonusTypeEnumType, position: number): Promise<number | undefined> {
+        const multiplier = (await BonusPosition.findOne({
+            where: {
+                period_id: period_id,
+                bonus_type: bonus_type,
+				position: position
+            }
+        }))?.multiplier
+        return multiplier
+    }
 	async getAllBonusPosition(): Promise<BonusPosition[] | null> {
 		const bonusPosition = await BonusPosition.findAll();
 		return bonusPosition;

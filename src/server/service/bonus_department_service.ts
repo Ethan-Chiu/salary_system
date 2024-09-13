@@ -29,7 +29,16 @@ export class BonusDepartmentService {
 		});
 		return newData;
 	}
-
+	async getMultiplier(period_id: number, bonus_type: BonusTypeEnumType, department: number): Promise<number | undefined> {
+        const multiplier = (await BonusDepartment.findOne({
+            where: {
+                period_id: period_id,
+                bonus_type: bonus_type,
+				department: department
+            }
+        }))?.multiplier
+        return multiplier
+    }
 	async getBonusDepartmentById(id: number): Promise<BonusDepartment | null> {
 		const bonusDepartment = await BonusDepartment.findOne({
 			where: {

@@ -38,7 +38,16 @@ export class BonusSeniorityService {
 		});
 		return bonusSeniority;
 	}
-
+	async getMultiplier(period_id: number, bonus_type: BonusTypeEnumType, seniority: number): Promise<number | undefined> {
+        const multiplier = (await BonusSeniority.findOne({
+            where: {
+                period_id: period_id,
+                bonus_type: bonus_type,
+				seniority: seniority
+            }
+        }))?.multiplier
+        return multiplier
+    }
 	async getBonusSeniorityByBonusType(period_id: number, bonus_type: BonusTypeEnumType): Promise<BonusSeniority[] | null> {
 		const bonusSeniority = await BonusSeniority.findAll({
 			where: {

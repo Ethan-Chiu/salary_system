@@ -51,7 +51,16 @@ export class BonusWorkTypeService {
         })
 		return bonusWorkType;
 	}
-
+    async getMultiplier(period_id: number, bonus_type: BonusTypeEnumType, work_type: string): Promise<number | undefined> {
+        const multiplier = (await BonusWorkType.findOne({
+            where: {
+                period_id: period_id,
+                bonus_type: bonus_type,
+                work_type: work_type
+            }
+        }))?.multiplier
+        return multiplier
+    }
 	async getAllBonusWorkType(): Promise<BonusWorkType[] | null> {
 		const bonusWorkType = await BonusWorkType.findAll();
 		return bonusWorkType;
