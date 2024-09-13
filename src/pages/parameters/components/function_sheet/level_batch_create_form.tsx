@@ -2,6 +2,7 @@ import AutoForm from "~/components/ui/auto-form";
 import * as z from "zod";
 import { Button } from "~/components/ui/button";
 import { useState } from "react";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
 import {
 	Table,
@@ -35,6 +36,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { Separator } from "~/components/ui/separator";
 
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
@@ -62,7 +64,9 @@ export function LevelBatchCreateForm<SchemaType extends z.AnyZodObject>({
 	const isList = Array.isArray(data);
 	const onlyOne = !(isList && data.length > 1);
 
-	const [selectedData, setSelectedData] = useState((defaultValue) ?? (isList ? null : data));
+	const [selectedData, setSelectedData] = useState(
+		defaultValue ?? (isList ? null : data)
+	);
 
 	const [formValues, setFormValues] = useState<
 		Partial<z.infer<z.AnyZodObject>>
@@ -115,112 +119,101 @@ export function LevelBatchCreateForm<SchemaType extends z.AnyZodObject>({
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-
-    const schema = z.object({
-        levels: z.array(
+	const schema = z.object({
+		levels: z.array(
 			z.object({
-				level: zc.number(),
+				level: z.coerce.number(),
 			})
-        ),
-      });
-      
-      type FormValues = z.infer<typeof schema>;
-      
-      function DynamicForm() {
-        const { control, handleSubmit, register, reset } = useForm<FormValues>({
-          resolver: zodResolver(schema),
-          defaultValues: {
-            rows: [], // Initial row
-          },
-        });
-      
-        const { fields, append, remove } = useFieldArray({
-          control,
-          name: "rows",
-        });
-      
-        const onSubmit = (data: FormValues) => {
-          console.log("Form Data:", data);
-        };
-        return (
-            <>
-            <br/>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="space-y-4">
-                {fields.map((field, index) => (
-                  <div className="flex items-center gap-8" key={field.id}>
-                    {/* Name Input */}
-                    <div className="flex-grow">
-                      <Label> {t("table.level")} </Label>
-                    </div>
-                    {/* Age Input */}
-                    <div className="flex-grow">
-                      <Input
-                        type="number"
-                        {...register(`rows.${index}.age` as const)}
-                        placeholder="Age"
-                      />
-                      <Input
-                        type="number"
-                        {...register(`rows.${index}.name` as const)}
-                        placeholder="Name"
-                      />
-                    </div>
-                    {/* Delete Button */}
-                    <button
-                      type="button"
-                      onClick={() => remove(index)}
-                      className="text-red-500"
-                    >
-                      <Trash2 className="h-5 w-5" />
-                    </button>
-                  </div>
-                ))}
+		),
+	});
 
-<div>
-					<div className="flex justify-between">
-						<Button
+	type FormValues = z.infer<typeof schema>;
+
+	function DynamicForm() {
+		const { control, handleSubmit, register } = useForm<FormValues>({
+			resolver: zodResolver(schema),
+			defaultValues: {
+				levels: [], // Start with an empty array
+			},
+		});
+
+		const { fields, append, remove } = useFieldArray({
+			control,
+			name: "levels",
+		});
+
+		const onSubmit = (data: FormValues) => {
+			data.levels.map((l) => {
+				createFunction.mutate(l);
+			})
+		};
+
+		return (
+			<>
+			  <Separator />
+			  <br />
+			  <form onSubmit={handleSubmit(onSubmit)}>
+				<div className="flex flex-col h-[74vh]"> {/* Set the height for the form */}
+				  
+				  {/* Scrollable Area */}
+				  <div className="flex-grow overflow-y-auto space-y-4 px-4"> 
+					{fields.map((field, index) => (
+					  <div className="flex items-center gap-4 w-full" key={field.id}>
+						{/* Level Input */}
+						<div className="flex flex-row items-center justify-between w-full gap-4">
+						  <Label className="min-w-[50px]"> {t("table.level")} </Label>
+						  <Input
+							className="flex-grow"
+							type="number"
+							{...register(`levels.${index}.level` as const)}
+						  />
+						  <button
 							type="button"
-							variant={"outline"}
-							onClick={() => {
-									closeSheet();
-							}}
-						>
-							{t("button.cancel")}
-						</Button>
-
-						<Button type="submit">
-							{t("button.batch_create")}
-						</Button>
-					</div>
+							onClick={() => remove(index)}
+							className="text-red-500"
+						  >
+							<Trash2 className="h-5 w-5" />
+						  </button>
+						</div>
+					  </div>
+					))}
+		  
+					{/* Add Row Button (Scrolls with the rows) */}
+					<Button
+					  variant={"outline"}
+					  onClick={() => append({ level: 0 })}
+					  className="w-full"
+					>
+					  {t("button.create")}
+					</Button>
+				  </div>
+		  
+				  {/* Fixed Cancel and Submit Buttons (Outside of Scrollable Area) */}
+				  <div className="flex justify-between px-4 py-4 bg-white">
+					{/* Cancel Button */}
+					<Button
+					  variant={"destructive"}
+					  onClick={() => closeSheet()}
+					>
+					  {t("button.cancel")}
+					</Button>
+					{/* Submit Button */}
+					<Button type="submit">
+					  {t("button.batch_create")}
+					</Button>
+				  </div>
 				</div>
-
-                {/* Add Row Button */}
-                <button
-                  type="button"
-                  className="btn-secondary"
-                  onClick={() => append({ name: "", age: 0 })}
-                >
-                  Add Row
-                </button>
-              </div>
-              {/* Submit Button */}
-              <div className="mt-4">
-                <button type="submit" className="btn-primary">
-                  Submit
-                </button>
-              </div>
-            </form>
-            </>
-          );
-        }
-
-
+			  </form>
+			</>
+		  );
+		  
+		  
+	}
 
 	// Create or update an entry
 	return (
 		<>
-            <DynamicForm />
+			<DynamicForm />
 			{/* Submit change dialog */}
 			<Dialog open={openDialog} onOpenChange={setOpenDialog}>
 				<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
