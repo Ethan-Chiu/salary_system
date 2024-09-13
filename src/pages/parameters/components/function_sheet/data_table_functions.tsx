@@ -1,6 +1,6 @@
 import { cn } from "~/lib/utils";
 import { useState } from "react";
-import { type LucideIcon, PenSquare, Plus, PlusSquare, Trash2 } from "lucide-react";
+import { type LucideIcon, PenSquare, Plus, PlusSquare, Trash2, Copy } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
 	DropdownMenu,
@@ -22,6 +22,7 @@ import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Button } from "~/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { ParameterForm } from "./parameter_form";
+import { LevelBatchCreateForm } from "./level_batch_create_form";
 import { type TableEnum, getTableNameKey } from "../context/data_table_enum";
 import { getSchema } from "../../schemas/get_schemas";
 import { api } from "~/utils/api";
@@ -33,7 +34,7 @@ interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
 }
 
-export type FunctionMode = "create" | "update" | "delete" | "none";
+export type FunctionMode = "create" | "batch_create" | "update" | "delete" | "none";
 
 export function DataTableFunctions({
 	tableType,
@@ -52,7 +53,7 @@ export function DataTableFunctions({
 			return <></>;
 		}
 		else {
-			const levelOptions: Array<z.ZodLiteral<number>> = 
+			const levelOptions: Array<z.ZodLiteral<number>> =
 				(data as Level[]).map((d: Level) => {
 					return z.literal(d.level);
 				})
@@ -84,14 +85,19 @@ export function DataTableFunctions({
 						<DropdownMenuLabel>{t("others.functions")}</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<CompTriggerItem
-							mode={"update"}
-							itemName={t("button.update")}
-							icon={PenSquare}
-						/>
-						<CompTriggerItem
 							mode={"create"}
 							itemName={t("button.create")}
 							icon={Plus}
+						/>
+						{tableType == "TableLevel" && <CompTriggerItem
+							mode={"batch_create"}
+							itemName={t("button.batch_create")}
+							icon={Copy}
+						/>}
+						<CompTriggerItem
+							mode={"update"}
+							itemName={t("button.update")}
+							icon={PenSquare}
 						/>
 						<CompTriggerItem
 							mode={"delete"}
@@ -104,20 +110,28 @@ export function DataTableFunctions({
 				<SheetContent className="w-[50%]">
 					<SheetHeader>
 						<SheetTitle>
-							{`${t(`button.${mode}`)!}${t( "button.form" )} (${t(getTableNameKey(tableType))})`}
+							{`${t(`button.${mode}`)!}${t("button.form")} (${t(getTableNameKey(tableType))})`}
 						</SheetTitle>
 						<SheetDescription>
 							{modeDescription(mode)}
 						</SheetDescription>
 					</SheetHeader>
-					<ScrollArea className="h-[85%] w-full">
-						<ParameterForm
-							formSchema={schema}
+					{mode == "batch_create" ?
+						<LevelBatchCreateForm
+							formSchema={z.object({ content: z.array(schema) })}
 							mode={mode}
 							closeSheet={() => setOpen(false)}
 						/>
-						<ScrollBar orientation="horizontal" />
-					</ScrollArea>
+						:
+						<ScrollArea className="h-full w-full">
+							<ParameterForm
+								formSchema={schema}
+								mode={mode}
+								closeSheet={() => setOpen(false)}
+							/>
+							<ScrollBar orientation="horizontal" />
+						</ScrollArea>
+					}
 				</SheetContent>
 			</Sheet>
 		</div>

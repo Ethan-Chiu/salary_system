@@ -104,7 +104,7 @@ export function DataTableFunctions({
 							{modeDescription(mode)}
 						</SheetDescription>
 					</SheetHeader>
-					<ScrollArea className="h-[85%] w-full">
+					<ScrollArea className="h-full w-full">
 						<EmployeeForm
 							formSchema={getSchema(tableType)!}
 							mode={mode}
