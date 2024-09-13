@@ -24,99 +24,74 @@ import {
 } from "~/components/ui/select";
 import { FATable } from "./test_FullAttendance";
 
-export function SelectTable(props: { updateStateFunction: Function }) {
-	return (
-		<div className="m-4">
-			<Select onValueChange={(value) => props.updateStateFunction(value)}>
-				<SelectTrigger className="w-[180px]">
-					<SelectValue defaultValue={"OT"} placeholder={"加班費"}/>
-				</SelectTrigger>
-				<SelectContent>
-					<SelectGroup>
-						<SelectLabel>Table</SelectLabel>
-						<SelectItem value="OT">加班費</SelectItem>
-						<SelectItem value="LID">勞保扣除額</SelectItem>
-						<SelectItem value="HID">健保扣除額</SelectItem>
-						<SelectItem value="GS">應發底薪</SelectItem>
-						<SelectItem value="LD">請假扣款</SelectItem>
-						<SelectItem value="FA">全勤獎金</SelectItem>
-						<SelectItem value="GID">團保費代扣</SelectItem>
-					</SelectGroup>
-				</SelectContent>
-			</Select>
-		</div>
-	);
-}
-
-export function SelectEMP(props: { updateStateFunction: Function }) {
-	return (
-		<div className="m-4">
-			<Select onValueChange={(value) => props.updateStateFunction(value)}>
-				<SelectTrigger className="w-[180px]">
-					<SelectValue defaultValue={"F103007"} placeholder={"F103007"}/>
-				</SelectTrigger>
-				<SelectContent>
-					<SelectGroup>
-						<SelectLabel>員工</SelectLabel>
-						<SelectItem value="F103007">F103007</SelectItem>
-						<SelectItem value="U094001">U094001</SelectItem>
-					</SelectGroup>
-				</SelectContent>
-			</Select>
-		</div>
-	);
-}
+import ExcelJS from 'exceljs';
 
 const TEST: NextPageWithLayout = () => {
-	// const EMP = "F103007";
-	const [EMP, setEMP] = useState("F103007");
-	const [chosenTable, setChosenTable] = useState("OT");
+	const [data, setData] = useState<any[][]>([]);
+	const [error, setError] = useState<string | null>(null);
+  
+	const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+	  const file = event.target.files?.[0];
+	  if (!file) return;
+  
+	  try {
+		// Read the file as ArrayBuffer
+		const arrayBuffer = await file.arrayBuffer();
+  
+		// Create a new workbook
+		const workbook = new ExcelJS.Workbook();
+		await workbook.xlsx.load(arrayBuffer);
+  
+		// Access the first sheet
+		const sheet = workbook.worksheets[0];
+		const rows: any[][] = [];
+  
+		// Extract data from the sheet
+		sheet!.eachRow({ includeEmpty: true }, (row: any) => {
+		  rows.push(row.values);
+		});
+  
+		// Update state with the extracted data
+		setData(rows);
+	  } catch (error) {
+		setError('Error processing file');
+		console.error(error);
+	  }
+	};
+  
 	return (
-		<>
-			<Header title={"TEST"} showOptions />
-			<div className="m-4 flex">
-				<SelectTable updateStateFunction={setChosenTable} />
-				<SelectEMP updateStateFunction={setEMP} />
-			</div>
-			<div className="m-6">
-			{chosenTable === "OT" ? (
-				<OvertimeTable EMP={EMP}  />
-			) : chosenTable === "LID" ? (
-				<LIDTable EMP={EMP}  />
-			) : chosenTable === "HID" ? (
-				<HIDTable EMP={EMP} />
-			) : chosenTable === "GS" ? (
-				<GSTable EMP={EMP} />
-			) : chosenTable === "LD" ? (
-				<LDTable EMP={EMP} period={113} />
-			) : chosenTable === "FA" ? (
-				<FATable EMP={EMP} period={113} />	
-			) : chosenTable === "GID" ? (
-				<GIDTable EMP={EMP} period={113} />	
-			) : (
-				<></>
-			)}
-			</div>
-			
-			{/* <EHR_OT period={113} emp_no_list={["F103007"]}/> */}
-
-			{/* <OvertimeTable />
-		<Separator />
-
-		<LIDTable />
-		<Separator />
-
-		<HIDTable EMP = {EMP}/>
-		<Separator />
-
-		<GSTable EMP = {EMP}/>
-		<Separator />
-
-		<LDTable EMP = {EMP} period = {113} />
-		<Separator /> */}
-		</>
+		<div>
+        <h1>Upload and Read Excel File</h1>
+        <input type="file" accept=".xlsx" onChange={handleFileUpload} />
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <div style={{ overflowX: 'auto', maxHeight: '600px', border: '1px solid #ddd' }}>
+          <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+            <thead>
+              <tr>
+                {/* Assuming the first row contains headers */}
+                {data[0] && data[0].map((header: any, index: number) => (
+                  <th key={index} style={{ border: '1px solid #ddd', padding: '8px' }}>
+                    {header}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {data.slice(1).map((row: any, rowIndex: number) => (
+                <tr key={rowIndex}>
+                  {row.map((cell: any, cellIndex: number) => (
+                    <td key={cellIndex} style={{ border: '1px solid #ddd', padding: '8px' }}>
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
 	);
-};
+  };
 
 TEST.getLayout = function getLayout(page: React.ReactElement) {
 	return (
