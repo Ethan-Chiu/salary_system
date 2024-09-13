@@ -12,6 +12,11 @@ import { accessiblePages } from "../types/access_page_type";
 import { AccessService } from "~/server/service/access_service";
 import { HolidaysTypeService } from "~/server/service/holidays_type_service";
 import { Transaction } from "~/server/database/entity/SALARY/transaction";
+import { BonusDepartment } from "~/server/database/entity/SALARY/bonus_department";
+import { BonusPosition } from "~/server/database/entity/SALARY/bonus_position";
+import { BonusPositionType } from "~/server/database/entity/SALARY/bonus_position_type";
+import { BonusSeniority } from "~/server/database/entity/SALARY/bonus_seniority";
+import { BonusWorkType } from "~/server/database/entity/SALARY/bonus_work_type";
 
 export const debugRouter = createTRPCRouter({
 	syncDb: publicProcedure
@@ -66,7 +71,41 @@ export const debugRouter = createTRPCRouter({
 				};
 			}
 		}),
-
+	syncBonus: publicProcedure
+		.input(
+			z.object({
+				force: z.boolean().nullable(),
+				alter: z.boolean().nullable(),
+			})
+		)
+		.query(async ({ input }) => {
+			const Bonus_list = [
+				BonusDepartment,
+				BonusPosition,
+				BonusPositionType,
+				BonusSeniority,
+				BonusWorkType,
+			];
+			Bonus_list.forEach(async (model) => {
+				model = BonusWorkType
+				try {
+					if (input.force) {
+						await model.sync({ force: true });
+					} else if (input.alter) {
+						await model.sync({ alter: true });
+					}
+					await model.sync();
+					
+				} catch (e) {
+					return {
+						msg: `error ${(e as Error).message}`,
+					};
+				}
+			})
+			return {
+				msg: "All models were synchronized successfully.",
+			};
+		}),
 	validate: publicProcedure.query(async () => {
 		const database = container.resolve(Database).connection;
 		try {

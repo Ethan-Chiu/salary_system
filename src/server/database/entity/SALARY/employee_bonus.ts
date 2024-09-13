@@ -17,6 +17,7 @@ export class EmployeeBonus extends Model<
 	declare period_id: number;
     declare bonus_type: BonusTypeEnumType;
 	declare emp_no: string;
+	declare special_multiplier: number;
 	declare multiplier: number|null;
 	declare fixed_amount: number|null;
 	declare budget_amount: number|null;
@@ -51,6 +52,10 @@ export function initEmployeeBonus(sequelize: Sequelize) {
 			emp_no: {
 				type: new DataTypes.STRING(32),
 				allowNull: false,
+			},
+			special_multiplier: {
+				type: DataTypes.FLOAT,
+				allowNull: true,
 			},
 			multiplier: {
 				type: DataTypes.FLOAT,

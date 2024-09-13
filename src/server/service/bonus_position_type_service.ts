@@ -7,6 +7,7 @@ import {
 	updateBonusPositionTypeService,
 } from "../api/types/parameters_input_type";
 import { select_value } from "./helper_function";
+import { BonusTypeEnumType } from "../api/types/bonus_type_enum";
 
 @injectable()
 export class BonusPositionTypeService {
@@ -41,9 +42,23 @@ export class BonusPositionTypeService {
 		});
 		return bonusPositionType;
 	}
-
-	async getCurrentBonusPositionType(): Promise<BonusPositionType[] | null> {
-		const bonusPositionType = this.getAllBonusPositionType();
+	async getMultiplier(period_id: number, bonus_type: BonusTypeEnumType, position_type: number): Promise<number | undefined> {
+        const multiplier = (await BonusPositionType.findOne({
+            where: {
+                period_id: period_id,
+                bonus_type: bonus_type,
+				position_type: position_type
+            }
+        }))?.multiplier
+        return multiplier
+    }
+	async getBonusPositionTypeByBonusType(period_id: number, bonus_type: BonusTypeEnumType): Promise<BonusPositionType[] | null> {
+		const bonusPositionType = await BonusPositionType.findAll({
+			where: {
+				period_id: period_id,
+				bonus_type: bonus_type,
+			},
+		})
 		return bonusPositionType;
 	}
 
