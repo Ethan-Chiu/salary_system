@@ -279,7 +279,8 @@ export class TransactionService {
 				other_addition_tax,
 				special_leave_deduction,
 				other_deduction_tax,
-				shift_allowance
+				shift_allowance,
+				professional_cert_allowance
 			);
 		const group_insurance_deduction =
 			await calculateService.getGroupInsuranceDeduction(
@@ -389,7 +390,7 @@ export class TransactionService {
 
 		const income_tax_deduction =
 			await calculateService.getIncomeTaxDeduction(period_id, emp_no);
-		const l_r_self = discounted_employee_payment_fe!.l_r_self;
+		const l_r_self = await calculateService.getLRSelf(discounted_employee_payment_fe);
 		const parking_fee = await calculateService.getParkingFee(
 			period_id,
 			emp_no
@@ -598,6 +599,7 @@ export class TransactionService {
 			where: {
 				period_id: period_id,
 			},
+			order: [["emp_no", "ASC"]],
 		});
 		return transactions;
 	}

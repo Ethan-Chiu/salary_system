@@ -17,6 +17,7 @@ import { BonusPosition } from "~/server/database/entity/SALARY/bonus_position";
 import { BonusPositionType } from "~/server/database/entity/SALARY/bonus_position_type";
 import { BonusSeniority } from "~/server/database/entity/SALARY/bonus_seniority";
 import { BonusWorkType } from "~/server/database/entity/SALARY/bonus_work_type";
+import { SalaryIncomeTax } from "~/server/database/entity/SALARY/salary_income_tax";
 
 export const debugRouter = createTRPCRouter({
 	syncDb: publicProcedure
@@ -84,10 +85,10 @@ export const debugRouter = createTRPCRouter({
 				BonusPosition,
 				BonusPositionType,
 				BonusSeniority,
+				SalaryIncomeTax,
 				BonusWorkType,
 			];
 			Bonus_list.forEach(async (model) => {
-				model = BonusWorkType
 				try {
 					if (input.force) {
 						await model.sync({ force: true });
