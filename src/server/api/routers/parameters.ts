@@ -13,6 +13,7 @@ import {
 	createInsuranceRateSettingAPI,
 	createLevelAPI,
 	createPerformanceLevelAPI,
+	createSalaryIncomeTaxAPI,
 	createTrustMoneyAPI,
 	updateAttendanceSettingAPI,
 	updateBankSettingAPI,
@@ -24,6 +25,7 @@ import {
 	updateInsuranceRateSettingAPI,
 	updateLevelAPI,
 	updatePerformanceLevelAPI,
+	updateSalaryIncomeTaxAPI,
 	updateTrustMoneyAPI,
 } from "../types/parameters_input_type";
 import { BankSettingService } from "~/server/service/bank_setting_service";
@@ -42,6 +44,7 @@ import { TrustMoneyService } from "~/server/service/trust_money_service";
 import { createLevelRangeAPI, updateLevelRangeAPI } from "../types/level_range_type";
 import { LevelRangeMapper } from "~/server/database/mapper/level_range_mapper";
 import { roundProperties } from "~/server/database/mapper/helper_function";
+import { SalaryIncomeTaxService } from "~/server/service/salary_income_tax_service";
 
 export const parametersRouter = createTRPCRouter({
 	createBankSetting: publicProcedure
@@ -270,17 +273,7 @@ export const parametersRouter = createTRPCRouter({
 			return newdata;
 		}),
 
-	getCurrentBonusDepartment: publicProcedure.query(async () => {
-		const bonusDepartmentService = container.resolve(
-			BonusDepartmentService
-		);
-		const bonusDepartment =
-			await bonusDepartmentService.getCurrentBonusDepartment();
-		if (bonusDepartment == null) {
-			throw new BaseResponseError("BonusDepartment does not exist");
-		}
-		return bonusDepartment;
-	}),
+	
 
 	getAllBonusDepartment: publicProcedure.query(async () => {
 		const bonusDepartmentService = container.resolve(
@@ -327,16 +320,6 @@ export const parametersRouter = createTRPCRouter({
 			return newdata;
 		}),
 
-	getCurrentBonusPosition: publicProcedure.query(async () => {
-		const bonusPositionService = container.resolve(BonusPositionService);
-		const bonusPosition =
-			await bonusPositionService.getCurrentBonusPosition();
-		if (bonusPosition == null) {
-			throw new BaseResponseError("BonusPosition does not exist");
-		}
-		return bonusPosition;
-	}),
-
 	getAllBonusPosition: publicProcedure.query(async () => {
 		const bonusPositionService = container.resolve(BonusPositionService);
 		const bonusPosition = await bonusPositionService.getAllBonusPosition();
@@ -377,17 +360,7 @@ export const parametersRouter = createTRPCRouter({
 			return newdata;
 		}),
 
-	getCurrentBonusPositionType: publicProcedure.query(async () => {
-		const bonusPositionTypeService = container.resolve(
-			BonusPositionTypeService
-		);
-		const bonusPositionType =
-			await bonusPositionTypeService.getCurrentBonusPositionType();
-		if (bonusPositionType == null) {
-			throw new BaseResponseError("BonusPositionType does not exist");
-		}
-		return bonusPositionType;
-	}),
+	
 
 	getAllBonusPositionType: publicProcedure.query(async () => {
 		const bonusPositionTypeService = container.resolve(
@@ -434,15 +407,7 @@ export const parametersRouter = createTRPCRouter({
 			return newdata;
 		}),
 
-	getCurrentBonusSeniority: publicProcedure.query(async () => {
-		const bonusSeniorityService = container.resolve(BonusSeniorityService);
-		const bonusSeniority =
-			await bonusSeniorityService.getCurrentBonusSeniority();
-		if (bonusSeniority == null) {
-			throw new BaseResponseError("BonusSeniority does not exist");
-		}
-		return bonusSeniority;
-	}),
+	
 
 	getAllBonusSeniority: publicProcedure.query(async () => {
 		const bonusSeniorityService = container.resolve(BonusSeniorityService);
@@ -708,4 +673,43 @@ export const parametersRouter = createTRPCRouter({
 			const trustMoneyService = container.resolve(TrustMoneyService);
 			await trustMoneyService.deleteTrustMoney(input.id);
 		}),
+	createSalaryIncomeTax: publicProcedure
+		.input(createSalaryIncomeTaxAPI)
+		.mutation(async ({ input }) => {
+			const salaryIncomeTaxService = container.resolve(
+				SalaryIncomeTaxService
+			);
+			const newdata = await salaryIncomeTaxService.createSalaryIncomeTax(input);
+			return newdata;
+		}),
+	updateSalaryIncomeTax: publicProcedure
+		.input(updateSalaryIncomeTaxAPI)
+		.mutation(async ({ input }) => {
+			const salaryIncomeTaxService = container.resolve(
+				SalaryIncomeTaxService
+			);
+			const newdata = await salaryIncomeTaxService.updateSalaryIncomeTax(input);
+			return newdata;
+		}),
+
+	deleteSalaryIncomeTax: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.mutation(async (opts) => {
+			const { input } = opts;
+			const salaryIncomeTaxService = container.resolve(
+				SalaryIncomeTaxService
+			);
+			await salaryIncomeTaxService.deleteSalaryIncomeTax(input.id);
+		}),
+
+	getAllSalaryIncomeTax: publicProcedure.query(async () => {
+		const salaryIncomeTaxService = container.resolve(
+			SalaryIncomeTaxService
+		);
+		const salaryIncomeTax = await salaryIncomeTaxService.getAllSalaryIncomeTax();
+		if (salaryIncomeTax == null) {
+			throw new BaseResponseError("SalaryIncomeTax does not exist");
+		}
+		return salaryIncomeTax;
+	}),
 });

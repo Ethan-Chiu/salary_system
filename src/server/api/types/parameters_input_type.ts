@@ -200,6 +200,17 @@ export const createPerformanceLevelService = PerformanceLevel;
 export const updatePerformanceLevelAPI = PerformanceLevel.merge(Id).partial();
 export const updatePerformanceLevelService =
 	PerformanceLevel.merge(Id).partial();
+
+const SalaryIncomeTax = z.object({
+	salary_start: z.number(),
+	salary_end: z.number(),
+	dependent: z.number(),
+	tax_amount: z.number(),
+});
+export const createSalaryIncomeTaxAPI = SalaryIncomeTax;
+export const createSalaryIncomeTaxService = SalaryIncomeTax;
+export const updateSalaryIncomeTaxAPI = SalaryIncomeTax.merge(Id).partial();
+export const updateSalaryIncomeTaxService = SalaryIncomeTax.merge(Id).partial();
 //MARK:trust
 const TrustMoney = z.object({
 	position: z.number(),
