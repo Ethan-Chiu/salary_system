@@ -459,7 +459,8 @@ export class CalculateService {
 		insurance_rate_setting: InsuranceRateSetting,
 		full_attendance_bonus: number,
 		shift_allowance: number,
-		gross_salary: number
+		gross_salary: number,
+		professional_cert_allowance: number
 	): Promise<number> {
 		// UPDATE 薪資查詢 SET 薪資查詢.請假扣款 = GetLeaveMoney(薪資查詢!工作類別,薪資查詢!工作形態,薪資查詢!應發底薪,薪資查詢!補助津貼+薪資查詢!輪班津貼+薪資查詢!全勤獎金+薪資查詢!專業証照津貼,薪資查詢!事假時數,薪資查詢!病假時數)
 		// 薪資查詢.不休假代金 = IIf(薪資查詢!工作類別="外籍勞工",round(GetSALARY_RATE()*(薪資查詢!不休假時數*Getnon_leaving_rate()+薪資查詢!不休假補休1時數*Getnon_leaving_rate1()+薪資查詢!不休假補休2時數*Getnon_leaving_rate2()+薪資查詢!不休假補休3時數*Getnon_leaving_rate3()+薪資查詢!不休假補休4時數*Getnon_leaving_rate4()+薪資查詢!不休假補休5時數*Getnon_leaving_rate5()),0),round(薪資查詢!應發底薪/240*(薪資查詢!不休假時數*Getnon_leaving_rate()+薪資查詢!不休假補休1時數*Getnon_leaving_rate1()+薪資查詢!不休假補休2時數*Getnon_leaving_rate2()+薪資查詢!不休假補休3時數*Getnon_leaving_rate3()+薪資查詢!不休假補休4時數*Getnon_leaving_rate4()+薪資查詢!不休假補休5時數*Getnon_leaving_rate5()),0));
@@ -468,7 +469,7 @@ export class CalculateService {
 		// const gross_salary = await this.getGrossSalary(employee_payment, payset);
 		// const shift_allowance = employee_payment.shift_allowance ?? 0;
 		let hourly_fee =
-			(gross_salary + shift_allowance + full_attendance_bonus) / 240;
+			(gross_salary + shift_allowance + full_attendance_bonus + professional_cert_allowance) / 240;
 		interface HolidaysTypeDict {
 			[key: number]: number;
 		}
@@ -655,7 +656,8 @@ export class CalculateService {
 		other_addition_tax: number,
 		special_leave_deduction: number,
 		other_deduction_tax: number,
-		shift_allowance: number
+		shift_allowance: number,
+		professional_cert_allowance: number
 	): Promise<number> {
 		/* 
 			rd("薪資所得扣繳總額") = 
@@ -823,16 +825,16 @@ export class CalculateService {
 		const non_leave_comp_id = holidays_type.find(
 			(h) => h.holidays_name === "不休假"
 		)!.pay_id;
-		const multiplier = holidays_type.find(
-			(h) => h.holidays_name === "不休假"
-		)!.multiplier;
+		// const multiplier = holidays_type.find(
+		// 	(h) => h.holidays_name === "不休假"
+		// )!.multiplier;
 		let non_leave_compensation = 0;
 		holiday_list.map((h) => {
 			if (h.pay_order === non_leave_comp_id) {
-				non_leave_compensation += multiplier * (h.total_hours ?? 0);
+				non_leave_compensation +=  (h.total_hours ?? 0);
 			}
 		});
-		if (employee_data.work_status === FOREIGN) {
+		if (employee_data.work_type === FOREIGN) {
 			return non_leave_compensation*insurance_rate_setting.min_wage_rate;
 		}
 		else{

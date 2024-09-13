@@ -7,6 +7,7 @@ import {
 	updateBonusDepartmentService,
 } from "../api/types/parameters_input_type";
 import { select_value } from "./helper_function";
+import { BonusTypeEnumType } from "../api/types/bonus_type_enum";
 
 @injectable()
 export class BonusDepartmentService {
@@ -38,8 +39,13 @@ export class BonusDepartmentService {
 		return bonusDepartment;
 	}
 
-	async getCurrentBonusDepartment(): Promise<BonusDepartment[] | null> {
-		const bonusDepartment = this.getAllBonusDepartment();
+	async getBonusDepartmentByBonusType(period_id: number, bonus_type: BonusTypeEnumType): Promise<BonusDepartment[] | null> {
+		const bonusDepartment = await BonusDepartment.findAll({
+			where: {
+				period_id: period_id,
+				bonus_type: bonus_type,
+			},
+		})
 		return bonusDepartment;
 	}
 

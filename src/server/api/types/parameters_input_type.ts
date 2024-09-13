@@ -257,6 +257,7 @@ const EmployeeBonus = z.object({
 	period_id: z.number(),
 	bonus_type: BonusTypeEnum,
 	emp_no: z.string(),
+	special_multiplier: z.number(),
 	multiplier: z.number().nullable(),
 	fixed_amount: z.number().nullable(),
 	budget_amount: z.number().nullable(),

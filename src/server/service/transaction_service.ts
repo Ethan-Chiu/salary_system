@@ -251,7 +251,8 @@ export class TransactionService {
 			insurance_rate_setting!,
 			full_attendance_bonus,
 			shift_allowance,
-			gross_salary
+			gross_salary,
+			professional_cert_allowance
 		);
 		const exceed_overtime_pay = await calculateService.getExceedOvertimePay(
 			employee_data!,

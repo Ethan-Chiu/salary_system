@@ -7,6 +7,7 @@ import {
 } from "../api/types/parameters_input_type";
 import { BonusSeniority } from "../database/entity/SALARY/bonus_seniority";
 import { select_value } from "./helper_function";
+import { BonusTypeEnumType } from "../api/types/bonus_type_enum";
 
 @injectable()
 export class BonusSeniorityService {
@@ -38,8 +39,13 @@ export class BonusSeniorityService {
 		return bonusSeniority;
 	}
 
-	async getCurrentBonusSeniority(): Promise<BonusSeniority[] | null> {
-		const bonusSeniority = this.getAllBonusSeniority();
+	async getBonusSeniorityByBonusType(period_id: number, bonus_type: BonusTypeEnumType): Promise<BonusSeniority[] | null> {
+		const bonusSeniority = await BonusSeniority.findAll({
+			where: {
+				period_id: period_id,
+				bonus_type: bonus_type,
+			},
+		})
 		return bonusSeniority;
 	}
 
