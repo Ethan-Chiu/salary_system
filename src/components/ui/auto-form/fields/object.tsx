@@ -29,11 +29,13 @@ export default function AutoFormObject<
 	form,
 	fieldConfig,
 	path = [],
+	dontShowTitle,
 }: {
 	schema: SchemaType | z.ZodEffects<SchemaType>;
 	form: ReturnType<typeof useForm>;
 	fieldConfig?: FieldConfig<z.infer<SchemaType>>;
 	path?: string[];
+	dontShowTitle?: boolean;
 }) {
 	const { shape }: { shape: z.infer<typeof schema> } = getBaseSchema<SchemaType>(schema);
 
