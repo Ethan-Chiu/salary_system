@@ -142,10 +142,11 @@ export function LevelBatchCreateForm<SchemaType extends z.AnyZodObject>({
 			name: "levels",
 		});
 
-		const onSubmit = (data: FormValues) => {
-			data.levels.map((l) => {
-				createFunction.mutate(l);
+		const onSubmit = async(data: FormValues) => {
+			data.levels.map(async(l) => {
+				await createFunction.mutateAsync(l);
 			})
+			closeSheet();
 		};
 
 		return (
@@ -180,6 +181,7 @@ export function LevelBatchCreateForm<SchemaType extends z.AnyZodObject>({
 		  
 					{/* Add Row Button (Scrolls with the rows) */}
 					<Button
+					  type={"button"}
 					  variant={"outline"}
 					  onClick={() => append({ level: 0 })}
 					  className="w-full"
