@@ -33,6 +33,6 @@ export const displayData = (
 	}
 
 
-	if (data === null)		return "無";
+	if (data === null)		return t("table.no_data");
 	if (data === undefined)		return t("table.no_data");
 };

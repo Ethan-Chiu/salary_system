@@ -265,6 +265,11 @@
     "employee_trust": "持股信託",
     "quarterly_bonus": "季獎金",
     "employee_dividends": "員工分紅",
+    "project_bonus": "專案獎金",
+    "q1_bonus": "Q1獎金",
+    "q2_bonus": "Q2獎金",
+    "q3_q4_bonus": "Q3-Q4獎金",
+    "employee_dividends_bonus": "員工分紅獎金",
     "now": "現在",
     "year": "年",
     "month": "月",
@@ -300,7 +305,7 @@
     "well_done_msg": "已確認所有變更，請按更新按鈕",
     "sync_employee_data": "同步員工資料",
     "comfirm_employee_list": "薪資發放名單檢核",
-    "comfirm_data": "確認資料",    
+    "comfirm_data": "確認資料",
     "confirm_parameter": "確認參數",
     "calculate_salary": "薪資計算",
     "calculate_done": "薪資計算完成",
@@ -314,6 +319,6 @@
     "enter_password": "輸入密碼",
     "start_calculate_month_salary": "月薪計算",
     "start_calculate_month_salary_button": "開始計算",
-    "Null": "沒有資料"
+    "transaction": "薪資異動檔"
   }
 }

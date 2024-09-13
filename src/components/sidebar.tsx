@@ -14,6 +14,7 @@ import {
 	CheckSquare,
 	CalendarRange,
 	Contact,
+	CircleDollarSign,
 } from "lucide-react";
 
 import {
@@ -66,7 +67,7 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 						className={cn(
 							buttonVariants({ variant: "ghost" }),
 							props.currentPath === props.navLinkEntry.url &&
-								"bg-muted hover:bg-muted",
+							"bg-muted hover:bg-muted",
 							"w-full items-center justify-center"
 						)}
 					>
@@ -88,7 +89,7 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 			className={cn(
 				buttonVariants({ variant: "ghost" }),
 				props.currentPath === props.navLinkEntry.url &&
-					"bg-muted hover:bg-muted",
+				"bg-muted hover:bg-muted",
 				"w-full justify-start"
 			)}
 		>
@@ -215,6 +216,12 @@ const actionLinks: NavLinkEntry[] = [
 		url: "/parameters",
 		collapsed: false,
 	},
+	{
+		title: "bonus",
+		icon: CircleDollarSign,
+		url: "/bonus",
+		collapsed: false,
+	}
 ];
 
 const settingLinks: NavLinkEntry[] = [
@@ -296,7 +303,7 @@ export function Sidebar({
 									collapseFunction={collapseFunction}
 									expandFunction={expandFunction}
 								>
-                  {t(link.title)}
+									{t(link.title)}
 								</CompNavLinkWrap>
 							))}
 						</div>

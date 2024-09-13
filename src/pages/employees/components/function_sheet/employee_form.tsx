@@ -30,7 +30,7 @@ import { type FunctionMode } from "./data_table_functions";
 import { LoadingSpinner } from "~/components/loading";
 import { type FieldConfig } from "~/components/ui/auto-form/types";
 import { employeeToolbarFunctionsContext } from "./employee_functions_context";
-import GeneralTable from "~/pages/parameters/components/function_sheet/general_table";
+import GeneralTable from "~/pages/employees/components/function_sheet/general_table";
 import { Input } from "~/components/ui/input";
 import { Checkbox } from "~/components/ui/checkbox";
 import periodContext from "~/components/context/period_context";

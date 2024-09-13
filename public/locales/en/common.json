@@ -251,6 +251,11 @@
     "employee_trust": "Employee Trust",
     "quarterly_bonus": "Quarterly Bonus",
     "employee_dividends": "Employee Dividends",
+    "project_bonus": "Project Bonus",
+    "q1_bonus": "Q1 Bonus",
+    "q2_bonus": "Q2 Bonus",
+    "q3_q4_bonus": "Q3-Q4 Bonus",
+    "employee_dividends_bonus": "Employee Dividends Bouns",
     "now": "Now",
     "year": "Year",
     "month": "Month",
@@ -299,6 +304,7 @@
     "reset_password": "Reset Password",
     "enter_password": "Enter Password",
     "start_calculate_month_salary": "Month Salary Calculation",
-    "start_calculate_month_salary_button": "Start"
+    "start_calculate_month_salary_button": "Start",
+    "transaction": "Transaction"
   }
 }

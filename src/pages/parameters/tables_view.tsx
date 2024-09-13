@@ -7,25 +7,14 @@ import {
 import { AttendanceTable } from "./tables/attendance_table";
 import { BankTable } from "./tables/bank_table";
 import { InsuranceRateTable } from "./tables/insurance_rate_table";
-import { BonusTable } from "./tables/bonus_table";
-import { BonusDepartmentTable } from "./tables/bonus_department_table";
-import { BonusPositionTable } from "./tables/bonus_position_table";
-import { BonusPositionTypeTable } from "./tables/bonus_position_type_table";
-import { BonusSeniorityTable } from "./tables/bonus_seniority_table";
 import { cn } from "~/lib/utils";
 import {
 	ActivitySquare,
-	Briefcase,
-	Cake,
-	CircleDollarSign,
 	Clock,
 	CreditCard,
-	Key,
 	Landmark,
 	type LucideIcon,
 	Table,
-	TrendingUp,
-	Users,
 } from "lucide-react";
 import DataTableContextProvider from "./components/context/data_table_context_provider";
 import dataTableContext from "./components/context/data_table_context";
@@ -39,7 +28,6 @@ import {
 import periodContext from "~/components/context/period_context";
 import { LevelRangeTable } from "./tables/level_range_table";
 import { LevelTable } from "./tables/level_table";
-import { PerformanceLevelTable } from "./tables/performance_level_table";
 import { useTranslation } from "react-i18next";
 import { TrustMoneyTable } from "./tables/trust_money_table";
 
@@ -77,31 +65,6 @@ function getTableComponent(
 				component: TrustMoneyTable,
 				icon: Landmark,
 			};
-		case "TableBonusSetting":
-			return {
-				component: BonusTable,
-				icon: CircleDollarSign,
-			};
-		case "TableBonusDepartment":
-			return {
-				component: BonusDepartmentTable,
-				icon: Users,
-			};
-		case "TableBonusPosition":
-			return {
-				component: BonusPositionTable,
-				icon: Briefcase,
-			};
-		case "TableBonusPositionType":
-			return {
-				component: BonusPositionTypeTable,
-				icon: Key,
-			};
-		case "TableBonusSeniority":
-			return {
-				component: BonusSeniorityTable,
-				icon: Cake,
-			};
 		case "TableLevelRange":
 			return {
 				component: LevelRangeTable,
@@ -111,11 +74,6 @@ function getTableComponent(
 			return {
 				component: LevelTable,
 				icon: Table,
-			};
-		case "TablePerformanceLevel":
-			return {
-				component: PerformanceLevelTable,
-				icon: TrendingUp,
 			};
 		default:
 			throw new Error(`Invalid table`);
