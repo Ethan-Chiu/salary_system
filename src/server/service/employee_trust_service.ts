@@ -225,12 +225,12 @@ export class EmployeeTrustService {
 	async autoCalculateEmployeeTrust(
 		period_id: number,
 		emp_no_list: string[]
-	): Promise<void> {
+	): Promise<{message: string}> {
 		const employee_data_service = container.resolve(EmployeeDataService);
 		const trust_money_service = container.resolve(TrustMoneyService);
 		const employee_trust_mapper = container.resolve(EmployeeTrustMapper);
 
-		emp_no_list.forEach(async (emp_no: string) => {
+		const promises = emp_no_list.map(async (emp_no: string) => {
 			const employeeTrust = await this.getCurrentEmployeeTrustByEmpNo(
 				emp_no,
 				period_id
@@ -279,5 +279,9 @@ export class EmployeeTrustService {
 				throw new BaseResponseError("Update error");
 			}
 		});
+
+    await Promise.all(promises);
+
+    return { message: "success" };
 	}
 }

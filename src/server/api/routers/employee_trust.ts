@@ -73,7 +73,7 @@ export const employeeTrustRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const employeeTrustService =
 				container.resolve(EmployeeTrustService);
-			await employeeTrustService.autoCalculateEmployeeTrust(
+			return await employeeTrustService.autoCalculateEmployeeTrust(
 				input.period_id,
 				input.emp_no_list
 			);
