@@ -10,7 +10,7 @@ const dataTableContext = React.createContext<{
 	selectedTableType: BonusTableEnum;
 	setSelectedTableType: (table: BonusTableEnum) => void;
 	selectedBonusType: BonusTypeEnumType;
-	setSelectedBonusType: (table: BonusTypeEnumType) => void;
+	setSelectedBonusType: (bonus_type: BonusTypeEnumType) => void;
 	selectedTable: TableObject | null;
 	setSelectedTable: (table: TableObject | null) => void;
 }>({

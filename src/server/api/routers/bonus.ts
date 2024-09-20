@@ -42,6 +42,57 @@ export const bonusRouter = createTRPCRouter({
             const result = await empBonusService.createEmployeeBonusByEmpNoList(input.period_id, input.bonus_type, all_emp_no_list);
             return result;
         }),
+    getBonusWorkType: publicProcedure
+        .input(z.object({
+            period_id: z.number(),
+            bonus_type: BonusTypeEnum,
+        }))
+        .query(async ({ input }) => {
+            const bonusWorkTypeService = container.resolve(BonusWorkTypeService);
+            const result = await bonusWorkTypeService.getBonusWorkTypeByBonusType(input.period_id, input.bonus_type);
+            return result;
+        }),
+    getBonusSeniority: publicProcedure
+        .input(z.object({
+            period_id: z.number(),
+            bonus_type: BonusTypeEnum,
+        }))
+        .query(async ({ input }) => {
+            const bonusSeniorityService = container.resolve(BonusSeniorityService);
+            const result = await bonusSeniorityService.getBonusSeniorityByBonusType(input.period_id, input.bonus_type);
+            return result;
+        }),
+    getBonusDepartment: publicProcedure
+        .input(z.object({
+            period_id: z.number(),
+            bonus_type: BonusTypeEnum,
+        }))
+        .query(async ({ input }) => {
+            const bonusDepartmentService = container.resolve(BonusDepartmentService);
+            const result = await bonusDepartmentService.getBonusDepartmentByBonusType(input.period_id, input.bonus_type);
+            return result;
+        }),
+    getBonusPositionType: publicProcedure
+        .input(z.object({
+            period_id: z.number(),
+            bonus_type: BonusTypeEnum,
+        }))
+        .query(async ({ input }) => {
+            const bonusPositionTypeService = container.resolve(BonusPositionTypeService);
+            const result = await bonusPositionTypeService.getBonusPositionTypeByBonusType(input.period_id, input.bonus_type);
+            return result;
+        }),
+    getBonusPosition: publicProcedure
+        .input(z.object({
+            period_id: z.number(),
+            bonus_type: BonusTypeEnum,
+        }))
+        .query(async ({ input }) => {
+            const bonusPositionService = container.resolve(BonusPositionService);
+            const result = await bonusPositionService.getBonusPositionByBonusType(input.period_id, input.bonus_type);
+            return result;
+        }),
+    
     createBonusWorkType: publicProcedure
         .input(z.object({
             period_id: z.number(),

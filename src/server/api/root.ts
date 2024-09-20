@@ -10,6 +10,7 @@ import { employeePaymentRouter } from "./routers/employee_payment";
 import { employeeTrustRouter } from "./routers/employee_trust";
 import { calculateRouter } from "./routers/calculate";
 import { transactionRouter } from "./routers/transaction";
+import { bonusRouter } from "./routers/bonus";
 
 /**
  * This is the primary router for your server.
@@ -19,6 +20,7 @@ import { transactionRouter } from "./routers/transaction";
 export const appRouter = createTRPCRouter({
 	debug: debugRouter,
 	parameters: parametersRouter,
+	bonus: bonusRouter,
 	login: loginRouter,
 	access: accessRouter,
 	function: functionRouter,

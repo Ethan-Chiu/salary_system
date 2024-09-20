@@ -8,6 +8,7 @@ import { type BonusPosition } from "~/server/database/entity/SALARY/bonus_positi
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { useTranslation } from "react-i18next";
+import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 export type RowItem = {
 	position: number;
 	multiplier: number;
@@ -70,13 +71,14 @@ export function bonusPositionMapper(
 
 interface BonusPositionTableProps extends TableComponentProps {
 	period_id: number;
+	bonus_type: BonusTypeEnumType;
 	globalFilter?: string;
 	viewOnly?: boolean;
 }
 
-export function BonusPositionTable({ viewOnly }: BonusPositionTableProps) {
+export function BonusPositionTable({ period_id, bonus_type, viewOnly }: BonusPositionTableProps) {
 	const { isLoading, isError, data, error } =
-		api.parameters.getCurrentBonusPosition.useQuery();
+		api.bonus.getBonusPosition.useQuery({ period_id, bonus_type });
 	const filterKey: RowItemKey = "position";
 
 	if (isLoading) {
@@ -97,6 +99,7 @@ export function BonusPositionTable({ viewOnly }: BonusPositionTableProps) {
 				<DataTableWithFunctions
 					columns={bonus_position_columns}
 					data={bonusPositionMapper(data!)}
+					bonusType={bonus_type}
 					filterColumnKey={filterKey}
 				/>
 			) : (

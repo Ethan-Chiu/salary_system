@@ -6,6 +6,7 @@ import { select_value } from "./helper_function";
 import { workerData } from "worker_threads";
 import { BonusTypeEnumType } from "../api/types/bonus_type_enum";
 import { SalaryIncomeTax } from "../database/entity/SALARY/salary_income_tax";
+import { Op } from "sequelize";
 
 @injectable()
 export class SalaryIncomeTaxService {
@@ -25,13 +26,16 @@ export class SalaryIncomeTaxService {
         });
         return newData;
     }
+
     async initSalaryIncomeTax(data_array: z.infer<typeof createSalaryIncomeTaxService>[]) {
         await SalaryIncomeTax.bulkCreate(data_array);
     }
+
     async getAllSalaryIncomeTax(): Promise<SalaryIncomeTax[]> {
         const salaryIncomeTax = await SalaryIncomeTax.findAll();
         return salaryIncomeTax;
     }
+
     async getSalaryIncomeTaxById(id: number): Promise<SalaryIncomeTax | null> {
         const salaryIncomeTax = await SalaryIncomeTax.findOne({
             where: {
@@ -40,6 +44,22 @@ export class SalaryIncomeTaxService {
         });
         return salaryIncomeTax;
     }
+
+    async getTargetSalaryIncomeTax(salary: number, dependent: number): Promise<SalaryIncomeTax | null> {
+        const salaryIncomeTax = await SalaryIncomeTax.findOne({
+            where: {
+                salary_start: {
+                    [Op.lte]: salary
+                },
+                salary_end: {
+                    [Op.gte]: salary
+                },
+                dependent: dependent
+            },
+        });
+        return salaryIncomeTax;
+    }
+
     async updateSalaryIncomeTax({
         id,
         salary_start,
@@ -64,6 +84,7 @@ export class SalaryIncomeTaxService {
 			throw new BaseResponseError("Update error");
 		}
     }
+
     async deleteSalaryIncomeTax(id: number) {
         const result = await SalaryIncomeTax.destroy({
 			where: {

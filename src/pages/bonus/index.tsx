@@ -10,12 +10,13 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { BonusTypeEnum, BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 import TablesView from "./tables_view";
 import dataTableContext from "./components/context/data_table_context";
-import periodContext from "~/components/context/period_context";
+import { api } from "~/utils/api";
+import DataTableContextProvider from "./components/context/data_table_context_provider";
 
-const BonusHomePage: NextPageWithLayout = () => {
-    const { selectedPeriod } = useContext(periodContext);
+const BonusHomePageContent = () => {
     const { t } = useTranslation(['common', 'nav']);
     const { selectedBonusType, setSelectedBonusType } = useContext(dataTableContext);
+    const ctx = api.useUtils();
 
     return (
         <div className="flex h-screen flex-col">
@@ -53,6 +54,14 @@ const BonusHomePage: NextPageWithLayout = () => {
                 <TablesView />
             </div>
         </div>
+    );
+};
+
+const BonusHomePage: NextPageWithLayout = () => {
+    return (
+        <DataTableContextProvider>
+            <BonusHomePageContent />
+        </DataTableContextProvider>
     );
 };
 

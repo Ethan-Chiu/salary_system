@@ -7,38 +7,43 @@ import { DataTableToolbar } from "./data_table_toolbar";
 import { DataTablePagination } from "~/components/data_table/data_table_pagination";
 import { DataTableStandardBody } from "~/components/data_table/default/data_table_standard_body";
 import { WithDataTableStandardState } from "~/components/data_table/default/data_table_standard_state";
+import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
 	data: TData[];
+	bonusType: BonusTypeEnumType;
 	filterColumnKey?: keyof TData;
 }
 
 export function DataTable<TData>({
 	columns,
 	data,
+	bonusType,
 	filterColumnKey,
 }: DataTableProps<TData>) {
 	return WithDataTableStandardState({
 		columns: columns,
 		data,
-		props: { filterColumnKey },
+		props: { bonusType, filterColumnKey },
 		WrappedComponent: DataTableContent,
 	});
 }
 
 function DataTableContent<TData>({
 	table,
+	bonusType,
 	filterColumnKey,
 }: {
 	table: Table<TData>;
+	bonusType: BonusTypeEnumType;
 	filterColumnKey?: keyof TData;
 }) {
 	const [dataPerRow, setDataPerRow] = React.useState(1);
 
 	return (
 		<div className="flex h-full w-full flex-col rounded-md border">
-			<DataTableToolbar table={table} filterColumnKey={filterColumnKey} />
+			<DataTableToolbar table={table} filterColumnKey={filterColumnKey} bonusType={bonusType} />
 			<Separator />
 			<div className="h-0 flex-grow">
 				<DataTableStandardBody table={table} dataPerRow={dataPerRow} />

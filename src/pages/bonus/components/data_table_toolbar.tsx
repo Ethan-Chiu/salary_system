@@ -6,14 +6,17 @@ import { useContext } from "react";
 import dataTableContext from "./context/data_table_context";
 import periodContext from "~/components/context/period_context";
 import { ToolbarFilter } from "~/components/data_table/toolbar/toolbar_filter";
+import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 
 interface DataTableToolbarProps<TData> {
 	table: Table<TData>;
+	bonusType: BonusTypeEnumType;
 	filterColumnKey?: keyof TData;
 }
 
 export function DataTableToolbar<TData>({
 	table,
+	bonusType,
 	filterColumnKey,
 }: DataTableToolbarProps<TData>) {
 	const { selectedTableType } = useContext(dataTableContext);
@@ -31,8 +34,9 @@ export function DataTableToolbar<TData>({
 						<BonusToolbarFunctionsProvider
 							selectedTableType={selectedTableType}
 							period_id={selectedPeriod.period_id}
+							bonus_type={bonusType}
 						>
-							<DataTableFunctions tableType={selectedTableType} />
+							<DataTableFunctions tableType={selectedTableType} bonusType={bonusType} />
 						</BonusToolbarFunctionsProvider>
 					)}
 				</div>

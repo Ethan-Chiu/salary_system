@@ -5,7 +5,7 @@ import {
 	UseTRPCMutationResult,
 	UseTRPCQueryResult,
 } from "@trpc/react-query/shared";
-import periodContext from "~/components/context/period_context";
+import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 
 interface FunctionsApi {
 	queryFunction: (() => UseTRPCQueryResult<any, any>) | undefined;
@@ -24,12 +24,14 @@ export const bonusToolbarFunctionsContext = createContext<FunctionsApi>({
 interface ToolbarFunctionsProviderProps {
 	selectedTableType: BonusTableEnum;
 	period_id: number;
+	bonus_type: BonusTypeEnumType;
 }
 
 export default function BonusToolbarFunctionsProvider({
 	children,
 	selectedTableType,
 	period_id,
+	bonus_type,
 }: PropsWithChildren<ToolbarFunctionsProviderProps>) {
 	const ctx = api.useUtils();
 
@@ -58,128 +60,113 @@ export default function BonusToolbarFunctionsProvider({
 
 	//#region <BonusWorkType>
 	const getBonusWorkType = () =>
-		api.parameters.getCurrentBonusWorkType.useQuery();
-	const updateBonusWorkType = api.parameters.updateBonusWorkType.useMutation({
+		api.bonus.getBonusWorkType.useQuery({ period_id, bonus_type });
+	const updateBonusWorkType = api.bonus.updateBonusWorkType.useMutation({
 		onSuccess: () => {
-			ctx.parameters.getCurrentBonusWorkType.invalidate();
-			ctx.parameters.getAllBonusWorkType.invalidate();
+			ctx.bonus.getBonusWorkType.invalidate();
 		},
 	});
-	const createBonusWorkType = api.parameters.createBonusWorkType.useMutation({
+	const createBonusWorkType = api.bonus.createBonusWorkType.useMutation({
 		onSuccess: () => {
-			ctx.parameters.getCurrentBonusWorkType.invalidate();
-			ctx.parameters.getAllBonusWorkType.invalidate();
+			ctx.bonus.getBonusWorkType.invalidate();
 		},
 	});
-	const deleteBonusWorkType = api.parameters.deleteBonusWorkType.useMutation({
+	const deleteBonusWorkType = api.bonus.deleteBonusWorkType.useMutation({
 		onSuccess: () => {
-			ctx.parameters.getCurrentBonusWorkType.invalidate();
-			ctx.parameters.getAllBonusWorkType.invalidate();
+			ctx.bonus.getBonusWorkType.invalidate();
 		},
 	});
 	//#endregion
 
 	//#region <BonusDepartment>
 	const getBonusDepartment = () =>
-		api.parameters.getCurrentBonusDepartment.useQuery();
+		api.bonus.getBonusDepartment.useQuery({ period_id, bonus_type });
 	const updateBonusDepartment =
-		api.parameters.updateBonusDepartment.useMutation({
+		api.bonus.updateBonusDepartment.useMutation({
 			onSuccess: () => {
-				ctx.parameters.getCurrentBonusDepartment.invalidate();
-				ctx.parameters.getAllBonusDepartment.invalidate();
+				ctx.bonus.getBonusDepartment.invalidate();
 			},
 		});
 	const createBonusDepartment =
-		api.parameters.createBonusDepartment.useMutation({
+		api.bonus.createBonusDepartment.useMutation({
 			onSuccess: () => {
-				ctx.parameters.getCurrentBonusDepartment.invalidate();
-				ctx.parameters.getAllBonusDepartment.invalidate();
+				ctx.bonus.getBonusDepartment.invalidate();
 			},
 		});
 	const deleteBonusDepartment =
-		api.parameters.deleteBonusDepartment.useMutation({
+		api.bonus.deleteBonusDepartment.useMutation({
 			onSuccess: () => {
-				ctx.parameters.getCurrentBonusDepartment.invalidate();
-				ctx.parameters.getAllBonusDepartment.invalidate();
+				ctx.bonus.getBonusDepartment.invalidate();
 			},
 		});
 	//#endregion
 
 	//#region <BonusPosition>
 	const getBonusPosition = () =>
-		api.parameters.getCurrentBonusPosition.useQuery();
-	const updateBonusPosition = api.parameters.updateBonusPosition.useMutation({
+		api.bonus.getBonusPosition.useQuery({ period_id, bonus_type });
+	const updateBonusPosition = api.bonus.updateBonusPosition.useMutation({
 		onSuccess: () => {
-			ctx.parameters.getCurrentBonusPosition.invalidate();
-			ctx.parameters.getAllBonusPosition.invalidate();
+			ctx.bonus.getBonusPosition.invalidate();
 		},
 	});
-	const createBonusPosition = api.parameters.createBonusPosition.useMutation({
+	const createBonusPosition = api.bonus.createBonusPosition.useMutation({
 		onSuccess: () => {
-			ctx.parameters.getCurrentBonusPosition.invalidate();
-			ctx.parameters.getAllBonusPosition.invalidate();
+			ctx.bonus.getBonusPosition.invalidate();
 		},
 	});
-	const deleteBonusPosition = api.parameters.deleteBonusPosition.useMutation({
+	const deleteBonusPosition = api.bonus.deleteBonusPosition.useMutation({
 		onSuccess: () => {
-			ctx.parameters.getCurrentBonusPosition.invalidate();
-			ctx.parameters.getAllBonusPosition.invalidate();
+			ctx.bonus.getBonusPosition.invalidate();
 		},
 	});
 	//#endregion
 
 	//#region <BonusPositionType>
 	const getBonusPositionType = () =>
-		api.parameters.getCurrentBonusPositionType.useQuery();
+		api.bonus.getBonusPositionType.useQuery({ period_id, bonus_type });
 	const updateBonusPositionType =
-		api.parameters.updateBonusPositionType.useMutation({
+		api.bonus.updateBonusPositionType.useMutation({
 			onSuccess: () => {
-				ctx.parameters.getCurrentBonusPositionType.invalidate();
-				ctx.parameters.getAllBonusPositionType.invalidate();
+				ctx.bonus.getBonusPositionType.invalidate();
 			},
 		});
 	const createBonusPositionType =
-		api.parameters.createBonusPositionType.useMutation({
+		api.bonus.createBonusPositionType.useMutation({
 			onSuccess: () => {
-				ctx.parameters.getCurrentBonusPositionType.invalidate();
-				ctx.parameters.getAllBonusPositionType.invalidate();
+				ctx.bonus.getBonusPositionType.invalidate();
 			},
 		});
 	const deleteBonusPositionType =
-		api.parameters.deleteBonusPositionType.useMutation({
+		api.bonus.deleteBonusPositionType.useMutation({
 			onSuccess: () => {
-				ctx.parameters.getCurrentBonusPositionType.invalidate();
-				ctx.parameters.getAllBonusPositionType.invalidate();
+				ctx.bonus.getBonusPositionType.invalidate();
 			},
 		});
 	//#endregion
 
 	//#region <BonusSeniority>
 	const getBonusSeniority = () =>
-		api.parameters.getCurrentBonusSeniority.useQuery();
+		api.bonus.getBonusSeniority.useQuery({ period_id, bonus_type });
 	const updateBonusSeniority =
-		api.parameters.updateBonusSeniority.useMutation({
+		api.bonus.updateBonusSeniority.useMutation({
 			onSuccess: () => {
-				ctx.parameters.getCurrentBonusSeniority.invalidate();
-				ctx.parameters.getAllBonusSeniority.invalidate();
+				ctx.bonus.getBonusSeniority.invalidate();
 			},
 		});
 	const createBonusSeniority =
-		api.parameters.createBonusSeniority.useMutation({
+		api.bonus.createBonusSeniority.useMutation({
 			onSuccess: () => {
-				ctx.parameters.getCurrentBonusSeniority.invalidate();
-				ctx.parameters.getAllBonusSeniority.invalidate();
+				ctx.bonus.getBonusSeniority.invalidate();
 			},
 		});
 	const deleteBonusSeniority =
-		api.parameters.deleteBonusSeniority.useMutation({
+		api.bonus.deleteBonusSeniority.useMutation({
 			onSuccess: () => {
-				ctx.parameters.getCurrentBonusSeniority.invalidate();
-				ctx.parameters.getAllBonusSeniority.invalidate();
+				ctx.bonus.getBonusSeniority.invalidate();
 			},
 		});
 	//#endregion
-	
+
 	// //#region <PerformanceLevel>
 	// const getPerformanceLevel = () =>
 	// 	api.parameters.getCurrentPerformanceLevel.useQuery();
