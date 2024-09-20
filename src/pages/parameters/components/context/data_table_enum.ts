@@ -7,6 +7,7 @@ export const TableEnumValues = [
 	"TableLevelRange",
 	"TableTrustMoney",
 	"TableBasicInfo",
+	"TableSalaryIncomeTax",
 ] as const;
 
 export type TableEnum = (typeof TableEnumValues)[number];
