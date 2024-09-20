@@ -5,7 +5,6 @@ export const TableEnumValues = [
 	"TableBonusPosition",
 	"TableBonusPositionType",
 	"TableBonusSeniority",
-	"TableSalaryIncomeTax",
 	// "TablePerformanceLevel",
 ] as const;
 
@@ -25,8 +24,6 @@ function getTableName(table: TableEnum) {
 			return "bonusPositionType";
 		case "TableBonusSeniority":
 			return "bonusSeniority";
-		case "TableSalaryIncomeTax":
-			return "salaryIncomeTax";
 		// case "TablePerformanceLevel":
 		// 	return "performanceLevel";
 	}
