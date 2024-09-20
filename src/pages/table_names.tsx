@@ -21,6 +21,9 @@ export const TABLE_PERFORMANCE_LEVEL = t("table_name.performanceLevel");
 export const TABLE_TRUST_MONEY = t("table_name.trustMoney");
 
 export const TABLE_BASIC_INFO = t("table_name.basicInfo");
+export const TABLE_SALARY_INCOME_TAX = t("table_name.salary_income_tax");
+
+
 // const BasicInfo = z.object({
 // 	issue_date: z.date(),
 // 	announcement: z.string(),

@@ -225,7 +225,11 @@
     "special_leave": "特別事假時數",
     "full_attendance_personal_leave": "有全勤事假",
     "full_attendance_sick_leave": "有全勤病假",
-    "long_service_allowance": "久任津貼"
+    "long_service_allowance": "久任津貼",
+    "salary_start": "起",
+    "salary_end": "迄",
+    "dependent": "扶養人數",
+    "tax_amount": "稅額"
   },
   "table_name": {
     "attendanceSetting": "請假加班",
@@ -250,7 +254,8 @@
     "holiday": "請假",
     "overtime": "加班",
     "other": "其他",
-    "payset": "工作天數"
+    "payset": "工作天數",
+    "salaryIncomeTax": "薪資所得稅"
   },
   "button": {
     "next_step": "下一步",

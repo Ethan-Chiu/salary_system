@@ -6,6 +6,8 @@ import { levelSchema } from "./configurations/level_schema";
 import { levelRangeSchema } from "./configurations/level_range_schema";
 import { trustMoneySchema } from "./configurations/trust_money_schema";
 
+import { salaryIncomeTaxSchema } from "./configurations/salary_income_tax_schema";
+
 export function getSchema(table: TableEnum) {
 	switch (table) {
 		case "TableAttendance":
@@ -23,6 +25,8 @@ export function getSchema(table: TableEnum) {
 			return levelRangeSchema;
 		case "TableTrustMoney":
 			return trustMoneySchema;
+		case "TableSalaryIncomeTax":
+			return salaryIncomeTaxSchema;
 		default:
 			throw Error("Table not found");
 	}

@@ -12,4 +12,5 @@ export const ParameterTableEnumValues = [
 	"TableTrustMoney",
 	"TableLevel",
 	"TableLevelRange",
+	"TableSalaryIncomeTax",
 ] as const;
