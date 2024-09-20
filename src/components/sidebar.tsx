@@ -256,7 +256,6 @@ export function Sidebar({
   const { ref, width } = useComponentSize();
 
   useEffect(() => {
-    console.log(width)
     if (width < 100 ) {
       collapseFunction();
     }
