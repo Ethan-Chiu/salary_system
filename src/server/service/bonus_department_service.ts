@@ -29,16 +29,37 @@ export class BonusDepartmentService {
 		});
 		return newData;
 	}
-	async getMultiplier(period_id: number, bonus_type: BonusTypeEnumType, department: number): Promise<number | undefined> {
-        const multiplier = (await BonusDepartment.findOne({
-            where: {
-                period_id: period_id,
-                bonus_type: bonus_type,
-				department: department
-            }
-        }))?.multiplier
-        return multiplier
-    }
+	async batchCreateBonusDepartment(
+		data_array: z.infer<typeof createBonusDepartmentService>[]
+	) {
+		const new_data_array = data_array.map((data) => {
+			return {
+				period_id: data.period_id,
+				bonus_type: data.bonus_type,
+				department: data.department,
+				multiplier: data.multiplier,
+				create_by: "system",
+				update_by: "system",
+			};
+		});
+		await BonusDepartment.bulkCreate(new_data_array);
+	}
+	async getMultiplier(
+		period_id: number,
+		bonus_type: BonusTypeEnumType,
+		department: number
+	): Promise<number | undefined> {
+		const multiplier = (
+			await BonusDepartment.findOne({
+				where: {
+					period_id: period_id,
+					bonus_type: bonus_type,
+					department: department,
+				},
+			})
+		)?.multiplier;
+		return multiplier;
+	}
 	async getBonusDepartmentById(id: number): Promise<BonusDepartment | null> {
 		const bonusDepartment = await BonusDepartment.findOne({
 			where: {
@@ -48,13 +69,16 @@ export class BonusDepartmentService {
 		return bonusDepartment;
 	}
 
-	async getBonusDepartmentByBonusType(period_id: number, bonus_type: BonusTypeEnumType): Promise<BonusDepartment[] | null> {
+	async getBonusDepartmentByBonusType(
+		period_id: number,
+		bonus_type: BonusTypeEnumType
+	): Promise<BonusDepartment[] | null> {
 		const bonusDepartment = await BonusDepartment.findAll({
 			where: {
 				period_id: period_id,
 				bonus_type: bonus_type,
 			},
-		})
+		});
 		return bonusDepartment;
 	}
 

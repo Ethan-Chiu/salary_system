@@ -117,8 +117,8 @@ export const createBonusWorkTypeAPI = BonusWorkType;
 export const createBonusWorkTypeService = BonusWorkType;
 export const updateBonusWorkTypeAPI = BonusWorkType.merge(Id).partial();
 export const updateBonusWorkTypeService = BonusWorkType.merge(Id).partial();
+export const batchCreateBonusWorkTypeAPI = z.array(createBonusWorkTypeAPI);
 
-	
 const BonusDepartment = z.object({
 	period_id: z.number(),
 	bonus_type: BonusTypeEnum,
@@ -130,6 +130,7 @@ export const createBonusDepartmentAPI = BonusDepartment;
 export const createBonusDepartmentService = BonusDepartment;
 export const updateBonusDepartmentAPI = BonusDepartment.merge(Id).partial();
 export const updateBonusDepartmentService = BonusDepartment.merge(Id).partial();
+export const batchCreateBonusDepartmentAPI = z.array(createBonusDepartmentAPI);
 
 const BonusPosition = z.object({
 	period_id: z.number(),
@@ -142,6 +143,7 @@ export const createBonusPositionAPI = BonusPosition;
 export const createBonusPositionService = BonusPosition;
 export const updateBonusPositionAPI = BonusPosition.merge(Id).partial();
 export const updateBonusPositionService = BonusPosition.merge(Id).partial();
+export const batchCreateBonusPositionAPI = z.array(createBonusPositionAPI);
 
 const BonusPositionType = z.object({
 	period_id: z.number(),
@@ -155,6 +157,9 @@ export const createBonusPositionTypeService = BonusPositionType;
 export const updateBonusPositionTypeAPI = BonusPositionType.merge(Id).partial();
 export const updateBonusPositionTypeService =
 	BonusPositionType.merge(Id).partial();
+export const batchCreateBonusPositionTypeAPI = z.array(
+	createBonusPositionTypeAPI
+);
 
 const BonusSeniority = z.object({
 	period_id: z.number(),
@@ -167,6 +172,7 @@ export const createBonusSeniorityAPI = BonusSeniority;
 export const createBonusSeniorityService = BonusSeniority;
 export const updateBonusSeniorityAPI = BonusSeniority.merge(Id).partial();
 export const updateBonusSeniorityService = BonusSeniority.merge(Id).partial();
+export const batchCreateBonusSeniorityAPI = z.array(createBonusSeniorityAPI);
 
 const BonusSetting = z.object({
 	fixed_multiplier: z.number(),
@@ -179,7 +185,6 @@ export const createBonusSettingAPI = BonusSetting;
 export const createBonusSettingService = BonusSetting;
 export const updateBonusSettingAPI = BonusSetting.merge(Id).partial();
 export const updateBonusSettingService = BonusSetting.merge(Id).partial();
-
 
 const Level = z.object({
 	level: z.number(),
@@ -284,13 +289,12 @@ export const updateEmployeeBonusByEmpNoAPI = EmployeeBonus.partial();
 export const updateEmployeeBonusService = EmployeeBonus.merge(Id).partial();
 export const updateEmployeeBonusByEmpNoService = EmployeeBonus.partial();
 
-
 // MARK: Holidays Type
 const HolidaysType = z.object({
 	pay_id: z.number(),
 	holidays_name: z.string(),
 	multiplier: z.number(),
-	pay_type: z.number()
+	pay_type: z.number(),
 });
 export const updateHolidaysTypeInput = z
 	.object({
@@ -298,14 +302,12 @@ export const updateHolidaysTypeInput = z
 		pay_id: z.number().nullable(),
 		holidays_name: z.string().nullable(),
 		multiplier: z.number().nullable(),
-		pay_type: z.number().nullable()
+		pay_type: z.number().nullable(),
 	})
 	.partial();
 
-export const createHolidaysTypeAPI =
-	HolidaysType.merge(DateAPI);
-export const createHolidaysTypeService =
-	HolidaysType.merge(DateService);
+export const createHolidaysTypeAPI = HolidaysType.merge(DateAPI);
+export const createHolidaysTypeService = HolidaysType.merge(DateService);
 export const updateHolidaysTypeAPI = HolidaysType.merge(Id)
 	.merge(DateAPI)
 	.partial();
