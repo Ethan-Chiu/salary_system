@@ -95,7 +95,7 @@ export default function CalendarUpdateEvent({}: CalendarUpdateEventProps) {
 					<SheetTitle>
 						{`${t(`button.${mode}`)!}${t("button.form")} (${t(getTableNameKey(selectedTableType))}`}
 					</SheetTitle>
-					<SheetDescription>{modeDescription(mode)}</SheetDescription>
+					<SheetDescription>{modeDescription(t, mode)}</SheetDescription>
 				</SheetHeader>
 				<ScrollArea className="h-[85%] w-full">
 					<AutoForm

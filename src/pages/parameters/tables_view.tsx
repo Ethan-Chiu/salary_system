@@ -30,6 +30,7 @@ import { LevelRangeTable } from "./tables/level_range_table";
 import { LevelTable } from "./tables/level_table";
 import { useTranslation } from "react-i18next";
 import { TrustMoneyTable } from "./tables/trust_money_table";
+import { SalaryIncomeTaxTable } from "./tables/salary_income_tax_table";
 
 export type TableComponentProps = {
 	period_id: number;
@@ -75,6 +76,11 @@ function getTableComponent(
 				component: LevelTable,
 				icon: Table,
 			};
+		case "TableSalaryIncomeTax":
+			return {
+				component: SalaryIncomeTaxTable,
+				icon: Table,
+			}
 		default:
 			throw new Error(`Invalid table`);
 	}

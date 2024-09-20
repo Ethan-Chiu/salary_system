@@ -87,7 +87,7 @@ export function DataTableFunctions({
 							{`${t(`button.${mode}`)!}${t("button.form")} (${t(getTableNameKey(tableType))})`}
 						</SheetTitle>
 						<SheetDescription>
-							{modeDescription(mode)}
+							{modeDescription(t, mode)}
 						</SheetDescription>
 					</SheetHeader>
 					<ScrollArea className="h-full w-full">

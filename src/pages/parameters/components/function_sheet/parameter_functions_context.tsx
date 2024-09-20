@@ -173,6 +173,29 @@ export default function ParameterToolbarFunctionsProvider({
 		},
 	});
 
+	//#region <SalaryIncomeTax>
+	const getSalaryIncomeTax = () =>
+		api.parameters.getAllSalaryIncomeTax.useQuery();
+	const updateSalaryIncomeTax =
+		api.parameters.updateSalaryIncomeTax.useMutation({
+			onSuccess: () => {
+				ctx.parameters.getAllSalaryIncomeTax.invalidate();
+			},
+		});
+	const createSalaryIncomeTax =
+		api.parameters.createSalaryIncomeTax.useMutation({
+			onSuccess: () => {
+				ctx.parameters.getAllSalaryIncomeTax.invalidate();
+			},
+		});
+	const deleteSalaryIncomeTax =
+		api.parameters.deleteSalaryIncomeTax.useMutation({
+			onSuccess: () => {
+				ctx.parameters.getAllSalaryIncomeTax.invalidate();
+			},
+		});
+	//#endregion
+
 	const functionsDictionary: Record<ParameterTableEnum, FunctionsApi> = {
 		TableAttendance: {
 			queryFunction: getAttendanceSetting,
@@ -210,6 +233,12 @@ export default function ParameterToolbarFunctionsProvider({
 			createFunction: createLevelRange,
 			deleteFunction: deleteLevelRange,
 		},
+		TableSalaryIncomeTax: {
+			queryFunction: getSalaryIncomeTax,
+			updateFunction: updateSalaryIncomeTax,
+			createFunction: createSalaryIncomeTax,
+			deleteFunction: deleteSalaryIncomeTax,
+		}
 	};
 
 	// Return the provider with the functions

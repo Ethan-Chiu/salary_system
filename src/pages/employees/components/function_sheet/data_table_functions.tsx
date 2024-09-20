@@ -53,7 +53,7 @@ export function DataTableFunctions({
 }: DataTableFunctionsProps) {
 	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
-	const { t } = useTranslation(['common', 'nav']);
+	const { t } = useTranslation(["common", "nav"]);
 
 	return (
 		<div className={cn(className, "flex h-full items-center")}>
@@ -70,7 +70,9 @@ export function DataTableFunctions({
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-[150px]">
-						<DropdownMenuLabel>{t("others.functions")}</DropdownMenuLabel>
+						<DropdownMenuLabel>
+							{t("others.functions")}
+						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<CompTriggerItem
 							mode={"update"}
@@ -96,22 +98,28 @@ export function DataTableFunctions({
 				</DropdownMenu>
 				{/* Sheet */}
 				<SheetContent className="w-[50%]">
-					<SheetHeader>
-						<SheetTitle>
-							{`${t(`button.${mode}`)!}${t("button.form")} (${t(getTableNameKey(tableType))})`}
-						</SheetTitle>
-						<SheetDescription>
-							{modeDescription(mode)}
-						</SheetDescription>
-					</SheetHeader>
-					<ScrollArea className="h-full w-full">
-						<EmployeeForm
-							formSchema={getSchema(tableType)!}
-							mode={mode}
-							closeSheet={() => setOpen(false)}
-						/>
-						<ScrollBar orientation="horizontal" />
-					</ScrollArea>
+					{mode !== "none" && (
+						<>
+							<SheetHeader>
+								<SheetTitle>
+									{`${t(`button.${mode}`)!}${t(
+										"button.form"
+									)} (${t(getTableNameKey(tableType))})`}
+								</SheetTitle>
+								<SheetDescription>
+									{modeDescription(t, mode)}
+								</SheetDescription>
+							</SheetHeader>
+							<ScrollArea className="h-full w-full">
+								<EmployeeForm
+									formSchema={getSchema(tableType)!}
+									mode={mode}
+									closeSheet={() => setOpen(false)}
+								/>
+								<ScrollBar orientation="horizontal" />
+							</ScrollArea>
+						</>
+					)}
 				</SheetContent>
 			</Sheet>
 		</div>
