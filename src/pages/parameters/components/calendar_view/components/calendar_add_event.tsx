@@ -37,7 +37,7 @@ export default function CalendarAddEvent() {
 						{`${t(`button.${mode}`)!}${t("button.form")} (${t(getTableNameKey(selectedTableType))})`}
 					</SheetTitle>
 					<SheetDescription>
-						{modeDescription(mode)}
+						{modeDescription(t, mode)}
 					</SheetDescription>
 				</SheetHeader>
 				<ScrollArea className="h-[85%] w-full">

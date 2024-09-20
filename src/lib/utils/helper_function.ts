@@ -1,7 +1,6 @@
-import { useTranslation } from "react-i18next";
+import { type I18nType } from "./i18n_type";
 
-export function modeDescription(mode: string) {
-    const { t } = useTranslation(['common']);
+export function modeDescription(t: I18nType, mode: string) {
     switch (mode) {
         case "create":
             return t("others.create_msg");

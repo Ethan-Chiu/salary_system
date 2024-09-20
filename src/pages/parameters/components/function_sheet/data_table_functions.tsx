@@ -113,7 +113,7 @@ export function DataTableFunctions({
 							{`${t(`button.${mode}`)!}${t("button.form")} (${t(getTableNameKey(tableType))})`}
 						</SheetTitle>
 						<SheetDescription>
-							{modeDescription(mode)}
+							{modeDescription(t, mode)}
 						</SheetDescription>
 					</SheetHeader>
 					{mode == "batch_create" ?
