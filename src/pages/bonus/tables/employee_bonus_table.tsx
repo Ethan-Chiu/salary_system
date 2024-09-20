@@ -43,7 +43,7 @@ const columns = (t: I18nType) =>
 
 export function EmployeeBonusTable({ period_id, bonus_type, viewOnly }: EmployeeBonusTableProps) {
     const { isLoading, isError, data, error } =
-        api.bonus.getAllEmpBonus.useQuery({});
+        api.bonus.getCandidateEmpBonus.useQuery({period_id, bonus_type});
     const filterKey: RowItemKey = "emp_no";
     const { t } = useTranslation(["common"]);
 
