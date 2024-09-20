@@ -15,6 +15,7 @@ import {
 	createPerformanceLevelAPI,
 	createSalaryIncomeTaxAPI,
 	createTrustMoneyAPI,
+	initSalaryIncomeTaxAPI,
 	updateAttendanceSettingAPI,
 	updateBankSettingAPI,
 	updateBonusDepartmentAPI,
@@ -680,6 +681,15 @@ export const parametersRouter = createTRPCRouter({
 				SalaryIncomeTaxService
 			);
 			const newdata = await salaryIncomeTaxService.createSalaryIncomeTax(input);
+			return newdata;
+		}),
+	initSalaryIncomeTax: publicProcedure
+		.input(initSalaryIncomeTaxAPI)
+		.mutation(async ({ input }) => {
+			const salaryIncomeTaxService = container.resolve(
+				SalaryIncomeTaxService
+			);
+			const newdata = await salaryIncomeTaxService.initSalaryIncomeTax(input);
 			return newdata;
 		}),
 	updateSalaryIncomeTax: publicProcedure

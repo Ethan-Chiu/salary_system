@@ -25,6 +25,9 @@ export class SalaryIncomeTaxService {
         });
         return newData;
     }
+    async initSalaryIncomeTax(data_array: z.infer<typeof createSalaryIncomeTaxService>[]) {
+        await SalaryIncomeTax.bulkCreate(data_array);
+    }
     async getAllSalaryIncomeTax(): Promise<SalaryIncomeTax[]> {
         const salaryIncomeTax = await SalaryIncomeTax.findAll();
         return salaryIncomeTax;
