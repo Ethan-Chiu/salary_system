@@ -8,6 +8,7 @@ import { type BonusDepartment } from "~/server/database/entity/SALARY/bonus_depa
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { useTranslation } from "react-i18next";
+import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 
 export type RowItem = {
 	department: string;
@@ -47,7 +48,7 @@ export const bonus_department_columns = [
 		header: () => {
 			const { t } = useTranslation(["common"]);
 			return <div className="text-center font-medium">{t("table.multiplier")}</div>
-		}, 
+		},
 		cell: ({ row }) => {
 			return (
 				<div className="flex justify-center">
@@ -71,13 +72,14 @@ export function bonusDepartmentMapper(
 
 interface BonusDepartmentTableProps extends TableComponentProps {
 	period_id: number;
+	bonus_type: BonusTypeEnumType;
 	globalFilter?: string;
 	viewOnly?: boolean;
 }
 
-export function BonusDepartmentTable({ viewOnly }: BonusDepartmentTableProps) {
+export function BonusDepartmentTable({ period_id, bonus_type, viewOnly }: BonusDepartmentTableProps) {
 	const { isLoading, isError, data, error } =
-		api.parameters.getCurrentBonusDepartment.useQuery();
+		api.bonus.getBonusDepartment.useQuery({ period_id, bonus_type });
 	const filterKey: RowItemKey = "department";
 
 	if (isLoading) {
@@ -98,6 +100,7 @@ export function BonusDepartmentTable({ viewOnly }: BonusDepartmentTableProps) {
 				<DataTableWithFunctions
 					columns={bonus_department_columns}
 					data={bonusDepartmentMapper(data!)}
+					bonusType={bonus_type}
 					filterColumnKey={filterKey}
 				/>
 			) : (

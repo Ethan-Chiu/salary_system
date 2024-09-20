@@ -8,6 +8,7 @@ import { type BonusSeniority } from "~/server/database/entity/SALARY/bonus_senio
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { useTranslation } from "react-i18next";
+import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 export type RowItem = {
 	seniority: number;
 	multiplier: number;
@@ -46,7 +47,7 @@ export const bonus_seniority_columns = [
 		header: () => {
 			const { t } = useTranslation(["common"]);
 			return <div className="text-center font-medium">{t("table.multiplier")}</div>
-		}, 
+		},
 		cell: ({ row }) => {
 			return (
 				<div className="flex justify-center">
@@ -70,13 +71,14 @@ export function bonusSeniorityMapper(
 
 interface BonusSeniorityTableProps extends TableComponentProps {
 	period_id: number;
+	bonus_type: BonusTypeEnumType;
 	globalFilter?: string;
 	viewOnly?: boolean;
 }
 
-export function BonusSeniorityTable({ viewOnly }: BonusSeniorityTableProps) {
+export function BonusSeniorityTable({ period_id, bonus_type, viewOnly }: BonusSeniorityTableProps) {
 	const { isLoading, isError, data, error } =
-		api.parameters.getCurrentBonusSeniority.useQuery();
+		api.bonus.getBonusSeniority.useQuery({ period_id, bonus_type });
 	const filterKey: RowItemKey = "seniority";
 
 	if (isLoading) {
@@ -97,6 +99,7 @@ export function BonusSeniorityTable({ viewOnly }: BonusSeniorityTableProps) {
 				<DataTableWithFunctions
 					columns={bonus_seniority_columns}
 					data={bonusSeniorityMapper(data!)}
+					bonusType={bonus_type}
 					filterColumnKey={filterKey}
 				/>
 			) : (

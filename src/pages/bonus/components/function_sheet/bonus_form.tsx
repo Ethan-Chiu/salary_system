@@ -30,12 +30,16 @@ import { FunctionMode } from "./data_table_functions";
 import GeneralTable from "./general_table";
 import { LoadingSpinner } from "~/components/loading";
 import { FieldConfig } from "~/components/ui/auto-form/types";
+import dataTableContext from "../context/data_table_context";
+import periodContext from "~/components/context/period_context";
+import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 
 interface BonusFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
 	fieldConfig?: FieldConfig<z.infer<SchemaType>>;
 	defaultValue?: any;
 	mode: FunctionMode;
+	bonus_type: BonusTypeEnumType;
 	closeSheet: () => void;
 }
 
@@ -44,6 +48,7 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 	fieldConfig,
 	defaultValue,
 	mode,
+	bonus_type,
 	closeSheet,
 }: BonusFormProps<SchemaType>) {
 	const functions = useContext(bonusToolbarFunctionsContext);
@@ -53,6 +58,8 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 	const createFunction = functions.createFunction!;
 	const deleteFunction = functions.deleteFunction!;
 	const { isLoading, isError, data, error } = queryFunction();
+	// const { selectedBonusType } = useContext(dataTableContext);
+	const { selectedPeriod } = useContext(periodContext);
 
 	const isList = Array.isArray(data);
 	const onlyOne = !(isList && data.length > 1);
@@ -76,17 +83,20 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 		);
 	}
 
-	function submitForm() {
+	function submitForm(period_id: number, bonus_type: BonusTypeEnumType) {
 		const parsedValues = formSchema.safeParse(formValues);
 		if (parsedValues.success) {
 			if (mode === "create") {
 				createFunction.mutate({
 					...parsedValues.data,
+					period_id,
+					bonus_type,
 				});
 			} else if (mode === "update") {
 				updateFunction.mutate({
 					...parsedValues.data,
 					id: selectedData.id,
+					bonus_type,
 				});
 			}
 		} else {
@@ -189,7 +199,7 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 					<GeneralTable data={formValues} />
 					<DialogFooter>
 						<DialogClose asChild>
-							<Button onClick={submitForm} type="submit">
+							<Button onClick={() => submitForm(selectedPeriod!.period_id, bonus_type)} type="submit">
 								{t("button.save")}
 							</Button>
 						</DialogClose>

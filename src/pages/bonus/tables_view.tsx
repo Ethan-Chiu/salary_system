@@ -25,9 +25,11 @@ import { BonusPositionTable } from "./tables/bonus_position_table";
 import { BonusPositionTypeTable } from "./tables/bonus_position_type_table";
 import { BonusSeniorityTable } from "./tables/bonus_seniority_table";
 import { BonusWorkTypeTable } from "./tables/bonus_work_type_table";
+import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 
 export type TableComponentProps = {
     period_id: number;
+    bonus_type: BonusTypeEnumType;
     globalFilter?: string;
 };
 
@@ -76,6 +78,7 @@ function getTableComponent(
 }
 
 export default function TablesView() {
+    const { selectedBonusType } = useContext(dataTableContext);
     return (
         <DataTableContextProvider>
             <ResizablePanelGroup direction="horizontal">
@@ -86,7 +89,7 @@ export default function TablesView() {
                 <ResizableHandle />
                 {/* right panel */}
                 <ResizablePanel minSize={40}>
-                    <CompTableView />
+                    <CompTableView bonus_type={selectedBonusType} />
                 </ResizablePanel>
             </ResizablePanelGroup>
         </DataTableContextProvider>
@@ -150,7 +153,7 @@ function CompTablesSelector() {
     );
 }
 
-function CompTableView() {
+function CompTableView({ bonus_type }: { bonus_type: BonusTypeEnumType }) {
     const { selectedTableType } = useContext(dataTableContext);
     const { selectedPeriod } = useContext(periodContext);
 
@@ -165,7 +168,7 @@ function CompTableView() {
                     <div key={selectedTableType} className="flex h-full">
                         {selectedPeriod ? React.createElement<TableComponentProps>(
                             getTableComponent(selectedTableType).component,
-                            { period_id: selectedPeriod.period_id }
+                            { period_id: selectedPeriod.period_id, bonus_type: bonus_type }
                         ) : <p>{t("others.select_period")}</p>}
                     </div>
                 );

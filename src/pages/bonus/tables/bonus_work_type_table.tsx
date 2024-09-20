@@ -8,6 +8,7 @@ import { type BonusWorkType } from "~/server/database/entity/SALARY/bonus_work_t
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { useTranslation } from "react-i18next";
+import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 
 export type RowItem = {
 	work_type: string;
@@ -47,7 +48,7 @@ export const bonus_work_type_columns = [
 		header: () => {
 			const { t } = useTranslation(["common"]);
 			return <div className="text-center font-medium">{t("table.multiplier")}</div>
-		}, 
+		},
 		cell: ({ row }) => {
 			return (
 				<div className="flex justify-center">
@@ -71,13 +72,14 @@ export function bonusWorkTypeMapper(
 
 interface BonusWorkTypeTableProps extends TableComponentProps {
 	period_id: number;
+	bonus_type: BonusTypeEnumType;
 	globalFilter?: string;
 	viewOnly?: boolean;
 }
 
-export function BonusWorkTypeTable({ viewOnly }: BonusWorkTypeTableProps) {
+export function BonusWorkTypeTable({ period_id, bonus_type, viewOnly }: BonusWorkTypeTableProps) {
 	const { isLoading, isError, data, error } =
-		api.parameters.getCurrentBonusWorkType.useQuery();
+		api.bonus.getBonusWorkType.useQuery({ period_id, bonus_type });
 	const filterKey: RowItemKey = "work_type";
 
 	if (isLoading) {
@@ -98,6 +100,7 @@ export function BonusWorkTypeTable({ viewOnly }: BonusWorkTypeTableProps) {
 				<DataTableWithFunctions
 					columns={bonus_work_type_columns}
 					data={bonusWorkTypeMapper(data!)}
+					bonusType={bonus_type}
 					filterColumnKey={filterKey}
 				/>
 			) : (

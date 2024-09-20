@@ -1,5 +1,5 @@
 import { cn } from "~/lib/utils";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { type LucideIcon, PenSquare, Plus, PlusSquare, Trash2 } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
@@ -24,24 +24,24 @@ import { useTranslation } from "react-i18next";
 import { BonusForm } from "./bonus_form";
 import { type TableEnum, getTableNameKey } from "../context/data_table_enum";
 import { getSchema } from "../../schemas/get_schemas";
-import { api } from "~/utils/api";
 import { modeDescription } from "~/lib/utils/helper_function";
+import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
+	bonusType: BonusTypeEnumType
 }
 
 export type FunctionMode = "create" | "update" | "delete" | "none";
 
 export function DataTableFunctions({
 	tableType,
+	bonusType,
 	className,
 }: DataTableFunctionsProps) {
 	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
 	const { t } = useTranslation(['common', 'nav']);
-
-	const { isLoading, isError, data, error } = api.parameters.getCurrentLevel.useQuery();
 
 	// ========================= Additional Condition for Schema =====================================
 	let schema = getSchema(tableType);
@@ -84,7 +84,7 @@ export function DataTableFunctions({
 				<SheetContent className="w-[50%]">
 					<SheetHeader>
 						<SheetTitle>
-							{`${t(`button.${mode}`)!}${t( "button.form" )} (${t(getTableNameKey(tableType))})`}
+							{`${t(`button.${mode}`)!}${t("button.form")} (${t(getTableNameKey(tableType))})`}
 						</SheetTitle>
 						<SheetDescription>
 							{modeDescription(t, mode)}
@@ -94,6 +94,7 @@ export function DataTableFunctions({
 						<BonusForm
 							formSchema={schema}
 							mode={mode}
+							bonus_type={bonusType}
 							closeSheet={() => setOpen(false)}
 						/>
 						<ScrollBar orientation="horizontal" />

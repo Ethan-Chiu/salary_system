@@ -17,6 +17,7 @@ import { HolidaysType } from "../database/entity/SALARY/holidays_type";
 import { EmployeePaymentFE } from "../api/types/employee_payment_type";
 import { z } from "zod";
 import { Round } from "./helper_function";
+import { SalaryIncomeTaxService } from "./salary_income_tax_service";
 
 const FOREIGN = "外籍勞工";
 const PROFESSOR = "顧問";
@@ -768,7 +769,7 @@ export class CalculateService {
 		const Entity = rd("入境日期");
 		const Day = rd("工作天數");			// no use in prev salary system code
 		*/
-		const taxi: any[] = []; //[rd("扣繳稅額")]; // Maybe a list
+		const salary_income_tax_service = container.resolve(SalaryIncomeTaxService);
 
 		const START_WORK_DAY = new Date(employee_data.registration_date);
 		const PAY_DATE = new Date(issue_date);
@@ -799,20 +800,16 @@ export class CalculateService {
 		}
 
 		if (Tax > 0) {
-			taxi.map((item: any) => {
-				if (
-					Tax >= item.薪資1 &&
-					Tax <= item.薪資2 &&
-					Num == item.扶養親屬
-				) {
-					if (kind2 === NEWBIE || kind2 === WILL_LEAVE)
-						return Round(item.扣繳稅額);
-					else return item.扣繳稅額;
-				}
-			});
+			const salary_income_tax = await salary_income_tax_service.getTargetSalaryIncomeTax(Tax, Num ?? 0)
+			if (salary_income_tax != null) {
+				if (kind2 === NEWBIE || kind2 === WILL_LEAVE)
+					return Round(salary_income_tax.tax_amount);
+				else return salary_income_tax.tax_amount;
+			}
 		}
 
-		return Round(Tax * 0.06);
+		// return Round(Tax * 0.06);
+		return 0;
 	}
 	//MARK: 獎金所得稅
 	async getBonusTax(): Promise<number> {
