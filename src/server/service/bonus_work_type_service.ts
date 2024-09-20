@@ -5,9 +5,9 @@ import {
 	createBonusSeniorityService,
 	createBonusWorkTypeService,
 	updateBonusSeniorityService,
-    updateBonusWorkTypeService,
+	updateBonusWorkTypeService,
 } from "../api/types/parameters_input_type";
-import {BonusWorkType } from "../database/entity/SALARY/bonus_work_type";
+import { BonusWorkType } from "../database/entity/SALARY/bonus_work_type";
 import { select_value } from "./helper_function";
 import { workerData } from "worker_threads";
 import { BonusTypeEnumType } from "../api/types/bonus_type_enum";
@@ -32,6 +32,21 @@ export class BonusWorkTypeService {
 		});
 		return newData;
 	}
+	async batchCreateBonusWorkType(
+		data_array: z.infer<typeof createBonusWorkTypeService>[]
+	) {
+		const new_data_array = data_array.map((data) => {
+			return {
+				period_id: data.period_id,
+				bonus_type: data.bonus_type,
+				work_type: data.work_type,
+				multiplier: data.multiplier,
+				create_by: "system",
+				update_by: "system",
+			};
+		});
+		await BonusWorkType.bulkCreate(new_data_array);
+	}
 
 	async getBonusWorkTypeById(id: number): Promise<BonusWorkType | null> {
 		const bonusWorkType = await BonusWorkType.findOne({
@@ -42,25 +57,34 @@ export class BonusWorkTypeService {
 		return bonusWorkType;
 	}
 
-	async getBonusWorkTypeByBonusType(period_id: number, bonus_type: BonusTypeEnumType): Promise<BonusWorkType[] | null> {
-        const bonusWorkType = await BonusWorkType.findAll({
-            where: {
-                period_id: period_id,
-                bonus_type: bonus_type
-            }
-        })
+	async getBonusWorkTypeByBonusType(
+		period_id: number,
+		bonus_type: BonusTypeEnumType
+	): Promise<BonusWorkType[] | null> {
+		const bonusWorkType = await BonusWorkType.findAll({
+			where: {
+				period_id: period_id,
+				bonus_type: bonus_type,
+			},
+		});
 		return bonusWorkType;
 	}
-    async getMultiplier(period_id: number, bonus_type: BonusTypeEnumType, work_type: string): Promise<number | undefined> {
-        const multiplier = (await BonusWorkType.findOne({
-            where: {
-                period_id: period_id,
-                bonus_type: bonus_type,
-                work_type: work_type
-            }
-        }))?.multiplier
-        return multiplier
-    }
+	async getMultiplier(
+		period_id: number,
+		bonus_type: BonusTypeEnumType,
+		work_type: string
+	): Promise<number | undefined> {
+		const multiplier = (
+			await BonusWorkType.findOne({
+				where: {
+					period_id: period_id,
+					bonus_type: bonus_type,
+					work_type: work_type,
+				},
+			})
+		)?.multiplier;
+		return multiplier;
+	}
 	async getAllBonusWorkType(): Promise<BonusWorkType[] | null> {
 		const bonusWorkType = await BonusWorkType.findAll();
 		return bonusWorkType;

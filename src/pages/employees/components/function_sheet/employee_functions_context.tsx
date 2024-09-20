@@ -62,11 +62,9 @@ export default function EmployeeToolbarFunctionsProvider({
 		});
 	const autoCalculateEmployeePayment =
 		api.employeePayment.autoCalculateEmployeePayment.useMutation({
-			onSuccess: async() => {
-				setTimeout(() => {
-					void ctx.employeePayment.getCurrentEmployeePayment.invalidate();
-					void ctx.employeePayment.getAllEmployeePayment.invalidate();
-				}, 1000);
+			onSuccess: () => {
+        void ctx.employeePayment.getCurrentEmployeePayment.invalidate();
+        void ctx.employeePayment.getAllEmployeePayment.invalidate();
 			},
 		});
 	//#endregion

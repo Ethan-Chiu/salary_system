@@ -29,7 +29,21 @@ export class BonusPositionService {
 		});
 		return newData;
 	}
-
+	async batchCreateBonusPosition(
+		data_array: z.infer<typeof createBonusPositionService>[]
+	) {
+		const new_data_array = data_array.map((data) => {
+			return {
+				period_id: data.period_id,
+				bonus_type: data.bonus_type,
+				position: data.position,
+				multiplier: data.multiplier,
+				create_by: "system",
+				update_by: "system",
+			};
+		});
+		await BonusPosition.bulkCreate(new_data_array);
+	}
 	async getBonusPositionById(id: number): Promise<BonusPosition | null> {
 		const bonusPosition = await BonusPosition.findOne({
 			where: {
@@ -39,25 +53,34 @@ export class BonusPositionService {
 		return bonusPosition;
 	}
 
-	async getBonusPositionByBonusType(period_id: number, bonus_type: BonusTypeEnumType): Promise<BonusPosition[] | null> {
+	async getBonusPositionByBonusType(
+		period_id: number,
+		bonus_type: BonusTypeEnumType
+	): Promise<BonusPosition[] | null> {
 		const bonusPosition = await BonusPosition.findAll({
 			where: {
 				period_id: period_id,
 				bonus_type: bonus_type,
 			},
-		})
+		});
 		return bonusPosition;
 	}
-	async getMultiplier(period_id: number, bonus_type: BonusTypeEnumType, position: number): Promise<number | undefined> {
-        const multiplier = (await BonusPosition.findOne({
-            where: {
-                period_id: period_id,
-                bonus_type: bonus_type,
-				position: position
-            }
-        }))?.multiplier
-        return multiplier
-    }
+	async getMultiplier(
+		period_id: number,
+		bonus_type: BonusTypeEnumType,
+		position: number
+	): Promise<number | undefined> {
+		const multiplier = (
+			await BonusPosition.findOne({
+				where: {
+					period_id: period_id,
+					bonus_type: bonus_type,
+					position: position,
+				},
+			})
+		)?.multiplier;
+		return multiplier;
+	}
 	async getAllBonusPosition(): Promise<BonusPosition[] | null> {
 		const bonusPosition = await BonusPosition.findAll();
 		return bonusPosition;

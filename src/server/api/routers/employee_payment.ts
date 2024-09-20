@@ -75,7 +75,7 @@ export const employeePaymentRouter = createTRPCRouter({
 			const employeePaymentService = container.resolve(
 				EmployeePaymentService
 			);
-			await employeePaymentService.autoCalculateEmployeePayment(
+			return await employeePaymentService.autoCalculateEmployeePayment(
 				input.period_id,
 				input.emp_no_list
 			);
