@@ -77,7 +77,7 @@ function getTableComponent(
     }
 }
 
-export default function TablesView() {
+export default function BonusFilter() {
     const { selectedBonusType } = useContext(dataTableContext);
     return (
         <DataTableContextProvider>
