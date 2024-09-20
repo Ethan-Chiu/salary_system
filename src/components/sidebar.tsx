@@ -60,11 +60,6 @@ function CompNavLinkWrap(props: PropsWithChildren<NavLinkProp>) {
 					<Link
 						key={props.navLinkEntry.url}
 						href={props.navLinkEntry.url}
-						onClick={() => {
-							if (!props.navLinkEntry.collapsed) {
-								props.expandFunction();
-							}
-						}}
 						className={cn(
 							buttonVariants({ variant: "ghost" }),
 							props.currentPath === props.navLinkEntry.url &&
@@ -261,7 +256,8 @@ export function Sidebar({
   const { ref, width } = useComponentSize();
 
   useEffect(() => {
-    if (width < 100) {
+    console.log(width)
+    if (width < 100 ) {
       collapseFunction();
     }
   })
