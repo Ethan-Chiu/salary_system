@@ -47,7 +47,7 @@ export const PerpageLayoutNav = (
 						<ResizablePanel
 							ref={ref}
 							defaultSize={265}
-							collapsedSize={3}
+							collapsedSize={4}
 							collapsible
 							minSize={10}
 							maxSize={15}
@@ -72,7 +72,6 @@ export const PerpageLayoutNav = (
 								isCollapsed={isCollapsed}
 								collapseFunction={() => ref.current?.collapse()}
 								expandFunction={() => ref.current?.expand()}
-								className="hidden lg:block lg:border-border"
 							/>
 						</ResizablePanel>
 						<ResizableHandle />

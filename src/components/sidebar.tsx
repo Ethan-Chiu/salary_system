@@ -2,7 +2,7 @@ import { cn } from "~/lib/utils";
 import { buttonVariants } from "~/components/ui/button";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useContext, type PropsWithChildren } from "react";
+import { useContext, type PropsWithChildren, useEffect } from "react";
 import { api } from "~/utils/api";
 import {
 	GanttChartSquare,
@@ -29,6 +29,7 @@ import { DialogTrigger } from "@radix-ui/react-dialog";
 import periodContext from "./context/period_context";
 import PeriodSelector from "./period_selector";
 import { useTranslation } from "react-i18next";
+import { useComponentSize } from "~/lib/utils/size_hook";
 
 export type Playlist = (typeof playlists)[number];
 
@@ -122,7 +123,7 @@ function CompSelectItemWrap(props: PropsWithChildren<SelectItemProp>) {
 						<DialogTrigger
 							className={cn(
 								buttonVariants({ variant: "ghost" }),
-								"w-full justify-start"
+                "w-full items-center justify-center"
 							)}
 						>
 							<props.selectItemEntry.icon className="h-4 w-4" />
@@ -257,14 +258,22 @@ export function Sidebar({
 
 	const { t } = useTranslation(["nav", "common"]);
 
+  const { ref, width } = useComponentSize();
+
+  useEffect(() => {
+    if (width < 100) {
+      collapseFunction();
+    }
+  })
+
 	if (isLoading) {
 		return <></>;
 	}
 
-
 	return (
-		<div className={cn("pb-12", className)}>
+		<div ref={ref} className={cn("pb-12", className)}>
 			<div className="space-y-2 py-4">
+        {/* Select */}
 				<div className={cn("py-2", !isCollapsed && "px-3")}>
 					{!isCollapsed && (
 						<div className="mb-2 line-clamp-1 break-all px-4 text-lg font-semibold tracking-tight">
@@ -286,6 +295,7 @@ export function Sidebar({
 					</div>
 				</div>
 				{isCollapsed && <Separator />}
+        {/* Action */}
 				{data?.actions && (
 					<div className={cn("py-2", !isCollapsed && "px-3")}>
 						{!isCollapsed && (
@@ -310,6 +320,7 @@ export function Sidebar({
 					</div>
 				)}
 				{isCollapsed && <Separator />}
+        {/* Setting */}
 				<div className={cn("py-2", !isCollapsed && "px-3")}>
 					{!isCollapsed && (
 						<div className="mb-2 line-clamp-1 break-all px-4 text-lg font-semibold tracking-tight">
