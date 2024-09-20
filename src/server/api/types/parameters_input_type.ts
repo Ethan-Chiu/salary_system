@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { Id, DateAPI, DateService, User } from "./common_type";
 import { BonusTypeEnum } from "./bonus_type_enum";
+import { WorkTypeEnum } from "./work_type_enum";
 
 export const createUserAPI = User.merge(DateAPI);
 export const createUserService = User.merge(DateService);
@@ -109,7 +110,7 @@ export const updateInsuranceRateSettingService = InsuranceRateSetting.merge(Id)
 const BonusWorkType = z.object({
 	period_id: z.number(),
 	bonus_type: BonusTypeEnum,
-	work_type: z.string(),
+	work_type: WorkTypeEnum,
 	multiplier: z.number(),
 });
 

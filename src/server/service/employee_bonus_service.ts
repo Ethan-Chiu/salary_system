@@ -220,7 +220,12 @@ export class EmployeeBonusService {
 				bonus_department_list!.filter(
 					(e) => e.department === employee_data?.department
 				)[0]!.multiplier;
+			this.updateEmployeeBonus({
+				id: emp.id,
+				multiplier: emp.special_multiplier,
+			})
 		});
+		return candidatelist;
 	}
 	async deleteEmployeeBonus(id: number) {
 		const result = await EmployeeBonus.destroy({

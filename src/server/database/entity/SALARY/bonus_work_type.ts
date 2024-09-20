@@ -7,6 +7,7 @@ import {
 	Sequelize,
 } from "sequelize";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
+import { WorkTypeEnumType } from "~/server/api/types/work_type_enum";
 
 export class BonusWorkType extends Model<
 	InferAttributes<BonusWorkType>,
@@ -16,7 +17,7 @@ export class BonusWorkType extends Model<
 	declare id: CreationOptional<number>;
     declare period_id: number;
     declare bonus_type: BonusTypeEnumType;
-	declare work_type: string;
+	declare work_type: WorkTypeEnumType;
 	declare multiplier: number;
 
 	// timestamps!

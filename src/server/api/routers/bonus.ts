@@ -19,6 +19,7 @@ import {
 	createBonusWorkTypeAPI,
 	updateBonusDepartmentAPI,
 } from "../types/parameters_input_type";
+import { WorkTypeEnum } from "../types/work_type_enum";
 // 改Enum
 export const bonusRouter = createTRPCRouter({
 	getAllEmpBonus: publicProcedure.input(z.object({})).query(async () => {
@@ -158,7 +159,7 @@ export const bonusRouter = createTRPCRouter({
 			z.object({
 				period_id: z.number(),
 				bonus_type: BonusTypeEnum,
-				work_type: z.string(),
+				work_type: WorkTypeEnum,
 				multiplier: z.number(),
 			})
 		)
@@ -296,7 +297,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				id: z.number(),
-				work_type: z.string(),
+				work_type: WorkTypeEnum,
 				multiplier: z.number(),
 			})
 		)
