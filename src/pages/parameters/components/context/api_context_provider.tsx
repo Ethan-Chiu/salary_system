@@ -38,6 +38,10 @@ export default function ApiFunctionsProvider({
 	const getLevel = () => 
 		api.parameters.getAllLevel.useQuery();
 
+	const getSalaryIncomeTax = () => 
+		api.parameters.getAllSalaryIncomeTax.useQuery();
+
+
 	const functionsDictionary: Record<ParameterTableEnum, QueryFunctionsApi> = {
 		TableAttendance: {
 			queryFunction: getAttendanceSetting,
@@ -57,6 +61,9 @@ export default function ApiFunctionsProvider({
 		TableLevel: {
 			queryFunction: getLevel,
 		},
+		TableSalaryIncomeTax: {
+			queryFunction: getSalaryIncomeTax,
+		}
 	};
 
 	// Return the provider with the functions

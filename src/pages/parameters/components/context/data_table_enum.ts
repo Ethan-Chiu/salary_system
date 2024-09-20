@@ -30,6 +30,8 @@ function getTableName(table: TableEnum) {
 			return "trustMoney";
 		case "TableBasicInfo":
 			return "basicInfo";
+		case "TableSalaryIncomeTax":
+			return "salaryIncomeTax";
 	}
 }
 
