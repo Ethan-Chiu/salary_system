@@ -1,17 +1,18 @@
 import React, { createContext, PropsWithChildren, useContext } from "react";
 import { api } from "~/utils/api";
-import { BonusTableEnum } from "../../bonus_tables";
 import {
 	UseTRPCMutationResult,
 	UseTRPCQueryResult,
 } from "@trpc/react-query/shared";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
+import { TableEnum } from "../context/data_table_enum";
 
 interface FunctionsApi {
 	queryFunction: (() => UseTRPCQueryResult<any, any>) | undefined;
 	updateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	createFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	deleteFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
+	autoCalculateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 }
 
 export const bonusToolbarFunctionsContext = createContext<FunctionsApi>({
@@ -19,10 +20,11 @@ export const bonusToolbarFunctionsContext = createContext<FunctionsApi>({
 	updateFunction: undefined,
 	createFunction: undefined,
 	deleteFunction: undefined,
+	autoCalculateFunction: undefined,
 });
 
 interface ToolbarFunctionsProviderProps {
-	selectedTableType: BonusTableEnum;
+	selectedTableType: TableEnum;
 	period_id: number;
 	bonus_type: BonusTypeEnumType;
 }
@@ -193,7 +195,32 @@ export default function BonusToolbarFunctionsProvider({
 	// 	});
 	// //#endregion
 
-	const functionsDictionary: Record<BonusTableEnum, FunctionsApi> = {
+	//#region <EmployeeBonus>
+	const getEmployeeBonus = () =>
+		api.bonus.getEmployeeBonus.useQuery({ period_id, bonus_type });
+	const updateEmployeeBonus = api.bonus.updateEmployeeBonus.useMutation({
+		onSuccess: () => {
+			ctx.bonus.getEmployeeBonus.invalidate();
+		},
+	});
+	const createEmployeeBonus = api.bonus.createEmployeeBonus.useMutation({
+		onSuccess: () => {
+			ctx.bonus.getEmployeeBonus.invalidate();
+		},
+	});
+	const deleteEmployeeBonus = api.bonus.deleteEmployeeBonus.useMutation({
+		onSuccess: () => {
+			ctx.bonus.getEmployeeBonus.invalidate();
+		},
+	});
+	const autoCalculateEmployeeBonus = api.bonus.autoCalculateEmployeeBonus.useMutation({
+		onSuccess: () => {
+			ctx.bonus.getEmployeeBonus.invalidate();
+		},
+	});
+	//#endregion
+
+	const functionsDictionary: Record<TableEnum, FunctionsApi> = {
 		// TableBonusSetting: {
 		// 	queryFunction: getBonusSetting,
 		// 	updateFunction: updateBonusSetting,
@@ -205,30 +232,35 @@ export default function BonusToolbarFunctionsProvider({
 			updateFunction: updateBonusWorkType,
 			createFunction: createBonusWorkType,
 			deleteFunction: deleteBonusWorkType,
+			autoCalculateFunction: undefined,
 		},
 		TableBonusDepartment: {
 			queryFunction: getBonusDepartment,
 			updateFunction: updateBonusDepartment,
 			createFunction: createBonusDepartment,
 			deleteFunction: deleteBonusDepartment,
+			autoCalculateFunction: undefined,
 		},
 		TableBonusPosition: {
 			queryFunction: getBonusPosition,
 			updateFunction: updateBonusPosition,
 			createFunction: createBonusPosition,
 			deleteFunction: deleteBonusPosition,
+			autoCalculateFunction: undefined,
 		},
 		TableBonusPositionType: {
 			queryFunction: getBonusPositionType,
 			updateFunction: updateBonusPositionType,
 			createFunction: createBonusPositionType,
 			deleteFunction: deleteBonusPositionType,
+			autoCalculateFunction: undefined,
 		},
 		TableBonusSeniority: {
 			queryFunction: getBonusSeniority,
 			updateFunction: updateBonusSeniority,
 			createFunction: createBonusSeniority,
 			deleteFunction: deleteBonusSeniority,
+			autoCalculateFunction: undefined,
 		},
 		// TablePerformanceLevel: {
 		// 	queryFunction: getPerformanceLevel,
@@ -236,6 +268,13 @@ export default function BonusToolbarFunctionsProvider({
 		// 	createFunction: createPerformanceLevel,
 		// 	deleteFunction: deletePerformanceLevel,
 		// },
+		TableEmployeeBonus: {
+			queryFunction: getEmployeeBonus,
+			updateFunction: updateEmployeeBonus,
+			createFunction: createEmployeeBonus,
+			deleteFunction: deleteEmployeeBonus,
+			autoCalculateFunction: autoCalculateEmployeeBonus,
+		}
 	};
 
 	// Return the provider with the functions

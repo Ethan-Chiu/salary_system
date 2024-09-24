@@ -229,7 +229,12 @@
     "salary_start": "起",
     "salary_end": "迄",
     "dependent": "扶養人數",
-    "tax_amount": "稅額"
+    "tax_amount": "稅額",
+    "special_multiplier": "特殊倍率",
+    "fixed_amount": "固定金額",
+    "budget_amount": "預算金額",
+    "superviser_amount": "主管建議金額",
+    "final_amount": "最終金額"
   },
   "table_name": {
     "attendanceSetting": "請假加班",

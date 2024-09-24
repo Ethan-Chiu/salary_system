@@ -9,25 +9,42 @@ import { BonusSeniorityService } from "~/server/service/bonus_seniority_service"
 import { BonusDepartmentService } from "~/server/service/bonus_department_service";
 import { BonusPositionTypeService } from "~/server/service/bonus_position_type_service";
 import { BonusPositionService } from "~/server/service/bonus_position_service";
-import { get } from "http";
 import {
 	batchCreateBonusDepartmentAPI,
 	batchCreateBonusPositionAPI,
 	batchCreateBonusPositionTypeAPI,
 	batchCreateBonusSeniorityAPI,
 	batchCreateBonusWorkTypeAPI,
-	createBonusWorkTypeAPI,
-	updateBonusDepartmentAPI,
-    updateEmployeeBonusAPI,
+	createEmployeeBonusAPI,
+	updateEmployeeBonusAPI,
 } from "../types/parameters_input_type";
 import { WorkTypeEnum } from "../types/work_type_enum";
+import { roundProperties } from "~/server/database/mapper/helper_function";
 // 改Enum
 export const bonusRouter = createTRPCRouter({
-	getAllEmployeeBonus: publicProcedure.input(z.object({})).query(async () => {
-		const bonusService = container.resolve(EmployeeBonusService);
-		const result = await bonusService.getAllEmployeeBonus();
-		return result;
-	}),
+	getAllEmployeeBonus: publicProcedure
+		.input(
+			z.object({
+				period_id: z.number(),
+				bonus_type: BonusTypeEnum,
+			})
+		).query(async ({ input }) => {
+			const bonusService = container.resolve(EmployeeBonusService);
+			const result = await bonusService.getAllEmployeeBonus(input.period_id, input.bonus_type);
+			return result.map((e) => roundProperties(e, 1));
+		}),
+	getEmployeeBonus: publicProcedure
+		.input(
+			z.object({
+				period_id: z.number(),
+				bonus_type: BonusTypeEnum,
+			})
+		)
+		.query(async ({ input }) => {
+			const bonusService = container.resolve(EmployeeBonusService);
+			const result = await bonusService.getEmployeeBonus(input.period_id, input.bonus_type);
+			return result.map((e) => roundProperties(e, 1));
+		}),
 	getCandidateEmployeeBonus: publicProcedure
 		.input(
 			z.object({
@@ -37,21 +54,6 @@ export const bonusRouter = createTRPCRouter({
 		)
 		.query(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
-			const result = await empBonusService.getCandidateEmployeeBonus(
-				input.period_id,
-				input.bonus_type
-			);
-			return result;
-		}),
-	createAllEmployeeBonus: publicProcedure
-		.input(
-			z.object({
-				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
-			})
-		)
-		.mutation(async ({ input }) => {
-			const empBonusService = container.resolve(EmployeeBonusService);
 			const all_emp_no_list = (
 				await EmployeeData.findAll({
 					attributes: ["emp_no", "work_status"],
@@ -59,22 +61,65 @@ export const bonusRouter = createTRPCRouter({
 			)
 				.filter((emp) => emp.work_status != "離職人員")
 				.map((emp) => emp.emp_no);
-			const result = await empBonusService.createEmployeeBonusByEmpNoList(
+			await empBonusService.createEmployeeBonusByEmpNoList(
 				input.period_id,
 				input.bonus_type,
 				all_emp_no_list
 			);
+			const result = await empBonusService.getCandidateEmployeeBonus(
+				input.period_id,
+				input.bonus_type
+			);
+			return result.map((e) => roundProperties(e, 1));
+		}),
+	createEmployeeBonus: publicProcedure
+		.input(
+			createEmployeeBonusAPI
+		)
+		.mutation(async ({ input }) => {
+			const empBonusService = container.resolve(EmployeeBonusService);
+			const result = await empBonusService.createEmployeeBonus(input);
 			return result;
 		}),
-    updateEmployeeBonus: publicProcedure
-        .input(
-            updateEmployeeBonusAPI
-        )
-        .mutation(async ({ input }) => {
-            const empBonusService = container.resolve(EmployeeBonusService);
-            const result = await empBonusService.updateEmployeeBonus(input);
-            return result;
-        }),
+	updateEmployeeBonus: publicProcedure
+		.input(
+			updateEmployeeBonusAPI
+		)
+		.mutation(async ({ input }) => {
+			const empBonusService = container.resolve(EmployeeBonusService);
+			const result = await empBonusService.updateEmployeeBonus(input);
+			return result;
+		}),
+	deleteEmployeeBonus: publicProcedure
+		.input(
+			z.object({
+				id: z.number(),
+			})
+		)
+		.mutation(async ({ input }) => {
+			const empBonusService = container.resolve(EmployeeBonusService);
+			const result = await empBonusService.deleteEmployeeBonus(input.id);
+			return result;
+		}),
+	autoCalculateEmployeeBonus: publicProcedure
+		.input(
+			z.object({
+				period_id: z.number(),
+				bonus_type: BonusTypeEnum,
+				emp_no_list: z.array(z.string()),
+				total_budgets: z.number(),
+			})
+		)
+		.mutation(async ({ input }) => {
+			const empBonusService = container.resolve(EmployeeBonusService);
+			const result = await empBonusService.autoCalculateEmployeeBonus(
+				input.period_id,
+				input.bonus_type,
+				input.emp_no_list,
+				input.total_budgets
+			);
+			return result;
+		}),
 	getBonusWorkType: publicProcedure
 		.input(
 			z.object({

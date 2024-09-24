@@ -4,6 +4,7 @@ import { bonusPositionSchema } from "./configurations/bonus_position_schema";
 import { bonusPositionTypeSchema } from "./configurations/bonus_position_type_schema";
 import { bonusSenioritySchema } from "./configurations/bonus_seniority_schema";
 import { bonusWorkTypeSchema } from "./configurations/bonus_work_type";
+import { employeeBonusSchema } from "./configurations/employee_bonus_schema";
 
 export function getSchema(table: TableEnum) {
 	switch (table) {
@@ -20,6 +21,8 @@ export function getSchema(table: TableEnum) {
 			return bonusPositionTypeSchema;
 		case "TableBonusSeniority":
 			return bonusSenioritySchema;
+		case "TableEmployeeBonus":
+			return employeeBonusSchema;
 		// level
 		// case "TablePerformanceLevel":
 		// 	return performanceLevelSchema;

@@ -23,6 +23,7 @@ import { initTransaction } from "./entity/SALARY/transaction";
 import { initTrustMoney } from "./entity/SALARY/trust_money";
 import{ initSalaryIncomeTax } from "./entity/SALARY/salary_income_tax";
 import { initUser } from "./entity/SALARY/user";
+import { initEmployeeBonus } from "./entity/SALARY/employee_bonus";
 
 const sequelize = container.resolve(Database).connection;
 
@@ -40,6 +41,7 @@ initEmployeeAccount(sequelize);
 initEmployeeData(sequelize);
 initEmployeePayment(sequelize);
 initEmployeeTrust(sequelize);
+initEmployeeBonus(sequelize);
 initHolidaysType(sequelize);
 initInsuranceRateSetting(sequelize);
 initLevelRange(sequelize);

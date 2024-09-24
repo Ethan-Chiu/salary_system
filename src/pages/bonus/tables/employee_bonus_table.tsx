@@ -6,6 +6,8 @@ import { type TableComponentProps } from "../bonus_filter";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 import { I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
+import { useContext, useEffect } from "react";
+import dataTableContext from "../components/context/data_table_context";
 
 export type RowItem = {
     emp_no: string,
@@ -42,10 +44,16 @@ const columns = (t: I18nType) =>
     });
 
 export function EmployeeBonusTable({ period_id, bonus_type, viewOnly }: EmployeeBonusTableProps) {
+    api.bonus.getCandidateEmployeeBonus.useQuery({ period_id, bonus_type });
     const { isLoading, isError, data, error } =
-        api.bonus.getCandidateEmpBonus.useQuery({period_id, bonus_type});
+        api.bonus.getEmployeeBonus.useQuery({ period_id, bonus_type });
     const filterKey: RowItemKey = "emp_no";
     const { t } = useTranslation(["common"]);
+    const { setSelectedTableType } = useContext(dataTableContext);
+
+    useEffect(() => {
+        setSelectedTableType("TableEmployeeBonus");
+    }, []);
 
     if (isLoading) {
         return (

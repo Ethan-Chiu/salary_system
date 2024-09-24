@@ -30,7 +30,6 @@ import { FunctionMode } from "./data_table_functions";
 import GeneralTable from "./general_table";
 import { LoadingSpinner } from "~/components/loading";
 import { FieldConfig } from "~/components/ui/auto-form/types";
-import dataTableContext from "../context/data_table_context";
 import periodContext from "~/components/context/period_context";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 
@@ -57,6 +56,7 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 	const updateFunction = functions.updateFunction!;
 	const createFunction = functions.createFunction!;
 	const deleteFunction = functions.deleteFunction!;
+	const autoCalculateFunction = functions.autoCalculateFunction!;
 	const { isLoading, isError, data, error } = queryFunction();
 	// const { selectedBonusType } = useContext(dataTableContext);
 	const { selectedPeriod } = useContext(periodContext);
