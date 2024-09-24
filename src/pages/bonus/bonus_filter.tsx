@@ -81,7 +81,7 @@ export default function BonusFilter() {
     const { selectedBonusType } = useContext(dataTableContext);
     return (
         <DataTableContextProvider>
-            <ResizablePanelGroup direction="horizontal">
+            <ResizablePanelGroup direction="horizontal" className="rounded-md border-2">
                 {/* left panel */}
                 <ResizablePanel defaultSize={15} minSize={10}>
                     <CompTablesSelector />

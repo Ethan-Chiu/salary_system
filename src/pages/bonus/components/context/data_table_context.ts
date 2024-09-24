@@ -1,21 +1,21 @@
 import React from "react";
 import {
-	type BonusTableEnum,
 	BonusTableEnumValues,
 } from "../../bonus_tables";
 import { type TableObject } from "./data_table_context_provider";
 import { BonusTypeEnum, BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
+import { TableEnum } from "./data_table_enum";
 
 const dataTableContext = React.createContext<{
-	selectedTableType: BonusTableEnum;
-	setSelectedTableType: (table: BonusTableEnum) => void;
+	selectedTableType: TableEnum;
+	setSelectedTableType: (table: TableEnum) => void;
 	selectedBonusType: BonusTypeEnumType;
 	setSelectedBonusType: (bonus_type: BonusTypeEnumType) => void;
 	selectedTable: TableObject | null;
 	setSelectedTable: (table: TableObject | null) => void;
 }>({
 	selectedTableType: BonusTableEnumValues[0],
-	setSelectedTableType: (_: BonusTableEnum) => undefined,
+	setSelectedTableType: (_: TableEnum) => undefined,
 	selectedBonusType: Object.values(BonusTypeEnum.Enum)[0]!,
 	setSelectedBonusType: (_: BonusTypeEnumType) => undefined,
 	selectedTable: null,
