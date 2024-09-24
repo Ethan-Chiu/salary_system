@@ -712,14 +712,15 @@ export const parametersRouter = createTRPCRouter({
 			await salaryIncomeTaxService.deleteSalaryIncomeTax(input.id);
 		}),
 
-	getAllSalaryIncomeTax: publicProcedure.query(async () => {
-		const salaryIncomeTaxService = container.resolve(
-			SalaryIncomeTaxService
-		);
-		const salaryIncomeTax = await salaryIncomeTaxService.getAllSalaryIncomeTax();
-		if (salaryIncomeTax == null) {
-			throw new BaseResponseError("SalaryIncomeTax does not exist");
-		}
-		return salaryIncomeTax;
-	}),
+	getAllSalaryIncomeTax: publicProcedure
+    .query(async () => {
+      const salaryIncomeTaxService = container.resolve(
+        SalaryIncomeTaxService
+      );
+      const salaryIncomeTax = await salaryIncomeTaxService.getAllSalaryIncomeTax();
+      if (salaryIncomeTax == null) {
+        throw new BaseResponseError("SalaryIncomeTax does not exist");
+      }
+      return salaryIncomeTax;
+    }),
 });

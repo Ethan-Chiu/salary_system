@@ -20,7 +20,6 @@ export class EmployeeTrust extends Model<
 	declare org_special_trust_incent_enc: string;
 	declare start_date: string;
 	declare end_date: string | null;
-
 	// timestamps!
 	// createdAt can be undefined during creation
 	declare create_date: CreationOptional<Date>;

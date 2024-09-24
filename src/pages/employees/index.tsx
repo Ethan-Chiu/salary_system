@@ -18,8 +18,9 @@ import { i18n, locales } from '~/components/lang_config'
 const tabOptions = ["table_name.employeeData", "table_name.employeePayment", "table_name.employeeTrust"];
 
 const PageEmployeesContent = () => {
-	const { setSelectedTableType } = useContext(dataTableContext);
+	const { setSelectedTableType} = useContext(dataTableContext);
 	const { selectedPeriod } = useContext(periodContext);
+
 	function getTable(table_name: string) {
 		if (selectedPeriod == null) {
 			return <p>{t("others.select_period")}</p>;

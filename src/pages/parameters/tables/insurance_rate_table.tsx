@@ -121,6 +121,10 @@ export function insuranceRateMapper(
 			value: data.v2_h_i_deduction_tsx_thres,
 		},
 		{
+			parameters: "二代健保補充保費倍數",
+			value: data.v2_h_i_multiplier,
+		},
+		{
 			parameters: c_StartDateStr,
 			value: formatDate("day", data.start_date),
 		},
