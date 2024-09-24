@@ -30,7 +30,7 @@ export function EmployeeTrustTable({ period_id }: any) {
 			period_id: period_id,
 		});
 
-	const { t } = useTranslation(['common']);
+	const { t } = useTranslation(["common"]);
 
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast
@@ -41,7 +41,16 @@ export function EmployeeTrustTable({ period_id }: any) {
 	}
 
 	if (data) {
-		return <DataTableUpdate columns={columns(t)} data={data} />;
+		// TODO: figure out its type
+		return (
+			<DataTableUpdate
+				columns={columns(t)}
+				data={data}
+				historyDataFunction={() =>
+					api.employeeTrust.getAllEmployeeTrust.useQuery()
+				}
+			/>
+		);
 	}
-	return <div />
+	return <div />;
 }

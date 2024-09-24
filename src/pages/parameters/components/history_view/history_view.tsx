@@ -1,4 +1,4 @@
-import { ArrowRightCircle, GitCommitHorizontal, GitCommitVertical } from "lucide-react";
+import { ArrowRightCircle, GitCommitHorizontal } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import { LoadingSpinner } from "~/components/loading";
 import {
@@ -17,8 +17,7 @@ import { DataTable } from "./data_table";
 import { is_date_available } from "~/server/service/helper_function";
 import { Badge } from "~/components/ui/badge";
 import { useTranslation } from "react-i18next";
-import { type TRPCClientErrorLike } from "@trpc/client";
-import { type UseTRPCQueryResult } from "@trpc/react-query/shared";
+import { type HistoryQueryFunctionType } from "~/components/data_table/history_data_type";
 
 export default function HistoryView() {
 	const { selectedTableType } = useContext(dataTableContext);
@@ -32,20 +31,11 @@ export default function HistoryView() {
 	);
 }
 
-interface historyDataType {
-  id: number;
-  start_date: string;
-  end_date: string;
-  update_by: string;
-}
-
-type queryFunctionType = () => UseTRPCQueryResult<historyDataType[], TRPCClientErrorLike<any>>;
-
 function CompHistoryView() {
 	const { selectedTableType } = useContext(dataTableContext);
 
 	const queryFunctions = useContext(apiFunctionsContext);
-	const queryFunction = queryFunctions.queryFunction! as queryFunctionType;
+	const queryFunction = queryFunctions.queryFunction! as HistoryQueryFunctionType;
 
 	const { isLoading, isError, data, error } = queryFunction();
 

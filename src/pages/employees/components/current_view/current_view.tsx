@@ -9,6 +9,7 @@ interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
 	data: TData[];
 }
+
 export function CurrentView<TData>({
 	columns,
 	data,
