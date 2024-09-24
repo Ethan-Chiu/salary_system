@@ -18,16 +18,17 @@ import {
 	batchCreateBonusWorkTypeAPI,
 	createBonusWorkTypeAPI,
 	updateBonusDepartmentAPI,
+    updateEmployeeBonusAPI,
 } from "../types/parameters_input_type";
 import { WorkTypeEnum } from "../types/work_type_enum";
 // 改Enum
 export const bonusRouter = createTRPCRouter({
-	getAllEmpBonus: publicProcedure.input(z.object({})).query(async () => {
+	getAllEmployeeBonus: publicProcedure.input(z.object({})).query(async () => {
 		const bonusService = container.resolve(EmployeeBonusService);
 		const result = await bonusService.getAllEmployeeBonus();
 		return result;
 	}),
-	getCandidateEmpBonus: publicProcedure
+	getCandidateEmployeeBonus: publicProcedure
 		.input(
 			z.object({
 				period_id: z.number(),
@@ -42,7 +43,7 @@ export const bonusRouter = createTRPCRouter({
 			);
 			return result;
 		}),
-	createAllEmpBonus: publicProcedure
+	createAllEmployeeBonus: publicProcedure
 		.input(
 			z.object({
 				period_id: z.number(),
@@ -65,6 +66,15 @@ export const bonusRouter = createTRPCRouter({
 			);
 			return result;
 		}),
+    updateEmployeeBonus: publicProcedure
+        .input(
+            updateEmployeeBonusAPI
+        )
+        .mutation(async ({ input }) => {
+            const empBonusService = container.resolve(EmployeeBonusService);
+            const result = await empBonusService.updateEmployeeBonus(input);
+            return result;
+        }),
 	getBonusWorkType: publicProcedure
 		.input(
 			z.object({
