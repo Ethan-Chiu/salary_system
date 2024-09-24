@@ -89,6 +89,7 @@ export class SyncService {
 		salary_data.quit_date = ehr_data.quit_date!;
 		salary_data.license_id = ehr_data.license_id!;
 		salary_data.bank_account = ehr_data.bank_account!;
+		salary_data.accumulated_bonus = 0;
 		return salary_data;
 	}
 
@@ -99,6 +100,7 @@ export class SyncService {
 	) {
 		const excludedKeys: (keyof EmployeeData)[] = [
 			"id",
+			"accumulated_bonus",
 			"create_date",
 			"create_by",
 			"update_date",

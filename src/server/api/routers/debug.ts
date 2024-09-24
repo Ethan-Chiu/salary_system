@@ -18,6 +18,10 @@ import { BonusPositionType } from "~/server/database/entity/SALARY/bonus_positio
 import { BonusSeniority } from "~/server/database/entity/SALARY/bonus_seniority";
 import { BonusWorkType } from "~/server/database/entity/SALARY/bonus_work_type";
 import { SalaryIncomeTax } from "~/server/database/entity/SALARY/salary_income_tax";
+import { EmployeeBonus } from "~/server/database/entity/SALARY/employee_bonus";
+import { EmployeeData } from "~/server/database/entity/SALARY/employee_data";
+import { InsuranceRateSetting } from "~/server/database/entity/SALARY/insurance_rate_setting";
+import { EmployeePayment } from "~/server/database/entity/SALARY/employee_payment";
 
 export const debugRouter = createTRPCRouter({
 	syncDb: publicProcedure
@@ -81,12 +85,13 @@ export const debugRouter = createTRPCRouter({
 		)
 		.query(async ({ input }) => {
 			const Bonus_list = [
-				BonusDepartment,
-				BonusPosition,
-				BonusPositionType,
-				BonusSeniority,
-				SalaryIncomeTax,
-				BonusWorkType,
+				// BonusDepartment,
+				// BonusPosition,
+				// BonusPositionType,
+				// BonusSeniority,
+				// BonusWorkType,
+				// EmployeeBonus,
+				EmployeePayment,
 			];
 			Bonus_list.forEach(async (model) => {
 				try {

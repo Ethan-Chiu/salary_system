@@ -1,3 +1,4 @@
+import { WorkTypeEnumType } from "~/server/api/types/work_type_enum";
 import { get_date_string } from "~/server/service/helper_function";
 
 export class Emp {
@@ -9,7 +10,7 @@ export class Emp {
 	declare position_type: string;
 	declare group_insurance_type: string;
 	declare department: string;
-	declare work_type: string;
+	declare work_type: WorkTypeEnumType;
 	declare work_status: string;
 	declare disabilty_level: string | null;
 	declare sex_type: string;
@@ -28,7 +29,7 @@ export class Emp {
 		position_type: string,
 		group_insurance_type: string,
 		department: string,
-		work_type: string,
+		work_type: WorkTypeEnumType,
 		work_status: string,
 		disabilty_level: string | null,
 		sex_type: string,

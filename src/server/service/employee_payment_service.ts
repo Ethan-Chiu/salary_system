@@ -23,6 +23,7 @@ export class EmployeePaymentService {
 		supervisor_allowance_enc,
 		occupational_allowance_enc,
 		subsidy_allowance_enc,
+		long_service_allowance_enc,
 		l_r_self_enc,
 		l_i_enc,
 		h_i_enc,
@@ -41,6 +42,7 @@ export class EmployeePaymentService {
 				supervisor_allowance_enc,
 				occupational_allowance_enc,
 				subsidy_allowance_enc,
+				long_service_allowance_enc,
 				l_r_self_enc: l_r_self_enc,
 				l_i_enc: l_i_enc,
 				h_i_enc: h_i_enc,
@@ -164,6 +166,7 @@ export class EmployeePaymentService {
 		supervisor_allowance_enc,
 		occupational_allowance_enc,
 		subsidy_allowance_enc,
+		long_service_allowance_enc,
 		l_r_self_enc,
 		l_i_enc,
 		h_i_enc,
@@ -198,6 +201,10 @@ export class EmployeePaymentService {
 				subsidy_allowance_enc: select_value(
 					subsidy_allowance_enc,
 					employeePayment.subsidy_allowance_enc
+				),
+				long_service_allowance_enc: select_value(
+					long_service_allowance_enc,
+					employeePayment.long_service_allowance_enc
 				),
 				l_r_self_enc: select_value(
 					l_r_self_enc,

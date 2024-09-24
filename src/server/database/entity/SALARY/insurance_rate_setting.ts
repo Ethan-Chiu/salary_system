@@ -22,6 +22,7 @@ export class InsuranceRateSetting extends Model<
 	declare h_i_avg_dependents_count: number;
 	declare v2_h_i_supp_pay_rate: number;
 	declare v2_h_i_deduction_tsx_thres: number;
+	declare v2_h_i_multiplier: number;
 	// 少一個二代健保倍數
 	declare start_date: string;
 	declare end_date: string | null;
@@ -87,6 +88,12 @@ export function initInsuranceRateSetting(sequelize: Sequelize) {
 				type: DataTypes.FLOAT,
 				unique: false,
 				allowNull: false,
+			},
+			v2_h_i_multiplier: {
+				type: DataTypes.FLOAT,
+				unique: false,
+				allowNull: false,
+				defaultValue: 4,
 			},
 			start_date: {
 				type: DataTypes.STRING(128),

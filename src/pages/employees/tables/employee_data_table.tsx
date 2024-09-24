@@ -22,7 +22,7 @@ const columns = (t: I18nType) =>
 		"quit_date",
 		"license_id",
 		"bank_account",
-		"month_salary",
+		"accumulated_bonus",
 	].map((key) => {
 		return {
 			accessorKey: key,

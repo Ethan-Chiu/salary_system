@@ -46,6 +46,7 @@ export class EmployeePaymentMapper {
                 supervisor_allowance: Number(CryptoHelper.decrypt(employee_payment.supervisor_allowance_enc)),
                 occupational_allowance: Number(CryptoHelper.decrypt(employee_payment.occupational_allowance_enc)),
                 subsidy_allowance: Number(CryptoHelper.decrypt(employee_payment.subsidy_allowance_enc)),
+                long_service_allowance: Number(CryptoHelper.decrypt(employee_payment.long_service_allowance_enc)),
                 l_r_self: Number(CryptoHelper.decrypt(employee_payment.l_r_self_enc)),
                 l_i: Number(CryptoHelper.decrypt(employee_payment.l_i_enc)),
                 h_i: Number(CryptoHelper.decrypt(employee_payment.h_i_enc)),

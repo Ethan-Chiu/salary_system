@@ -24,6 +24,7 @@ export class InsuranceRateSettingService {
 		h_i_avg_dependents_count,
 		v2_h_i_supp_pay_rate,
 		v2_h_i_deduction_tsx_thres,
+		v2_h_i_multiplier,
 		start_date,
 		end_date,
 	}: z.infer<
@@ -41,6 +42,7 @@ export class InsuranceRateSettingService {
 			h_i_avg_dependents_count: h_i_avg_dependents_count,
 			v2_h_i_supp_pay_rate: v2_h_i_supp_pay_rate,
 			v2_h_i_deduction_tsx_thres: v2_h_i_deduction_tsx_thres,
+			v2_h_i_multiplier: v2_h_i_multiplier,
 			start_date: start_date ?? current_date_string,
 			end_date: end_date,
 			create_by: "system",
@@ -110,6 +112,7 @@ export class InsuranceRateSettingService {
 		h_i_avg_dependents_count,
 		v2_h_i_supp_pay_rate,
 		v2_h_i_deduction_tsx_thres,
+		v2_h_i_multiplier,
 		start_date,
 		end_date,
 	}: z.infer<typeof updateInsuranceRateSettingService>): Promise<void> {
@@ -155,6 +158,10 @@ export class InsuranceRateSettingService {
 				v2_h_i_deduction_tsx_thres: select_value(
 					v2_h_i_deduction_tsx_thres,
 					insuranceSetting.v2_h_i_deduction_tsx_thres
+				),
+				v2_h_i_multiplier: select_value(
+					v2_h_i_multiplier,
+					insuranceSetting.v2_h_i_multiplier
 				),
 				start_date: select_value(
 					start_date,
