@@ -246,7 +246,7 @@ export function HistoryView<TData>({
 									{employees.map((employee) => (
 										<CommandItem
 											key={employee.emp_no}
-											value={employee.emp_no}
+											value={`${employee.emp_no} ${employee.emp_name}`}
 											onSelect={() => {
 												setSelectedEmpNo(
 													employee.emp_no
