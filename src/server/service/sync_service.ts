@@ -443,6 +443,7 @@ export class SyncService {
 					supervisor_allowance: 0,
 					occupational_allowance: 0,
 					subsidy_allowance: 0,
+					long_service_allowance: 0,
 					l_r_self: 0,
 					l_i: 0,
 					h_i: 0,
