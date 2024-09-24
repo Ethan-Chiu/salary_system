@@ -1,7 +1,7 @@
 import AutoForm from "~/components/ui/auto-form";
 import * as z from "zod";
 import { Button } from "~/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
 	Table,
@@ -32,6 +32,7 @@ import { LoadingSpinner } from "~/components/loading";
 import { FieldConfig } from "~/components/ui/auto-form/types";
 import periodContext from "~/components/context/period_context";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
+import { Input } from "~/components/ui/input";
 
 interface BonusFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
@@ -126,6 +127,24 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 		);
 	}
 
+	if (mode === "auto_calculate") {
+		return (
+			<AutoCalculateForm
+				onAutoCalculate={(totalBudgets: number) => {
+					autoCalculateFunction.mutate({
+						period_id: selectedPeriod!.period_id,
+						bonus_type,
+						total_budgets: totalBudgets,
+					});
+					closeSheet();
+				}}
+				onCancel={
+					closeSheet
+				}
+			/>
+		)
+	}
+
 
 	// Select one entry
 	if (mode !== "create" && selectedData === null) {
@@ -210,6 +229,42 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 	);
 }
 
+const AutoCalculateForm = ({
+	onAutoCalculate,
+	onCancel,
+}: {
+	onAutoCalculate: (totalBudgets: number) => void;
+	onCancel: () => void;
+}) => {
+	const [totalBudgets, setTotalBudgets] = useState<number>(0);
+	const { t } = useTranslation(["common"]);
+
+	return (
+		<div className="flex flex-col h-full w-full">
+			<div className="flex flex-row items-center m-4">
+				<div className="w-1/5 text-center">{t("table.total_budgets")}</div>
+				<Input
+					className="w-full left-4 top-4"
+					placeholder={t("others.filter_setting")}
+					onChange={(e) => setTotalBudgets(Number(e.target.value))}
+				/>
+			</div>
+			<div className="flex justify-between">
+				<Button
+					type="button"
+					variant={"outline"}
+					onClick={onCancel}
+				>
+					{t("button.cancel")}
+				</Button>
+				<Button onClick={() => onAutoCalculate(totalBudgets)}>
+					{t("button.auto_calculate")}
+				</Button>
+			</div>
+		</div>
+	)
+}
+
 const CompViewAllDatas = ({
 	dataNoID,
 	mode,
@@ -218,45 +273,56 @@ const CompViewAllDatas = ({
 }: {
 	dataNoID: any[];
 	mode: FunctionMode;
-	onUpdate: Function;
-	onDelete: Function;
+	onUpdate: (index: number) => void;
+	onDelete: (index: number) => void;
 }) => {
+	const [filterValue, setFilterValue] = useState<string>("");
+	const [filteredDataList, setFilteredDataList] =
+		useState(dataNoID);
+
+	useEffect(() => {
+		const filteredData = dataNoID?.filter((data) => {
+			return Object.values(data).some((value: any) =>
+				value ? value.toString().includes(filterValue) : false
+			);
+		});
+		setFilteredDataList(filteredData);
+	}, [dataNoID, filterValue]);
+
 	const { t } = useTranslation(["common"]);
+
 	return (
 		<>
-			{dataNoID && (
-				<div className="m-4">
+			<div className="flex h-10 items-center justify-between">
+				<Input
+					className="w-1/10 absolute left-4 top-4"
+					placeholder={t("others.filter_setting")}
+					onChange={(e) => setFilterValue(e.target.value)}
+				></Input>
+			</div>
+			<div className="m-4">
+				{filteredDataList.length != 0 && filteredDataList[0] ? (
 					<Table>
 						<TableHeader>
 							<TableRow>
-								<TableHead className="whitespace-nowrap text-center"></TableHead>
-								{dataNoID[0] ? (
-									Object.keys(dataNoID[0]).map(
-										(key: string) => {
-											return (
-												<TableHead
-													key={key}
-													className="whitespace-nowrap text-center"
-												>
-													{t(`table.${key}`)}
-												</TableHead>
-											);
-										}
-									)
-								) : (
-									<TableCell
-										colSpan={5}
-										className="h-24 text-center"
-									>
-										{t('table.no_data')}
-									</TableCell>
+								{Object.keys(filteredDataList[0]).map(
+									(key: string) => {
+										return (
+											<TableHead
+												key={key}
+												className="whitespace-nowrap text-center"
+											>
+												{t(`table.${key}`)}
+											</TableHead>
+										);
+									}
 								)}
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{dataNoID?.map((data: any, index: number) => {
+							{filteredDataList.map((data, index: number) => {
 								return (
-									<TableRow key={data.id}>
+									<TableRow key={data.emp_no}>
 										<TableCell className="items-center">
 											{mode === "update" && (
 												<PenSquare
@@ -277,10 +343,12 @@ const CompViewAllDatas = ({
 												/>
 											)}
 										</TableCell>
-										{Object.keys(data).map((key, index) => {
+										{Object.keys(data).map((key) => {
 											return (
-												<TableCell className="text-center font-medium whitespace-nowrap">
-													{/* {isDate(data[key]) ? data[key].toDateString() : data[key]} */}
+												<TableCell
+													key={key}
+													className="whitespace-nowrap text-center font-medium"
+												>
 													{data[key]}
 												</TableCell>
 											);
@@ -290,8 +358,10 @@ const CompViewAllDatas = ({
 							})}
 						</TableBody>
 					</Table>
-				</div>
-			)}
+				) : (
+					<div className="m-4"> {t("table.no_data")} </div>
+				)}
+			</div>
 		</>
 	);
 };

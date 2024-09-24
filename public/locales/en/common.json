@@ -234,7 +234,8 @@
     "fixed_amount": "Fixed Amount",
     "budget_amount": "Budget Amount",
     "superviser_amount": "Superviser Amount",
-    "final_amount": "Final Amount"
+    "final_amount": "Final Amount",
+    "total_budgets": "Total Budgets"
   },
   "table_name": {
     "attendanceSetting": "Attendance Setting",
@@ -255,6 +256,7 @@
     "employeeData": "Employee Data",
     "employeePayment": "Employee Payment",
     "employeeTrust": "Employee Trust",
+    "employeeBonus": "Employee Bonus",
     "allowance": "Allowance",
     "holiday": "Holiday",
     "overtime": "Overtime",
