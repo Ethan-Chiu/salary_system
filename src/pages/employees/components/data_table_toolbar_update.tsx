@@ -17,10 +17,11 @@ interface DataTableToolbarProps<TData> {
 export function DataTableToolbarUpdate<TData>({
 	filterColumnKey,
 }: DataTableToolbarProps<TData>) {
-	const { selectedTableType, selectedTable } = useContext(dataTableContext);
+	const { selectedTab, selectedTableType, selectedTable } =
+		useContext(dataTableContext);
 	const { selectedPeriod } = useContext(periodContext);
 
-  const { t } = useTranslation(["common"]);
+	const { t } = useTranslation(["common"]);
 
 	const table = selectedTable?.table;
 
@@ -37,17 +38,14 @@ export function DataTableToolbarUpdate<TData>({
 			{/* search bar */}
 			<ToolbarFilter table={table} filterColumnKey={filterColumnKey} />
 			{/* tabs */}
-      <TabsList className="grid h-8 w-96 grid-cols-2">
-        <TabsTrigger value={EmpTabsEnum.Enum.current} className="h-6">
-          {t("table.current")}
-        </TabsTrigger>
-        <TabsTrigger
-          value={EmpTabsEnum.Enum.history}
-          className="h-6"
-        >
-          {t("table.history")}
-        </TabsTrigger>
-      </TabsList>
+			<TabsList className="grid h-8 w-96 grid-cols-2">
+				<TabsTrigger value={EmpTabsEnum.Enum.current} className="h-6">
+					{t("table.current")}
+				</TabsTrigger>
+				<TabsTrigger value={EmpTabsEnum.Enum.history} className="h-6">
+					{t("table.history")}
+				</TabsTrigger>
+			</TabsList>
 			{/* functions */}
 			<div className="flex">
 				<DataTableViewOptions table={table} />
@@ -57,7 +55,11 @@ export function DataTableToolbarUpdate<TData>({
 							tableType={selectedTableType}
 							period_id={selectedPeriod.period_id}
 						>
-							<DataTableFunctions tableType={selectedTableType} />
+							{selectedTab === EmpTabsEnum.Enum.current && (
+								<DataTableFunctions
+									tableType={selectedTableType}
+								/>
+							)}
 						</EmployeeToolbarFunctionsProvider>
 					)}
 				</div>

@@ -1,4 +1,9 @@
-import { ArrowRightCircle, GitCommitHorizontal } from "lucide-react";
+import {
+	ArrowRightCircle,
+	Check,
+	ChevronsUpDown,
+	GitCommitHorizontal,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { LoadingSpinner } from "~/components/loading";
 import {
@@ -15,13 +20,20 @@ import { useTranslation } from "react-i18next";
 import { type HistoryQueryFunctionType } from "~/components/data_table/history_data_type";
 import { type ColumnDef } from "@tanstack/react-table";
 import {
-	Select,
-	SelectContent,
-	SelectTrigger,
-	SelectGroup,
-	SelectItem,
-} from "~/components/ui/select";
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from "~/components/ui/command";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "~/components/ui/popover";
 import { Separator } from "~/components/ui/separator";
+import { Button } from "~/components/ui/button";
 
 export interface EmployeeHistoryViewCommonEmpInfo {
 	emp_name: string;
@@ -48,6 +60,7 @@ export function HistoryView<TData>({
 	useEffect(() => {
 		if (!isLoading && data?.[0]) {
 			setSelectedId(data[0].id);
+      setSelectedEmpNo(data[0].emp_no);
 		}
 	}, [isLoading, data]);
 
@@ -180,6 +193,8 @@ export function HistoryView<TData>({
 	}: {
 		data: EmployeeHistoryViewCommonEmpInfo[];
 	}) {
+		const [open, setOpen] = useState(false);
+
 		const seen = new Set<string>();
 		const employees: EmployeeHistoryViewCommonEmpInfo[] = [];
 
@@ -192,31 +207,70 @@ export function HistoryView<TData>({
 
 		return (
 			<div className="p-2">
-				<Select onValueChange={(value) => setSelectedEmpNo(value)}>
-					<SelectTrigger className="w-full">
-						{selectedEmpNo ? (
-							<>
-								{employees.find(
-									(emp) => emp.emp_no === selectedEmpNo
-								)?.emp_name ?? t("others.search_employee")}
-							</>
-						) : (
-							<> {t("others.search_employee")} </>
-						)}
-					</SelectTrigger>
-					<SelectContent>
-						<SelectGroup>
-							{employees.map((employee) => (
-								<SelectItem
-									key={employee.emp_no}
-									value={employee.emp_no}
-								>
-									{employee.emp_name}
-								</SelectItem>
-							))}
-						</SelectGroup>
-					</SelectContent>
-				</Select>
+				<Popover open={open} onOpenChange={setOpen}>
+					{/* Trigger */}
+					<PopoverTrigger asChild>
+						<Button
+							variant="outline"
+							role="combobox"
+							aria-expanded={open}
+							className="w-full justify-between"
+						>
+							{selectedEmpNo ? (
+								<>
+									{`${selectedEmpNo} ${
+										employees.find(
+											(emp) =>
+												emp.emp_no === selectedEmpNo
+										)?.emp_name ??
+										t("others.search_employee")
+									}`}
+								</>
+							) : (
+								<> {t("others.search_employee")} </>
+							)}
+							<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+						</Button>
+					</PopoverTrigger>
+					{/* Employee list */}
+					<PopoverContent className="p-0">
+						<Command>
+							<CommandInput
+								placeholder={t("others.search_employee")}
+							/>
+							<CommandList>
+								<CommandEmpty>
+									{t("others.no_employee_found")}
+								</CommandEmpty>
+								<CommandGroup>
+									{employees.map((employee) => (
+										<CommandItem
+											key={employee.emp_no}
+											value={`${employee.emp_no} ${employee.emp_name}`}
+											onSelect={() => {
+												setSelectedEmpNo(
+													employee.emp_no
+												);
+												setOpen(false);
+											}}
+										>
+											<Check
+												className={cn(
+													"mr-2 h-4 w-4",
+													selectedEmpNo ===
+														employee.emp_no
+														? "opacity-100"
+														: "opacity-0"
+												)}
+											/>
+											{`${employee.emp_no} ${employee.emp_name}`}
+										</CommandItem>
+									))}
+								</CommandGroup>
+							</CommandList>
+						</Command>
+					</PopoverContent>
+				</Popover>
 			</div>
 		);
 	}
