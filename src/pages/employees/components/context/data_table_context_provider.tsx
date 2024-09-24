@@ -5,6 +5,7 @@ import {
 	EmployeeTableEnumValues,
 } from "../../employee_tables";
 import { type Table } from "@tanstack/react-table";
+import { EmpTabsEnum, type EmpTabsEnumType } from "./employee_tabs_enum";
 
 interface DataTableContextProviderProps {}
 
@@ -18,6 +19,10 @@ export default function DataTableContextProvider({
 	const [selectedTableType, setSelectedTableType] =
 		useState<EmployeeTableEnum>(EmployeeTableEnumValues[0]);
 
+	const [selectedTab, setSelectedTab] = useState<EmpTabsEnumType>(
+		EmpTabsEnum.Enum.current
+	);
+
 	const [selectedTable, setSelectedTable] = useState<EmpTableObject | null>(
 		null
 	);
@@ -27,6 +32,8 @@ export default function DataTableContextProvider({
 			value={{
 				selectedTableType,
 				setSelectedTableType,
+        selectedTab,
+        setSelectedTab,
         selectedTable,
         setSelectedTable,
 			}}
