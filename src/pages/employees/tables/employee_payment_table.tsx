@@ -1,5 +1,5 @@
 import { LoadingSpinner } from "~/components/loading";
-import { DataTable } from "../components/data_table_update";
+import { DataTableUpdate } from "../components/data_table_update";
 import { api } from "~/utils/api";
 import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
@@ -52,7 +52,7 @@ export function EmployeePaymentTable({ period_id }: any) {
 		return (
 			<>
         {isFetched ? (
-          <DataTable columns={columns(t)} data={data} />
+          <DataTableUpdate columns={columns(t)} data={data} />
         ) : (
           <LoadingSpinner />
         )}
