@@ -1,4 +1,3 @@
-import { type Table } from "@tanstack/react-table";
 import { DataTableViewOptions } from "~/components/data_table/toolbar/data_table_view_options";
 import EmployeeToolbarFunctionsProvider from "./function_sheet/employee_functions_context";
 import { DataTableFunctions } from "./function_sheet/data_table_functions";
@@ -9,20 +8,29 @@ import { ToolbarFilter } from "~/components/data_table/toolbar/toolbar_filter";
 import { TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { EmpTabsEnum } from "./context/employee_tabs_enum";
 import { useTranslation } from "react-i18next";
+import { LoadingSpinner } from "~/components/loading";
 
 interface DataTableToolbarProps<TData> {
-	table: Table<TData>;
 	filterColumnKey?: keyof TData;
 }
 
 export function DataTableToolbarUpdate<TData>({
-	table,
 	filterColumnKey,
 }: DataTableToolbarProps<TData>) {
-	const { selectedTableType } = useContext(dataTableContext);
+	const { selectedTableType, selectedTable } = useContext(dataTableContext);
 	const { selectedPeriod } = useContext(periodContext);
 
   const { t } = useTranslation(["common"]);
+
+	const table = selectedTable?.table;
+
+	if (!table) {
+		return (
+			<div className="flex grow items-center justify-center">
+				<LoadingSpinner />
+			</div>
+		); // TODO: Loading element with toast
+	}
 
 	return (
 		<div className="flex flex-row items-center justify-between space-x-2 px-2 py-2">

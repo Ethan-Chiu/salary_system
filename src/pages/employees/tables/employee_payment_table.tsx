@@ -1,5 +1,5 @@
 import { LoadingSpinner } from "~/components/loading";
-import { DataTable } from "../components/data_table_update";
+import { DataTableUpdate } from "../components/data_table_update";
 import { api } from "~/utils/api";
 import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
@@ -32,11 +32,11 @@ const columns = (t: I18nType) =>
 	});
 
 export function EmployeePaymentTable({ period_id }: any) {
-
 	const { isLoading, isFetched, isError, data, error } =
-		api.employeePayment.getCurrentEmployeePayment.useQuery({ period_id }, {
-			
-		});
+		api.employeePayment.getCurrentEmployeePayment.useQuery(
+			{ period_id },
+			{}
+		);
 
 	const { t } = useTranslation(["common"]);
 
@@ -48,15 +48,21 @@ export function EmployeePaymentTable({ period_id }: any) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-
 	if (data) {
 		return (
 			<>
-        {isFetched ? (
-          <DataTable columns={columns(t)} data={data} />
-        ) : (
-          <LoadingSpinner />
-        )}
+				{isFetched ? (
+					// TODO: figure out its type
+					<DataTableUpdate
+						columns={columns(t)}
+						data={data}
+						historyDataFunction={() =>
+							api.employeePayment.getAllEmployeePayment.useQuery()
+						}
+					/>
+				) : (
+					<LoadingSpinner />
+				)}
 			</>
 		);
 	}

@@ -1,5 +1,5 @@
 import { ArrowRightCircle, GitCommitHorizontal } from "lucide-react";
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { LoadingSpinner } from "~/components/loading";
 import {
 	ResizableHandle,
@@ -8,39 +8,26 @@ import {
 } from "~/components/ui/resizable";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { cn } from "~/lib/utils";
-import ApiFunctionsProvider, {
-	apiFunctionsContext,
-} from "../context/api_context_provider";
-import dataTableContext from "../context/data_table_context";
-import { getTableColumn, getTableMapper } from "../../tables/table_columns";
-import { DataTable } from "./data_table";
+import { DataTable } from "./history_data_table";
 import { is_date_available } from "~/server/service/helper_function";
 import { Badge } from "~/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import { type HistoryQueryFunctionType } from "~/components/data_table/history_data_type";
+import { type ColumnDef } from "@tanstack/react-table";
 
-export default function HistoryView() {
-	const { selectedTableType } = useContext(dataTableContext);
-
-	return (
-		<>
-			<ApiFunctionsProvider selectedTableType={selectedTableType}>
-				<CompHistoryView />
-			</ApiFunctionsProvider>
-		</>
-	);
+interface DataTableProps<TData> {
+	columns: ColumnDef<TData, any>[];
+	dataFunction: HistoryQueryFunctionType;
 }
+   
+export function HistoryView<TData>({
+	columns,
+	dataFunction, 
+}: DataTableProps<TData>) {
 
-function CompHistoryView() {
-	const { selectedTableType } = useContext(dataTableContext);
-
-	const queryFunctions = useContext(apiFunctionsContext);
-	const queryFunction = queryFunctions.queryFunction! as HistoryQueryFunctionType;
-
-	const { isLoading, isError, data, error } = queryFunction();
+	const { isLoading, isError, data, error } = dataFunction();
 
 	const [selectedId, setSelectedId] = useState<number>(0);
-	const filterKey = "name";
 	const { t } = useTranslation(['common']);
 
 	useEffect(() => {
@@ -125,11 +112,10 @@ function CompHistoryView() {
 			<ResizablePanel defaultSize={75}>
 				{data!.filter((e) => e.id === selectedId).length > 0 ? (
 					<DataTable
-						columns={getTableColumn(selectedTableType, t)}
-						data={getTableMapper(selectedTableType)(
+						columns={columns}
+						data={(
 							data!.filter((e) => e.id === selectedId) as any[]
 						)}
-						filterColumnKey={filterKey}
 					/>
 				) : (
 					<></>

@@ -23,6 +23,7 @@ export function DataTable<TData>({
 	/* filterColumnKey, */
 	showTabs,
 }: DataTableProps<TData>) {
+
 	const { selectedTab, setSelectedTab, selectedTableType } =
 		useContext(dataTableContext);
 
