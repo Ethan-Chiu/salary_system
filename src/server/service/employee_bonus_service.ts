@@ -35,10 +35,10 @@ export class EmployeeBonusService {
 			emp_no: emp_no,
 			special_multiplier: special_multiplier,
 			multiplier: multiplier,
+			fixed_amount: fixed_amount,
 			budget_amount: budget_amount,
 			superviser_amount: superviser_amount,
 			final_amount: final_amount,
-			// received_elderly_benefits: received_elderly_benefits,
 			create_by: "system",
 			update_by: "system",
 		});
@@ -220,7 +220,12 @@ export class EmployeeBonusService {
 				bonus_department_list!.filter(
 					(e) => e.department === employee_data?.department
 				)[0]!.multiplier;
+			this.updateEmployeeBonus({
+				id: emp.id,
+				multiplier: emp.special_multiplier,
+			})
 		});
+		return candidatelist;
 	}
 	async deleteEmployeeBonus(id: number) {
 		const result = await EmployeeBonus.destroy({
