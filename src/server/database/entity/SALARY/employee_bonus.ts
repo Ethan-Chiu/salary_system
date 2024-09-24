@@ -18,8 +18,8 @@ export class EmployeeBonus extends Model<
     declare bonus_type: BonusTypeEnumType;
 	declare emp_no: string;
 	declare special_multiplier: number;
-	declare multiplier: number|null;
-	declare fixed_amount: number|null;
+	declare multiplier: number;
+	declare fixed_amount: number;
 	declare budget_amount: number|null;
 	declare superviser_amount: number|null;
 	declare final_amount: number|null;

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { EmployeeBonusTable } from "./tables/employee_bonus_table";
+import { EmployeeBonusTable } from "./tables/employee_bonus_table_budget";
 import periodContext from "~/components/context/period_context";
 import dataTableContext from "./components/context/data_table_context";
 
