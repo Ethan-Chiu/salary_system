@@ -78,24 +78,8 @@ const InsuranceRateSetting = z.object({
 	h_i_avg_dependents_count: z.number(),
 	v2_h_i_supp_pay_rate: z.number(),
 	v2_h_i_deduction_tsx_thres: z.number(),
+	v2_h_i_multiplier: z.number(),
 });
-export const updateInsuranceRateSettingInput = z
-	.object({
-		id: z.number(),
-		min_wage_rate: z.number().nullable(),
-		l_i_accident_rate: z.number().nullable(),
-		l_i_employment_pay_rate: z.number().nullable(),
-		l_i_occupational_injury_rate: z.number().nullable(),
-		l_i_wage_replacement_rate: z.number().nullable(),
-		h_i_standard_rate: z.number().nullable(),
-		h_i_avg_dependents_count: z.number().nullable(),
-		v2_h_i_supp_pay_rate: z.number().nullable(),
-		v2_h_i_deduction_tsx_thres: z.number().nullable(),
-		start_date: z.date().nullable(),
-		end_date: z.date().nullable(),
-	})
-	.partial();
-
 export const createInsuranceRateSettingAPI =
 	InsuranceRateSetting.merge(DateAPI);
 export const createInsuranceRateSettingService =
@@ -251,7 +235,7 @@ const EmployeeData = z.object({
 	position_type: z.string(),
 	group_insurance_type: z.string(),
 	department: z.string(),
-	work_type: z.string(),
+	work_type: WorkTypeEnum,
 	work_status: z.string(),
 	disabilty_level: z.string().nullable(),
 	sex_type: z.string(),
@@ -261,6 +245,7 @@ const EmployeeData = z.object({
 	quit_date: z.string().nullable(),
 	license_id: z.string().nullable(),
 	bank_account: z.string(),
+	accumulated_bonus: z.number(),
 	// received_elderly_benefits: z.boolean(),
 });
 

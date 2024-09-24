@@ -9,7 +9,6 @@ import {
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { select_value } from "./helper_function";
 
-
 @injectable()
 export class EmployeeDataService {
 	/* constructor() {} */
@@ -31,8 +30,9 @@ export class EmployeeDataService {
 		quit_date,
 		license_id,
 		bank_account,
-		// received_elderly_benefits,
-	}: z.infer<typeof createEmployeeDataService>): Promise<EmployeeData> {
+		accumulated_bonus,
+	}: // received_elderly_benefits,
+	z.infer<typeof createEmployeeDataService>): Promise<EmployeeData> {
 		const newData = await EmployeeData.create({
 			emp_no: emp_no,
 			emp_name: emp_name,
@@ -50,6 +50,7 @@ export class EmployeeDataService {
 			quit_date: quit_date,
 			license_id: license_id,
 			bank_account: bank_account,
+			accumulated_bonus: accumulated_bonus,
 			// received_elderly_benefits: received_elderly_benefits,
 			create_by: "system",
 			update_by: "system",
@@ -80,9 +81,9 @@ export class EmployeeDataService {
 	}
 
 	async getAllEmployeeData(): Promise<EmployeeData[]> {
-		const employeeData = await EmployeeData.findAll({ 
+		const employeeData = await EmployeeData.findAll({
 			raw: true,
-			order: [['emp_no', 'ASC']]
+			order: [["emp_no", "ASC"]],
 		});
 		return employeeData;
 	}
@@ -105,8 +106,9 @@ export class EmployeeDataService {
 		quit_date: quit_date,
 		license_id: license_id,
 		bank_account: bank_account,
-		// received_elderly_benefits: received_elderly_benefits,
-	}: z.infer<typeof updateEmployeeDataService>): Promise<void> {
+		accumulated_bonus: accumulated_bonus,
+	}: // received_elderly_benefits: received_elderly_benefits,
+	z.infer<typeof updateEmployeeDataService>): Promise<void> {
 		const employeeData = await this.getEmployeeDataById(id!);
 		if (employeeData == null) {
 			throw new BaseResponseError("Employee account does not exist");
@@ -120,10 +122,16 @@ export class EmployeeDataService {
 					work_status,
 					employeeData.work_status
 				),
-				disabilty_level: select_value(disabilty_level, employeeData.disabilty_level),
+				disabilty_level: select_value(
+					disabilty_level,
+					employeeData.disabilty_level
+				),
 				sex_type: select_value(sex_type, employeeData.sex_type),
 				dependents: select_value(dependents, employeeData.dependents),
-				healthcare_dependents: select_value(healthcare_dependents, employeeData.healthcare_dependents),
+				healthcare_dependents: select_value(
+					healthcare_dependents,
+					employeeData.healthcare_dependents
+				),
 				registration_date: select_value(
 					registration_date,
 					employeeData.registration_date
@@ -144,6 +152,10 @@ export class EmployeeDataService {
 					employeeData.group_insurance_type
 				),
 				department: select_value(department, employeeData.department),
+				accumulated_bonus: select_value(
+					accumulated_bonus,
+					employeeData.accumulated_bonus
+				),
 				// received_elderly_benefits: select_value(
 				// 	received_elderly_benefits,
 				// 	employeeData.received_elderly_benefits
@@ -174,8 +186,8 @@ export class EmployeeDataService {
 		quit_date: quit_date,
 		license_id: license_id,
 		bank_account: bank_account,
-		// received_elderly_benefits: received_elderly_benefits,
-	}: z.infer<typeof updateEmployeeDataByEmpNoService>): Promise<void> {
+	}: // received_elderly_benefits: received_elderly_benefits,
+	z.infer<typeof updateEmployeeDataByEmpNoService>): Promise<void> {
 		const employeeData = await this.getEmployeeDataByEmpNo(emp_no!);
 		if (employeeData == null) {
 			throw new BaseResponseError("Employee account does not exist");
@@ -189,10 +201,16 @@ export class EmployeeDataService {
 					work_status,
 					employeeData.work_status
 				),
-				disabilty_level: select_value(disabilty_level, employeeData.disabilty_level),
+				disabilty_level: select_value(
+					disabilty_level,
+					employeeData.disabilty_level
+				),
 				sex_type: select_value(sex_type, employeeData.sex_type),
 				dependents: select_value(dependents, employeeData.dependents),
-				healthcare_dependents: select_value(healthcare_dependents, employeeData.healthcare_dependents),
+				healthcare_dependents: select_value(
+					healthcare_dependents,
+					employeeData.healthcare_dependents
+				),
 				registration_date: select_value(
 					registration_date,
 					employeeData.registration_date

@@ -16,6 +16,7 @@ const columns = (t: I18nType) =>
 		"supervisor_allowance",
 		"occupational_allowance",
 		"subsidy_allowance",
+		"long_service_allowance",
 		"l_r_self",
 		"l_i",
 		"h_i",
