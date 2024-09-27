@@ -296,7 +296,7 @@ export function FileUploader(props: FileUploaderProps) {
 	}
 
 	return (
-		<div className="relative flex flex-col gap-6 overflow-hidden">
+		<div className="flex grow gap-6 overflow-hidden">
 			{files.length === 0 && <FileDropZone />}
 		</div>
 	);

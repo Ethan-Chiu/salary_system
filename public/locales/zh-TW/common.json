@@ -236,7 +236,8 @@
     "budget_amount": "預算金額",
     "superviser_amount": "主管建議金額",
     "final_amount": "最終金額",
-    "total_budgets": "總預算"
+    "total_budgets": "總預算",
+    "bonus_type": "獎金類別"
   },
   "table_name": {
     "attendanceSetting": "請假加班",
