@@ -40,7 +40,7 @@ export function BonusExcelExport() {
 
 	const getExcelA = api.bonus.getEmployeeBonus.useQuery({
 		period_id: selectedPeriod?.period_id ?? 0,
-		bonus_type: "project_bonus",
+		bonus_type: selectedBonusType,
 	});
 
 	if (getExcelA.isFetched) {
