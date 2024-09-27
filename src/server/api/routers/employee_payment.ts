@@ -5,6 +5,7 @@ import { z } from "zod";
 import { EmployeePaymentService } from "~/server/service/employee_payment_service";
 import { createEmployeePaymentAPI, updateEmployeePaymentAPI } from "../types/employee_payment_type";
 import { EmployeePaymentMapper } from "~/server/database/mapper/employee_payment_mapper";
+import { get_date_string } from "~/server/service/helper_function";
 
 export const employeePaymentRouter = createTRPCRouter({
 	getCurrentEmployeePayment: publicProcedure
@@ -69,15 +70,17 @@ export const employeePaymentRouter = createTRPCRouter({
 
 	autoCalculateEmployeePayment: publicProcedure
 		.input(
-			z.object({ period_id: z.number(), emp_no_list: z.string().array() })
+			z.object({ period_id: z.number(), emp_no_list: z.string().array(), start_date: z.date() })
 		)
 		.mutation(async ({ input }) => {
 			const employeePaymentService = container.resolve(
 				EmployeePaymentService
 			);
-			return await employeePaymentService.autoCalculateEmployeePayment(
+			await employeePaymentService.autoCalculateEmployeePayment(
 				input.period_id,
-				input.emp_no_list
+				input.emp_no_list,
+				get_date_string(input.start_date)
 			);
+			await employeePaymentService.rescheduleEmployeePayment();
 		}),
 });

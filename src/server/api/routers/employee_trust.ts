@@ -5,6 +5,7 @@ import { z } from "zod";
 import { EmployeeTrustService } from "~/server/service/employee_trust_service";
 import { createEmployeeTrustAPI, updateEmployeeTrustAPI } from "../types/employee_trust";
 import { EmployeeTrustMapper } from "~/server/database/mapper/employee_trust_mapper";
+import { get_date_string } from "~/server/service/helper_function";
 
 export const employeeTrustRouter = createTRPCRouter({
 	getCurrentEmployeeTrust: publicProcedure
@@ -68,14 +69,16 @@ export const employeeTrustRouter = createTRPCRouter({
 
 	autoCalculateEmployeeTrust: publicProcedure
 		.input(
-			z.object({ period_id: z.number(), emp_no_list: z.string().array() })
+			z.object({ period_id: z.number(), emp_no_list: z.string().array(), start_date: z.date() })
 		)
 		.mutation(async ({ input }) => {
 			const employeeTrustService =
 				container.resolve(EmployeeTrustService);
-			return await employeeTrustService.autoCalculateEmployeeTrust(
+			await employeeTrustService.autoCalculateEmployeeTrust(
 				input.period_id,
-				input.emp_no_list
+				input.emp_no_list,
+				get_date_string(input.start_date)
 			);
+			await employeeTrustService.rescheduleEmployeeTrust();
 		}),
 });

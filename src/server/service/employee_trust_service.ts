@@ -224,8 +224,9 @@ export class EmployeeTrustService {
 	}
 	async autoCalculateEmployeeTrust(
 		period_id: number,
-		emp_no_list: string[]
-	): Promise<{message: string}> {
+		emp_no_list: string[],
+		start_date: string
+	): Promise<void> {
 		const employee_data_service = container.resolve(EmployeeDataService);
 		const trust_money_service = container.resolve(TrustMoneyService);
 		const employee_trust_mapper = container.resolve(EmployeeTrustMapper);
@@ -235,9 +236,15 @@ export class EmployeeTrustService {
 				emp_no,
 				period_id
 			);
+
 			if (employeeTrust == null) {
 				throw new BaseResponseError("Employee Trust does not exist");
 			}
+
+			if (employeeTrust.end_date != null) {
+				return;
+			}
+
 			const employee_data =
 				await employee_data_service.getEmployeeDataByEmpNo(emp_no);
 			if (employee_data == null) {
@@ -249,10 +256,13 @@ export class EmployeeTrustService {
 					employee_data.position_type
 				);
 			if (trust_money == null) {
-				throw new BaseResponseError("Trust money does not exist");
+				return
 			}
 
 			const employeeTrustFE = await employee_trust_mapper.getEmployeeTrustFE(employeeTrust.dataValues);
+
+			const originalEmployeeTrust = await employee_trust_mapper.getEmployeeTrust(employeeTrustFE);
+
 			const updatedEmployeeTrust = await employee_trust_mapper.getEmployeeTrust({
 				...employeeTrustFE,
 				emp_trust_reserve:
@@ -266,22 +276,18 @@ export class EmployeeTrustService {
 					trust_money.org_special_trust_incent_limit,
 			});
 
-			const affectedCount = await EmployeeTrust.update(
-				{
-					emp_trust_reserve_enc: updatedEmployeeTrust.emp_trust_reserve_enc,
-					org_trust_reserve_enc: updatedEmployeeTrust.org_trust_reserve_enc,
-					emp_special_trust_incent_enc: updatedEmployeeTrust.emp_special_trust_incent_enc,
-					org_special_trust_incent_enc: updatedEmployeeTrust.org_special_trust_incent_enc,
-				},
-				{ where: { emp_no: emp_no } }
-			);
-			if (affectedCount[0] == 0) {
-				throw new BaseResponseError("Update error");
+			if (originalEmployeeTrust.emp_trust_reserve_enc != updatedEmployeeTrust.emp_trust_reserve_enc ||
+				originalEmployeeTrust.org_trust_reserve_enc != updatedEmployeeTrust.org_trust_reserve_enc ||
+				originalEmployeeTrust.emp_special_trust_incent_enc != updatedEmployeeTrust.emp_special_trust_incent_enc ||
+				originalEmployeeTrust.org_special_trust_incent_enc != updatedEmployeeTrust.org_special_trust_incent_enc) {
+				await this.createEmployeeTrust({
+					...updatedEmployeeTrust,
+					start_date: start_date,
+					end_date: null,
+				});
 			}
 		});
 
-    await Promise.all(promises);
-
-    return { message: "success" };
+		await Promise.all(promises);
 	}
 }
