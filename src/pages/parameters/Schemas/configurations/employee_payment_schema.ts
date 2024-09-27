@@ -10,6 +10,7 @@ export const employeePaymentSchema = z.object({
 	supervisor_allowance: zc.number(),
 	occupational_allowance: zc.number(),
 	subsidy_allowance: zc.number(),
+	long_service_allowance: zc.number(),
 	l_r_self: zc.number(),
 	l_i: zc.number(),
 	h_i: zc.number(),

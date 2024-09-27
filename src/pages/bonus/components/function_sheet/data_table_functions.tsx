@@ -7,6 +7,7 @@ import {
 	PlusSquare,
 	Trash2,
 	Copy,
+	RefreshCcw,
 } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
@@ -40,6 +41,7 @@ import { BonusDepartmentBatchCreateForm } from "./batch_create_form/bonus_depart
 import { BonusPositionBatchCreateForm } from "./batch_create_form/bonus_position_batch_create_form";
 import { BonusPositionTypeBatchCreateForm } from "./batch_create_form/bonus_position_type_batch_create_form";
 import { BonusSeniorityBatchCreateForm } from "./batch_create_form/bonus_seniority_batch_create_form";
+import { BonusTableEnumValues } from "../../bonus_tables";
 
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -52,6 +54,7 @@ export type FunctionMode =
 	| "batch_create"
 	| "update"
 	| "delete"
+	| "auto_calculate"
 	| "none";
 
 export function DataTableFunctions({
@@ -62,6 +65,7 @@ export function DataTableFunctions({
 	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
 	const { t } = useTranslation(["common", "nav"]);
+
 
 	// ========================= Additional Condition for Schema =====================================
 	let schema = getSchema(tableType);
@@ -85,26 +89,41 @@ export function DataTableFunctions({
 							{t("others.functions")}
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						<CompTriggerItem
-							mode={"create"}
-							itemName={t("button.create")}
-							icon={Plus}
-						/>
-						<CompTriggerItem
-							mode={"batch_create"}
-							itemName={t("button.batch_create")}
-							icon={Copy}
-						/>
-						<CompTriggerItem
-							mode={"update"}
-							itemName={t("button.update")}
-							icon={PenSquare}
-						/>
-						<CompTriggerItem
-							mode={"delete"}
-							itemName={t("button.delete")}
-							icon={Trash2}
-						/>
+						{BonusTableEnumValues.find((value) => value == tableType) ?
+							<>
+								<CompTriggerItem
+									mode={"create"}
+									itemName={t("button.create")}
+									icon={Plus}
+								/>
+								<CompTriggerItem
+									mode={"batch_create"}
+									itemName={t("button.batch_create")}
+									icon={Copy}
+								/>
+								<CompTriggerItem
+									mode={"update"}
+									itemName={t("button.update")}
+									icon={PenSquare}
+								/>
+								<CompTriggerItem
+									mode={"delete"}
+									itemName={t("button.delete")}
+									icon={Trash2}
+								/>
+							</> :
+							<>
+								<CompTriggerItem
+									mode={"update"}
+									itemName={t("button.update")}
+									icon={PenSquare}
+								/>
+								<CompTriggerItem
+									mode={"auto_calculate"}
+									itemName={t("button.auto_calculate")}
+									icon={RefreshCcw}
+								/>
+							</>}
 					</DropdownMenuContent>
 				</DropdownMenu>
 				{/* Sheet */}
@@ -121,9 +140,9 @@ export function DataTableFunctions({
 					</SheetHeader>
 
 					{mode == "batch_create" ? (
-						<BatchCreateForm 
+						<BatchCreateForm
 							bonusType={bonusType}
-							tableType={tableType} 
+							tableType={tableType}
 							schema={schema}
 							setOpen={setOpen}
 						/>
@@ -191,7 +210,7 @@ function BatchCreateForm({ tableType, bonusType, schema, setOpen }: { tableType:
 		mode={mode}
 		closeSheet={() => setOpen(false)}
 	/>;
-	if (tableType == "TableBonusSeniority")  return <BonusSeniorityBatchCreateForm
+	if (tableType == "TableBonusSeniority") return <BonusSeniorityBatchCreateForm
 		bonusType={bonusType}
 		formSchema={z.object({ content: z.array(schema) })}
 		mode={mode}
