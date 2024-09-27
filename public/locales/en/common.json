@@ -237,7 +237,8 @@
     "budget_amount": "Budget Amount",
     "superviser_amount": "Superviser Amount",
     "final_amount": "Final Amount",
-    "total_budgets": "Total Budgets"
+    "total_budgets": "Total Budgets",
+    "bonus_type": "Bonus Type"
   },
   "table_name": {
     "attendanceSetting": "Attendance Setting",

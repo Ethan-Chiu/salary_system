@@ -38,9 +38,9 @@ export function BonusExcelExport() {
 	const { selectedPeriod } = useContext(periodContext);
 	const { selectedBonusType } = useContext(dataTableContext);
 
-	const getExcelA = api.bonus.getEmployeeBonus.useQuery({
+	const getExcelA = api.bonus.getAllEmployeeBonus.useQuery({
 		period_id: selectedPeriod?.period_id ?? 0,
-		bonus_type: "project_bonus",
+		bonus_type: selectedBonusType,
 	});
 
 	if (getExcelA.isFetched) {
@@ -160,8 +160,7 @@ export function BonusExcelExport() {
 	return (
 		<>
 			{getExcelA.isFetched ? (
-				<>
-					<div className="grow">
+					<div className="flex grow">
 						<ExcelViewer
 							original_sheets={
 								toDisplayData ?? getExcelData(ExcludeDataColumn(getExcelA.data!, toExcludedColumns))
@@ -171,7 +170,7 @@ export function BonusExcelExport() {
 							setSelectedSheetIndex={setSelectedSheetIndex}
 						/>
 					</div>
-				</>
+
 			) : (
 				<div className="flex grow items-center justify-center">
 					<LoadingSpinner />

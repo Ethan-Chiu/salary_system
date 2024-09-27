@@ -55,6 +55,103 @@ interface ExcelViewerProps {
 	filter_component: JSX.Element;
 }
 
+
+const standard_sheet_name = "Standard"
+const Standard: ExcelSheetWithColor = {
+	sheetName: standard_sheet_name,
+	data: [
+		[
+			{ content: "考績分佈比例", textColor: "#000000", backgroundColor: "#ccffcc" },
+			{ content: "績效獎金月倍數", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "974考績等級", textColor: "#ff0000", backgroundColor: "#ffffff" },
+			{ content: "個人績效獎金月倍數", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "姓名", textColor: "#0000ff", backgroundColor: "#ffffff" },
+		],
+		[
+			{ content: "10%", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "3", textColor: "#ff0000", backgroundColor: "#ffffff" },
+			{ content: "AE", textColor: "#000000", backgroundColor: "#ffff00" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+		],
+		[
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "9E", textColor: "#000000", backgroundColor: "#ffff00" },
+			{ content: "Average E", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+		],
+		[
+			{ content: "30%", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "2", textColor: "#ff0000", backgroundColor: "#ffffff" },
+			{ content: "8A", textColor: "#000000", backgroundColor: "#00ffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+		],
+		[
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "7A", textColor: "#000000", backgroundColor: "#00ffff" },
+			{ content: "Average A", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+		],
+		[
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "6A", textColor: "#000000", backgroundColor: "#00ffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+		],
+		[
+			{ content: "55%", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "1.2", textColor: "#ff0000", backgroundColor: "#ffffff" },
+			{ content: "5B", textColor: "#000000", backgroundColor: "#66ff33" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+		],
+		[
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "4B", textColor: "#000000", backgroundColor: "#66ff33" },
+			{ content: "Average B", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+		],
+		[
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "3B", textColor: "#000000", backgroundColor: "#66ff33" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+		],
+		[
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "2B", textColor: "#000000", backgroundColor: "#66ff33" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+		],
+		[
+			{ content: "5%", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "0", textColor: "#ff0000", backgroundColor: "#ffffff" },
+			{ content: "1C", textColor: "#000000", backgroundColor: "#ff0000" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+		],
+	],
+}
+
+
 interface Block {
 	content: string;
 	textColor: string;
@@ -87,7 +184,7 @@ const handleExportExcel = async (
 	}
 
 	if (datas) {
-		datas.map((sheetdata: ExcelSheetWithColor, si: number) => {
+		datas.concat([Standard]).map((sheetdata: ExcelSheetWithColor, si: number) => {
 			let name = sheetdata.sheetName;
 			const worksheet = workbook.addWorksheet(
 				name === "" ? "blank" : name
@@ -95,10 +192,19 @@ const handleExportExcel = async (
 			try {
 				sheetdata.data.map((row: Block[], i: number) => {
 					if (i === 0) {
-						worksheet.addRow(row.map((cell: Block) => Translate(`table.${cell.content}`)));
-					}
-					else {
-						worksheet.addRow(row.map((cell: Block) => cell.content));
+						worksheet.addRow(
+							row.map((cell: Block) => {
+								if (name !== standard_sheet_name)
+									return Translate(`table.${cell.content}`)
+								else
+									return cell.content
+							}
+							)
+						);
+					} else {
+						worksheet.addRow(
+							row.map((cell: Block) => cell.content)
+						);
 					}
 				});
 			} catch {}
@@ -130,9 +236,15 @@ const handleExportExcel = async (
 						bottom: { style: "thin" },
 						right: { style: "thin" },
 					};
+
 				});
 			});
+
+			worksheet.columns.forEach(column => {
+				column.width = 20;	
+			});
 		});
+
 	}
 
 	// Save the workbook to a file
@@ -148,7 +260,7 @@ const handleExportExcel = async (
 	URL.revokeObjectURL(url);
 };
 
-const ExcelViewer: React.FC<ExcelViewerProps> = ({ 
+const ExcelViewer: React.FC<ExcelViewerProps> = ({
 	original_sheets,
 	selectedSheetIndex,
 	setSelectedSheetIndex,
@@ -159,7 +271,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 		rowIndex: number;
 		colIndex: number;
 	}>({ rowIndex: -1, colIndex: -1 });
-	
+
 	const [sheets, setSheets] = useState<ExcelSheetWithColor[]>([]);
 	const [lastValidSheets, setLastValidSheets] = useState<
 		ExcelSheetWithColor[]
@@ -272,13 +384,19 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 			}
 		});
 
-		const toReturn = query === "content"
-						? selectedBlock!.content
-						: query === "textColor"
-						? selectedBlock!.textColor
-						: selectedBlock!.backgroundColor;
+		const toReturn =
+			query === "content"
+				? selectedBlock!.content
+				: query === "textColor"
+				? selectedBlock!.textColor
+				: selectedBlock!.backgroundColor;
 
-		console.log("selected Block: ", selectedBlock!.content, selectedBlock!.textColor, selectedBlock!.backgroundColor);
+		console.log(
+			"selected Block: ",
+			selectedBlock!.content,
+			selectedBlock!.textColor,
+			selectedBlock!.backgroundColor
+		);
 
 		return toReturn;
 	}
@@ -330,81 +448,88 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 		return (
 			<>
 				{selectedSheet && (
-					<div className="mt-4 w-full overflow-x-auto  rounded border bg-white p-4 shadow-md">
-						<table className="w-full border-collapse border border-zinc-950">
-							<thead>
-								<tr>
-									{selectedSheet.data[0]!.map(
-										(cell, index) => (
-											<th
-												key={index}
-												className={`inset-0 border border-zinc-950 px-4 py-2 leading-6 truncate`}
-												style={{
-													backgroundColor:
-														cell.backgroundColor,
-												}}
-											>
-												<div
+					<div className="flex grow h-full w-full flex-col rounded border bg-white p-4 shadow-md ">
+						{/* The container for the table */}
+						<div className="flex grow overflow-auto justify-center">
+							<table className="flex-col grow items-center justify-center"> {/* table-auto border-collapse border border-zinc-950*/}
+								<thead>
+									<tr>
+										{selectedSheet.data[0]!.map(
+											(cell, index) => (
+												<th
+													key={index}
+													className={`truncate border border-zinc-950 px-4 py-2 leading-6`}
 													style={{
-														color: cell.textColor,
-													}}
-												>
-													{t(`table.${cell.content}`)}
-												</div>
-											</th>
-										)
-									)}
-								</tr>
-							</thead>
-							<tbody>
-								{selectedSheet.data
-									.slice(1)
-									.map((row, rowIndex) => (
-										<tr key={rowIndex}>
-											{row.map((cell, cellIndex) => (
-												<td
-													key={cellIndex}
-													className={`relative px-4 py-2 leading-6 truncate ${formatColor(
-														cell.textColor,
-														"text"
-													)} ${formatColor(
-														cell.backgroundColor,
-														"background"
-													)}`}
-													onClick={() => {
-														setSelectedCell({
-															rowIndex:
-																rowIndex + 1,
-															colIndex: cellIndex,
-														});
-													}}
-													style={{
-														color: cell.textColor,
 														backgroundColor:
 															cell.backgroundColor,
 													}}
 												>
 													<div
-														className={`absolute inset-0 border ${
-															selectedCell.rowIndex -
-																1 ===
-																rowIndex &&
-															selectedCell.colIndex ===
-																cellIndex &&
-															mode === "edit"
-																? "border-2 border-blue-600"
-																: "border-gray-400"
-														}`}
-													></div>
-													<div className="relative z-10">
-														{cell.content}
+														style={{
+															color: cell.textColor,
+														}}
+													>
+														{t(
+															`table.${cell.content}`
+														)}
 													</div>
-												</td>
-											))}
-										</tr>
-									))}
-							</tbody>
-						</table>
+												</th>
+											)
+										)}
+									</tr>
+								</thead>
+								<tbody>
+									{selectedSheet.data
+										.slice(1)
+										.map((row, rowIndex) => (
+											<tr key={rowIndex}>
+												{row.map((cell, cellIndex) => (
+													<td
+														key={cellIndex}
+														className={`relative truncate px-4 py-2 leading-6 ${formatColor(
+															cell.textColor,
+															"text"
+														)} ${formatColor(
+															cell.backgroundColor,
+															"background"
+														)}`}
+														onClick={() => {
+															setSelectedCell({
+																rowIndex:
+																	rowIndex +
+																	1,
+																colIndex:
+																	cellIndex,
+															});
+														}}
+														style={{
+															color: cell.textColor,
+															backgroundColor:
+																cell.backgroundColor,
+														}}
+													>
+														<div
+															className={`absolute inset-0 border ${
+																selectedCell.rowIndex -
+																	1 ===
+																	rowIndex &&
+																selectedCell.colIndex ===
+																	cellIndex &&
+																mode === "edit"
+																	? "border-2 border-blue-600"
+																	: "border-gray-400"
+															}`}
+														></div>
+														<div className="relative z-10">
+															{cell.content}
+														</div>
+													</td>
+												))}
+											</tr>
+										))}
+								</tbody>
+							</table>
+						</div>
 					</div>
 				)}
 			</>
@@ -424,11 +549,14 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 					<PopoverContent className="w-auto p-0">
 						<ColorPickerWrapper
 							initialColor={
-								sheets[selectedSheetIndex]!.data.findLast((rows, r_idx) => 
-									r_idx === selectedCell.rowIndex)?.findLast((cols, c_idx) => 
-									c_idx === selectedCell.colIndex)?.backgroundColor ?? "#FFFFFF"
+								sheets[selectedSheetIndex]!.data.findLast(
+									(rows, r_idx) =>
+										r_idx === selectedCell.rowIndex
+								)?.findLast(
+									(cols, c_idx) =>
+										c_idx === selectedCell.colIndex
+								)?.backgroundColor ?? "#FFFFFF"
 							}
-							
 							setFinalColor={(newColor: string) => {
 								changeSheets(
 									selectedSheetIndex,
@@ -459,9 +587,13 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 					<PopoverContent className="w-auto p-0">
 						<ColorPickerWrapper
 							initialColor={
-								sheets[selectedSheetIndex]!.data.findLast((rows, r_idx) => 
-								r_idx === selectedCell.rowIndex)?.findLast((cols, c_idx) => 
-								c_idx === selectedCell.colIndex)?.textColor ?? "#FFFFFF"
+								sheets[selectedSheetIndex]!.data.findLast(
+									(rows, r_idx) =>
+										r_idx === selectedCell.rowIndex
+								)?.findLast(
+									(cols, c_idx) =>
+										c_idx === selectedCell.colIndex
+								)?.textColor ?? "#FFFFFF"
 							}
 							setFinalColor={(newColor: string) => {
 								changeSheets(
@@ -525,8 +657,12 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 		);
 	}
 
+	function AddInformation() {
+
+	}
+
 	function DownloadButton() {
-		const [filename, setFilename] = useState("transaction");
+		const [filename, setFilename] = useState("bonus");
 		return (
 			<div className={mode != "view" ? "cursor-not-allowed" : ""}>
 				<Dialog>
@@ -580,18 +716,25 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 
 	return (
 		<>
-			<div className="full-w mb-4 grid grid-cols-4">
-				<div className="flex space-x-4">
-					<SelectSheetComponent />
-					{filter_component}
+			<div className="flex flex-col grow">
+				{/* Top controls section */}
+				<div className="grid w-full grid-cols-4 gap-4 mb-2">
+					<div className="col-span-3 flex items-center space-x-4">
+						<SelectSheetComponent />
+						{filter_component}
+					</div>
+					<div className="col-span-1 flex items-center justify-end space-x-4">
+						<ColorControlComponent />
+						<EditButton />
+						<DownloadButton />
+					</div>
 				</div>
-				<div className="col-start-4 flex items-center justify-end">
-					<ColorControlComponent />
-					<EditButton />
-					<DownloadButton />
+
+				{/* SheetTable section */}
+				<div className="flex grow overflow-auto justify-center">
+					<SheetTable />
 				</div>
 			</div>
-			<SheetTable />
 		</>
 	);
 };
