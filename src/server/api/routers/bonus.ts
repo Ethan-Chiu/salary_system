@@ -106,7 +106,6 @@ export const bonusRouter = createTRPCRouter({
 			z.object({
 				period_id: z.number(),
 				bonus_type: BonusTypeEnum,
-				emp_no_list: z.array(z.string()),
 				total_budgets: z.number(),
 			})
 		)
@@ -115,7 +114,6 @@ export const bonusRouter = createTRPCRouter({
 			const result = await empBonusService.autoCalculateEmployeeBonus(
 				input.period_id,
 				input.bonus_type,
-				input.emp_no_list,
 				input.total_budgets
 			);
 			return result;

@@ -235,7 +235,8 @@
     "fixed_amount": "固定金額",
     "budget_amount": "預算金額",
     "superviser_amount": "主管建議金額",
-    "final_amount": "最終金額"
+    "final_amount": "最終金額",
+    "total_budgets": "總預算"
   },
   "table_name": {
     "attendanceSetting": "請假加班",
@@ -256,6 +257,7 @@
     "employeeData": "基本資料",
     "employeePayment": "薪資檔案",
     "employeeTrust": "持股信託",
+    "employeeBonus": "員工獎金",
     "allowance": "工作津貼",
     "holiday": "請假",
     "overtime": "加班",

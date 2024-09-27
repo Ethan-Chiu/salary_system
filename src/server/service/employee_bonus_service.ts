@@ -68,8 +68,8 @@ export class EmployeeBonusService {
 				bonus_type: bonus_type,
 				emp_no: emp_no,
 				special_multiplier: 0,
-				multiplier: null,
-				fixed_amount: null,
+				multiplier: 0,
+				fixed_amount: 0,
 				budget_amount: null,
 				superviser_amount: null,
 				final_amount: null,
@@ -103,6 +103,7 @@ export class EmployeeBonusService {
 				period_id: period_id,
 				bonus_type: bonus_type,
 			},
+			order: [["emp_no", "ASC"]],
 		});
 		return result;
 	}
@@ -119,6 +120,7 @@ export class EmployeeBonusService {
 					[Op.gt]: 0,
 				},
 			},
+			order: [["emp_no", "ASC"]],
 		});
 		return result;
 	}
@@ -326,13 +328,13 @@ export class EmployeeBonusService {
 	async autoCalculateEmployeeBonus(
 		period_id: number,
 		bonus_type: BonusTypeEnumType,
-		emp_no_list: string[],
 		total_budgets: number
 	) {
 		const budget_amount_list: { emp_no: string; budget_amount: number; }[] = [];
+		const emp_no_list = (await this.getAllEmployeeBonus(period_id, bonus_type)).map(e => e.emp_no);
 		const promises = emp_no_list.map(async (emp_no) => {
 			const employee_bonus = await this.getEmployeeBonusByEmpNo(period_id, bonus_type, emp_no);
-			if (!employee_bonus || !employee_bonus.multiplier || !employee_bonus.fixed_amount) {
+			if (!employee_bonus) {
 				return;
 			}
 			const employee_payment_service = container.resolve(EmployeePaymentService);

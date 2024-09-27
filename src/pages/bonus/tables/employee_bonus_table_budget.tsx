@@ -34,8 +34,6 @@ const columns = (t: I18nType) =>
         "multiplier",
         "fixed_amount",
         "budget_amount",
-        "superviser_amount",
-        "final_amount",
     ].map((key) => {
         return {
             accessorKey: key,
