@@ -280,7 +280,8 @@ export class EmployeePaymentService {
 
 			const result = [];
 			for (const levelRange of levelRangeList) {
-				const level = await levelService.getLevelBySalary(
+				const level = await levelService.getCurrentLevelBySalary(
+					period_id,
 					salary,
 					levelRange.level_start_id,
 					levelRange.level_end_id

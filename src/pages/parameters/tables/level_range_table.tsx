@@ -5,14 +5,16 @@ import { ArrowUpDown } from "lucide-react";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { LoadingSpinner } from "~/components/loading";
-import { type LevelRange } from "~/server/database/entity/SALARY/level_range";
 import { type TableComponentProps } from "../tables_view";
 import { useTranslation } from "react-i18next";
+import { formatDate } from "~/lib/utils/format_date";
 
 export type RowItem = {
 	type: string;
 	level_start: number;
 	level_end: number;
+	start_date: string;
+	end_date: string | null;
 };
 type RowItemKey = keyof RowItem;
 
@@ -66,18 +68,47 @@ export const level_range_columns = [
 			);
 		},
 	}),
+	columnHelper.accessor("start_date", {
+		header: () => {
+			const { t } = useTranslation(["common"]);
+			return <div className="text-center font-medium">{t("table.start_date")}</div>
+		},
+		cell: ({ row }) => {
+			return (
+				<div className="text-center font-medium">{`${row.original.start_date
+					}`}</div>
+			);
+		},
+	}),
+	columnHelper.accessor("end_date", {
+		header: () => {
+			const { t } = useTranslation(["common"]);
+			return <div className="text-center font-medium">{t("table.end_date")}</div>
+		},
+		cell: ({ row }) => {
+			return row.original.end_date ? (
+				<div className="text-center font-medium">{`${row.original.end_date}`}</div>
+			) : (
+				<div className="text-center font-medium"></div>
+			);
+		},
+	}),
 ];
 
 export function levelRangeMapper(levelRangeData: {
-    type: string;
-    level_start: number;
-    level_end: number;
+	type: string;
+	level_start: number;
+	level_end: number;
+	start_date: string;
+	end_date: string | null;
 }[]): RowItem[] {
 	return levelRangeData.map((d) => {
 		return {
 			type: d.type,
 			level_start: d.level_start,
 			level_end: d.level_end,
+			start_date: d.start_date,
+			end_date: d.end_date,
 		};
 	});
 }
@@ -88,9 +119,9 @@ interface LevelRangeTableProps extends TableComponentProps {
 	viewOnly?: boolean;
 }
 
-export function LevelRangeTable({ viewOnly }: LevelRangeTableProps) {
+export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 	const { isLoading, isError, data, error } =
-		api.parameters.getCurrentLevelRange.useQuery();
+		api.parameters.getCurrentLevelRange.useQuery({ period_id });
 	const filterKey: RowItemKey = "type";
 
 	if (isLoading) {

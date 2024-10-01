@@ -36,25 +36,24 @@ export class EmployeePaymentMapper {
             throw new BaseResponseError("Employee does not exist")
         }
 
-        const employeePaymentFE: z.infer<typeof EmployeePaymentFE> =
-            convertDatePropertiesToISOString({
-                emp_name: employee.emp_name,
-                position: employee.position,
-                position_type: employee.position_type,
-                department: employee.department,
-                base_salary: Number(CryptoHelper.decrypt(employee_payment.base_salary_enc)),
-                food_allowance: Number(CryptoHelper.decrypt(employee_payment.food_allowance_enc)),
-                supervisor_allowance: Number(CryptoHelper.decrypt(employee_payment.supervisor_allowance_enc)),
-                occupational_allowance: Number(CryptoHelper.decrypt(employee_payment.occupational_allowance_enc)),
-                subsidy_allowance: Number(CryptoHelper.decrypt(employee_payment.subsidy_allowance_enc)),
-                long_service_allowance: Number(CryptoHelper.decrypt(employee_payment.long_service_allowance_enc)),
-                l_r_self: Number(CryptoHelper.decrypt(employee_payment.l_r_self_enc)),
-                l_i: Number(CryptoHelper.decrypt(employee_payment.l_i_enc)),
-                h_i: Number(CryptoHelper.decrypt(employee_payment.h_i_enc)),
-                l_r: Number(CryptoHelper.decrypt(employee_payment.l_r_enc)),
-                occupational_injury: Number(CryptoHelper.decrypt(employee_payment.occupational_injury_enc)),
-                ...employee_payment,
-            })
+        const employeePaymentFE: z.infer<typeof EmployeePaymentFE> = convertDatePropertiesToISOString({
+            emp_name: employee.emp_name,
+            position: employee.position,
+            position_type: employee.position_type,
+            department: employee.department,
+            base_salary: Number(CryptoHelper.decrypt(employee_payment.base_salary_enc)),
+            food_allowance: Number(CryptoHelper.decrypt(employee_payment.food_allowance_enc)),
+            supervisor_allowance: Number(CryptoHelper.decrypt(employee_payment.supervisor_allowance_enc)),
+            occupational_allowance: Number(CryptoHelper.decrypt(employee_payment.occupational_allowance_enc)),
+            subsidy_allowance: Number(CryptoHelper.decrypt(employee_payment.subsidy_allowance_enc)),
+            long_service_allowance: Number(CryptoHelper.decrypt(employee_payment.long_service_allowance_enc)),
+            l_r_self: Number(CryptoHelper.decrypt(employee_payment.l_r_self_enc)),
+            l_i: Number(CryptoHelper.decrypt(employee_payment.l_i_enc)),
+            h_i: Number(CryptoHelper.decrypt(employee_payment.h_i_enc)),
+            l_r: Number(CryptoHelper.decrypt(employee_payment.l_r_enc)),
+            occupational_injury: Number(CryptoHelper.decrypt(employee_payment.occupational_injury_enc)),
+            ...employee_payment,
+        })
 
         return deleteProperties(employeePaymentFE, ["base_salary_enc", "supervisor_allowance_enc", "occupational_allowance_enc", "subsidy_allowance_enc", "food_allowance_enc", "l_r_self_enc", "l_i_enc", "h_i_enc", "l_r_enc", "occupational_injury_enc"])
     }

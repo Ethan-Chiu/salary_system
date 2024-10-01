@@ -251,7 +251,8 @@ export class EmployeeTrustService {
 				throw new BaseResponseError("Employee data does not exist");
 			}
 			const trust_money =
-				await trust_money_service.getTrustMoneyByPosition(
+				await trust_money_service.getCurrentTrustMoneyByPosition(
+					period_id,
 					employee_data.position,
 					employee_data.position_type
 				);
@@ -265,13 +266,7 @@ export class EmployeeTrustService {
 
 			const updatedEmployeeTrust = await employee_trust_mapper.getEmployeeTrust({
 				...employeeTrustFE,
-				emp_trust_reserve:
-					trust_money.emp_trust_reserve_limit ??
-					trust_money.org_trust_reserve_limit,
 				org_trust_reserve: trust_money.org_trust_reserve_limit,
-				emp_special_trust_incent:
-					trust_money.emp_special_trust_incent_limit ??
-					trust_money.org_special_trust_incent_limit,
 				org_special_trust_incent:
 					trust_money.org_special_trust_incent_limit,
 			});

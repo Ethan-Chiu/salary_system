@@ -175,10 +175,10 @@ const Level = z.object({
 	level: z.number(),
 });
 
-export const createLevelAPI = Level;
-export const createLevelService = Level;
-export const updateLevelAPI = Level.merge(Id).partial();
-export const updateLevelService = Level.merge(Id).partial();
+export const createLevelAPI = Level.merge(DateAPI);
+export const createLevelService = Level.merge(DateService);
+export const updateLevelAPI = Level.merge(Id).merge(DateAPI).partial();
+export const updateLevelService = Level.merge(Id).merge(DateService).partial();
 
 const PerformanceLevel = z.object({
 	performance_level: z.string(),
@@ -212,10 +212,10 @@ const TrustMoney = z.object({
 	org_special_trust_incent_limit: z.number(),
 });
 
-export const createTrustMoneyAPI = TrustMoney;
-export const createTrustMoneyService = TrustMoney;
-export const updateTrustMoneyAPI = TrustMoney.merge(Id).partial();
-export const updateTrustMoneyService = TrustMoney.merge(Id).partial();
+export const createTrustMoneyAPI = TrustMoney.merge(DateAPI);
+export const createTrustMoneyService = TrustMoney.merge(DateService);
+export const updateTrustMoneyAPI = TrustMoney.merge(Id).merge(DateAPI).partial();
+export const updateTrustMoneyService = TrustMoney.merge(Id).merge(DateService).partial();
 //MARK:account
 const EmployeeAccount = z.object({
 	emp_no: z.string(),

@@ -11,6 +11,8 @@ import { useTranslation } from "react-i18next";
 
 export type RowItem = {
 	level: number;
+	start_date: string;
+	end_date: string | null;
 };
 type RowItemKey = keyof RowItem;
 
@@ -42,12 +44,39 @@ export const level_columns = [
 			<div className="text-center font-medium">{`${row.original.level}`}</div>
 		),
 	}),
+	columnHelper.accessor("start_date", {
+		header: () => {
+			const { t } = useTranslation(["common"]);
+			return <div className="text-center font-medium">{t("table.start_date")}</div>
+		},
+		cell: ({ row }) => {
+			return (
+				<div className="text-center font-medium">{`${row.original.start_date
+					}`}</div>
+			);
+		},
+	}),
+	columnHelper.accessor("end_date", {
+		header: () => {
+			const { t } = useTranslation(["common"]);
+			return <div className="text-center font-medium">{t("table.end_date")}</div>
+		},
+		cell: ({ row }) => {
+			return row.original.end_date ? (
+				<div className="text-center font-medium">{`${row.original.end_date}`}</div>
+			) : (
+				<div className="text-center font-medium"></div>
+			);
+		},
+	}),
 ];
 
 export function levelMapper(levelData: Level[]): RowItem[] {
 	return levelData.map((d) => {
 		return {
 			level: d.level,
+			start_date: d.start_date,
+			end_date: d.end_date,
 		};
 	});
 }
@@ -58,9 +87,9 @@ interface LevelTableProps extends TableComponentProps {
 	viewOnly?: boolean;
 }
 
-export function LevelTable({ viewOnly }: LevelTableProps) {
+export function LevelTable({ period_id, viewOnly }: LevelTableProps) {
 	const { isLoading, isError, data, error } =
-		api.parameters.getCurrentLevel.useQuery();
+		api.parameters.getCurrentLevel.useQuery({ period_id });
 	const filterKey: RowItemKey = "level";
 
 	if (isLoading) {
