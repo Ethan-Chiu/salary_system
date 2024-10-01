@@ -38,12 +38,15 @@ export function DataTableToolbarUpdate<TData>({
 			{/* search bar */}
 			<ToolbarFilter table={table} filterColumnKey={filterColumnKey} />
 			{/* tabs */}
-			<TabsList className="grid h-8 w-96 grid-cols-2">
+			<TabsList className="grid h-8 w-96 grid-cols-3">
 				<TabsTrigger value={EmpTabsEnum.Enum.current} className="h-6">
 					{t("table.current")}
 				</TabsTrigger>
 				<TabsTrigger value={EmpTabsEnum.Enum.history} className="h-6">
 					{t("table.history")}
+				</TabsTrigger>
+				<TabsTrigger value={EmpTabsEnum.Enum.calendar} className="h-6">
+					{t("table.calendar")}
 				</TabsTrigger>
 			</TabsList>
 			{/* functions */}
