@@ -3,8 +3,8 @@ import { type UseTRPCQueryResult } from "@trpc/react-query/shared";
 
 export interface HistoryDataType {
 	id: number;
-	start_date: string;
-	end_date: string;
+	start_date: Date;
+	end_date: Date | null;
 	update_by: string;
 }
 
