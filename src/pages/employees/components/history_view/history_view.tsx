@@ -234,7 +234,7 @@ export function HistoryView<TData>({
 					</PopoverTrigger>
 					{/* Employee list */}
 					<PopoverContent className="p-0">
-						<Command>
+						<Command className="max-h-[40vh]">
 							<CommandInput
 								placeholder={t("others.search_employee")}
 							/>

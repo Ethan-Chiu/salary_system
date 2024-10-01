@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
+import { type EmployeeTableEnum } from "./employee_tables";
 
 const tabOptions = ["table_name.employeeData", "table_name.employeePayment", "table_name.employeeTrust"];
 
@@ -37,7 +38,7 @@ const PageEmployeesContent = () => {
 		}
 	}
 
-	function getTypeByOption(options: string) {
+	function getTypeByOption(options: string): EmployeeTableEnum {
 		switch (options) {
 			case tabOptions[1]:
 				return "TableEmployeePayment";

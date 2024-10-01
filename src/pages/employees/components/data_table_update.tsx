@@ -24,11 +24,11 @@ export function DataTableUpdate<TData>({
 	historyDataFunction,
 	filterColumnKey,
 }: DataTableProps<TData>) {
-	const { setSelectedTab } = useContext(dataTableContext);
+	const { selectedTab, setSelectedTab } = useContext(dataTableContext);
 
 	return (
 		<Tabs
-			defaultValue={EmpTabsEnum.Enum.current}
+			defaultValue={selectedTab}
 			className="h-full w-full"
 			onValueChange={(tab) => {
 				setSelectedTab(EmpTabsEnum.parse(tab));
