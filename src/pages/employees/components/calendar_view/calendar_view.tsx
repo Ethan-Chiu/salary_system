@@ -6,13 +6,13 @@ import calendarContext from "./context/calendar_context";
 import CalendarHeader from "./components/calendar_header";
 import CalendarAddEvent from "./components/calendar_add_event";
 import dataTableContext from "../context/data_table_context";
-// import ParameterToolbarFunctionsProvider from "../function_sheet/parameter_functions_context";
 import { LoadingSpinner } from "~/components/loading";
-// import CalendarUpdateEvent from "./components/calendar_update_event";
+import CalendarUpdateEvent from "./components/calendar_update_event";
 import periodContext from "~/components/context/period_context";
 import { useTranslation } from "react-i18next";
-import { HistoryQueryFunctionType } from "~/components/data_table/history_data_type";
-import { EmployeeHistoryViewCommonEmpInfo } from "../history_view/history_view";
+import { type HistoryQueryFunctionType } from "~/components/data_table/history_data_type";
+import { type EmployeeHistoryViewCommonEmpInfo } from "../history_view/history_view";
+import EmployeeToolbarFunctionsProvider from "../function_sheet/employee_functions_context";
 
 interface DataTableProps {
 	dataFunction: HistoryQueryFunctionType<EmployeeHistoryViewCommonEmpInfo>;
@@ -26,15 +26,15 @@ export default function CalendarView({ dataFunction }: DataTableProps) {
 	return (
 		<>
 			{selectedPeriod ? (
-				// <ParameterToolbarFunctionsProvider
-				// 	selectedTableType={selectedTableType}
-				// 	period_id={selectedPeriod.period_id}
-				// >
+				<EmployeeToolbarFunctionsProvider
+					tableType={selectedTableType}
+					period_id={selectedPeriod.period_id}
+				>
 					<CompCalendarContent
 						target_date={selectedPeriod.end_date}
 						dataFunction={dataFunction}
 					/>
-				// </ParameterToolbarFunctionsProvider>
+				</EmployeeToolbarFunctionsProvider>
 			) : (
 				<p>{t("others.select_period")}</p>
 			)}
@@ -74,19 +74,17 @@ function CompCalendarView({ target_date }: { target_date: string }) {
 
 	useEffect(() => {
 		setCurrentMonth(getDayInMonth(target_date, monthIndex));
-	}, [monthIndex]);
+	}, [monthIndex, target_date]);
 
 	return (
 		<>
 			<div className="flex h-full flex-col">
 				<CalendarHeader target_date={target_date} />
 				<div className="flex h-0 flex-grow">
-					{/* <ScrollArea className="w-full"> */}
 					<MonthView month={currenMonth} target_date={target_date} />
-					{/* </ScrollArea> */}
 				</div>
 				<CalendarAddEvent />
-				{/* <CalendarUpdateEvent /> */}
+				<CalendarUpdateEvent />
 			</div>
 		</>
 	);

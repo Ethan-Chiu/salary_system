@@ -19,9 +19,9 @@ import {
 	HoverCardTrigger,
 } from "~/components/ui/hover-card";
 import { Pen, Trash2 } from "lucide-react";
-// import { parameterToolbarFunctionsContext } from "../../function_sheet/parameter_functions_context";
 import { get_date_string } from "~/server/service/helper_function";
 import { useTranslation } from "react-i18next";
+import { employeeToolbarFunctionsContext } from "../../function_sheet/employee_functions_context";
 
 interface DayViewProps {
 	day: Dayjs;
@@ -43,8 +43,8 @@ export default function DayView({ day, rowIdx, target_date }: DayViewProps) {
 		setSelectedEvent,
 	} = useContext(calendarContext);
 
-	/* const mutateFunctions = useContext(parameterToolbarFunctionsContext); */
-	/* const deleteFunction = mutateFunctions.deleteFunction!; */
+	const mutateFunctions = useContext(employeeToolbarFunctionsContext);
+	const deleteFunction = mutateFunctions.deleteFunction!;
 
 	const [dayEvents, setDayEvents] = useState<CalendarEventLevelWithID[]>([]);
 	const { t } = useTranslation(['common']);
@@ -195,9 +195,9 @@ export default function DayView({ day, rowIdx, target_date }: DayViewProps) {
 						variant={"ghost"}
 						className="rounded-full p-3"
 						onClick={() => {
-							/* deleteFunction.mutate({ */
-							/* 	id: selectedEvent?.getData()?.id, */
-							/* }); */
+							deleteFunction.mutate({
+								id: selectedEvent?.getData()?.id,
+							});
 						}}
 					>
 						<Trash2 className="h-4 w-4" />

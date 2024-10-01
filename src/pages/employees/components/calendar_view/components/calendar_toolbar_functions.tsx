@@ -21,10 +21,10 @@ import {
 	SheetTrigger,
 } from "~/components/ui/sheet";
 import { useTranslation } from "react-i18next";
-import { ParameterForm } from "../../function_sheet/parameter_form";
-import { getSchema } from "~/pages/parameters/schemas/get_schemas";
+import { EmployeeForm } from "../../function_sheet/employee_form";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { modeDescription } from "~/lib/utils/helper_function";
+import { getSchema } from "~/pages/employees/schemas/get_schemas";
 
 interface CalendarToolbarFunctionsProps
 	extends React.HTMLAttributes<HTMLDivElement> {
@@ -76,7 +76,7 @@ export function CalendarToolbarFunctions({
 						</SheetDescription>
 					</SheetHeader>
 					<ScrollArea className="h-[85%] w-full">
-						<ParameterForm
+						<EmployeeForm
 							formSchema={getSchema(tableType)!}
 							mode={mode}
 							closeSheet={() => setOpen(false)}

@@ -8,12 +8,12 @@ import {
 	SheetTitle,
 } from "~/components/ui/sheet";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
-// import { ParameterForm } from "../../function_sheet/parameter_form";
 import dataTableContext from "../../context/data_table_context";
 import { getTableNameKey } from "../../context/data_table_enum";
-import { getSchema } from "~/pages/parameters/schemas/get_schemas";
 import { useTranslation } from "react-i18next";
 import { modeDescription } from "~/lib/utils/helper_function";
+import { EmployeeForm } from "../../function_sheet/employee_form";
+import { getSchema } from "~/pages/employees/schemas/get_schemas";
 
 export default function CalendarAddEvent() {
 	const { openSheet, mouseDownDate, mouseUpDate, setOpenSheet, resetMouse } =
@@ -41,30 +41,30 @@ export default function CalendarAddEvent() {
 					</SheetDescription>
 				</SheetHeader>
 				<ScrollArea className="h-[85%] w-full">
-					{/* <ParameterForm */}
-					{/* 	formSchema={getSchema(selectedTableType)!} */}
-					{/* 	mode={mode} */}
-					{/* 	closeSheet={() => { */}
-					{/* 		setOpenSheet(false); */}
-					{/* 		resetMouse(); */}
-					{/* 	}} */}
-					{/* 	defaultValue={ */}
-					{/* 		{ */}
-					{/* 			start_date: mouseDownDate */}
-					{/* 				? new Date( */}
-					{/* 					mouseDownDate.format( */}
-					{/* 						"YYYY-MM-DD" */}
-					{/* 					) */}
-					{/* 				) */}
-					{/* 				: undefined, */}
-					{/* 			end_date: mouseUpDate */}
-					{/* 				? (new Date( */}
-					{/* 					mouseUpDate.format("YYYY-MM-DD") */}
-					{/* 				) as any) */}
-					{/* 				: undefined, */}
-					{/* 		} */}
-					{/* 	} */}
-					{/* /> */}
+					<EmployeeForm
+						formSchema={getSchema(selectedTableType)!}
+						mode={mode}
+						closeSheet={() => {
+							setOpenSheet(false);
+							resetMouse();
+						}}
+						defaultValue={
+							{
+								start_date: mouseDownDate
+									? new Date(
+										mouseDownDate.format(
+											"YYYY-MM-DD"
+										)
+									)
+									: undefined,
+								end_date: mouseUpDate
+									? (new Date(
+										mouseUpDate.format("YYYY-MM-DD")
+									) as any)
+									: undefined,
+							}
+						}
+					/>
 					<ScrollBar orientation="horizontal" />
 				</ScrollArea>
 			</SheetContent>
