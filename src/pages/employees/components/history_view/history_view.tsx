@@ -1,7 +1,5 @@
 import {
 	ArrowRightCircle,
-	Check,
-	ChevronsUpDown,
 	GitCommitHorizontal,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -19,21 +17,11 @@ import { Badge } from "~/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import { type HistoryQueryFunctionType } from "~/components/data_table/history_data_type";
 import { type ColumnDef } from "@tanstack/react-table";
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-	CommandList,
-} from "~/components/ui/command";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "~/components/ui/popover";
 import { Separator } from "~/components/ui/separator";
-import { Button } from "~/components/ui/button";
+import {
+	PopoverSelector,
+	type PopoverSelectorDataType,
+} from "~/components/popover_selector";
 
 export interface EmployeeHistoryViewCommonEmpInfo {
 	emp_name: string;
@@ -60,7 +48,7 @@ export function HistoryView<TData>({
 	useEffect(() => {
 		if (!isLoading && data?.[0]) {
 			setSelectedId(data[0].id);
-      setSelectedEmpNo(data[0].emp_no);
+			setSelectedEmpNo(data[0].emp_no);
 		}
 	}, [isLoading, data]);
 
@@ -95,11 +83,28 @@ export function HistoryView<TData>({
 		return <div />;
 	}
 
+	const seen = new Set<string>();
+	const employees: PopoverSelectorDataType[] = [];
+
+	data.forEach((employee) => {
+		if (!seen.has(employee.emp_no)) {
+			seen.add(employee.emp_no);
+			employees.push({
+				key: employee.emp_no,
+				value: `${employee.emp_no} ${employee.emp_name}`,
+			});
+		}
+	});
+
 	return (
 		<ResizablePanelGroup direction="horizontal">
 			<ResizablePanel defaultSize={25} minSize={15}>
 				<div className="flex h-full flex-col">
-					<CompSelectEmp data={data} />
+					<PopoverSelector
+						data={employees}
+						selectedKey={selectedEmpNo}
+						setSelectedKey={setSelectedEmpNo}
+					/>
 					<Separator />
 					<div className="h-0 flex-grow">
 						<ScrollArea className="h-full">
@@ -127,15 +132,15 @@ export function HistoryView<TData>({
 											" relative m-2 flex flex-col rounded-md border p-1 hover:bg-muted",
 											e.id === selectedId && "bg-muted",
 											is_date_available(
-												e.start_date,
-												e.end_date
+												e.start_date.toString(),
+												e.end_date?.toString() ?? ""
 											) && "mb-3 border-blue-500"
 										)}
 										onClick={() => setSelectedId(e.id)}
 									>
 										<div className="m-1 flex flex-wrap items-center justify-center">
 											<div className="flex-1 whitespace-nowrap text-center">
-												{e.start_date ??
+												{e.start_date.toString() ??
 													t("others.now")}
 											</div>
 											<ArrowRightCircle
@@ -143,7 +148,8 @@ export function HistoryView<TData>({
 												className="mx-2 flex-shrink-0"
 											/>
 											<div className="flex-1 whitespace-nowrap text-center">
-												{e.end_date ?? t("others.now")}
+												{e.end_date?.toString() ??
+													t("others.now")}
 											</div>
 										</div>
 										<div className="m-1 flex text-sm">
@@ -158,8 +164,8 @@ export function HistoryView<TData>({
 											</div>
 										</div>
 										{is_date_available(
-											e.start_date,
-											e.end_date
+											e.start_date.toString(),
+											e.end_date?.toString() ?? ""
 										) && (
 											<div className="absolute -bottom-3 right-2 z-10">
 												<Badge>
@@ -187,91 +193,4 @@ export function HistoryView<TData>({
 			</ResizablePanel>
 		</ResizablePanelGroup>
 	);
-
-	function CompSelectEmp({
-		data,
-	}: {
-		data: EmployeeHistoryViewCommonEmpInfo[];
-	}) {
-		const [open, setOpen] = useState(false);
-
-		const seen = new Set<string>();
-		const employees: EmployeeHistoryViewCommonEmpInfo[] = [];
-
-		data.forEach((employee) => {
-			if (!seen.has(employee.emp_no)) {
-				seen.add(employee.emp_no);
-				employees.push(employee);
-			}
-		});
-
-		return (
-			<div className="p-2">
-				<Popover open={open} onOpenChange={setOpen}>
-					{/* Trigger */}
-					<PopoverTrigger asChild>
-						<Button
-							variant="outline"
-							role="combobox"
-							aria-expanded={open}
-							className="w-full justify-between"
-						>
-							{selectedEmpNo ? (
-								<>
-									{`${selectedEmpNo} ${
-										employees.find(
-											(emp) =>
-												emp.emp_no === selectedEmpNo
-										)?.emp_name ??
-										t("others.search_employee")
-									}`}
-								</>
-							) : (
-								<> {t("others.search_employee")} </>
-							)}
-							<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-						</Button>
-					</PopoverTrigger>
-					{/* Employee list */}
-					<PopoverContent className="p-0">
-						<Command className="max-h-[40vh]">
-							<CommandInput
-								placeholder={t("others.search_employee")}
-							/>
-							<CommandList>
-								<CommandEmpty>
-									{t("others.no_employee_found")}
-								</CommandEmpty>
-								<CommandGroup>
-									{employees.map((employee) => (
-										<CommandItem
-											key={employee.emp_no}
-											value={`${employee.emp_no} ${employee.emp_name}`}
-											onSelect={() => {
-												setSelectedEmpNo(
-													employee.emp_no
-												);
-												setOpen(false);
-											}}
-										>
-											<Check
-												className={cn(
-													"mr-2 h-4 w-4",
-													selectedEmpNo ===
-														employee.emp_no
-														? "opacity-100"
-														: "opacity-0"
-												)}
-											/>
-											{`${employee.emp_no} ${employee.emp_name}`}
-										</CommandItem>
-									))}
-								</CommandGroup>
-							</CommandList>
-						</Command>
-					</PopoverContent>
-				</Popover>
-			</div>
-		);
-	}
 }
