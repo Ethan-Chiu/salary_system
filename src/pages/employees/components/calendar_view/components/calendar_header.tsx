@@ -4,13 +4,19 @@ import dayjs from "dayjs";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { useTranslation } from "react-i18next";
+import {
+	PopoverSelector,
+	type PopoverSelectorDataType,
+} from "~/components/popover_selector";
 
 export default function CalendarHeader({
 	target_date,
+	employees,
 }: {
 	target_date: string;
+	employees: PopoverSelectorDataType[];
 }) {
-	const { monthIndex, setMonthIndex } = useContext(calendarContext);
+	const { monthIndex, setMonthIndex, selectedEmp, setSelectedEmp } = useContext(calendarContext);
 	const { t } = useTranslation(["common"]);
 
 	function handlePrevMonth() {
@@ -37,6 +43,7 @@ export default function CalendarHeader({
 				)}
 			</p>
 
+			{/* Select date */}
 			<Button variant="outline" size="sm" onClick={handlePrevMonth}>
 				<ChevronLeftIcon className="h-4 w-4" />
 			</Button>
@@ -46,6 +53,13 @@ export default function CalendarHeader({
 			<Button variant="outline" size="sm" onClick={handleNextMonth}>
 				<ChevronRightIcon className="h-4 w-4" />
 			</Button>
+
+			{/* Select employee */}
+			<PopoverSelector
+				data={employees}
+				selectedKey={selectedEmp}
+				setSelectedKey={setSelectedEmp}
+			/>
 		</div>
 	);
 }

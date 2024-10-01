@@ -9,8 +9,9 @@ import { getEventLevel } from "../utils/event_level";
 
 interface RecordData {
 	id: number;
+  emp_no: string;
 	start_date: Date;
-	end_date: Date;
+	end_date: Date | null;
 }
 
 interface CalendarContextProviderProps<T extends RecordData> {
@@ -43,6 +44,15 @@ export default function CalendarContextProvider<T extends RecordData>({
 	const [selectedEvent, setSelectedEvent] =
 		useState<CalendarEventWithID | null>(null);
 
+  const [selectedEmp, setSelectedEmp] = useState<string | null>(null);
+
+	// Select the first when data loaded
+	useEffect(() => {
+		if (data?.[0]) {
+			setSelectedEmp(data[0].emp_no);
+		}
+	}, [data]);
+
 	useEffect(() => {
 		if (mouseDownDate && mouseUpDate) {
 			setCurrentEvent(
@@ -56,6 +66,7 @@ export default function CalendarContextProvider<T extends RecordData>({
 	useEffect(() => {
 		setEventList(
 			data
+        .filter((d) => d.emp_no === selectedEmp)
 				.sort((a, b) => {
 					if (a.start_date == null) {
 						return -1;
@@ -74,7 +85,7 @@ export default function CalendarContextProvider<T extends RecordData>({
 					return event;
 				})
 		);
-	}, [data]);
+	}, [data, selectedEmp]);
 
 	useEffect(() => {
 		let showEvents = eventList;
@@ -108,6 +119,8 @@ export default function CalendarContextProvider<T extends RecordData>({
 				selectedEvent,
 				setSelectedEvent,
 				resetMouse,
+        selectedEmp,
+        setSelectedEmp,
 			}}
 		>
 			{children}

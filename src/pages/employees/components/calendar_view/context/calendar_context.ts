@@ -29,6 +29,8 @@ const calendarContext = React.createContext<{
 	setSelectedEvent: (event: CalendarEventWithID) => void;
 	resetMouse: () => void;
 	// dispatchEventList: React.Dispatch<ActionType>,
+  selectedEmp: string | null;
+	setSelectedEmp: (index: string) => void;
 }>({
 	monthIndex: 0,
 	setMonthIndex: (_: number) => undefined,
@@ -48,6 +50,9 @@ const calendarContext = React.createContext<{
 	selectedEvent: null,
 	setSelectedEvent: (_: CalendarEvent<HasID>) => undefined,
 	resetMouse: () => undefined,
+  // selected employee
+  selectedEmp: null,
+  setSelectedEmp: (_: string) => undefined,
 });
 
 export default calendarContext;
