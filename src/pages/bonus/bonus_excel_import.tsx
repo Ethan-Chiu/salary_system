@@ -12,6 +12,17 @@ import { Button } from "~/components/ui/button";
 import { Progress } from "~/components/ui/progress";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose
+} from "~/components/ui/dialog"
+
 
 import { Toaster, toast } from "sonner";
 
@@ -434,9 +445,16 @@ export default function BonusExcelImport() {
 		[]
 	);
 
+	const [errorEmployees, setErrorEmployees] = useState<Array<string>>([]);
+
 	const updateFromExcel = api.bonus.updateFromExcel.useMutation({
 		onSuccess: (data) => {
-			console.log('Update successful:', data);
+			let newErrorEmployees = errorEmployees;
+			data.map((d) => {
+				if (!(d in newErrorEmployees))
+					newErrorEmployees.push(d)
+			});
+			setErrorEmployees(newErrorEmployees);
 		},
 		onError: (error) => {
 			console.error('Update failed:', error);
@@ -515,16 +533,37 @@ export default function BonusExcelImport() {
 							</SelectContent>
 						</Select>
 
+						<Dialog open={errorEmployees.length != 0} onOpenChange={() => setErrorEmployees([])}>
+						<DialogContent>
+							<DialogHeader>
+							<DialogTitle>Are you absolutely sure to update bonus table?</DialogTitle>
+							<DialogDescription>
+							</DialogDescription>
+							</DialogHeader>
+							These are the bug employees
+								{errorEmployees.map((emp) => {
+									return <>
+									<p>{emp}</p>
+									</>
+								})}
+							<Button 
+								variant={"outline"}
+								onClick={() => {
+									datas.map(async(data: any) => {
+										confirmUpdateFromExcel.mutate(recoverObject(data!.data as any) as any);
+									})
+									setErrorEmployees([]);
+							}}>
+								Update
+							</Button>
+						</DialogContent>
+						</Dialog>
 						<Button
 							variant={"outline"}
 							onClick={() => {
 								datas.map(async(data: any) => {
 									updateFromExcel.mutate(recoverObject(data!.data as any) as any);
-									
-									// confirmUpdateFromExcel.mutate(recoverObject(data!.data as any) as any);
 								})
-								// console.log(recoverObject(datas[selectedFileIdx()]!.data as any) as any);
-								// datas[0]?.data[1]?.map((d) => console.log(`"type of ${d} ${typeof d}"`));
 							}}
 							className=""
 						>
