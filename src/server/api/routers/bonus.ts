@@ -109,7 +109,20 @@ export const bonusRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
 			const err_emp_no_list = input
-				.map(async (e) => await empBonusService.updateFromExcel(false,e))
+				.map(
+					async (e) => await empBonusService.updateFromExcel(false, e)
+				)
+				.filter((e) => e != null);
+			return err_emp_no_list;
+		}),
+	confirmUpdateFromExcel: publicProcedure
+		.input(updateEmployeeBonusAPI.array())
+		.mutation(async ({ input }) => {
+			const empBonusService = container.resolve(EmployeeBonusService);
+			const err_emp_no_list = input
+				.map(
+					async (e) => await empBonusService.updateFromExcel(true, e)
+				)
 				.filter((e) => e != null);
 			return err_emp_no_list;
 		}),
