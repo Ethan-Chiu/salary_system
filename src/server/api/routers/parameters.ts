@@ -487,8 +487,10 @@ export const parametersRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const levelRangeService = container.resolve(LevelRangeService);
 			const levelRangeMapper = container.resolve(LevelRangeMapper);
-			const newdata = await levelRangeService.createLevelRange(input);
+			const levelRange = await levelRangeMapper.getLevelRange(input);
+			const newdata = await levelRangeService.createLevelRange(levelRange);
 			const levelRangeFE = await levelRangeMapper.getLevelRangeFE(newdata)
+			await levelRangeService.rescheduleLevelRange();
 			return levelRangeFE;
 		}),
 
@@ -518,7 +520,10 @@ export const parametersRouter = createTRPCRouter({
 		.input(updateLevelRangeAPI)
 		.mutation(async ({ input }) => {
 			const levelRangeService = container.resolve(LevelRangeService);
-			const newdata = await levelRangeService.updateLevelRange(input);
+			const levelRangeMapper = container.resolve(LevelRangeMapper);
+			const levelRange = await levelRangeMapper.getLevelRangeNullable(input);
+			const newdata = await levelRangeService.updateLevelRange(levelRange);
+			await levelRangeService.rescheduleLevelRange();
 			return newdata;
 		}),
 
@@ -528,6 +533,7 @@ export const parametersRouter = createTRPCRouter({
 			const { input } = opts;
 			const levelRangeService = container.resolve(LevelRangeService);
 			await levelRangeService.deleteLevelRange(input.id);
+			await levelRangeService.rescheduleLevelRange();
 		}),
 
 	createLevel: publicProcedure
@@ -543,6 +549,7 @@ export const parametersRouter = createTRPCRouter({
 					? get_date_string(input.end_date)
 					: null,
 			});
+			await levelService.rescheduleLevel();
 			return newdata;
 		}),
 
@@ -577,6 +584,7 @@ export const parametersRouter = createTRPCRouter({
 					? get_date_string(input.end_date)
 					: null,
 			});
+			await levelService.rescheduleLevel();
 			return newdata;
 		}),
 
@@ -586,6 +594,7 @@ export const parametersRouter = createTRPCRouter({
 			const { input } = opts;
 			const levelService = container.resolve(LevelService);
 			await levelService.deleteLevel(input.id);
+			await levelService.rescheduleLevel();
 		}),
 
 	createPerformanceLevel: publicProcedure
@@ -657,6 +666,7 @@ export const parametersRouter = createTRPCRouter({
 					? get_date_string(input.end_date)
 					: null,
 			});
+			await trustMoneyService.rescheduleTrustMoney();
 			return newdata;
 		}),
 
@@ -691,6 +701,7 @@ export const parametersRouter = createTRPCRouter({
 					? get_date_string(input.end_date)
 					: null,
 			});
+			await trustMoneyService.rescheduleTrustMoney();
 			return newdata;
 		}),
 
@@ -700,6 +711,7 @@ export const parametersRouter = createTRPCRouter({
 			const { input } = opts;
 			const trustMoneyService = container.resolve(TrustMoneyService);
 			await trustMoneyService.deleteTrustMoney(input.id);
+			await trustMoneyService.rescheduleTrustMoney();
 		}),
 	createSalaryIncomeTax: publicProcedure
 		.input(createSalaryIncomeTaxAPI)

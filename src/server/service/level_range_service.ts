@@ -104,4 +104,36 @@ export class LevelRangeService {
 			throw new BaseResponseError("Delete error");
 		}
 	}
+
+	async rescheduleLevelRange(): Promise<void> {
+		const levelRangeList = await LevelRange.findAll({
+			order: [
+				['type', 'ASC'],
+				["start_date", "ASC"],
+			],
+		});
+		for (let i = 0; i < levelRangeList.length; i += 1) {
+			const start_date = new Date(
+				levelRangeList[i]!.dataValues.start_date
+			);
+			const start_date_string = get_date_string(
+				new Date(start_date.setFullYear(start_date.getFullYear(), 0, 1))
+			);
+			const end_date_string = get_date_string(
+				new Date(start_date.setFullYear(start_date.getFullYear(), 11, 31))
+			);
+
+			if (i != 0 && (levelRangeList[i]!.dataValues.type == levelRangeList[i - 1]!.dataValues.type
+				&& levelRangeList[i]!.dataValues.start_date == levelRangeList[i - 1]!.dataValues.start_date)) {
+				await this.deleteLevelRange(levelRangeList[i]!.dataValues.id);
+			}
+			else {
+				await this.updateLevelRange({
+					id: levelRangeList[i]!.dataValues.id,
+					start_date: start_date_string,
+					end_date: end_date_string,
+				});
+			}
+		}
+	}
 }

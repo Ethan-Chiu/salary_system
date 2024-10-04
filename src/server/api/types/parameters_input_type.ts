@@ -206,9 +206,7 @@ export const initSalaryIncomeTaxAPI = SalaryIncomeTax.array();
 const TrustMoney = z.object({
 	position: z.number(),
 	position_type: z.string(),
-	emp_trust_reserve_limit: z.number().nullable(),
 	org_trust_reserve_limit: z.number(),
-	emp_special_trust_incent_limit: z.number().nullable(),
 	org_special_trust_incent_limit: z.number(),
 });
 

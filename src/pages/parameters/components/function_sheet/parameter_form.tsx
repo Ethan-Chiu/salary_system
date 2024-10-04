@@ -30,6 +30,7 @@ import { FunctionMode } from "./data_table_functions";
 import GeneralTable from "./general_table";
 import { LoadingSpinner } from "~/components/loading";
 import { FieldConfig } from "~/components/ui/auto-form/types";
+import dataTableContext from "../context/data_table_context";
 
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
@@ -47,6 +48,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	closeSheet,
 }: ParameterFormProps<SchemaType>) {
 	const functions = useContext(parameterToolbarFunctionsContext);
+	const { selectedTableType } = useContext(dataTableContext);
 
 	const queryFunction = functions.queryFunction!;
 	const updateFunction = functions.updateFunction!;
