@@ -434,7 +434,15 @@ export default function BonusExcelImport() {
 		[]
 	);
 
-	const updateFromExcel = api.bonus.updateFromExcel.useMutation();
+	const updateFromExcel = api.bonus.updateFromExcel.useMutation({
+		onSuccess: (data) => {
+			console.log('Update successful:', data);
+		},
+		onError: (error) => {
+			console.error('Update failed:', error);
+		},
+	});
+	const confirmUpdateFromExcel = api.bonus.confirmUpdateFromExcel.useMutation();
 
 	const selectedFileIdx = () =>
 		datas.findIndex((d) => d.name === selectedFile);
@@ -443,7 +451,7 @@ export default function BonusExcelImport() {
 	function recoverObject(data: Array<any>) {
 		return data.slice(1).map((d) => {
 			return {
-				period_id: Number(d[1]),
+				period_id: d[1],
 				bonus_type: d[2],
 				emp_no: d[3],
 				special_multiplier: d[4],
@@ -456,7 +464,7 @@ export default function BonusExcelImport() {
 				supervisor_amount: d[11],
 				approved_performance_level: d[12],
 				approved_effective_salary: d[13],
-				final_amount: d[14],
+				approved_amount: d[14],
 			}
 		})
 	}
@@ -510,8 +518,10 @@ export default function BonusExcelImport() {
 						<Button
 							variant={"outline"}
 							onClick={() => {
-								datas.map((data: any) => {
+								datas.map(async(data: any) => {
 									updateFromExcel.mutate(recoverObject(data!.data as any) as any);
+									
+									// confirmUpdateFromExcel.mutate(recoverObject(data!.data as any) as any);
 								})
 								// console.log(recoverObject(datas[selectedFileIdx()]!.data as any) as any);
 								// datas[0]?.data[1]?.map((d) => console.log(`"type of ${d} ${typeof d}"`));

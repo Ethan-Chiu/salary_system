@@ -60,7 +60,7 @@ export function BonusExcelExport() {
 				supervisor_amount: d.superviser_amount,
 				approved_performance_level: d.approved_performance_level,
 				approved_effective_salary: d.approved_effective_salary,
-				final_amount: d.final_amount,
+				approved_amount: d.approved_amount,
 			};
 		})
 	}
