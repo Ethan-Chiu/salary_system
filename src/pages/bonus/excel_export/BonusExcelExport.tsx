@@ -43,6 +43,29 @@ export function BonusExcelExport() {
 		bonus_type: selectedBonusType,
 	});
 
+	function getBonusExcel(data: any) {
+		return data.map((d: any) => {
+			return {
+				id: d.id,
+				period_id: d.period_id,
+				bonus_type: d.bonus_type,
+				emp_no: d.emp_no,
+				special_multiplier: d.special_multiplier,
+				multiplier: d.multiplier,
+				fixed_amount: d.fixed_amount,
+				budget_effective_salary: d.budget_effective_salary,
+				budget_amount: d.budget_amount,
+				supervisor_performance_level: d.supervisor_performance_level,
+				supervisor_effective_salary: d.supervisor_effective_salary,
+				supervisor_amount: d.superviser_amount,
+				approved_performance_level: d.approved_performance_level,
+				approved_effective_salary: d.approved_effective_salary,
+				final_amount: d.final_amount,
+			};
+		})
+	}
+
+
 	if (getExcelA.isFetched) {
 		console.log(getExcelA.data)
 	}
@@ -90,7 +113,7 @@ export function BonusExcelExport() {
 	function createSchema() {
 		const testData = [{
 			name: "test",
-			data: getExcelA.data!
+			data: getBonusExcel(getExcelA.data!)
 		}]
 		const keys = (getExcelA.isFetched) ? Object.keys(
 			testData.map((sheet: any) => sheet.data[0])[selectedSheetIndex]
@@ -160,10 +183,10 @@ export function BonusExcelExport() {
 	return (
 		<>
 			{getExcelA.isFetched ? (
-					<div className="flex grow">
+					<div className="flex grow overflow-auto">
 						<ExcelViewer
 							original_sheets={
-								toDisplayData ?? getExcelData(ExcludeDataColumn(getExcelA.data!, toExcludedColumns))
+								toDisplayData ?? getExcelData(ExcludeDataColumn(getBonusExcel(getExcelA.data!), toExcludedColumns))
 							}
 							filter_component={<FilterComponent />}
 							selectedSheetIndex={selectedSheetIndex}

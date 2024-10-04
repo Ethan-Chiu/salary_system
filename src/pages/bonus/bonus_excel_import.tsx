@@ -7,9 +7,11 @@ import { Header } from "~/components/header";
 
 /* ShadCN UI */
 import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
 import { Progress } from "~/components/ui/progress";
 import { ScrollArea } from "~/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 
 import { Toaster, toast } from "sonner";
 
@@ -21,6 +23,17 @@ import Dropzone, {
 import { cn } from "~/lib/utils";
 
 import ExcelJS from "exceljs";
+
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
+} from "~/components/ui/select";
+import { api } from "~/utils/api";
 
 export function formatBytes(
 	bytes: number,
@@ -106,7 +119,7 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
 	/**
 	 * Maximum file size for the uploader.
 	 * @type number | undefined
-	 * @default 1024 * 1024 * 2 // 2MB
+	 * @default 16384 * 1024 * 2 // 32MB
 	 * @example maxSize={1024 * 1024 * 2} // 2MB
 	 */
 	maxSize?: DropzoneProps["maxSize"];
@@ -114,7 +127,7 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
 	/**
 	 * Maximum number of files for the uploader.
 	 * @type number | undefined
-	 * @default 1
+	 * @default 2
 	 * @example maxFileCount={4}
 	 */
 	maxFileCount?: DropzoneProps["maxFiles"];
@@ -122,7 +135,7 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
 	/**
 	 * Whether the uploader should accept multiple files.
 	 * @type boolean
-	 * @default false
+	 * @default true
 	 * @example multiple
 	 */
 	multiple?: boolean;
@@ -139,9 +152,13 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
 	files: File[];
 	setFiles: (files: File[]) => void;
 
-	/* 2D array data */
-	data: any[][];
-	setData: (data: any[][]) => void;
+	/* 3D array data */
+	datas: Array<{ name: string; data: any[][] }>;
+	setDatas: (data: Array<{ name: string; data: any[][] }>) => void;
+
+	setSelectedFile: (filename: string) => void;
+
+	setStatus: () => void;
 }
 
 export function FileUploader(props: FileUploaderProps) {
@@ -155,14 +172,16 @@ export function FileUploader(props: FileUploaderProps) {
 			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
 				[".xlsx"],
 		},
-		maxSize = 1024 * 1024 * 2,
-		maxFileCount = 1,
-		multiple = false,
+		maxSize = 1024 * 1024 * 32,
+		maxFileCount = 100,
+		multiple = true,
 		disabled = false,
 		files,
 		setFiles,
-		data,
-		setData,
+		datas,
+		setDatas,
+		setStatus,
+		setSelectedFile,
 		className,
 		...dropzoneProps
 	} = props;
@@ -200,7 +219,7 @@ export function FileUploader(props: FileUploaderProps) {
 			// createAPI.mutate(newRows)
 
 			// Update state with the extracted data
-			setData(rows);
+			return rows;
 		} catch (error) {
 			console.error("Error processing file");
 		}
@@ -208,23 +227,39 @@ export function FileUploader(props: FileUploaderProps) {
 
 	const onDrop = useCallback(
 		(acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
-			if (!multiple && maxFileCount === 1 && acceptedFiles.length > 1) {
-				toast.error("Cannot upload more than 1 file at a time");
-				return;
-			}
+			// if (!multiple && maxFileCount === 1 && acceptedFiles.length > 1) {
+			// 	toast.error("Cannot upload more than 1 file at a time");
+			// 	return;
+			// }
+
+			console.log("accepted files:", acceptedFiles);
+			console.log("rejected files:", rejectedFiles);
 
 			setFiles(acceptedFiles);
+			setStatus();
 
-			acceptedFiles.forEach((file) => {
-				ExtractData(file);
+			let datas: Array<any> = [];
+
+			acceptedFiles.sort((a: File, b: File) =>
+				a.name.localeCompare(b.name)
+			);
+
+			acceptedFiles.map(async (file, index) => {
+				datas.push({
+					name: file.name,
+					data: (await ExtractData(file)) ?? [],
+				});
+				if (index == 0) setSelectedFile(file.name);
 			});
+
+			setDatas(datas);
 		},
 		[]
 	);
 
 	function FileDropZone() {
 		return (
-			<>
+			<div className="flex h-full w-full grow">
 				<Dropzone
 					onDrop={onDrop}
 					accept={accept}
@@ -291,13 +326,14 @@ export function FileUploader(props: FileUploaderProps) {
 						</div>
 					)}
 				</Dropzone>
-			</>
+			</div>
 		);
 	}
 
 	return (
-		<div className="flex grow gap-6 overflow-hidden">
-			{files.length === 0 && <FileDropZone />}
+		<div className="flex h-full w-full grow overflow-hidden">
+			{/* {files.length === 0 && <FileDropZone />} */}
+			<FileDropZone />
 		</div>
 	);
 }
@@ -341,63 +377,196 @@ function FileCard({ file, progress, onRemove }: FileCardProps) {
 	);
 }
 
-export default function BonusExcelImport() {
-	const [files, setFiles] = useState<File[]>([]);
-	const [data, setData] = useState<any[]>([]);
+function TableViewer({ data }: any) {
 	return (
-		<>
-			<FileUploader
-				onUpload={async (files: File[]) => console.log(files)}
-				files={files}
-				setFiles={setFiles}
-				data={data}
-				setData={setData}
-			/>
-
-			<div
-				style={{
-					overflowX: "auto",
-					maxHeight: "600px",
-					border: "1px solid #ddd",
-				}}
-			>
-				<table style={{ borderCollapse: "collapse", width: "100%" }}>
-					<thead>
-						<tr>
-							{/* Assuming the first row contains headers */}
-							{data[0] &&
-								data[0].map((header: any, index: number) => (
-									<th
-										key={index}
-										style={{
-											border: "1px solid #ddd",
-											padding: "8px",
-										}}
-									>
-										{header}
-									</th>
-								))}
+		<div
+			style={{
+				overflowX: "auto",
+				maxHeight: "600px",
+				border: "1px solid #ddd",
+			}}
+		>
+			<table style={{ borderCollapse: "collapse", width: "100%" }}>
+				<thead>
+					<tr>
+						{/* Assuming the first row contains headers */}
+						{data[0] &&
+							data[0].map((header: any, index: number) => (
+								<th
+									key={index}
+									style={{
+										border: "1px solid #ddd",
+										padding: "8px",
+									}}
+								>
+									{header}
+								</th>
+							))}
+					</tr>
+				</thead>
+				<tbody>
+					{data.slice(1).map((row: any, rowIndex: number) => (
+						<tr key={rowIndex}>
+							{row.map((cell: any, cellIndex: number) => (
+								<td
+									key={cellIndex}
+									style={{
+										border: "1px solid #ddd",
+										padding: "8px",
+									}}
+								>
+									{cell}
+								</td>
+							))}
 						</tr>
-					</thead>
-					<tbody>
-						{data.slice(1).map((row: any, rowIndex: number) => (
-							<tr key={rowIndex}>
-								{row.map((cell: any, cellIndex: number) => (
-									<td
-										key={cellIndex}
-										style={{
-											border: "1px solid #ddd",
-											padding: "8px",
-										}}
-									>
-										{cell}
-									</td>
-								))}
-							</tr>
-						))}
-					</tbody>
-				</table>
-			</div>
-		</>
+					))}
+				</tbody>
+			</table>
+		</div>
+	);
+}
+
+export default function BonusExcelImport() {
+	const [status, setStatus] = useState<string>("upload");
+	const [selectedFile, setSelectedFile] = useState<string>("");
+	const [files, setFiles] = useState<File[]>([]);
+	const [datas, setDatas] = useState<Array<{ name: string; data: any[][] }>>(
+		[]
+	);
+
+	const updateFromExcel = api.bonus.updateFromExcel.useMutation();
+
+	const selectedFileIdx = () =>
+		datas.findIndex((d) => d.name === selectedFile);
+
+
+	function recoverObject(data: Array<any>) {
+		return data.slice(1).map((d) => {
+			return {
+				period_id: Number(d[1]),
+				bonus_type: d[2],
+				emp_no: d[3],
+				special_multiplier: d[4],
+				multiplier: d[5],
+				fixed_amount: d[6],
+				budget_effective_salary: d[7],
+				budget_amount: d[8],
+				supervisor_performance_level: d[9],
+				supervisor_effective_salary: d[10],
+				supervisor_amount: d[11],
+				approved_performance_level: d[12],
+				approved_effective_salary: d[13],
+				final_amount: d[14],
+			}
+		})
+	}
+
+
+	return (
+		<div className="grow flex-col">
+			<Tabs
+				className="flex h-full w-full flex-col"
+				value={status}
+				onValueChange={(v) => setStatus(v)}
+			>
+				<TabsList className="grid w-full grid-cols-2">
+					<TabsTrigger value="upload">Upload</TabsTrigger>
+					<TabsTrigger value="preview" disabled={files.length == 0}>
+						Preview
+					</TabsTrigger>
+				</TabsList>
+				<TabsContent value="upload" className="m-2 flex grow">
+					<FileUploader
+						onUpload={async (files: File[]) => console.log(files)}
+						files={files}
+						setFiles={setFiles}
+						datas={datas}
+						setDatas={setDatas}
+						setStatus={() => setStatus("preview")}
+						setSelectedFile={setSelectedFile}
+					/>
+				</TabsContent>
+				<TabsContent value="preview">
+					<div className="mb-2 flex w-full items-center justify-between">
+						<Select
+							value={selectedFile}
+							onValueChange={setSelectedFile}
+						>
+							<SelectTrigger className="w-[180px]">
+								<SelectValue placeholder="Select a fruit" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectGroup>
+									<SelectLabel>Filename</SelectLabel>
+									{files.map((f) => (
+										<SelectItem key={f.name} value={f.name}>
+											{f.name}
+										</SelectItem>
+									))}
+								</SelectGroup>
+							</SelectContent>
+						</Select>
+
+						<Button
+							variant={"outline"}
+							onClick={() => {
+								datas.map((data: any) => {
+									updateFromExcel.mutate(recoverObject(data!.data as any) as any);
+								})
+								// console.log(recoverObject(datas[selectedFileIdx()]!.data as any) as any);
+								// datas[0]?.data[1]?.map((d) => console.log(`"type of ${d} ${typeof d}"`));
+							}}
+							className=""
+						>
+							Update
+						</Button>
+					</div>
+
+					<div className="flex grow overflow-auto border border-gray-300">
+						<table className="w-full border-collapse">
+							<thead>
+								<tr>
+									{/* Assuming the first row contains headers */}
+									{datas[selectedFileIdx()] &&
+										(
+											datas[selectedFileIdx()]!
+												.data![0] ?? []
+										).map((header: any, index: number) => (
+											<th
+												key={index}
+												className="border border-gray-300 p-2"
+											>
+												{header}
+											</th>
+										))}
+								</tr>
+							</thead>
+							<tbody>
+								{datas[selectedFileIdx()] &&
+									datas[selectedFileIdx()]!.data!.slice(
+										1
+									).map((row: any, rowIndex: number) => (
+										<tr key={rowIndex}>
+											{row.map(
+												(
+													cell: any,
+													cellIndex: number
+												) => (
+													<td
+														key={cellIndex}
+														className="border border-gray-300 p-2"
+													>
+														{cell}
+													</td>
+												)
+											)}
+										</tr>
+									))}
+							</tbody>
+						</table>
+					</div>
+				</TabsContent>
+			</Tabs>
+		</div>
 	);
 }
