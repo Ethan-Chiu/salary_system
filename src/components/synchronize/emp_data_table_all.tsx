@@ -41,7 +41,7 @@ export function EmployeeDataChangeAll({
 					<TableHeader className="bg-secondary">
 						<TableRow className="sticky top-0 bg-secondary hover:bg-secondary">
 							<TableHead className="w-1/3 text-center">
-								{"Emp no"}
+								{t("table.emp_no")}
 							</TableHead>
 							<TableHead className="w-1/3 text-center">
 								{t("table.key")}
