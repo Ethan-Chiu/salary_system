@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { DateAPI, DateService, EmpData, Id } from "./common_type";
+import { EnterFullScreenIcon } from "@radix-ui/react-icons";
 
 export const EmployeeTrust = z.object({
 	emp_no: z.string(),
@@ -7,6 +8,7 @@ export const EmployeeTrust = z.object({
 	org_trust_reserve_enc: z.string(),
 	emp_special_trust_incent_enc: z.string(),
 	org_special_trust_incent_enc: z.string(),
+	entry_date: z.string(),
 }).merge(DateService);
 
 export const EmployeeTrustFE = z.object({
@@ -15,6 +17,7 @@ export const EmployeeTrustFE = z.object({
 	org_trust_reserve: z.number(),
 	emp_special_trust_incent: z.number(),
 	org_special_trust_incent: z.number(),
+	entry_date: z.string(),
 }).merge(EmpData).merge(DateAPI);
 
 export const createEmployeeTrustAPI = EmployeeTrustFE;

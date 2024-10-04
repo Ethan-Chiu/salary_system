@@ -22,6 +22,8 @@ import { EmployeeBonus } from "~/server/database/entity/SALARY/employee_bonus";
 import { EmployeeData } from "~/server/database/entity/SALARY/employee_data";
 import { InsuranceRateSetting } from "~/server/database/entity/SALARY/insurance_rate_setting";
 import { EmployeePayment } from "~/server/database/entity/SALARY/employee_payment";
+import { EmployeeTrust } from "~/server/database/entity/SALARY/employee_trust";
+// import { EmployeeDataMut } from "~/server/database/entity/SALARY/employee_data_mut";
 
 export const debugRouter = createTRPCRouter({
 	syncDb: publicProcedure
@@ -91,7 +93,8 @@ export const debugRouter = createTRPCRouter({
 				// BonusSeniority,
 				// BonusWorkType,
 				// EmployeeBonus,
-				EmployeePayment,
+				// EmployeeDataMut,
+				EmployeeTrust,
 			];
 			Bonus_list.forEach(async (model) => {
 				try {

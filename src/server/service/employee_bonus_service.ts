@@ -130,7 +130,7 @@ export class EmployeeBonusService {
 		return result;
 	}
 
-	async getCandidateEmployeeBonus(
+	async initCandidateEmployeeBonus(
 		period_id: number,
 		bonus_type: BonusTypeEnumType
 	) {
@@ -198,8 +198,8 @@ export class EmployeeBonusService {
 		});
 
 		await Promise.all(promises);
-		const candidatelist = (await this.getAllEmployeeBonus(period_id, bonus_type)).filter(e => e.special_multiplier !== 0);
-		return candidatelist;
+		// const candidatelist = (await this.getAllEmployeeBonus(period_id, bonus_type)).filter(e => e.special_multiplier !== 0);
+		// return candidatelist;
 	}
 
 	getBonusWorkTypeSpecialMultiplier(bonus_work_type_list: BonusWorkType[] | null, employee_data: EmployeeData): number {

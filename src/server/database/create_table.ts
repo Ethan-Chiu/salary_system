@@ -24,6 +24,7 @@ import { initTrustMoney } from "./entity/SALARY/trust_money";
 import{ initSalaryIncomeTax } from "./entity/SALARY/salary_income_tax";
 import { initUser } from "./entity/SALARY/user";
 import { initEmployeeBonus } from "./entity/SALARY/employee_bonus";
+// import { initEmployeeDataMut } from "./entity/SALARY/employee_data_mut";
 
 const sequelize = container.resolve(Database).connection;
 
@@ -51,3 +52,4 @@ initSalaryIncomeTax(sequelize);
 initTransaction(sequelize);
 initTrustMoney(sequelize);
 initUser(sequelize);
+// initEmployeeDataMut(sequelize);

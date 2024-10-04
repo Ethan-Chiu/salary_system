@@ -6,7 +6,7 @@ import {
 	createEmployeeDataAPI,
 	updateEmployeeDataAPI,
 	updateEmployeeDataByEmpNoAPI,
-} from "../types/parameters_input_type";
+} from "../types/employee_data_type";
 import { z } from "zod";
 import { EmployeeInformationService } from "~/server/service/employee_information_service";
 

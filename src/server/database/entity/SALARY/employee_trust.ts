@@ -18,6 +18,7 @@ export class EmployeeTrust extends Model<
 	declare org_trust_reserve_enc: string;
 	declare emp_special_trust_incent_enc: string;
 	declare org_special_trust_incent_enc: string;
+	declare entry_date: string;
 	declare start_date: string;
 	declare end_date: string | null;
 	// timestamps!
@@ -56,6 +57,11 @@ export function initEmployeeTrust(sequelize: Sequelize) {
 			org_special_trust_incent_enc: {
 				type: DataTypes.STRING(128),
 				allowNull: false,
+			},
+			entry_date: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+				defaultValue: "2024-01-01",
 			},
 			start_date: {
 				type: DataTypes.STRING(128),

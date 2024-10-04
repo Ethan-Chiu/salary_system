@@ -20,6 +20,7 @@ export class EmployeeTrustService {
 		org_trust_reserve_enc,
 		emp_special_trust_incent_enc,
 		org_special_trust_incent_enc,
+		entry_date,
 		start_date,
 		end_date,
 	}: z.infer<typeof createEmployeeTrustService>): Promise<EmployeeTrust> {
@@ -31,6 +32,7 @@ export class EmployeeTrustService {
 			org_trust_reserve_enc: org_trust_reserve_enc,
 			emp_special_trust_incent_enc: emp_special_trust_incent_enc,
 			org_special_trust_incent_enc: org_special_trust_incent_enc,
+			entry_date: entry_date,
 			start_date: start_date ?? current_date_string,
 			end_date: end_date,
 			create_by: "system",
@@ -134,6 +136,7 @@ export class EmployeeTrustService {
 		org_trust_reserve_enc,
 		emp_special_trust_incent_enc,
 		org_special_trust_incent_enc,
+		entry_date,
 		start_date,
 		end_date,
 	}: z.infer<typeof updateEmployeeTrustService>): Promise<void> {
@@ -160,6 +163,7 @@ export class EmployeeTrustService {
 					org_special_trust_incent_enc,
 					employeeTrust.org_special_trust_incent_enc
 				),
+				entry_date: select_value(entry_date, employeeTrust.entry_date),
 				start_date: select_value(start_date, employeeTrust.start_date),
 				end_date: select_value(end_date, employeeTrust.end_date),
 				update_by: "system",

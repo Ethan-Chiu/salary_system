@@ -6,13 +6,16 @@ import { useTranslation } from "react-i18next";
 
 const columns = (t: I18nType) =>
 	[
-		"period_name",
+		// "period_name",
 		"emp_no",
 		"emp_name",
+		"department",
+		"position",
+		"work_day",
 		"allowance_type_name",
 		"amount",
 		"remark",
-		"pay_delay"
+		// "pay_delay"
 	].map((key) => {
 		return {
 			accessorKey: key,

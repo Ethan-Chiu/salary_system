@@ -45,7 +45,18 @@ export const bonusRouter = createTRPCRouter({
 			const result = await bonusService.getEmployeeBonus(input.period_id, input.bonus_type);
 			return result.map((e) => roundProperties(e, 1));
 		}),
-	getCandidateEmployeeBonus: publicProcedure
+	// getExportedSheets: publicProcedure.input(
+	// 	z.object({
+	// 		period_id: z.number(),
+	// 		bonus_type: BonusTypeEnum,
+	// 	})
+	// )
+	// .query(async ({ input }) => {
+	// 	const bonusService = container.resolve(EmployeeBonusService);
+	// 	return await bonusService.getExportedSheets(input.period_id, input.bonus_type);
+	// }),
+
+	initCandidateEmployeeBonus: publicProcedure
 		.input(
 			z.object({
 				period_id: z.number(),
@@ -66,11 +77,11 @@ export const bonusRouter = createTRPCRouter({
 				input.bonus_type,
 				all_emp_no_list
 			);
-			const result = await empBonusService.getCandidateEmployeeBonus(
+			const result = await empBonusService.initCandidateEmployeeBonus(
 				input.period_id,
 				input.bonus_type
 			);
-			return result.map((e) => roundProperties(e, 1));
+			// return result.map((e) => roundProperties(e, 1));
 		}),
 	createEmployeeBonus: publicProcedure
 		.input(

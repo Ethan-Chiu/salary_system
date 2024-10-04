@@ -227,34 +227,6 @@ export const createEmployeeAccountAPI = EmployeeAccount;
 export const createEmployeeAccountService = EmployeeAccount;
 export const updateEmployeeAccountAPI = EmployeeAccount.merge(Id).partial();
 export const updateEmployeeAccountService = EmployeeAccount.merge(Id).partial();
-//MARK:employee_data
-const EmployeeData = z.object({
-	emp_no: z.string(),
-	emp_name: z.string(),
-	position: z.number(),
-	position_type: z.string(),
-	group_insurance_type: z.string(),
-	department: z.string(),
-	work_type: WorkTypeEnum,
-	work_status: z.string(),
-	disabilty_level: z.string().nullable(),
-	sex_type: z.string(),
-	dependents: z.number().nullable(),
-	healthcare_dependents: z.number().nullable(),
-	registration_date: z.string(),
-	quit_date: z.string().nullable(),
-	license_id: z.string().nullable(),
-	bank_account: z.string(),
-	accumulated_bonus: z.number(),
-	// received_elderly_benefits: z.boolean(),
-});
-
-export const createEmployeeDataAPI = EmployeeData;
-export const createEmployeeDataService = EmployeeData;
-export const updateEmployeeDataAPI = EmployeeData.merge(Id).partial();
-export const updateEmployeeDataByEmpNoAPI = EmployeeData.partial();
-export const updateEmployeeDataService = EmployeeData.merge(Id).partial();
-export const updateEmployeeDataByEmpNoService = EmployeeData.partial();
 
 const EmployeeBonus = z.object({
 	period_id: z.number(),
