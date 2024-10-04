@@ -20,6 +20,7 @@ export class EmployeeTrustService {
 		org_trust_reserve_enc,
 		emp_special_trust_incent_enc,
 		org_special_trust_incent_enc,
+		entry_date,
 		start_date,
 		end_date,
 	}: z.infer<typeof createEmployeeTrustService>): Promise<EmployeeTrust> {
@@ -31,6 +32,7 @@ export class EmployeeTrustService {
 			org_trust_reserve_enc: org_trust_reserve_enc,
 			emp_special_trust_incent_enc: emp_special_trust_incent_enc,
 			org_special_trust_incent_enc: org_special_trust_incent_enc,
+			entry_date: entry_date,
 			start_date: start_date ?? current_date_string,
 			end_date: end_date,
 			create_by: "system",
@@ -131,9 +133,10 @@ export class EmployeeTrustService {
 		id,
 		emp_no,
 		emp_trust_reserve_enc,
-		org_trust_reserve_enc,
+		// org_trust_reserve_enc,
 		emp_special_trust_incent_enc,
-		org_special_trust_incent_enc,
+		// org_special_trust_incent_enc,
+		entry_date,
 		start_date,
 		end_date,
 	}: z.infer<typeof updateEmployeeTrustService>): Promise<void> {
@@ -148,23 +151,25 @@ export class EmployeeTrustService {
 					emp_trust_reserve_enc,
 					employeeTrust.emp_trust_reserve_enc
 				),
-				org_trust_reserve_enc: select_value(
-					org_trust_reserve_enc,
-					employeeTrust.org_trust_reserve_enc
-				),
+				// org_trust_reserve_enc: select_value(
+				// 	org_trust_reserve_enc,
+				// 	employeeTrust.org_trust_reserve_enc
+				// ),
 				emp_special_trust_incent_enc: select_value(
 					emp_special_trust_incent_enc,
 					employeeTrust.emp_special_trust_incent_enc
 				),
-				org_special_trust_incent_enc: select_value(
-					org_special_trust_incent_enc,
-					employeeTrust.org_special_trust_incent_enc
-				),
+				// org_special_trust_incent_enc: select_value(
+				// 	org_special_trust_incent_enc,
+				// 	employeeTrust.org_special_trust_incent_enc
+				// ),
+				entry_date: select_value(entry_date, employeeTrust.entry_date),
 				start_date: select_value(start_date, employeeTrust.start_date),
 				end_date: select_value(end_date, employeeTrust.end_date),
 				update_by: "system",
 			},
 			{ where: { id: id } }
+			// this.autoCalculateEmployeeTrust(period)
 		);
 		if (affectedCount[0] == 0) {
 			throw new BaseResponseError("Update error");
@@ -266,9 +271,9 @@ export class EmployeeTrustService {
 
 			const updatedEmployeeTrust = await employee_trust_mapper.getEmployeeTrust({
 				...employeeTrustFE,
-				org_trust_reserve: trust_money.org_trust_reserve_limit,
+				org_trust_reserve: Math.min(trust_money.org_trust_reserve_limit,employeeTrustFE.emp_trust_reserve),
 				org_special_trust_incent:
-					trust_money.org_special_trust_incent_limit,
+					Math.min(trust_money.org_special_trust_incent_limit,employeeTrustFE.emp_special_trust_incent),
 			});
 
 			if (originalEmployeeTrust.emp_trust_reserve_enc != updatedEmployeeTrust.emp_trust_reserve_enc ||

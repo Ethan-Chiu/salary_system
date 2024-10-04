@@ -445,23 +445,23 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 
 	function SheetTable() {
 		const selectedSheet = sheets[selectedSheetIndex]!;
+	
 		return (
 			<>
 				{selectedSheet && (
-					<div className="flex grow h-full w-full flex-col rounded border bg-white p-4 shadow-md ">
-						{/* The container for the table */}
-						<div className="flex grow overflow-auto justify-center">
-							<table className="flex-col grow items-center justify-center"> {/* table-auto border-collapse border border-zinc-950*/}
-								<thead>
-									<tr>
-										{selectedSheet.data[0]!.map(
-											(cell, index) => (
+					<div className="flex grow h-full w-full flex-col rounded border bg-white p-4 shadow-md">
+						{/* Outer container for the table */}
+						<div className="flex grow overflow-x-auto">
+							<div className="min-w-full">
+								<table className="min-w-full border-collapse overflow-x-auto">
+									<thead>
+										<tr>
+											{selectedSheet.data[0]!.map((cell, index) => (
 												<th
 													key={index}
-													className={`truncate border border-zinc-950 px-4 py-2 leading-6`}
+													className="truncate border border-zinc-950 px-4 py-2 leading-6"
 													style={{
-														backgroundColor:
-															cell.backgroundColor,
+														backgroundColor: cell.backgroundColor,
 													}}
 												>
 													<div
@@ -469,19 +469,14 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 															color: cell.textColor,
 														}}
 													>
-														{t(
-															`table.${cell.content}`
-														)}
+														{t(`table.${cell.content}`)}
 													</div>
 												</th>
-											)
-										)}
-									</tr>
-								</thead>
-								<tbody>
-									{selectedSheet.data
-										.slice(1)
-										.map((row, rowIndex) => (
+											))}
+										</tr>
+									</thead>
+									<tbody>
+										{selectedSheet.data.slice(1).map((row, rowIndex) => (
 											<tr key={rowIndex}>
 												{row.map((cell, cellIndex) => (
 													<td
@@ -495,23 +490,18 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 														)}`}
 														onClick={() => {
 															setSelectedCell({
-																rowIndex:
-																	rowIndex +
-																	1,
-																colIndex:
-																	cellIndex,
+																rowIndex: rowIndex + 1,
+																colIndex: cellIndex,
 															});
 														}}
 														style={{
 															color: cell.textColor,
-															backgroundColor:
-																cell.backgroundColor,
+															backgroundColor: cell.backgroundColor,
 														}}
 													>
 														<div
 															className={`absolute inset-0 border ${
-																selectedCell.rowIndex -
-																	1 ===
+																selectedCell.rowIndex - 1 ===
 																	rowIndex &&
 																selectedCell.colIndex ===
 																	cellIndex &&
@@ -527,14 +517,16 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 												))}
 											</tr>
 										))}
-								</tbody>
-							</table>
+									</tbody>
+								</table>
+							</div>
 						</div>
 					</div>
 				)}
 			</>
 		);
 	}
+	
 
 	function BgColorControlComponent() {
 		const [openSignal, setOpenSignal] = useState(false);
@@ -719,7 +711,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 			<div className="flex flex-col grow">
 				{/* Top controls section */}
 				<div className="grid w-full grid-cols-4 gap-4 mb-2">
-					<div className="col-span-3 flex items-center space-x-4">
+					<div className="col-span-3 flex items-center space-x-4 ml-1 mt-1">
 						<SelectSheetComponent />
 						{filter_component}
 					</div>

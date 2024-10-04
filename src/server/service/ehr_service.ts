@@ -27,7 +27,7 @@ export type ExpenseWithType = Omit<Expense, "period_id" | "id"> & {
 	expense_type_name: string;
 };
 
-export type AllowanceWithType = Omit<Allowance, "period_id" | "allowance_id"> & {
+export type AllowanceWithType = Omit<Allowance,  "allowance_id"> & {
 	period_name: string;
 	allowance_type_name: string;
 };

@@ -30,7 +30,7 @@ export class EmployeeData extends Model<
 	declare quit_date: string | null;
 	declare license_id: string | null;
 	declare bank_account: string;
-	declare accumulated_bonus: number;
+	// declare accumulated_bonus: number;
 	// declare received_elderly_benefits: boolean;
 
 	// timestamps!
@@ -111,10 +111,10 @@ export function initEmployeeData(sequelize: Sequelize) {
 			license_id: {
 				type: DataTypes.STRING(32),
 			},
-			accumulated_bonus: {
-				type: DataTypes.INTEGER.UNSIGNED,
-				defaultValue: 0,
-			},
+			// accumulated_bonus: {
+			// 	type: DataTypes.INTEGER.UNSIGNED,
+			// 	defaultValue: 0,
+			// },
 			create_date: {
 				type: DataTypes.DATE,
 			},

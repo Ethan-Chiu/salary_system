@@ -15,8 +15,8 @@ export type RowItem = {
     multiplier: number,
     fixed_amount: number,
     budget_amount: number,
-    superviser_amount: number,
-    final_amount: number,
+    supervisor_amount: number,
+    approved_amount: number,
 };
 type RowItemKey = keyof RowItem;
 
@@ -34,8 +34,8 @@ const columns = (t: I18nType) =>
         "multiplier",
         "fixed_amount",
         "budget_amount",
-        "superviser_amount",
-        "final_amount",
+        "supervisor_amount",
+        "approved_amount",
     ].map((key) => {
         return {
             accessorKey: key,

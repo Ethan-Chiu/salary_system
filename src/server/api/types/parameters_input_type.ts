@@ -225,34 +225,6 @@ export const createEmployeeAccountAPI = EmployeeAccount;
 export const createEmployeeAccountService = EmployeeAccount;
 export const updateEmployeeAccountAPI = EmployeeAccount.merge(Id).partial();
 export const updateEmployeeAccountService = EmployeeAccount.merge(Id).partial();
-//MARK:employee_data
-const EmployeeData = z.object({
-	emp_no: z.string(),
-	emp_name: z.string(),
-	position: z.number(),
-	position_type: z.string(),
-	group_insurance_type: z.string(),
-	department: z.string(),
-	work_type: WorkTypeEnum,
-	work_status: z.string(),
-	disabilty_level: z.string().nullable(),
-	sex_type: z.string(),
-	dependents: z.number().nullable(),
-	healthcare_dependents: z.number().nullable(),
-	registration_date: z.string(),
-	quit_date: z.string().nullable(),
-	license_id: z.string().nullable(),
-	bank_account: z.string(),
-	accumulated_bonus: z.number(),
-	// received_elderly_benefits: z.boolean(),
-});
-
-export const createEmployeeDataAPI = EmployeeData;
-export const createEmployeeDataService = EmployeeData;
-export const updateEmployeeDataAPI = EmployeeData.merge(Id).partial();
-export const updateEmployeeDataByEmpNoAPI = EmployeeData.partial();
-export const updateEmployeeDataService = EmployeeData.merge(Id).partial();
-export const updateEmployeeDataByEmpNoService = EmployeeData.partial();
 
 const EmployeeBonus = z.object({
 	period_id: z.number(),
@@ -261,9 +233,14 @@ const EmployeeBonus = z.object({
 	special_multiplier: z.number(),
 	multiplier: z.number(),
 	fixed_amount: z.number(),
-	budget_amount: z.number().nullable(),
-	superviser_amount: z.number().nullable(),
-	final_amount: z.number().nullable(),
+	budget_effective_salary: z.number(),
+	budget_amount: z.number(),
+	supervisor_performance_level: z.number().nullable(),
+	supervisor_effective_salary: z.number().nullable(),
+	supervisor_amount: z.number().nullable(),
+	approved_performance_level: z.number().nullable(),
+	approved_effective_salary: z.number().nullable(),
+	approved_amount: z.number().nullable(),
 });
 
 export const createEmployeeBonusAPI = EmployeeBonus;

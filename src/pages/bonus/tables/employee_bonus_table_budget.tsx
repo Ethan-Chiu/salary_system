@@ -42,7 +42,7 @@ const columns = (t: I18nType) =>
     });
 
 export function EmployeeBonusTable({ period_id, bonus_type, viewOnly }: EmployeeBonusTableProps) {
-    api.bonus.getCandidateEmployeeBonus.useQuery({ period_id, bonus_type });
+    api.bonus.initCandidateEmployeeBonus.useQuery({ period_id, bonus_type });
     const { isLoading, isError, data, error } =
         api.bonus.getEmployeeBonus.useQuery({period_id, bonus_type});
     const filterKey: RowItemKey = "emp_no";

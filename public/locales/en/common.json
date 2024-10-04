@@ -236,7 +236,7 @@
     "fixed_amount": "Fixed Amount",
     "budget_amount": "Budget Amount",
     "superviser_amount": "Superviser Amount",
-    "final_amount": "Final Amount",
+    "approved_amount": "Final Amount",
     "total_budgets": "Total Budgets",
     "bonus_type": "Bonus Type"
   },
@@ -380,5 +380,9 @@
     "start_calculate_month_salary_button": "Start",
     "transaction": "Transaction",
     "new_data_start_date": "New Data Start Date"
+  },
+  "sync_page": {
+    "show_all": "All Employees",
+    "select_employee": "Select Employee"
   }
 }

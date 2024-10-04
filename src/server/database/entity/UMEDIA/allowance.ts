@@ -1,29 +1,29 @@
 export class Allowance {
-	declare id?: number;
-	declare period_id?: number;
-	declare emp_no?: string;
-	declare emp_name?: string;
-	declare allowance_id?: number;
-	declare amount?: number;
-	declare remark?: string;
-	declare create_by?: string;
-	declare create_date?: Date;
-	declare update_by?: string;
-	declare update_date?: Date;
-	declare pay_delay?: number;
+	declare id: number;
+	declare period_id: number;
+	declare emp_no: string;
+	declare emp_name: string;
+	declare allowance_id: number;
+	declare amount: number;
+	declare remark: string;
+	declare create_by: string;
+	declare create_date: Date;
+	declare update_by: string;
+	declare update_date: Date;
+	declare pay_delay: number;
 	constructor(
-		id?: number,
-		period_id?: number,
-		emp_no?: string,
-		emp_name?: string,
-		allowance_id?: number,
-		amount?: number,
-		remark?: string,
-		create_by?: string,
-		create_date?: Date,
-		update_by?: string,
-		update_date?: Date,
-		pay_delay?: number
+		id: number,
+		period_id: number,
+		emp_no: string,
+		emp_name: string,
+		allowance_id: number,
+		amount: number,
+		remark: string,
+		create_by: string,
+		create_date: Date,
+		update_by: string,
+		update_date: Date,
+		pay_delay: number
 	) {
 		this.id = id;
 		this.period_id = period_id;

@@ -89,7 +89,7 @@ export class SyncService {
 		salary_data.quit_date = ehr_data.quit_date!;
 		salary_data.license_id = ehr_data.license_id!;
 		salary_data.bank_account = ehr_data.bank_account!;
-		salary_data.accumulated_bonus = 0;
+		// salary_data.accumulated_bonus = 0;
 		return salary_data;
 	}
 
@@ -100,7 +100,7 @@ export class SyncService {
 	) {
 		const excludedKeys: (keyof EmployeeData)[] = [
 			"id",
-			"accumulated_bonus",
+			// "accumulated_bonus",
 			"create_date",
 			"create_by",
 			"update_date",
@@ -455,17 +455,17 @@ export class SyncService {
 				const employee_payment = await employee_payment_mapper.getEmployeePayment(payment_input)
 				await employee_payment_service.createEmployeePayment(employee_payment);
 
-				const employee_trust_input = {
-					emp_no: updatedData.emp_no,
-					emp_trust_reserve: 0,
-					org_trust_reserve: 0,
-					emp_special_trust_incent: 0,
-					org_special_trust_incent: 0,
-					start_date: new Date(updatedData.registration_date),
-					end_date: null,
-				};
-				const employee_trust = await employee_trust_mapper.getEmployeeTrust(employee_trust_input);
-				await employee_trust_setvice.createEmployeeTrust(employee_trust);
+				// const employee_trust_input = {
+				// 	emp_no: updatedData.emp_no,
+				// 	emp_trust_reserve: 0,
+				// 	org_trust_reserve: 0,
+				// 	emp_special_trust_incent: 0,
+				// 	org_special_trust_incent: 0,
+				// 	start_date: new Date(updatedData.registration_date),
+				// 	end_date: null,
+				// };
+				// const employee_trust = await employee_trust_mapper.getEmployeeTrust(employee_trust_input);
+				// await employee_trust_setvice.createEmployeeTrust(employee_trust);
 			} else
 				await employee_data_service.updateEmployeeDataByEmpNo(
 					updatedData

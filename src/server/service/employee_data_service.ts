@@ -5,7 +5,7 @@ import {
 	createEmployeeDataService,
 	updateEmployeeDataByEmpNoService,
 	updateEmployeeDataService,
-} from "../api/types/parameters_input_type";
+} from "../api/types/employee_data_type";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { select_value } from "./helper_function";
 
@@ -30,7 +30,7 @@ export class EmployeeDataService {
 		quit_date,
 		license_id,
 		bank_account,
-		accumulated_bonus,
+		// accumulated_bonus,
 	}: // received_elderly_benefits,
 	z.infer<typeof createEmployeeDataService>): Promise<EmployeeData> {
 		const newData = await EmployeeData.create({
@@ -50,7 +50,7 @@ export class EmployeeDataService {
 			quit_date: quit_date,
 			license_id: license_id,
 			bank_account: bank_account,
-			accumulated_bonus: accumulated_bonus,
+			// accumulated_bonus: accumulated_bonus,
 			// received_elderly_benefits: received_elderly_benefits,
 			create_by: "system",
 			update_by: "system",
@@ -106,7 +106,7 @@ export class EmployeeDataService {
 		quit_date: quit_date,
 		license_id: license_id,
 		bank_account: bank_account,
-		accumulated_bonus: accumulated_bonus,
+		// accumulated_bonus: accumulated_bonus,
 	}: // received_elderly_benefits: received_elderly_benefits,
 	z.infer<typeof updateEmployeeDataService>): Promise<void> {
 		const employeeData = await this.getEmployeeDataById(id!);
@@ -152,10 +152,10 @@ export class EmployeeDataService {
 					employeeData.group_insurance_type
 				),
 				department: select_value(department, employeeData.department),
-				accumulated_bonus: select_value(
-					accumulated_bonus,
-					employeeData.accumulated_bonus
-				),
+				// accumulated_bonus: select_value(
+				// 	accumulated_bonus,
+				// 	employeeData.accumulated_bonus
+				// ),
 				// received_elderly_benefits: select_value(
 				// 	received_elderly_benefits,
 				// 	employeeData.received_elderly_benefits
