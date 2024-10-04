@@ -380,5 +380,9 @@
     "start_calculate_month_salary_button": "Start",
     "transaction": "Transaction",
     "new_data_start_date": "New Data Start Date"
+  },
+  "sync_page": {
+    "show_all": "All Employees",
+    "select_employee": "Select Employee"
   }
 }

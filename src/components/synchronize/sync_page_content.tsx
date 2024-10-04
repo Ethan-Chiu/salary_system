@@ -146,12 +146,12 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 						{showAllData ? (
 							<>
 								<DoubleArrowUpIcon className="mr-2 h-4 w-4" />
-								<p>{"Single Employee"}</p>
+								<p>{t("sync_page.select_employee")}</p>
 							</>
 						) : (
 							<>
 								<DoubleArrowDownIcon className="mr-2 h-4 w-4" />
-								<p>{"Show All"}</p>
+								<p>{t("sync_page.show_all")}</p>
 							</>
 						)}
 					</Toggle>
