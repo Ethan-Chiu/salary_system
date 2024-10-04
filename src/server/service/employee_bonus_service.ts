@@ -484,7 +484,7 @@ export class EmployeeBonusService {
 		bonus_type: BonusTypeEnumType,
 		total_budgets: number
 	) {
-		const budget_amount_list: { emp_no: string; budget_amount: number }[] =
+		const budget_amount_list: { emp_no: string; budget_effective_salary: number; budget_amount: number }[] =
 			[];
 		const emp_no_list = (
 			await this.getAllEmployeeBonus(period_id, bonus_type)
@@ -529,6 +529,11 @@ export class EmployeeBonusService {
 
 			budget_amount_list.push({
 				emp_no: emp_no,
+				budget_effective_salary: budget_amount/(employee_payment_fe.base_salary +
+					employee_payment_fe.food_allowance +
+					employee_payment_fe.supervisor_allowance +
+					employee_payment_fe.occupational_allowance +
+					employee_payment_fe.subsidy_allowance),
 				budget_amount: budget_amount,
 			});
 		});
@@ -554,6 +559,7 @@ export class EmployeeBonusService {
 			}
 			await this.updateEmployeeBonus({
 				id: employee_bonus.id,
+				budget_effective_salary: e.budget_effective_salary,
 				budget_amount: e.budget_amount,
 			});
 		});

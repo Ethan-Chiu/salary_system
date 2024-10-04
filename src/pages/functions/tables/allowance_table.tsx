@@ -14,7 +14,7 @@ const columns = (t: I18nType) =>
 		"work_day",
 		"allowance_type_name",
 		"amount",
-		"remark",
+		// "remark",
 		// "pay_delay"
 	].map((key) => {
 		return {
@@ -30,7 +30,7 @@ interface AllowanceTableProps {
 
 export function AllowanceTable({ period, emp_no_list }: AllowanceTableProps) {
 	const { isLoading, isError, data, error } =
-		api.function.getAllowanceWithTypeByEmpNoList.useQuery({
+		api.function.getAllowanceFEByEmpNoList.useQuery({
 			period_id: period,
 			emp_no_list: emp_no_list,
 		});
