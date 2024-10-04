@@ -20,9 +20,14 @@ export class EmployeeBonus extends Model<
 	declare special_multiplier: number;
 	declare multiplier: number;
 	declare fixed_amount: number;
-	declare budget_amount: number|null;
-	declare superviser_amount: number|null;
-	declare final_amount: number|null;
+	declare budget_effective_salary: number;
+	declare budget_amount: number;
+	declare supervisor_performance_level: number|null;
+	declare supervisor_effective_salary: number|null;
+	declare supervisor_amount: number|null;
+	declare approved_performance_level: number|null;
+	declare approved_effective_salary: number|null;
+	declare approved_amount: number|null;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -55,25 +60,46 @@ export function initEmployeeBonus(sequelize: Sequelize) {
 			},
 			special_multiplier: {
 				type: DataTypes.FLOAT,
-				allowNull: true,
+				allowNull: false,
 			},
 			multiplier: {
 				type: DataTypes.FLOAT,
-				allowNull: true,
+				allowNull: false,
 			},
 			fixed_amount: {
 				type: DataTypes.INTEGER.UNSIGNED,
-				allowNull: true,
+				allowNull: false,
+			},
+			budget_effective_salary: {
+				type: DataTypes.FLOAT,
+				allowNull: false,
+				defaultValue: 0,	
 			},
 			budget_amount: {
 				type: DataTypes.FLOAT,
-				allowNull: true,
+				allowNull: false,
 			},
-			superviser_amount: {
+			supervisor_performance_level: {
 				type: DataTypes.FLOAT,
 				allowNull: true,
 			},
-			final_amount: {
+			supervisor_effective_salary: {
+				type: DataTypes.FLOAT,
+				allowNull: true,
+			},
+			supervisor_amount: {
+				type: DataTypes.FLOAT,
+				allowNull: true,
+			},
+			approved_performance_level: {
+				type: DataTypes.FLOAT,
+				allowNull: true,
+			},
+			approved_effective_salary: {
+				type: DataTypes.FLOAT,
+				allowNull: true,
+			},
+			approved_amount: {
 				type: DataTypes.FLOAT,
 				allowNull: true,
 			},

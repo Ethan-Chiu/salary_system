@@ -34,9 +34,14 @@ export class EmployeeBonusService {
 		special_multiplier,
 		multiplier,
 		fixed_amount,
+		budget_effective_salary,
 		budget_amount,
-		superviser_amount,
-		final_amount,
+		supervisor_performance_level,
+		supervisor_effective_salary,
+		supervisor_amount,
+		approved_performance_level,
+		approved_effective_salary,
+		approved_amount,
 	}: z.infer<typeof createEmployeeBonusService>) {
 		const newData = await EmployeeBonus.create({
 			period_id: period_id,
@@ -45,9 +50,14 @@ export class EmployeeBonusService {
 			special_multiplier: special_multiplier,
 			multiplier: multiplier,
 			fixed_amount: fixed_amount,
+			budget_effective_salary: budget_effective_salary,
 			budget_amount: budget_amount,
-			superviser_amount: superviser_amount,
-			final_amount: final_amount,
+			supervisor_performance_level: supervisor_performance_level,
+			supervisor_effective_salary: supervisor_effective_salary,
+			supervisor_amount: supervisor_amount,
+			approved_performance_level: approved_performance_level,
+			approved_effective_salary: approved_effective_salary,
+			approved_amount: approved_amount,
 			create_by: "system",
 			update_by: "system",
 		});
@@ -70,9 +80,14 @@ export class EmployeeBonusService {
 				special_multiplier: 0,
 				multiplier: 0,
 				fixed_amount: 0,
-				budget_amount: null,
-				superviser_amount: null,
-				final_amount: null,
+				budget_effective_salary: 0,
+				budget_amount: 0,
+				supervisor_performance_level: null,
+				supervisor_effective_salary: null,
+				supervisor_amount: null,
+				approved_performance_level: null,
+				approved_effective_salary: null,
+				approved_amount: null,
 			});
 		});
 
@@ -288,9 +303,14 @@ export class EmployeeBonusService {
 		special_multiplier,
 		multiplier,
 		fixed_amount,
+		budget_effective_salary,
 		budget_amount,
-		superviser_amount,
-		final_amount,
+		supervisor_performance_level,
+		supervisor_effective_salary,
+		supervisor_amount,
+		approved_performance_level,
+		approved_effective_salary,
+		approved_amount,
 	}: z.infer<typeof updateEmployeeBonusService>) {
 		const employeeBonus = await this.getEmployeeBonusById(id!);
 		if (employeeBonus == null) {
@@ -304,17 +324,37 @@ export class EmployeeBonusService {
 				special_multiplier: select_value(special_multiplier, employeeBonus.special_multiplier),
 				multiplier: select_value(multiplier, employeeBonus.multiplier),
 				fixed_amount: select_value(fixed_amount, employeeBonus.fixed_amount),
+				budget_effective_salary: select_value(
+					budget_effective_salary,
+					employeeBonus.budget_effective_salary
+				),
 				budget_amount: select_value(
 					budget_amount,
 					employeeBonus.budget_amount
 				),
-				superviser_amount: select_value(
-					superviser_amount,
-					employeeBonus.superviser_amount
+				supervisor_performance_level: select_value(
+					supervisor_performance_level,
+					employeeBonus.supervisor_performance_level
 				),
-				final_amount: select_value(
-					final_amount,
-					employeeBonus.final_amount
+				supervisor_effective_salary: select_value(
+					supervisor_effective_salary,
+					employeeBonus.supervisor_effective_salary
+				),
+				supervisor_amount: select_value(
+					supervisor_amount,
+					employeeBonus.supervisor_amount
+				),
+				approved_performance_level: select_value(
+					approved_performance_level,
+					employeeBonus.approved_performance_level
+				),
+				approved_effective_salary: select_value(
+					approved_effective_salary,
+					employeeBonus.approved_effective_salary
+				),
+				approved_amount: select_value(
+					approved_amount,
+					employeeBonus.approved_amount
 				),
 				update_by: "system",
 			},
@@ -324,7 +364,32 @@ export class EmployeeBonusService {
 			throw new BaseResponseError("Update error");
 		}
 	}
-
+	async updateFromExcel({
+		period_id,
+		bonus_type,
+		emp_no,
+		special_multiplier,
+		multiplier,
+		fixed_amount,
+		budget_amount,
+		supervisor_amount,
+		approved_amount,
+	}: z.infer<typeof updateEmployeeBonusService>) {
+		const employeeBonus = await this.getEmployeeBonusByEmpNo(period_id!, bonus_type!, emp_no!);
+		const affectedCount = await EmployeeBonus.update(
+			{
+				supervisor_amount: select_value(
+					supervisor_amount,
+					employeeBonus!.supervisor_amount
+				),
+				approved_amount: select_value(
+					approved_amount,
+					employeeBonus!.approved_amount
+				),
+				update_by: "system",
+			},
+			{ where: { id: employeeBonus!.id } });
+	}
 	async autoCalculateEmployeeBonus(
 		period_id: number,
 		bonus_type: BonusTypeEnumType,
