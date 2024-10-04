@@ -170,7 +170,9 @@
     "view": "View",
     "no_data": "No Data",
     "all": "All",
-    "no_month_salary": "No Month Salary",
+    "month_salary_unpaid": "Month Salary Unpaid",
+    "month_salary_paid": "Month Salary Paid",
+    "leave": "Leave",
     "salary_data": "Salary Data",
     "ehr_data": "Ehr Data",
     "l_i_deduction": "L I Deduction",
@@ -235,7 +237,8 @@
     "budget_amount": "Budget Amount",
     "superviser_amount": "Superviser Amount",
     "final_amount": "Final Amount",
-    "total_budgets": "Total Budgets"
+    "total_budgets": "Total Budgets",
+    "bonus_type": "Bonus Type"
   },
   "table_name": {
     "attendanceSetting": "Attendance Setting",
@@ -375,6 +378,7 @@
     "enter_password": "Enter Password",
     "start_calculate_month_salary": "Month Salary Calculation",
     "start_calculate_month_salary_button": "Start",
-    "transaction": "Transaction"
+    "transaction": "Transaction",
+    "new_data_start_date": "New Data Start Date"
   }
 }

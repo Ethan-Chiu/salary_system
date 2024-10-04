@@ -15,10 +15,10 @@ export class TrustMoney extends Model<
 	declare id: CreationOptional<number>;
 	declare position: number;
 	declare position_type: string;
-	declare emp_trust_reserve_limit: number | null;
 	declare org_trust_reserve_limit: number;
-	declare emp_special_trust_incent_limit: number | null;
 	declare org_special_trust_incent_limit: number;
+	declare start_date: string;
+	declare end_date: string | null;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -46,21 +46,21 @@ export function initTrustMoney(sequelize: Sequelize) {
 				unique: false,
 				allowNull: false,
 			},
-			emp_trust_reserve_limit: {
-				type: DataTypes.INTEGER.UNSIGNED,
-				allowNull: true,
-			},
 			org_trust_reserve_limit: {
 				type: DataTypes.INTEGER.UNSIGNED,
 				allowNull: false,
 			},
-			emp_special_trust_incent_limit: {
-				type: DataTypes.INTEGER.UNSIGNED,
-				allowNull: true,
-			},
 			org_special_trust_incent_limit: {
 				type: DataTypes.INTEGER.UNSIGNED,
 				allowNull: false,
+			},
+			start_date: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+			},
+			end_date: {
+				type: DataTypes.STRING(128),
+				allowNull: true,
 			},
 			create_date: {
 				type: DataTypes.DATE,

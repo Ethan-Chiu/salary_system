@@ -30,7 +30,6 @@ import { FunctionMode } from "./data_table_functions";
 import GeneralTable from "./general_table";
 import { LoadingSpinner } from "~/components/loading";
 import { FieldConfig } from "~/components/ui/auto-form/types";
-import isDate from "date-fns/isDate";
 
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
@@ -268,9 +267,9 @@ const CompViewAllDatas = ({
 												/>
 											)}
 										</TableCell>
-										{Object.keys(data).map((key, index) => {
+										{Object.keys(data).map((key) => {
 											return (
-												<TableCell className="text-center font-medium whitespace-nowrap">
+												<TableCell key={key} className="text-center font-medium whitespace-nowrap">
 													{/* {isDate(data[key]) ? data[key].toDateString() : data[key]} */}
 													{data[key]}
 												</TableCell>

@@ -3,7 +3,7 @@ import { BaseResponseError } from "../api/error/BaseResponseError";
 import { check_date, get_date_string, select_value } from "./helper_function";
 import { type z } from "zod";
 import { EmployeePayment } from "../database/entity/SALARY/employee_payment";
-import { Op } from "sequelize";
+import { Op, or } from "sequelize";
 import { EHRService } from "./ehr_service";
 import { LevelRangeService } from "./level_range_service";
 import { LevelService } from "./level_service";
@@ -242,8 +242,9 @@ export class EmployeePaymentService {
 
 	async autoCalculateEmployeePayment(
 		period_id: number,
-		emp_no_list: string[]
-	): Promise<{ message: string }> {
+		emp_no_list: string[],
+		start_date: string
+	): Promise<void> {
 		const levelRangeService = container.resolve(LevelRangeService);
 		const levelService = container.resolve(LevelService);
 		const employeeDataService = container.resolve(EmployeeDataService);
@@ -261,6 +262,10 @@ export class EmployeePaymentService {
 				throw new BaseResponseError("Employee Payment does not exist");
 			}
 
+			if (employeePayment.end_date != null) {
+				return;
+			}
+
 			const employeePaymentFE =
 				await employeePaymentMapper.getEmployeePaymentFE(
 					employeePayment.dataValues
@@ -275,7 +280,8 @@ export class EmployeePaymentService {
 
 			const result = [];
 			for (const levelRange of levelRangeList) {
-				const level = await levelService.getLevelBySalary(
+				const level = await levelService.getCurrentLevelBySalary(
+					period_id,
 					salary,
 					levelRange.level_start_id,
 					levelRange.level_end_id
@@ -292,6 +298,8 @@ export class EmployeePaymentService {
 				throw new BaseResponseError("Employee Data does not exist");
 			}
 
+			const originalEmployeePayment = await employeePaymentMapper.getEmployeePayment(employeePaymentFE);
+
 			const updatedEmployeePayment =
 				await employeePaymentMapper.getEmployeePayment({
 					...employeePaymentFE,
@@ -305,27 +313,19 @@ export class EmployeePaymentService {
 						result.find((r) => r.type === "職災")?.level ?? 0,
 				});
 
-			/* Update database */
-			const affectedCount = await EmployeePayment.update(
-				{
-					l_i_enc: updatedEmployeePayment.l_i_enc,
-					h_i_enc: updatedEmployeePayment.h_i_enc,
-					l_r_enc: updatedEmployeePayment.l_r_enc,
-					occupational_injury_enc:
-						updatedEmployeePayment.occupational_injury_enc,
-					update_by: "system",
-				},
-				{ where: { emp_no: emp_no } }
-			);
-
-			if (affectedCount[0] == 0) {
-				throw new BaseResponseError("Update error");
+			if (originalEmployeePayment.l_i_enc != updatedEmployeePayment.l_i_enc ||
+				originalEmployeePayment.h_i_enc != updatedEmployeePayment.h_i_enc ||
+				originalEmployeePayment.l_r_enc != updatedEmployeePayment.l_r_enc ||
+				originalEmployeePayment.occupational_injury_enc != updatedEmployeePayment.occupational_injury_enc) {
+				await this.createEmployeePayment({
+					...updatedEmployeePayment,
+					start_date: start_date,
+					end_date: null,
+				})
 			}
 		});
 
 		await Promise.all(promises);
-
-		return { message: "success" };
 	}
 
 	async rescheduleEmployeePayment(): Promise<void> {

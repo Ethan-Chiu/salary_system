@@ -34,6 +34,7 @@ import GeneralTable from "~/pages/employees/components/function_sheet/general_ta
 import { Input } from "~/components/ui/input";
 import { Checkbox } from "~/components/ui/checkbox";
 import periodContext from "~/components/context/period_context";
+import { get_date_string } from "~/server/service/helper_function";
 
 interface EmployeeFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
@@ -175,11 +176,12 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 						id: selectedId,
 					});
 				}}
-				onAutoCalculate={async (selectedEmpNoList: string[]) => {
+				onAutoCalculate={async (selectedEmpNoList: string[], start_date: Date) => {
 					closeSheet();
 					await autoCalculateFunction.mutateAsync({
 						period_id: selectedPeriod!.period_id,
 						emp_no_list: selectedEmpNoList,
+						start_date: start_date,
 					}, {
 
 					});
@@ -258,7 +260,7 @@ const CompViewAllDatas = ({
 	mode: FunctionMode;
 	onUpdate: (emp_no: string) => void;
 	onDelete: (index: number) => void;
-	onAutoCalculate: (selectedEmpNoList: string[]) => void;
+	onAutoCalculate: (selectedEmpNoList: string[], date: Date) => void;
 }) => {
 	const [filterValue, setFilterValue] = useState<string>("");
 	const [filteredDataList, setFilteredDataList] =
@@ -266,6 +268,7 @@ const CompViewAllDatas = ({
 	const [selectedEmpNoList, setSelectedEmpNoList] = useState<string[]>(
 		dataNoID.map((e) => e.emp_no)
 	);
+	const [date, setDate] = useState<Date>(new Date());
 
 	useEffect(() => {
 		const filteredData = dataNoID?.filter((data) => {
@@ -302,10 +305,18 @@ const CompViewAllDatas = ({
 									{t("others.confirm_msg")}
 								</DialogDescription>
 							</DialogHeader>
+							<div className="flex flex-row items-center m-4">
+								<div className="w-1/2 text-center">{t("others.new_data_start_date")}</div>
+								<Input
+									type="date"
+									onChange={(e) => setDate(new Date(e.target.value))}
+									defaultValue={get_date_string(date)}
+								/>
+							</div>
 							<DialogFooter>
 								<DialogClose>
 									<Button
-										onClick={() => onAutoCalculate(selectedEmpNoList)}
+										onClick={() => onAutoCalculate(selectedEmpNoList, date)}
 									>
 										{t("button.confirm")}
 									</Button>

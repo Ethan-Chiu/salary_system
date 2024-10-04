@@ -23,6 +23,7 @@ const columns = (t: I18nType) =>
 		"license_id",
 		"bank_account",
 		// "accumulated_bonus",
+		"month_salary",
 	].map((key) => {
 		return {
 			accessorKey: key,

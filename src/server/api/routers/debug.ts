@@ -24,6 +24,9 @@ import { InsuranceRateSetting } from "~/server/database/entity/SALARY/insurance_
 import { EmployeePayment } from "~/server/database/entity/SALARY/employee_payment";
 import { EmployeeTrust } from "~/server/database/entity/SALARY/employee_trust";
 // import { EmployeeDataMut } from "~/server/database/entity/SALARY/employee_data_mut";
+import { TrustMoney } from "~/server/database/entity/SALARY/trust_money";
+import { Level } from "~/server/database/entity/SALARY/level";
+import { LevelRange } from "~/server/database/entity/SALARY/level_range";
 
 export const debugRouter = createTRPCRouter({
 	syncDb: publicProcedure
@@ -78,7 +81,7 @@ export const debugRouter = createTRPCRouter({
 				};
 			}
 		}),
-	syncBonus: publicProcedure
+	syncTables: publicProcedure
 		.input(
 			z.object({
 				force: z.boolean().nullable(),
@@ -86,17 +89,12 @@ export const debugRouter = createTRPCRouter({
 			})
 		)
 		.query(async ({ input }) => {
-			const Bonus_list = [
-				// BonusDepartment,
-				// BonusPosition,
-				// BonusPositionType,
-				// BonusSeniority,
-				// BonusWorkType,
-				// EmployeeBonus,
-				// EmployeeDataMut,
-				EmployeeTrust,
+			const table_list = [
+				TrustMoney,
+				Level,
+				LevelRange,
 			];
-			Bonus_list.forEach(async (model) => {
+			table_list.forEach(async (model) => {
 				try {
 					if (input.force) {
 						await model.sync({ force: true });

@@ -1,4 +1,4 @@
-import { injectable } from "tsyringe";
+import { container, injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {
@@ -6,27 +6,32 @@ import {
 	updateTrustMoneyService,
 } from "../api/types/parameters_input_type";
 import { TrustMoney } from "../database/entity/SALARY/trust_money";
-import { select_value } from "./helper_function";
+import { check_date, get_date_string, select_value } from "./helper_function";
+import { EHRService } from "./ehr_service";
+import { Op } from "sequelize";
 
 @injectable()
 export class TrustMoneyService {
-	constructor() {}
+	constructor() { }
 
 	async createTrustMoney({
 		position,
 		position_type,
-		emp_trust_reserve_limit,
 		org_trust_reserve_limit,
-		emp_special_trust_incent_limit,
 		org_special_trust_incent_limit,
+		start_date,
+		end_date,
 	}: z.infer<typeof createTrustMoneyService>): Promise<TrustMoney> {
+		const current_date_string = get_date_string(new Date());
+		check_date(start_date, end_date, current_date_string);
+
 		const newData = await TrustMoney.create({
 			position: position,
 			position_type: position_type,
-			emp_trust_reserve_limit: emp_trust_reserve_limit,
 			org_trust_reserve_limit: org_trust_reserve_limit,
-			emp_special_trust_incent_limit: emp_special_trust_incent_limit,
 			org_special_trust_incent_limit: org_special_trust_incent_limit,
+			start_date: start_date ?? current_date_string,
+			end_date: end_date,
 			create_by: "system",
 			update_by: "system",
 		});
@@ -42,12 +47,25 @@ export class TrustMoneyService {
 		return trustMoney;
 	}
 
-	async getTrustMoneyByPosition(
+	async getCurrentTrustMoneyByPosition(
+		period_id: number,
 		position: number,
 		position_type: string
 	): Promise<TrustMoney | null> {
+		const ehr_service = container.resolve(EHRService);
+		const period = await ehr_service.getPeriodById(period_id);
+		const current_date_string = period.end_date;
 		const trustMoney = await TrustMoney.findOne({
 			where: {
+				start_date: {
+					[Op.lte]: current_date_string,
+				},
+				end_date: {
+					[Op.or]: [
+						{ [Op.gte]: current_date_string },
+						{ [Op.eq]: null },
+					],
+				},
 				position: position,
 				position_type: position_type,
 			},
@@ -55,8 +73,23 @@ export class TrustMoneyService {
 		return trustMoney;
 	}
 
-	async getCurrentTrustMoney(): Promise<TrustMoney[]> {
-		const trustMoney = await this.getAllTrustMoney();
+	async getCurrentTrustMoney(period_id: number): Promise<TrustMoney[]> {
+		const ehr_service = container.resolve(EHRService);
+		const period = await ehr_service.getPeriodById(period_id);
+		const current_date_string = period.end_date;
+		const trustMoney = await TrustMoney.findAll({
+			where: {
+				start_date: {
+					[Op.lte]: current_date_string,
+				},
+				end_date: {
+					[Op.or]: [
+						{ [Op.gte]: current_date_string },
+						{ [Op.eq]: null },
+					],
+				},
+			},
+		});
 		return trustMoney;
 	}
 
@@ -69,10 +102,10 @@ export class TrustMoneyService {
 		id,
 		position,
 		position_type,
-		emp_trust_reserve_limit,
 		org_trust_reserve_limit,
-		emp_special_trust_incent_limit,
 		org_special_trust_incent_limit,
+		start_date,
+		end_date,
 	}: z.infer<typeof updateTrustMoneyService>): Promise<void> {
 		const trustMoney = await this.getTrustMoneyById(id!);
 		if (trustMoney == null) {
@@ -86,22 +119,19 @@ export class TrustMoneyService {
 					position_type,
 					trustMoney.position_type
 				),
-				emp_trust_reserve_limit: select_value(
-					emp_trust_reserve_limit,
-					trustMoney.emp_trust_reserve_limit
-				),
 				org_trust_reserve_limit: select_value(
 					org_trust_reserve_limit,
 					trustMoney.org_trust_reserve_limit
-				),
-				emp_special_trust_incent_limit: select_value(
-					emp_special_trust_incent_limit,
-					trustMoney.emp_special_trust_incent_limit
 				),
 				org_special_trust_incent_limit: select_value(
 					org_special_trust_incent_limit,
 					trustMoney.org_special_trust_incent_limit
 				),
+				start_date: select_value(
+					start_date,
+					trustMoney.start_date
+				),
+				end_date: select_value(end_date, trustMoney.end_date),
 				update_by: "system",
 			},
 			{ where: { id: id } }
@@ -118,5 +148,50 @@ export class TrustMoneyService {
 		if (destroyedRows != 1) {
 			throw new BaseResponseError("Delete error");
 		}
+	}
+
+	async rescheduleTrustMoney(): Promise<void> {
+		const trustMoneyList = await TrustMoney.findAll({
+			order: [
+				["position", "ASC"],
+				["position_type", "ASC"],
+				["start_date", "ASC"],
+			],
+		});
+
+		for (let i = 0; i < trustMoneyList.length - 1; i += 1) {
+			const end_date_string = get_date_string(
+				new Date(trustMoneyList[i]!.dataValues.end_date!)
+			);
+			const start_date = new Date(
+				trustMoneyList[i + 1]!.dataValues.start_date
+			);
+			const new_end_date_string = get_date_string(
+				new Date(start_date.setDate(start_date.getDate() - 1))
+			);
+			if (
+				trustMoneyList[i]!.dataValues.position ==
+				trustMoneyList[i + 1]!.dataValues.position &&
+				trustMoneyList[i]!.dataValues.position_type ==
+				trustMoneyList[i + 1]!.dataValues.position_type
+			) {
+				if (end_date_string != new_end_date_string) {
+					await this.updateTrustMoney({
+						id: trustMoneyList[i]!.dataValues.id,
+						end_date: new_end_date_string,
+					});
+				}
+			} else {
+				await this.updateTrustMoney({
+					id: trustMoneyList[i]!.dataValues.id,
+					end_date: null,
+				});
+			}
+		}
+		await this.updateTrustMoney({
+			id: trustMoneyList[trustMoneyList.length - 1]!.dataValues
+				.id,
+			end_date: null,
+		});
 	}
 }

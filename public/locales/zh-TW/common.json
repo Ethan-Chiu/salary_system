@@ -171,7 +171,9 @@
     "view": "顯示",
     "no_data": "沒有資料",
     "all": "全部",
-    "no_month_salary": "未發放月薪",
+    "month_salary_unpaid": "未發放月薪",
+    "month_salary_paid": "已發放月薪",
+    "leave": "離職人員",
     "salary_data": "當前資料",
     "ehr_data": "更新資料",
     "l_i_deduction": "勞保扣除額",
@@ -236,7 +238,8 @@
     "budget_amount": "預算金額",
     "superviser_amount": "主管建議金額",
     "final_amount": "最終金額",
-    "total_budgets": "總預算"
+    "total_budgets": "總預算",
+    "bonus_type": "獎金類別"
   },
   "table_name": {
     "attendanceSetting": "請假加班",
@@ -381,6 +384,7 @@
     "enter_password": "輸入密碼",
     "start_calculate_month_salary": "月薪計算",
     "start_calculate_month_salary_button": "開始計算",
-    "transaction": "薪資異動檔"
+    "transaction": "薪資異動檔",
+    "new_data_start_date": "新資料開始時間"
   }
 }

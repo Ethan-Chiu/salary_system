@@ -123,7 +123,7 @@ export const parametersRouter = createTRPCRouter({
 			if (attendanceSetting == null) {
 				throw new BaseResponseError("AttendanceSetting does not exist");
 			}
-			
+
 			return roundProperties(attendanceSetting, 4);
 		}),
 
@@ -274,8 +274,6 @@ export const parametersRouter = createTRPCRouter({
 			return newdata;
 		}),
 
-	
-
 	getAllBonusDepartment: publicProcedure.query(async () => {
 		const bonusDepartmentService = container.resolve(
 			BonusDepartmentService
@@ -361,7 +359,7 @@ export const parametersRouter = createTRPCRouter({
 			return newdata;
 		}),
 
-	
+
 
 	getAllBonusPositionType: publicProcedure.query(async () => {
 		const bonusPositionTypeService = container.resolve(
@@ -408,7 +406,7 @@ export const parametersRouter = createTRPCRouter({
 			return newdata;
 		}),
 
-	
+
 
 	getAllBonusSeniority: publicProcedure.query(async () => {
 		const bonusSeniorityService = container.resolve(BonusSeniorityService);
@@ -489,16 +487,15 @@ export const parametersRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const levelRangeService = container.resolve(LevelRangeService);
 			const levelRangeMapper = container.resolve(LevelRangeMapper);
-			const levelRange = await levelRangeMapper.getLevelRange(input);
-			const newdata = await levelRangeService.createLevelRange(levelRange);
+			const newdata = await levelRangeService.createLevelRange(input);
 			const levelRangeFE = await levelRangeMapper.getLevelRangeFE(newdata)
 			return levelRangeFE;
 		}),
 
-	getCurrentLevelRange: publicProcedure.query(async () => {
+	getCurrentLevelRange: publicProcedure.input(z.object({ period_id: z.number() })).query(async ({ input }) => {
 		const levelRangeService = container.resolve(LevelRangeService);
 		const levelRangeMapper = container.resolve(LevelRangeMapper);
-		const levelRange = await levelRangeService.getCurrentLevelRange();
+		const levelRange = await levelRangeService.getCurrentLevelRange(input.period_id);
 		if (levelRange == null) {
 			throw new BaseResponseError("LevelRange does not exist");
 		}
@@ -521,9 +518,7 @@ export const parametersRouter = createTRPCRouter({
 		.input(updateLevelRangeAPI)
 		.mutation(async ({ input }) => {
 			const levelRangeService = container.resolve(LevelRangeService);
-			const levelRangeMapper = container.resolve(LevelRangeMapper);
-			const levelRange = await levelRangeMapper.getLevelRangeNullable(input);
-			const newdata = await levelRangeService.updateLevelRange(levelRange);
+			const newdata = await levelRangeService.updateLevelRange(input);
 			return newdata;
 		}),
 
@@ -539,13 +534,21 @@ export const parametersRouter = createTRPCRouter({
 		.input(createLevelAPI)
 		.mutation(async ({ input }) => {
 			const levelService = container.resolve(LevelService);
-			const newdata = await levelService.createLevel(input);
+			const newdata = await levelService.createLevel({
+				...input,
+				start_date: input.start_date
+					? get_date_string(input.start_date)
+					: null,
+				end_date: input.end_date
+					? get_date_string(input.end_date)
+					: null,
+			});
 			return newdata;
 		}),
 
-	getCurrentLevel: publicProcedure.query(async () => {
+	getCurrentLevel: publicProcedure.input(z.object({ period_id: z.number() })).query(async ({ input }) => {
 		const levelService = container.resolve(LevelService);
-		const level = await levelService.getCurrentLevel();
+		const level = await levelService.getCurrentLevel(input.period_id);
 		if (level == null) {
 			throw new BaseResponseError("Level does not exist");
 		}
@@ -565,7 +568,15 @@ export const parametersRouter = createTRPCRouter({
 		.input(updateLevelAPI)
 		.mutation(async ({ input }) => {
 			const levelService = container.resolve(LevelService);
-			const newdata = await levelService.updateLevel(input);
+			const newdata = await levelService.updateLevel({
+				...input,
+				start_date: input.start_date
+					? get_date_string(input.start_date)
+					: null,
+				end_date: input.end_date
+					? get_date_string(input.end_date)
+					: null,
+			});
 			return newdata;
 		}),
 
@@ -637,13 +648,21 @@ export const parametersRouter = createTRPCRouter({
 		.input(createTrustMoneyAPI)
 		.mutation(async ({ input }) => {
 			const trustMoneyService = container.resolve(TrustMoneyService);
-			const newdata = await trustMoneyService.createTrustMoney(input);
+			const newdata = await trustMoneyService.createTrustMoney({
+				...input,
+				start_date: input.start_date
+					? get_date_string(input.start_date)
+					: null,
+				end_date: input.end_date
+					? get_date_string(input.end_date)
+					: null,
+			});
 			return newdata;
 		}),
 
-	getCurrentTrustMoney: publicProcedure.query(async () => {
+	getCurrentTrustMoney: publicProcedure.input(z.object({ period_id: z.number() })).query(async ({ input }) => {
 		const trustMoneyService = container.resolve(TrustMoneyService);
-		const trustMoney = await trustMoneyService.getCurrentTrustMoney();
+		const trustMoney = await trustMoneyService.getCurrentTrustMoney(input.period_id);
 		if (trustMoney == null) {
 			throw new BaseResponseError("TrustMoney does not exist");
 		}
@@ -663,7 +682,15 @@ export const parametersRouter = createTRPCRouter({
 		.input(updateTrustMoneyAPI)
 		.mutation(async ({ input }) => {
 			const trustMoneyService = container.resolve(TrustMoneyService);
-			const newdata = await trustMoneyService.updateTrustMoney(input);
+			const newdata = await trustMoneyService.updateTrustMoney({
+				...input,
+				start_date: input.start_date
+					? get_date_string(input.start_date)
+					: null,
+				end_date: input.end_date
+					? get_date_string(input.end_date)
+					: null,
+			});
 			return newdata;
 		}),
 
@@ -713,14 +740,14 @@ export const parametersRouter = createTRPCRouter({
 		}),
 
 	getAllSalaryIncomeTax: publicProcedure
-    .query(async () => {
-      const salaryIncomeTaxService = container.resolve(
-        SalaryIncomeTaxService
-      );
-      const salaryIncomeTax = await salaryIncomeTaxService.getAllSalaryIncomeTax();
-      if (salaryIncomeTax == null) {
-        throw new BaseResponseError("SalaryIncomeTax does not exist");
-      }
-      return salaryIncomeTax;
-    }),
+		.query(async () => {
+			const salaryIncomeTaxService = container.resolve(
+				SalaryIncomeTaxService
+			);
+			const salaryIncomeTax = await salaryIncomeTaxService.getAllSalaryIncomeTax();
+			if (salaryIncomeTax == null) {
+				throw new BaseResponseError("SalaryIncomeTax does not exist");
+			}
+			return salaryIncomeTax;
+		}),
 });

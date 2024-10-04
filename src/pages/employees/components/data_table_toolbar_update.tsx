@@ -9,6 +9,7 @@ import { TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { EmpTabsEnum } from "./context/employee_tabs_enum";
 import { useTranslation } from "react-i18next";
 import { LoadingSpinner } from "~/components/loading";
+import { CalendarToolbarFunctions } from "./calendar_view/components/calendar_toolbar_functions";
 
 interface DataTableToolbarProps<TData> {
 	filterColumnKey?: keyof TData;
@@ -38,17 +39,23 @@ export function DataTableToolbarUpdate<TData>({
 			{/* search bar */}
 			<ToolbarFilter table={table} filterColumnKey={filterColumnKey} />
 			{/* tabs */}
-			<TabsList className="grid h-8 w-96 grid-cols-2">
+			<TabsList className="grid h-8 w-96 grid-cols-3">
 				<TabsTrigger value={EmpTabsEnum.Enum.current} className="h-6">
 					{t("table.current")}
 				</TabsTrigger>
 				<TabsTrigger value={EmpTabsEnum.Enum.history} className="h-6">
 					{t("table.history")}
 				</TabsTrigger>
+				<TabsTrigger value={EmpTabsEnum.Enum.calendar} className="h-6">
+					{t("table.calendar")}
+				</TabsTrigger>
 			</TabsList>
 			{/* functions */}
 			<div className="flex">
-				<DataTableViewOptions table={table} />
+				{(selectedTab === EmpTabsEnum.Enum.current ||
+					selectedTab === EmpTabsEnum.Enum.history) && (
+					<DataTableViewOptions table={table} />
+				)}
 				<div className="ml-2 w-12">
 					{selectedPeriod && (
 						<EmployeeToolbarFunctionsProvider
@@ -57,6 +64,11 @@ export function DataTableToolbarUpdate<TData>({
 						>
 							{selectedTab === EmpTabsEnum.Enum.current && (
 								<DataTableFunctions
+									tableType={selectedTableType}
+								/>
+							)}
+							{selectedTab === EmpTabsEnum.Enum.calendar && (
+								<CalendarToolbarFunctions
 									tableType={selectedTableType}
 								/>
 							)}

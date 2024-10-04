@@ -10,11 +10,13 @@ import { HistoryView } from "./history_view/history_view";
 import { type HistoryQueryFunctionType } from "~/components/data_table/history_data_type";
 import { type EmployeeHistoryViewCommonEmpInfo } from "./history_view/history_view";
 import dataTableContext from "./context/data_table_context";
+import CalendarView from "./calendar_view/calendar_view";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
 	data: TData[];
 	historyDataFunction: HistoryQueryFunctionType<EmployeeHistoryViewCommonEmpInfo>;
+	calendarDataFunction: HistoryQueryFunctionType<EmployeeHistoryViewCommonEmpInfo>;
 	filterColumnKey?: keyof TData;
 }
 
@@ -22,13 +24,14 @@ export function DataTableUpdate<TData>({
 	columns,
 	data,
 	historyDataFunction,
+  calendarDataFunction,
 	filterColumnKey,
 }: DataTableProps<TData>) {
-	const { setSelectedTab } = useContext(dataTableContext);
+	const { selectedTab, setSelectedTab } = useContext(dataTableContext);
 
 	return (
 		<Tabs
-			defaultValue={EmpTabsEnum.Enum.current}
+			defaultValue={selectedTab}
 			className="h-full w-full"
 			onValueChange={(tab) => {
 				setSelectedTab(EmpTabsEnum.parse(tab));
@@ -48,6 +51,12 @@ export function DataTableUpdate<TData>({
 							columns={columns}
 							dataFunction={historyDataFunction}
 						/>
+					</div>
+				</TabsContent>
+				<TabsContent value={EmpTabsEnum.Enum.calendar} asChild>
+					<div className="flex h-0 w-full flex-grow flex-col">
+						<CalendarView 
+              dataFunction={historyDataFunction}/>
 					</div>
 				</TabsContent>
 			</div>
