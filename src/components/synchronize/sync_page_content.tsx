@@ -23,6 +23,7 @@ import {
 	CardTitle,
 } from "~/components/ui/card";
 import { useTranslation } from 'next-i18next'
+import { EmployeeDataChangeAll } from "./emp_data_table_all";
 
 
 export function SyncPageContent({ data }: { data: SyncData[] }) {
@@ -165,6 +166,22 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		);
 	}
 
+  function CompChangedDataTableAll({ data }: { data: SyncData[] }) {
+		return (
+			<>
+				{selectedEmployee && (
+					<div className="h-0 w-full flex-grow">
+						<EmployeeDataChangeAll
+							data={data}
+							mode={mode}
+						/>
+					</div>
+				)}
+			</>
+		);
+	}
+
+
 	if (!data || data.length === 0) {
 		return <CompAllDonePage />;
 	}
@@ -173,7 +190,7 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		<>
 			{/* Main Content */}
 			<CompTopBar data={data} />
-			<CompChangedDataTable data={data} />
+			<CompChangedDataTableAll data={data} />
 			{/* Bottom Buttons */}
 			<div className="mt-4 flex justify-between">
 				<UpdateTableDialog data={dataWithStatus} />
