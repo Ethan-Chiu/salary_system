@@ -22,9 +22,10 @@ import {
 	CardHeader,
 	CardTitle,
 } from "~/components/ui/card";
-import { useTranslation } from 'next-i18next'
+import { Toggle } from "~/components/ui/toggle";
+import { useTranslation } from "next-i18next";
 import { EmployeeDataChangeAll } from "./emp_data_table_all";
-
+import { DoubleArrowDownIcon, DoubleArrowUpIcon } from "@radix-ui/react-icons";
 
 export function SyncPageContent({ data }: { data: SyncData[] }) {
 	const [selectedEmployee, setSelectedEmployee] = useState<string | null>(
@@ -44,8 +45,9 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		[]
 	);
 	const [isAllConfirmed, setIsAllConfirmed] = useState<boolean>(false);
+	const [showAllData, setShowAllData] = useState<boolean>(false);
 
-	const { t } = useTranslation(['common'])
+	const { t } = useTranslation(["common"]);
 
 	useEffect(() => {
 		setDataWithStatus(
@@ -99,8 +101,7 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		if (!nextEmp()) {
 			toast({
 				title: t("others.well_done"),
-				description:
-					t("others.well_done_msg"),
+				description: t("others.well_done_msg"),
 				className: cn(
 					"top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4 data-[state=open]:sm:slide-in-from-top-full"
 				),
@@ -115,14 +116,17 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 
 	function CompAllDonePage() {
 		return (
-			<div className="h-0 w-full flex-grow flex justify-center items-center">
-				<Card className="text-center w-1/2">
+			<div className="flex h-0 w-full flex-grow items-center justify-center">
+				<Card className="w-1/2 text-center">
 					<CardHeader className="p-2 pt-0 md:p-4">
-						<CardTitle className="p-4">{t("others.up_to_date")}</CardTitle>
-						<CardDescription>{t("others.up_to_date_msg")}</CardDescription>
+						<CardTitle className="p-4">
+							{t("others.up_to_date")}
+						</CardTitle>
+						<CardDescription>
+							{t("others.up_to_date_msg")}
+						</CardDescription>
 					</CardHeader>
-					<CardContent className="p-2 pt-0 md:p-4 md:pt-0">
-					</CardContent>
+					<CardContent className="p-2 pt-0 md:p-4 md:pt-0"></CardContent>
 				</Card>
 			</div>
 		);
@@ -132,12 +136,38 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		return (
 			<>
 				<div className="mb-4 flex items-center">
-					<SelectEmployee
-						data={data}
-						checkStatus={checkedStatus}
-						selectedEmployee={selectedEmployee}
-						setSelectedEmployee={setSelectedEmployee}
-					/>
+					<Toggle
+						variant="outline"
+						aria-label="Toggle italic"
+						className="mr-2"
+						onPressedChange={() => setShowAllData(!showAllData)}
+						pressed={showAllData}
+					>
+						{showAllData ? (
+							<>
+								<DoubleArrowUpIcon className="mr-2 h-4 w-4" />
+								<p>{"Single Employee"}</p>
+							</>
+						) : (
+							<>
+								<DoubleArrowDownIcon className="mr-2 h-4 w-4" />
+								<p>{"Show All"}</p>
+							</>
+						)}
+					</Toggle>
+					<div
+						className={cn(
+							"transition-all duration-700",
+							!showAllData ? "opacity-100" : "opacity-0"
+						)}
+					>
+						<SelectEmployee
+							data={data}
+							checkStatus={checkedStatus}
+							selectedEmployee={selectedEmployee}
+							setSelectedEmployee={setSelectedEmployee}
+						/>
+					</div>
 					<div className="ml-auto">
 						<SelectModeComponent mode={mode} setMode={setMode} />
 					</div>
@@ -166,21 +196,17 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		);
 	}
 
-  function CompChangedDataTableAll({ data }: { data: SyncData[] }) {
+	function CompChangedDataTableAll({ data }: { data: SyncData[] }) {
 		return (
 			<>
 				{selectedEmployee && (
 					<div className="h-0 w-full flex-grow">
-						<EmployeeDataChangeAll
-							data={data}
-							mode={mode}
-						/>
+						<EmployeeDataChangeAll data={data} mode={mode} />
 					</div>
 				)}
 			</>
 		);
 	}
-
 
 	if (!data || data.length === 0) {
 		return <CompAllDonePage />;
@@ -190,7 +216,11 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		<>
 			{/* Main Content */}
 			<CompTopBar data={data} />
-			<CompChangedDataTableAll data={data} />
+			{showAllData ? (
+				<CompChangedDataTableAll data={data} />
+			) : (
+				<CompChangedDataTable data={data} />
+			)}
 			{/* Bottom Buttons */}
 			<div className="mt-4 flex justify-between">
 				<UpdateTableDialog data={dataWithStatus} />
