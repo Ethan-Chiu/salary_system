@@ -28,9 +28,13 @@ export const bonusRouter = createTRPCRouter({
 				period_id: z.number(),
 				bonus_type: BonusTypeEnum,
 			})
-		).query(async ({ input }) => {
+		)
+		.query(async ({ input }) => {
 			const bonusService = container.resolve(EmployeeBonusService);
-			const result = await bonusService.getAllEmployeeBonus(input.period_id, input.bonus_type);
+			const result = await bonusService.getAllEmployeeBonus(
+				input.period_id,
+				input.bonus_type
+			);
 			return result.map((e) => roundProperties(e, 1));
 		}),
 	getEmployeeBonus: publicProcedure
@@ -42,7 +46,10 @@ export const bonusRouter = createTRPCRouter({
 		)
 		.query(async ({ input }) => {
 			const bonusService = container.resolve(EmployeeBonusService);
-			const result = await bonusService.getEmployeeBonus(input.period_id, input.bonus_type);
+			const result = await bonusService.getEmployeeBonus(
+				input.period_id,
+				input.bonus_type
+			);
 			return result.map((e) => roundProperties(e, 1));
 		}),
 	// getExportedSheets: publicProcedure.input(
@@ -84,22 +91,27 @@ export const bonusRouter = createTRPCRouter({
 			// return result.map((e) => roundProperties(e, 1));
 		}),
 	createEmployeeBonus: publicProcedure
-		.input(
-			createEmployeeBonusAPI
-		)
+		.input(createEmployeeBonusAPI)
 		.mutation(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
 			const result = await empBonusService.createEmployeeBonus(input);
 			return result;
 		}),
 	updateEmployeeBonus: publicProcedure
-		.input(
-			updateEmployeeBonusAPI
-		)
+		.input(updateEmployeeBonusAPI)
 		.mutation(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
 			const result = await empBonusService.updateEmployeeBonus(input);
 			return result;
+		}),
+	updateFromExcel: publicProcedure
+		.input(updateEmployeeBonusAPI.array())
+		.mutation(async ({ input }) => {
+			const empBonusService = container.resolve(EmployeeBonusService);
+			const err_emp_no_list = input
+				.map(async (e) => await empBonusService.updateFromExcel(false,e))
+				.filter((e) => e != null);
+			return err_emp_no_list;
 		}),
 	deleteEmployeeBonus: publicProcedure
 		.input(
