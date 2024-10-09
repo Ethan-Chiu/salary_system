@@ -54,9 +54,25 @@ export const insurance_rate_columns = [
 		),
 	}),
 	columnHelper.accessor("value", {
-		header: () => {
+		header: ({ column }) => {
 			const { t } = useTranslation(["common"]);
-			return <div className="text-center font-medium">{t("table.value")}</div>
+			return (
+				<div className="flex justify-center pl-3">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t("table.value")}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
+			);
 		},
 		cell: ({ row }) => {
 			const value = row.getValue("value");

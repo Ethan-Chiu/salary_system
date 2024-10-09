@@ -44,9 +44,25 @@ export const bonus_seniority_columns = [
 		),
 	}),
 	columnHelper.accessor("multiplier", {
-		header: () => {
+		header: ({ column }) => {
 			const { t } = useTranslation(["common"]);
-			return <div className="text-center font-medium">{t("table.multiplier")}</div>
+			return (
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t("table.multiplier")}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
+			);
 		},
 		cell: ({ row }) => {
 			return (

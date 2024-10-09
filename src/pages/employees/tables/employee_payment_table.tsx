@@ -3,14 +3,16 @@ import { DataTableUpdate } from "../components/data_table_update";
 import { api } from "~/utils/api";
 import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
+import { Button } from "~/components/ui/button";
+import { ArrowUpDown } from "lucide-react";
 
 const columns = (t: I18nType) =>
 	[
+		"department",
 		"emp_no",
 		"emp_name",
 		"position",
 		"position_type",
-		"department",
 		"base_salary",
 		"food_allowance",
 		"supervisor_allowance",
@@ -27,7 +29,26 @@ const columns = (t: I18nType) =>
 	].map((key) => {
 		return {
 			accessorKey: key,
-			header: t(`table.${key}`),
+			header: ({ column }:any) => {
+				const { t } = useTranslation(["common"]);
+				return (
+					<div className="flex justify-center">
+						<div className="text-center font-medium">
+							<Button
+								variant="ghost"
+								onClick={() =>
+									column.toggleSorting(
+										column.getIsSorted() === "asc"
+									)
+								}
+							>
+								{t(`table.${key}`)}
+								<ArrowUpDown className="ml-2 h-4 w-4" />
+							</Button>
+						</div>
+					</div>
+				);
+			},
 		};
 	});
 

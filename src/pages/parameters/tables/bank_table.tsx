@@ -50,18 +50,50 @@ export const bank_columns = [
 		,
 	}),
 	columnHelper.accessor("org_name", {
-		header: () => {
+		header: ({ column }) => {
 			const { t } = useTranslation(["common"]);
-			return <div className="text-center font-medium">{t("table.org_name")}</div>
+			return (
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t("table.org_name")}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
+			);
 		},
 		cell: ({ row }) =>
 			<div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>
 		,
 	}),
 	columnHelper.accessor("start_date", {
-		header: () => {
+		header: ({column}) => {
 			const { t } = useTranslation(["common"]);
-			return <div className="text-center font-medium">{t("table.start_date")}</div>
+			return (
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t("table.start_date")}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
+			);
 		},
 		cell: ({ row }) => {
 			return (
@@ -71,9 +103,25 @@ export const bank_columns = [
 		},
 	}),
 	columnHelper.accessor("end_date", {
-		header: () => {
+		header: ({ column }) => {
 			const { t } = useTranslation(["common"]);
-			return <div className="text-center font-medium">{t("table.end_date")}</div>
+			return (
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t("table.end_date")}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
+			);
 		},
 		cell: ({ row }) => {
 			return row.original.end_date ? (
