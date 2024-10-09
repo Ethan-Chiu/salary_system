@@ -22,10 +22,10 @@ export class EmployeeBonus extends Model<
 	declare fixed_amount: number;
 	declare budget_effective_salary: number;
 	declare budget_amount: number;
-	declare supervisor_performance_level: number|null;
+	declare supervisor_performance_level: string|null;
 	declare supervisor_effective_salary: number|null;
 	declare supervisor_amount: number|null;
-	declare approved_performance_level: number|null;
+	declare approved_performance_level: string|null;
 	declare approved_effective_salary: number|null;
 	declare approved_amount: number|null;
 
@@ -80,7 +80,7 @@ export function initEmployeeBonus(sequelize: Sequelize) {
 				allowNull: false,
 			},
 			supervisor_performance_level: {
-				type: DataTypes.FLOAT,
+				type: DataTypes.STRING(32),
 				allowNull: true,
 			},
 			supervisor_effective_salary: {
@@ -100,7 +100,7 @@ export function initEmployeeBonus(sequelize: Sequelize) {
 				allowNull: true,
 			},
 			approved_amount: {
-				type: DataTypes.FLOAT,
+				type: DataTypes.STRING(32),
 				allowNull: true,
 			},
 			create_date: {

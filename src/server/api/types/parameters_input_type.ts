@@ -235,10 +235,10 @@ const EmployeeBonus = z.object({
 	fixed_amount: z.number(),
 	budget_effective_salary: z.number(),
 	budget_amount: z.number(),
-	supervisor_performance_level: z.number().nullable(),
+	supervisor_performance_level: z.string().nullable(),
 	supervisor_effective_salary: z.number().nullable(),
 	supervisor_amount: z.number().nullable(),
-	approved_performance_level: z.number().nullable(),
+	approved_performance_level: z.string().nullable(),
 	approved_effective_salary: z.number().nullable(),
 	approved_amount: z.number().nullable(),
 });
