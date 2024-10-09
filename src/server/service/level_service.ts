@@ -41,26 +41,18 @@ export class LevelService {
 		return level;
 	}
 
-	async getCurrentLevelById(period_id: number, id: number): Promise<Level | null> {
-		const ehr_service = container.resolve(EHRService);
-		const period = await ehr_service.getPeriodById(period_id);
-		const current_date_string = period.end_date;
-		const _level = await Level.findOne({
+	async getLevelByLevel(level: number, start_date: string): Promise<Level | null> {
+		const date = new Date(start_date);
+		const start_date_string = get_date_string(
+			new Date(date.setFullYear(date.getFullYear(), 0, 1))
+		);
+		const levelData = await Level.findOne({
 			where: {
-				start_date: {
-					[Op.lte]: current_date_string,
-				},
-				end_date: {
-					[Op.or]: [
-						{ [Op.gte]: current_date_string },
-						{ [Op.eq]: null },
-					],
-				},
-				id: id,
+				level: level,
+				start_date: start_date_string,
 			},
 		});
-
-		return _level;
+		return levelData;
 	}
 
 	async getCurrentLevel(period_id: number): Promise<Level[]> {
@@ -78,13 +70,13 @@ export class LevelService {
 						{ [Op.eq]: null },
 					],
 				},
-			}, order: [['level', 'asc']]
+			}, order: [["start_date", "DESC"], ["level", "ASC"]]
 		});
 		return level;
 	}
 
 	async getAllLevel(): Promise<Level[]> {
-		const level = await Level.findAll({ order: [['level', 'asc']] });
+		const level = await Level.findAll({ order: [["start_date", "DESC"], ["level", "ASC"]] });
 		return level;
 	}
 
@@ -152,9 +144,37 @@ export class LevelService {
 					],
 				},
 			},
-			order: [["level", "ASC"]]
+			order: [["start_date", "DESC"], ["level", "ASC"]]
 		});
 		const targetLevel = levelList.find((level) => level.level >= salary);
 		return targetLevel ?? levelList[levelList.length - 1]!;
+	}
+
+	async rescheduleLevel(): Promise<void> {
+		const levelList = await Level.findAll({
+			order: [["start_date", "DESC"], ["level", "ASC"]],
+		});
+		for (let i = 0; i < levelList.length; i += 1) {
+			const start_date = new Date(
+				levelList[i]!.dataValues.start_date
+			);
+			const start_date_string = get_date_string(
+				new Date(start_date.setFullYear(start_date.getFullYear(), 0, 1))
+			);
+			const end_date_string = get_date_string(
+				new Date(start_date.setFullYear(start_date.getFullYear(), 11, 31))
+			);
+			if (i != 0 && (levelList[i]!.dataValues.level == levelList[i - 1]!.dataValues.level
+				&& levelList[i]!.dataValues.start_date == levelList[i - 1]!.dataValues.start_date)) {
+				await this.deleteLevel(levelList[i]!.dataValues.id);
+			}
+			else {
+				await this.updateLevel({
+					id: levelList[i]!.dataValues.id,
+					start_date: start_date_string,
+					end_date: end_date_string,
+				});
+			}
+		}
 	}
 }

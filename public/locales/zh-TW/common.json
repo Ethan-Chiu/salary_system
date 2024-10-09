@@ -236,10 +236,15 @@
     "special_multiplier": "特殊倍率",
     "fixed_amount": "固定金額",
     "budget_amount": "預算金額",
-    "superviser_amount": "主管建議金額",
-    "final_amount": "最終金額",
+    "supervisor_amount": "主管建議金額",
     "total_budgets": "總預算",
-    "bonus_type": "獎金類別"
+    "bonus_type": "獎金類別",
+    "budget_effective_salary": "預算_等效月薪",
+    "supervisor_performance_level": "主管_績效等級",
+    "supervisor_effective_salary": "主管_等效月薪",
+    "approved_performance_level": "核准_績效等級",
+    "approved_effective_salary": "核准_等效月薪",
+    "approved_amount": "核准金額"
   },
   "table_name": {
     "attendanceSetting": "請假加班",

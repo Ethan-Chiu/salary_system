@@ -29,6 +29,7 @@ import { api } from "~/utils/api";
 import { z } from "zod";
 import { type Level } from "~/server/database/entity/SALARY/level";
 import { modeDescription } from "~/lib/utils/helper_function";
+import { zodOptionalDate, zodRequiredDate } from "~/lib/utils/zod_types";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
@@ -44,7 +45,7 @@ export function DataTableFunctions({
 	const [mode, setMode] = useState<FunctionMode>("none");
 	const { t } = useTranslation(['common', 'nav']);
 
-	const { isLoading, isError, data, error } = api.parameters.getCurrentLevel.useQuery();
+	const { isLoading, isError, data, error } = api.parameters.getAllLevel.useQuery();
 
 	// ========================= Additional Condition for Schema =====================================
 	let schema = getSchema(tableType);
@@ -55,14 +56,15 @@ export function DataTableFunctions({
 		else {
 			const levelOptions: Array<z.ZodLiteral<number>> =
 				(data as Level[]).map((d: Level) => {
-					return z.literal(d.level);
-				})
+					return d.level;
+				}).map((d: number) => z.literal(d));
 			const levelDataAsTuple: readonly [z.ZodTypeAny, z.ZodTypeAny, ...z.ZodTypeAny[]] = levelOptions as any as [z.ZodTypeAny, z.ZodTypeAny, ...z.ZodTypeAny[]];
 			const levelSchema = z.union(levelDataAsTuple);
 			schema = schema.extend({
-				// level_start: z.enum(levelDataAsTuple),
 				level_start: levelSchema,
 				level_end: levelSchema,
+				start_date: zodRequiredDate("start_date"),
+				end_date: zodOptionalDate(),
 			})
 		}
 	}

@@ -110,7 +110,7 @@ export default function ParameterToolbarFunctionsProvider({
 
 	//#region <TrustMoneySetting>
 	const getTrustMoneySetting = () =>
-		api.parameters.getCurrentTrustMoney.useQuery();
+		api.parameters.getCurrentTrustMoney.useQuery({ period_id });
 	const updateTrustMoneySetting =
 		api.parameters.updateTrustMoney.useMutation({
 			onSuccess: () => {
@@ -134,7 +134,7 @@ export default function ParameterToolbarFunctionsProvider({
 		});
 	//#endregion
 
-	const getLevel = () => api.parameters.getCurrentLevel.useQuery();
+	const getLevel = () => api.parameters.getCurrentLevel.useQuery({ period_id });
 	const updateLevel = api.parameters.updateLevel.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentLevel.invalidate();
@@ -153,7 +153,7 @@ export default function ParameterToolbarFunctionsProvider({
 			ctx.parameters.getAllLevel.invalidate();
 		},
 	});
-	const getLevelRange = () => api.parameters.getCurrentLevelRange.useQuery();
+	const getLevelRange = () => api.parameters.getCurrentLevelRange.useQuery({ period_id });
 	const updateLevelRange = api.parameters.updateLevelRange.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentLevelRange.invalidate();

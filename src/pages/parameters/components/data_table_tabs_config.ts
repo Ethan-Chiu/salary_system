@@ -5,8 +5,9 @@ export function hasHistory(tableType: ParameterTableEnum): boolean {
 		case "TableAttendance":
 		case "TableBankSetting":
 		case "TableInsurance":
-		// case "TableLevelRange":
-		// case "TableLevel":
+		case "TableLevelRange":
+		case "TableLevel":
+		case "TableTrustMoney":
 			return true;
 		default:
 			return false;

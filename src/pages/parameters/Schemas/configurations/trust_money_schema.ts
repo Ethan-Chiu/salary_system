@@ -1,12 +1,13 @@
 import { z } from "zod";
+import { zodOptionalDate, zodRequiredDate } from "~/lib/utils/zod_types";
 
 const zc = z.coerce;
 
 export const trustMoneySchema = z.object({
 	position: zc.number(),
 	position_type: zc.string().max(2),
-	emp_trust_reserve_limit: zc.number().optional(),
 	org_trust_reserve_limit: zc.number(),
-	emp_special_trust_incent_limit: zc.number().nullable(),
 	org_special_trust_incent_limit: zc.number(),
+	start_date: zodRequiredDate("start_date"),
+	end_date: zodOptionalDate(),
 });

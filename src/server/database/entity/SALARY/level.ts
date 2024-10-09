@@ -36,7 +36,7 @@ export function initLevel(sequelize: Sequelize) {
             },
             level: {
                 type: DataTypes.INTEGER.UNSIGNED,
-                unique: true,
+                unique: false,
                 allowNull: false,
             },
             start_date: {

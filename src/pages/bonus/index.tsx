@@ -63,7 +63,7 @@ const BonusHomePageContent = () => {
     const titles: string[] = pageList.map((page) => page.title);
 
     return (
-        <div className="flex h-screen flex-col">
+        <div className="flex h-full flex-col">
             <Header title={t("bonus", { ns: "nav" })} showOptions className="mb-4" />
             <div className="flex flex-row items-start">
                 <div className="ml-4 h-full min-w-[100px]">
@@ -98,7 +98,7 @@ const BonusHomePageContent = () => {
                     <ProgressBar labels={titles} selectedIndex={selectedIndex} />
                 </div>
             </div>
-            <div className="m-4 h-0 flex grow">
+            <div className="m-4 flex grow">
                 {pageList[selectedIndex]?.page ?? <></>}
             </div>
             <div className="mx-4 mb-4 flex justify-between">
