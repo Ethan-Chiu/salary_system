@@ -185,12 +185,10 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		return (
 			<>
 				{selectedEmployee && (
-					<div className="h-0 w-full flex-grow">
-						<EmployeeDataChange
-							empData={selectedEmployeeData}
-							mode={mode}
-						/>
-					</div>
+					<EmployeeDataChange
+						empData={selectedEmployeeData}
+						mode={mode}
+					/>
 				)}
 			</>
 		);
@@ -200,9 +198,7 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		return (
 			<>
 				{selectedEmployee && (
-					<div className="h-0 w-full flex-grow">
-						<EmployeeDataChangeAll data={data} mode={mode} />
-					</div>
+					<EmployeeDataChangeAll data={data} mode={mode} />
 				)}
 			</>
 		);
@@ -216,11 +212,28 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		<>
 			{/* Main Content */}
 			<CompTopBar data={data} />
-			{showAllData ? (
-				<CompChangedDataTableAll data={data} />
-			) : (
-				<CompChangedDataTable data={data} />
-			)}
+			<div className="relative h-0 w-full flex-grow ">
+				<div
+					className={cn(
+						"absolute h-full w-full transition-all",
+						!showAllData
+							? "translate-y-[100%] opacity-0"
+							: "opacity-100"
+					)}
+				>
+					<CompChangedDataTableAll data={data} />
+				</div>
+				<div
+					className={cn(
+						"absolute h-full w-full transition-all",
+						showAllData
+							? "translate-y-[-100%] opacity-0 pointer-events-none"
+							: "opacity-100 pointer-events-auto"
+					)}
+				>
+					<CompChangedDataTable data={data} />
+				</div>
+			</div>
 			{/* Bottom Buttons */}
 			<div className="mt-4 flex justify-between">
 				<UpdateTableDialog data={dataWithStatus} />
