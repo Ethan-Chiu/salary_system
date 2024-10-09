@@ -55,34 +55,31 @@ export function EmployeeDataChangeAll({
 						</TableRow>
 					</TableHeader>
 					{data.map((d: SyncData, _index: number) => {
-						const rowSpan = d.comparisons.length - 1;
+						// Filter data based on mode
+						let comparisons: DataComparison[] = d.comparisons;
+
+						if (mode === SyncDataDisplayModeEnum.Values.changed) {
+							comparisons = d.comparisons.filter(
+								(c: DataComparison) => c.is_different
+							);
+						}
+
+            // Get row span
+						const rowSpan = comparisons.length;
 
 						return (
 							<>
 								<TableBody className="hover:bg-muted/50">
-									{d.comparisons.map(
+									{comparisons.map(
 										(c: DataComparison, index: number) => {
 											const diff = c.is_different;
-
-											if (
-												mode ===
-													SyncDataDisplayModeEnum
-														.Values.changed &&
-												!diff
-											) {
-												return (
-													<Fragment
-														key={c.key}
-													></Fragment>
-												);
-											}
 
 											return (
 												<TableRow
 													key={c.key}
 													className="hover:bg-transparent"
 												>
-													{index === 1 ? (
+													{index === 0 ? (
 														<TableCell
 															className="font-medium hover:bg-muted/50"
 															rowSpan={rowSpan}
