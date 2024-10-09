@@ -353,6 +353,7 @@ export class EmployeeBonusService {
 		if (employeeBonus == null) {
 			throw new BaseResponseError("Employee account does not exist");
 		}
+		console.log("after_update", budget_effective_salary);
 		const affectedCount = await EmployeeBonus.update(
 			{
 				emp_no: select_value(emp_no, employeeBonus.emp_no),
@@ -484,8 +485,11 @@ export class EmployeeBonusService {
 		bonus_type: BonusTypeEnumType,
 		total_budgets: number
 	) {
-		const budget_amount_list: { emp_no: string; budget_effective_salary: number; budget_amount: number }[] =
-			[];
+		let budget_amount_list: {
+			emp_no: string;
+			budget_effective_salary: number;
+			budget_amount: number;
+		}[] = [];
 		const emp_no_list = (
 			await this.getAllEmployeeBonus(period_id, bonus_type)
 		).map((e) => e.emp_no);
@@ -529,13 +533,19 @@ export class EmployeeBonusService {
 
 			budget_amount_list.push({
 				emp_no: emp_no,
-				budget_effective_salary: budget_amount/(employee_payment_fe.base_salary +
-					employee_payment_fe.food_allowance +
-					employee_payment_fe.supervisor_allowance +
-					employee_payment_fe.occupational_allowance +
-					employee_payment_fe.subsidy_allowance),
+				budget_effective_salary: Round(
+					budget_amount /
+						(employee_payment_fe.base_salary +
+							employee_payment_fe.food_allowance +
+							employee_payment_fe.supervisor_allowance +
+							employee_payment_fe.occupational_allowance +
+							employee_payment_fe.subsidy_allowance),
+					3
+				),
 				budget_amount: budget_amount,
 			});
+			console.log("\n\n\n\n Before:");
+			console.log(budget_amount_list);
 		});
 
 		await Promise.all(promises);
@@ -544,9 +554,16 @@ export class EmployeeBonusService {
 			.map((e) => e.budget_amount)
 			.reduce((a, b) => a + b, 0);
 		const ratio = total_budgets / total_budget_amount;
-		budget_amount_list.forEach(
-			(e) => (e.budget_amount = Round(e.budget_amount * ratio, 1))
-		);
+		budget_amount_list.forEach((e) => {
+			e.budget_amount = Round(e.budget_amount * ratio, 1);
+			e.budget_effective_salary = Round(
+				e.budget_effective_salary * ratio,
+				2
+			);
+		});
+
+		console.log("\n\n\n\n After:");
+		console.log(budget_amount_list);
 
 		const promises2 = budget_amount_list.map(async (e) => {
 			const employee_bonus = await this.getEmployeeBonusByEmpNo(
@@ -557,6 +574,9 @@ export class EmployeeBonusService {
 			if (!employee_bonus) {
 				return;
 			}
+
+			console.log("before_update", e.budget_effective_salary)
+
 			await this.updateEmployeeBonus({
 				id: employee_bonus.id,
 				budget_effective_salary: e.budget_effective_salary,

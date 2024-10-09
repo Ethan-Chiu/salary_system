@@ -35,7 +35,7 @@ export const bonusRouter = createTRPCRouter({
 				input.period_id,
 				input.bonus_type
 			);
-			return result.map((e) => roundProperties(e, 1));
+			return result.map((e) => roundProperties(e, 2));
 		}),
 	getEmployeeBonus: publicProcedure
 		.input(
@@ -50,7 +50,7 @@ export const bonusRouter = createTRPCRouter({
 				input.period_id,
 				input.bonus_type
 			);
-			return result.map((e) => roundProperties(e, 1));
+			return result.map((e) => roundProperties(e, 2));
 		}),
 	// getExportedSheets: publicProcedure.input(
 	// 	z.object({
