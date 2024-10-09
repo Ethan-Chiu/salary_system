@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { zodOptionalDate, zodRequiredDate } from "~/lib/utils/zod_types";
+import { LongServiceeEnum } from "~/server/api/types/long_service_enum";
 
 const zc = z.coerce;
 
@@ -11,6 +12,7 @@ export const employeePaymentSchema = z.object({
 	occupational_allowance: zc.number(),
 	subsidy_allowance: zc.number(),
 	long_service_allowance: zc.number(),
+	long_service_allowance_type: LongServiceeEnum,
 	l_r_self: zc.number(),
 	l_i: zc.number(),
 	h_i: zc.number(),
