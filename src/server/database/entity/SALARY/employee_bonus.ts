@@ -92,7 +92,7 @@ export function initEmployeeBonus(sequelize: Sequelize) {
 				allowNull: true,
 			},
 			approved_performance_level: {
-				type: DataTypes.FLOAT,
+				type: DataTypes.STRING(32),
 				allowNull: true,
 			},
 			approved_effective_salary: {
@@ -100,7 +100,7 @@ export function initEmployeeBonus(sequelize: Sequelize) {
 				allowNull: true,
 			},
 			approved_amount: {
-				type: DataTypes.STRING(32),
+				type: DataTypes.FLOAT,
 				allowNull: true,
 			},
 			create_date: {
