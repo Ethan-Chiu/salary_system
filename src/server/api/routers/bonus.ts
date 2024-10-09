@@ -70,7 +70,7 @@ export const bonusRouter = createTRPCRouter({
 				bonus_type: BonusTypeEnum,
 			})
 		)
-		.query(async ({ input }) => {
+		.mutation(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
 			const all_emp_no_list = (
 				await EmployeeData.findAll({
@@ -84,11 +84,11 @@ export const bonusRouter = createTRPCRouter({
 				input.bonus_type,
 				all_emp_no_list
 			);
-			const result = await empBonusService.initCandidateEmployeeBonus(
+			await empBonusService.initCandidateEmployeeBonus(
 				input.period_id,
 				input.bonus_type
 			);
-			// return result.map((e) => roundProperties(e, 1));
+			return;
 		}),
 	createEmployeeBonus: publicProcedure
 		.input(createEmployeeBonusAPI)

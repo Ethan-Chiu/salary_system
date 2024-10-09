@@ -40,22 +40,22 @@ export function EmployeeDataChangeAll({
 				<Table>
 					<TableHeader className="bg-secondary">
 						<TableRow className="sticky top-0 bg-secondary hover:bg-secondary">
-							<TableHead className="w-1/3 text-center">
+							<TableHead className="w-1/4 text-center">
 								{t("table.emp_no")}
 							</TableHead>
-							<TableHead className="w-1/3 text-center">
+							<TableHead className="w-1/4 text-center">
 								{t("table.key")}
 							</TableHead>
-							<TableHead className="w-1/3 text-center">
+							<TableHead className="w-1/4 text-center">
 								{t("table.salary_data")}
 							</TableHead>
-							<TableHead className="w-1/3 text-center">
+							<TableHead className="w-1/4 text-center">
 								{t("table.ehr_data")}
 							</TableHead>
 						</TableRow>
 					</TableHeader>
 					{data.map((d: SyncData, _index: number) => {
-						const rowSpan = d.comparisons.length - 1;
+						const rowSpan = d.comparisons.length;
 
 						return (
 							<>
