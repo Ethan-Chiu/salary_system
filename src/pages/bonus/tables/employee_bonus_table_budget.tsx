@@ -42,15 +42,21 @@ const columns = (t: I18nType) =>
     });
 
 export function EmployeeBonusTable({ period_id, bonus_type, viewOnly }: EmployeeBonusTableProps) {
-    api.bonus.initCandidateEmployeeBonus.useQuery({ period_id, bonus_type });
+    const ctx = api.useUtils();
+    const initFunction = api.bonus.initCandidateEmployeeBonus.useMutation({
+        onSuccess: () => {
+            ctx.bonus.getEmployeeBonus.invalidate();
+        },
+    });
     const { isLoading, isError, data, error } =
-        api.bonus.getEmployeeBonus.useQuery({period_id, bonus_type});
+        api.bonus.getEmployeeBonus.useQuery({ period_id, bonus_type });
     const filterKey: RowItemKey = "emp_no";
     const { t } = useTranslation(["common"]);
     const { setSelectedTableType } = useContext(dataTableContext);
 
     useEffect(() => {
         setSelectedTableType("TableEmployeeBonus");
+        initFunction.mutate({ period_id, bonus_type });
     }, []);
 
     if (isLoading) {

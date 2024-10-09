@@ -20,7 +20,7 @@ function defineNextConfig(config) {
 }
 
 export default defineNextConfig({
-	reactStrictMode: true,
+	reactStrictMode: false,
 	experimental: {
 		instrumentationHook: true,
 		serverComponentsExternalPackages: [
