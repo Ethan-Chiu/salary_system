@@ -2,7 +2,7 @@ import { api } from "~/utils/api";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { LoadingSpinner } from "~/components/loading";
-import { type TableComponentProps } from "../bonus_filter";
+import { type TableComponentProps } from "../pre_calculate_bonus/bonus_filter";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 import { I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";

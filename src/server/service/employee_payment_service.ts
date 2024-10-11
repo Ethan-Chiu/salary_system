@@ -154,7 +154,7 @@ export class EmployeePaymentService {
 	}
 	async getAllEmployeePayment(): Promise<EmployeePayment[]> {
 		const employeePayment = await EmployeePayment.findAll({
-			order: [["emp_no", "ASC"]],
+			order: [["emp_no", "ASC"], ["start_date", "DESC"]],
 			raw: true,
 		});
 		return employeePayment;

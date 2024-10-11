@@ -7,7 +7,7 @@ import { useContext } from "react";
 import { EmpTabsEnum } from "./context/employee_tabs_enum";
 import { CurrentView } from "./current_view/current_view";
 import { HistoryView } from "./history_view/history_view";
-import { type HistoryQueryFunctionType } from "~/components/data_table/history_data_type";
+import { CalenderQueryFunctionType, type HistoryQueryFunctionType } from "~/components/data_table/history_data_type";
 import { type EmployeeHistoryViewCommonEmpInfo } from "./history_view/history_view";
 import dataTableContext from "./context/data_table_context";
 import CalendarView from "./calendar_view/calendar_view";
@@ -16,7 +16,7 @@ interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
 	data: TData[];
 	historyDataFunction: HistoryQueryFunctionType<EmployeeHistoryViewCommonEmpInfo>;
-	calendarDataFunction: HistoryQueryFunctionType<EmployeeHistoryViewCommonEmpInfo>;
+	calendarDataFunction: CalenderQueryFunctionType<EmployeeHistoryViewCommonEmpInfo>;
 	filterColumnKey?: keyof TData;
 }
 
@@ -24,7 +24,7 @@ export function DataTableUpdate<TData>({
 	columns,
 	data,
 	historyDataFunction,
-  calendarDataFunction,
+	calendarDataFunction,
 	filterColumnKey,
 }: DataTableProps<TData>) {
 	const { selectedTab, setSelectedTab } = useContext(dataTableContext);
@@ -55,8 +55,8 @@ export function DataTableUpdate<TData>({
 				</TabsContent>
 				<TabsContent value={EmpTabsEnum.Enum.calendar} asChild>
 					<div className="flex h-0 w-full flex-grow flex-col">
-						<CalendarView 
-              dataFunction={historyDataFunction}/>
+						<CalendarView
+							dataFunction={calendarDataFunction} />
 					</div>
 				</TabsContent>
 			</div>
