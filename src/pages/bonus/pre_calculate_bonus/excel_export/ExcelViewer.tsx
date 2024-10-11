@@ -55,21 +55,44 @@ interface ExcelViewerProps {
 	filter_component: JSX.Element;
 }
 
-
-const standard_sheet_name = "Standard"
+const standard_sheet_name = "Standard";
 const Standard: ExcelSheetWithColor = {
 	sheetName: standard_sheet_name,
 	data: [
 		[
-			{ content: "考績分佈比例", textColor: "#000000", backgroundColor: "#ccffcc" },
-			{ content: "績效獎金月倍數", textColor: "#000000", backgroundColor: "#ffffff" },
+			{
+				content: "考績分佈比例",
+				textColor: "#000000",
+				backgroundColor: "#ccffcc",
+			},
+			{
+				content: "績效獎金月倍數",
+				textColor: "#000000",
+				backgroundColor: "#ffffff",
+			},
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "974考績等級", textColor: "#ff0000", backgroundColor: "#ffffff" },
-			{ content: "個人績效獎金月倍數", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "姓名", textColor: "#0000ff", backgroundColor: "#ffffff" },
+			{
+				content: "974考績等級",
+				textColor: "#ff0000",
+				backgroundColor: "#ffffff",
+			},
+			{
+				content: "個人績效獎金月倍數",
+				textColor: "#000000",
+				backgroundColor: "#ffffff",
+			},
+			{
+				content: "姓名",
+				textColor: "#0000ff",
+				backgroundColor: "#ffffff",
+			},
 		],
 		[
-			{ content: "10%", textColor: "#000000", backgroundColor: "#ffffff" },
+			{
+				content: "10%",
+				textColor: "#000000",
+				backgroundColor: "#ffffff",
+			},
 			{ content: "3", textColor: "#ff0000", backgroundColor: "#ffffff" },
 			{ content: "AE", textColor: "#000000", backgroundColor: "#ffff00" },
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
@@ -80,12 +103,20 @@ const Standard: ExcelSheetWithColor = {
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
 			{ content: "9E", textColor: "#000000", backgroundColor: "#ffff00" },
-			{ content: "Average E", textColor: "#000000", backgroundColor: "#ffffff" },
+			{
+				content: "Average E",
+				textColor: "#000000",
+				backgroundColor: "#ffffff",
+			},
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
 		],
 		[
-			{ content: "30%", textColor: "#000000", backgroundColor: "#ffffff" },
+			{
+				content: "30%",
+				textColor: "#000000",
+				backgroundColor: "#ffffff",
+			},
 			{ content: "2", textColor: "#ff0000", backgroundColor: "#ffffff" },
 			{ content: "8A", textColor: "#000000", backgroundColor: "#00ffff" },
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
@@ -96,7 +127,11 @@ const Standard: ExcelSheetWithColor = {
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
 			{ content: "7A", textColor: "#000000", backgroundColor: "#00ffff" },
-			{ content: "Average A", textColor: "#000000", backgroundColor: "#ffffff" },
+			{
+				content: "Average A",
+				textColor: "#000000",
+				backgroundColor: "#ffffff",
+			},
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
 		],
@@ -109,8 +144,16 @@ const Standard: ExcelSheetWithColor = {
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
 		],
 		[
-			{ content: "55%", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "1.2", textColor: "#ff0000", backgroundColor: "#ffffff" },
+			{
+				content: "55%",
+				textColor: "#000000",
+				backgroundColor: "#ffffff",
+			},
+			{
+				content: "1.2",
+				textColor: "#ff0000",
+				backgroundColor: "#ffffff",
+			},
 			{ content: "5B", textColor: "#000000", backgroundColor: "#66ff33" },
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
@@ -120,7 +163,11 @@ const Standard: ExcelSheetWithColor = {
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
 			{ content: "4B", textColor: "#000000", backgroundColor: "#66ff33" },
-			{ content: "Average B", textColor: "#000000", backgroundColor: "#ffffff" },
+			{
+				content: "Average B",
+				textColor: "#000000",
+				backgroundColor: "#ffffff",
+			},
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
 		],
@@ -149,8 +196,7 @@ const Standard: ExcelSheetWithColor = {
 			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
 		],
 	],
-}
-
+};
 
 interface Block {
 	content: string;
@@ -184,67 +230,68 @@ const handleExportExcel = async (
 	}
 
 	if (datas) {
-		datas.concat([Standard]).map((sheetdata: ExcelSheetWithColor, si: number) => {
-			let name = sheetdata.sheetName;
-			const worksheet = workbook.addWorksheet(
-				name === "" ? "blank" : name
-			);
-			try {
-				sheetdata.data.map((row: Block[], i: number) => {
-					if (i === 0) {
-						worksheet.addRow(
-							row.map((cell: Block) => {
-								if (name !== standard_sheet_name)
-									return Translate(`table.${cell.content}`)
-								else
-									return cell.content
-							}
-							)
-						);
-					} else {
-						worksheet.addRow(
-							row.map((cell: Block) => cell.content)
-						);
-					}
-				});
-			} catch {}
+		datas
+			.concat([Standard])
+			.map((sheetdata: ExcelSheetWithColor, si: number) => {
+				let name = sheetdata.sheetName;
+				const worksheet = workbook.addWorksheet(
+					name === "" ? "blank" : name
+				);
+				try {
+					sheetdata.data.map((row: Block[], i: number) => {
+						if (i === 0) {
+							worksheet.addRow(
+								row.map((cell: Block) => {
+									if (name !== standard_sheet_name)
+										return Translate(
+											`table.${cell.content}`
+										);
+									else return cell.content;
+								})
+							);
+						} else {
+							worksheet.addRow(
+								row.map((cell: Block) => cell.content)
+							);
+						}
+					});
+				} catch {}
 
-			sheetdata.data.forEach((row: Block[], ri: number) => {
-				row.forEach((cellProps: Block, ci: number) => {
-					const cellName = getCellName(ri, ci);
-					const cell = worksheet.getCell(cellName);
+				sheetdata.data.forEach((row: Block[], ri: number) => {
+					row.forEach((cellProps: Block, ci: number) => {
+						const cellName = getCellName(ri, ci);
+						const cell = worksheet.getCell(cellName);
 
-					// Set text color
-					if (cellProps.textColor) {
-						const textColor = cellProps.textColor.substring(1); // Remove '#' from color code
-						cell.font = { color: { argb: textColor } };
-					}
+						// Set text color
+						if (cellProps.textColor) {
+							const textColor = cellProps.textColor.substring(1); // Remove '#' from color code
+							cell.font = { color: { argb: textColor } };
+						}
 
-					// Set background color
-					if (cellProps.backgroundColor) {
-						const bgColor = cellProps.backgroundColor.substring(1); // Remove '#' from color code
-						cell.fill = {
-							type: "pattern",
-							pattern: "solid",
-							fgColor: { argb: bgColor },
+						// Set background color
+						if (cellProps.backgroundColor) {
+							const bgColor =
+								cellProps.backgroundColor.substring(1); // Remove '#' from color code
+							cell.fill = {
+								type: "pattern",
+								pattern: "solid",
+								fgColor: { argb: bgColor },
+							};
+						}
+
+						cell.border = {
+							top: { style: "thin" },
+							left: { style: "thin" },
+							bottom: { style: "thin" },
+							right: { style: "thin" },
 						};
-					}
+					});
+				});
 
-					cell.border = {
-						top: { style: "thin" },
-						left: { style: "thin" },
-						bottom: { style: "thin" },
-						right: { style: "thin" },
-					};
-
+				worksheet.columns.forEach((column) => {
+					column.width = 20;
 				});
 			});
-
-			worksheet.columns.forEach(column => {
-				column.width = 20;	
-			});
-		});
-
 	}
 
 	// Save the workbook to a file
@@ -445,78 +492,97 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 
 	function SheetTable() {
 		const selectedSheet = sheets[selectedSheetIndex]!;
-	
+
 		return (
 			<>
 				{selectedSheet && (
-					<div className="flex grow h-full w-full flex-col rounded border bg-white p-4 shadow-md">
+					<div className="flex h-full w-full grow flex-col rounded border bg-white p-4 shadow-md">
 						{/* Outer container for the table */}
 						<div className="flex grow overflow-x-auto">
 							<div className="min-w-full">
 								<table className="min-w-full border-collapse overflow-x-auto">
 									<thead>
 										<tr>
-											{selectedSheet.data[0]!.map((cell, index) => (
-												<th
-													key={index}
-													className="truncate border border-zinc-950 px-4 py-2 leading-6"
-													style={{
-														backgroundColor: cell.backgroundColor,
-													}}
-												>
-													<div
+											{selectedSheet.data[0]!.map(
+												(cell, index) => (
+													<th
+														key={index}
+														className="truncate border border-zinc-950 px-4 py-2 leading-6"
 														style={{
-															color: cell.textColor,
-														}}
-													>
-														{t(`table.${cell.content}`)}
-													</div>
-												</th>
-											))}
-										</tr>
-									</thead>
-									<tbody>
-										{selectedSheet.data.slice(1).map((row, rowIndex) => (
-											<tr key={rowIndex}>
-												{row.map((cell, cellIndex) => (
-													<td
-														key={cellIndex}
-														className={`relative truncate px-4 py-2 leading-6 ${formatColor(
-															cell.textColor,
-															"text"
-														)} ${formatColor(
-															cell.backgroundColor,
-															"background"
-														)}`}
-														onClick={() => {
-															setSelectedCell({
-																rowIndex: rowIndex + 1,
-																colIndex: cellIndex,
-															});
-														}}
-														style={{
-															color: cell.textColor,
-															backgroundColor: cell.backgroundColor,
+															backgroundColor:
+																cell.backgroundColor,
 														}}
 													>
 														<div
-															className={`absolute inset-0 border ${
-																selectedCell.rowIndex - 1 ===
-																	rowIndex &&
-																selectedCell.colIndex ===
-																	cellIndex &&
-																mode === "edit"
-																	? "border-2 border-blue-600"
-																	: "border-gray-400"
-															}`}
-														></div>
-														<div className="relative z-10">
-															{cell.content}
+															style={{
+																color: cell.textColor,
+															}}
+														>
+															{t(
+																`table.${cell.content}`
+															)}
 														</div>
-													</td>
-												))}
-											</tr>
-										))}
+													</th>
+												)
+											)}
+										</tr>
+									</thead>
+									<tbody>
+										{selectedSheet.data
+											.slice(1)
+											.map((row, rowIndex) => (
+												<tr key={rowIndex}>
+													{row.map(
+														(cell, cellIndex) => (
+															<td
+																key={cellIndex}
+																className={`relative truncate px-4 py-2 leading-6 ${formatColor(
+																	cell.textColor,
+																	"text"
+																)} ${formatColor(
+																	cell.backgroundColor,
+																	"background"
+																)}`}
+																onClick={() => {
+																	setSelectedCell(
+																		{
+																			rowIndex:
+																				rowIndex +
+																				1,
+																			colIndex:
+																				cellIndex,
+																		}
+																	);
+																}}
+																style={{
+																	color: cell.textColor,
+																	backgroundColor:
+																		cell.backgroundColor,
+																}}
+															>
+																<div
+																	className={`absolute inset-0 border ${
+																		selectedCell.rowIndex -
+																			1 ===
+																			rowIndex &&
+																		selectedCell.colIndex ===
+																			cellIndex &&
+																		mode ===
+																			"edit"
+																			? "border-2 border-blue-600"
+																			: "border-gray-400"
+																	}`}
+																></div>
+																<div className="relative z-10">
+																	{
+																		cell.content
+																	}
+																</div>
+															</td>
+														)
+													)}
+												</tr>
+											))}
 									</tbody>
 								</table>
 							</div>
@@ -526,7 +592,6 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 			</>
 		);
 	}
-	
 
 	function BgColorControlComponent() {
 		const [openSignal, setOpenSignal] = useState(false);
@@ -649,9 +714,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 		);
 	}
 
-	function AddInformation() {
-
-	}
+	function AddInformation() {}
 
 	function DownloadButton() {
 		const [filename, setFilename] = useState("bonus");
@@ -708,14 +771,15 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 
 	return (
 		<>
-			<div className="flex flex-col grow">
+			{/* Wrapping container */}
+			<div className="flex h-full w-full flex-col">
 				{/* Top controls section */}
-				<div className="grid w-full grid-cols-4 gap-4 mb-2">
-					<div className="col-span-3 flex items-center space-x-4 ml-1 mt-1">
+				<div className="mb-4 flex w-full items-center justify-between space-x-4">
+					<div className="flex items-center space-x-4">
 						<SelectSheetComponent />
 						{filter_component}
 					</div>
-					<div className="col-span-1 flex items-center justify-end space-x-4">
+					<div className="flex items-center space-x-4">
 						<ColorControlComponent />
 						<EditButton />
 						<DownloadButton />
@@ -723,7 +787,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 				</div>
 
 				{/* SheetTable section */}
-				<div className="flex grow overflow-auto justify-center">
+				<div className="flex grow justify-center overflow-auto">
 					<SheetTable />
 				</div>
 			</div>

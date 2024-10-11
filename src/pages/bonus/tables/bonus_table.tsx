@@ -10,7 +10,7 @@ import { type BonusSetting } from "~/server/database/entity/SALARY/bonus_setting
 import { LoadingSpinner } from "~/components/loading";
 import { formatDate } from "~/lib/utils/format_date";
 import { EmptyTable } from "./empty_table";
-import { type TableComponentProps } from "../bonus_filter";
+import { type TableComponentProps } from "../pre_calculate_bonus/bonus_filter";
 import { useTranslation } from "react-i18next";
 
 export type RowItem = {

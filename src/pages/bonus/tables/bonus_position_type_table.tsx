@@ -6,7 +6,7 @@ import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { type BonusPositionType } from "~/server/database/entity/SALARY/bonus_position_type";
 import { LoadingSpinner } from "~/components/loading";
-import { type TableComponentProps } from "../bonus_filter";
+import { type TableComponentProps } from "../pre_calculate_bonus/bonus_filter";
 import { useTranslation } from "react-i18next";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 
