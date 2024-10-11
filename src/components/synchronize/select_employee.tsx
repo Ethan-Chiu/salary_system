@@ -25,8 +25,8 @@ export function SelectEmployee({
 			data={foramttedData}
 			selectedKeys={selectedKeys}
 			setSelectedKeys={setSelectedKeys}
-			placeholder={t("synchronize.select_employee")}
-			emptyPlaceholder={t("synchronize.select_employee")}
+			placeholder={t("button.select")}
+			emptyPlaceholder={t("button.select")}
 		/>
 	);
 }

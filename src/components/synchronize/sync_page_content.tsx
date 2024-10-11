@@ -132,16 +132,16 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 						</SelectTrigger>
 						<SelectContent>
 							<SelectGroup>
-								<SelectLabel>
-									{t("sync_page.select_filter_mode")}
-								</SelectLabel>
 								<SelectItem
 									value={
 										SyncDataSelectModeEnum.Values.all_emp
 									}
 								>
-									{syncDataSelectModeString(
-										SyncDataSelectModeEnum.Values.all_emp
+									{t(
+										`sync_page.${syncDataSelectModeString(
+											SyncDataSelectModeEnum.Values
+												.all_emp
+										)}`
 									)}
 								</SelectItem>
 								<SelectItem
@@ -149,8 +149,11 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 										SyncDataSelectModeEnum.Values.filter_emp
 									}
 								>
-									{syncDataSelectModeString(
-										SyncDataSelectModeEnum.Values.filter_emp
+									{t(
+										`sync_page.${syncDataSelectModeString(
+											SyncDataSelectModeEnum.Values
+												.filter_emp
+										)}`
 									)}
 								</SelectItem>
 								<SelectItem
@@ -158,8 +161,11 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 										SyncDataSelectModeEnum.Values.filter_dep
 									}
 								>
-									{syncDataSelectModeString(
-										SyncDataSelectModeEnum.Values.filter_dep
+									{t(
+										`sync_page.${syncDataSelectModeString(
+											SyncDataSelectModeEnum.Values
+												.filter_dep
+										)}`
 									)}
 								</SelectItem>
 							</SelectGroup>

@@ -395,6 +395,8 @@
   },
   "sync_page": {
     "show_all": "所有員工",
-    "select_employee": "選擇員工"
+    "select_employee": "選擇員工",
+    "select_department" : "選擇部門",
+    "selected" : "已選擇"
   }
 }

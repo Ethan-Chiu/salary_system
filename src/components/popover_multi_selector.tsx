@@ -17,6 +17,7 @@ import {
 
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
+import { useTranslation } from "react-i18next";
 
 export interface PopoverSelectorDataType {
 	key: string;
@@ -27,8 +28,8 @@ interface PopoverSelectorProps {
 	data: PopoverSelectorDataType[];
 	selectedKeys: Set<string>;
 	setSelectedKeys: (key: Set<string>) => void;
-	placeholder?: string;
-	emptyPlaceholder?: string;
+	placeholder: string;
+	emptyPlaceholder: string;
 }
 
 export function PopoverMultiSelector({
@@ -39,6 +40,8 @@ export function PopoverMultiSelector({
 	emptyPlaceholder,
 }: PopoverSelectorProps) {
 	const [open, setOpen] = useState(false);
+
+	const { t } = useTranslation(["common"]);
 
 	return (
 		<div>
@@ -52,7 +55,7 @@ export function PopoverMultiSelector({
 						className="w-full justify-between"
 					>
 						{selectedKeys.size > 0
-							? `${selectedKeys.size} Selected`
+							? `${t("sync_page.selected")} ${selectedKeys.size}`
 							: placeholder}
 						<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 					</Button>

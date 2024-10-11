@@ -50,10 +50,10 @@ export function EmployeeDataChangeAll({
 							<TableHead className="w-1/4 text-center">
 								{t("table.key")}
 							</TableHead>
-							<TableHead className="w-1/4 text-center">
+							<TableHead className="w-1/4 text-center min-w-[180px]">
 								{t("table.salary_data")}
 							</TableHead>
-							<TableHead className="w-1/4 text-center">
+							<TableHead className="w-1/4 text-center min-w-[180px]">
 								{t("table.ehr_data")}
 							</TableHead>
 						</TableRow>
@@ -123,7 +123,7 @@ export function EmployeeDataChangeAll({
                           {/* Salary Data */}
 													<TableCell
 														className={cn(
-															"font-medium min-w-[120px]",
+															"font-medium min-w-[180px]",
 															diff &&
 															"text-red-500"
 														)}
@@ -136,7 +136,7 @@ export function EmployeeDataChangeAll({
                           {/* EHR Data */}
 													<TableCell
 														className={cn(
-															"font-medium min-w-[120px]",
+															"font-medium min-w-[180px]",
 															diff &&
 															"text-red-500"
 														)}
