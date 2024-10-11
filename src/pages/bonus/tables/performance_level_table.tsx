@@ -6,7 +6,7 @@ import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { LoadingSpinner } from "~/components/loading";
 import { type PerformanceLevel } from "~/server/database/entity/SALARY/performance_level";
-import { type TableComponentProps } from "../bonus_filter";
+import { type TableComponentProps } from "../pre_calculate_bonus/bonus_filter";
 import { useTranslation } from "react-i18next";
 
 export type RowItem = {

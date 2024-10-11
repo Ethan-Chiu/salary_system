@@ -31,10 +31,10 @@ export default function CalendarView({ dataFunction }: DataTableProps) {
 					tableType={selectedTableType}
 					period_id={selectedPeriod.period_id}
 				>
-					<CompCalendarContent
+					{/* <CompCalendarContent
 						target_date={selectedPeriod.end_date}
 						dataFunction={dataFunction}
-					/>
+					/> */}
 				</EmployeeToolbarFunctionsProvider>
 			) : (
 				<p>{t("others.select_period")}</p>

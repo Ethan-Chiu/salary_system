@@ -1,5 +1,5 @@
 import { Cross2Icon, FileTextIcon, UploadIcon } from "@radix-ui/react-icons";
-import { NextPageWithLayout } from "../_app";
+import { NextPageWithLayout } from "../../_app";
 import { ReactElement, useState, useCallback, useEffect } from "react";
 import { RootLayout } from "~/components/layout/root_layout";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";

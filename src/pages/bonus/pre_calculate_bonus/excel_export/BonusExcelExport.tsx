@@ -1,12 +1,12 @@
 import { RootLayout } from "~/components/layout/root_layout";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { Header } from "~/components/header";
-import { type NextPageWithLayout } from "../../_app";
+import { type NextPageWithLayout } from "../../../_app";
 import { useContext, useState } from "react";
 import ExcelViewer from "./ExcelViewer";
 import { LoadingSpinner } from "~/components/loading";
 import periodContext from "~/components/context/period_context";
-import dataTableContext from "../components/context/data_table_context";
+import dataTableContext from "../../components/context/data_table_context";
 
 import { getExcelData, getDefaults } from "./utils";
 import { keyDict } from "./utils";
@@ -183,16 +183,15 @@ export function BonusExcelExport() {
 	return (
 		<>
 			{getExcelA.isFetched ? (
-					<div className="flex grow overflow-auto">
-						<ExcelViewer
-							original_sheets={
-								toDisplayData ?? getExcelData(ExcludeDataColumn(getBonusExcel(getExcelA.data!), toExcludedColumns))
-							}
-							filter_component={<FilterComponent />}
-							selectedSheetIndex={selectedSheetIndex}
-							setSelectedSheetIndex={setSelectedSheetIndex}
-						/>
-					</div>
+					
+				<ExcelViewer
+					original_sheets={
+						toDisplayData ?? getExcelData(ExcludeDataColumn(getBonusExcel(getExcelA.data!), toExcludedColumns))
+					}
+					filter_component={<FilterComponent />}
+					selectedSheetIndex={selectedSheetIndex}
+					setSelectedSheetIndex={setSelectedSheetIndex}
+				/>
 
 			) : (
 				<div className="flex grow items-center justify-center">

@@ -1,140 +1,137 @@
 import { RootLayout } from "~/components/layout/root_layout";
+import {
+	CardFunction,
+	CardFunctionIcon,
+} from "~/components/functions/card_function";
+import type { CardFunctionData } from "~/components/functions/card_function";
+import { motion } from "framer-motion";
 import { type NextPageWithLayout } from "../_app";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
+import { IconCoins } from "~/components/icons/svg_icons";
 import { Header } from "~/components/header";
-import { ReactElement, useContext, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useRouter } from "next/router";
+import { useContext, useState } from "react";
+import periodContext from "~/components/context/period_context";
+import { useToast } from "~/components/ui/use-toast";
+import PeriodSelector from "~/components/period_selector";
+import { Dialog, DialogContent } from "~/components/ui/dialog";
+import { ToastAction } from "~/components/ui/toast";
+
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "~/components/ui/select";
-import { BonusTypeEnum, BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
-import dataTableContext from "./components/context/data_table_context";
-import DataTableContextProvider from "./components/context/data_table_context_provider";
-import { ProgressBar } from "~/components/functions/progress_bar";
-import { Button } from "~/components/ui/button";
-import BonusFilter from "./bonus_filter";
-import BonusBudget from "./bonus_budget";
-import BonusExcelExport from "./bonus_excel_export";
-import BonusExcelImport from "./bonus_excel_import";
-import BonusFinalCheck from "./bonus_final_check";
+import { type I18nType } from "~/lib/utils/i18n_type";
 
-type BonusStepPage = {
-    title: string;
-    page: ReactElement;
+type FunctionLinkData = CardFunctionData & { url: string | null };
+
+const function_data: (t: I18nType) => FunctionLinkData[] = (t) => [
+	{
+		title: t("others.bonus_first_stage"),
+		iconPath: "./icons/coins.svg",
+		subscript: "some notes",
+		url: "/bonus/pre_calculate_bonus",
+	},
+	{
+		title: t("others.bonus_second_stage"),
+		iconPath: "./icons/coins.svg",
+		subscript: "some notes",
+		url: "/bonus/final_update_bonus",
+	},
+];
+
+const PageHome: NextPageWithLayout = () => {
+	const router = useRouter();
+	const { selectedPeriod, selectedPayDate } = useContext(periodContext);
+	const { toast } = useToast();
+	const [open, setOpen] = useState(false);
+	const { t } = useTranslation(['common', 'nav'])
+
+	return (
+		<>
+			<Header title={t("bonus", { ns: "nav" })} showOptions className="mb-4" />
+			<Dialog open={open} onOpenChange={setOpen}>
+				<DialogContent>
+					<PeriodSelector />
+				</DialogContent>
+			</Dialog>
+			<motion.div
+				className="m-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+				variants={container}
+				initial="hidden"
+				animate="visible"
+			>
+				{function_data(t).map((f_data: FunctionLinkData) => (
+					<motion.div
+						key={f_data.title}
+						variants={stagger}
+						className="cursor-pointer"
+						onClick={() => {
+							if (!selectedPeriod || !selectedPayDate) {
+								toast({
+									title: "",
+									description:
+										t("others.select_period_and_issue_date"),
+									action: (
+										<ToastAction
+											altText="Go to select period and paydate"
+											onClick={() => {
+												setOpen(true);
+											}}
+										>
+											{t("button.select")}
+										</ToastAction>
+									),
+								});
+							} else {
+								void router.push(f_data.url ?? "/bonus");
+							}
+						}}
+					>
+						<CardFunction
+							title={f_data.title}
+							iconPath={f_data.iconPath}
+							subscript={f_data.subscript}
+						>
+							<CardFunctionIcon className="text-foreground">
+								<IconCoins />
+							</CardFunctionIcon>
+						</CardFunction>
+					</motion.div>
+				))}
+			</motion.div>
+		</>
+	);
 };
-
-const BonusHomePageContent = () => {
-    const { t } = useTranslation(['common', 'nav']);
-    const { selectedBonusType, setSelectedBonusType } = useContext(dataTableContext);
-    const [selectedIndex, setSelectedIndex] = useState(0);
-
-    const pageList: BonusStepPage[] = [
-        {
-            title: t("others.bonus_filter"),
-            page: (
-                <BonusFilter />
-            ),
-        },
-        {
-            title: t("others.bonus_budget"),
-            page: (
-                <BonusBudget />
-            ),
-        },
-        {
-            title: t("others.bonus_excel_export"),
-            page: (
-                <BonusExcelExport />
-            ),
-        },
-        {
-            title: t("others.bonus_excel_import"),
-            page: (
-                <BonusExcelImport />
-            ),
-        },
-        {
-            title: t("others.bonus_final_check"),
-            page: (
-                <BonusFinalCheck />
-            ),
-        },
-    ];
-    const titles: string[] = pageList.map((page) => page.title);
-
-    return (
-        <div className="flex h-full flex-col">
-            <Header title={t("bonus", { ns: "nav" })} showOptions className="mb-4" />
-            <div className="flex flex-row items-start">
-                <div className="ml-4 h-full min-w-[100px]">
-                    <Select
-                        defaultValue={selectedBonusType}
-                        onValueChange={(chosen) => {
-                            setSelectedBonusType(chosen as BonusTypeEnumType);
-                            setSelectedIndex(0);
-                        }}
-                    >
-                        <SelectTrigger className="h-full w-full">
-                            <SelectValue placeholder={t("others.select_period")} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel>{t('others.period')}</SelectLabel>
-                                {Object.values(BonusTypeEnum.Enum).map((bonus_type) => {
-                                    return (
-                                        <SelectItem
-                                            key={bonus_type}
-                                            value={bonus_type}
-                                        >
-                                            {t(`others.${bonus_type}`)}
-                                        </SelectItem>
-                                    );
-                                })}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-                </div>
-                <div className="grow mx-4">
-                    <ProgressBar labels={titles} selectedIndex={selectedIndex} />
-                </div>
-            </div>
-            <div className="m-4 flex grow">
-                {pageList[selectedIndex]?.page ?? <></>}
-            </div>
-            <div className="mx-4 mb-4 flex justify-between">
-                {selectedIndex != 0 ? <Button onClick={() => setSelectedIndex(selectedIndex - 1)}>
-                    {t("button.previous_step")}
-                </Button> : <div></div>}
-                {selectedIndex != titles.length - 1 ? <Button onClick={() => setSelectedIndex(selectedIndex + 1)}>
-                    {t("button.next_step")}
-                </Button> : <div></div>}
-            </div>
-        </div>
-    );
-};
-
-const BonusHomePage: NextPageWithLayout = () => {
-    return (
-        <DataTableContextProvider>
-            <BonusHomePageContent />
-        </DataTableContextProvider>
-    );
-};
-
-BonusHomePage.getLayout = function getLayout(page: React.ReactElement) {
-    return (
-        <RootLayout>
-            <PerpageLayoutNav pageTitle="Bonus">{page}</PerpageLayoutNav>
-        </RootLayout>
-    );
-};
-
-export default BonusHomePage;
 
 export const getStaticProps = async ({ locale }: { locale: string }) => {
-    return ({
-        props: {
-            ...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
-        }
-    });
+	return ({
+		props: {
+			...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
+		}
+	});
+};
+
+PageHome.getLayout = function getLayout(page: React.ReactElement) {
+	return (
+		<RootLayout>
+			<PerpageLayoutNav pageTitle="bonus">{page}</PerpageLayoutNav>
+		</RootLayout>
+	);
+};
+
+export default PageHome;
+
+const container = {
+	hidden: {},
+	visible: {
+		transition: {
+			staggerChildren: 0.2,
+			delayChildren: 0.1,
+		},
+	},
+};
+
+const stagger = {
+	hidden: { opacity: 0, y: -100 },
+	visible: { opacity: 1, y: 0 },
 };
