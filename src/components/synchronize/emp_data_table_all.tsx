@@ -1,5 +1,3 @@
-import { Fragment } from "react";
-
 import { ScrollArea } from "~/components/ui/scroll-area";
 
 import {
@@ -41,7 +39,13 @@ export function EmployeeDataChangeAll({
 					<TableHeader className="bg-secondary">
 						<TableRow className="sticky top-0 bg-secondary hover:bg-secondary">
 							<TableHead className="w-1/4 text-center">
+								{t("table.department")}
+							</TableHead>
+							<TableHead className="w-1/4 text-center">
 								{t("table.emp_no")}
+							</TableHead>
+							<TableHead className="w-1/4 text-center">
+								{t("table.emp_name")}
 							</TableHead>
 							<TableHead className="w-1/4 text-center">
 								{t("table.key")}
@@ -79,22 +83,47 @@ export function EmployeeDataChangeAll({
 													key={c.key}
 													className="hover:bg-transparent"
 												>
+                          {/* Department */}
 													{index === 0 ? (
 														<TableCell
 															className="font-medium hover:bg-muted/50"
 															rowSpan={rowSpan}
 														>
-															{d.emp_no.ehr_value}
+															{d.department.salary_value}
 														</TableCell>
 													) : (
 														<></>
 													)}
+                          {/* Emp No */}
+													{index === 0 ? (
+														<TableCell
+															className="font-medium hover:bg-muted/50"
+															rowSpan={rowSpan}
+														>
+															{d.emp_no.salary_value}
+														</TableCell>
+													) : (
+														<></>
+													)}
+                          {/* Name */}
+													{index === 0 ? (
+														<TableCell
+															className="font-medium hover:bg-muted/50"
+															rowSpan={rowSpan}
+														>
+															{d.name.salary_value}
+														</TableCell>
+													) : (
+														<></>
+													)}
+                          {/* Data Field Name */}
 													<TableCell className="font-medium">
 														{t(`table.${c.key}`)}
 													</TableCell>
+                          {/* Salary Data */}
 													<TableCell
 														className={cn(
-															"font-medium",
+															"font-medium min-w-[120px]",
 															diff &&
 															"text-red-500"
 														)}
@@ -104,9 +133,10 @@ export function EmployeeDataChangeAll({
 															t
 														)}
 													</TableCell>
+                          {/* EHR Data */}
 													<TableCell
 														className={cn(
-															"font-medium",
+															"font-medium min-w-[120px]",
 															diff &&
 															"text-red-500"
 														)}
