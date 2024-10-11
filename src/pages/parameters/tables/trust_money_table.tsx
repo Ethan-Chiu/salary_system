@@ -53,8 +53,24 @@ export const trust_money_columns = ({ t }: { t: TFunction<[string], undefined> }
 		),
 	}),
 	columnHelper.accessor("position_type", {
-		header: () => {
-			return <div className="text-center font-medium">{t("table.position_type")}</div>
+		header: ({ column }) => {
+			return (
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t("table.position_type")}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
+			);
 		},
 		cell: ({ row }) => {
 			return (
@@ -65,8 +81,24 @@ export const trust_money_columns = ({ t }: { t: TFunction<[string], undefined> }
 		},
 	}),
 	columnHelper.accessor("org_trust_reserve_limit", {
-		header: () => {
-			return <div className="text-center font-medium">{t("table.org_trust_reserve_limit")}</div>
+		header: ({ column }) => {
+			return (
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t("table.org_trust_reserve_limit")}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
+			);
 		},
 		cell: ({ row }) => {
 			return (
@@ -77,8 +109,24 @@ export const trust_money_columns = ({ t }: { t: TFunction<[string], undefined> }
 		},
 	}),
 	columnHelper.accessor("org_special_trust_incent_limit", {
-		header: () => {
-			return <div className="text-center font-medium">{t("table.org_special_trust_incent_limit")}</div>
+		header: ({ column }) => {
+			return (
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t("table.org_special_trust_incent_limit")}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
+			);
 		},
 		cell: ({ row }) => {
 			return (
@@ -89,9 +137,24 @@ export const trust_money_columns = ({ t }: { t: TFunction<[string], undefined> }
 		},
 	}),
 	columnHelper.accessor("start_date", {
-		header: () => {
-			const { t } = useTranslation(["common"]);
-			return <div className="text-center font-medium">{t("table.start_date")}</div>
+		header: ({ column }) => {
+			return (
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t("table.start_date")}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
+			);
 		},
 		cell: ({ row }) => {
 			return (
@@ -101,9 +164,24 @@ export const trust_money_columns = ({ t }: { t: TFunction<[string], undefined> }
 		},
 	}),
 	columnHelper.accessor("end_date", {
-		header: () => {
-			const { t } = useTranslation(["common"]);
-			return <div className="text-center font-medium">{t("table.end_date")}</div>
+		header: ({ column }) => {
+			return (
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t("table.end_date")}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
+			);
 		},
 		cell: ({ row }) => {
 			return row.original.end_date ? (

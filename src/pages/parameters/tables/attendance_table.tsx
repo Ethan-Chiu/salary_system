@@ -55,8 +55,24 @@ export const attendance_columns = ({t}: {t: TFunction<[string], undefined>}) => 
 		),
 	}),
 	columnHelper.accessor("value", {
-		header: () => {
-			return <div className="text-center font-medium">{t("table.value")}</div>
+		header: ({ column }) => {
+			return (
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t("table.value")}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
+			);
 		},
 		cell: ({ row }) => {
 			const value = row.getValue("value");

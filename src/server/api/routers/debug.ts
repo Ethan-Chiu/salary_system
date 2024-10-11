@@ -91,7 +91,7 @@ export const debugRouter = createTRPCRouter({
 		.query(async ({ input }) => {
 			const table_list = [
 				// Level,
-				EmployeeBonus
+				EmployeePayment
 			];
 			table_list.forEach(async (model) => {
 				try {

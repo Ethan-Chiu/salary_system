@@ -49,11 +49,23 @@ export const salary_income_tax_columns = [
 		),
 	}),
 	columnHelper.accessor("salary_end", {
-		header: () => {
+		header: ({ column }) => {
 			const { t } = useTranslation(["common"]);
 			return (
-				<div className="text-center font-medium">
-					{t("table.salary_end")}
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t("table.salary_end")}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
 				</div>
 			);
 		},
@@ -62,11 +74,23 @@ export const salary_income_tax_columns = [
 		),
 	}),
 	columnHelper.accessor("dependent", {
-		header: () => {
+		header: ({ column }) => {
 			const { t } = useTranslation(["common"]);
 			return (
-				<div className="text-center font-medium">
-					{t("table.dependent")}
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t("table.dependent")}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
 				</div>
 			);
 		},
@@ -77,11 +101,23 @@ export const salary_income_tax_columns = [
 		},
 	}),
 	columnHelper.accessor("tax_amount", {
-		header: () => {
+		header: ({ column }) => {
 			const { t } = useTranslation(["common"]);
 			return (
-				<div className="text-center font-medium">
-					{t("table.tax_amount")}
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t("table.tax_amount")}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
 				</div>
 			);
 		},

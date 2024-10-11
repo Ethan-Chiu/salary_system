@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { DateAPI, DateService, EmpData, Id } from "./common_type";
+import { LongServiceeEnum } from "./long_service_enum";
 
 export const EmployeePayment = z.object({
 	emp_no: z.string(),
@@ -9,6 +10,7 @@ export const EmployeePayment = z.object({
 	occupational_allowance_enc: z.string(),
 	subsidy_allowance_enc: z.string(),
 	long_service_allowance_enc: z.string(),
+	long_service_allowance_type: LongServiceeEnum,
 	l_r_self_enc: z.string(),
 	l_i_enc: z.string(),
 	h_i_enc: z.string(),
@@ -24,6 +26,7 @@ export const EmployeePaymentFE = z.object({
 	occupational_allowance: z.number(),
 	subsidy_allowance: z.number(),
 	long_service_allowance: z.number(),
+	long_service_allowance_type: LongServiceeEnum,
 	l_r_self: z.number(),
 	l_i: z.number(),
 	h_i: z.number(),

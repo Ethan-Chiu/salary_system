@@ -6,6 +6,7 @@ import {
 	type CreationOptional,
 	Sequelize,
 } from "sequelize";
+import { LongServiceeEnumType } from "~/server/api/types/long_service_enum";
 
 export class EmployeePayment extends Model<
 	InferAttributes<EmployeePayment>,
@@ -20,6 +21,7 @@ export class EmployeePayment extends Model<
 	declare occupational_allowance_enc: string;
 	declare subsidy_allowance_enc: string;
 	declare long_service_allowance_enc: string;
+	declare long_service_allowance_type: LongServiceeEnumType;
 	declare l_r_self_enc: string;
 	declare l_i_enc: string;
 	declare h_i_enc: string;
@@ -73,6 +75,11 @@ export function initEmployeePayment(sequelize: Sequelize) {
 				type: DataTypes.STRING(128),
 				allowNull: false,
 				// defaultValue: "c22c4fcf13c6eeae8a0709d3b0534226",
+			},
+			long_service_allowance_type: {
+				type: DataTypes.STRING(128),
+				allowNull: false,
+				// defaultValue: "月領",
 			},
 			l_r_self_enc: {
 				type: DataTypes.STRING(128),
