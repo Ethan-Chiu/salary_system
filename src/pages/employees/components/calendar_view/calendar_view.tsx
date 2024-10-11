@@ -10,13 +10,13 @@ import { LoadingSpinner } from "~/components/loading";
 import CalendarUpdateEvent from "./components/calendar_update_event";
 import periodContext from "~/components/context/period_context";
 import { useTranslation } from "react-i18next";
-import { type HistoryQueryFunctionType } from "~/components/data_table/history_data_type";
+import { HistoryDataType, type CalenderQueryFunctionType } from "~/components/data_table/history_data_type";
 import { type EmployeeHistoryViewCommonEmpInfo } from "../history_view/history_view";
 import EmployeeToolbarFunctionsProvider from "../function_sheet/employee_functions_context";
 import { PopoverSelectorDataType } from "~/components/popover_selector";
 
 interface DataTableProps {
-	dataFunction: HistoryQueryFunctionType<EmployeeHistoryViewCommonEmpInfo>;
+	dataFunction: CalenderQueryFunctionType<EmployeeHistoryViewCommonEmpInfo>;
 }
 
 export default function CalendarView({ dataFunction }: DataTableProps) {
@@ -48,7 +48,7 @@ function CompCalendarContent({
 	dataFunction,
 }: {
 	target_date: string;
-	dataFunction: HistoryQueryFunctionType<EmployeeHistoryViewCommonEmpInfo>;
+	dataFunction: CalenderQueryFunctionType<EmployeeHistoryViewCommonEmpInfo>;
 }) {
 	const { isLoading, isError, data, error } = dataFunction();
 
@@ -60,12 +60,12 @@ function CompCalendarContent({
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-  if (!data) {
-    return <p>No data</p>;
-  }
+	if (!data) {
+		return <p>No data</p>;
+	}
 
-  // TODO: consider moving into context
-  const seen = new Set<string>();
+	// TODO: consider moving into context
+	const seen = new Set<string>();
 	const employees: PopoverSelectorDataType[] = [];
 
 	data.forEach((employee) => {
@@ -80,25 +80,46 @@ function CompCalendarContent({
 
 	return (
 		<CalendarContextProvider data={data} target_date={target_date}>
-			<CompCalendarView target_date={target_date} employees={employees}/>
+			<CompCalendarView target_date={target_date} data={data} />
 		</CalendarContextProvider>
 	);
 }
 
-function CompCalendarView({ target_date, employees }: { target_date: string, employees: PopoverSelectorDataType[] }) {
+function CompCalendarView({ target_date, data }: { target_date: string, data: (HistoryDataType & EmployeeHistoryViewCommonEmpInfo)[] }) {
 	const [currenMonth, setCurrentMonth] = useState(
 		getDayInMonth(target_date, null)
 	);
 	const { monthIndex } = useContext(calendarContext);
 
+	const [filteredEmployees, setFilteredEmployees] = useState<PopoverSelectorDataType[]>([]);
+
 	useEffect(() => {
 		setCurrentMonth(getDayInMonth(target_date, monthIndex));
+		const date = new Date(new Date(target_date).getFullYear(), monthIndex)
+		const year = date.getFullYear()
+		const month = date.getMonth() + 1
+		const formattedMonth = month.toString().padStart(2, '0');
+		const seen = new Set<string>();
+		const employees: PopoverSelectorDataType[] = [];
+		data.filter((d) =>
+			d.start_date.toString() <= `${year}-${formattedMonth}-31`
+			&& d.start_date.toString() >= `${year}-${formattedMonth}-01`
+		).forEach((employee) => {
+			if (!seen.has(employee.emp_no)) {
+				seen.add(employee.emp_no);
+				employees.push({
+					key: employee.emp_no,
+					value: `${employee.emp_no} ${employee.emp_name}`,
+				});
+			}
+		});
+		setFilteredEmployees(employees);
 	}, [monthIndex, target_date]);
 
 	return (
 		<>
 			<div className="flex h-full flex-col">
-				<CalendarHeader target_date={target_date} employees={employees} />
+				<CalendarHeader target_date={target_date} employees={filteredEmployees} />
 				<div className="flex h-0 flex-grow">
 					<MonthView month={currenMonth} target_date={target_date} />
 				</div>

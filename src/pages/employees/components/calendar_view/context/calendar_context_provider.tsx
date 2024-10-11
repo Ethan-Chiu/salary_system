@@ -9,7 +9,7 @@ import { getEventLevel } from "../utils/event_level";
 
 interface RecordData {
 	id: number;
-  emp_no: string;
+	emp_no: string;
 	start_date: Date;
 	end_date: Date | null;
 }
@@ -44,14 +44,21 @@ export default function CalendarContextProvider<T extends RecordData>({
 	const [selectedEvent, setSelectedEvent] =
 		useState<CalendarEventWithID | null>(null);
 
-  const [selectedEmp, setSelectedEmp] = useState<string | null>(null);
+	const [selectedEmp, setSelectedEmp] = useState<string | null>(null);
 
 	// Select the first when data loaded
 	useEffect(() => {
 		if (data?.[0]) {
-			setSelectedEmp(data[0].emp_no);
+			const date = new Date(new Date(target_date).getFullYear(), monthIndex)
+			const year = date.getFullYear()
+			const month = date.getMonth() + 1
+			const formattedMonth = month.toString().padStart(2, '0');
+			setSelectedEmp(data.filter((d) =>
+				d.start_date.toString() <= `${year}-${formattedMonth}-31`
+				&& d.start_date.toString() >= `${year}-${formattedMonth}-01`
+			)[0]?.emp_no ?? null);
 		}
-	}, [data]);
+	}, [data, monthIndex]);
 
 	useEffect(() => {
 		if (mouseDownDate && mouseUpDate) {
@@ -66,7 +73,7 @@ export default function CalendarContextProvider<T extends RecordData>({
 	useEffect(() => {
 		setEventList(
 			data
-        .filter((d) => d.emp_no === selectedEmp)
+				.filter((d) => d.emp_no === selectedEmp)
 				.sort((a, b) => {
 					if (a.start_date == null) {
 						return -1;
@@ -85,7 +92,7 @@ export default function CalendarContextProvider<T extends RecordData>({
 					return event;
 				})
 		);
-	}, [data, selectedEmp]);
+	}, [data, selectedEmp, monthIndex]);
 
 	useEffect(() => {
 		let showEvents = eventList;
@@ -119,8 +126,8 @@ export default function CalendarContextProvider<T extends RecordData>({
 				selectedEvent,
 				setSelectedEvent,
 				resetMouse,
-        selectedEmp,
-        setSelectedEmp,
+				selectedEmp,
+				setSelectedEmp,
 			}}
 		>
 			{children}

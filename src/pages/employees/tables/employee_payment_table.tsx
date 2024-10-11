@@ -81,6 +81,9 @@ export function EmployeePaymentTable({ period_id }: any) {
 						historyDataFunction={() =>
 							api.employeePayment.getAllEmployeePayment.useQuery()
 						}
+						calendarDataFunction={() =>
+							api.employeePayment.getAllEmployeePayment.useQuery()
+						}
 					/>
 				) : (
 					<LoadingSpinner />

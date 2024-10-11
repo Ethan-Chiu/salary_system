@@ -71,6 +71,9 @@ export function EmployeeTrustTable({ period_id }: any) {
 				historyDataFunction={() =>
 					api.employeeTrust.getAllEmployeeTrust.useQuery()
 				}
+				calendarDataFunction={() =>
+					api.employeeTrust.getAllEmployeeTrust.useQuery()
+				}
 			/>
 		);
 	}
