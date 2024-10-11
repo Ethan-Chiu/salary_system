@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { Button } from "~/components/ui/button";
-import { cn } from "~/lib/utils";
 import { SelectModeComponent } from "~/components/synchronize/select_mode";
 import { type SyncData } from "~/server/service/sync_service";
 import {
@@ -12,7 +10,6 @@ import {
 	SyncDataDisplayModeEnum,
 	type SyncDataDisplayModeEnumType,
 } from "~/components/synchronize/utils/data_display_mode";
-import { toast } from "~/components/ui/use-toast";
 import { SelectEmployee } from "~/components/synchronize/select_employee";
 import {
 	Card,
@@ -37,7 +34,6 @@ import {
 	type SyncDataSelectModeEnumType,
 	syncDataSelectModeString,
 } from "./utils/select_mode";
-import { Label } from "../ui/label";
 
 export function SyncPageContent({ data }: { data: SyncData[] }) {
 	const [mode, setMode] = useState<SyncDataDisplayModeEnumType>(
@@ -50,6 +46,7 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 
 	const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
 
+  // Status
 	const checked = {} as Record<string, SyncCheckStatusEnumType>;
 	data.forEach((d) => {
 		checked[d.emp_no.ehr_value] = "initial";
@@ -59,7 +56,6 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 	const [dataWithStatus, setDataWithStatus] = useState<SyncDataAndStatus[]>(
 		[]
 	);
-	const [isAllConfirmed, setIsAllConfirmed] = useState<boolean>(false);
 
 	const { t } = useTranslation(["common"]);
 
@@ -76,12 +72,6 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 			})
 		);
 	}, [data, checkedStatus]);
-
-	useEffect(() => {
-		setIsAllConfirmed(
-			Object.values(checkedStatus).every((status) => status === "checked")
-		);
-	}, [checkedStatus]);
 
 	useEffect(() => {
 		switch (filterMode) {
@@ -101,50 +91,6 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		}
 	}, [data, filterMode, selectedKeys]);
 
-	/* const changeSelectedEmpStatus = (status: SyncCheckStatusEnumType) => { */
-	/* 	setCheckedStatus((prevCheckedStatus) => { */
-	/* 		if (!selectedEmployee) return prevCheckedStatus; */
-	/**/
-	/* 		return { */
-	/* 			...prevCheckedStatus, */
-	/* 			[selectedEmployee]: status, */
-	/* 		}; */
-	/* 	}); */
-	/* }; */
-
-	/* const nextEmp = () => { */
-	/* 	const selectedEmployeeIndex = data.findIndex( */
-	/* 		(d) => d.emp_no.ehr_value === selectedEmployee */
-	/* 	); */
-	/* 	for (let i = 1; i < data.length; i++) { */
-	/* 		const idx = (selectedEmployeeIndex + i) % data.length; */
-	/* 		const empNo = data[idx]?.emp_no.ehr_value; */
-	/* 		if (empNo && checkedStatus[empNo] === "initial") { */
-	/* 			setSelectedEmployee(empNo); */
-	/* 			return true; */
-	/* 		} */
-	/* 	} */
-	/* 	// All checked */
-	/* 	return false; */
-	/* }; */
-
-	/* const handleConfirm = () => { */
-	/* 	changeSelectedEmpStatus("checked"); */
-	/* 	if (!nextEmp()) { */
-	/* 		toast({ */
-	/* 			title: t("others.well_done"), */
-	/* 			description: t("others.well_done_msg"), */
-	/* 			className: cn( */
-	/* 				"top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4 data-[state=open]:sm:slide-in-from-top-full" */
-	/* 			), */
-	/* 		}); */
-	/* 	} */
-	/* }; */
-
-	/* const handleIgnore = () => { */
-	/* 	changeSelectedEmpStatus("ignored"); */
-	/* 	nextEmp(); */
-	/* }; */
 
 	function CompAllDonePage() {
 		return (
@@ -254,19 +200,6 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 			{/* Bottom Buttons */}
 			<div className="mt-4 flex justify-between">
 				<UpdateTableDialog data={dataWithStatus} />
-
-				<div className="flex">
-					<Button key="IgnoreButton" variant={"destructive"}>
-						{t("button.ignore")}
-					</Button>
-					<Button
-						key="ConfirmButton"
-						className="ml-4"
-						disabled={isAllConfirmed}
-					>
-						{t("button.confirm")}
-					</Button>
-				</div>
 			</div>
 		</>
 	);
