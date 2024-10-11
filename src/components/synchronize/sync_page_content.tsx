@@ -34,6 +34,7 @@ import {
 	type SyncDataSelectModeEnumType,
 	syncDataSelectModeString,
 } from "./utils/select_mode";
+import { SelectDepartment } from "./select_department";
 
 export function SyncPageContent({ data }: { data: SyncData[] }) {
 	const [mode, setMode] = useState<SyncDataDisplayModeEnumType>(
@@ -45,8 +46,11 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 	const [filterData, setFilterData] = useState<SyncData[]>(data);
 
 	const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
+	const [selectedDepartments, setSelectedDepartments] = useState<Set<string>>(
+		new Set()
+	);
 
-  // Status
+	// Status
 	const checked = {} as Record<string, SyncCheckStatusEnumType>;
 	data.forEach((d) => {
 		checked[d.emp_no.ehr_value] = "initial";
@@ -85,12 +89,15 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 				break;
 			case SyncDataSelectModeEnum.Values.filter_dep:
 				setFilterData(() =>
-					data.filter((d) => d.department.ehr_value === "TODO")
+					data.filter((d) =>
+						selectedDepartments.has(
+							d.department.salary_value as string
+						)
+					)
 				);
 				break;
 		}
-	}, [data, filterMode, selectedKeys]);
-
+	}, [data, filterMode, selectedKeys, selectedDepartments]);
 
 	function CompAllDonePage() {
 		return (
@@ -171,10 +178,10 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 					{filterMode ===
 						SyncDataSelectModeEnum.Values.filter_dep && (
 						<div className="">
-							<SelectEmployee
+							<SelectDepartment
 								data={data}
-								selectedKeys={selectedKeys}
-								setSelectedKeys={setSelectedKeys}
+								selectedKeys={selectedDepartments}
+								setSelectedKeys={setSelectedDepartments}
 							/>
 						</div>
 					)}
