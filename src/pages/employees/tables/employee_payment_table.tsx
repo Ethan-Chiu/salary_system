@@ -6,11 +6,11 @@ import { useTranslation } from "react-i18next";
 
 const columns = (t: I18nType) =>
 	[
+		"department",
 		"emp_no",
 		"emp_name",
 		"position",
 		"position_type",
-		"department",
 		"base_salary",
 		"food_allowance",
 		"supervisor_allowance",
@@ -57,6 +57,9 @@ export function EmployeePaymentTable({ period_id }: any) {
 						columns={columns(t)}
 						data={data}
 						historyDataFunction={() =>
+							api.employeePayment.getAllEmployeePayment.useQuery()
+						}
+						calendarDataFunction={() =>
 							api.employeePayment.getAllEmployeePayment.useQuery()
 						}
 					/>

@@ -17,3 +17,9 @@ export type HistoryQueryFunctionType<T = Record<string, never>> =
 		ExtendableHistoryDataType<T>,
 		TRPCClientErrorLike<any>
 	>;
+
+export type CalenderQueryFunctionType<T = Record<string, never>> =
+	() => UseTRPCQueryResult<
+		ExtendableHistoryDataType<T>,
+		TRPCClientErrorLike<any>
+	>;

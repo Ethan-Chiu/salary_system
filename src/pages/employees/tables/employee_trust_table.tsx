@@ -6,11 +6,11 @@ import { useTranslation } from "react-i18next";
 
 const columns = (t: I18nType) =>
 	[
+		"department",
 		"emp_no",
 		"emp_name",
 		"position",
 		"position_type",
-		"department",
 		"emp_trust_reserve",
 		"org_trust_reserve",
 		"emp_special_trust_incent",
@@ -47,6 +47,9 @@ export function EmployeeTrustTable({ period_id }: any) {
 				columns={columns(t)}
 				data={data}
 				historyDataFunction={() =>
+					api.employeeTrust.getAllEmployeeTrust.useQuery()
+				}
+				calendarDataFunction={() =>
 					api.employeeTrust.getAllEmployeeTrust.useQuery()
 				}
 			/>

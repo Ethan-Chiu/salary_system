@@ -109,17 +109,6 @@ export function HistoryView<TData>({
 					<div className="h-0 flex-grow">
 						<ScrollArea className="h-full">
 							{data
-								.sort((a, b) => {
-									if (a.start_date == null) {
-										return -1;
-									} else if (b.start_date == null) {
-										return 1;
-									} else {
-										return a.start_date > b.start_date
-											? -1
-											: 1;
-									}
-								})
 								.filter(
 									(e) =>
 										selectedEmpNo === null ||
@@ -167,12 +156,12 @@ export function HistoryView<TData>({
 											e.start_date.toString(),
 											e.end_date?.toString() ?? ""
 										) && (
-											<div className="absolute -bottom-3 right-2 z-10">
-												<Badge>
-													{t("table.current")}
-												</Badge>
-											</div>
-										)}
+												<div className="absolute -bottom-3 right-2 z-10">
+													<Badge>
+														{t("table.current")}
+													</Badge>
+												</div>
+											)}
 									</div>
 								))}
 							<div className="h-4" />

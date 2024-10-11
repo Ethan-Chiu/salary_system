@@ -44,22 +44,25 @@ export default function CalendarHeader({
 			</p>
 
 			{/* Select date */}
-			<Button variant="outline" size="sm" onClick={handlePrevMonth}>
+			<Button variant="outline" size="sm" className="my-3" onClick={handlePrevMonth}>
 				<ChevronLeftIcon className="h-4 w-4" />
 			</Button>
-			<Button variant="outline" size="sm" onClick={handleReset}>
+			<Button variant="outline" size="sm" className="my-3" onClick={handleReset}>
 				{t("table.current")}
 			</Button>
-			<Button variant="outline" size="sm" onClick={handleNextMonth}>
+			<Button variant="outline" size="sm" className="my-3" onClick={handleNextMonth}>
 				<ChevronRightIcon className="h-4 w-4" />
 			</Button>
 
 			{/* Select employee */}
-			<PopoverSelector
-				data={employees}
-				selectedKey={selectedEmp}
-				setSelectedKey={setSelectedEmp}
-			/>
+			{
+				employees.length > 0 &&
+				<PopoverSelector
+					data={employees}
+					selectedKey={selectedEmp}
+					setSelectedKey={setSelectedEmp}
+				/>
+			}
 		</div>
 	);
 }
