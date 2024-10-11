@@ -33,13 +33,8 @@ const columns = (t: I18nType) =>
         "special_multiplier",
         "multiplier",
         "fixed_amount",
-        "budget_effective_salary",
         "budget_amount",
-        "supervisor_performance_level",
-        "supervisor_effective_salary",
         "supervisor_amount",
-        "approved_performance_level",
-        "approved_effective_salary",
         "approved_amount",
     ].map((key) => {
         return {
