@@ -168,10 +168,10 @@ export class EHRService {
 
 	async getEmp(period_id: number): Promise<Emp[]> {
 		const dbConnection = container.resolve(Database).connection;
-		let dataList = await dbConnection.query(this.GET_EMP_QUERY(period_id), {
+		const dataList = await dbConnection.query(this.GET_EMP_QUERY(period_id), {
 			type: QueryTypes.SELECT,
 		});
-		const empList: Emp[] = dataList.map(Emp.fromDB);
+		const empList: Emp[] = dataList.map((d) => Emp.fromDB(d));
 		return empList;
 	}
 

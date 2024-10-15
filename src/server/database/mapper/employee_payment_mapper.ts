@@ -1,14 +1,14 @@
 import { container, injectable } from "tsyringe";
 import { type z } from "zod";
 import { BaseResponseError } from "~/server/api/error/BaseResponseError";
-import { EmployeePayment, EmployeePaymentFE, updateEmployeePaymentService, type updateEmployeePaymentAPI } from "~/server/api/types/employee_payment_type";
+import { EmployeePayment, updateEmployeePaymentService, type updateEmployeePaymentAPI, type EmployeePaymentFEType, type EmployeePaymentType } from "~/server/api/types/employee_payment_type";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { convertDatePropertiesToISOString, deleteProperties } from "./helper_function";
 import { CryptoHelper } from "~/lib/utils/crypto";
 
 @injectable()
 export class EmployeePaymentMapper {
-    async getEmployeePayment(employee_payment: z.infer<typeof EmployeePaymentFE>): Promise<z.infer<typeof EmployeePayment>> {
+    async getEmployeePayment(employee_payment: EmployeePaymentFEType): Promise<EmployeePaymentType> {
         const employeePayment: z.infer<typeof EmployeePayment> = EmployeePayment.parse(
             convertDatePropertiesToISOString({
                 base_salary_enc: CryptoHelper.encrypt(employee_payment.base_salary.toString()),
@@ -29,14 +29,14 @@ export class EmployeePaymentMapper {
         return employeePayment
     }
 
-    async getEmployeePaymentFE(employee_payment: z.infer<typeof EmployeePayment>): Promise<z.infer<typeof EmployeePaymentFE>> {
+    async getEmployeePaymentFE(employee_payment: EmployeePaymentType): Promise<EmployeePaymentFEType> {
         const employeeDataService = container.resolve(EmployeeDataService)
         const employee = await employeeDataService.getEmployeeDataByEmpNo(employee_payment.emp_no)
         if (employee == null) {
             throw new BaseResponseError("Employee does not exist")
         }
 
-        const employeePaymentFE: z.infer<typeof EmployeePaymentFE> = convertDatePropertiesToISOString({
+        const employeePaymentFE: EmployeePaymentFEType = convertDatePropertiesToISOString({
             emp_name: employee.emp_name,
             position: employee.position,
             position_type: employee.position_type,

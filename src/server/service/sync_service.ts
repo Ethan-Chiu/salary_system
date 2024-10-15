@@ -1,6 +1,6 @@
 import { container, injectable } from "tsyringe";
 import { EmployeeData } from "../database/entity/SALARY/employee_data";
-import { Op } from "sequelize";
+import { InferAttributes, Op } from "sequelize";
 import { EHRService } from "./ehr_service";
 import { type Emp } from "../database/entity/UMEDIA/emp";
 import { EmployeeDataService } from "./employee_data_service";
@@ -19,6 +19,7 @@ import {
 	syncInputType,
 } from "../api/types/sync_type";
 import { Period } from "../database/entity/UMEDIA/period";
+import { EmployeePaymentFEType } from "../api/types/employee_payment_type";
 
 export interface DataComparison<ValueT = any> {
 	key: string;
@@ -46,7 +47,7 @@ export interface PaidEmployee {
 
 @injectable()
 export class SyncService {
-  // TODO: move this
+	// TODO: move this
 	parsedPeriod(
 		period: Period
 	): Period & { period_year: number; period_month: number } {
@@ -79,8 +80,10 @@ export class SyncService {
 
 	async checkQuitDate(
 		period: number,
-		quit_date: string
+		quit_date: string | null
 	): Promise<QuitDateEnumType> {
+		if (!quit_date) return QuitDateEnum.Values.null;
+
 		const ehrService = container.resolve(EHRService);
 
 		const periodInfo = await ehrService.getPeriodById(period);
@@ -102,9 +105,9 @@ export class SyncService {
 		} else return QuitDateEnum.Values.past;
 	}
 
-  // TODO: move this
+	// TODO: move this
 	// 將EHR資料格式轉換為Salary資料格式
-	empToEmployee(ehr_data: Emp) {
+	empToEmployee(ehr_data: Emp): EmployeeData {
 		const salary_data = new EmployeeData();
 		salary_data.emp_no = ehr_data.emp_no!;
 		salary_data.emp_name = ehr_data.emp_name!;
@@ -174,6 +177,7 @@ export class SyncService {
 			ehrEmp.department,
 			salaryEmp?.department
 		);
+		// TODO: change this
 		// syncData.english_name = this.dataComparison("english_name", ehrEmp.english_name, salaryEmp?.english_name);
 		const pseudo_english_name: DataComparison = {
 			key: "english_name",
@@ -203,9 +207,10 @@ export class SyncService {
 		func: FunctionsEnumType, // 要執行的功能
 		period: number // 期間
 	): Promise<PaidEmployee[]> {
-		// 返回需支付的員工數組的Promise
-		let cand_paid_emps: PaidEmployee[] = []; // 候選需支付員工數組初始化為空
 		const ehrService = container.resolve(EHRService); // 獲取EHR服務的實例
+
+		// 返回需支付的員工數組的Promise
+		let cand_paid_emps: PaidEmployee[] = [];
 		const pay_work_status = [
 			// 支付工作狀態列表
 			"一般員工",
@@ -215,6 +220,7 @@ export class SyncService {
 			"當月新進人員全月",
 			"當月新進人員破月",
 		];
+
 		if (func == FunctionsEnum.Enum.month_salary) {
 			// 如果功能是月薪計算
 			let salary_emps = await EmployeeData.findAll({
@@ -226,12 +232,14 @@ export class SyncService {
 					"quit_date",
 				],
 			});
+			// 篩選符合支付工作狀態的員工
 			salary_emps = salary_emps.filter((emp) => {
-				// 篩選符合支付工作狀態的員工
 				return pay_work_status.includes(emp.work_status);
 			});
+
 			const salary_emp_nos = salary_emps.map((emp) => emp.emp_no); // 提取工資員工的員工編號
 			const ehr_emps = await ehrService.getEmp(period); // 從EHR服務中獲取員工數據
+
 			// 步驟1: 創建ehr_emps的字典
 			const ehrDict: Map<string, Emp> = new Map<string, Emp>();
 			ehr_emps.forEach((emp) => {
@@ -247,116 +255,72 @@ export class SyncService {
 				)
 					newEmps.push(emp);
 			});
-			const new_employees = await Promise.all(
-				// 將新員工轉換為Employee對象
-				newEmps.map((emp) => this.empToEmployee(emp))
+			// 將新員工轉換為Employee
+			const new_employees: EmployeeData[] = newEmps.map((emp) =>
+				this.empToEmployee(emp)
 			);
+
 			const all_emps = salary_emps.concat(new_employees); // 合併所有員工數據
 
-			const updated_all_emps = await Promise.all(
-				// 最新的所有員工數據
-				all_emps.map((salaryEmp) => {
-					const matchingEhrEmp = ehrDict.get(salaryEmp.emp_no);
-					return matchingEhrEmp
-						? this.empToEmployee(matchingEhrEmp)
-						: salaryEmp;
-				})
-			);
+			// 最新的所有員工數據
+			const updated_all_emps = all_emps.map((salaryEmp) => {
+				const matchingEhrEmp = ehrDict.get(salaryEmp.emp_no);
+				return matchingEhrEmp
+					? this.empToEmployee(matchingEhrEmp)
+					: salaryEmp;
+			});
+			// NOTE: check employee work status
+			// NOTE: 檢查所有員工的支付狀態有無不合理處
 			cand_paid_emps = await Promise.all(
-				// 檢查所有員工的支付狀態有無不合理處
 				updated_all_emps.map(async (emp) => {
 					let msg = "";
-					switch (
-						emp.work_status // 根據工作狀態生成不同的消息
-					) {
+					const quit_date = await this.checkQuitDate(
+						period,
+						emp.quit_date
+					);
+					switch (emp.work_status) {
 						case "一般員工":
 							// 檢查不合理的離職日期
-							if (emp.quit_date != null) {
-								if (
-									(await this.checkQuitDate(
-										period,
-										emp.quit_date
-									)) != "future"
-								) {
-									msg =
-										"一般員工卻有不合理離職日期(" +
-										emp.quit_date +
-										")";
-								}
+							if (quit_date !== QuitDateEnum.Values.future) {
+								msg = `一般員工卻有不合理離職日期(${emp.quit_date})`;
 							}
 							break;
 						case "當月離職人員破月":
 							// 檢查不合理的離職日期
-							if (emp.quit_date == null) {
+							if (quit_date === QuitDateEnum.Values.null) {
 								msg = "當月離職人員卻沒有離職日期";
-							} else {
-								if (
-									(await this.checkQuitDate(
-										period,
-										emp.quit_date
-									)) != "current"
-								) {
-									msg =
-										"當月離職人員卻有不合理離職日期(" +
-										emp.quit_date +
-										")";
-								}
+							} else if (
+								quit_date !== QuitDateEnum.Values.current
+							) {
+								msg = `當月離職人員卻有不合理離職日期(${emp.quit_date})`;
 							}
 							break;
 						case "當月離職人員全月":
 							// 檢查不合理的離職日期
-							if (emp.quit_date == null) {
+							if (quit_date === QuitDateEnum.Values.null) {
 								msg = "當月離職人員卻沒有離職日期";
-							} else {
-								if (
-									(await this.checkQuitDate(
-										period,
-										emp.quit_date
-									)) != "current"
-								) {
-									msg =
-										"當月離職人員卻有不合理離職日期(" +
-										emp.quit_date +
-										")";
-								}
+							} else if (
+								quit_date !== QuitDateEnum.Values.current
+							) {
+								msg = `當月離職人員卻有不合理離職日期(${emp.quit_date})`;
 							}
 							break;
 						case "離職人員":
 							// 檢查不合理的離職日期
-							if (emp.quit_date == null) {
+							if (quit_date === QuitDateEnum.Values.null) {
 								msg = "離職人員卻沒有離職日期";
-							} else {
-								if (
-									(await this.checkQuitDate(
-										period,
-										emp.quit_date
-									)) != "past"
-								) {
-									msg =
-										"離職人員卻有不合理離職日期(" +
-										emp.quit_date +
-										")";
-								}
+							} else if (quit_date !== QuitDateEnum.Values.past) {
+								msg = `離職人員卻有不合理離職日期(${emp.quit_date})`;
 							}
 							break;
 						default:
 							// 檢查不合理的離職日期
-							if (emp.quit_date != null) {
-								if (
-									(await this.checkQuitDate(
-										period,
-										emp.quit_date
-									)) != "future"
-								) {
-									msg =
-										"有不合理離職日期(" +
-										emp.quit_date +
-										")";
-								}
+							if (quit_date !== QuitDateEnum.Values.future) {
+								msg = `有不合理離職日期(${emp.quit_date})`;
 							}
 							break;
 					}
-					// 創建候選需支付員工對象
+
 					const cand_paid_emp: PaidEmployee = {
 						emp_no: emp.emp_no,
 						name: emp.emp_name,
@@ -440,24 +404,24 @@ export class SyncService {
 		return changedDatas;
 	}
 
-	async synchronize(period: number, emp_no_list: syncInputType[]) {
+	async synchronize(period: number, change_emp_list: syncInputType[]) {
 		const ehrService = container.resolve(EHRService);
+		// NOTE: All employee data from EHR
 		const ehr_datas = await ehrService.getEmp(period);
-		const salary_datas = await EmployeeData.findAll({
-			where: { emp_no: { [Op.in]: emp_no_list } },
-		});
-		const salary_emp_no_list = salary_datas.map((emp) => emp.emp_no);
-
 		const ehrDict: Map<string, Emp> = new Map<string, Emp>();
 		ehr_datas.forEach((emp) => {
 			ehrDict.set(emp.emp_no, emp);
 		});
 
-		const updatedDatas = emp_no_list.map((emp_no: string) => {
-			const updatedData = this.empToEmployee(ehrDict.get(emp_no)!);
-			return updatedData;
+		// NOTE: All the employee that needs to be updated
+		const changed_emp_nos = change_emp_list.map((emp) => emp.emp_no);
+
+		// All existing employee data from Salary
+		const salary_datas = await EmployeeData.findAll({
+			where: { emp_no: { [Op.in]: changed_emp_nos } },
 		});
 
+		// Get services
 		const employee_data_service = container.resolve(EmployeeDataService);
 		const employee_payment_service = container.resolve(
 			EmployeePaymentService
@@ -467,11 +431,22 @@ export class SyncService {
 			EmployeePaymentMapper
 		);
 		const employee_trust_mapper = container.resolve(EmployeeTrustMapper);
-		updatedDatas.map(async (updatedData) => {
-			if (!salary_emp_no_list.includes(updatedData.emp_no)) {
-				await employee_data_service.createEmployeeData(updatedData);
-				const payment_input = {
-					emp_no: updatedData.emp_no,
+
+		// Update fields
+		const updatedDatas: EmployeeData[] = [];
+		for (const changeEmp of change_emp_list) {
+			const ehr_emp_data: EmployeeData = this.empToEmployee(
+				ehrDict.get(changeEmp.emp_no)!
+			);
+
+			let salary_emp_data: EmployeeData | undefined = salary_datas.find(
+				(emp) => emp.emp_no == changeEmp.emp_no
+			);
+			// Create default employee if not exist
+			// TODO: Refactor this
+			if (!salary_emp_data) {
+				const payment_input: EmployeePaymentFEType = {
+					emp_no: ehr_emp_data.emp_no,
 					base_salary: 0,
 					food_allowance: 0,
 					supervisor_allowance: 0,
@@ -484,15 +459,15 @@ export class SyncService {
 					h_i: 0,
 					l_r: 0,
 					occupational_injury: 0,
-					start_date: new Date(updatedData.registration_date),
+					start_date: new Date(ehr_emp_data.registration_date),
 					end_date: null,
 				};
-				const employee_payment =
+				const employee_payment_input =
 					await employee_payment_mapper.getEmployeePayment(
 						payment_input
 					);
 				await employee_payment_service.createEmployeePayment(
-					employee_payment
+					employee_payment_input
 				);
 
 				// const employee_trust_input = {
@@ -506,11 +481,28 @@ export class SyncService {
 				// };
 				// const employee_trust = await employee_trust_mapper.getEmployeeTrust(employee_trust_input);
 				// await employee_trust_setvice.createEmployeeTrust(employee_trust);
-			} else
-				await employee_data_service.updateEmployeeDataByEmpNo(
-					updatedData
+
+        // TODO: 
+				/* salary_emp_data = ehr_emp_data; */
+			}
+
+			if (!salary_emp_data) {
+				throw new Error(
+					`Employee data for ${changeEmp.emp_no} does not exist`
 				);
-		});
+			}
+
+			const updatedData: EmployeeData = salary_emp_data;
+			for (const key of changeEmp.keys) {
+				const data_key: keyof InferAttributes<EmployeeData> =
+					key as keyof InferAttributes<EmployeeData>;
+				updatedData.set(data_key, ehr_emp_data[data_key]);
+			}
+
+			await employee_data_service.updateEmployeeDataByEmpNo(updatedData);
+			updatedDatas.push(updatedData);
+		}
+
 		return updatedDatas;
 	}
 
