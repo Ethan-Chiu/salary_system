@@ -11,12 +11,12 @@ import {
 } from "~/components/ui/dialog";
 
 import { api } from "~/utils/api";
-import { type DataComparison } from "~/server/service/sync_service";
 import { type SyncCheckStatusEnumType } from "~/components/synchronize/utils/sync_check_status";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import periodContext from "../context/period_context";
 import { useTranslation } from "react-i18next";
 import { EmployeeDataChangeTable } from "./emp_data_table_all";
+import { type DataComparison, type SyncInputType } from "~/server/api/types/sync_type";
 
 export interface DataComparisonAndStatus extends DataComparison {
 	check_status: SyncCheckStatusEnumType;
@@ -46,11 +46,26 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 	});
 
 	function handleUpdate(period_id: number) {
-		const updateList: Array<string> = [];
+		const update_input: SyncInputType[] = [];
+
+    data.forEach((d) => {
+      const change_keys: string[] = []
+      for (const c of d.comparisons) {
+        if (c.check_status === "checked") {
+          change_keys.push(c.key) 
+        }
+      }
+      if (change_keys.length > 0) {
+        update_input.push({
+          emp_no: d.emp_no,
+          keys: change_keys
+        })
+      }
+    });
 
 		mutate({
 			period: period_id,
-			emp_no_list: updateList,
+			change_emp_list: update_input,
 		});
 	}
 

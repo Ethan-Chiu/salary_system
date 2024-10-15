@@ -5,21 +5,21 @@ import { EHRService } from "./ehr_service";
 import { type Emp } from "../database/entity/UMEDIA/emp";
 import { EmployeeDataService } from "./employee_data_service";
 import { EmployeePaymentService } from "./employee_payment_service";
-import { EmployeeTrustService } from "./employee_trust_service";
 import { type Exact } from "~/utils/exact_type";
 import {
 	FunctionsEnum,
 	type FunctionsEnumType,
 } from "../api/types/functions_enum";
 import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
-import { EmployeeTrustMapper } from "../database/mapper/employee_trust_mapper";
+/* import { EmployeeTrustService } from "./employee_trust_service"; */
+/* import { EmployeeTrustMapper } from "../database/mapper/employee_trust_mapper"; */
 import {
 	type DataComparison,
 	type PaidEmployee,
 	QuitDateEnum,
 	type QuitDateEnumType,
 	SyncData,
-	type syncInputType,
+	type SyncInputType,
 } from "../api/types/sync_type";
 import { type Period } from "../database/entity/UMEDIA/period";
 import { type EmployeePaymentFEType } from "../api/types/employee_payment_type";
@@ -383,7 +383,7 @@ export class SyncService {
 		return changedDatas;
 	}
 
-	async synchronize(period: number, change_emp_list: syncInputType[]) {
+	async synchronize(period: number, change_emp_list: SyncInputType[]) {
 		const ehrService = container.resolve(EHRService);
 		// NOTE: All employee data from EHR
 		const ehr_datas = await ehrService.getEmp(period);
