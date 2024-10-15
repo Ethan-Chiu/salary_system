@@ -29,7 +29,7 @@ interface EmployeeDataChangeAllProps {
 	setDataStatus: (emp_no: string, key: string, checked: boolean) => void;
 }
 
-export function EmployeeDataChangeAll({
+export function EmployeeDataChangeTable({
 	data,
 	mode,
 	setDataStatus,

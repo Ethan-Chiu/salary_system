@@ -18,7 +18,7 @@ import {
 	CardTitle,
 } from "~/components/ui/card";
 import { useTranslation } from "next-i18next";
-import { EmployeeDataChangeAll } from "./emp_data_table_all";
+import { EmployeeDataChangeTable } from "./emp_data_table_all";
 import {
 	Select,
 	SelectContent,
@@ -206,7 +206,7 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 			{/* Main Content */}
 			<CompTopBar data={data} />
 			<div className="relative h-0 w-full flex-grow ">
-				<EmployeeDataChangeAll 
+				<EmployeeDataChangeTable 
 					data={filterData} 
 					setDataStatus={(emp_no, key, checked) => {
 						setDataWithStatus((prevData) => {
