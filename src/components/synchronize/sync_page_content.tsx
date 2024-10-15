@@ -233,7 +233,7 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 				/>
 			</div>
 			{/* Bottom Buttons */}
-			<div className="mt-4 flex justify-between">
+			<div className="ml-auto mt-4 flex justify-between">
 				<UpdateTableDialog data={dataWithStatus} />
 			</div>
 		</>
