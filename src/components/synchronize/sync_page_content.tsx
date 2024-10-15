@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { SelectModeComponent } from "~/components/synchronize/select_mode";
-import { type SyncData } from "~/server/service/sync_service";
 import {
 	type SyncDataAndStatus,
 	UpdateTableDialog,
@@ -33,6 +32,7 @@ import {
 	syncDataSelectModeString,
 } from "./utils/select_mode";
 import { SelectDepartment } from "./select_department";
+import { type SyncData } from "~/server/api/types/sync_type";
 
 export function SyncPageContent({ data }: { data: SyncData[] }) {
 	const [mode, setMode] = useState<SyncDataDisplayModeEnumType>(

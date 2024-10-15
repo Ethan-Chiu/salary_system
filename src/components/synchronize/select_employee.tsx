@@ -1,6 +1,6 @@
-import { type SyncData } from "~/server/service/sync_service";
 import { useTranslation } from "react-i18next";
 import { PopoverMultiSelector } from "../popover_multi_selector";
+import { type SyncData } from "~/server/api/types/sync_type";
 
 interface SelectEmployeeProps {
 	data: SyncData[];
