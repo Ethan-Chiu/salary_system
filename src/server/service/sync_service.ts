@@ -1,6 +1,6 @@
 import { container, injectable } from "tsyringe";
 import { EmployeeData } from "../database/entity/SALARY/employee_data";
-import { InferAttributes, Op } from "sequelize";
+import { type InferAttributes, Op } from "sequelize";
 import { EHRService } from "./ehr_service";
 import { type Emp } from "../database/entity/UMEDIA/emp";
 import { EmployeeDataService } from "./employee_data_service";
@@ -14,36 +14,15 @@ import {
 import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
 import { EmployeeTrustMapper } from "../database/mapper/employee_trust_mapper";
 import {
+	type DataComparison,
+	type PaidEmployee,
 	QuitDateEnum,
-	QuitDateEnumType,
-	syncInputType,
+	type QuitDateEnumType,
+	SyncData,
+	type syncInputType,
 } from "../api/types/sync_type";
-import { Period } from "../database/entity/UMEDIA/period";
-import { EmployeePaymentFEType } from "../api/types/employee_payment_type";
-
-export interface DataComparison<ValueT = any> {
-	key: string;
-	salary_value: ValueT;
-	ehr_value: ValueT;
-	is_different: boolean;
-}
-
-export class SyncData {
-	emp_no: DataComparison<string>;
-	name: DataComparison<string>;
-	department: DataComparison<string>;
-	english_name: DataComparison;
-	comparisons: Array<DataComparison>;
-}
-
-export interface PaidEmployee {
-	emp_no: string;
-	name: string;
-	department: string;
-	work_status: string;
-	quit_date: string | null;
-	bug?: string;
-}
+import { type Period } from "../database/entity/UMEDIA/period";
+import { type EmployeePaymentFEType } from "../api/types/employee_payment_type";
 
 @injectable()
 export class SyncService {
@@ -211,7 +190,7 @@ export class SyncService {
 
 		// 返回需支付的員工數組的Promise
 		let cand_paid_emps: PaidEmployee[] = [];
-		const pay_work_status = [
+		const paid_status = [
 			// 支付工作狀態列表
 			"一般員工",
 			"外籍勞工",
@@ -234,7 +213,7 @@ export class SyncService {
 			});
 			// 篩選符合支付工作狀態的員工
 			salary_emps = salary_emps.filter((emp) => {
-				return pay_work_status.includes(emp.work_status);
+				return paid_status.includes(emp.work_status);
 			});
 
 			const salary_emp_nos = salary_emps.map((emp) => emp.emp_no); // 提取工資員工的員工編號
@@ -426,11 +405,11 @@ export class SyncService {
 		const employee_payment_service = container.resolve(
 			EmployeePaymentService
 		);
-		const employee_trust_setvice = container.resolve(EmployeeTrustService);
 		const employee_payment_mapper = container.resolve(
 			EmployeePaymentMapper
 		);
-		const employee_trust_mapper = container.resolve(EmployeeTrustMapper);
+		/* const employee_trust_setvice = container.resolve(EmployeeTrustService); */
+		/* const employee_trust_mapper = container.resolve(EmployeeTrustMapper); */
 
 		// Update fields
 		const updatedDatas: EmployeeData[] = [];
@@ -482,7 +461,7 @@ export class SyncService {
 				// const employee_trust = await employee_trust_mapper.getEmployeeTrust(employee_trust_input);
 				// await employee_trust_setvice.createEmployeeTrust(employee_trust);
 
-        // TODO: 
+				// TODO:
 				/* salary_emp_data = ehr_emp_data; */
 			}
 
@@ -507,12 +486,11 @@ export class SyncService {
 	}
 
 	// Stage 3
+	// 獲取需支付員工的函數
 	async getPaidEmps(func: FunctionsEnumType): Promise<EmployeeData[]> {
-		// 獲取需支付員工的函數，返回Promise<EmployeeData[]>類型的數組
 		if (func == FunctionsEnum.Enum.month_salary) {
-			// 如果功能是月薪計算
+			// 定義需支付的員工狀態列表
 			const paid_status = [
-				// 定義需支付的員工狀態列表
 				"一般員工",
 				"外籍勞工",
 				"當月離職人員全月",
@@ -521,18 +499,17 @@ export class SyncService {
 				"當月新進人員破月",
 			];
 			const paid_emps = await EmployeeData.findAll({
-				// 查找符合需支付狀態的員工數據
 				where: {
 					work_status: {
 						[Op.in]: paid_status,
 					},
 				},
 			});
-			return paid_emps; // 返回需支付員工數據
+			return paid_emps;
 		} else {
 			// 如果功能不是月薪計算
 			const paid_emps = await EmployeeData.findAll({}); // 查找所有需支付的員工數據
-			return paid_emps; // 返回需支付員工數據
+			return paid_emps;
 		}
 	}
 }
