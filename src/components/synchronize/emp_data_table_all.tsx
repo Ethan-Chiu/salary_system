@@ -1,5 +1,4 @@
 import { ScrollArea } from "~/components/ui/scroll-area";
-
 import {
 	Table,
 	TableBody,
@@ -9,10 +8,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
-import {
-	type SyncData,
-	type DataComparison,
-} from "~/server/service/sync_service";
 import { displayData } from "~/components/synchronize/utils/display";
 import { cn } from "~/lib/utils";
 import {
@@ -21,15 +16,23 @@ import {
 } from "~/components/synchronize/utils/data_display_mode";
 
 import { useTranslation } from "react-i18next";
+import { Checkbox } from "../ui/checkbox";
+import {
+	type DataComparisonAndStatus,
+	type SyncDataAndStatus,
+} from "./update_table";
+import { CircleCheckBigIcon } from "lucide-react";
 
 interface EmployeeDataChangeAllProps {
-	data: SyncData[];
+	data: SyncDataAndStatus[];
 	mode: SyncDataDisplayModeEnumType;
+	setDataStatus: (emp_no: string, key: string, checked: boolean) => void;
 }
 
 export function EmployeeDataChangeAll({
 	data,
 	mode,
+	setDataStatus,
 }: EmployeeDataChangeAllProps) {
 	const { t } = useTranslation(["common"]);
 	return (
@@ -50,21 +53,26 @@ export function EmployeeDataChangeAll({
 							<TableHead className="w-1/4 text-center">
 								{t("table.key")}
 							</TableHead>
-							<TableHead className="w-1/4 text-center min-w-[180px]">
+							<TableHead className="w-1/4 min-w-[180px] text-center">
 								{t("table.salary_data")}
 							</TableHead>
-							<TableHead className="w-1/4 text-center min-w-[180px]">
+							<TableHead className="w-1/4 min-w-[180px] text-center">
 								{t("table.ehr_data")}
+							</TableHead>
+							<TableHead className="w-1/4 text-center">
+								Check
+								{/* {t("sync_page.check")} */}
 							</TableHead>
 						</TableRow>
 					</TableHeader>
-					{data.map((d: SyncData, _index: number) => {
+					{data.map((d: SyncDataAndStatus, _index: number) => {
 						// Filter data based on mode
-						let comparisons: DataComparison[] = d.comparisons;
+						let comparisons: DataComparisonAndStatus[] =
+							d.comparisons;
 
 						if (mode === SyncDataDisplayModeEnum.Values.changed) {
 							comparisons = d.comparisons.filter(
-								(c: DataComparison) => c.is_different
+								(c: DataComparisonAndStatus) => c.is_different
 							);
 						}
 
@@ -75,7 +83,10 @@ export function EmployeeDataChangeAll({
 							<>
 								<TableBody className="hover:bg-muted/50">
 									{comparisons.map(
-										(c: DataComparison, index: number) => {
+										(
+											c: DataComparisonAndStatus,
+											index: number
+										) => {
 											const diff = c.is_different;
 
 											return (
@@ -83,49 +94,49 @@ export function EmployeeDataChangeAll({
 													key={c.key}
 													className="hover:bg-transparent"
 												>
-                          {/* Department */}
+													{/* Department */}
 													{index === 0 ? (
 														<TableCell
 															className="font-medium hover:bg-muted/50"
 															rowSpan={rowSpan}
 														>
-															{d.department.salary_value}
+															{d.department}
 														</TableCell>
 													) : (
 														<></>
 													)}
-                          {/* Emp No */}
+													{/* Emp No */}
 													{index === 0 ? (
 														<TableCell
 															className="font-medium hover:bg-muted/50"
 															rowSpan={rowSpan}
 														>
-															{d.emp_no.salary_value}
+															{d.emp_no}
 														</TableCell>
 													) : (
 														<></>
 													)}
-                          {/* Name */}
+													{/* Name */}
 													{index === 0 ? (
 														<TableCell
 															className="font-medium hover:bg-muted/50"
 															rowSpan={rowSpan}
 														>
-															{d.name.salary_value}
+															{d.emp_name}
 														</TableCell>
 													) : (
 														<></>
 													)}
-                          {/* Data Field Name */}
+													{/* Data Field Name */}
 													<TableCell className="font-medium">
 														{t(`table.${c.key}`)}
 													</TableCell>
-                          {/* Salary Data */}
+													{/* Salary Data */}
 													<TableCell
 														className={cn(
-															"font-medium min-w-[180px]",
+															"min-w-[180px] font-medium",
 															diff &&
-															"text-red-500"
+																"text-red-500"
 														)}
 													>
 														{displayData(
@@ -133,17 +144,43 @@ export function EmployeeDataChangeAll({
 															t
 														)}
 													</TableCell>
-                          {/* EHR Data */}
+													{/* EHR Data */}
 													<TableCell
 														className={cn(
-															"font-medium min-w-[180px]",
+															"min-w-[180px] font-medium",
 															diff &&
-															"text-red-500"
+																"text-red-500"
 														)}
 													>
 														{displayData(
 															c.ehr_value,
 															t
+														)}
+													</TableCell>
+													<TableCell className="flex h-14 items-center justify-center p-0">
+														{diff ? (
+															<Checkbox
+																className="border-red-500 data-[state=checked]:bg-red-500"
+																checked={
+																	c.check_status ===
+																	"checked"
+																}
+																onCheckedChange={(
+																	checked
+																) =>
+																	setDataStatus(
+																		d.emp_no,
+																		c.key,
+																		checked ===
+																			true
+																	)
+																}
+															/>
+														) : (
+															<CircleCheckBigIcon
+																width={16}
+																className="text-green-500"
+															/>
 														)}
 													</TableCell>
 												</TableRow>

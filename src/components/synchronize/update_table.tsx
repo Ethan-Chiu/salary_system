@@ -35,11 +35,15 @@ import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import periodContext from "../context/period_context";
 import { useTranslation } from "react-i18next";
 
+export interface DataComparisonAndStatus extends DataComparison {
+  check_status: SyncCheckStatusEnumType;
+}
+
 export interface SyncDataAndStatus {
 	emp_no: string;
 	emp_name: string;
-	check_status: SyncCheckStatusEnumType;
-	comparisons: Array<DataComparison>;
+	department: string;
+	comparisons: Array<DataComparisonAndStatus>;
 }
 
 interface UpdateTableDialogProps {
@@ -49,10 +53,10 @@ interface UpdateTableDialogProps {
 interface UpdateTableProps {
 	data: SyncDataAndStatus[];
 	showDetails: boolean;
-	checkedEmps: Record<string, boolean>;
-	setCheckedEmps: React.Dispatch<
-		React.SetStateAction<Record<string, boolean>>
-	>;
+	/* checkedEmps: Record<string, boolean>; */
+	/* setCheckedEmps: React.Dispatch< */
+	/* 	React.SetStateAction<Record<string, boolean>> */
+	/* >; */
 }
 
 export function UpdateTableDialog({ data }: UpdateTableDialogProps) {

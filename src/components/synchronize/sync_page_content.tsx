@@ -5,7 +5,6 @@ import {
 	type SyncDataAndStatus,
 	UpdateTableDialog,
 } from "~/components/synchronize/update_table";
-import { type SyncCheckStatusEnumType } from "~/components/synchronize/utils/sync_check_status";
 import {
 	SyncDataDisplayModeEnum,
 	type SyncDataDisplayModeEnumType,
@@ -25,7 +24,6 @@ import {
 	SelectContent,
 	SelectGroup,
 	SelectItem,
-	SelectLabel,
 	SelectTrigger,
 	SelectValue,
 } from "../ui/select";
@@ -43,7 +41,6 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 	const [filterMode, setFilterMode] = useState<SyncDataSelectModeEnumType>(
 		SyncDataSelectModeEnum.Values.all_emp
 	);
-	const [filterData, setFilterData] = useState<SyncData[]>(data);
 
 	const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
 	const [selectedDepartments, setSelectedDepartments] = useState<Set<string>>(
@@ -51,15 +48,10 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 	);
 
 	// Status
-	const checked = {} as Record<string, SyncCheckStatusEnumType>;
-	data.forEach((d) => {
-		checked[d.emp_no.ehr_value] = "initial";
-	});
-	const [checkedStatus, setCheckedStatus] =
-		useState<Record<string, SyncCheckStatusEnumType>>(checked);
 	const [dataWithStatus, setDataWithStatus] = useState<SyncDataAndStatus[]>(
 		[]
 	);
+	const [filterData, setFilterData] = useState<SyncDataAndStatus[]>([]);
 
 	const { t } = useTranslation(["common"]);
 
@@ -67,37 +59,43 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		setDataWithStatus(
 			data.map((d) => {
 				return {
-					emp_no: d.emp_no.ehr_value,
-					emp_name: d.name.ehr_value,
-					check_status:
-						checkedStatus[d.emp_no.ehr_value] ?? "initial",
-					comparisons: d.comparisons,
+					emp_no: d.emp_no.salary_value,
+					emp_name: d.name.salary_value,
+					department: d.department.salary_value,
+					comparisons: d.comparisons.map((c) => {
+						return {
+							key: c.key,
+							salary_value: c.salary_value,
+							ehr_value: c.ehr_value,
+							is_different: c.is_different,
+							check_status: "initial",
+						};
+					}),
 				};
 			})
 		);
-	}, [data, checkedStatus]);
+	}, [data]);
 
+	/* Filter Data */
 	useEffect(() => {
 		switch (filterMode) {
 			case SyncDataSelectModeEnum.Values.all_emp:
-				setFilterData(data);
+				setFilterData(dataWithStatus);
 				break;
 			case SyncDataSelectModeEnum.Values.filter_emp:
 				setFilterData(() =>
-					data.filter((d) => selectedKeys.has(d.emp_no.salary_value))
+					dataWithStatus.filter((d) => selectedKeys.has(d.emp_no))
 				);
 				break;
 			case SyncDataSelectModeEnum.Values.filter_dep:
 				setFilterData(() =>
-					data.filter((d) =>
-						selectedDepartments.has(
-							d.department.salary_value as string
-						)
+					dataWithStatus.filter((d) =>
+						selectedDepartments.has(d.department)
 					)
 				);
 				break;
 		}
-	}, [data, filterMode, selectedKeys, selectedDepartments]);
+	}, [dataWithStatus, filterMode, selectedKeys, selectedDepartments]);
 
 	function CompAllDonePage() {
 		return (
@@ -208,7 +206,31 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 			{/* Main Content */}
 			<CompTopBar data={data} />
 			<div className="relative h-0 w-full flex-grow ">
-				<EmployeeDataChangeAll data={filterData} mode={mode} />
+				<EmployeeDataChangeAll 
+					data={filterData} 
+					setDataStatus={(emp_no, key, checked) => {
+						setDataWithStatus((prevData) => {
+							return prevData.map((employee) => {
+								if (employee.emp_no === emp_no) {
+									return {
+										...employee,
+										comparisons: employee.comparisons.map((comparison) => {
+											if (comparison.key === key) {
+												return {
+													...comparison,
+													check_status: checked ? "checked" : "initial"
+												};
+											}
+											return comparison;
+										})
+									};
+								}
+								return employee;
+							});
+						});
+					}}
+					mode={mode}
+				/>
 			</div>
 			{/* Bottom Buttons */}
 			<div className="mt-4 flex justify-between">

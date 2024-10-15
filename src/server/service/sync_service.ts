@@ -21,7 +21,7 @@ export interface DataComparison<ValueT = any> {
 export class SyncData {
 	emp_no: DataComparison<string>;
 	name: DataComparison<string>;
-	department: DataComparison;
+	department: DataComparison<string>;
 	english_name: DataComparison;
 	comparisons: Array<DataComparison>;
 }
