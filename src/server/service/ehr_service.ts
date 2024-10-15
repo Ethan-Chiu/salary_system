@@ -15,7 +15,7 @@ import { ExpenseClass } from "../database/entity/UMEDIA/expense_class";
 import { AllowanceType } from "../database/entity/UMEDIA/allowance_type";
 import { Allowance } from "../database/entity/UMEDIA/allowance";
 import { HolidaysTypeService } from "./holidays_type_service";
-import { PayTypeEnum, PayTypeEnumType } from "../api/types/pay_type_enum";
+import { PayTypeEnum, type PayTypeEnumType } from "../api/types/pay_type_enum";
 
 export type BonusWithType = Omit<Bonus, "bonus_id" | "period_id"> & {
 	period_name: string;
@@ -352,7 +352,7 @@ export class EHRService {
 	): Promise<AllowanceWithType[]> {
 		const all_allowance = await this.getAllowance(period_id);
 		const filtered_allowance = all_allowance.filter((allowance) =>
-			emp_no_list.includes(allowance.emp_no!)
+			emp_no_list.includes(allowance.emp_no)
 		);
 		const allowance_type_list = await this.getAllowanceType();
 		const period_name = await this.getPeriodById(period_id).then(
@@ -423,7 +423,7 @@ export class EHRService {
 		}
 		let amount = 0;
 		target_allowance.forEach((allowance) => {
-			amount += allowance.amount!;
+			amount += allowance.amount;
 		});
 		return amount;
 	}
