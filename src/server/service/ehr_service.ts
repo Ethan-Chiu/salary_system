@@ -165,6 +165,7 @@ export class EHRService {
 		);
 		return filtered_payset;
 	}
+
 	async getEmp(period_id: number): Promise<Emp[]> {
 		const dbConnection = container.resolve(Database).connection;
 		let dataList = await dbConnection.query(this.GET_EMP_QUERY(period_id), {
@@ -173,6 +174,7 @@ export class EHRService {
 		const empList: Emp[] = dataList.map(Emp.fromDB);
 		return empList;
 	}
+
 	async getPeriodById(period_id: number): Promise<Period> {
 		const dbConnection = container.resolve(Database).connection;
 		const dataList = await dbConnection.query(

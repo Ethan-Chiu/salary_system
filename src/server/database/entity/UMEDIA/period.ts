@@ -42,16 +42,16 @@ export class Period {
 			ISSUE_DATE,
 		} = data;
 
-		const formattedStartDate = get_date_string(START_DATE);
-		const formattedEndDate = get_date_string(END_DATE);
-		const formattedIssueDate = get_date_string(ISSUE_DATE);
+		const formattedStartDate = get_date_string(START_DATE as Date);
+		const formattedEndDate = get_date_string(END_DATE as Date);
+		const formattedIssueDate = get_date_string(ISSUE_DATE as Date);
 
 		return new Period(
-			PERIOD_ID,
-			PERIOD_NAME,
+			PERIOD_ID as number,
+			PERIOD_NAME as string,
 			formattedStartDate,
 			formattedEndDate,
-			STATUS,
+			STATUS as string,
 			formattedIssueDate
 		);
 	}

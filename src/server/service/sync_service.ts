@@ -7,9 +7,18 @@ import { EmployeeDataService } from "./employee_data_service";
 import { EmployeePaymentService } from "./employee_payment_service";
 import { EmployeeTrustService } from "./employee_trust_service";
 import { type Exact } from "~/utils/exact_type";
-import { FunctionsEnum, type FunctionsEnumType } from "../api/types/functions_enum";
+import {
+	FunctionsEnum,
+	type FunctionsEnumType,
+} from "../api/types/functions_enum";
 import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
 import { EmployeeTrustMapper } from "../database/mapper/employee_trust_mapper";
+import {
+	QuitDateEnum,
+	QuitDateEnumType,
+	syncInputType,
+} from "../api/types/sync_type";
+import { Period } from "../database/entity/UMEDIA/period";
 
 export interface DataComparison<ValueT = any> {
 	key: string;
@@ -37,39 +46,63 @@ export interface PaidEmployee {
 
 @injectable()
 export class SyncService {
-	async checkQuitDate(period: number, quit_date: string): Promise<string> {
-		const ehrService = container.resolve(EHRService);
-		const periodInfo = await ehrService.getPeriodById(period);
-		const current_year = "20" + periodInfo.period_name.split("-")[1];
-		const current_month = periodInfo.period_name.split("-")[0]!;
-		const levaing_year = quit_date.split("-")[0]!; //讀出來是2023-05-04的形式
-		const leaving_month = quit_date.split("-")[1]!;
-		const monthDict: Record<string, string> = {
-			JAN: "1",
-			FEB: "2",
-			MAR: "3",
-			APR: "4",
-			MAY: "5",
-			JUN: "6",
-			JUL: "7",
-			AUG: "8",
-			SEP: "9",
-			OCT: "10",
-			NOV: "11",
-			DEC: "12",
+  // TODO: move this
+	parsedPeriod(
+		period: Period
+	): Period & { period_year: number; period_month: number } {
+		const current_year = "20" + period.period_name.split("-")[1];
+		const current_month = period.period_name.split("-")[0]!;
+		const year = parseInt(current_year);
+
+		const monthDict: Record<string, number> = {
+			JAN: 1,
+			FEB: 2,
+			MAR: 3,
+			APR: 4,
+			MAY: 5,
+			JUN: 6,
+			JUL: 7,
+			AUG: 8,
+			SEP: 9,
+			OCT: 10,
+			NOV: 11,
+			DEC: 12,
 		};
 
-		if (parseInt(current_year) < parseInt(levaing_year)) return "future";
-		else if (parseInt(current_year) == parseInt(levaing_year)) {
-			if (parseInt(monthDict[current_month]!) < parseInt(leaving_month))
-				return "future";
-			else if (
-				parseInt(monthDict[current_month]!) == parseInt(leaving_month)
-			)
-				return "current";
-			else return "past";
-		} else return "past";
+		const month = monthDict[current_month];
+		if (!month) {
+			throw new Error(`Invalid month: ${current_month}`);
+		}
+
+		return { ...period, period_year: year, period_month: month };
 	}
+
+	async checkQuitDate(
+		period: number,
+		quit_date: string
+	): Promise<QuitDateEnumType> {
+		const ehrService = container.resolve(EHRService);
+
+		const periodInfo = await ehrService.getPeriodById(period);
+		const parsedPeriod = this.parsedPeriod(periodInfo);
+
+		const leaving_year_str = quit_date.split("-")[0]!; //讀出來是2023-05-04的形式
+		const leaving_month_str = quit_date.split("-")[1]!;
+		const levaing_year = parseInt(leaving_year_str);
+		const leaving_month = parseInt(leaving_month_str);
+
+		if (parsedPeriod.period_year < levaing_year)
+			return QuitDateEnum.Values.future;
+		else if (parsedPeriod.period_year == levaing_year) {
+			if (parsedPeriod.period_month < leaving_month)
+				return QuitDateEnum.Values.future;
+			else if (parsedPeriod.period_month == leaving_month)
+				return QuitDateEnum.Values.current;
+			else return QuitDateEnum.Values.past;
+		} else return QuitDateEnum.Values.past;
+	}
+
+  // TODO: move this
 	// 將EHR資料格式轉換為Salary資料格式
 	empToEmployee(ehr_data: Emp) {
 		const salary_data = new EmployeeData();
@@ -185,7 +218,6 @@ export class SyncService {
 		if (func == FunctionsEnum.Enum.month_salary) {
 			// 如果功能是月薪計算
 			let salary_emps = await EmployeeData.findAll({
-				// 查找所有員工數據
 				attributes: [
 					"emp_name",
 					"department",
@@ -235,7 +267,7 @@ export class SyncService {
 				updated_all_emps.map(async (emp) => {
 					let msg = "";
 					switch (
-					emp.work_status // 根據工作狀態生成不同的消息
+						emp.work_status // 根據工作狀態生成不同的消息
 					) {
 						case "一般員工":
 							// 檢查不合理的離職日期
@@ -337,7 +369,7 @@ export class SyncService {
 				})
 			);
 		}
-		return cand_paid_emps; // 返回候選已支付員工數組
+		return cand_paid_emps;
 	}
 
 	// Stage 2
@@ -408,7 +440,7 @@ export class SyncService {
 		return changedDatas;
 	}
 
-	async synchronize(period: number, emp_no_list: string[]) {
+	async synchronize(period: number, emp_no_list: syncInputType[]) {
 		const ehrService = container.resolve(EHRService);
 		const ehr_datas = await ehrService.getEmp(period);
 		const salary_datas = await EmployeeData.findAll({
@@ -431,7 +463,9 @@ export class SyncService {
 			EmployeePaymentService
 		);
 		const employee_trust_setvice = container.resolve(EmployeeTrustService);
-		const employee_payment_mapper = container.resolve(EmployeePaymentMapper);
+		const employee_payment_mapper = container.resolve(
+			EmployeePaymentMapper
+		);
 		const employee_trust_mapper = container.resolve(EmployeeTrustMapper);
 		updatedDatas.map(async (updatedData) => {
 			if (!salary_emp_no_list.includes(updatedData.emp_no)) {
@@ -453,8 +487,13 @@ export class SyncService {
 					start_date: new Date(updatedData.registration_date),
 					end_date: null,
 				};
-				const employee_payment = await employee_payment_mapper.getEmployeePayment(payment_input)
-				await employee_payment_service.createEmployeePayment(employee_payment);
+				const employee_payment =
+					await employee_payment_mapper.getEmployeePayment(
+						payment_input
+					);
+				await employee_payment_service.createEmployeePayment(
+					employee_payment
+				);
 
 				// const employee_trust_input = {
 				// 	emp_no: updatedData.emp_no,
@@ -474,6 +513,7 @@ export class SyncService {
 		});
 		return updatedDatas;
 	}
+
 	// Stage 3
 	async getPaidEmps(func: FunctionsEnumType): Promise<EmployeeData[]> {
 		// 獲取需支付員工的函數，返回Promise<EmployeeData[]>類型的數組
