@@ -19,25 +19,29 @@ export class LevelRangeService {
 		const current_date_string = get_date_string(new Date());
 		check_date(start_date, end_date, current_date_string);
 
-		const newData = await LevelRange.create({
-			type: type,
-			level_start_id: level_start_id,
-			level_end_id: level_end_id,
-			start_date: start_date ?? current_date_string,
-			end_date: end_date,
-			create_by: "system",
-			update_by: "system",
-		}, { raw: true });
+		const newData = await LevelRange.create(
+			{
+				type: type,
+				level_start_id: level_start_id,
+				level_end_id: level_end_id,
+				start_date: start_date ?? current_date_string,
+				end_date: end_date,
+				disabled: false,
+				create_by: "system",
+				update_by: "system",
+			},
+			{ raw: true }
+		);
 
 		return newData;
 	}
 
 	async getLevelRangeById(id: number): Promise<LevelRange | null> {
-		const levelRange = await LevelRange.findOne({
-			where: {
-				id: id,
-			},
-		});
+		const levelRange = await LevelRange.findOne(
+			{
+				where: { id: id },
+			}
+		);
 		return levelRange;
 	}
 
@@ -45,43 +49,52 @@ export class LevelRangeService {
 		const ehr_service = container.resolve(EHRService);
 		const period = await ehr_service.getPeriodById(period_id);
 		const current_date_string = period.end_date;
-		const levelRange = await LevelRange.findAll({
-			where: {
-				start_date: {
-					[Op.lte]: current_date_string,
+		const levelRange = await LevelRange.findAll(
+			{
+				where: {
+					start_date: {
+						[Op.lte]: current_date_string,
+					},
+					end_date: {
+						[Op.or]: [
+							{ [Op.gte]: current_date_string },
+							{ [Op.eq]: null },
+						],
+					},
+					disabled: false,
 				},
-				end_date: {
-					[Op.or]: [
-						{ [Op.gte]: current_date_string },
-						{ [Op.eq]: null },
-					],
-				},
-			},
-			raw: true
-		});
+				raw: true
+			}
+		);
 		return levelRange;
 	}
 
 	async getCurrentLevelRangeByDate(date: string): Promise<LevelRange[]> {
-		const levelRange = await LevelRange.findAll({
-			where: {
-				start_date: {
-					[Op.lte]: date,
+		const levelRange = await LevelRange.findAll(
+			{
+				where: {
+					start_date: {
+						[Op.lte]: date,
+					},
+					end_date: {
+						[Op.or]: [
+							{ [Op.gte]: date },
+							{ [Op.eq]: null },
+						],
+					},
+					disabled: false,
 				},
-				end_date: {
-					[Op.or]: [
-						{ [Op.gte]: date },
-						{ [Op.eq]: null },
-					],
-				},
-			},
-			raw: true
-		});
+				raw: true
+			}
+		);
 		return levelRange;
 	}
 
 	async getAllLevelRange(): Promise<LevelRange[]> {
-		const levelRange = await LevelRange.findAll({ raw: true });
+		const levelRange = await LevelRange.findAll({
+			where: { disabled: false },
+			raw: true
+		});
 		return levelRange;
 	}
 
@@ -93,46 +106,47 @@ export class LevelRangeService {
 		start_date,
 		end_date
 	}: z.infer<typeof updateLevelRangeService>): Promise<void> {
-		const levelRange = await this.getLevelRangeById(id!);
+		const levelRange = await this.getLevelRangeById(id);
 		if (levelRange == null) {
 			throw new BaseResponseError("LevelRange does not exist");
 		}
 
-		const affectedCount = await LevelRange.update(
+		await this.deleteLevelRange(id);
+
+		await this.createLevelRange(
 			{
 				type: select_value(type, levelRange.type),
 				level_start_id: select_value(level_start_id, levelRange.level_start_id),
 				level_end_id: select_value(level_end_id, levelRange.level_end_id),
 				start_date: select_value(start_date, levelRange.start_date),
 				end_date: select_value(end_date, levelRange.end_date),
-				update_by: "system",
 			},
-			{ where: { id: id } }
 		);
-		if (affectedCount[0] == 0) {
-			throw new BaseResponseError("Update error");
-		}
 	}
 
 	async deleteLevelRange(id: number): Promise<void> {
-		const destroyedRows = await LevelRange.destroy({
-			where: { id: id },
-		});
-		if (destroyedRows != 1) {
+		const destroyedRows = await LevelRange.update(
+			{ disabled: true },
+			{ where: { id: id } }
+		);
+		if (destroyedRows[0] == 0) {
 			throw new BaseResponseError("Delete error");
 		}
 	}
 
 	async rescheduleLevelRange(): Promise<void> {
-		const levelRangeList = await LevelRange.findAll({
-			order: [
-				['type', 'ASC'],
-				["start_date", "ASC"],
-			],
-		});
+		const levelRangeList = await LevelRange.findAll(
+			{
+				where: { disabled: false },
+				order: [
+					['type', 'ASC'],
+					["start_date", "ASC"],
+				],
+			}
+		);
 		for (let i = 0; i < levelRangeList.length; i += 1) {
 			const start_date = new Date(
-				levelRangeList[i]!.dataValues.start_date
+				levelRangeList[i]!.start_date
 			);
 			const start_date_string = get_date_string(
 				new Date(start_date.setFullYear(start_date.getFullYear(), 0, 1))
@@ -141,16 +155,18 @@ export class LevelRangeService {
 				new Date(start_date.setFullYear(start_date.getFullYear(), 11, 31))
 			);
 
-			if (i != 0 && (levelRangeList[i]!.dataValues.type == levelRangeList[i - 1]!.dataValues.type
-				&& levelRangeList[i]!.dataValues.start_date == levelRangeList[i - 1]!.dataValues.start_date)) {
-				await this.deleteLevelRange(levelRangeList[i]!.dataValues.id);
+			if (i != 0 && (levelRangeList[i]!.type == levelRangeList[i - 1]!.type
+				&& levelRangeList[i]!.start_date == levelRangeList[i - 1]!.start_date)) {
+				await this.deleteLevelRange(levelRangeList[i]!.id);
 			}
 			else {
-				await this.updateLevelRange({
-					id: levelRangeList[i]!.dataValues.id,
-					start_date: start_date_string,
-					end_date: end_date_string,
-				});
+				if (levelRangeList[i]!.start_date != start_date_string || levelRangeList[i]!.end_date != end_date_string) {
+					await this.updateLevelRange({
+						id: levelRangeList[i]!.id,
+						start_date: start_date_string,
+						end_date: end_date_string,
+					});
+				}
 			}
 		}
 	}

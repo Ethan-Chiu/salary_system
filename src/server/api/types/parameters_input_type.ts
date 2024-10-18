@@ -185,10 +185,10 @@ const SalaryIncomeTax = z.object({
 	dependent: z.number(),
 	tax_amount: z.number(),
 });
-export const createSalaryIncomeTaxAPI = SalaryIncomeTax;
-export const createSalaryIncomeTaxService = SalaryIncomeTax;
-export const updateSalaryIncomeTaxAPI = SalaryIncomeTax.partial().merge(Id);
-export const updateSalaryIncomeTaxService = SalaryIncomeTax.partial().merge(Id);
+export const createSalaryIncomeTaxAPI = SalaryIncomeTax.merge(DateAPI);
+export const createSalaryIncomeTaxService = SalaryIncomeTax.merge(DateService);
+export const updateSalaryIncomeTaxAPI = SalaryIncomeTax.merge(DateAPI).partial().merge(Id);
+export const updateSalaryIncomeTaxService = SalaryIncomeTax.merge(DateService).partial().merge(Id);
 export const initSalaryIncomeTaxAPI = SalaryIncomeTax.array();
 //MARK:trust
 const TrustMoney = z.object({

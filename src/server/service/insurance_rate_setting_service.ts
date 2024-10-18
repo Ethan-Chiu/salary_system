@@ -197,9 +197,12 @@ export class InsuranceRateSettingService {
 	}
 
 	async rescheduleInsuranceRateSetting(): Promise<void> {
-		const insuranceRateSettingList = await InsuranceRateSetting.findAll({
-			order: [["start_date", "ASC"]],
-		});
+		const insuranceRateSettingList = await InsuranceRateSetting.findAll(
+			{
+				where: { disabled: false },
+				order: [["start_date", "ASC"]],
+			}
+		);
 
 		for (let i = 0; i < insuranceRateSettingList.length - 1; i += 1) {
 			const end_date_string = get_date_string(
