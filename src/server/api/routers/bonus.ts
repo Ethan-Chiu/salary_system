@@ -195,7 +195,7 @@ export const bonusRouter = createTRPCRouter({
 					input.period_id,
 					input.bonus_type
 				);
-			return result;
+			return result?.map((e) => roundProperties(e, 2));
 		}),
 	getBonusSeniority: publicProcedure
 		.input(
@@ -213,7 +213,7 @@ export const bonusRouter = createTRPCRouter({
 					input.period_id,
 					input.bonus_type
 				);
-			return result;
+			return result?.map((e) => roundProperties(e, 2));
 		}),
 	getBonusDepartment: publicProcedure
 		.input(
@@ -231,7 +231,7 @@ export const bonusRouter = createTRPCRouter({
 					input.period_id,
 					input.bonus_type
 				);
-			return result;
+			return result?.map((e) => roundProperties(e, 2));
 		}),
 	getBonusPositionType: publicProcedure
 		.input(
@@ -249,7 +249,7 @@ export const bonusRouter = createTRPCRouter({
 					input.period_id,
 					input.bonus_type
 				);
-			return result;
+			return result?.map((e) => roundProperties(e, 2));
 		}),
 	getBonusPosition: publicProcedure
 		.input(
@@ -266,7 +266,7 @@ export const bonusRouter = createTRPCRouter({
 					input.period_id,
 					input.bonus_type
 				);
-			return result;
+			return result?.map((e) => roundProperties(e, 2));
 		}),
 
 	createBonusWorkType: publicProcedure
@@ -481,7 +481,9 @@ export const bonusRouter = createTRPCRouter({
 			z.object({
 				id: z.number(),
 				position: z.number(),
-				multiplier: z.number(),
+				position_multiplier: z.number(),
+				position_type: z.string(),
+				position_type_multiplier: z.number(),
 			})
 		)
 		.mutation(async ({ input }) => {

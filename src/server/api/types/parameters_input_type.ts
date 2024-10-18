@@ -255,7 +255,7 @@ export const updateHolidaysTypeInput = z
 	})
 	.partial();
 
-export const createHolidaysTypeAPI = HolidaysType.merge(DateAPI);
-export const createHolidaysTypeService = HolidaysType.merge(DateService);
-export const updateHolidaysTypeAPI = HolidaysType.merge(DateAPI).partial().merge(Id);
-export const updateHolidaysTypeService = HolidaysType.merge(DateService).partial().merge(Id);
+export const createHolidaysTypeAPI = HolidaysType;
+export const createHolidaysTypeService = HolidaysType;
+export const updateHolidaysTypeAPI = HolidaysType.partial().merge(Id);
+export const updateHolidaysTypeService = HolidaysType.partial().merge(Id);

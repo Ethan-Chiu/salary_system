@@ -12,7 +12,7 @@ import { EHRService } from "./ehr_service";
 
 @injectable()
 export class InsuranceRateSettingService {
-	constructor() {}
+	constructor() { }
 
 	async createInsuranceRateSetting({
 		min_wage_rate,
@@ -32,22 +32,25 @@ export class InsuranceRateSettingService {
 	>): Promise<InsuranceRateSetting> {
 		const current_date_string = get_date_string(new Date());
 		check_date(start_date, end_date, current_date_string);
-		const newData = await InsuranceRateSetting.create({
-			min_wage_rate: min_wage_rate,
-			l_i_accident_rate: l_i_accident_rate,
-			l_i_employment_pay_rate: l_i_employment_pay_rate,
-			l_i_occupational_injury_rate: l_i_occupational_injury_rate,
-			l_i_wage_replacement_rate: l_i_wage_replacement_rate,
-			h_i_standard_rate: h_i_standard_rate,
-			h_i_avg_dependents_count: h_i_avg_dependents_count,
-			v2_h_i_supp_pay_rate: v2_h_i_supp_pay_rate,
-			v2_h_i_deduction_tsx_thres: v2_h_i_deduction_tsx_thres,
-			v2_h_i_multiplier: v2_h_i_multiplier,
-			start_date: start_date ?? current_date_string,
-			end_date: end_date,
-			create_by: "system",
-			update_by: "system",
-		});
+		const newData = await InsuranceRateSetting.create(
+			{
+				min_wage_rate: min_wage_rate,
+				l_i_accident_rate: l_i_accident_rate,
+				l_i_employment_pay_rate: l_i_employment_pay_rate,
+				l_i_occupational_injury_rate: l_i_occupational_injury_rate,
+				l_i_wage_replacement_rate: l_i_wage_replacement_rate,
+				h_i_standard_rate: h_i_standard_rate,
+				h_i_avg_dependents_count: h_i_avg_dependents_count,
+				v2_h_i_supp_pay_rate: v2_h_i_supp_pay_rate,
+				v2_h_i_deduction_tsx_thres: v2_h_i_deduction_tsx_thres,
+				v2_h_i_multiplier: v2_h_i_multiplier,
+				start_date: start_date ?? current_date_string,
+				end_date: end_date,
+				disabled: false,
+				create_by: "system",
+				update_by: "system",
+			}
+		);
 		return newData;
 	}
 
@@ -57,19 +60,23 @@ export class InsuranceRateSettingService {
 		const ehr_service = container.resolve(EHRService);
 		const period = await ehr_service.getPeriodById(period_id);
 		const current_date_string = period.end_date;
-		const insuranceRateSettingList = await InsuranceRateSetting.findAll({
-			where: {
-				start_date: {
-					[Op.lte]: current_date_string,
+		const insuranceRateSettingList = await InsuranceRateSetting.findAll(
+			{
+				where: {
+					start_date: {
+						[Op.lte]: current_date_string,
+					},
+					end_date: {
+						[Op.or]: [
+							{ [Op.gte]: current_date_string },
+							{ [Op.eq]: null },
+						],
+					},
+					disabled: false,
 				},
-				end_date: {
-					[Op.or]: [
-						{ [Op.gte]: current_date_string },
-						{ [Op.eq]: null },
-					],
-				},
-			},
-		});
+				order: [["start_date", "DESC"]],
+			}
+		);
 		if (insuranceRateSettingList.length > 1) {
 			throw new BaseResponseError(
 				"more than one active InsuranceRateSetting"
@@ -85,7 +92,12 @@ export class InsuranceRateSettingService {
 	}
 
 	async getAllInsuranceRateSetting(): Promise<InsuranceRateSetting[]> {
-		const insuranceRateSettingList = await InsuranceRateSetting.findAll();
+		const insuranceRateSettingList = await InsuranceRateSetting.findAll(
+			{
+				where: { disabled: false },
+				order: [["start_date", "DESC"]],
+			}
+		);
 		return insuranceRateSettingList;
 	}
 
@@ -116,12 +128,14 @@ export class InsuranceRateSettingService {
 		start_date,
 		end_date,
 	}: z.infer<typeof updateInsuranceRateSettingService>): Promise<void> {
-		const insuranceSetting = await this.getInsuranceRateSettingById(id!);
+		const insuranceSetting = await this.getInsuranceRateSettingById(id);
 		if (insuranceSetting == null) {
 			throw new BaseResponseError("InsuranceRateSetting does not exist");
 		}
 
-		const affectedCount = await InsuranceRateSetting.update(
+		await this.deleteInsuranceRateSetting(id);
+
+		await this.createInsuranceRateSetting(
 			{
 				min_wage_rate: select_value(
 					min_wage_rate,
@@ -168,20 +182,16 @@ export class InsuranceRateSettingService {
 					insuranceSetting.start_date
 				),
 				end_date: select_value(end_date, insuranceSetting.end_date),
-				update_by: "system",
 			},
-			{ where: { id: id } }
 		);
-		if (affectedCount[0] == 0) {
-			throw new BaseResponseError("Update error");
-		}
 	}
 
 	async deleteInsuranceRateSetting(id: number): Promise<void> {
-		const destroyedRows = await InsuranceRateSetting.destroy({
-			where: { id: id },
-		});
-		if (destroyedRows != 1) {
+		const destroyedRows = await InsuranceRateSetting.update(
+			{ disabled: true },
+			{ where: { id: id } }
+		);
+		if (destroyedRows[0] == 0) {
 			throw new BaseResponseError("Delete error");
 		}
 	}
@@ -193,26 +203,29 @@ export class InsuranceRateSettingService {
 
 		for (let i = 0; i < insuranceRateSettingList.length - 1; i += 1) {
 			const end_date_string = get_date_string(
-				new Date(insuranceRateSettingList[i]!.dataValues.end_date!)
+				new Date(insuranceRateSettingList[i]!.end_date!)
 			);
 			const start_date = new Date(
-				insuranceRateSettingList[i + 1]!.dataValues.start_date
+				insuranceRateSettingList[i + 1]!.start_date
 			);
 			const new_end_date_string = get_date_string(
 				new Date(start_date.setDate(start_date.getDate() - 1))
 			);
 			if (end_date_string != new_end_date_string) {
 				await this.updateInsuranceRateSetting({
-					id: insuranceRateSettingList[i]!.dataValues.id,
+					id: insuranceRateSettingList[i]!.id,
 					end_date: new_end_date_string,
 				});
 			}
 		}
 
-		await this.updateInsuranceRateSetting({
-			id: insuranceRateSettingList[insuranceRateSettingList.length - 1]!
-				.dataValues.id,
-			end_date: null,
-		});
+		if (
+			insuranceRateSettingList[insuranceRateSettingList.length - 1]!.end_date != null
+		) {
+			await this.updateInsuranceRateSetting({
+				id: insuranceRateSettingList[insuranceRateSettingList.length - 1]!.id,
+				end_date: null,
+			});
+		}
 	}
 }

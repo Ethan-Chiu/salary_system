@@ -2,9 +2,7 @@ import { injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {
-	createBonusSeniorityService,
 	createBonusWorkTypeService,
-	updateBonusSeniorityService,
 	updateBonusWorkTypeService,
 } from "../api/types/parameters_input_type";
 import { BonusWorkType } from "../database/entity/SALARY/bonus_work_type";

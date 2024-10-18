@@ -10,7 +10,7 @@ import { BonusSetting } from "../database/entity/SALARY/bonus_setting";
 
 @injectable()
 export class BonusSettingService {
-	constructor() {}
+	constructor() { }
 
 	async createBonusSetting({
 		fixed_multiplier,
@@ -18,23 +18,26 @@ export class BonusSettingService {
 		base_on,
 		type,
 	}: z.infer<typeof createBonusSettingService>): Promise<BonusSetting> {
-		const newData = await BonusSetting.create({
-			fixed_multiplier: fixed_multiplier,
-			criterion_date: criterion_date,
-			base_on: base_on,
-			type: type,
-			create_by: "system",
-			update_by: "system",
-		});
+		const newData = await BonusSetting.create(
+			{
+				fixed_multiplier: fixed_multiplier,
+				criterion_date: criterion_date,
+				base_on: base_on,
+				type: type,
+				disabled: false,
+				create_by: "system",
+				update_by: "system",
+			}
+		);
 		return newData;
 	}
 
 	async getBonusSettingById(id: number): Promise<BonusSetting | null> {
-		const bonusSetting = await BonusSetting.findOne({
-			where: {
-				id: id,
-			},
-		});
+		const bonusSetting = await BonusSetting.findOne(
+			{
+				where: { id: id },
+			}
+		);
 
 		return bonusSetting;
 	}
@@ -51,7 +54,11 @@ export class BonusSettingService {
 	}
 
 	async getAllBonusSetting(): Promise<BonusSetting[]> {
-		const bonusSetting = await BonusSetting.findAll();
+		const bonusSetting = await BonusSetting.findAll(
+			{
+				where: { disabled: false },
+			}
+		);
 		return bonusSetting;
 	}
 
@@ -62,12 +69,14 @@ export class BonusSettingService {
 		base_on,
 		type,
 	}: z.infer<typeof updateBonusSettingService>): Promise<void> {
-		const bonus_setting = await this.getBonusSettingById(id!);
+		const bonus_setting = await this.getBonusSettingById(id);
 		if (bonus_setting == null) {
 			throw new BaseResponseError("BonusSetting does not exist");
 		}
 
-		const affectedCount = await BonusSetting.update(
+		await this.deleteBonusSetting(id);
+
+		await this.createBonusSetting(
 			{
 				fixed_multiplier: select_value(
 					fixed_multiplier,
@@ -79,20 +88,16 @@ export class BonusSettingService {
 				),
 				base_on: select_value(base_on, bonus_setting.base_on),
 				type: select_value(type, bonus_setting.type),
-				update_by: "system",
 			},
-			{ where: { id: id } }
 		);
-		if (affectedCount[0] == 0) {
-			throw new BaseResponseError("Update error");
-		}
 	}
 
 	async deleteBonusSetting(id: number): Promise<void> {
-		const destroyedRows = await BonusSetting.destroy({
-			where: { id: id },
-		});
-		if (destroyedRows != 1) {
+		const destroyedRows = await BonusSetting.update(
+			{ disabled: true },
+			{ where: { id: id } }
+		);
+		if (destroyedRows[0] == 0) {
 			throw new BaseResponseError("Delete error");
 		}
 	}

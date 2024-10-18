@@ -10,48 +10,59 @@ import { EmployeeAccount } from "../database/entity/SALARY/employee_account";
 
 @injectable()
 export class EmployeeAccountService {
-	constructor() {}
+	constructor() { }
 
 	async createEmployeeAccount({
 		emp_no,
 		bank_account,
 		ratio,
 	}: z.infer<typeof createEmployeeAccountService>): Promise<EmployeeAccount> {
-		const newData = await EmployeeAccount.create({
-			emp_no: emp_no,
-			bank_account: bank_account,
-			ratio: ratio,
-			create_by: "system",
-			update_by: "system",
-		});
+		const newData = await EmployeeAccount.create(
+			{
+				emp_no: emp_no,
+				bank_account: bank_account,
+				ratio: ratio,
+				disabled: false,
+				create_by: "system",
+				update_by: "system",
+			}
+		);
 		return newData;
 	}
 
 	async getEmployeeAccountById(id: number): Promise<EmployeeAccount | null> {
-		const employeeAccount = await EmployeeAccount.findOne({
-			where: {
-				id: id,
-			},
-		});
+		const employeeAccount = await EmployeeAccount.findOne(
+			{
+				where: { id: id },
+			}
+		);
 		return employeeAccount;
 	}
 
 	async getEmployeeAccountByEmpNo(emp_no: string): Promise<EmployeeAccount[] | null> {
-		const employeeAccountList = await EmployeeAccount.findAll({
-			where: {
-				emp_no: emp_no,
-			},
-		});
+		const employeeAccountList = await EmployeeAccount.findAll(
+			{
+				where: { emp_no: emp_no },
+			}
+		);
 		return employeeAccountList;
 	}
 
 	async getCurrentEmployeeAccount(): Promise<EmployeeAccount[]> {
-		const employeeAccount = await EmployeeAccount.findAll({});
+		const employeeAccount = await EmployeeAccount.findAll(
+			{
+				where: { disabled: false },
+			}
+		);
 		return employeeAccount;
 	}
 
 	async getAllEmployeeAccount(): Promise<EmployeeAccount[]> {
-		const employeeAccount = await EmployeeAccount.findAll();
+		const employeeAccount = await EmployeeAccount.findAll(
+			{
+				where: { disabled: false },
+			}
+		);
 		return employeeAccount;
 	}
 
@@ -61,11 +72,14 @@ export class EmployeeAccountService {
 		bank_account,
 		ratio,
 	}: z.infer<typeof updateEmployeeAccountService>): Promise<void> {
-		const employeeAccount = await this.getEmployeeAccountById(id!);
+		const employeeAccount = await this.getEmployeeAccountById(id);
 		if (employeeAccount == null) {
 			throw new BaseResponseError("Employee account does not exist");
 		}
-		const affectedCount = await EmployeeAccount.update(
+
+		await this.deleteEmployeeAcount(id);
+
+		await this.createEmployeeAccount(
 			{
 				emp_no: select_value(emp_no, employeeAccount.emp_no),
 				bank_account: select_value(
@@ -73,20 +87,16 @@ export class EmployeeAccountService {
 					employeeAccount.bank_account
 				),
 				ratio: select_value(ratio, employeeAccount.ratio),
-				update_by: "system",
 			},
-			{ where: { id: id } }
 		);
-		if (affectedCount[0] == 0) {
-			throw new BaseResponseError("Update error");
-		}
 	}
 
 	async deleteEmployeeAcount(id: number): Promise<void> {
-		const destroyedRows = await EmployeeAccount.destroy({
-			where: { id: id },
-		});
-		if (destroyedRows != 1) {
+		const destroyedRows = await EmployeeAccount.update(
+			{ disabled: true },
+			{ where: { id: id } }
+		);
+		if (destroyedRows[0] == 0) {
 			throw new BaseResponseError("Delete error");
 		}
 	}

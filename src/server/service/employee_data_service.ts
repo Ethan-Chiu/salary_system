@@ -14,7 +14,7 @@ export class EmployeeDataService {
 	/* constructor() {} */
 
 	async createEmployeeData({
-    period_id,
+		period_id,
 		emp_no,
 		emp_name,
 		position,
@@ -33,9 +33,9 @@ export class EmployeeDataService {
 		bank_account,
 		// accumulated_bonus,
 	}: // received_elderly_benefits,
-	z.infer<typeof createEmployeeDataService>): Promise<EmployeeData> {
+		z.infer<typeof createEmployeeDataService>): Promise<EmployeeData> {
 		const newData = await EmployeeData.create({
-      period_id: period_id,
+			period_id: period_id,
 			emp_no: emp_no,
 			emp_name: emp_name,
 			position: position,
@@ -110,7 +110,7 @@ export class EmployeeDataService {
 		bank_account: bank_account,
 		// accumulated_bonus: accumulated_bonus,
 	}: // received_elderly_benefits: received_elderly_benefits,
-	z.infer<typeof updateEmployeeDataService>): Promise<void> {
+		z.infer<typeof updateEmployeeDataService>): Promise<void> {
 		const employeeData = await this.getEmployeeDataById(id!);
 		if (employeeData == null) {
 			throw new BaseResponseError("Employee account does not exist");
@@ -189,7 +189,7 @@ export class EmployeeDataService {
 		license_id: license_id,
 		bank_account: bank_account,
 	}: // received_elderly_benefits: received_elderly_benefits,
-	z.infer<typeof updateEmployeeDataByEmpNoService>): Promise<void> {
+		z.infer<typeof updateEmployeeDataByEmpNoService>): Promise<void> {
 		const employeeData = await this.getEmployeeDataByEmpNo(emp_no!);
 		if (employeeData == null) {
 			throw new BaseResponseError("Employee account does not exist");
