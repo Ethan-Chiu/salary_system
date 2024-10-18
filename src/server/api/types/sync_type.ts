@@ -24,6 +24,26 @@ export class SyncData {
 	department: DataComparison<string>;
 	english_name: DataComparison;
 	comparisons: Array<DataComparison>;
+
+  constructor({
+    emp_no,
+    name,
+    department,
+    english_name,
+    comparisons
+  }: {
+    emp_no: DataComparison<string>;
+    name: DataComparison<string>;
+    department: DataComparison<string>;
+    english_name: DataComparison;
+    comparisons: Array<DataComparison>;
+  }) {
+    this.emp_no = emp_no;
+    this.name = name;
+    this.department = department;
+    this.english_name = english_name;
+    this.comparisons = comparisons;
+  }
 }
 
 export interface PaidEmployee {
