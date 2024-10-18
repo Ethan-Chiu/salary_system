@@ -28,9 +28,7 @@ export function getSchema(table: TableEnum) {
 		// case "TablePerformanceLevel":
 		// 	return performanceLevelSchema;
 
-		
-		case "TableBonusPositionAndPositionType":
-			return bonusPositionAndPositionTypeSchema;
+	
 
 
 		default:

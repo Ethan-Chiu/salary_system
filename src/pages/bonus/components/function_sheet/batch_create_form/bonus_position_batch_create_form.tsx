@@ -39,6 +39,16 @@ import { Separator } from "~/components/ui/separator";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 import periodContext from "~/components/context/period_context";
 
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
+} from "~/components/ui/select";
+
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
 	fieldConfig?: FieldConfig<z.infer<SchemaType>>;
@@ -59,7 +69,7 @@ export function BonusPositionBatchCreateForm<
 	closeSheet,
 }: ParameterFormProps<SchemaType>) {
 	const functions = useContext(bonusToolbarFunctionsContext);
-	const period = useContext(periodContext)
+	const period = useContext(periodContext);
 
 	const queryFunction = functions.queryFunction!;
 	const updateFunction = functions.updateFunction!;
@@ -114,7 +124,9 @@ export function BonusPositionBatchCreateForm<
 		bonus_position: z.array(
 			z.object({
 				position: z.coerce.number(),
-				multiplier: z.coerce.number(),
+				position_multiplier: z.coerce.number(),
+				position_type: z.enum(["a", "b"]),
+				position_type_multiplier: z.coerce.number(),
 			})
 		),
 	});
@@ -122,7 +134,7 @@ export function BonusPositionBatchCreateForm<
 	type FormValues = z.infer<typeof schema>;
 
 	function DynamicForm() {
-		const { control, handleSubmit, register } = useForm<FormValues>({
+		const { control, handleSubmit, register, setValue } = useForm<FormValues>({
 			resolver: zodResolver(schema),
 			defaultValues: {
 				bonus_position: [], // Start with an empty array
@@ -137,9 +149,11 @@ export function BonusPositionBatchCreateForm<
 		const onSubmit = async (data: FormValues) => {
 			data.bonus_position.map(async (x) => {
 				console.log(x);
-				await createFunction.mutateAsync(
-					{...x, bonus_type: bonusType, period_id: period.selectedPeriod?.period_id},
-				);
+				await createFunction.mutateAsync({
+					...x,
+					bonus_type: bonusType,
+					period_id: period.selectedPeriod?.period_id,
+				});
 			});
 			closeSheet();
 		};
@@ -159,7 +173,7 @@ export function BonusPositionBatchCreateForm<
 									key={field.id}
 								>
 									<div className="flex w-full flex-row items-center justify-between gap-4">
-										{/* work_type Input */}
+										{/* position Input */}
 										<Label className="min-w-[75px] text-center">
 											{t("table.position")}{" "}
 										</Label>
@@ -170,18 +184,49 @@ export function BonusPositionBatchCreateForm<
 												`bonus_position.${index}.position` as const
 											)}
 										/>
-										{/* multiplier Input */}
+										{/* position_multiplier Input */}
 										<Label className="min-w-[75px] text-center">
-											{t("table.multiplier")}{" "}
+											{t("table.position_multiplier")}{" "}
 										</Label>
 										<Input
 											className="flex-grow"
 											type="number"
 											{...register(
-												`bonus_position.${index}.multiplier` as const
+												`bonus_position.${index}.position_multiplier` as const
 											)}
 										/>
-
+										{/* position_type Input */}
+										<Label className="min-w-[75px] text-center">
+											{t("table.position_type")}{" "}
+										</Label>
+										<Select onValueChange={(v: any) => setValue(`bonus_position.${index}.position_type`, v)}>
+											<SelectTrigger className="flex grow">
+												<SelectValue placeholder="" defaultValue={"a"}/>
+											</SelectTrigger>
+											<SelectContent>
+												<SelectGroup>
+													<SelectItem value="a">
+														a
+													</SelectItem>
+													<SelectItem value="b">
+														b
+													</SelectItem>
+												</SelectGroup>
+											</SelectContent>
+										</Select>
+										{/* position_type_multiplier Input */}
+										<Label className="min-w-[75px] text-center">
+											{t(
+												"table.position_type_multiplier"
+											)}{" "}
+										</Label>
+										<Input
+											className="flex-grow"
+											type="number"
+											{...register(
+												`bonus_position.${index}.position_type_multiplier` as const
+											)}
+										/>
 										<button
 											type="button"
 											onClick={() => remove(index)}
@@ -197,7 +242,14 @@ export function BonusPositionBatchCreateForm<
 								<Button
 									type={"button"}
 									variant={"ghost"}
-									onClick={() => append({ position: 0, multiplier: 0 })}
+									onClick={() =>
+										append({
+											position: 0,
+											position_multiplier: 0,
+											position_type: "a",
+											position_type_multiplier: 0,
+										})
+									}
 								>
 									<PlusCircle />
 								</Button>

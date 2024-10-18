@@ -41,7 +41,7 @@ export const bonus_position_columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="text-center font-medium">{row.getValue("position")}</div>
+			<div className="text-center font-medium">{row.getValue("positionAndPositionType")}</div>
 		),
 	}),
 	columnHelper.accessor("position_multiplier", {
