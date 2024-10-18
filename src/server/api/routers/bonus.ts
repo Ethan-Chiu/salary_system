@@ -15,12 +15,11 @@ import {
 	batchCreateBonusPositionTypeAPI,
 	batchCreateBonusSeniorityAPI,
 	batchCreateBonusWorkTypeAPI,
-	createEmployeeBonusAPI,
-	updateEmployeeBonusAPI,
 } from "../types/parameters_input_type";
 import { WorkTypeEnum } from "../types/work_type_enum";
 import { roundProperties } from "~/server/database/mapper/helper_function";
 import { EmployeeBonusMapper } from "~/server/database/mapper/employee_bonus_mapper";
+import { createEmployeeBonusAPI, updateEmployeeBonusAPI } from "../types/employee_bonus_type";
 
 // 改Enum
 export const bonusRouter = createTRPCRouter({
@@ -53,7 +52,7 @@ export const bonusRouter = createTRPCRouter({
 				input.period_id,
 				input.bonus_type
 			)
-			
+
 			const employeeBonusFE = await Promise.all(bonusData.map(async e => await bonusMapper.getEmployeeBonusFE(e)));
 
 			return employeeBonusFE // Not finished yet
@@ -115,23 +114,28 @@ export const bonusRouter = createTRPCRouter({
 		.input(createEmployeeBonusAPI)
 		.mutation(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
-			const result = await empBonusService.createEmployeeBonus(input);
+			const empBonusMapper = container.resolve(EmployeeBonusMapper);
+			const empBonus = await empBonusMapper.getEmployeeBonus(input);
+			const result = await empBonusService.createEmployeeBonus(empBonus);
 			return result;
 		}),
 	updateEmployeeBonus: publicProcedure
 		.input(updateEmployeeBonusAPI)
 		.mutation(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
-			const result = await empBonusService.updateEmployeeBonus(input);
+			const empBonusMapper = container.resolve(EmployeeBonusMapper);
+			const empBonus = await empBonusMapper.getEmployeeBonusNullable(input);
+			const result = await empBonusService.updateEmployeeBonus(empBonus);
 			return result;
 		}),
 	updateFromExcel: publicProcedure
 		.input(updateEmployeeBonusAPI.array())
 		.mutation(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
+			const empBonusMapper = container.resolve(EmployeeBonusMapper);
 			const promises = input
 				.map(
-					async (e) => await empBonusService.updateFromExcel(false, e)
+					async (e) => await empBonusService.updateFromExcel(false, await empBonusMapper.getEmployeeBonusNullable(e))
 				)
 			const err_emp_no_list = (await Promise.all(promises)).filter((e) => e != null);
 			return err_emp_no_list;
@@ -140,9 +144,10 @@ export const bonusRouter = createTRPCRouter({
 		.input(updateEmployeeBonusAPI.array())
 		.mutation(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
+			const empBonusMapper = container.resolve(EmployeeBonusMapper);
 			const err_emp_no_list = input
 				.map(
-					async (e) => await empBonusService.updateFromExcel(true, e)
+					async (e) => await empBonusService.updateFromExcel(true, await empBonusMapper.getEmployeeBonusNullable(e))
 				)
 				.filter((e) => e != null);
 			return err_emp_no_list;
@@ -340,7 +345,9 @@ export const bonusRouter = createTRPCRouter({
 				period_id: z.number(),
 				bonus_type: BonusTypeEnum,
 				position: z.number(),
-				multiplier: z.number(),
+				position_multiplier: z.number(),
+				position_type: z.string(),
+				position_type_multiplier: z.number(),
 			})
 		)
 		.mutation(async ({ input }) => {

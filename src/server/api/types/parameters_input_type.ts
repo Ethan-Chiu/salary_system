@@ -111,7 +111,7 @@ const BonusPosition = z.object({
 	position: z.number(),
 	position_multiplier: z.number(),
 	position_type: z.string(),
-	position_type_multipier: z.number(),
+	position_type_multiplier: z.number(),
 });
 
 export const createBonusPositionAPI = BonusPosition;
@@ -214,29 +214,29 @@ export const createEmployeeAccountService = EmployeeAccount;
 export const updateEmployeeAccountAPI = EmployeeAccount.partial().merge(Id);
 export const updateEmployeeAccountService = EmployeeAccount.partial().merge(Id);
 
-const EmployeeBonus = z.object({
-	period_id: z.number(),
-	bonus_type: BonusTypeEnum,
-	emp_no: z.string(),
-	special_multiplier_enc: z.string(),
-	multiplier_enc: z.string(),
-	fixed_amount_enc: z.string(),
-	bud_effective_salary_enc: z.string(),
-	bud_amount_enc: z.string(),
-	sup_performance_level_enc: z.string(),
-	sup_effective_salary_enc: z.string(),
-	sup_amount_enc: z.string(),
-	app_performance_level_enc: z.string(),
-	app_effective_salary_enc: z.string(),
-	app_amount_enc: z.string(),
-});
+// const EmployeeBonus = z.object({
+// 	period_id: z.number(),
+// 	bonus_type: BonusTypeEnum,
+// 	emp_no: z.string(),
+// 	special_multiplier_enc: z.string(),
+// 	multiplier_enc: z.string(),
+// 	fixed_amount_enc: z.string(),
+// 	bud_effective_salary_enc: z.string(),
+// 	bud_amount_enc: z.string(),
+// 	sup_performance_level_enc: z.string(),
+// 	sup_effective_salary_enc: z.string(),
+// 	sup_amount_enc: z.string(),
+// 	app_performance_level_enc: z.string(),
+// 	app_effective_salary_enc: z.string(),
+// 	app_amount_enc: z.string(),
+// });
 
-export const createEmployeeBonusAPI = EmployeeBonus;
-export const createEmployeeBonusService = EmployeeBonus;
-export const updateEmployeeBonusAPI = EmployeeBonus.partial().merge(Id);
-export const updateEmployeeBonusByEmpNoAPI = EmployeeBonus.partial();
-export const updateEmployeeBonusService = EmployeeBonus.partial().merge(Id);
-export const updateEmployeeBonusByEmpNoService = EmployeeBonus.partial();
+// export const createEmployeeBonusAPI = EmployeeBonus;
+// export const createEmployeeBonusService = EmployeeBonus;
+// export const updateEmployeeBonusAPI = EmployeeBonus.partial().merge(Id);
+// export const updateEmployeeBonusByEmpNoAPI = EmployeeBonus.partial();
+// export const updateEmployeeBonusService = EmployeeBonus.partial().merge(Id);
+// export const updateEmployeeBonusByEmpNoService = EmployeeBonus.partial();
 
 // MARK: Holidays Type
 const HolidaysType = z.object({

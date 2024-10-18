@@ -19,7 +19,7 @@ export class BonusPositionService {
 		position,
 		position_multiplier,
 		position_type,
-		position_type_multipier
+		position_type_multiplier
 	}: z.infer<typeof createBonusPositionService>): Promise<BonusPosition> {
 		const newData = await BonusPosition.create(
 			{
@@ -28,7 +28,7 @@ export class BonusPositionService {
 				position: position,
 				position_multiplier: position_multiplier,
 				position_type: position_type,
-				position_type_multiplier: position_type_multipier,
+				position_type_multiplier: position_type_multiplier,
 				disabled: false,
 				create_by: "system",
 				update_by: "system",
@@ -46,7 +46,7 @@ export class BonusPositionService {
 				position: data.position,
 				position_multiplier: data.position_multiplier,
 				position_type: data.position_type,
-				position_type_multiplier: data.position_type_multipier,
+				position_type_multiplier: data.position_type_multiplier,
 				disabled: false,
 				create_by: "system",
 				update_by: "system",
@@ -122,7 +122,7 @@ export class BonusPositionService {
 		position,
 		position_multiplier,
 		position_type,
-		position_type_multipier,
+		position_type_multiplier,
 	}: z.infer<typeof updateBonusPositionService>): Promise<void> {
 		const bonus_position = await this.getBonusPositionById(id);
 		if (bonus_position == null) {
@@ -138,7 +138,7 @@ export class BonusPositionService {
 				position: select_value(position, bonus_position.position),
 				position_multiplier: select_value(position_multiplier, bonus_position.position_multiplier),
 				position_type: select_value(position_type, bonus_position.position_type),
-				position_type_multipier: select_value(position_type_multipier, bonus_position.position_type_multiplier),
+				position_type_multiplier: select_value(position_type_multiplier, bonus_position.position_type_multiplier),
 			}
 		);
 	}
