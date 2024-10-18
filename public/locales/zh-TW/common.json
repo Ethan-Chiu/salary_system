@@ -8,6 +8,8 @@
     "start_date": "開始時間",
     "end_date": "截止時間",
     "multiplier": "倍率",
+    "position_multiplier": "職等倍率",
+    "position_type_multiplier": "職級倍率",
     "performance_level": "績效等級",
     "position": "職等",
     "position_type": "職級",
