@@ -4,13 +4,14 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
-import { type BonusPosition } from "~/server/database/entity/SALARY/bonus_position";
+import { type BonusPositionType } from "~/server/database/entity/SALARY/bonus_position_type";
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../pre_calculate_bonus/bonus_filter";
 import { useTranslation } from "react-i18next";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
+
 export type RowItem = {
-	positionAndPositionType: string;
+	position_and_position_type: string;
 	position_multiplier: number;
 	position_type_multiplier: number;
 };
@@ -18,8 +19,8 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-export const bonus_position_columns = [
-	columnHelper.accessor("positionAndPositionType", {
+export const bonus_position_and_position_type_columns = [
+	columnHelper.accessor("position_and_position_type", {
 		header: ({ column }) => {
 			const { t } = useTranslation(["common"]);
 			return (
@@ -33,7 +34,7 @@ export const bonus_position_columns = [
 								)
 							}
 						>
-							{t("table.position") + t("table.position_type")}
+							{t("table.position_type")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -41,7 +42,7 @@ export const bonus_position_columns = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="text-center font-medium">{row.getValue("position")}</div>
+			<div className="capitalize">{row.getValue("position_type")}</div>
 		),
 	}),
 	columnHelper.accessor("position_multiplier", {
@@ -58,7 +59,7 @@ export const bonus_position_columns = [
 								)
 							}
 						>
-							{t("table.position_multiplier")}
+							{t("table.multiplier")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -87,7 +88,7 @@ export const bonus_position_columns = [
 								)
 							}
 						>
-							{t("table.position_type_multiplier")}
+							{t("table.multiplier")}
 							<ArrowUpDown className="ml-2 h-4 w-4" />
 						</Button>
 					</div>
@@ -104,30 +105,32 @@ export const bonus_position_columns = [
 	}),
 ];
 
-export function bonusPositionMapper(
-	bonusPositionData: BonusPosition[]
+export function bonusPositionTypeMapper(
+	bonusPositionTypeData: BonusPositionType[]
 ): RowItem[] {
-	return bonusPositionData.map((d) => {
+	return bonusPositionTypeData.map((d) => {
 		return {
-			positionAndPositionType: d.position+d.position_type,
-			position_multiplier: d.position_multiplier,
-			position_type_multiplier: d.position_type_multiplier
+			position_type: d.position_type,
+			multiplier: d.multiplier,
 		};
 	});
 }
 
-interface BonusPositionTableProps extends TableComponentProps {
+interface BonusPositionAndPositionTypeTableProps extends TableComponentProps {
 	period_id: number;
 	bonus_type: BonusTypeEnumType;
 	globalFilter?: string;
 	viewOnly?: boolean;
 }
 
-export function BonusPositionTable({ period_id, bonus_type, viewOnly }: BonusPositionTableProps) {
+export function BonusPositionAndPositionTypeTable({
+	period_id,
+	bonus_type,
+	viewOnly,
+}: BonusPositionAndPositionTypeTableProps) {
 	const { isLoading, isError, data, error } =
-		api.bonus.getBonusPosition.useQuery({ period_id, bonus_type });
-	const filterKey: RowItemKey = "positionAndPositionType";
-
+		api.bonus.getBonusPositionType.useQuery({ period_id, bonus_type });
+	const filterKey: RowItemKey = "position_and_position_type";
 
 	if (isLoading) {
 		return (
@@ -145,15 +148,15 @@ export function BonusPositionTable({ period_id, bonus_type, viewOnly }: BonusPos
 		<>
 			{!viewOnly ? (
 				<DataTableWithFunctions
-					columns={bonus_position_columns}
-					data={bonusPositionMapper(data!)}
+					columns={bonus_position_and_position_type_columns}
+					data={bonusPositionTypeMapper(data!)}
 					bonusType={bonus_type}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
-					columns={bonus_position_columns}
-					data={bonusPositionMapper(data!)}
+					columns={bonus_position_and_position_type_columns}
+					data={bonusPositionTypeMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
 			)}
