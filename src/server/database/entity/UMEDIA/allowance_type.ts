@@ -15,31 +15,30 @@ const dbAllowanceType = z.object({
 });
 
 export class AllowanceType {
-	// id can be undefined during creation when using `autoIncrement`
-	declare id?: number;
-	declare name?: string;
-	declare type?: number; //class
-	declare other_tax?: number;
-	declare other_add?: number;
-	declare rule?: number;
-	declare field_order?: number;
-	declare hiddle?: number;
-	declare memo?: string;
-	declare update_by?: string;
-	declare update_date?: Date;
+	id: number;
+	name: string;
+	type: number; //class
+	other_tax: number;
+	other_add: number;
+	rule: number;
+	field_order: number;
+	hiddle: number;
+	memo: string;
+	update_by: string;
+	update_date: Date;
 
 	constructor(
-		id?: number,
-		name?: string,
-		type?: number,
-		other_tax?: number,
-		other_add?: number,
-		rule?: number,
-		field_order?: number,
-		hiddle?: number,
-		memo?: string,
-		update_by?: string,
-		update_date?: Date
+		id: number,
+		name: string,
+		type: number,
+		other_tax: number,
+		other_add: number,
+		rule: number,
+		field_order: number,
+		hiddle: number,
+		memo: string,
+		update_by: string,
+		update_date: Date
 	) {
 		this.id = id;
 		this.name = name;
@@ -59,21 +58,22 @@ export class AllowanceType {
 
 		if (!result.success) {
 			throw new Error(result.error.message);
-		} else {
-			const data = result.data;
-			return new AllowanceType(
-				data.ID,
-				data.NAME,
-				data.TYPE,
-				data.OTHER_TAX,
-				data.OTHER_ADD,
-				data.RULE,
-				data.FIELD_ORDER,
-				data.HIDDE,
-				data.MEMO,
-				data.UPDATE_BY,
-				data.UPDATE_DATE
-			);
 		}
+
+		const data = result.data;
+
+		return new AllowanceType(
+			data.ID,
+			data.NAME,
+			data.TYPE,
+			data.OTHER_TAX,
+			data.OTHER_ADD,
+			data.RULE,
+			data.FIELD_ORDER,
+			data.HIDDE,
+			data.MEMO,
+			data.UPDATE_BY,
+			data.UPDATE_DATE
+		);
 	}
 }

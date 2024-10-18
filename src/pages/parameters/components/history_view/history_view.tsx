@@ -18,6 +18,7 @@ import { is_date_available } from "~/server/service/helper_function";
 import { Badge } from "~/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import { type HistoryQueryFunctionType } from "~/components/data_table/history_data_type";
+import periodContext from "~/components/context/period_context";
 
 export default function HistoryView() {
 	const { selectedTableType } = useContext(dataTableContext);
@@ -38,6 +39,8 @@ function CompHistoryView() {
 	const queryFunction = queryFunctions.queryFunction! as HistoryQueryFunctionType;
 
 	const { isLoading, isError, data, error } = queryFunction();
+
+	const { selectedPeriod } = useContext(periodContext);
 
 	const [selectedId, setSelectedId] = useState<number>(0);
 	const filterKey = "name";
@@ -82,6 +85,7 @@ function CompHistoryView() {
 									" relative m-2 flex flex-col rounded-md border p-1 hover:bg-muted",
 									e.id === selectedId && "bg-muted",
 									is_date_available(
+                    selectedPeriod, 
 										e.start_date,
 										e.end_date
 									) && "mb-3 border-blue-500"

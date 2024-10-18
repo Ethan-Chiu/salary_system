@@ -1,25 +1,49 @@
-import { WorkTypeEnumType } from "~/server/api/types/work_type_enum";
+import { z } from "zod";
+import {
+	WorkTypeEnumType,
+	WorkTypeEnum,
+} from "~/server/api/types/work_type_enum";
 import { get_date_string } from "~/server/service/helper_function";
+
+const dbEmp = z.object({
+	CHANGE_FLAG: z.string(),
+	EMP_NO: z.string(),
+	EMP_NAME: z.string(),
+	POSITION: z.number(),
+	POSITION_TYPE: z.string(),
+	GINSURANCE_TYPE: z.string(),
+	U_DEP: z.string(),
+	WORK_TYPE: WorkTypeEnum,
+	WORK_STATUS: z.string(),
+	ACCESSIBLE: z.string(),
+	SEX_TYPE: z.string(),
+	DEPENDENTS: z.number(),
+	HEALTHCARE: z.number(),
+	REGISTRATION_DATE: z.date(),
+	QUIT_DATE: z.date(),
+	LICENS_ID: z.string(),
+	NBANKNUMBER: z.string(),
+});
 
 export class Emp {
 	// id can be undefined during creation when using `autoIncrement`
-	declare change_flag: string;
-	declare emp_no: string;
-	declare emp_name: string;
-	declare position: number;
-	declare position_type: string;
-	declare group_insurance_type: string;
-	declare department: string;
-	declare work_type: WorkTypeEnumType;
-	declare work_status: string;
-	declare disabilty_level: string | null;
-	declare sex_type: string;
-	declare dependents: number | null;
-	declare healthcare_dependents: number | null; //健保眷口數
-	declare registration_date: string;
-	declare quit_date: string | null;
-	declare license_id: string | null;
-	declare bank_account: string | null;
+	change_flag: string;
+	emp_no: string;
+	emp_name: string;
+	position: number;
+	position_type: string;
+	group_insurance_type: string;
+	department: string;
+	work_type: WorkTypeEnumType;
+	work_status: string;
+	disabilty_level: string | null;
+	sex_type: string;
+	dependents: number | null;
+	healthcare_dependents: number | null; //健保眷口數
+	registration_date: string;
+	quit_date: string | null;
+	license_id: string | null;
+	bank_account: string | null;
 
 	constructor(
 		change_flag: string,
@@ -59,52 +83,41 @@ export class Emp {
 		this.bank_account = bank_account;
 	}
 
-	static fromDB(data: any): Emp {
-		const {
-			CHANGE_FLAG,
-			EMP_NO,
-			EMP_NAME,
-			POSITION,
-			POSITION_TYPE,
-			GINSURANCE_TYPE,
-			U_DEP,
-			WORK_TYPE,
-			WORK_STATUS,
-			ACCESSIBLE,
-			SEX_TYPE,
-			DEPENDENTS,
-			HEALTHCARE,
-			REGISTRATION_DATE,
-			QUIT_DATE,
-			LICENS_ID,
-			NBANKNUMBER,
-		} = data;
+	static fromDB(db_data: any): Emp {
+		const result = dbEmp.safeParse(db_data);
+
+		if (!result.success) {
+			throw new Error(result.error.message);
+		}
+
+		const data = result.data;
 
 		// Format the date string from yy-mm-ddThh:mm:ss to yyyy-mm-dd
-		const FORMAT_REGISTRATION_DATE =
-			get_date_string(REGISTRATION_DATE) ;
-		const FORMAT_QUIT_DATE = QUIT_DATE
-			? get_date_string(QUIT_DATE)
+		const FORMAT_REGISTRATION_DATE = get_date_string(
+			data.REGISTRATION_DATE
+		);
+		const FORMAT_QUIT_DATE = data.QUIT_DATE
+			? get_date_string(data.QUIT_DATE)
 			: null;
 
 		return new Emp(
-			CHANGE_FLAG,
-			EMP_NO,
-			EMP_NAME,
-			POSITION,
-			POSITION_TYPE,
-			GINSURANCE_TYPE,
-			U_DEP,
-			WORK_TYPE,
-			WORK_STATUS,
-			ACCESSIBLE,
-			SEX_TYPE,
-			DEPENDENTS,
-			HEALTHCARE,
+			data.CHANGE_FLAG,
+			data.EMP_NO,
+			data.EMP_NAME,
+			data.POSITION,
+			data.POSITION_TYPE,
+			data.GINSURANCE_TYPE,
+			data.U_DEP,
+			data.WORK_TYPE,
+			data.WORK_STATUS,
+			data.ACCESSIBLE,
+			data.SEX_TYPE,
+			data.DEPENDENTS,
+			data.HEALTHCARE,
 			FORMAT_REGISTRATION_DATE,
 			FORMAT_QUIT_DATE,
-			LICENS_ID,
-			NBANKNUMBER
+			data.LICENS_ID,
+			data.NBANKNUMBER
 		);
 	}
 }

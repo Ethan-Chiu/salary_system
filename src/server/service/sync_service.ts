@@ -140,24 +140,7 @@ export class SyncService {
 		ehrEmp: Exact<T, EmployeeData>,
 		salaryEmp?: Exact<T, EmployeeData>
 	): SyncData {
-		const syncData: SyncData = new SyncData();
-
-		syncData.emp_no = this.dataComparison(
-			"emp_no",
-			ehrEmp.emp_no,
-			salaryEmp?.emp_no
-		);
-		syncData.name = this.dataComparison(
-			"emp_name",
-			ehrEmp.emp_name,
-			salaryEmp?.emp_name
-		);
-		syncData.department = this.dataComparison(
-			"department",
-			ehrEmp.department,
-			salaryEmp?.department
-		);
-		// TODO: change this
+    		// TODO: change this
 		// syncData.english_name = this.dataComparison("english_name", ehrEmp.english_name, salaryEmp?.english_name);
 		const pseudo_english_name: DataComparison = {
 			key: "english_name",
@@ -165,7 +148,26 @@ export class SyncService {
 			ehr_value: "Howard",
 			is_different: false,
 		};
-		syncData.english_name = pseudo_english_name;
+
+		const syncData: SyncData = new SyncData({
+			emp_no: this.dataComparison(
+				"emp_no",
+				ehrEmp.emp_no,
+				salaryEmp?.emp_no
+			),
+			name: this.dataComparison(
+				"emp_name",
+				ehrEmp.emp_name,
+				salaryEmp?.emp_name
+			),
+			department: this.dataComparison(
+				"department",
+				ehrEmp.department,
+				salaryEmp?.department
+			),
+			english_name: pseudo_english_name,
+			comparisons: [],
+		});
 
 		syncData.comparisons = [];
 		for (const key in ehrEmp.dataValues) {
@@ -415,8 +417,8 @@ export class SyncService {
 		// Update fields
 		const updatedDatas: EmployeeData[] = [];
 		for (const changeEmp of change_emp_list) {
-      // TODO: the data type is incorrect, lacking type check (period_id is missing)
-      // TODO: append period_id 
+			// TODO: the data type is incorrect, lacking type check (period_id is missing)
+			// TODO: append period_id
 			const ehr_emp_data: EmployeeData = this.empToEmployee(
 				ehrDict.get(changeEmp.emp_no)!
 			);

@@ -1,23 +1,28 @@
-export class BonusType {
-	// id can be undefined during creation when using `autoIncrement`
-	declare id?: number;
-	declare name?: string;
-	constructor(
-        id?: number,
-        name?: string
-	) {
-        this.id = id
-        this.name = name
-	}
-	static fromDB(data: any): BonusType {
-		const {
-           ID,
-           NAME
-		} = data;
+import { z } from "zod";
 
-		return new BonusType(
-			ID,
-            NAME
-		);
+const dbBonusType = z.object({
+	ID: z.number(),
+	NAME: z.string(),
+});
+
+export class BonusType {
+	id: number;
+	name: string;
+
+	constructor(id: number, name: string) {
+		this.id = id;
+		this.name = name;
+	}
+
+	static fromDB(db_data: any): BonusType {
+		const result = dbBonusType.safeParse(db_data);
+
+		if (!result.success) {
+			throw new Error(result.error.message);
+		}
+
+		const data = result.data;
+
+		return new BonusType(data.ID, data.NAME);
 	}
 }

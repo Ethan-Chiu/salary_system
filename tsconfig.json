@@ -19,7 +19,7 @@
 		"noUncheckedIndexedAccess": true,
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
-		"strictPropertyInitialization": false,
+		"strictPropertyInitialization": true,
 		"baseUrl": ".",
 		"paths": {
 			"~/*": ["./src/*"]
