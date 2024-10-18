@@ -272,7 +272,8 @@
     "overtime": "加班",
     "other": "其他",
     "payset": "工作天數",
-    "salaryIncomeTax": "薪資所得稅"
+    "salaryIncomeTax": "薪資所得稅",
+    "bonusPositionAndPositionType": "獎金職等與職級"
   },
   "button": {
     "next_step": "下一步",

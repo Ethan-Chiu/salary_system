@@ -19,7 +19,7 @@ export class BonusPosition extends Model<
 	declare position: number;
 	declare position_multiplier: number;
 	declare position_type: string;
-	declare position_type_mutiplier: number;
+	declare position_type_multiplier: number;
 	declare disabled: boolean;
 
 	// timestamps!
@@ -62,7 +62,7 @@ export function initBonusPosition(sequelize: Sequelize) {
 				unique: false,
 				allowNull: false,
 			},
-			position_type_mutiplier: {
+			position_type_multiplier: {
 				type: DataTypes.FLOAT,
 				unique: false,
 				allowNull: false,

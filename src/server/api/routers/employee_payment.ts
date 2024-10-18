@@ -77,7 +77,7 @@ export const employeePaymentRouter = createTRPCRouter({
 				EmployeePaymentService
 			);
 			await employeePaymentService.autoCalculateEmployeePayment(
-				input.period_id,
+				// input.period_id,
 				input.emp_no_list,
 				get_date_string(input.start_date)
 			);

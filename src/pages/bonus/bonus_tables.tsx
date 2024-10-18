@@ -10,7 +10,7 @@ export const BonusTableEnumValues = [
 	"TableBonusWorkType",
 	"TableBonusDepartment",
 	"TableBonusPosition",
-	"TableBonusPositionType",
+	// "TableBonusPositionType",
 	"TableBonusSeniority",
 	// "TablePerformanceLevel",
 ] as const;
