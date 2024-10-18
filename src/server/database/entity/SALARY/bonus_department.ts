@@ -15,9 +15,10 @@ export class BonusDepartment extends Model<
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
 	declare period_id: number;
-    declare bonus_type: BonusTypeEnumType;
+	declare bonus_type: BonusTypeEnumType;
 	declare department: string;
 	declare multiplier: number;
+	declare disabled: boolean;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -52,6 +53,10 @@ export function initBonusDepartment(sequelize: Sequelize) {
 			multiplier: {
 				type: DataTypes.FLOAT,
 				unique: false,
+				allowNull: false,
+			},
+			disabled: {
+				type: DataTypes.BOOLEAN,
 				allowNull: false,
 			},
 			create_date: {

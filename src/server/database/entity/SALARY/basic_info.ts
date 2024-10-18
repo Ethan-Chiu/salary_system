@@ -15,6 +15,7 @@ export class BasicInfo extends Model<
 	declare id: CreationOptional<number>;
 	declare issue_date: Date;
 	declare announcement: string;
+	declare disabled: boolean;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -41,6 +42,10 @@ export function initBasicInfo(sequelize: Sequelize) {
 				type: new DataTypes.STRING(512),
 				unique: false,
 				allowNull: true,
+			},
+			disabled: {
+				type: DataTypes.BOOLEAN,
+				allowNull: false,
 			},
 			create_date: {
 				type: DataTypes.DATE,

@@ -27,6 +27,12 @@ import { EmployeeTrust } from "~/server/database/entity/SALARY/employee_trust";
 import { TrustMoney } from "~/server/database/entity/SALARY/trust_money";
 import { Level } from "~/server/database/entity/SALARY/level";
 import { LevelRange } from "~/server/database/entity/SALARY/level_range";
+import { AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
+import { AccessSetting } from "~/server/database/entity/SALARY/access_setting";
+import { BankSetting } from "~/server/database/entity/SALARY/bank_setting";
+import { BasicInfo } from "~/server/database/entity/SALARY/basic_info";
+import { BonusSetting } from "~/server/database/entity/SALARY/bonus_setting";
+import { EmployeeAccount } from "~/server/database/entity/SALARY/employee_account";
 
 export const debugRouter = createTRPCRouter({
 	syncDb: publicProcedure
@@ -90,10 +96,26 @@ export const debugRouter = createTRPCRouter({
 		)
 		.query(async ({ input }) => {
 			const table_list = [
+				// AccessSetting,
+				// AttendanceSetting,
+				// BankSetting,
+				// BasicInfo,
+				// BonusDepartment,
+				// BonusPosition,
+				// BonusPositionType,
+				// BonusSeniority,
+				// BonusWorkType,
+				// BonusSetting,
+				// EmployeeAccount,
+				// EmployeeBonus,
+				EmployeePayment,
+				// EmployeeTrust,
+				// InsuranceRateSetting,
+				// LevelRange,
 				// Level,
-				EmployeePayment
+				// TrustMoney,
 			];
-			table_list.forEach(async (model) => {
+			const promises = table_list.map(async (model) => {
 				try {
 					if (input.force) {
 						await model.sync({ force: true });
@@ -101,13 +123,14 @@ export const debugRouter = createTRPCRouter({
 						await model.sync({ alter: true });
 					}
 					await model.sync();
-					
+
 				} catch (e) {
 					return {
 						msg: `error ${(e as Error).message}`,
 					};
 				}
 			})
+			await Promise.all(promises)
 			return {
 				msg: "All models were synchronized successfully.",
 			};
@@ -119,9 +142,8 @@ export const debugRouter = createTRPCRouter({
 			return { msg: "Connection has been established successfully." };
 		} catch (error) {
 			return {
-				msg: `Unable to connect to the database: ${
-					(error as Error).message
-				}`,
+				msg: `Unable to connect to the database: ${(error as Error).message
+					}`,
 			};
 		}
 	}),

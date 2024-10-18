@@ -21,6 +21,7 @@ export class EmployeeTrust extends Model<
 	declare entry_date: string;
 	declare start_date: string;
 	declare end_date: string | null;
+	declare disabled: boolean;
 	// timestamps!
 	// createdAt can be undefined during creation
 	declare create_date: CreationOptional<Date>;
@@ -61,7 +62,6 @@ export function initEmployeeTrust(sequelize: Sequelize) {
 			entry_date: {
 				type: DataTypes.STRING(128),
 				allowNull: false,
-				defaultValue: "2024-01-01",
 			},
 			start_date: {
 				type: DataTypes.STRING(128),
@@ -70,6 +70,10 @@ export function initEmployeeTrust(sequelize: Sequelize) {
 			end_date: {
 				type: DataTypes.STRING(128),
 				allowNull: true,
+			},
+			disabled: {
+				type: DataTypes.BOOLEAN,
+				allowNull: false,
 			},
 			create_date: {
 				type: DataTypes.DATE,

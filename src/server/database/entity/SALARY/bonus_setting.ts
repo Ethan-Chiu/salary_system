@@ -17,6 +17,7 @@ export class BonusSetting extends Model<
 	declare criterion_date: Date;
 	declare base_on: string;
 	declare type: string;
+	declare disabled: boolean;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -50,6 +51,10 @@ export function initBonusSetting(sequelize: Sequelize) {
 			},
 			type: {
 				type: DataTypes.STRING(32),
+				allowNull: false,
+			},
+			disabled: {
+				type: DataTypes.BOOLEAN,
 				allowNull: false,
 			},
 			create_date: {

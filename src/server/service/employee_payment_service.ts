@@ -8,6 +8,7 @@ import { EHRService } from "./ehr_service";
 import { LevelRangeService } from "./level_range_service";
 import { LevelService } from "./level_service";
 import {
+	EmployeePayment as EmployeePaymentType,
 	createEmployeePaymentService,
 	updateEmployeePaymentService,
 } from "../api/types/employee_payment_type";
@@ -35,6 +36,8 @@ export class EmployeePaymentService {
 	}: z.infer<typeof createEmployeePaymentService>): Promise<EmployeePayment> {
 		const current_date_string = get_date_string(new Date());
 		check_date(start_date, end_date, current_date_string);
+
+		// const employeePayment = await this.getCurrentEmployeePaymentByEmpNoByDate(emp_no, start_date ?? current_date_string);
 		const newData = await EmployeePayment.create(
 			{
 				emp_no: emp_no,
@@ -52,11 +55,13 @@ export class EmployeePaymentService {
 				occupational_injury_enc: occupational_injury_enc,
 				start_date: start_date ?? current_date_string,
 				end_date: end_date,
+				disabled: false,
 				create_by: "system",
 				update_by: "system",
 			},
 			{ raw: true }
 		);
+
 		return newData;
 	}
 
@@ -64,6 +69,7 @@ export class EmployeePaymentService {
 		const employeePayment = await EmployeePayment.findOne({
 			where: {
 				id: id,
+				disabled: false,
 			},
 		});
 		return employeePayment;
@@ -75,6 +81,7 @@ export class EmployeePaymentService {
 		const employeePayment = await EmployeePayment.findOne({
 			where: {
 				emp_no: emp_no,
+				disabled: false,
 			},
 		});
 		return employeePayment;
@@ -97,6 +104,7 @@ export class EmployeePaymentService {
 						{ [Op.eq]: null },
 					],
 				},
+				disabled: false,
 			},
 			order: [["emp_no", "ASC"]],
 			raw: true,
@@ -123,6 +131,7 @@ export class EmployeePaymentService {
 						{ [Op.eq]: null },
 					],
 				},
+				disabled: false,
 			},
 			order: [["emp_no", "ASC"]],
 		});
@@ -148,12 +157,39 @@ export class EmployeePaymentService {
 						{ [Op.eq]: null },
 					],
 				},
+				disabled: false,
 			},
 		});
 		return employeePayment;
 	}
+
+	async getCurrentEmployeePaymentByEmpNoByDate(
+		emp_no: string,
+		date: string
+	): Promise<EmployeePayment | null> {
+		const employeePayment = await EmployeePayment.findOne({
+			where: {
+				emp_no: emp_no,
+				start_date: {
+					[Op.lte]: date,
+				},
+				end_date: {
+					[Op.or]: [
+						{ [Op.gte]: date },
+						{ [Op.eq]: null },
+					],
+				},
+				disabled: false,
+			},
+		});
+		return employeePayment;
+	}
+
 	async getAllEmployeePayment(): Promise<EmployeePayment[]> {
 		const employeePayment = await EmployeePayment.findAll({
+			where: {
+				disabled: false,
+			},
 			order: [["emp_no", "ASC"], ["start_date", "DESC"]],
 			raw: true,
 		});
@@ -182,7 +218,10 @@ export class EmployeePaymentService {
 		if (employeePayment == null) {
 			throw new BaseResponseError("Employee Payment does not exist");
 		}
-		const affectedCount = await EmployeePayment.update(
+
+		await this.deleteEmployeePayment(id!);
+
+		await this.createEmployeePayment(
 			{
 				emp_no: select_value(emp_no, employeePayment.emp_no),
 				base_salary_enc: select_value(
@@ -229,26 +268,25 @@ export class EmployeePaymentService {
 					employeePayment.start_date
 				),
 				end_date: select_value(end_date, employeePayment.end_date),
-				update_by: "system",
 			},
-			{ where: { id: id } }
 		);
-		if (affectedCount[0] == 0) {
-			throw new BaseResponseError("Update error");
-		}
 	}
 
 	async deleteEmployeePayment(id: number): Promise<void> {
-		const destroyedRows = await EmployeePayment.destroy({
-			where: { id: id },
-		});
-		if (destroyedRows != 1) {
+		const destroyedRows = await EmployeePayment.update(
+			{
+				disabled: true,
+			},
+			{
+				where: { id: id },
+			}
+		);
+		if (destroyedRows[0] == 0) {
 			throw new BaseResponseError("Delete error");
 		}
 	}
 
 	async autoCalculateEmployeePayment(
-		period_id: number,
 		emp_no_list: string[],
 		start_date: string
 	): Promise<void> {
@@ -256,13 +294,12 @@ export class EmployeePaymentService {
 		const levelService = container.resolve(LevelService);
 		const employeeDataService = container.resolve(EmployeeDataService);
 		const employeePaymentMapper = container.resolve(EmployeePaymentMapper);
-
-		const levelRangeList = await levelRangeService.getAllLevelRange();
+		const levelRangeList = await levelRangeService.getCurrentLevelRangeByDate(start_date);
 
 		const promises = emp_no_list.map(async (emp_no: string) => {
-			const employeePayment = await this.getCurrentEmployeePaymentByEmpNo(
+			const employeePayment = await this.getCurrentEmployeePaymentByEmpNoByDate(
 				emp_no,
-				period_id
+				start_date
 			);
 
 			if (employeePayment == null) {
@@ -287,8 +324,8 @@ export class EmployeePaymentService {
 
 			const result = [];
 			for (const levelRange of levelRangeList) {
-				const level = await levelService.getCurrentLevelBySalary(
-					period_id,
+				const level = await levelService.getCurrentLevelBySalaryByDate(
+					start_date,
 					salary,
 					levelRange.level_start_id,
 					levelRange.level_end_id
@@ -333,6 +370,51 @@ export class EmployeePaymentService {
 		});
 
 		await Promise.all(promises);
+	}
+
+	async getUpdatedEmployeePayment(employeePayment: z.infer<typeof EmployeePaymentType>, date: string): Promise<z.infer<typeof EmployeePaymentType>> {
+		const levelRangeService = container.resolve(LevelRangeService);
+		const levelService = container.resolve(LevelService);
+		const employeeDataService = container.resolve(EmployeeDataService);
+		const employeePaymentMapper = container.resolve(EmployeePaymentMapper);
+
+		const employeePaymentFE = await employeePaymentMapper.getEmployeePaymentFE(employeePayment);
+		const salary =
+			employeePaymentFE.base_salary +
+			employeePaymentFE.food_allowance +
+			employeePaymentFE.supervisor_allowance +
+			employeePaymentFE.occupational_allowance +
+			employeePaymentFE.subsidy_allowance;
+
+		const result = [];
+		const levelRangeList = await levelRangeService.getCurrentLevelRangeByDate(date);
+		for (const levelRange of levelRangeList) {
+			const level = await levelService.getCurrentLevelBySalaryByDate(
+				date,
+				salary,
+				levelRange.level_start_id,
+				levelRange.level_end_id
+			);
+			result.push({
+				type: levelRange.type,
+				level: level.level,
+			});
+		}
+
+		const employeeData = await employeeDataService.getEmployeeDataByEmpNo(employeePaymentFE.emp_no);
+		if (employeeData == null) {
+			throw new BaseResponseError("Employee Data does not exist");
+		}
+
+		const updatedEmployeePayment = await employeePaymentMapper.getEmployeePayment({
+			...employeePaymentFE,
+			l_i: result.find((r) => r.type === "勞保")?.level ?? 0,
+			h_i: result.find((r) => r.type === "健保")?.level ?? 0,
+			l_r: employeeData.work_type != "外籍勞工" ? result.find((r) => r.type === "勞退")?.level ?? 0 : 0,
+			occupational_injury: result.find((r) => r.type === "職災")?.level ?? 0,
+		});
+
+		return updatedEmployeePayment;
 	}
 
 	async rescheduleEmployeePayment(): Promise<void> {

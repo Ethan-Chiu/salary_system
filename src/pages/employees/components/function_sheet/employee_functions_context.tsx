@@ -11,9 +11,7 @@ interface FunctionsApi {
 	updateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	createFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	deleteFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
-	autoCalculateFunction:
-		| UseTRPCMutationResult<any, any, any, any>
-		| undefined;
+	autoCalculateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 }
 
 export const employeeToolbarFunctionsContext = createContext<FunctionsApi>({
@@ -63,8 +61,8 @@ export default function EmployeeToolbarFunctionsProvider({
 	const autoCalculateEmployeePayment =
 		api.employeePayment.autoCalculateEmployeePayment.useMutation({
 			onSuccess: () => {
-        void ctx.employeePayment.getCurrentEmployeePayment.invalidate();
-        void ctx.employeePayment.getAllEmployeePayment.invalidate();
+				void ctx.employeePayment.getCurrentEmployeePayment.invalidate();
+				void ctx.employeePayment.getAllEmployeePayment.invalidate();
 			},
 		});
 	//#endregion

@@ -33,6 +33,7 @@ export class UserService {
 			auth_l: auth_l,
 			start_date: start_date ?? current_date_string,
 			end_date: end_date,
+			disabled: false,
 			create_by: "system",
 			update_by: "system",
 		});

@@ -33,6 +33,7 @@ export class User extends Model<
 	declare auth_l: number;
 	declare start_date: string;
 	declare end_date: string | null;
+	declare disabled: boolean;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -71,6 +72,10 @@ export function initUser(sequelize: Sequelize) {
 			end_date: {
 				type: DataTypes.STRING(128),
 				allowNull: true,
+			},
+			disabled: {
+				type: DataTypes.BOOLEAN,
+				allowNull: false,
 			},
 			create_date: {
 				type: DataTypes.DATE,

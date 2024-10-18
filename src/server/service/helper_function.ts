@@ -7,6 +7,9 @@ export function check_date(
 	end_date: string | null,
 	current_date_string: string
 ) {
+	// if (start_date != null && start_date <= current_date_string) {
+	// 	throw new BaseResponseError("Start date is earlier than current date");
+	// }
 	if (end_date != null && end_date < (start_date ?? current_date_string)) {
 		throw new BaseResponseError("End date is earlier than start date");
 	}

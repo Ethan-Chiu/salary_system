@@ -15,9 +15,12 @@ export class BonusPosition extends Model<
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
 	declare period_id: number;
-    declare bonus_type: BonusTypeEnumType;
+	declare bonus_type: BonusTypeEnumType;
 	declare position: number;
-	declare multiplier: number;
+	declare position_multiplier: number;
+	declare position_type: string;
+	declare position_type_mutiplier: number;
+	declare disabled: boolean;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -49,9 +52,23 @@ export function initBonusPosition(sequelize: Sequelize) {
 				unique: false,
 				allowNull: false,
 			},
-			multiplier: {
+			position_multiplier: {
 				type: DataTypes.FLOAT,
 				unique: false,
+				allowNull: false,
+			},
+			position_type: {
+				type: new DataTypes.STRING(2),
+				unique: false,
+				allowNull: false,
+			},
+			position_type_mutiplier: {
+				type: DataTypes.FLOAT,
+				unique: false,
+				allowNull: false,
+			},
+			disabled: {
+				type: DataTypes.BOOLEAN,
 				allowNull: false,
 			},
 			create_date: {

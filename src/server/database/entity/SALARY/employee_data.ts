@@ -14,6 +14,7 @@ export class EmployeeData extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
+	declare period_id: number;
 	declare emp_no: string;
 	declare emp_name: string;
 	declare position: number; //職等
@@ -49,6 +50,10 @@ export function initEmployeeData(sequelize: Sequelize) {
 				type: DataTypes.INTEGER.UNSIGNED,
 				autoIncrement: true,
 				primaryKey: true,
+			},
+			period_id: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				allowNull: false,
 			},
 			emp_no: {
 				type: DataTypes.STRING(32),

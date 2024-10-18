@@ -39,6 +39,7 @@ export class AccessService {
 			settings: access.settings,
 			report: access.report,
 			roles: access.roles,
+			disabled: false,
 			create_by: "system",
 			update_by: "system",
 		});

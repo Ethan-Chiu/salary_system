@@ -105,6 +105,8 @@ export class Transaction extends Model<
 	declare full_attendance_personal_leave: number; // 有全勤事假
 	declare full_attendance_sick_leave: number; // 有全勤病假
 	declare long_service_allowance: number; //久任津貼
+	declare disable: boolean; // 是否禁用
+
 	declare create_date: CreationOptional<Date>; // 建立日期
 	declare create_by: string; // 建立者
 	declare update_date: CreationOptional<Date>; // 更新日期
@@ -478,6 +480,10 @@ export function initTransaction(sequelize: Sequelize) {
 			long_service_allowance: {
 				type: DataTypes.INTEGER,
 				comment: "久任津貼",
+			},
+			disable: {
+				type: DataTypes.BOOLEAN,
+				comment: "是否禁用",
 			},
 			create_date: {
 				type: DataTypes.DATE,

@@ -1,7 +1,7 @@
 import { container, injectable } from "tsyringe";
 import { type z } from "zod";
 import { BaseResponseError } from "~/server/api/error/BaseResponseError";
-import { EmployeePayment, EmployeePaymentFE, updateEmployeePaymentService, type updateEmployeePaymentAPI } from "~/server/api/types/employee_payment_type";
+import { EmployeePayment, EmployeePaymentFE, updateEmployeePaymentAPI, updateEmployeePaymentService } from "~/server/api/types/employee_payment_type";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { convertDatePropertiesToISOString, deleteProperties } from "./helper_function";
 import { CryptoHelper } from "~/lib/utils/crypto";

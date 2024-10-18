@@ -16,6 +16,7 @@ export class EmployeeAccount extends Model<
 	declare emp_no: string;
 	declare bank_account: string;
 	declare ratio: number;
+	declare disabled: boolean;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -45,6 +46,10 @@ export function initEmployeeAccount(sequelize: Sequelize) {
 			ratio: {
 				type: DataTypes.FLOAT,
 				unique: false,
+				allowNull: false,
+			},
+			disabled: {
+				type: DataTypes.BOOLEAN,
 				allowNull: false,
 			},
 			create_date: {

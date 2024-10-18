@@ -15,10 +15,11 @@ export class BonusWorkType extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-    declare period_id: number;
-    declare bonus_type: BonusTypeEnumType;
+	declare period_id: number;
+	declare bonus_type: BonusTypeEnumType;
 	declare work_type: WorkTypeEnumType;
 	declare multiplier: number;
+	declare disabled: boolean;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -37,14 +38,14 @@ export function initBonusWorkType(sequelize: Sequelize) {
 				autoIncrement: true,
 				primaryKey: true,
 			},
-            period_id: {
-                type: DataTypes.INTEGER.UNSIGNED,
-                allowNull: false,
-            },
-            bonus_type: {
-                type: new DataTypes.STRING(32),
-                allowNull: false,
-            },
+			period_id: {
+				type: DataTypes.INTEGER.UNSIGNED,
+				allowNull: false,
+			},
+			bonus_type: {
+				type: new DataTypes.STRING(32),
+				allowNull: false,
+			},
 			work_type: {
 				type: new DataTypes.STRING(512),
 				unique: false,
@@ -53,6 +54,10 @@ export function initBonusWorkType(sequelize: Sequelize) {
 			multiplier: {
 				type: DataTypes.FLOAT,
 				unique: false,
+				allowNull: false,
+			},
+			disabled: {
+				type: DataTypes.BOOLEAN,
 				allowNull: false,
 			},
 			create_date: {

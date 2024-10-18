@@ -10,6 +10,7 @@ import { type Exact } from "~/utils/exact_type";
 import { FunctionsEnum, type FunctionsEnumType } from "../api/types/functions_enum";
 import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
 import { EmployeeTrustMapper } from "../database/mapper/employee_trust_mapper";
+import { LongServiceeEnum } from "../api/types/long_service_enum";
 
 export interface DataComparison<ValueT = any> {
 	key: string;
@@ -444,7 +445,7 @@ export class SyncService {
 					occupational_allowance: 0,
 					subsidy_allowance: 0,
 					long_service_allowance: 0,
-					long_service_allowance_type: "月領",
+					long_service_allowance_type: LongServiceeEnum.Enum.月領,
 					l_r_self: 0,
 					l_i: 0,
 					h_i: 0,

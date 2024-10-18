@@ -24,7 +24,6 @@ import {
 	DialogTrigger,
 } from "~/components/ui/dialog";
 import { PenSquare, Trash2 } from "lucide-react";
-
 import { useContext } from "react";
 import { type FunctionMode } from "./data_table_functions";
 import { LoadingSpinner } from "~/components/loading";

@@ -29,6 +29,7 @@ export class EmployeePayment extends Model<
 	declare occupational_injury_enc: string;
 	declare start_date: string;
 	declare end_date: string | null;
+	declare disabled: boolean;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -74,12 +75,10 @@ export function initEmployeePayment(sequelize: Sequelize) {
 			long_service_allowance_enc: {
 				type: DataTypes.STRING(128),
 				allowNull: false,
-				// defaultValue: "c22c4fcf13c6eeae8a0709d3b0534226",
 			},
 			long_service_allowance_type: {
 				type: DataTypes.STRING(128),
 				allowNull: false,
-				// defaultValue: "月領",
 			},
 			l_r_self_enc: {
 				type: DataTypes.STRING(128),
@@ -108,6 +107,10 @@ export function initEmployeePayment(sequelize: Sequelize) {
 			end_date: {
 				type: DataTypes.STRING(128),
 				allowNull: true,
+			},
+			disabled: {
+				type: DataTypes.BOOLEAN,
+				allowNull: false,
 			},
 			create_date: {
 				type: DataTypes.DATE,

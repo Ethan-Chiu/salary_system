@@ -18,6 +18,7 @@ export class LevelRange extends Model<
     declare level_end_id: number;
     declare start_date: string;
     declare end_date: string | null;
+    declare disabled: boolean;
 
     // timestamps!
     // createdAt can be undefined during creation
@@ -56,6 +57,10 @@ export function initLevelRange(sequelize: Sequelize) {
                 type: DataTypes.STRING(128),
                 allowNull: true,
             },
+            disabled: {
+				type: DataTypes.BOOLEAN,
+				allowNull: false,
+			},
             create_date: {
                 type: DataTypes.DATE,
             },

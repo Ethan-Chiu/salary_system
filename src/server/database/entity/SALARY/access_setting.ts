@@ -19,6 +19,7 @@ export class AccessSetting extends Model<
 	declare report: boolean;
 	declare roles: boolean;
 	declare settings: boolean;
+	declare disabled: boolean;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -55,6 +56,10 @@ export function initAccessSetting(sequelize: Sequelize) {
 				allowNull: false,
 			},
 			settings: {
+				type: DataTypes.BOOLEAN,
+				allowNull: false,
+			},
+			disabled: {
 				type: DataTypes.BOOLEAN,
 				allowNull: false,
 			},

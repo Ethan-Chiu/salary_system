@@ -15,19 +15,20 @@ export class EmployeeBonus extends Model<
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
 	declare period_id: number;
-    declare bonus_type: BonusTypeEnumType;
+	declare bonus_type: BonusTypeEnumType;
 	declare emp_no: string;
-	declare special_multiplier: number;
-	declare multiplier: number;
-	declare fixed_amount: number;
-	declare budget_effective_salary: number;
-	declare budget_amount: number;
-	declare supervisor_performance_level: string|null;
-	declare supervisor_effective_salary: number|null;
-	declare supervisor_amount: number|null;
-	declare approved_performance_level: string|null;
-	declare approved_effective_salary: number|null;
-	declare approved_amount: number|null;
+	declare special_multiplier_enc: string;
+	declare multiplier_enc: string;
+	declare fixed_amount_enc: string;
+	declare bud_effective_salary_enc: string;
+	declare bud_amount_enc: string;
+	declare sup_performance_level_enc: string;
+	declare sup_effective_salary_enc: string;
+	declare sup_amount_enc: string;
+	declare app_performance_level_enc: string;
+	declare app_effective_salary_enc: string;
+	declare app_amount_enc: string;
+	declare disabled: boolean;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -58,50 +59,53 @@ export function initEmployeeBonus(sequelize: Sequelize) {
 				type: new DataTypes.STRING(32),
 				allowNull: false,
 			},
-			special_multiplier: {
-				type: DataTypes.FLOAT,
+			special_multiplier_enc: {
+				type: new DataTypes.STRING(128),
 				allowNull: false,
 			},
-			multiplier: {
-				type: DataTypes.FLOAT,
+			multiplier_enc: {
+				type: new DataTypes.STRING(128),
 				allowNull: false,
 			},
-			fixed_amount: {
-				type: DataTypes.INTEGER.UNSIGNED,
+			fixed_amount_enc: {
+				type: new DataTypes.STRING(128),
 				allowNull: false,
 			},
-			budget_effective_salary: {
-				type: DataTypes.FLOAT,
-				allowNull: false,
-				defaultValue: 0,	
-			},
-			budget_amount: {
-				type: DataTypes.FLOAT,
+			bud_effective_salary_enc: {
+				type: new DataTypes.STRING(128),
 				allowNull: false,
 			},
-			supervisor_performance_level: {
-				type: DataTypes.STRING(32),
-				allowNull: true,
+			bud_amount_enc: {
+				type: new DataTypes.STRING(128),
+				allowNull: false,
 			},
-			supervisor_effective_salary: {
-				type: DataTypes.FLOAT,
-				allowNull: true,
+			sup_performance_level_enc: {
+				type: new DataTypes.STRING(128),
+				allowNull: false,
 			},
-			supervisor_amount: {
-				type: DataTypes.FLOAT,
-				allowNull: true,
+			sup_effective_salary_enc: {
+				type: new DataTypes.STRING(128),
+				allowNull: false,
 			},
-			approved_performance_level: {
-				type: DataTypes.STRING(32),
-				allowNull: true,
+			sup_amount_enc: {
+				type: new DataTypes.STRING(128),
+				allowNull: false,
 			},
-			approved_effective_salary: {
-				type: DataTypes.FLOAT,
-				allowNull: true,
+			app_performance_level_enc: {
+				type: new DataTypes.STRING(128),
+				allowNull: false,
 			},
-			approved_amount: {
-				type: DataTypes.FLOAT,
-				allowNull: true,
+			app_effective_salary_enc: {
+				type: new DataTypes.STRING(128),
+				allowNull: false,
+			},
+			app_amount_enc: {
+				type: new DataTypes.STRING(128),
+				allowNull: false,
+			},
+			disabled: {
+				type: DataTypes.BOOLEAN,
+				allowNull: false,
 			},
 			create_date: {
 				type: DataTypes.DATE,

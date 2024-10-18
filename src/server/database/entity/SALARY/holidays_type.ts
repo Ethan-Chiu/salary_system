@@ -17,6 +17,7 @@ export class HolidaysType extends Model<
 	declare holidays_name: string;
 	declare multiplier: number;
 	declare pay_type: number;
+	declare disabled: boolean;
 	// timestamps!
 	// createdAt can be undefined during creation
 	declare create_date: CreationOptional<Date>;
@@ -48,6 +49,10 @@ export function initHolidaysType(sequelize: Sequelize) {
 			},
 			pay_type: {
 				type: DataTypes.INTEGER.UNSIGNED,
+				allowNull: false,
+			},
+			disabled: {
+				type: DataTypes.BOOLEAN,
 				allowNull: false,
 			},
 			create_date: {

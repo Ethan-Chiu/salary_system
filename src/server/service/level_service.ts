@@ -114,8 +114,8 @@ export class LevelService {
 		}
 	}
 
-	async getCurrentLevelBySalary(
-		period_id: number,
+	async getCurrentLevelBySalaryByDate(
+		date: string,
 		salary: number,
 		level_start_id: number,
 		level_end_id: number
@@ -125,9 +125,6 @@ export class LevelService {
 		if (minLevel == null || maxLevel == null) {
 			throw new BaseResponseError("Level does not exist");
 		}
-		const ehr_service = container.resolve(EHRService);
-		const period = await ehr_service.getPeriodById(period_id);
-		const current_date_string = period.end_date;
 		const levelList = await Level.findAll({
 			where: {
 				level: {
@@ -135,11 +132,11 @@ export class LevelService {
 					[Op.lte]: maxLevel.level,
 				},
 				start_date: {
-					[Op.lte]: current_date_string,
+					[Op.lte]: date,
 				},
 				end_date: {
 					[Op.or]: [
-						{ [Op.gte]: current_date_string },
+						{ [Op.gte]: date },
 						{ [Op.eq]: null },
 					],
 				},

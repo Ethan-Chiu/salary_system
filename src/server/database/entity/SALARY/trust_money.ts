@@ -19,6 +19,7 @@ export class TrustMoney extends Model<
 	declare org_special_trust_incent_limit: number;
 	declare start_date: string;
 	declare end_date: string | null;
+	declare disabled: boolean;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -61,6 +62,10 @@ export function initTrustMoney(sequelize: Sequelize) {
 			end_date: {
 				type: DataTypes.STRING(128),
 				allowNull: true,
+			},
+			disabled: {
+				type: DataTypes.BOOLEAN,
+				allowNull: false,
 			},
 			create_date: {
 				type: DataTypes.DATE,
