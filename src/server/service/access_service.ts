@@ -9,7 +9,7 @@ import "reflect-metadata";
 
 @injectable()
 export class AccessService {
-	constructor() {}
+	constructor() { }
 
 	async getAccessByRole(
 		role: RolesEnumType | null
@@ -18,11 +18,14 @@ export class AccessService {
 			return accessiblePages.parse({});
 		}
 
-		const accessSettings = await AccessSetting.findOne({
-			where: {
-				auth_l: role,
-			},
-		});
+		const accessSettings = await AccessSetting.findOne(
+			{
+				where: {
+					auth_l: role,
+					disabled: false,
+				},
+			}
+		);
 
 		if (accessSettings === null) {
 			return accessiblePages.parse({});
@@ -33,15 +36,17 @@ export class AccessService {
 	}
 
 	async createAccessData(role: RolesEnumType, access: AccessiblePagesType) {
-		await AccessSetting.create({
-			auth_l: role,
-			actions: access.actions,
-			settings: access.settings,
-			report: access.report,
-			roles: access.roles,
-			disabled: false,
-			create_by: "system",
-			update_by: "system",
-		});
+		await AccessSetting.create(
+			{
+				auth_l: role,
+				actions: access.actions,
+				settings: access.settings,
+				report: access.report,
+				roles: access.roles,
+				disabled: false,
+				create_by: "system",
+				update_by: "system",
+			}
+		);
 	}
 }

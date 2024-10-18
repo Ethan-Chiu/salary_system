@@ -22,7 +22,5 @@ export const EmployeeTrustFE = z.object({
 
 export const createEmployeeTrustAPI = EmployeeTrustFE;
 export const createEmployeeTrustService = EmployeeTrust;
-export const updateEmployeeTrustAPI = EmployeeTrustFE.merge(Id)
-	.partial();
-export const updateEmployeeTrustService = EmployeeTrust.merge(Id)
-	.partial();
+export const updateEmployeeTrustAPI = EmployeeTrustFE.partial().merge(Id);
+export const updateEmployeeTrustService = EmployeeTrust.partial().merge(Id);

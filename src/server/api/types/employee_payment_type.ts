@@ -39,7 +39,5 @@ export type EmployeePaymentType = z.infer<typeof EmployeePayment>
 
 export const createEmployeePaymentAPI = EmployeePaymentFE;
 export const createEmployeePaymentService = EmployeePayment;
-export const updateEmployeePaymentAPI = EmployeePaymentFE.merge(Id)
-	.partial();
-export const updateEmployeePaymentService = EmployeePayment.merge(Id)
-	.partial();
+export const updateEmployeePaymentAPI = EmployeePaymentFE.partial().merge(Id);
+export const updateEmployeePaymentService = EmployeePayment.partial().merge(Id);

@@ -11,22 +11,29 @@ import { BonusTypeEnumType } from "../api/types/bonus_type_enum";
 
 @injectable()
 export class BonusPositionService {
-	constructor() {}
+	constructor() { }
 
 	async createBonusPosition({
 		period_id,
 		bonus_type,
 		position,
-		multiplier,
+		position_multiplier,
+		position_type,
+		position_type_multipier
 	}: z.infer<typeof createBonusPositionService>): Promise<BonusPosition> {
-		const newData = await BonusPosition.create({
-			period_id: period_id,
-			bonus_type: bonus_type,
-			position: position,
-			multiplier: multiplier,
-			create_by: "system",
-			update_by: "system",
-		});
+		const newData = await BonusPosition.create(
+			{
+				period_id: period_id,
+				bonus_type: bonus_type,
+				position: position,
+				position_multiplier: position_multiplier,
+				position_type: position_type,
+				position_type_multiplier: position_type_multipier,
+				disabled: false,
+				create_by: "system",
+				update_by: "system",
+			}
+		);
 		return newData;
 	}
 	async batchCreateBonusPosition(
@@ -37,7 +44,10 @@ export class BonusPositionService {
 				period_id: data.period_id,
 				bonus_type: data.bonus_type,
 				position: data.position,
-				multiplier: data.multiplier,
+				position_multiplier: data.position_multiplier,
+				position_type: data.position_type,
+				position_type_multiplier: data.position_type_multipier,
+				disabled: false,
 				create_by: "system",
 				update_by: "system",
 			};
@@ -45,11 +55,11 @@ export class BonusPositionService {
 		await BonusPosition.bulkCreate(new_data_array);
 	}
 	async getBonusPositionById(id: number): Promise<BonusPosition | null> {
-		const bonusPosition = await BonusPosition.findOne({
-			where: {
-				id: id,
-			},
-		});
+		const bonusPosition = await BonusPosition.findOne(
+			{
+				where: { id: id },
+			}
+		);
 		return bonusPosition;
 	}
 
@@ -61,6 +71,7 @@ export class BonusPositionService {
 			where: {
 				period_id: period_id,
 				bonus_type: bonus_type,
+				disabled: false,
 			},
 		});
 		return bonusPosition;
@@ -68,52 +79,76 @@ export class BonusPositionService {
 	async getMultiplier(
 		period_id: number,
 		bonus_type: BonusTypeEnumType,
-		position: number
+		position: number,
+		position_type: string
 	): Promise<number | undefined> {
-		const multiplier = (
+		const position_multiplier = (
 			await BonusPosition.findOne({
 				where: {
 					period_id: period_id,
 					bonus_type: bonus_type,
 					position: position,
+					position_type: position_type,
 				},
 			})
-		)?.multiplier;
-		return multiplier;
+		)?.position_multiplier;
+
+		const position_type_multiplier = (
+			await BonusPosition.findOne({
+				where: {
+					period_id: period_id,
+					bonus_type: bonus_type,
+					position: position,
+					position_type: position_type,
+				},
+			})
+		)?.position_type_multiplier;
+		if (position_multiplier == undefined || position_type_multiplier == undefined) {
+			return undefined;
+		}
+		return position_multiplier * position_type_multiplier;
 	}
 	async getAllBonusPosition(): Promise<BonusPosition[] | null> {
-		const bonusPosition = await BonusPosition.findAll();
+		const bonusPosition = await BonusPosition.findAll(
+			{
+				where: { disabled: false },
+			}
+		);
 		return bonusPosition;
 	}
 
 	async updateBonusPosition({
 		id,
 		position,
-		multiplier,
+		position_multiplier,
+		position_type,
+		position_type_multipier,
 	}: z.infer<typeof updateBonusPositionService>): Promise<void> {
-		const bonus_position = await this.getBonusPositionById(id!);
+		const bonus_position = await this.getBonusPositionById(id);
 		if (bonus_position == null) {
 			throw new BaseResponseError("BonusPosition does not exist");
 		}
 
-		const affectedCount = await BonusPosition.update(
+		await this.deleteBonusPosition(id);
+
+		await this.createBonusPosition(
 			{
+				period_id: bonus_position.period_id,
+				bonus_type: bonus_position.bonus_type,
 				position: select_value(position, bonus_position.position),
-				multiplier: select_value(multiplier, bonus_position.multiplier),
-				update_by: "system",
-			},
-			{ where: { id: id } }
+				position_multiplier: select_value(position_multiplier, bonus_position.position_multiplier),
+				position_type: select_value(position_type, bonus_position.position_type),
+				position_type_multipier: select_value(position_type_multipier, bonus_position.position_type_multiplier),
+			}
 		);
-		if (affectedCount[0] == 0) {
-			throw new BaseResponseError("Update error");
-		}
 	}
 
 	async deleteBonusPosition(id: number): Promise<void> {
-		const destroyedRows = await BonusPosition.destroy({
-			where: { id: id },
-		});
-		if (destroyedRows != 1) {
+		const destroyedRows = await BonusPosition.update(
+			{ disabled: true },
+			{ where: { id: id } }
+		);
+		if (destroyedRows[0] == 0) {
 			throw new BaseResponseError("Delete error");
 		}
 	}

@@ -11,7 +11,7 @@ import { BonusTypeEnumType } from "../api/types/bonus_type_enum";
 
 @injectable()
 export class BonusDepartmentService {
-	constructor() {}
+	constructor() { }
 
 	async createBonusDepartment({
 		period_id,
@@ -19,14 +19,17 @@ export class BonusDepartmentService {
 		department,
 		multiplier,
 	}: z.infer<typeof createBonusDepartmentService>): Promise<BonusDepartment> {
-		const newData = await BonusDepartment.create({
-			period_id: period_id,
-			bonus_type: bonus_type,
-			department: department,
-			multiplier: multiplier,
-			create_by: "system",
-			update_by: "system",
-		});
+		const newData = await BonusDepartment.create(
+			{
+				period_id: period_id,
+				bonus_type: bonus_type,
+				department: department,
+				multiplier: multiplier,
+				disabled: false,
+				create_by: "system",
+				update_by: "system",
+			}
+		);
 		return newData;
 	}
 	async batchCreateBonusDepartment(
@@ -38,6 +41,7 @@ export class BonusDepartmentService {
 				bonus_type: data.bonus_type,
 				department: data.department,
 				multiplier: data.multiplier,
+				disabled: false,
 				create_by: "system",
 				update_by: "system",
 			};
@@ -50,22 +54,25 @@ export class BonusDepartmentService {
 		department: number
 	): Promise<number | undefined> {
 		const multiplier = (
-			await BonusDepartment.findOne({
-				where: {
-					period_id: period_id,
-					bonus_type: bonus_type,
-					department: department,
-				},
-			})
+			await BonusDepartment.findOne(
+				{
+					where: {
+						period_id: period_id,
+						bonus_type: bonus_type,
+						department: department,
+						disabled: false,
+					},
+				}
+			)
 		)?.multiplier;
 		return multiplier;
 	}
 	async getBonusDepartmentById(id: number): Promise<BonusDepartment | null> {
-		const bonusDepartment = await BonusDepartment.findOne({
-			where: {
-				id: id,
-			},
-		});
+		const bonusDepartment = await BonusDepartment.findOne(
+			{
+				where: { id: id }
+			}
+		);
 		return bonusDepartment;
 	}
 
@@ -73,17 +80,24 @@ export class BonusDepartmentService {
 		period_id: number,
 		bonus_type: BonusTypeEnumType
 	): Promise<BonusDepartment[] | null> {
-		const bonusDepartment = await BonusDepartment.findAll({
-			where: {
-				period_id: period_id,
-				bonus_type: bonus_type,
-			},
-		});
+		const bonusDepartment = await BonusDepartment.findAll(
+			{
+				where: {
+					period_id: period_id,
+					bonus_type: bonus_type,
+					disabled: false,
+				},
+			}
+		);
 		return bonusDepartment;
 	}
 
 	async getAllBonusDepartment(): Promise<BonusDepartment[] | null> {
-		const bonusDepartment = await BonusDepartment.findAll();
+		const bonusDepartment = await BonusDepartment.findAll(
+			{
+				where: { disabled: false },
+			}
+		);
 		return bonusDepartment;
 	}
 
@@ -92,13 +106,16 @@ export class BonusDepartmentService {
 		department,
 		multiplier,
 	}: z.infer<typeof updateBonusDepartmentService>): Promise<void> {
-		const bonus_department = await this.getBonusDepartmentById(id!);
+		const bonus_department = await this.getBonusDepartmentById(id);
 		if (bonus_department == null) {
 			throw new BaseResponseError("BonusDepartment does not exist");
 		}
+		await this.deleteBonusDepartment(id);
 
-		const affectedCount = await BonusDepartment.update(
+		await this.createBonusDepartment(
 			{
+				period_id: bonus_department.period_id,
+				bonus_type: bonus_department.bonus_type,
 				department: select_value(
 					department,
 					bonus_department.department
@@ -107,20 +124,16 @@ export class BonusDepartmentService {
 					multiplier,
 					bonus_department.multiplier
 				),
-				update_by: "system",
-			},
-			{ where: { id: id } }
+			}
 		);
-		if (affectedCount[0] == 0) {
-			throw new BaseResponseError("Update error");
-		}
 	}
 
 	async deleteBonusDepartment(id: number): Promise<void> {
-		const destroyedRows = await BonusDepartment.destroy({
-			where: { id: id },
-		});
-		if (destroyedRows != 1) {
+		const destroyedRows = await BonusDepartment.update(
+			{ disabled: true },
+			{ where: { id: id } }
+		);
+		if (destroyedRows[0] == 0) {
 			throw new BaseResponseError("Delete error");
 		}
 	}

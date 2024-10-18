@@ -26,9 +26,9 @@ const EmployeeData = z.object({
 
 export const createEmployeeDataAPI = EmployeeData;
 export const createEmployeeDataService = EmployeeData;
-export const updateEmployeeDataAPI = EmployeeData.merge(Id).partial();
+export const updateEmployeeDataAPI = EmployeeData.partial().merge(Id);
 export const updateEmployeeDataByEmpNoAPI = EmployeeData.partial();
-export const updateEmployeeDataService = EmployeeData.merge(Id).partial();
+export const updateEmployeeDataService = EmployeeData.partial().merge(Id);
 export const updateEmployeeDataByEmpNoService = EmployeeData.partial();
 
 // const EmployeeDataMut = z.object({
@@ -39,9 +39,9 @@ export const updateEmployeeDataByEmpNoService = EmployeeData.partial();
 // });
 // export const createEmployeeDataMutAPI = EmployeeDataMut;
 // export const createEmployeeDataMutService = EmployeeDataMut;
-// export const updateEmployeeDataMutAPI = EmployeeDataMut.merge(Id).partial();
+// export const updateEmployeeDataMutAPI = EmployeeDataMut.partial().merge(Id);
 // export const updateEmployeeDataMutByEmpNoAPI = EmployeeDataMut.partial();
-// export const updateEmployeeDataMutService = EmployeeDataMut.merge(Id).partial();
+// export const updateEmployeeDataMutService = EmployeeDataMut.partial().merge(Id);
 // export const updateEmployeeDataMutByEmpNoService = EmployeeDataMut.partial();
 
 const EmployeeDataFE = z.object({

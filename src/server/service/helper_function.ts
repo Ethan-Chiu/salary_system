@@ -10,9 +10,9 @@ export function check_date(
 	// if (start_date != null && start_date <= current_date_string) {
 	// 	throw new BaseResponseError("Start date is earlier than current date");
 	// }
-	if (end_date != null && end_date < (start_date ?? current_date_string)) {
-		throw new BaseResponseError("End date is earlier than start date");
-	}
+	// if (end_date != null && end_date < (start_date ?? current_date_string)) {
+	// 	throw new BaseResponseError("End date is earlier than start date");
+	// }
 }
 
 export function get_date_string(date: Date): string {

@@ -31,33 +31,34 @@ export class EmployeeBonusService {
 		period_id,
 		bonus_type,
 		emp_no,
-		special_multiplier,
-		multiplier,
-		fixed_amount,
-		budget_effective_salary,
-		budget_amount,
-		supervisor_performance_level,
-		supervisor_effective_salary,
-		supervisor_amount,
-		approved_performance_level,
-		approved_effective_salary,
-		approved_amount,
+		special_multiplier_enc,
+		multiplier_enc,
+		fixed_amount_enc,
+		bud_effective_salary_enc,
+		bud_amount_enc,
+		sup_performance_level_enc,
+		sup_effective_salary_enc,
+		sup_amount_enc,
+		app_performance_level_enc,
+		app_effective_salary_enc,
+		app_amount_enc,
 	}: z.infer<typeof createEmployeeBonusService>) {
 		const newData = await EmployeeBonus.create({
 			period_id: period_id,
 			bonus_type: bonus_type,
 			emp_no: emp_no,
-			special_multiplier: special_multiplier,
-			multiplier: multiplier,
-			fixed_amount: fixed_amount,
-			budget_effective_salary: budget_effective_salary,
-			budget_amount: budget_amount,
-			supervisor_performance_level: supervisor_performance_level,
-			supervisor_effective_salary: supervisor_effective_salary,
-			supervisor_amount: supervisor_amount,
-			approved_performance_level: approved_performance_level,
-			approved_effective_salary: approved_effective_salary,
-			approved_amount: approved_amount,
+			special_multiplier_enc: special_multiplier_enc,
+			multiplier_enc: multiplier_enc,
+			fixed_amount_enc: fixed_amount_enc,
+			bud_effective_salary_enc: bud_effective_salary_enc,
+			bud_amount_enc: bud_amount_enc,
+			sup_performance_level_enc: sup_performance_level_enc,
+			sup_effective_salary_enc: sup_effective_salary_enc,
+			sup_amount_enc: sup_amount_enc,
+			app_performance_level_enc: app_performance_level_enc,
+			app_effective_salary_enc: app_effective_salary_enc,
+			app_amount_enc: app_amount_enc,
+			disabled: false,
 			create_by: "system",
 			update_by: "system",
 		});
@@ -292,7 +293,7 @@ export class EmployeeBonusService {
 		const seniority = Math.floor(
 			(new Date(issue_date).getTime() -
 				new Date(employee_data.registration_date).getTime()) /
-				(1000 * 60 * 60 * 24 * 365)
+			(1000 * 60 * 60 * 24 * 365)
 		);
 		const candidate_bonus_seniority = bonus_seniority_list.filter(
 			(e) => e.seniority === seniority
@@ -527,19 +528,19 @@ export class EmployeeBonusService {
 					employee_payment_fe.supervisor_allowance +
 					employee_payment_fe.occupational_allowance +
 					employee_payment_fe.subsidy_allowance) *
-					employee_bonus.special_multiplier *
-					employee_bonus.multiplier +
+				employee_bonus.special_multiplier *
+				employee_bonus.multiplier +
 				employee_bonus.fixed_amount;
 
 			budget_amount_list.push({
 				emp_no: emp_no,
 				budget_effective_salary: Round(
 					budget_amount /
-						(employee_payment_fe.base_salary +
-							employee_payment_fe.food_allowance +
-							employee_payment_fe.supervisor_allowance +
-							employee_payment_fe.occupational_allowance +
-							employee_payment_fe.subsidy_allowance),
+					(employee_payment_fe.base_salary +
+						employee_payment_fe.food_allowance +
+						employee_payment_fe.supervisor_allowance +
+						employee_payment_fe.occupational_allowance +
+						employee_payment_fe.subsidy_allowance),
 					3
 				),
 				budget_amount: budget_amount,

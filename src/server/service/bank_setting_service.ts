@@ -12,7 +12,7 @@ import { EHRService } from "./ehr_service";
 
 @injectable()
 export class BankSettingService {
-	constructor() {}
+	constructor() { }
 
 	async createBankSetting({
 		bank_code,
@@ -24,25 +24,28 @@ export class BankSettingService {
 	}: z.infer<typeof createBankSettingService>): Promise<BankSetting> {
 		const current_date_string = get_date_string(new Date());
 		check_date(start_date, end_date, current_date_string);
-		const newData = await BankSetting.create({
-			bank_code: bank_code,
-			bank_name: bank_name,
-			org_code: org_code,
-			org_name: org_name,
-			start_date: start_date ?? current_date_string,
-			end_date: end_date,
-			create_by: "system",
-			update_by: "system",
-		});
+		const newData = await BankSetting.create(
+			{
+				bank_code: bank_code,
+				bank_name: bank_name,
+				org_code: org_code,
+				org_name: org_name,
+				start_date: start_date ?? current_date_string,
+				end_date: end_date,
+				disabled: false,
+				create_by: "system",
+				update_by: "system",
+			}
+		);
 		return newData;
 	}
 
 	async getBankSettingById(id: number): Promise<BankSetting | null> {
-		const bankSetting = await BankSetting.findOne({
-			where: {
-				id: id,
-			},
-		});
+		const bankSetting = await BankSetting.findOne(
+			{
+				where: { id: id },
+			}
+		);
 		return bankSetting;
 	}
 
@@ -61,13 +64,20 @@ export class BankSettingService {
 						{ [Op.eq]: null },
 					],
 				},
+				disabled: false,
 			},
+			order: [["bank_code", "ASC"]],
 		});
 		return bankSetting;
 	}
 
 	async getAllBankSetting(): Promise<BankSetting[]> {
-		const bankSetting = await BankSetting.findAll();
+		const bankSetting = await BankSetting.findAll(
+			{
+				where: { disabled: false },
+				order: [["bank_code", "ASC"]]
+			}
+		);
 		return bankSetting;
 	}
 
@@ -80,11 +90,13 @@ export class BankSettingService {
 		start_date,
 		end_date,
 	}: z.infer<typeof updateBankSettingService>): Promise<void> {
-		const bankSetting = await this.getBankSettingById(id!);
+		const bankSetting = await this.getBankSettingById(id);
 		if (bankSetting == null) {
 			throw new BaseResponseError("BankSetting does not exist");
 		}
-		const affectedCount = await BankSetting.update(
+		await this.deleteBankSetting(id);
+
+		await this.createBankSetting(
 			{
 				bank_code: select_value(bank_code, bankSetting.bank_code),
 				bank_name: select_value(bank_name, bankSetting.bank_name),
@@ -92,20 +104,22 @@ export class BankSettingService {
 				org_name: select_value(org_name, bankSetting.org_name),
 				start_date: select_value(start_date, bankSetting.start_date),
 				end_date: select_value(end_date, bankSetting.end_date),
-				update_by: "system",
 			},
-			{ where: { id: id } }
 		);
-		if (affectedCount[0] == 0) {
-			throw new BaseResponseError("Update error");
-		}
 	}
 
 	async deleteBankSetting(id: number): Promise<void> {
-		const destroyedRows = await BankSetting.destroy({
-			where: { id: id },
-		});
-		if (destroyedRows != 1) {
+		const bankSetting = await this.getBankSettingById(id);
+		if (bankSetting == null) {
+			throw new BaseResponseError("BankSetting does not exist");
+		}
+		const current_date_string = get_date_string(new Date());
+		check_date(bankSetting.start_date, bankSetting.end_date, current_date_string);
+		const destroyedRows = await BankSetting.update(
+			{ disabled: true },
+			{ where: { id: id } }
+		);
+		if (destroyedRows[0] == 0) {
 			throw new BaseResponseError("Delete error");
 		}
 	}

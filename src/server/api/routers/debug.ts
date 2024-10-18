@@ -97,7 +97,7 @@ export const debugRouter = createTRPCRouter({
 		.query(async ({ input }) => {
 			const table_list = [
 				// AccessSetting,
-				// AttendanceSetting,
+				AttendanceSetting,
 				// BankSetting,
 				// BasicInfo,
 				// BonusDepartment,
@@ -108,7 +108,7 @@ export const debugRouter = createTRPCRouter({
 				// BonusSetting,
 				// EmployeeAccount,
 				// EmployeeBonus,
-				EmployeePayment,
+				// EmployeePayment,
 				// EmployeeTrust,
 				// InsuranceRateSetting,
 				// LevelRange,

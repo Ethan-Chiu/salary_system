@@ -17,5 +17,5 @@ export const LevelRange = z.object({
 export const createLevelRangeAPI = LevelRangeFE;
 export const createLevelRangeService = LevelRange;
 
-export const updateLevelRangeAPI = LevelRangeFE.merge(Id).partial();
-export const updateLevelRangeService = LevelRange.merge(Id).partial();
+export const updateLevelRangeAPI = LevelRangeFE.partial().merge(Id);
+export const updateLevelRangeService = LevelRange.partial().merge(Id);
