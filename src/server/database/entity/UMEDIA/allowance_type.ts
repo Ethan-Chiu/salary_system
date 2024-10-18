@@ -1,3 +1,19 @@
+import { z } from "zod";
+
+const dbAllowanceType = z.object({
+	ID: z.number(),
+	NAME: z.string(),
+	TYPE: z.number(),
+	OTHER_TAX: z.number(),
+	OTHER_ADD: z.number(),
+	RULE: z.number(),
+	FIELD_ORDER: z.number(),
+	HIDDE: z.number(),
+	MEMO: z.string(),
+	UPDATE_BY: z.string(),
+	UPDATE_DATE: z.date(),
+});
+
 export class AllowanceType {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id?: number;
@@ -11,6 +27,7 @@ export class AllowanceType {
 	declare memo?: string;
 	declare update_by?: string;
 	declare update_date?: Date;
+
 	constructor(
 		id?: number,
 		name?: string,
@@ -36,33 +53,27 @@ export class AllowanceType {
 		this.update_by = update_by;
 		this.update_date = update_date;
 	}
-	static fromDB(data: any): AllowanceType {
-		const {
-			ID,
-			NAME,
-			TYPE,
-			OTHER_TAX,
-			OTHER_ADD,
-			RULE,
-			FIELD_ORDER,
-			HIDDE,
-			MEMO,
-			UPDATE_BY,
-			UPDATE_DATE,
-		} = data;
 
-		return new AllowanceType(
-			ID,
-			NAME,
-			TYPE,
-			OTHER_TAX,
-			OTHER_ADD,
-			RULE,
-			FIELD_ORDER,
-			HIDDE,
-			MEMO,
-			UPDATE_BY,
-			UPDATE_DATE
-		);
+	static fromDB(db_data: any): AllowanceType {
+		const result = dbAllowanceType.safeParse(db_data);
+
+		if (!result.success) {
+			throw new Error(result.error.message);
+		} else {
+			const data = result.data;
+			return new AllowanceType(
+				data.ID,
+				data.NAME,
+				data.TYPE,
+				data.OTHER_TAX,
+				data.OTHER_ADD,
+				data.RULE,
+				data.FIELD_ORDER,
+				data.HIDDE,
+				data.MEMO,
+				data.UPDATE_BY,
+				data.UPDATE_DATE
+			);
+		}
 	}
 }

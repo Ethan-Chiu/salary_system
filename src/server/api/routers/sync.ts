@@ -7,6 +7,7 @@ import { BaseResponseError } from "../error/BaseResponseError";
 import { z } from "zod";
 import { SyncService } from "~/server/service/sync_service";
 import { FunctionsEnum } from "../types/functions_enum";
+import { syncInput } from "../types/sync_type";
 
 export const syncRouter = createTRPCRouter({
 	getCandEmployees: publicProcedure
@@ -36,13 +37,13 @@ export const syncRouter = createTRPCRouter({
 
 	synchronize: publicProcedure
 		.input(
-			z.object({ period: z.number(), emp_no_list: z.string().array() })
+			z.object({ period: z.number(), change_emp_list: syncInput.array() })
 		)
 		.mutation(async ({ input }) => {
 			const syncService = container.resolve(SyncService);
 			const updatedDatas = await syncService.synchronize(
 				input.period,
-				input.emp_no_list
+				input.change_emp_list
 			);
 			return updatedDatas;
 		}),

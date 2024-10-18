@@ -1,3 +1,20 @@
+import { z } from "zod";
+
+const dbAllowance = z.object({
+	ID: z.number(),
+	PERIOD_ID: z.number(),
+	EMP_NO: z.string(),
+	EMP_NAME: z.string(),
+	ALLOWANCE_ID: z.number(),
+	AMOUNT: z.number(),
+	REMARK: z.string(),
+	CREATE_BY: z.string(),
+	CREATE_DATE: z.date(),
+	UPDATE_BY: z.string(),
+	UPDATE_DATE: z.date(),
+	PAY_DELAY: z.number(),
+});
+
 export class Allowance {
 	declare id: number;
 	declare period_id: number;
@@ -11,6 +28,7 @@ export class Allowance {
 	declare update_by: string;
 	declare update_date: Date;
 	declare pay_delay: number;
+
 	constructor(
 		id: number,
 		period_id: number,
@@ -38,35 +56,28 @@ export class Allowance {
 		this.update_date = update_date;
 		this.pay_delay = pay_delay;
 	}
-	static fromDB(data: any): Allowance {
-		const {
-			ID,
-			PERIOD_ID,
-			EMP_NO,
-			EMP_NAME,
-			ALLOWANCE_ID,
-			AMOUNT,
-			REMARK,
-			CREATE_BY,
-			CREATE_DATE,
-			UPDATE_BY,
-			UPDATE_DATE,
-			PAY_DELAY,
-		} = data;
 
-		return new Allowance(
-			ID,
-			PERIOD_ID,
-			EMP_NO,
-			EMP_NAME,
-			ALLOWANCE_ID,
-			Number(AMOUNT),
-			REMARK,
-			CREATE_BY,
-			CREATE_DATE,
-			UPDATE_BY,
-			UPDATE_DATE,
-			PAY_DELAY
-		);
+	static fromDB(db_data: any): Allowance {
+		const result = dbAllowance.safeParse(db_data);
+
+		if (!result.success) {
+			throw new Error(result.error.message);
+		} else {
+			const data = result.data;
+			return new Allowance(
+				data.ID,
+				data.PERIOD_ID,
+				data.EMP_NO,
+				data.EMP_NAME,
+				data.ALLOWANCE_ID,
+				data.AMOUNT,
+				data.REMARK,
+				data.CREATE_BY,
+				data.CREATE_DATE,
+				data.UPDATE_BY,
+				data.UPDATE_DATE,
+				data.PAY_DELAY
+			);
+		}
 	}
 }

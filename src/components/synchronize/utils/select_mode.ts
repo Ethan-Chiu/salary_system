@@ -6,10 +6,10 @@ export type SyncDataSelectModeEnumType = z.infer<typeof SyncDataSelectModeEnum>;
 export function syncDataSelectModeString(mode: SyncDataSelectModeEnumType): string {
    switch (mode) {
         case "all_emp":
-            return "mode_all_emp";
+            return "show_all";
         case "filter_emp":
-            return "mode_filter_emp";
+            return "select_employee";
         case "filter_dep":
-            return "mode_filter_dep"
+            return "select_department";
     }
 }

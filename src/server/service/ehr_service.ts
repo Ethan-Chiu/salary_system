@@ -15,7 +15,7 @@ import { ExpenseClass } from "../database/entity/UMEDIA/expense_class";
 import { AllowanceType } from "../database/entity/UMEDIA/allowance_type";
 import { Allowance } from "../database/entity/UMEDIA/allowance";
 import { HolidaysTypeService } from "./holidays_type_service";
-import { PayTypeEnum, PayTypeEnumType } from "../api/types/pay_type_enum";
+import { PayTypeEnum, type PayTypeEnumType } from "../api/types/pay_type_enum";
 
 export type BonusWithType = Omit<Bonus, "bonus_id" | "period_id"> & {
 	period_name: string;
@@ -165,14 +165,16 @@ export class EHRService {
 		);
 		return filtered_payset;
 	}
+
 	async getEmp(period_id: number): Promise<Emp[]> {
 		const dbConnection = container.resolve(Database).connection;
-		let dataList = await dbConnection.query(this.GET_EMP_QUERY(period_id), {
+		const dataList = await dbConnection.query(this.GET_EMP_QUERY(period_id), {
 			type: QueryTypes.SELECT,
 		});
-		const empList: Emp[] = dataList.map(Emp.fromDB);
+		const empList: Emp[] = dataList.map((d) => Emp.fromDB(d));
 		return empList;
 	}
+
 	async getPeriodById(period_id: number): Promise<Period> {
 		const dbConnection = container.resolve(Database).connection;
 		const dataList = await dbConnection.query(
@@ -350,7 +352,7 @@ export class EHRService {
 	): Promise<AllowanceWithType[]> {
 		const all_allowance = await this.getAllowance(period_id);
 		const filtered_allowance = all_allowance.filter((allowance) =>
-			emp_no_list.includes(allowance.emp_no!)
+			emp_no_list.includes(allowance.emp_no)
 		);
 		const allowance_type_list = await this.getAllowanceType();
 		const period_name = await this.getPeriodById(period_id).then(
@@ -421,7 +423,7 @@ export class EHRService {
 		}
 		let amount = 0;
 		target_allowance.forEach((allowance) => {
-			amount += allowance.amount!;
+			amount += allowance.amount;
 		});
 		return amount;
 	}

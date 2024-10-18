@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { SelectModeComponent } from "~/components/synchronize/select_mode";
-import { type SyncData } from "~/server/service/sync_service";
 import {
 	type SyncDataAndStatus,
 	UpdateTableDialog,
 } from "~/components/synchronize/update_table";
-import { type SyncCheckStatusEnumType } from "~/components/synchronize/utils/sync_check_status";
 import {
 	SyncDataDisplayModeEnum,
 	type SyncDataDisplayModeEnumType,
@@ -19,13 +17,12 @@ import {
 	CardTitle,
 } from "~/components/ui/card";
 import { useTranslation } from "next-i18next";
-import { EmployeeDataChangeAll } from "./emp_data_table_all";
+import { EmployeeDataChangeTable } from "./emp_data_table_all";
 import {
 	Select,
 	SelectContent,
 	SelectGroup,
 	SelectItem,
-	SelectLabel,
 	SelectTrigger,
 	SelectValue,
 } from "../ui/select";
@@ -34,6 +31,8 @@ import {
 	type SyncDataSelectModeEnumType,
 	syncDataSelectModeString,
 } from "./utils/select_mode";
+import { SelectDepartment } from "./select_department";
+import { type SyncData } from "~/server/api/types/sync_type";
 
 export function SyncPageContent({ data }: { data: SyncData[] }) {
 	const [mode, setMode] = useState<SyncDataDisplayModeEnumType>(
@@ -42,20 +41,17 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 	const [filterMode, setFilterMode] = useState<SyncDataSelectModeEnumType>(
 		SyncDataSelectModeEnum.Values.all_emp
 	);
-	const [filterData, setFilterData] = useState<SyncData[]>(data);
 
 	const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
+	const [selectedDepartments, setSelectedDepartments] = useState<Set<string>>(
+		new Set()
+	);
 
-  // Status
-	const checked = {} as Record<string, SyncCheckStatusEnumType>;
-	data.forEach((d) => {
-		checked[d.emp_no.ehr_value] = "initial";
-	});
-	const [checkedStatus, setCheckedStatus] =
-		useState<Record<string, SyncCheckStatusEnumType>>(checked);
+	// Status
 	const [dataWithStatus, setDataWithStatus] = useState<SyncDataAndStatus[]>(
 		[]
 	);
+	const [filterData, setFilterData] = useState<SyncDataAndStatus[]>([]);
 
 	const { t } = useTranslation(["common"]);
 
@@ -63,34 +59,43 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		setDataWithStatus(
 			data.map((d) => {
 				return {
-					emp_no: d.emp_no.ehr_value,
-					emp_name: d.name.ehr_value,
-					check_status:
-						checkedStatus[d.emp_no.ehr_value] ?? "initial",
-					comparisons: d.comparisons,
+					emp_no: d.emp_no.salary_value,
+					emp_name: d.name.salary_value,
+					department: d.department.salary_value,
+					comparisons: d.comparisons.map((c) => {
+						return {
+							key: c.key,
+							salary_value: c.salary_value,
+							ehr_value: c.ehr_value,
+							is_different: c.is_different,
+							check_status: "initial",
+						};
+					}),
 				};
 			})
 		);
-	}, [data, checkedStatus]);
+	}, [data]);
 
+	/* Filter Data */
 	useEffect(() => {
 		switch (filterMode) {
 			case SyncDataSelectModeEnum.Values.all_emp:
-				setFilterData(data);
+				setFilterData(dataWithStatus);
 				break;
 			case SyncDataSelectModeEnum.Values.filter_emp:
 				setFilterData(() =>
-					data.filter((d) => selectedKeys.has(d.emp_no.salary_value))
+					dataWithStatus.filter((d) => selectedKeys.has(d.emp_no))
 				);
 				break;
 			case SyncDataSelectModeEnum.Values.filter_dep:
 				setFilterData(() =>
-					data.filter((d) => d.department.ehr_value === "TODO")
+					dataWithStatus.filter((d) =>
+						selectedDepartments.has(d.department)
+					)
 				);
 				break;
 		}
-	}, [data, filterMode, selectedKeys]);
-
+	}, [dataWithStatus, filterMode, selectedKeys, selectedDepartments]);
 
 	function CompAllDonePage() {
 		return (
@@ -125,16 +130,16 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 						</SelectTrigger>
 						<SelectContent>
 							<SelectGroup>
-								<SelectLabel>
-									{t("sync_page.select_filter_mode")}
-								</SelectLabel>
 								<SelectItem
 									value={
 										SyncDataSelectModeEnum.Values.all_emp
 									}
 								>
-									{syncDataSelectModeString(
-										SyncDataSelectModeEnum.Values.all_emp
+									{t(
+										`sync_page.${syncDataSelectModeString(
+											SyncDataSelectModeEnum.Values
+												.all_emp
+										)}`
 									)}
 								</SelectItem>
 								<SelectItem
@@ -142,8 +147,11 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 										SyncDataSelectModeEnum.Values.filter_emp
 									}
 								>
-									{syncDataSelectModeString(
-										SyncDataSelectModeEnum.Values.filter_emp
+									{t(
+										`sync_page.${syncDataSelectModeString(
+											SyncDataSelectModeEnum.Values
+												.filter_emp
+										)}`
 									)}
 								</SelectItem>
 								<SelectItem
@@ -151,8 +159,11 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 										SyncDataSelectModeEnum.Values.filter_dep
 									}
 								>
-									{syncDataSelectModeString(
-										SyncDataSelectModeEnum.Values.filter_dep
+									{t(
+										`sync_page.${syncDataSelectModeString(
+											SyncDataSelectModeEnum.Values
+												.filter_dep
+										)}`
 									)}
 								</SelectItem>
 							</SelectGroup>
@@ -171,10 +182,10 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 					{filterMode ===
 						SyncDataSelectModeEnum.Values.filter_dep && (
 						<div className="">
-							<SelectEmployee
+							<SelectDepartment
 								data={data}
-								selectedKeys={selectedKeys}
-								setSelectedKeys={setSelectedKeys}
+								selectedKeys={selectedDepartments}
+								setSelectedKeys={setSelectedDepartments}
 							/>
 						</div>
 					)}
@@ -195,10 +206,34 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 			{/* Main Content */}
 			<CompTopBar data={data} />
 			<div className="relative h-0 w-full flex-grow ">
-				<EmployeeDataChangeAll data={filterData} mode={mode} />
+				<EmployeeDataChangeTable 
+					data={filterData} 
+					setDataStatus={(emp_no, key, checked) => {
+						setDataWithStatus((prevData) => {
+							return prevData.map((employee) => {
+								if (employee.emp_no === emp_no) {
+									return {
+										...employee,
+										comparisons: employee.comparisons.map((comparison) => {
+											if (comparison.key === key) {
+												return {
+													...comparison,
+													check_status: checked ? "checked" : "initial"
+												};
+											}
+											return comparison;
+										})
+									};
+								}
+								return employee;
+							});
+						});
+					}}
+					mode={mode}
+				/>
 			</div>
 			{/* Bottom Buttons */}
-			<div className="mt-4 flex justify-between">
+			<div className="ml-auto mt-4 flex justify-between">
 				<UpdateTableDialog data={dataWithStatus} />
 			</div>
 		</>

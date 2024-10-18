@@ -2,27 +2,31 @@ import { useTranslation } from "react-i18next";
 import { PopoverMultiSelector } from "../popover_multi_selector";
 import { type SyncData } from "~/server/api/types/sync_type";
 
-interface SelectEmployeeProps {
+interface SelectDepartmentProps {
 	data: SyncData[];
 	selectedKeys: Set<string>;
 	setSelectedKeys: (key: Set<string>) => void;
 }
 
-export function SelectEmployee({
+export function SelectDepartment({
 	data,
 	selectedKeys,
 	setSelectedKeys,
-}: SelectEmployeeProps) {
+}: SelectDepartmentProps) {
 	const { t } = useTranslation(["common"]);
 
-	const foramttedData = data.map((d) => ({
-		key: d.emp_no.ehr_value,
-		value: `${d.emp_no.salary_value} ${d.name.salary_value} ${d.english_name.salary_value}`,
-	}));
+  const departments = new Set<string>();
+  data.forEach(d => {
+    departments.add(d.department.salary_value);
+  });
+  const departmentsOptions = Array.from(departments).map(d => ({
+    key: d,
+    value: d
+  }));
 
 	return (
 		<PopoverMultiSelector
-			data={foramttedData}
+			data={departmentsOptions}
 			selectedKeys={selectedKeys}
 			setSelectedKeys={setSelectedKeys}
 			placeholder={t("button.select")}

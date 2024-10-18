@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const SyncCheckStatusEnum = z.enum(["initial", "checked", "ignored"]);
+export const SyncCheckStatusEnum = z.enum(["initial", "checked"]);
 export type SyncCheckStatusEnumType = z.infer<typeof SyncCheckStatusEnum>;
 
 export function statusLabel(status: SyncCheckStatusEnumType): string {
@@ -9,7 +9,5 @@ export function statusLabel(status: SyncCheckStatusEnumType): string {
             return "sync_state.initial";
         case "checked":
             return "sync_state.checked";
-        case "ignored":
-            return "sync_state.ignored";
     }
 }
