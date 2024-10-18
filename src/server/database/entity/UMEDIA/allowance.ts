@@ -16,18 +16,18 @@ const dbAllowance = z.object({
 });
 
 export class Allowance {
-	declare id: number;
-	declare period_id: number;
-	declare emp_no: string;
-	declare emp_name: string;
-	declare allowance_id: number;
-	declare amount: number;
-	declare remark: string;
-	declare create_by: string;
-	declare create_date: Date;
-	declare update_by: string;
-	declare update_date: Date;
-	declare pay_delay: number;
+	id: number;
+	period_id: number;
+	emp_no: string;
+	emp_name: string;
+	allowance_id: number;
+	amount: number;
+	remark: string;
+	create_by: string;
+	create_date: Date;
+	update_by: string;
+	update_date: Date;
+	pay_delay: number;
 
 	constructor(
 		id: number,
@@ -62,22 +62,23 @@ export class Allowance {
 
 		if (!result.success) {
 			throw new Error(result.error.message);
-		} else {
-			const data = result.data;
-			return new Allowance(
-				data.ID,
-				data.PERIOD_ID,
-				data.EMP_NO,
-				data.EMP_NAME,
-				data.ALLOWANCE_ID,
-				data.AMOUNT,
-				data.REMARK,
-				data.CREATE_BY,
-				data.CREATE_DATE,
-				data.UPDATE_BY,
-				data.UPDATE_DATE,
-				data.PAY_DELAY
-			);
 		}
+
+		const data = result.data;
+
+		return new Allowance(
+			data.ID,
+			data.PERIOD_ID,
+			data.EMP_NO,
+			data.EMP_NAME,
+			data.ALLOWANCE_ID,
+			data.AMOUNT,
+			data.REMARK,
+			data.CREATE_BY,
+			data.CREATE_DATE,
+			data.UPDATE_BY,
+			data.UPDATE_DATE,
+			data.PAY_DELAY
+		);
 	}
 }

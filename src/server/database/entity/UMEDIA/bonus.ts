@@ -12,22 +12,22 @@ const dbBonus = z.object({
 
 export class Bonus {
 	// id can be undefined during creation when using `autoIncrement`
-	declare period_id?: number;
-	declare emp_no?: string;
-	declare emp_name?: string;
-	declare bonus_id?: number;
-	declare amount?: number;
-	declare pay?: number;
-	declare remark?: string;
+	period_id: number;
+	emp_no: string;
+	emp_name: string;
+	bonus_id: number;
+	amount: number;
+	pay: number;
+	remark: string;
 
 	constructor(
-		period_id?: number,
-		emp_no?: string,
-		emp_name?: string,
-		bonus_id?: number,
-		amount?: number,
-		pay?: number,
-		remark?: string
+		period_id: number,
+		emp_no: string,
+		emp_name: string,
+		bonus_id: number,
+		amount: number,
+		pay: number,
+		remark: string
 	) {
 		this.period_id = period_id;
 		this.emp_no = emp_no;
@@ -43,17 +43,18 @@ export class Bonus {
 
 		if (!result.success) {
 			throw new Error(result.error.message);
-		} else {
-			const data = result.data;
-			return new Bonus(
-				data.PERIOD_ID,
-				data.EMP_NO,
-				data.EMP_NAME,
-				data.BONUS_ID,
-				data.AMOUNT,
-				data.PAY,
-				data.REMARK
-			);
 		}
+
+		const data = result.data;
+
+		return new Bonus(
+			data.PERIOD_ID,
+			data.EMP_NO,
+			data.EMP_NAME,
+			data.BONUS_ID,
+			data.AMOUNT,
+			data.PAY,
+			data.REMARK
+		);
 	}
 }

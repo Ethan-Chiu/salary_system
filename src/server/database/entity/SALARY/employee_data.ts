@@ -4,9 +4,9 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
-	Sequelize,
+	type Sequelize,
 } from "sequelize";
-import { WorkTypeEnumType } from "~/server/api/types/work_type_enum";
+import { type WorkTypeEnumType } from "~/server/api/types/work_type_enum";
 
 export class EmployeeData extends Model<
 	InferAttributes<EmployeeData>,
