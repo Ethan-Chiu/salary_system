@@ -415,6 +415,8 @@ export class SyncService {
 		// Update fields
 		const updatedDatas: EmployeeData[] = [];
 		for (const changeEmp of change_emp_list) {
+      // TODO: the data type is incorrect, lacking type check (period_id is missing)
+      // TODO: append period_id 
 			const ehr_emp_data: EmployeeData = this.empToEmployee(
 				ehrDict.get(changeEmp.emp_no)!
 			);
@@ -425,6 +427,11 @@ export class SyncService {
 			// Create default employee if not exist
 			// TODO: Refactor this
 			if (!salary_emp_data) {
+				salary_emp_data =
+					await employee_data_service.createEmployeeData(
+						ehr_emp_data
+					);
+
 				const payment_input: EmployeePaymentFEType = {
 					emp_no: ehr_emp_data.emp_no,
 					base_salary: 0,

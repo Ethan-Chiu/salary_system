@@ -14,6 +14,7 @@ export class EmployeeDataService {
 	/* constructor() {} */
 
 	async createEmployeeData({
+    period_id,
 		emp_no,
 		emp_name,
 		position,
@@ -34,6 +35,7 @@ export class EmployeeDataService {
 	}: // received_elderly_benefits,
 	z.infer<typeof createEmployeeDataService>): Promise<EmployeeData> {
 		const newData = await EmployeeData.create({
+      period_id: period_id,
 			emp_no: emp_no,
 			emp_name: emp_name,
 			position: position,
