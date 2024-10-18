@@ -2,7 +2,7 @@ import {
 	ArrowRightCircle,
 	GitCommitHorizontal,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { LoadingSpinner } from "~/components/loading";
 import {
 	ResizableHandle,
@@ -22,6 +22,7 @@ import {
 	PopoverSelector,
 	type PopoverSelectorDataType,
 } from "~/components/popover_selector";
+import periodContext from "~/components/context/period_context";
 
 export interface EmployeeHistoryViewCommonEmpInfo {
 	emp_name: string;
@@ -39,8 +40,11 @@ export function HistoryView<TData>({
 }: DataTableProps<TData>) {
 	const { isLoading, isError, data, error } = dataFunction();
 
+	const { selectedPeriod } = useContext(periodContext);
+
 	const [selectedId, setSelectedId] = useState<number>(0);
 	const [selectedEmpNo, setSelectedEmpNo] = useState<string | null>(null);
+
 
 	const { t } = useTranslation(["common"]);
 
@@ -121,6 +125,7 @@ export function HistoryView<TData>({
 											" relative m-2 flex flex-col rounded-md border p-1 hover:bg-muted",
 											e.id === selectedId && "bg-muted",
 											is_date_available(
+                        selectedPeriod,
 												e.start_date.toString(),
 												e.end_date?.toString() ?? ""
 											) && "mb-3 border-blue-500"

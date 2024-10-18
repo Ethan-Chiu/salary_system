@@ -1,6 +1,5 @@
-import { useContext } from "react";
 import { BaseResponseError } from "../api/error/BaseResponseError";
-import periodContext from "~/components/context/period_context";
+import { type Period } from "../database/entity/UMEDIA/period";
 
 export function check_date(
 	start_date: string | null,
@@ -24,14 +23,14 @@ export function get_date_string(date: Date): string {
 }
 
 export function is_date_available(
+  period: Period | null,
 	start_date: string | null,
 	end_date: string | null
 ): boolean {
-	const { selectedPeriod } = useContext(periodContext);
-	if (!selectedPeriod) {
+	if (!period) {
 		return false;
 	}
-	const targetDate = selectedPeriod.end_date;
+	const targetDate = period.end_date;
 
 	if (end_date && end_date < targetDate) {
 		return false;
@@ -42,10 +41,10 @@ export function is_date_available(
 	return true;
 }
 
-export function select_value(newData: any, oldData: any) {
-	return newData !== undefined ? newData : oldData;
+export function select_value<T>(newData: T | undefined, oldData: T): T {
+	return newData ?? oldData;
 }
 
-export function Round(num: number, decimals: number = 0): number {
+export function Round(num: number, decimals = 0): number {
 	return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
 }
