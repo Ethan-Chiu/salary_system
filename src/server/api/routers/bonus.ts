@@ -20,6 +20,8 @@ import {
 } from "../types/parameters_input_type";
 import { WorkTypeEnum } from "../types/work_type_enum";
 import { roundProperties } from "~/server/database/mapper/helper_function";
+import { EmployeeBonusMapper } from "~/server/database/mapper/employee_bonus_mapper";
+
 // 改Enum
 export const bonusRouter = createTRPCRouter({
 	getAllEmployeeBonus: publicProcedure
@@ -36,6 +38,25 @@ export const bonusRouter = createTRPCRouter({
 				input.bonus_type
 			);
 			return result.map((e) => roundProperties(e, 2));
+		}),
+	getExcelEmployeeBonus: publicProcedure
+		.input(
+			z.object({
+				period_id: z.number(),
+				bonus_type: BonusTypeEnum,
+			})
+		)
+		.query(async ({ input }) => {
+			const bonusService = container.resolve(EmployeeBonusService);
+			const bonusMapper = container.resolve(EmployeeBonusMapper);
+			const bonusData = await bonusService.getAllEmployeeBonus(
+				input.period_id,
+				input.bonus_type
+			)
+			
+			const employeeBonusFE = await Promise.all(bonusData.map(async e => await bonusMapper.getEmployeeBonusFE(e)));
+
+			return employeeBonusFE // Not finished yet
 		}),
 	getEmployeeBonus: publicProcedure
 		.input(

@@ -5,6 +5,7 @@ import { BonusTypeEnum } from "./bonus_type_enum";
 import { WorkTypeEnum } from "./work_type_enum";
 //MARK:employee_data
 const EmployeeData = z.object({
+  period_id: z.number(),
 	emp_no: z.string(),
 	emp_name: z.string(),
 	position: z.number(),

@@ -57,11 +57,11 @@ function getTableComponent(
                 component: BonusPositionTable,
                 icon: Briefcase,
             };
-        case "TableBonusPositionType":
-            return {
-                component: BonusPositionTypeTable,
-                icon: Key,
-            };
+        // case "TableBonusPositionType":
+        //     return {
+        //         component: BonusPositionTypeTable,
+        //         icon: Key,
+        //     };
         case "TableBonusSeniority":
             return {
                 component: BonusSeniorityTable,
