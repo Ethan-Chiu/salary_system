@@ -187,6 +187,7 @@ export class EmployeeTrustService {
 
 	async rescheduleEmployeeTrust(): Promise<void> {
 		const employeeTrustList = await EmployeeTrust.findAll({
+			where: { disabled: false },
 			order: [
 				["emp_no", "ASC"],
 				["start_date", "ASC"],

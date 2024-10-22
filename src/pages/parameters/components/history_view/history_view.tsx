@@ -85,23 +85,23 @@ function CompHistoryView() {
 									" relative m-2 flex flex-col rounded-md border p-1 hover:bg-muted",
 									e.id === selectedId && "bg-muted",
 									is_date_available(
-                    selectedPeriod, 
-										e.start_date,
-										e.end_date
+										selectedPeriod,
+										e.start_date.toString(),
+										e.end_date?.toString() ?? ""
 									) && "mb-3 border-blue-500"
 								)}
 								onClick={() => setSelectedId(e.id)}
 							>
 								<div className="m-1 flex flex-wrap items-center justify-center">
 									<div className="flex-1 whitespace-nowrap text-center">
-										{e.start_date ?? t("others.now")}
+										{e.start_date.toString() ?? t("others.now")}
 									</div>
 									<ArrowRightCircle
 										size={18}
 										className="mx-2 flex-shrink-0"
 									/>
 									<div className="flex-1 whitespace-nowrap text-center">
-										{e.end_date ?? t("others.now")}
+										{e.end_date?.toString() ?? t("others.now")}
 									</div>
 								</div>
 								<div className="m-1 flex text-sm">
@@ -114,13 +114,14 @@ function CompHistoryView() {
 									</div>
 								</div>
 								{is_date_available(
-									e.start_date,
-									e.end_date
+									selectedPeriod,
+									e.start_date.toString(),
+									e.end_date?.toString() ?? ""
 								) && (
-									<div className="absolute -bottom-3 right-2 z-10">
-										<Badge>{t("table.current")}</Badge>
-									</div>
-								)}
+										<div className="absolute -bottom-3 right-2 z-10">
+											<Badge>{t("table.current")}</Badge>
+										</div>
+									)}
 							</div>
 						))}
 				</ScrollArea>
@@ -130,7 +131,7 @@ function CompHistoryView() {
 				{data!.filter((e) => e.id === selectedId).length > 0 ? (
 					<DataTable
 						columns={getTableColumn(selectedTableType, t)}
-						data={getTableMapper(selectedTableType)(
+						data={getTableMapper(selectedTableType)!(
 							data!.filter((e) => e.id === selectedId) as any[]
 						)}
 						filterColumnKey={filterKey}

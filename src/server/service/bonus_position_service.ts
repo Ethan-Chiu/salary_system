@@ -81,7 +81,7 @@ export class BonusPositionService {
 		bonus_type: BonusTypeEnumType,
 		position: number,
 		position_type: string
-	): Promise<number | undefined> {
+	): Promise<number> {
 		const position_multiplier = (
 			await BonusPosition.findOne({
 				where: {
@@ -89,6 +89,7 @@ export class BonusPositionService {
 					bonus_type: bonus_type,
 					position: position,
 					position_type: position_type,
+					disabled: false,
 				},
 			})
 		)?.position_multiplier;
@@ -104,7 +105,7 @@ export class BonusPositionService {
 			})
 		)?.position_type_multiplier;
 		if (position_multiplier == undefined || position_type_multiplier == undefined) {
-			return undefined;
+			return 0;
 		}
 		return position_multiplier * position_type_multiplier;
 	}

@@ -157,6 +157,7 @@ export class EmployeeBonusService {
 				// special_multiplier: {
 				// 	[Op.gt]: 0,
 				// },
+				disabled: false,
 			},
 			order: [["emp_no", "ASC"]],
 		});
@@ -178,9 +179,9 @@ export class EmployeeBonusService {
 		);
 		const bonus_work_type_service = container.resolve(BonusWorkTypeService);
 		const bonus_position_service = container.resolve(BonusPositionService);
-		const bonus_position_type_service = container.resolve(
-			BonusPositionTypeService
-		);
+		// const bonus_position_type_service = container.resolve(
+		// 	BonusPositionTypeService
+		// );
 		const bonus_seniority_service = container.resolve(
 			BonusSeniorityService
 		);
@@ -198,11 +199,11 @@ export class EmployeeBonusService {
 				period_id,
 				bonus_type
 			);
-		const bonus_position_type_list =
-			await bonus_position_type_service.getBonusPositionTypeByBonusType(
-				period_id,
-				bonus_type
-			);
+		// const bonus_position_type_list =
+		// 	await bonus_position_type_service.getBonusPositionTypeByBonusType(
+		// 		period_id,
+		// 		bonus_type
+		// 	);
 		const bonus_seniority_list =
 			await bonus_seniority_service.getBonusSeniorityByBonusType(
 				period_id,
@@ -224,27 +225,10 @@ export class EmployeeBonusService {
 				return;
 			}
 			const special_multiplier =
-				this.getBonusWorkTypeSpecialMultiplier(
-					bonus_work_type_list,
-					employee_data
-				) *
-				this.getBonusPositionSpecialMultiplier(
-					bonus_position_list,
-					employee_data
-				) *
-				// this.getBonusPositionTypeSpecialMultiplier(
-				// 	bonus_position_type_list,
-				// 	employee_data
-				// ) *
-				this.getBonusSenioritySpecialMultiplier(
-					bonus_seniority_list,
-					employee_data,
-					issue_date
-				) *
-				this.getBonusDepartmentSpecialMultiplier(
-					bonus_department_list,
-					employee_data
-				);
+				await bonus_work_type_service.getMultiplier(period_id, bonus_type, employee_data.work_type) *
+				await bonus_position_service.getMultiplier(period_id, bonus_type, employee_data.position, employee_data.position_type) *
+				await bonus_seniority_service.getMultiplier(period_id, bonus_type, Math.floor((new Date(issue_date).getTime() - new Date(employee_data.registration_date).getTime()) / (1000 * 60 * 60 * 24 * 365))) *
+				await bonus_department_service.getMultiplier(period_id, bonus_type, employee_data.department);
 			await this.updateEmployeeBonus({
 				id: emp.id,
 				special_multiplier_enc: CryptoHelper.encrypt(special_multiplier.toString()),

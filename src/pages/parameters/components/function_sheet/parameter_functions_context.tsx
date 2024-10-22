@@ -175,22 +175,25 @@ export default function ParameterToolbarFunctionsProvider({
 
 	//#region <SalaryIncomeTax>
 	const getSalaryIncomeTax = () =>
-		api.parameters.getAllSalaryIncomeTax.useQuery();
+		api.parameters.getCurrentSalaryIncomeTax.useQuery({ period_id });
 	const updateSalaryIncomeTax =
 		api.parameters.updateSalaryIncomeTax.useMutation({
 			onSuccess: () => {
+				ctx.parameters.getCurrentSalaryIncomeTax.invalidate();
 				ctx.parameters.getAllSalaryIncomeTax.invalidate();
 			},
 		});
 	const createSalaryIncomeTax =
 		api.parameters.createSalaryIncomeTax.useMutation({
 			onSuccess: () => {
+				ctx.parameters.getCurrentSalaryIncomeTax.invalidate();
 				ctx.parameters.getAllSalaryIncomeTax.invalidate();
 			},
 		});
 	const deleteSalaryIncomeTax =
 		api.parameters.deleteSalaryIncomeTax.useMutation({
 			onSuccess: () => {
+				ctx.parameters.getCurrentSalaryIncomeTax.invalidate();
 				ctx.parameters.getAllSalaryIncomeTax.invalidate();
 			},
 		});

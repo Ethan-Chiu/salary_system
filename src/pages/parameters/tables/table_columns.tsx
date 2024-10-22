@@ -9,6 +9,7 @@ import {
 import { trustMoneyMapper, trust_money_columns } from "./trust_money_table";
 import { levelMapper, level_columns } from "./level_table";
 import { levelRangeMapper, level_range_columns } from "./level_range_table";
+import { salary_income_tax_columns, salaryIncomeTaxMapper } from "./salary_income_tax_table";
 import { type TFunction } from "i18next";
 
 export function getTableColumn(
@@ -28,6 +29,8 @@ export function getTableColumn(
 			return level_range_columns;
 		case "TableLevel":
 			return level_columns;
+		case "TableSalaryIncomeTax":
+			return salary_income_tax_columns;
 	}
 }
 
@@ -45,5 +48,7 @@ export function getTableMapper(selectedTableType: ParameterTableEnum) {
 			return levelRangeMapper;
 		case "TableLevel":
 			return levelMapper;
+		case "TableSalaryIncomeTax":
+			return salaryIncomeTaxMapper;
 	}
 }

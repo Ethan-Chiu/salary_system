@@ -127,7 +127,7 @@ const resolveAuthedUser = t.middleware(async ({ ctx, next }) => {
 		throw new TRPCError({ code: "UNAUTHORIZED" });
 	}
 	const userService = container.resolve(UserService);
-	const user = await userService.getUser(user_emp_no);
+	const user = await userService.getUserByEmpNo(user_emp_no);
 
 	return next({
 		ctx: {

@@ -8,6 +8,7 @@ import { LoadingSpinner } from "~/components/loading";
 import { type Level } from "~/server/database/entity/SALARY/level";
 import { type TableComponentProps } from "../tables_view";
 import { useTranslation } from "react-i18next";
+import { formatDate } from "~/lib/utils/format_date";
 
 export type RowItem = {
 	level: number;
@@ -108,8 +109,8 @@ export function levelMapper(levelData: Level[]): RowItem[] {
 	return levelData.map((d) => {
 		return {
 			level: d.level,
-			start_date: d.start_date,
-			end_date: d.end_date,
+			start_date: formatDate("day", d.start_date),
+			end_date: d.end_date ? formatDate("day", d.end_date) : "",
 		};
 	});
 }

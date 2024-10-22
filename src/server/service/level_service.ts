@@ -9,6 +9,7 @@ import { Level } from "../database/entity/SALARY/level";
 import { check_date, get_date_string, select_value } from "./helper_function";
 import { Op } from "sequelize";
 import { EHRService } from "./ehr_service";
+import { LevelRangeService } from "./level_range_service";
 
 @injectable()
 export class LevelService {
@@ -108,13 +109,16 @@ export class LevelService {
 
 		await this.deleteLevel(id);
 
-		await this.createLevel(
+		const newData = await this.createLevel(
 			{
 				level: select_value(level, _level.level),
 				start_date: select_value(start_date, _level.start_date),
 				end_date: select_value(end_date, _level.end_date),
 			},
 		);
+
+		const levelRangeService = container.resolve(LevelRangeService);
+		await levelRangeService.updateLevelRangeId({ old_id: id, new_id: newData.id });
 	}
 
 	async deleteLevel(id: number): Promise<void> {

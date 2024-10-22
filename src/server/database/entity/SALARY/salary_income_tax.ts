@@ -30,7 +30,7 @@ export class SalaryIncomeTax extends Model<
 	declare update_by: string;
 }
 
-export function initSalaryIncomeTax(sequelize: Sequelize) {
+export function batchCreateSalaryIncomeTax(sequelize: Sequelize) {
 	SalaryIncomeTax.init(
 		{
 			id: {

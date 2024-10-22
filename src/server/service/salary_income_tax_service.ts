@@ -1,4 +1,4 @@
-import { injectable } from "tsyringe";
+import { container, injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {
@@ -8,6 +8,7 @@ import {
 import { check_date, get_date_string, select_value } from "./helper_function";
 import { SalaryIncomeTax } from "../database/entity/SALARY/salary_income_tax";
 import { Op } from "sequelize";
+import { EHRService } from "./ehr_service";
 
 @injectable()
 export class SalaryIncomeTaxService {
@@ -40,7 +41,7 @@ export class SalaryIncomeTaxService {
 		return newData;
 	}
 
-	async initSalaryIncomeTax(
+	async batchCreateSalaryIncomeTax(
 		data_array: z.infer<typeof createSalaryIncomeTaxService>[]
 	) {
 		const current_date_string = get_date_string(new Date());
@@ -56,6 +57,30 @@ export class SalaryIncomeTaxService {
 				}
 			})
 		);
+	}
+
+	async getCurrentSalaryIncomeTax(period_id: number): Promise<SalaryIncomeTax[]> {
+		const ehr_service = container.resolve(EHRService);
+		const period = await ehr_service.getPeriodById(period_id);
+		const current_date_string = period.end_date;
+		const salaryIncomeTax = await SalaryIncomeTax.findAll(
+			{
+				where: {
+					start_date: {
+						[Op.lte]: current_date_string,
+					},
+					end_date: {
+						[Op.or]: [
+							{ [Op.gte]: current_date_string },
+							{ [Op.eq]: null },
+						],
+					},
+					disabled: false
+				},
+				order: [["dependent", "ASC"], ["salary_start", "ASC"]],
+			}
+		);
+		return salaryIncomeTax;
 	}
 
 	async getAllSalaryIncomeTax(): Promise<SalaryIncomeTax[]> {

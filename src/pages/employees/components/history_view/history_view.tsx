@@ -125,7 +125,7 @@ export function HistoryView<TData>({
 											" relative m-2 flex flex-col rounded-md border p-1 hover:bg-muted",
 											e.id === selectedId && "bg-muted",
 											is_date_available(
-                        selectedPeriod,
+												selectedPeriod,
 												e.start_date.toString(),
 												e.end_date?.toString() ?? ""
 											) && "mb-3 border-blue-500"
@@ -158,6 +158,7 @@ export function HistoryView<TData>({
 											</div>
 										</div>
 										{is_date_available(
+											selectedPeriod,
 											e.start_date.toString(),
 											e.end_date?.toString() ?? ""
 										) && (

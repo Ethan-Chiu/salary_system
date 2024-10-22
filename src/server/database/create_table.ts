@@ -21,7 +21,7 @@ import { initInsuranceRateSetting } from "./entity/SALARY/insurance_rate_setting
 import { initPerformanceLevel } from "./entity/SALARY/performance_level";
 import { initTransaction } from "./entity/SALARY/transaction";
 import { initTrustMoney } from "./entity/SALARY/trust_money";
-import{ initSalaryIncomeTax } from "./entity/SALARY/salary_income_tax";
+import{ batchCreateSalaryIncomeTax } from "./entity/SALARY/salary_income_tax";
 import { initUser } from "./entity/SALARY/user";
 import { initEmployeeBonus } from "./entity/SALARY/employee_bonus";
 // import { initEmployeeDataMut } from "./entity/SALARY/employee_data_mut";
@@ -48,7 +48,7 @@ initInsuranceRateSetting(sequelize);
 initLevelRange(sequelize);
 initLevel(sequelize);
 initPerformanceLevel(sequelize);
-initSalaryIncomeTax(sequelize);
+batchCreateSalaryIncomeTax(sequelize);
 initTransaction(sequelize);
 initTrustMoney(sequelize);
 initUser(sequelize);

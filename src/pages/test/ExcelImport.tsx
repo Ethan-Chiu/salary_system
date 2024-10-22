@@ -22,7 +22,7 @@ import ExcelJS from 'exceljs';
 const TEST: NextPageWithLayout = () => {
 	const [data, setData] = useState<any[][]>([]);
 	const [error, setError] = useState<string | null>(null);
-	const createAPI = api.parameters.initSalaryIncomeTax.useMutation();
+	const createAPI = api.parameters.batchCreateSalaryIncomeTax.useMutation();
 
 	const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];

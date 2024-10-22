@@ -23,7 +23,7 @@ export function get_date_string(date: Date): string {
 }
 
 export function is_date_available(
-  period: Period | null,
+	period: Period | null,
 	start_date: string | null,
 	end_date: string | null
 ): boolean {
@@ -42,7 +42,7 @@ export function is_date_available(
 }
 
 export function select_value<T>(newData: T | undefined, oldData: T): T {
-	return newData ?? oldData;
+	return newData !== undefined ? newData : oldData;
 }
 
 export function Round(num: number, decimals = 0): number {

@@ -101,7 +101,7 @@ export const debugRouter = createTRPCRouter({
 				// BankSetting,
 				// BasicInfo,
 				// BonusDepartment,
-				BonusPosition,
+				// BonusPosition,
 				// BonusPositionType,
 				// BonusSeniority,
 				// BonusWorkType,
@@ -111,7 +111,7 @@ export const debugRouter = createTRPCRouter({
 				// EmployeePayment,
 				// EmployeeTrust,
 				// InsuranceRateSetting,
-				// LevelRange,
+				LevelRange,
 				// Level,
 				// TrustMoney,
 			];

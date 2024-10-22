@@ -9,6 +9,7 @@ import { type TableComponentProps } from "../tables_view";
 import { useTranslation } from "react-i18next";
 import { LevelRangeFE } from "~/server/api/types/level_range_type";
 import { z } from "zod";
+import { formatDate } from "~/lib/utils/format_date";
 
 export type RowItem = {
 	type: string;
@@ -166,8 +167,8 @@ export function levelRangeMapper(levelRangeData: z.infer<typeof LevelRangeFE>[])
 			type: d.type,
 			level_start: d.level_start,
 			level_end: d.level_end,
-			start_date: d.start_date,
-			end_date: d.end_date,
+			start_date: formatDate("day", d.start_date),
+			end_date: d.end_date ? formatDate("day", d.end_date) : "",
 		};
 	});
 }
