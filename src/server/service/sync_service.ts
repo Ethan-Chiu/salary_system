@@ -1,6 +1,5 @@
 import { container, injectable } from "tsyringe";
 import { EmployeeData } from "../database/entity/SALARY/employee_data";
-import { type InferAttributes, Op } from "sequelize";
 import { EHRService } from "./ehr_service";
 import { type Emp } from "../database/entity/UMEDIA/emp";
 import { EmployeeDataService } from "./employee_data_service";
@@ -24,7 +23,8 @@ import {
 import { type Period } from "../database/entity/UMEDIA/period";
 import { type EmployeePaymentFEType } from "../api/types/employee_payment_type";
 import { LongServiceeEnum } from "../api/types/long_service_enum";
-import { CreateEmployeeDataType } from "../api/types/employee_data_type";
+import { type CreateEmployeeDataType } from "../api/types/employee_data_type";
+import { Op } from "sequelize";
 
 @injectable()
 export class SyncService {
@@ -217,7 +217,7 @@ export class SyncService {
 			});
 
 			// 篩選符合支付工作狀態的員工
-			const salary_emps = salary_emps_data.filter((emp) => {
+			const salary_emps: CreateEmployeeDataType[] = salary_emps_data.filter((emp) => {
 				return paid_status.includes(emp.work_status);
 			});
 
