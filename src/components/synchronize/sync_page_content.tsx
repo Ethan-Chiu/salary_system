@@ -47,6 +47,8 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		new Set()
 	);
 
+  const [open, setOpen] = useState(false);
+
 	// Status
 	const [dataWithStatus, setDataWithStatus] = useState<SyncDataAndStatus[]>(
 		[]
@@ -59,9 +61,10 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		setDataWithStatus(
 			data.map((d) => {
 				return {
-					emp_no: d.emp_no.salary_value,
-					emp_name: d.name.salary_value,
-					department: d.department.salary_value,
+					emp_no: d.emp_no.ehr_value,
+					name: d.name,
+          english_name: d.english_name,
+					department: d.department,
 					comparisons: d.comparisons.map((c) => {
 						return {
 							key: c.key,
@@ -90,7 +93,7 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 			case SyncDataSelectModeEnum.Values.filter_dep:
 				setFilterData(() =>
 					dataWithStatus.filter((d) =>
-						selectedDepartments.has(d.department)
+						selectedDepartments.has(d.department.salary_value ?? d.department.ehr_value)
 					)
 				);
 				break;
@@ -173,9 +176,11 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 						SyncDataSelectModeEnum.Values.filter_emp && (
 						<div className="">
 							<SelectEmployee
-								data={data}
+								data={dataWithStatus}
 								selectedKeys={selectedKeys}
 								setSelectedKeys={setSelectedKeys}
+                open={open}
+                setOpen={setOpen}
 							/>
 						</div>
 					)}
@@ -183,9 +188,11 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 						SyncDataSelectModeEnum.Values.filter_dep && (
 						<div className="">
 							<SelectDepartment
-								data={data}
+								data={dataWithStatus}
 								selectedKeys={selectedDepartments}
 								setSelectedKeys={setSelectedDepartments}
+                open={open}
+                setOpen={setOpen}
 							/>
 						</div>
 					)}

@@ -97,10 +97,10 @@ export function EmployeeDataChangeTable({
 													{/* Department */}
 													{index === 0 ? (
 														<TableCell
-															className="font-medium hover:bg-muted/50"
+															className={cn("font-medium hover:bg-muted/50", d.department.is_different && "text-red-500")}
 															rowSpan={rowSpan}
 														>
-															{d.department}
+															{d.department.salary_value ?? d.department.ehr_value}
 														</TableCell>
 													) : (
 														<></>
@@ -119,10 +119,10 @@ export function EmployeeDataChangeTable({
 													{/* Name */}
 													{index === 0 ? (
 														<TableCell
-															className="font-medium hover:bg-muted/50"
+															className={cn("font-medium hover:bg-muted/50", d.name.is_different && "text-red-500")}
 															rowSpan={rowSpan}
 														>
-															{d.emp_name}
+															{d.name.salary_value ?? d.name.ehr_value}
 														</TableCell>
 													) : (
 														<></>

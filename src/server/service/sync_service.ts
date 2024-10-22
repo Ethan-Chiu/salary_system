@@ -171,7 +171,7 @@ export class SyncService {
 
 		syncData.comparisons = [];
 		for (const key in ehrEmp.dataValues) {
-			if (key == "emp_no" || key == "emp_name") continue;
+			if (key == "emp_no" || key == "id") continue;
 			syncData.comparisons.push(
 				this.dataComparison(
 					key as keyof EmployeeData,
