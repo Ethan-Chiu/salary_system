@@ -386,6 +386,8 @@
     "bonus_excel_export": "匯出Excel",
     "bonus_excel_import": "匯入Excel",
     "bonus_final_check": "最終確認",
+    "bonus_first_stage": "獎金第一階段",
+    "bonus_second_stage": "獎金第二階段",
     "login": "登入",
     "user_id": "員工編號",
     "your_employee_id": "您的員工編號",
@@ -400,7 +402,7 @@
   "sync_page": {
     "show_all": "所有員工",
     "select_employee": "選擇員工",
-    "select_department" : "選擇部門",
-    "selected" : "已選擇"
+    "select_department": "選擇部門",
+    "selected": "已選擇"
   }
 }

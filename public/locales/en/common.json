@@ -372,6 +372,8 @@
     "bonus_excel_export": "Excel Export",
     "bonus_excel_import": "Excel Import",
     "bonus_final_check": "Final Check",
+    "bonus_first_stage": "Bonus First Stage",
+    "bonus_second_stage": "Bonus Second Stage",
     "login": "Login",
     "user_id": "User ID",
     "your_employee_id": "Your Employee ID",
@@ -386,7 +388,7 @@
   "sync_page": {
     "show_all": "All Employees",
     "select_employee": "Select Employee",
-    "select_department" : "Select Department",
-    "selected" : "Selected"
+    "select_department": "Select Department",
+    "selected": "Selected"
   }
 }

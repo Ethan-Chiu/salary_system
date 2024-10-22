@@ -11,11 +11,6 @@ import { BonusSeniorityService } from "./bonus_seniority_service";
 import { BonusDepartmentService } from "./bonus_department_service";
 import { EmployeeDataService } from "./employee_data_service";
 import { EHRService } from "./ehr_service";
-import { BonusWorkType } from "../database/entity/SALARY/bonus_work_type";
-import { EmployeeData } from "../database/entity/SALARY/employee_data";
-import { BonusPosition } from "../database/entity/SALARY/bonus_position";
-import { BonusSeniority } from "../database/entity/SALARY/bonus_seniority";
-import { BonusDepartment } from "../database/entity/SALARY/bonus_department";
 import { EmployeePaymentService } from "./employee_payment_service";
 import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
 import { EmployeeBonusMapper } from "../database/mapper/employee_bonus_mapper";
@@ -236,98 +231,6 @@ export class EmployeeBonusService {
 		});
 
 		await Promise.all(promises);
-		// const candidatelist = (await this.getAllEmployeeBonus(period_id, bonus_type)).filter(e => e.special_multiplier !== 0);
-		// return candidatelist;
-	}
-
-	getBonusWorkTypeSpecialMultiplier(
-		bonus_work_type_list: BonusWorkType[] | null,
-		employee_data: EmployeeData
-	): number {
-		if (!bonus_work_type_list) {
-			return 0;
-		}
-		const candidate_bonus_work_type = bonus_work_type_list.filter(
-			(e) => e.work_type === employee_data.work_type
-		)[0];
-		if (!candidate_bonus_work_type) {
-			return 0;
-		}
-		return candidate_bonus_work_type.multiplier;
-	}
-
-	getBonusPositionSpecialMultiplier(
-		bonus_position_list: BonusPosition[] | null,
-		employee_data: EmployeeData
-	): number {
-		if (!bonus_position_list) {
-			return 0;
-		}
-		const candidate_bonus_position = bonus_position_list.filter(
-			(e) => e.position === employee_data.position
-		)[0];
-		if (!candidate_bonus_position) {
-			return 0;
-		}
-		return candidate_bonus_position.position_multiplier * candidate_bonus_position.position_type_multiplier;
-	}
-
-	// getBonusPositionTypeSpecialMultiplier(
-	// 	bonus_position_type_list: BonusPositionType[] | null,
-	// 	employee_data: EmployeeData
-	// ): number {
-	// 	if (!bonus_position_type_list) {
-	// 		return 0;
-	// 	}
-	// 	const candidate_bonus_position_type = bonus_position_type_list.filter(
-	// 		(e) => e.position_type === employee_data.position_type
-	// 	)[0];
-	// 	if (!candidate_bonus_position_type) {
-	// 		return 0;
-	// 	}
-	// 	return candidate_bonus_position_type.multiplier;
-	// }
-
-	getBonusSenioritySpecialMultiplier(
-		bonus_seniority_list: BonusSeniority[] | null,
-		employee_data: EmployeeData,
-		issue_date: string
-	): number {
-		if (!bonus_seniority_list) {
-			return 0;
-		}
-		const seniority = Math.floor(
-			(new Date(issue_date).getTime() -
-				new Date(employee_data.registration_date).getTime()) /
-			(1000 * 60 * 60 * 24 * 365)
-		);
-		const candidate_bonus_seniority = bonus_seniority_list.filter(
-			(e) => e.seniority === seniority
-		)[0];
-		if (!candidate_bonus_seniority) {
-			return 0;
-		}
-		return candidate_bonus_seniority.multiplier;
-	}
-
-	getBonusDepartmentSpecialMultiplier(
-		bonus_department_list: BonusDepartment[] | null,
-		employee_data: EmployeeData
-	): number {
-		if (!bonus_department_list) {
-			return 0;
-		}
-		const candidate_bonus_department = bonus_department_list.filter(
-			(e) =>
-				e.department ===
-				employee_data.department
-					.replaceAll("\n", "")
-					.replaceAll("\r", "")
-		)[0];
-		if (!candidate_bonus_department) {
-			return 0;
-		}
-		return candidate_bonus_department.multiplier;
 	}
 
 	async deleteEmployeeBonus(id: number) {

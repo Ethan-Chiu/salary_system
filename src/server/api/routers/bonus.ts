@@ -7,12 +7,12 @@ import { EmployeeData } from "~/server/database/entity/SALARY/employee_data";
 import { BonusWorkTypeService } from "~/server/service/bonus_work_type_service";
 import { BonusSeniorityService } from "~/server/service/bonus_seniority_service";
 import { BonusDepartmentService } from "~/server/service/bonus_department_service";
-import { BonusPositionTypeService } from "~/server/service/bonus_position_type_service";
+// import { BonusPositionTypeService } from "~/server/service/bonus_position_type_service";
 import { BonusPositionService } from "~/server/service/bonus_position_service";
 import {
 	batchCreateBonusDepartmentAPI,
 	batchCreateBonusPositionAPI,
-	batchCreateBonusPositionTypeAPI,
+	// batchCreateBonusPositionTypeAPI,
 	batchCreateBonusSeniorityAPI,
 	batchCreateBonusWorkTypeAPI,
 } from "../types/parameters_input_type";
@@ -32,11 +32,13 @@ export const bonusRouter = createTRPCRouter({
 		)
 		.query(async ({ input }) => {
 			const bonusService = container.resolve(EmployeeBonusService);
+			const bonusMapper = container.resolve(EmployeeBonusMapper);
 			const result = await bonusService.getAllEmployeeBonus(
 				input.period_id,
 				input.bonus_type
 			);
-			return result.map((e) => roundProperties(e, 2));
+			const employeeBonusFE = (await Promise.all(result.map(async e => await bonusMapper.getEmployeeBonusFE(e))));
+			return employeeBonusFE.map((e) => roundProperties(e, 2));
 		}),
 	getExcelEmployeeBonus: publicProcedure
 		.input(
@@ -66,11 +68,13 @@ export const bonusRouter = createTRPCRouter({
 		)
 		.query(async ({ input }) => {
 			const bonusService = container.resolve(EmployeeBonusService);
+			const bonusMapper = container.resolve(EmployeeBonusMapper);
 			const result = await bonusService.getEmployeeBonus(
 				input.period_id,
 				input.bonus_type
 			);
-			return result.map((e) => roundProperties(e, 2));
+			const employeeBonusFE = (await Promise.all(result.map(async e => await bonusMapper.getEmployeeBonusFE(e)))).filter(e => e.special_multiplier > 0);
+			return employeeBonusFE.map((e) => roundProperties(e, 2));
 		}),
 	// getExportedSheets: publicProcedure.input(
 	// 	z.object({
@@ -117,7 +121,8 @@ export const bonusRouter = createTRPCRouter({
 			const empBonusMapper = container.resolve(EmployeeBonusMapper);
 			const empBonus = await empBonusMapper.getEmployeeBonus(input);
 			const result = await empBonusService.createEmployeeBonus(empBonus);
-			return result;
+			const employeeBonusFE = await empBonusMapper.getEmployeeBonusFE(result);
+			return roundProperties(employeeBonusFE, 2);
 		}),
 	updateEmployeeBonus: publicProcedure
 		.input(updateEmployeeBonusAPI)
@@ -233,24 +238,24 @@ export const bonusRouter = createTRPCRouter({
 				);
 			return result?.map((e) => roundProperties(e, 2));
 		}),
-	getBonusPositionType: publicProcedure
-		.input(
-			z.object({
-				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
-			})
-		)
-		.query(async ({ input }) => {
-			const bonusPositionTypeService = container.resolve(
-				BonusPositionTypeService
-			);
-			const result =
-				await bonusPositionTypeService.getBonusPositionTypeByBonusType(
-					input.period_id,
-					input.bonus_type
-				);
-			return result?.map((e) => roundProperties(e, 2));
-		}),
+	// getBonusPositionType: publicProcedure
+	// 	.input(
+	// 		z.object({
+	// 			period_id: z.number(),
+	// 			bonus_type: BonusTypeEnum,
+	// 		})
+	// 	)
+	// 	.query(async ({ input }) => {
+	// 		const bonusPositionTypeService = container.resolve(
+	// 			BonusPositionTypeService
+	// 		);
+	// 		const result =
+	// 			await bonusPositionTypeService.getBonusPositionTypeByBonusType(
+	// 				input.period_id,
+	// 				input.bonus_type
+	// 			);
+	// 		return result?.map((e) => roundProperties(e, 2));
+	// 	}),
 	getBonusPosition: publicProcedure
 		.input(
 			z.object({
@@ -322,23 +327,23 @@ export const bonusRouter = createTRPCRouter({
 			);
 			return result;
 		}),
-	createBonusPositionType: publicProcedure
-		.input(
-			z.object({
-				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
-				position_type: z.string(),
-				multiplier: z.number(),
-			})
-		)
-		.mutation(async ({ input }) => {
-			const bonusPositionTypeService = container.resolve(
-				BonusPositionTypeService
-			);
-			const result =
-				await bonusPositionTypeService.createBonusPositionType(input);
-			return result;
-		}),
+	// createBonusPositionType: publicProcedure
+	// 	.input(
+	// 		z.object({
+	// 			period_id: z.number(),
+	// 			bonus_type: BonusTypeEnum,
+	// 			position_type: z.string(),
+	// 			multiplier: z.number(),
+	// 		})
+	// 	)
+	// 	.mutation(async ({ input }) => {
+	// 		const bonusPositionTypeService = container.resolve(
+	// 			BonusPositionTypeService
+	// 		);
+	// 		const result =
+	// 			await bonusPositionTypeService.createBonusPositionType(input);
+	// 		return result;
+	// 	}),
 	createBonusPosition: publicProcedure
 		.input(
 			z.object({
@@ -388,18 +393,18 @@ export const bonusRouter = createTRPCRouter({
 				await bonusDepartmentService.batchCreateBonusDepartment(input);
 			return result;
 		}),
-	batchCreateBonusPositionType: publicProcedure
-		.input(batchCreateBonusPositionTypeAPI)
-		.mutation(async ({ input }) => {
-			const bonusPositionTypeService = container.resolve(
-				BonusPositionTypeService
-			);
-			const result =
-				await bonusPositionTypeService.batchCreateBonusPositionType(
-					input
-				);
-			return result;
-		}),
+	// batchCreateBonusPositionType: publicProcedure
+	// 	.input(batchCreateBonusPositionTypeAPI)
+	// 	.mutation(async ({ input }) => {
+	// 		const bonusPositionTypeService = container.resolve(
+	// 			BonusPositionTypeService
+	// 		);
+	// 		const result =
+	// 			await bonusPositionTypeService.batchCreateBonusPositionType(
+	// 				input
+	// 			);
+	// 		return result;
+	// 	}),
 	batchCreateBonusPosition: publicProcedure
 		.input(batchCreateBonusPositionAPI)
 		.mutation(async ({ input }) => {
@@ -460,22 +465,22 @@ export const bonusRouter = createTRPCRouter({
 			);
 			return result;
 		}),
-	updateBonusPositionType: publicProcedure
-		.input(
-			z.object({
-				id: z.number(),
-				position_type: z.string(),
-				multiplier: z.number(),
-			})
-		)
-		.mutation(async ({ input }) => {
-			const bonusPositionTypeService = container.resolve(
-				BonusPositionTypeService
-			);
-			const result =
-				await bonusPositionTypeService.updateBonusPositionType(input);
-			return result;
-		}),
+	// updateBonusPositionType: publicProcedure
+	// 	.input(
+	// 		z.object({
+	// 			id: z.number(),
+	// 			position_type: z.string(),
+	// 			multiplier: z.number(),
+	// 		})
+	// 	)
+	// 	.mutation(async ({ input }) => {
+	// 		const bonusPositionTypeService = container.resolve(
+	// 			BonusPositionTypeService
+	// 		);
+	// 		const result =
+	// 			await bonusPositionTypeService.updateBonusPositionType(input);
+	// 		return result;
+	// 	}),
 	updateBonusPosition: publicProcedure
 		.input(
 			z.object({
@@ -538,22 +543,22 @@ export const bonusRouter = createTRPCRouter({
 			);
 			return result;
 		}),
-	deleteBonusPositionType: publicProcedure
-		.input(
-			z.object({
-				id: z.number(),
-			})
-		)
-		.mutation(async ({ input }) => {
-			const bonusPositionTypeService = container.resolve(
-				BonusPositionTypeService
-			);
-			const result =
-				await bonusPositionTypeService.deleteBonusPositionType(
-					input.id
-				);
-			return result;
-		}),
+	// deleteBonusPositionType: publicProcedure
+	// 	.input(
+	// 		z.object({
+	// 			id: z.number(),
+	// 		})
+	// 	)
+	// 	.mutation(async ({ input }) => {
+	// 		const bonusPositionTypeService = container.resolve(
+	// 			BonusPositionTypeService
+	// 		);
+	// 		const result =
+	// 			await bonusPositionTypeService.deleteBonusPositionType(
+	// 				input.id
+	// 			);
+	// 		return result;
+	// 	}),
 	deleteBonusPosition: publicProcedure
 		.input(
 			z.object({

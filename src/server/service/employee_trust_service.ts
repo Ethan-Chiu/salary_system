@@ -26,18 +26,22 @@ export class EmployeeTrustService {
 	}: z.infer<typeof createEmployeeTrustService>): Promise<EmployeeTrust> {
 		const current_date_string = get_date_string(new Date());
 		check_date(start_date, end_date, current_date_string);
-		const newData = await EmployeeTrust.create({
-			emp_no: emp_no,
-			emp_trust_reserve_enc: emp_trust_reserve_enc,
-			org_trust_reserve_enc: org_trust_reserve_enc,
-			emp_special_trust_incent_enc: emp_special_trust_incent_enc,
-			org_special_trust_incent_enc: org_special_trust_incent_enc,
-			entry_date: entry_date,
-			start_date: start_date ?? current_date_string,
-			end_date: end_date,
-			create_by: "system",
-			update_by: "system",
-		}, { raw: true });
+		const newData = await EmployeeTrust.create(
+			{
+				emp_no: emp_no,
+				emp_trust_reserve_enc: emp_trust_reserve_enc,
+				org_trust_reserve_enc: org_trust_reserve_enc,
+				emp_special_trust_incent_enc: emp_special_trust_incent_enc,
+				org_special_trust_incent_enc: org_special_trust_incent_enc,
+				entry_date: entry_date,
+				start_date: start_date ?? current_date_string,
+				end_date: end_date,
+				disabled: false,
+				create_by: "system",
+				update_by: "system",
+			},
+			{ raw: true }
+		);
 		return newData;
 	}
 
@@ -54,23 +58,26 @@ export class EmployeeTrustService {
 		const ehr_service = container.resolve(EHRService);
 		const period = await ehr_service.getPeriodById(period_id);
 		const current_date_string = period.end_date;
-		const employeeTrust = await EmployeeTrust.findAll({
-			where: {
-				start_date: {
-					[Op.lte]: current_date_string,
+		const employeeTrust = await EmployeeTrust.findAll(
+			{
+				where: {
+					start_date: {
+						[Op.lte]: current_date_string,
+					},
+					end_date: {
+						[Op.or]: [
+							{ [Op.gte]: current_date_string },
+							{ [Op.eq]: null },
+						],
+					},
+					disabled: false,
 				},
-				end_date: {
-					[Op.or]: [
-						{ [Op.gte]: current_date_string },
-						{ [Op.eq]: null },
-					],
-				},
-			},
-			order: [
-				['emp_no', 'ASC']
-			],
-			raw: true
-		});
+				order: [
+					['emp_no', 'ASC']
+				],
+				raw: true
+			}
+		);
 		return employeeTrust;
 	}
 
@@ -78,20 +85,23 @@ export class EmployeeTrustService {
 		id: number
 	): Promise<EmployeeTrust | null> {
 		const current_date_string = get_date_string(new Date());
-		const employeeTrust = await EmployeeTrust.findOne({
-			where: {
-				id: id,
-				start_date: {
-					[Op.lte]: current_date_string,
-				},
-				end_date: {
-					[Op.or]: [
-						{ [Op.gte]: current_date_string },
-						{ [Op.eq]: null },
-					],
-				},
+		const employeeTrust = await EmployeeTrust.findOne(
+			{
+				where: {
+					id: id,
+					start_date: {
+						[Op.lte]: current_date_string,
+					},
+					end_date: {
+						[Op.or]: [
+							{ [Op.gte]: current_date_string },
+							{ [Op.eq]: null },
+						],
+					},
+					disabled: false,
+				}
 			}
-		});
+		);
 		return employeeTrust;
 	}
 
@@ -114,18 +124,20 @@ export class EmployeeTrustService {
 						{ [Op.eq]: null },
 					],
 				},
+				disabled: false,
 			},
 		});
 		return employeeTrust;
 	}
 
 	async getAllEmployeeTrust(): Promise<EmployeeTrust[]> {
-		const employeeTrust = await EmployeeTrust.findAll({
-			order: [
-				['emp_no', 'ASC']
-			],
-			raw: true
-		});
+		const employeeTrust = await EmployeeTrust.findAll(
+			{
+				where: { disabled: false },
+				order: [['emp_no', 'ASC']],
+				raw: true
+			}
+		);
 		return employeeTrust;
 	}
 
@@ -140,47 +152,38 @@ export class EmployeeTrustService {
 		start_date,
 		end_date,
 	}: z.infer<typeof updateEmployeeTrustService>): Promise<void> {
-		const employeeTrust = await this.getEmployeeTrustById(id!);
+		const employeeTrust = await this.getEmployeeTrustById(id);
 		if (employeeTrust == null) {
 			throw new BaseResponseError("Employee Trust does not exist");
 		}
-		const affectedCount = await EmployeeTrust.update(
+
+		await this.deleteEmployeeTrust(id);
+
+		await this.createEmployeeTrust(
 			{
 				emp_no: select_value(emp_no, employeeTrust.emp_no),
 				emp_trust_reserve_enc: select_value(
 					emp_trust_reserve_enc,
 					employeeTrust.emp_trust_reserve_enc
 				),
-				// org_trust_reserve_enc: select_value(
-				// 	org_trust_reserve_enc,
-				// 	employeeTrust.org_trust_reserve_enc
-				// ),
+				org_trust_reserve_enc: employeeTrust.org_trust_reserve_enc,
 				emp_special_trust_incent_enc: select_value(
 					emp_special_trust_incent_enc,
 					employeeTrust.emp_special_trust_incent_enc
 				),
-				// org_special_trust_incent_enc: select_value(
-				// 	org_special_trust_incent_enc,
-				// 	employeeTrust.org_special_trust_incent_enc
-				// ),
+				org_special_trust_incent_enc: employeeTrust.org_special_trust_incent_enc,
 				entry_date: select_value(entry_date, employeeTrust.entry_date),
 				start_date: select_value(start_date, employeeTrust.start_date),
 				end_date: select_value(end_date, employeeTrust.end_date),
-				update_by: "system",
 			},
-			{ where: { id: id } }
-			// this.autoCalculateEmployeeTrust(period)
 		);
-		if (affectedCount[0] == 0) {
-			throw new BaseResponseError("Update error");
-		}
 	}
 
 	async deleteEmployeeTrust(id: number): Promise<void> {
-		const destroyedRows = await EmployeeTrust.destroy({
+		const destroyedRows = await EmployeeTrust.update({ disabled: true }, {
 			where: { id: id },
 		});
-		if (destroyedRows != 1) {
+		if (destroyedRows[0] == 0) {
 			throw new BaseResponseError("Delete error");
 		}
 	}
@@ -272,9 +275,9 @@ export class EmployeeTrustService {
 
 			const updatedEmployeeTrust = await employee_trust_mapper.getEmployeeTrust({
 				...employeeTrustFE,
-				org_trust_reserve: Math.min(trust_money.org_trust_reserve_limit,employeeTrustFE.emp_trust_reserve),
+				org_trust_reserve: Math.min(trust_money.org_trust_reserve_limit, employeeTrustFE.emp_trust_reserve),
 				org_special_trust_incent:
-					Math.min(trust_money.org_special_trust_incent_limit,employeeTrustFE.emp_special_trust_incent),
+					Math.min(trust_money.org_special_trust_incent_limit, employeeTrustFE.emp_special_trust_incent),
 			});
 
 			if (originalEmployeeTrust.emp_trust_reserve_enc != updatedEmployeeTrust.emp_trust_reserve_enc ||
