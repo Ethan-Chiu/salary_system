@@ -77,7 +77,7 @@ export class BonusWorkTypeService {
 		period_id: number,
 		bonus_type: BonusTypeEnumType,
 		work_type: string
-	): Promise<number | undefined> {
+	): Promise<number> {
 		const multiplier = (
 			await BonusWorkType.findOne(
 				{
@@ -90,7 +90,7 @@ export class BonusWorkTypeService {
 				}
 			)
 		)?.multiplier;
-		return multiplier;
+		return multiplier ?? 0;
 	}
 	async getAllBonusWorkType(): Promise<BonusWorkType[] | null> {
 		const bonusWorkType = await BonusWorkType.findAll(

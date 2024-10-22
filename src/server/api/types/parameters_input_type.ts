@@ -189,7 +189,7 @@ export const createSalaryIncomeTaxAPI = SalaryIncomeTax.merge(DateAPI);
 export const createSalaryIncomeTaxService = SalaryIncomeTax.merge(DateService);
 export const updateSalaryIncomeTaxAPI = SalaryIncomeTax.merge(DateAPI).partial().merge(Id);
 export const updateSalaryIncomeTaxService = SalaryIncomeTax.merge(DateService).partial().merge(Id);
-export const initSalaryIncomeTaxAPI = SalaryIncomeTax.array();
+export const batchCreateSalaryIncomeTaxAPI = z.array(createSalaryIncomeTaxAPI);
 //MARK:trust
 const TrustMoney = z.object({
 	position: z.number(),

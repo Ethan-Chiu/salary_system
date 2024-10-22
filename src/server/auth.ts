@@ -125,7 +125,7 @@ export const authOptions: NextAuthOptions = {
 
 				const userService = container.resolve(UserService);
 				// TODO: move following to user service
-				const user = await userService.getUser(input.emp_no);
+				const user = await userService.getUserByEmpNo(input.emp_no);
 
 				if (!user) {
 					throw new BaseResponseError("User does not exist");

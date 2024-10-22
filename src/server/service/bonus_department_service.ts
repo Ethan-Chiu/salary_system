@@ -51,8 +51,8 @@ export class BonusDepartmentService {
 	async getMultiplier(
 		period_id: number,
 		bonus_type: BonusTypeEnumType,
-		department: number
-	): Promise<number | undefined> {
+		department: string
+	): Promise<number> {
 		const multiplier = (
 			await BonusDepartment.findOne(
 				{
@@ -65,7 +65,7 @@ export class BonusDepartmentService {
 				}
 			)
 		)?.multiplier;
-		return multiplier;
+		return multiplier ?? 0;
 	}
 	async getBonusDepartmentById(id: number): Promise<BonusDepartment | null> {
 		const bonusDepartment = await BonusDepartment.findOne(

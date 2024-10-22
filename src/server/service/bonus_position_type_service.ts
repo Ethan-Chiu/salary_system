@@ -61,7 +61,7 @@ export class BonusPositionTypeService {
 		period_id: number,
 		bonus_type: BonusTypeEnumType,
 		position_type: number
-	): Promise<number | undefined> {
+	): Promise<number> {
 		const multiplier = (
 			await BonusPositionType.findOne({
 				where: {
@@ -71,7 +71,7 @@ export class BonusPositionTypeService {
 				},
 			})
 		)?.multiplier;
-		return multiplier;
+		return multiplier ?? 0;
 	}
 	async getBonusPositionTypeByBonusType(
 		period_id: number,

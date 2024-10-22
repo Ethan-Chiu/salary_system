@@ -69,7 +69,6 @@ export class EmployeePaymentService {
 		const employeePayment = await EmployeePayment.findOne({
 			where: {
 				id: id,
-				disabled: false,
 			},
 		});
 		return employeePayment;
@@ -419,6 +418,7 @@ export class EmployeePaymentService {
 
 	async rescheduleEmployeePayment(): Promise<void> {
 		const employeePaymentList = await EmployeePayment.findAll({
+			where: { disabled: false },
 			order: [
 				["emp_no", "ASC"],
 				["start_date", "ASC"],

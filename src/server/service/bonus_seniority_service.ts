@@ -63,7 +63,7 @@ export class BonusSeniorityService {
 		period_id: number,
 		bonus_type: BonusTypeEnumType,
 		seniority: number
-	): Promise<number | undefined> {
+	): Promise<number> {
 		const multiplier = (
 			await BonusSeniority.findOne(
 				{
@@ -76,7 +76,7 @@ export class BonusSeniorityService {
 				}
 			)
 		)?.multiplier;
-		return multiplier;
+		return multiplier ?? 0;
 	}
 	async getBonusSeniorityByBonusType(
 		period_id: number,

@@ -108,6 +108,7 @@
     "l_i_accident_rate": "勞保事故費率",
     "v2_h_i_deduction_tsx_thres": "二代健保扣繳門檻單次",
     "v2_h_i_supp_pay_rate": "二代健保補充保費率",
+    "v2_h_i_multiplier": "二代健保補充保費倍數",
     "h_i_avg_dependents_count": "健保平均眷口數",
     "l_i_wage_replacement_rate": "勞保工資墊償基金提繳率",
     "l_i_employment_pay_rate": "勞保就業保險費率",

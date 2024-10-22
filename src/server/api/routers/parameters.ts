@@ -15,7 +15,7 @@ import {
 	createPerformanceLevelAPI,
 	createSalaryIncomeTaxAPI,
 	createTrustMoneyAPI,
-	initSalaryIncomeTaxAPI,
+	batchCreateSalaryIncomeTaxAPI,
 	updateAttendanceSettingAPI,
 	updateBankSettingAPI,
 	updateBonusDepartmentAPI,
@@ -719,16 +719,33 @@ export const parametersRouter = createTRPCRouter({
 			const salaryIncomeTaxService = container.resolve(
 				SalaryIncomeTaxService
 			);
-			const newdata = await salaryIncomeTaxService.createSalaryIncomeTax(input);
+			const newdata = await salaryIncomeTaxService.createSalaryIncomeTax({
+				...input,
+				start_date: input.start_date
+					? get_date_string(input.start_date)
+					: null,
+				end_date: input.end_date
+					? get_date_string(input.end_date)
+					: null,
+			});
 			return newdata;
 		}),
-	initSalaryIncomeTax: publicProcedure
-		.input(initSalaryIncomeTaxAPI)
+	batchCreateSalaryIncomeTax: publicProcedure
+		.input(batchCreateSalaryIncomeTaxAPI)
 		.mutation(async ({ input }) => {
 			const salaryIncomeTaxService = container.resolve(
 				SalaryIncomeTaxService
 			);
-			const newdata = await salaryIncomeTaxService.initSalaryIncomeTax(input);
+			const newdata = await salaryIncomeTaxService.batchCreateSalaryIncomeTax(input.map(e => ({
+				...e,
+				start_date: e.start_date
+					? get_date_string(e.start_date)
+					: null,
+				end_date: e.end_date
+					? get_date_string(e.end_date)
+					: null,
+			}))
+			);
 			return newdata;
 		}),
 	updateSalaryIncomeTax: publicProcedure
@@ -737,7 +754,15 @@ export const parametersRouter = createTRPCRouter({
 			const salaryIncomeTaxService = container.resolve(
 				SalaryIncomeTaxService
 			);
-			const newdata = await salaryIncomeTaxService.updateSalaryIncomeTax(input);
+			const newdata = await salaryIncomeTaxService.updateSalaryIncomeTax({
+				...input,
+				start_date: input.start_date
+					? get_date_string(input.start_date)
+					: null,
+				end_date: input.end_date
+					? get_date_string(input.end_date)
+					: null,
+			});
 			return newdata;
 		}),
 
@@ -749,6 +774,22 @@ export const parametersRouter = createTRPCRouter({
 				SalaryIncomeTaxService
 			);
 			await salaryIncomeTaxService.deleteSalaryIncomeTax(input.id);
+		}),
+
+	getCurrentSalaryIncomeTax: publicProcedure
+		.input(z.object({ period_id: z.number() }))
+		.query(async ({ input }) => {
+			const salaryIncomeTaxService = container.resolve(
+				SalaryIncomeTaxService
+			);
+			const salaryIncomeTax =
+				await salaryIncomeTaxService.getCurrentSalaryIncomeTax(
+					input.period_id
+				);
+			if (salaryIncomeTax == null) {
+				throw new BaseResponseError("SalaryIncomeTax does not exist");
+			}
+			return salaryIncomeTax;
 		}),
 
 	getAllSalaryIncomeTax: publicProcedure

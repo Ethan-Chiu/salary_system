@@ -135,9 +135,9 @@ export const debugRouter = createTRPCRouter({
 				// EmployeeBonus,
 				// EmployeePayment,
 				// EmployeeTrust,
-        EmployeeData
+				// EmployeeData
 				// InsuranceRateSetting,
-				// LevelRange,
+				LevelRange,
 				// Level,
 				// TrustMoney,
 			];
@@ -167,9 +167,8 @@ export const debugRouter = createTRPCRouter({
 			return { msg: "Connection has been established successfully." };
 		} catch (error) {
 			return {
-				msg: `Unable to connect to the database: ${
-					(error as Error).message
-				}`,
+				msg: `Unable to connect to the database: ${(error as Error).message
+					}`,
 			};
 		}
 	}),

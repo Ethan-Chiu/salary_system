@@ -8,6 +8,7 @@ export function hasHistory(tableType: ParameterTableEnum): boolean {
 		case "TableLevelRange":
 		case "TableLevel":
 		case "TableTrustMoney":
+		case "TableSalaryIncomeTax":
 			return true;
 		default:
 			return false;

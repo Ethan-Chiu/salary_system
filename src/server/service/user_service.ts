@@ -12,7 +12,7 @@ import {
 
 @injectable()
 export class UserService {
-	constructor() {}
+	constructor() { }
 
 	async createUser({
 		emp_no,
@@ -41,7 +41,7 @@ export class UserService {
 		return newUser;
 	}
 
-	async getUser(emp_no: string): Promise<User | null> {
+	async getUserByEmpNo(emp_no: string): Promise<User | null> {
 		const current_date_string = get_date_string(new Date());
 		const user = await User.findOne({
 			where: {
@@ -55,12 +55,13 @@ export class UserService {
 						{ [Op.eq]: null },
 					],
 				},
+				disabled: false,
 			},
 		});
 		return user;
 	}
 
-	async getUserList(): Promise<User[] | null> {
+	async getCurrentUser(): Promise<User[] | null> {
 		const current_date_string = get_date_string(new Date());
 		const user = await User.findAll({
 			where: {
@@ -73,6 +74,7 @@ export class UserService {
 						{ [Op.eq]: null },
 					],
 				},
+				disabled: false,
 			},
 		});
 		return user;
@@ -85,7 +87,7 @@ export class UserService {
 		start_date,
 		end_date,
 	}: z.infer<typeof updateUserService>): Promise<void> {
-		const user = await this.getUser(emp_no!);
+		const user = await this.getUserByEmpNo(emp_no!);
 		if (user == null) {
 			throw new BaseResponseError("User does not exist");
 		}
@@ -97,26 +99,26 @@ export class UserService {
 			hash = await bcrypt.hash(password, salt);
 		}
 
-		const affectedCount = await User.update(
-			{
-				hash: select_value(hash, user.hash),
-				auth_l: select_value(auth_l, user.auth_l),
-				start_date: select_value(start_date, user.start_date),
-				end_date: select_value(end_date, user.end_date),
-				update_by: "system",
-			},
-			{ where: { emp_no: emp_no } }
-		);
-		if (affectedCount[0] == 0) {
-			throw new BaseResponseError("Update error");
-		}
+		await this.deleteUser(user.id);
+
+		await User.create({
+			emp_no: select_value(emp_no, user.emp_no),
+			hash: select_value(hash, user.hash)!,
+			auth_l: select_value(auth_l, user.auth_l),
+			start_date: select_value(start_date, user.start_date)!,
+			end_date: select_value(end_date, user.end_date),
+			disabled: false,
+			create_by: "system",
+			update_by: "system",
+		});
 	}
 
-	async deleteUser(emp_no: string): Promise<void> {
-		const destroyedRows = await User.destroy({
-			where: { emp_no: emp_no },
-		});
-		if (destroyedRows != 1) {
+	async deleteUser(id: number): Promise<void> {
+		const destroyedRows = await User.update(
+			{ disabled: true },
+			{ where: { id: id } }
+		);
+		if (destroyedRows[0] == 0) {
 			throw new BaseResponseError("Delete error");
 		}
 	}

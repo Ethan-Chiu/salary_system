@@ -164,6 +164,7 @@ export class TrustMoneyService {
 
 	async rescheduleTrustMoney(): Promise<void> {
 		const trustMoneyList = await TrustMoney.findAll({
+			where: { disabled: false },
 			order: [
 				["position", "ASC"],
 				["position_type", "ASC"],

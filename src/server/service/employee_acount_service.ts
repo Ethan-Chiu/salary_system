@@ -42,7 +42,10 @@ export class EmployeeAccountService {
 	async getEmployeeAccountByEmpNo(emp_no: string): Promise<EmployeeAccount[] | null> {
 		const employeeAccountList = await EmployeeAccount.findAll(
 			{
-				where: { emp_no: emp_no },
+				where: {
+					disabled: false,
+					emp_no: emp_no
+				},
 			}
 		);
 		return employeeAccountList;

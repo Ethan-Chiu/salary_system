@@ -17,6 +17,8 @@ export type RowItem = {
 	salary_end: number;
 	dependent: number;
 	tax_amount: number;
+	start_date: string;
+	end_date: string | null;
 };
 type RowItemKey = keyof RowItem;
 
@@ -127,6 +129,64 @@ export const salary_income_tax_columns = [
 			);
 		},
 	}),
+	columnHelper.accessor("start_date", {
+		header: ({ column }) => {
+			const { t } = useTranslation(["common"]);
+			return (
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t("table.start_date")}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
+			);
+		},
+		cell: ({ row }) => {
+			return (
+				<div className="text-center font-medium">{`${row.original.start_date
+					}`}</div>
+			);
+		},
+	}),
+	columnHelper.accessor("end_date", {
+
+		header: ({ column }) => {
+			const { t } = useTranslation(["common"]);
+			return (
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t("table.end_date")}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
+			);
+		},
+		cell: ({ row }) => {
+			return row.original.end_date ? (
+				<div className="text-center font-medium">{`${row.original.end_date}`}</div>
+			) : (
+				<div className="text-center font-medium"></div>
+			);
+		},
+	}),
 ];
 
 export function salaryIncomeTaxMapper(
@@ -138,18 +198,21 @@ export function salaryIncomeTaxMapper(
 			salary_end: d.salary_end,
 			dependent: d.dependent,
 			tax_amount: d.tax_amount,
+			start_date: formatDate("day", d.start_date),
+			end_date: d.end_date ? formatDate("day", d.end_date) : "",
 		};
 	});
 }
 
 interface SalaryIncomeTaxTableProps extends TableComponentProps {
+	period_id: number;
 	globalFilter?: string;
 	viewOnly?: boolean;
 }
 
-export function SalaryIncomeTaxTable({ viewOnly }: SalaryIncomeTaxTableProps) {
+export function SalaryIncomeTaxTable({ viewOnly, period_id }: SalaryIncomeTaxTableProps) {
 	const { isLoading, isError, data, error } =
-		api.parameters.getAllSalaryIncomeTax.useQuery();
+		api.parameters.getCurrentSalaryIncomeTax.useQuery({ period_id });
 	const filterKey: RowItemKey = "salary_start";
 
 	if (isLoading) {

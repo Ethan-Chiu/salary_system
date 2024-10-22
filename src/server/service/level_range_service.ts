@@ -124,6 +124,27 @@ export class LevelRangeService {
 		);
 	}
 
+	async updateLevelRangeId({
+		old_id,
+		new_id
+	}: {
+		old_id: number,
+		new_id: number,
+	}): Promise<void> {
+		const levelRangeList = await LevelRange.findAll({where: {disabled: false}});
+		const promises = levelRangeList.map(async (levelRange) => {
+			if (levelRange.level_start_id == old_id || levelRange.level_end_id == old_id) {
+				this.updateLevelRange({
+					id: levelRange.id,
+					level_start_id: levelRange.level_start_id == old_id ? new_id : levelRange.level_start_id,
+					level_end_id: levelRange.level_end_id == old_id ? new_id : levelRange.level_end_id,
+				});
+			}
+		});
+
+		await Promise.all(promises);
+	}
+
 	async deleteLevelRange(id: number): Promise<void> {
 		const destroyedRows = await LevelRange.update(
 			{ disabled: true },
