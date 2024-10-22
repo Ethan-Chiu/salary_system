@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import {
 	Command,
@@ -22,12 +22,15 @@ import { useTranslation } from "react-i18next";
 export interface PopoverSelectorDataType {
 	key: string;
 	value: string;
+  option: ReactElement;
 }
 
 interface PopoverSelectorProps {
 	data: PopoverSelectorDataType[];
 	selectedKeys: Set<string>;
 	setSelectedKeys: (key: Set<string>) => void;
+  open: boolean;
+  setOpen: (open: boolean) => void;
 	placeholder: string;
 	emptyPlaceholder: string;
 }
@@ -36,10 +39,11 @@ export function PopoverMultiSelector({
 	data,
 	selectedKeys,
 	setSelectedKeys,
+  open,
+  setOpen,
 	placeholder,
 	emptyPlaceholder,
 }: PopoverSelectorProps) {
-	const [open, setOpen] = useState(false);
 
 	const { t } = useTranslation(["common"]);
 
@@ -81,8 +85,8 @@ export function PopoverMultiSelector({
 												newSet.add(d.key);
 											}
 											setSelectedKeys(newSet);
-											setOpen(false);
 										}}
+                    className="aria-selected:bg-none"
 									>
 										<Check
 											className={cn(
@@ -92,7 +96,7 @@ export function PopoverMultiSelector({
 													: "opacity-0"
 											)}
 										/>
-										{d.value}
+										{d.option} 
 									</CommandItem>
 								))}
 							</CommandGroup>

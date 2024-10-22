@@ -386,6 +386,7 @@
     "show_all": "All Employees",
     "select_employee": "Select Employee",
     "select_department" : "Select Department",
-    "selected" : "Selected"
+    "selected" : "Selected",
+    "new_department": "New"
   }
 }

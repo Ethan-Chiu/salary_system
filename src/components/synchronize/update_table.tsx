@@ -24,8 +24,9 @@ export interface DataComparisonAndStatus extends DataComparison {
 
 export interface SyncDataAndStatus {
 	emp_no: string;
-	emp_name: string;
-	department: string;
+	name: DataComparison<string>;
+	english_name: DataComparison<string>;
+	department: DataComparison<string>;
 	comparisons: Array<DataComparisonAndStatus>;
 }
 

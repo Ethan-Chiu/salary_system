@@ -20,6 +20,7 @@ import { WorkTypeEnum } from "../types/work_type_enum";
 import { roundProperties } from "~/server/database/mapper/helper_function";
 import { EmployeeBonusMapper } from "~/server/database/mapper/employee_bonus_mapper";
 import { createEmployeeBonusAPI, updateEmployeeBonusAPI } from "../types/employee_bonus_type";
+import { EmployeeBonus } from "~/server/database/entity/SALARY/employee_bonus";
 
 // 改Enum
 export const bonusRouter = createTRPCRouter({
@@ -70,7 +71,7 @@ export const bonusRouter = createTRPCRouter({
 				input.period_id,
 				input.bonus_type
 			);
-			return result.map((e) => roundProperties(e, 2));
+			return result.map((e) => roundProperties<EmployeeBonus>(e, 2));
 		}),
 	// getExportedSheets: publicProcedure.input(
 	// 	z.object({

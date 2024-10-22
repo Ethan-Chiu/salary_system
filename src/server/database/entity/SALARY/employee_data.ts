@@ -41,6 +41,7 @@ export class EmployeeData extends Model<
 	// updatedAt can be undefined during creation
 	declare update_date: CreationOptional<Date>;
 	declare update_by: string;
+  
 }
 
 export function initEmployeeData(sequelize: Sequelize) {
