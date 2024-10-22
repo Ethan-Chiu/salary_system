@@ -31,7 +31,7 @@ const remoteDatabaseConfig: DatabaseConfig = {
 @singleton()
 export class Database {
 	constructor() {
-		this.initDatabaseConnection();
+		this.connection = this.initDatabaseConnection();
 	}
 
 	connection: Sequelize;
@@ -56,6 +56,6 @@ export class Database {
 			}
 		);
 
-		this.connection = sequelize;
+    return sequelize
 	}
 }

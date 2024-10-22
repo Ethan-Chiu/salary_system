@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { DateAPI, DateService, EmpData, Id } from "./common_type";
+import { EmpData, Id } from "./common_type";
 import { BonusTypeEnum } from "./bonus_type_enum";
 
-export const EmployeeBonus = z.object({
+export const employeeBonus = z.object({
 	period_id: z.number(),
 	bonus_type: BonusTypeEnum,
 	emp_no: z.string(),
@@ -19,7 +19,7 @@ export const EmployeeBonus = z.object({
 	app_amount_enc: z.string(),
 });
 
-export const EmployeeBonusFE = z.object({
+export const employeeBonusFE = z.object({
 	period_id: z.coerce.number(),
 	bonus_type: BonusTypeEnum,
 	department: z.coerce.string(),
@@ -50,10 +50,10 @@ export const EmployeeBonusFE = z.object({
 }).merge(EmpData);
 
 
-export type EmployeeBonusFEType = z.infer<typeof EmployeeBonusFE>
-export type EmployeeBonusType = z.infer<typeof EmployeeBonus>
+export type EmployeeBonusFEType = z.infer<typeof employeeBonusFE>
+export type EmployeeBonusType = z.infer<typeof employeeBonus>
 
-export const createEmployeeBonusAPI = EmployeeBonusFE;
-export const createEmployeeBonusService = EmployeeBonus;
-export const updateEmployeeBonusAPI = EmployeeBonusFE.partial().merge(Id);
-export const updateEmployeeBonusService = EmployeeBonus.partial().merge(Id);
+export const createEmployeeBonusAPI = employeeBonusFE;
+export const createEmployeeBonusService = employeeBonus;
+export const updateEmployeeBonusAPI = employeeBonusFE.partial().merge(Id);
+export const updateEmployeeBonusService = employeeBonus.partial().merge(Id);

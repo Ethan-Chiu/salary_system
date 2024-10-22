@@ -5,6 +5,7 @@ import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
+import { type Column } from "@tanstack/react-table";
 
 const columns = (t: I18nType) =>
 	[
@@ -28,8 +29,7 @@ const columns = (t: I18nType) =>
 	].map((key) => {
 		return {
 			accessorKey: key,
-			header: ({ column }: any) => {
-				const { t } = useTranslation(["common"]);
+			header: ({ column }: { column: Column<any, any>}) => {
 				return (
 					<div className="flex justify-center">
 						<div className="text-center font-medium">

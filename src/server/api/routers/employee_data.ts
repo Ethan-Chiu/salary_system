@@ -27,9 +27,6 @@ export const employeeDataRouter = createTRPCRouter({
 	getAllEmployeeData: publicProcedure.query(async () => {
 		const employeeDataService = container.resolve(EmployeeDataService);
 		const employeeData = await employeeDataService.getAllEmployeeData();
-		if (employeeData.length == 0) {
-			throw new BaseResponseError("EmployeeData does not exist");
-		}
 		return employeeData;
 	}),
 

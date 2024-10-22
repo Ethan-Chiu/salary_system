@@ -1,5 +1,5 @@
-import { AllowanceFEType } from "~/server/api/types/allowance_type";
-import { AllowanceWithType, EHRService } from "~/server/service/ehr_service";
+import { type AllowanceFEType } from "~/server/api/types/allowance_type";
+import { type AllowanceWithType, EHRService } from "~/server/service/ehr_service";
 import { convertDatePropertiesToISOString } from "./helper_function";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { container } from "tsyringe";
@@ -12,12 +12,12 @@ export class AllowanceMapper {
 		const ehrService = container.resolve(EHRService);
 		const employee_data =
 			await employee_data_service.getEmployeeDataByEmpNo(
-				allowance_with_type.emp_no!
+				allowance_with_type.emp_no
 			);
 		const payset = (
 			await ehrService.getPaysetByEmpNoList(
-				allowance_with_type.period_id!,
-				[allowance_with_type.emp_no!]
+				allowance_with_type.period_id,
+				[allowance_with_type.emp_no]
 			)
 		)[0];
 		const allowanceFE: AllowanceFEType = {
