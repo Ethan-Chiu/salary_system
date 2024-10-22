@@ -386,6 +386,8 @@
     "bonus_excel_export": "匯出Excel",
     "bonus_excel_import": "匯入Excel",
     "bonus_final_check": "最終確認",
+    "bonus_first_stage": "獎金第一階段",
+    "bonus_second_stage": "獎金第二階段",
     "login": "登入",
     "user_id": "員工編號",
     "your_employee_id": "您的員工編號",
@@ -405,4 +407,3 @@
     "new_department": "改動",
     "new_employee": "改動"
   }
-}

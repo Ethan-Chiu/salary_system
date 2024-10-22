@@ -372,6 +372,8 @@
     "bonus_excel_export": "Excel Export",
     "bonus_excel_import": "Excel Import",
     "bonus_final_check": "Final Check",
+    "bonus_first_stage": "Bonus First Stage",
+    "bonus_second_stage": "Bonus Second Stage",
     "login": "Login",
     "user_id": "User ID",
     "your_employee_id": "Your Employee ID",
@@ -391,4 +393,3 @@
     "new_department": "New",
     "new_employee": "New"
   }
-}

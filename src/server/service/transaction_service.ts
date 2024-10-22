@@ -577,6 +577,7 @@ export class TransactionService {
 			full_attendance_personal_leave: full_attendance_personal_leave, // 有全勤事假
 			full_attendance_sick_leave: full_attendance_sick_leave, // 有全勤病假
 			long_service_allowance: long_service_allowance, // 久任津貼
+			disable: false,
 			create_by: "system",
 			update_by: "system",
 		});

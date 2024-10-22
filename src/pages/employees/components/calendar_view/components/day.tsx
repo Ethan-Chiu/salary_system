@@ -219,6 +219,9 @@ function CompEvent({
 	day: Dayjs;
 	onMouseDown: MouseEventHandler;
 }) {
+	const event_start_date = get_date_string(event.getStartDate());
+	const event_end_date = get_date_string(event.getEndDate());
+	const current_date = get_date_string(day.toDate());
 	return (
 		<div
 			onMouseDown={(e) => {
@@ -226,12 +229,10 @@ function CompEvent({
 				e.stopPropagation();
 			}}
 			className={cn(
-				"z-20 mb-1 h-4 truncate bg-primary text-sm text-gray-600 opacity-20",
+				(current_date == event_start_date || current_date == event_end_date) && "z-20 mb-1 h-4 truncate text-sm text-gray-600 opacity-20",
+				current_date == event_start_date && "ml-4 rounded-s-md bg-gradient-to-r from-primary",
+				current_date == event_end_date && "mr-4 rounded-e-md bg-gradient-to-r from-transparent to-primary",
 				selected && "opacity-90",
-				get_date_string(event.getStartDate()) == get_date_string(day.toDate()) &&
-				"ml-4 rounded-s-md",
-				get_date_string(event.getEndDate()) == get_date_string(day.toDate()) &&
-				"mr-4 rounded-e-md"
 			)}
 		></div>
 	);
