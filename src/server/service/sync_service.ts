@@ -205,7 +205,7 @@ export class SyncService {
 
 		if (func == FunctionsEnum.Enum.month_salary) {
 			// 如果功能是月薪計算
-			let salary_emps = await EmployeeData.findAll({
+			const salary_emps_data = await EmployeeData.findAll({
 				attributes: [
 					"emp_name",
 					"department",
@@ -214,8 +214,9 @@ export class SyncService {
 					"quit_date",
 				],
 			});
+
 			// 篩選符合支付工作狀態的員工
-			salary_emps = salary_emps.filter((emp) => {
+			const salary_emps = salary_emps_data.filter((emp) => {
 				return paid_status.includes(emp.work_status);
 			});
 

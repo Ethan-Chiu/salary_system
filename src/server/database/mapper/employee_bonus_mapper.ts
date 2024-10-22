@@ -4,13 +4,13 @@ import { BaseResponseError } from "~/server/api/error/BaseResponseError";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { convertDatePropertiesToISOString, deleteProperties } from "./helper_function";
 import { CryptoHelper } from "~/lib/utils/crypto";
-import { EmployeeBonus, EmployeeBonusFEType, EmployeeBonusType, updateEmployeeBonusAPI, updateEmployeeBonusService } from "~/server/api/types/employee_bonus_type";
+import { employeeBonus, EmployeeBonusFEType, EmployeeBonusType, updateEmployeeBonusAPI, updateEmployeeBonusService } from "~/server/api/types/employee_bonus_type";
 import { EmployeePaymentService } from "~/server/service/employee_payment_service";
 
 @injectable()
 export class EmployeeBonusMapper {
     async getEmployeeBonus(employee_bonus: EmployeeBonusFEType): Promise<EmployeeBonusType> {
-        const employeeBonus: z.infer<typeof EmployeeBonus> = EmployeeBonus.parse(
+        const result: z.infer<typeof employeeBonus> = employeeBonus.parse(
             convertDatePropertiesToISOString({
                 ...employee_bonus,
                 period_id: employee_bonus.period_id,
@@ -30,7 +30,7 @@ export class EmployeeBonusMapper {
             })
         )
 
-        return employeeBonus
+        return result 
     }
 
     async getEmployeeBonusFE(employee_bonus: EmployeeBonusType): Promise<EmployeeBonusFEType> {

@@ -35,6 +35,31 @@ import { BonusSetting } from "~/server/database/entity/SALARY/bonus_setting";
 import { EmployeeAccount } from "~/server/database/entity/SALARY/employee_account";
 
 export const debugRouter = createTRPCRouter({
+	getDatabases: publicProcedure.query(async () => {
+		const database = container.resolve(Database).connection;
+		const tables = await database.getQueryInterface().showAllSchemas();
+		return {
+			msg: tables,
+		};
+	}),
+	getTables: publicProcedure.query(async () => {
+		const database = container.resolve(Database).connection;
+		const tables = await database.getQueryInterface().showAllTables();
+		return {
+			msg: tables,
+		};
+	}),
+	describeTable: publicProcedure
+		.input(z.object({ table_name: z.string() }))
+		.query(async ({ input }) => {
+			const database = container.resolve(Database).connection;
+			const tables = await database
+				.getQueryInterface()
+				.describeTable(input.table_name);
+			return {
+				msg: tables,
+			};
+		}),
 	syncDb: publicProcedure
 		.input(
 			z.object({
@@ -110,6 +135,7 @@ export const debugRouter = createTRPCRouter({
 				// EmployeeBonus,
 				// EmployeePayment,
 				// EmployeeTrust,
+        EmployeeData
 				// InsuranceRateSetting,
 				LevelRange,
 				// Level,
@@ -123,14 +149,13 @@ export const debugRouter = createTRPCRouter({
 						await model.sync({ alter: true });
 					}
 					await model.sync();
-
 				} catch (e) {
 					return {
 						msg: `error ${(e as Error).message}`,
 					};
 				}
-			})
-			await Promise.all(promises)
+			});
+			await Promise.all(promises);
 			return {
 				msg: "All models were synchronized successfully.",
 			};
@@ -142,8 +167,9 @@ export const debugRouter = createTRPCRouter({
 			return { msg: "Connection has been established successfully." };
 		} catch (error) {
 			return {
-				msg: `Unable to connect to the database: ${(error as Error).message
-					}`,
+				msg: `Unable to connect to the database: ${
+					(error as Error).message
+				}`,
 			};
 		}
 	}),
