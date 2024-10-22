@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { DateAPI, DateService, EmpData, Id } from "./common_type";
-import { EnterFullScreenIcon } from "@radix-ui/react-icons";
 
 export const EmployeeTrust = z.object({
 	emp_no: z.string(),

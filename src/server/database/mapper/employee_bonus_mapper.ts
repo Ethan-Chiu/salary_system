@@ -94,9 +94,9 @@ export class EmployeeBonusMapper {
         const employeeBonus: z.infer<typeof updateEmployeeBonusService> = updateEmployeeBonusService.parse(
             convertDatePropertiesToISOString({
                 ...employee_bonus,
-                period_id: employee_bonus.period_id != undefined ? employee_bonus.period_id : undefined,
-                bonus_type: employee_bonus.bonus_type != undefined ? employee_bonus.bonus_type : undefined,
-                emp_no: employee_bonus.emp_no != undefined ? employee_bonus.emp_no : undefined,
+                period_id: employee_bonus.period_id ?? employee_bonus.period_id,
+                bonus_type: employee_bonus.bonus_type ?? employee_bonus.bonus_type,
+                emp_no: employee_bonus.emp_no ?? employee_bonus.emp_no,
                 special_multiplier_enc: employee_bonus.special_multiplier != undefined ? CryptoHelper.encrypt(employee_bonus.special_multiplier.toString()) : undefined,
                 multiplier_enc: employee_bonus.multiplier != undefined ? CryptoHelper.encrypt(employee_bonus.multiplier.toString()) : undefined,
                 fixed_amount_enc: employee_bonus.fixed_amount != undefined ? CryptoHelper.encrypt(employee_bonus.fixed_amount.toString()) : undefined,

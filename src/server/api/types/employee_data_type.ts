@@ -1,11 +1,11 @@
 import { z } from "zod";
 
-import { Id, DateAPI, DateService, User } from "./common_type";
-import { BonusTypeEnum } from "./bonus_type_enum";
+import { Id } from "./common_type";
 import { WorkTypeEnum } from "./work_type_enum";
+
 //MARK:employee_data
-const EmployeeData = z.object({
-  period_id: z.number(),
+const employeeData = z.object({
+	period_id: z.number(),
 	emp_no: z.string(),
 	emp_name: z.string(),
 	position: z.number(),
@@ -25,12 +25,15 @@ const EmployeeData = z.object({
 	// received_elderly_benefits: z.boolean(),
 });
 
-export const createEmployeeDataAPI = EmployeeData;
-export const createEmployeeDataService = EmployeeData;
-export const updateEmployeeDataAPI = EmployeeData.partial().merge(Id);
-export const updateEmployeeDataByEmpNoAPI = EmployeeData.partial();
-export const updateEmployeeDataService = EmployeeData.partial().merge(Id);
-export const updateEmployeeDataByEmpNoService = EmployeeData.partial();
+export const createEmployeeDataAPI = employeeData;
+export const createEmployeeDataService = employeeData;
+export type CreateEmployeeDataType = z.infer<typeof createEmployeeDataService>;
+
+
+export const updateEmployeeDataAPI = employeeData.partial().merge(Id);
+export const updateEmployeeDataByEmpNoAPI = employeeData.partial();
+export const updateEmployeeDataService = employeeData.partial().merge(Id);
+export const updateEmployeeDataByEmpNoService = employeeData.partial();
 
 // const EmployeeDataMut = z.object({
 // 	emp_no: z.string(),
@@ -45,8 +48,8 @@ export const updateEmployeeDataByEmpNoService = EmployeeData.partial();
 // export const updateEmployeeDataMutService = EmployeeDataMut.partial().merge(Id);
 // export const updateEmployeeDataMutByEmpNoService = EmployeeDataMut.partial();
 
-const EmployeeDataFE = z.object({
-    emp_no: z.string(),
+const employeeDataFE = z.object({
+	emp_no: z.string(),
 	emp_name: z.string(),
 	position: z.number(),
 	position_type: z.string(),
@@ -62,4 +65,5 @@ const EmployeeDataFE = z.object({
 	quit_date: z.string().nullable(),
 	license_id: z.string().nullable(),
 	bank_account: z.string(),
-    trust_date: z.string(),});
+	trust_date: z.string(),
+});

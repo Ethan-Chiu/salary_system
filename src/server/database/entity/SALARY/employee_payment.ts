@@ -4,9 +4,9 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
-	Sequelize,
+	type Sequelize,
 } from "sequelize";
-import { LongServiceeEnumType } from "~/server/api/types/long_service_enum";
+import { type LongServiceeEnumType } from "~/server/api/types/long_service_enum";
 
 export class EmployeePayment extends Model<
 	InferAttributes<EmployeePayment>,

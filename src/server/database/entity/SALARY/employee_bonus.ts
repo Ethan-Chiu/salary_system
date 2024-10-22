@@ -4,9 +4,9 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
-	Sequelize,
+	type Sequelize,
 } from "sequelize";
-import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
+import { type BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 
 export class EmployeeBonus extends Model<
 	InferAttributes<EmployeeBonus>,

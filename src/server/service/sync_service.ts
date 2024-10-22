@@ -11,8 +11,8 @@ import {
 	type FunctionsEnumType,
 } from "../api/types/functions_enum";
 import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
-/* import { EmployeeTrustService } from "./employee_trust_service"; */
-/* import { EmployeeTrustMapper } from "../database/mapper/employee_trust_mapper"; */
+import { EmployeeTrustService } from "./employee_trust_service";
+import { EmployeeTrustMapper } from "../database/mapper/employee_trust_mapper";
 import {
 	type DataComparison,
 	type PaidEmployee,
@@ -24,6 +24,7 @@ import {
 import { type Period } from "../database/entity/UMEDIA/period";
 import { type EmployeePaymentFEType } from "../api/types/employee_payment_type";
 import { LongServiceeEnum } from "../api/types/long_service_enum";
+import { CreateEmployeeDataType } from "../api/types/employee_data_type";
 
 @injectable()
 export class SyncService {
@@ -87,26 +88,26 @@ export class SyncService {
 
 	// TODO: move this
 	// 將EHR資料格式轉換為Salary資料格式
-	empToEmployee(ehr_data: Emp): EmployeeData {
-		const salary_data = new EmployeeData();
-		salary_data.emp_no = ehr_data.emp_no!;
-		salary_data.emp_name = ehr_data.emp_name!;
-		salary_data.position = ehr_data.position!;
-		salary_data.position_type = ehr_data.position_type!;
-		salary_data.group_insurance_type = ehr_data.group_insurance_type!;
-		salary_data.department = ehr_data.department!;
-		salary_data.work_type = ehr_data.work_type!;
-		salary_data.work_status = ehr_data.work_status!;
-		salary_data.disabilty_level = ehr_data.disabilty_level!;
-		salary_data.sex_type = ehr_data.sex_type!;
-		salary_data.dependents = ehr_data.dependents!;
-		salary_data.healthcare_dependents = ehr_data.healthcare_dependents!;
-		salary_data.registration_date = ehr_data.registration_date!;
-		salary_data.quit_date = ehr_data.quit_date!;
-		salary_data.license_id = ehr_data.license_id!;
-		salary_data.bank_account = ehr_data.bank_account!;
-		// salary_data.accumulated_bonus = 0;
-		return salary_data;
+	empToEmployee(ehr_data: Emp, period_id: number): CreateEmployeeDataType {
+		return {
+      period_id: period_id,
+			emp_no: ehr_data.emp_no,
+			emp_name: ehr_data.emp_name,
+			position: ehr_data.position,
+			position_type: ehr_data.position_type,
+			group_insurance_type: ehr_data.group_insurance_type,
+			department: ehr_data.department,
+			work_type: ehr_data.work_type,
+			work_status: ehr_data.work_status,
+			disabilty_level: ehr_data.disabilty_level,
+			sex_type: ehr_data.sex_type,
+			dependents: ehr_data.dependents,
+			healthcare_dependents: ehr_data.healthcare_dependents,
+			registration_date: ehr_data.registration_date,
+			quit_date: ehr_data.quit_date!,
+			license_id: ehr_data.license_id!,
+			bank_account: ehr_data.bank_account!,
+		};
 	}
 
 	dataComparison<ValueT>(
@@ -140,7 +141,7 @@ export class SyncService {
 		ehrEmp: Exact<T, EmployeeData>,
 		salaryEmp?: Exact<T, EmployeeData>
 	): SyncData {
-    		// TODO: change this
+		// TODO: change this
 		// syncData.english_name = this.dataComparison("english_name", ehrEmp.english_name, salaryEmp?.english_name);
 		const pseudo_english_name: DataComparison = {
 			key: "english_name",
@@ -239,8 +240,8 @@ export class SyncService {
 					newEmps.push(emp);
 			});
 			// 將新員工轉換為Employee
-			const new_employees: EmployeeData[] = newEmps.map((emp) =>
-				this.empToEmployee(emp)
+			const new_employees: CreateEmployeeDataType[] = newEmps.map((emp) =>
+				this.empToEmployee(emp, period)
 			);
 
 			const all_emps = salary_emps.concat(new_employees); // 合併所有員工數據
@@ -249,7 +250,7 @@ export class SyncService {
 			const updated_all_emps = all_emps.map((salaryEmp) => {
 				const matchingEhrEmp = ehrDict.get(salaryEmp.emp_no);
 				return matchingEhrEmp
-					? this.empToEmployee(matchingEhrEmp)
+					? this.empToEmployee(matchingEhrEmp, period)
 					: salaryEmp;
 			});
 			// NOTE: check employee work status
@@ -345,8 +346,8 @@ export class SyncService {
 		}
 
 		const ehr_datas: Emp[] = await ehrService.getEmp(period);
-		const ehr_datas_transformed: EmployeeData[] = ehr_datas.map((emp) =>
-			this.empToEmployee(emp)
+		const ehr_datas_transformed: CreateEmployeeDataType[] = ehr_datas.map((emp) =>
+			this.empToEmployee(emp, period)
 		);
 
 		// Lookup table by EMP_NO
@@ -412,16 +413,16 @@ export class SyncService {
 		const employee_payment_mapper = container.resolve(
 			EmployeePaymentMapper
 		);
-		/* const employee_trust_setvice = container.resolve(EmployeeTrustService); */
-		/* const employee_trust_mapper = container.resolve(EmployeeTrustMapper); */
+		const employee_trust_setvice = container.resolve(EmployeeTrustService);
+		const employee_trust_mapper = container.resolve(EmployeeTrustMapper);
 
 		// Update fields
 		const updatedDatas: EmployeeData[] = [];
 		for (const changeEmp of change_emp_list) {
 			// TODO: the data type is incorrect, lacking type check (period_id is missing)
 			// TODO: append period_id
-			const ehr_emp_data: EmployeeData = this.empToEmployee(
-				ehrDict.get(changeEmp.emp_no)!
+			const ehr_emp_data: CreateEmployeeDataType = this.empToEmployee(
+				ehrDict.get(changeEmp.emp_no)!, period
 			);
 
 			let salary_emp_data: EmployeeData | undefined = salary_datas.find(
@@ -460,17 +461,18 @@ export class SyncService {
 					employee_payment_input
 				);
 
-				// const employee_trust_input = {
-				// 	emp_no: updatedData.emp_no,
-				// 	emp_trust_reserve: 0,
-				// 	org_trust_reserve: 0,
-				// 	emp_special_trust_incent: 0,
-				// 	org_special_trust_incent: 0,
-				// 	start_date: new Date(updatedData.registration_date),
-				// 	end_date: null,
-				// };
-				// const employee_trust = await employee_trust_mapper.getEmployeeTrust(employee_trust_input);
-				// await employee_trust_setvice.createEmployeeTrust(employee_trust);
+				const employee_trust_input = {
+					emp_no: ehr_emp_data.emp_no,
+					emp_trust_reserve: 0,
+					org_trust_reserve: 0,
+					emp_special_trust_incent: 0,
+					org_special_trust_incent: 0,
+          entry_date: (new Date()).toString(),
+					start_date: new Date(ehr_emp_data.registration_date),
+					end_date: null,
+				};
+				const employee_trust = await employee_trust_mapper.getEmployeeTrust(employee_trust_input);
+				await employee_trust_setvice.createEmployeeTrust(employee_trust);
 
 				// TODO:
 				/* salary_emp_data = ehr_emp_data; */
@@ -484,8 +486,8 @@ export class SyncService {
 
 			const updatedData: EmployeeData = salary_emp_data;
 			for (const key of changeEmp.keys) {
-				const data_key: keyof InferAttributes<EmployeeData> =
-					key as keyof InferAttributes<EmployeeData>;
+				const data_key: keyof CreateEmployeeDataType =
+					key as keyof CreateEmployeeDataType;
 				updatedData.set(data_key, ehr_emp_data[data_key]);
 			}
 
