@@ -118,7 +118,7 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		);
 	}
 
-	function CompTopBar({ data }: { data: SyncData[] }) {
+	function CompTopBar() {
 		return (
 			<>
 				<div className="mb-4 flex items-center">
@@ -211,7 +211,7 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 	return (
 		<>
 			{/* Main Content */}
-			<CompTopBar data={data} />
+			<CompTopBar />
 			<div className="relative h-0 w-full flex-grow ">
 				<EmployeeDataChangeTable 
 					data={filterData} 

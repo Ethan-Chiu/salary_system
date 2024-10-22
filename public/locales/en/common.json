@@ -388,6 +388,7 @@
     "select_employee": "Select Employee",
     "select_department" : "Select Department",
     "selected" : "Selected",
-    "new_department": "New"
+    "new_department": "New",
+    "new_employee": "New"
   }
 }

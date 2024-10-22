@@ -21,18 +21,26 @@ export function SelectEmployee({
 	const { t } = useTranslation(["common"]);
 
 	const foramttedData = data.map((d) => {
-		const changed = !d.name.salary_value || !d.english_name.salary_value
-			return {
-				key: d.emp_no,
-				value: `${d.emp_no} ${
-					d.name.salary_value ?? d.name.ehr_value
-				} ${d.english_name.salary_value}`,
-				option: (
-					<div>{`${d.emp_no} ${
-						d.name.ehr_value ?? d.name.ehr_value
-					} ${d.english_name.ehr_value ?? d.name.ehr_value}`}{changed && <Badge variant="outline">{t("sync_page.new_department")}</Badge>}</div>
-				),
-			};
+		const changed = !d.name.salary_value || !d.english_name.salary_value;
+
+		return {
+			key: d.emp_no,
+			value: `${d.emp_no} ${d.name.salary_value ?? d.name.ehr_value} ${
+				d.english_name.salary_value
+			}`,
+			option: (
+				<div>
+					{`${d.emp_no} ${d.name.ehr_value ?? d.name.ehr_value} ${
+						d.english_name.ehr_value ?? d.name.ehr_value
+					}`}
+					{changed && (
+						<Badge variant="outline">
+							{t("sync_page.new_employee")}
+						</Badge>
+					)}
+				</div>
+			),
+		};
 	});
 
 	return (
