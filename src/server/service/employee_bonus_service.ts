@@ -16,7 +16,10 @@ import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mappe
 import { EmployeeBonusMapper } from "../database/mapper/employee_bonus_mapper";
 import { CryptoHelper } from "~/lib/utils/crypto";
 import { LongServiceeEnum } from "../api/types/long_service_enum";
-import { createEmployeeBonusService, updateEmployeeBonusService } from "../api/types/employee_bonus_type";
+import {
+	createEmployeeBonusService,
+	updateEmployeeBonusService,
+} from "../api/types/employee_bonus_type";
 
 @injectable()
 export class EmployeeBonusService {
@@ -70,7 +73,8 @@ export class EmployeeBonusService {
 			if (employeeBonus.find((e) => e.emp_no === emp_no)) {
 				return;
 			}
-			const employee_bonus_mapper = container.resolve(EmployeeBonusMapper);
+			const employee_bonus_mapper =
+				container.resolve(EmployeeBonusMapper);
 			const employee_bonus = await employee_bonus_mapper.getEmployeeBonus(
 				{
 					period_id: period_id,
@@ -114,16 +118,14 @@ export class EmployeeBonusService {
 		bonus_type: BonusTypeEnumType,
 		emp_no: string
 	) {
-		const result = await EmployeeBonus.findOne(
-			{
-				where: {
-					period_id: period_id,
-					bonus_type: bonus_type,
-					emp_no: emp_no,
-					disabled: false,
-				},
-			}
-		);
+		const result = await EmployeeBonus.findOne({
+			where: {
+				period_id: period_id,
+				bonus_type: bonus_type,
+				emp_no: emp_no,
+				disabled: false,
+			},
+		});
 		return result;
 	}
 
@@ -131,16 +133,14 @@ export class EmployeeBonusService {
 		period_id: number,
 		bonus_type: BonusTypeEnumType
 	) {
-		const result = await EmployeeBonus.findAll(
-			{
-				where: {
-					period_id: period_id,
-					bonus_type: bonus_type,
-					disabled: false,
-				},
-				order: [["emp_no", "ASC"]],
-			}
-		);
+		const result = await EmployeeBonus.findAll({
+			where: {
+				period_id: period_id,
+				bonus_type: bonus_type,
+				disabled: false,
+			},
+			order: [["emp_no", "ASC"]],
+		});
 		return result;
 	}
 
@@ -184,31 +184,6 @@ export class EmployeeBonusService {
 			BonusDepartmentService
 		);
 		const ehr_service = container.resolve(EHRService);
-		const bonus_work_type_list =
-			await bonus_work_type_service.getBonusWorkTypeByBonusType(
-				period_id,
-				bonus_type
-			);
-		const bonus_position_list =
-			await bonus_position_service.getBonusPositionByBonusType(
-				period_id,
-				bonus_type
-			);
-		// const bonus_position_type_list =
-		// 	await bonus_position_type_service.getBonusPositionTypeByBonusType(
-		// 		period_id,
-		// 		bonus_type
-		// 	);
-		const bonus_seniority_list =
-			await bonus_seniority_service.getBonusSeniorityByBonusType(
-				period_id,
-				bonus_type
-			);
-		const bonus_department_list =
-			await bonus_department_service.getBonusDepartmentByBonusType(
-				period_id,
-				bonus_type
-			);
 		const employee_data_service = container.resolve(EmployeeDataService);
 		const issue_date = (await ehr_service.getPeriodById(period_id))
 			.issue_date;
@@ -220,14 +195,44 @@ export class EmployeeBonusService {
 				return;
 			}
 			const special_multiplier =
-				await bonus_work_type_service.getMultiplier(period_id, bonus_type, employee_data.work_type) *
-				await bonus_position_service.getMultiplier(period_id, bonus_type, employee_data.position, employee_data.position_type) *
-				await bonus_seniority_service.getMultiplier(period_id, bonus_type, Math.floor((new Date(issue_date).getTime() - new Date(employee_data.registration_date).getTime()) / (1000 * 60 * 60 * 24 * 365))) *
-				await bonus_department_service.getMultiplier(period_id, bonus_type, employee_data.department);
-			await this.updateEmployeeBonus({
-				id: emp.id,
-				special_multiplier_enc: CryptoHelper.encrypt(special_multiplier.toString()),
-			});
+				(await bonus_work_type_service.getMultiplier(
+					period_id,
+					bonus_type,
+					employee_data.work_type
+				)) *
+				(await bonus_position_service.getMultiplier(
+					period_id,
+					bonus_type,
+					employee_data.position,
+					employee_data.position_type
+				)) *
+				(await bonus_seniority_service.getMultiplier(
+					period_id,
+					bonus_type,
+					Math.floor(
+						(new Date(issue_date).getTime() -
+							new Date(
+								employee_data.registration_date
+							).getTime()) /
+							(1000 * 60 * 60 * 24 * 365)
+					)
+				)) *
+				(await bonus_department_service.getMultiplier(
+					period_id,
+					bonus_type,
+					employee_data.department
+				));
+			if (
+				CryptoHelper.encrypt(special_multiplier.toString()) !=
+				emp.special_multiplier_enc
+			) {
+				await this.updateEmployeeBonus({
+					id: emp.id,
+					special_multiplier_enc: CryptoHelper.encrypt(
+						special_multiplier.toString()
+					),
+				});
+			}
 		});
 
 		await Promise.all(promises);
@@ -265,55 +270,55 @@ export class EmployeeBonusService {
 
 		await this.deleteEmployeeBonus(id);
 
-		await this.createEmployeeBonus(
-			{
-				emp_no: select_value(emp_no, employeeBonus.emp_no),
-				period_id: select_value(period_id, employeeBonus.period_id),
-				bonus_type: select_value(bonus_type, employeeBonus.bonus_type),
-				special_multiplier_enc: select_value(
-					special_multiplier_enc,
-					employeeBonus.special_multiplier_enc
-				),
-				multiplier_enc: select_value(multiplier_enc, employeeBonus.multiplier_enc),
-				fixed_amount_enc: select_value(
-					fixed_amount_enc,
-					employeeBonus.fixed_amount_enc
-				),
-				bud_effective_salary_enc: select_value(
-					bud_effective_salary_enc,
-					employeeBonus.bud_effective_salary_enc
-				),
-				bud_amount_enc: select_value(
-					bud_amount_enc,
-					employeeBonus.bud_amount_enc
-				),
-				sup_performance_level_enc: select_value(
-					sup_performance_level_enc,
-					employeeBonus.sup_performance_level_enc
-				),
-				sup_effective_salary_enc: select_value(
-					sup_effective_salary_enc,
-					employeeBonus.sup_effective_salary_enc
-				),
-				sup_amount_enc: select_value(
-					sup_amount_enc,
-					employeeBonus.sup_amount_enc
-				),
-				app_performance_level_enc: select_value(
-					app_performance_level_enc,
-					employeeBonus.app_performance_level_enc
-				),
-				app_effective_salary_enc: select_value(
-					app_effective_salary_enc,
-					employeeBonus.app_effective_salary_enc
-				),
-				app_amount_enc: select_value(
-					app_amount_enc,
-					employeeBonus.app_amount_enc
-				),
-
-			},
-		);
+		await this.createEmployeeBonus({
+			emp_no: select_value(emp_no, employeeBonus.emp_no),
+			period_id: select_value(period_id, employeeBonus.period_id),
+			bonus_type: select_value(bonus_type, employeeBonus.bonus_type),
+			special_multiplier_enc: select_value(
+				special_multiplier_enc,
+				employeeBonus.special_multiplier_enc
+			),
+			multiplier_enc: select_value(
+				multiplier_enc,
+				employeeBonus.multiplier_enc
+			),
+			fixed_amount_enc: select_value(
+				fixed_amount_enc,
+				employeeBonus.fixed_amount_enc
+			),
+			bud_effective_salary_enc: select_value(
+				bud_effective_salary_enc,
+				employeeBonus.bud_effective_salary_enc
+			),
+			bud_amount_enc: select_value(
+				bud_amount_enc,
+				employeeBonus.bud_amount_enc
+			),
+			sup_performance_level_enc: select_value(
+				sup_performance_level_enc,
+				employeeBonus.sup_performance_level_enc
+			),
+			sup_effective_salary_enc: select_value(
+				sup_effective_salary_enc,
+				employeeBonus.sup_effective_salary_enc
+			),
+			sup_amount_enc: select_value(
+				sup_amount_enc,
+				employeeBonus.sup_amount_enc
+			),
+			app_performance_level_enc: select_value(
+				app_performance_level_enc,
+				employeeBonus.app_performance_level_enc
+			),
+			app_effective_salary_enc: select_value(
+				app_effective_salary_enc,
+				employeeBonus.app_effective_salary_enc
+			),
+			app_amount_enc: select_value(
+				app_amount_enc,
+				employeeBonus.app_amount_enc
+			),
+		});
 	}
 	async updateFromExcel(
 		force: boolean,
@@ -344,15 +349,16 @@ export class EmployeeBonusService {
 			throw new BaseResponseError("Employee bonus does not exist");
 		}
 		const employee_bonus_mapper = container.resolve(EmployeeBonusMapper);
-		const employee_bonus_fe = await employee_bonus_mapper.getEmployeeBonusFE({
-			...employeeBonus,
-			sup_performance_level_enc: sup_performance_level_enc!,
-			sup_effective_salary_enc: sup_effective_salary_enc!,
-			sup_amount_enc: sup_amount_enc!,
-			app_performance_level_enc: app_performance_level_enc!,
-			app_effective_salary_enc: app_effective_salary_enc!,
-			app_amount_enc: app_amount_enc!,
-		})
+		const employee_bonus_fe =
+			await employee_bonus_mapper.getEmployeeBonusFE({
+				...employeeBonus,
+				sup_performance_level_enc: sup_performance_level_enc!,
+				sup_effective_salary_enc: sup_effective_salary_enc!,
+				sup_amount_enc: sup_amount_enc!,
+				app_performance_level_enc: app_performance_level_enc!,
+				app_effective_salary_enc: app_effective_salary_enc!,
+				app_amount_enc: app_amount_enc!,
+			});
 		if (
 			employee_bonus_fe.sup_performance_level ||
 			employee_bonus_fe.sup_effective_salary ||
@@ -364,35 +370,33 @@ export class EmployeeBonusService {
 			error = true;
 		}
 		if (force || !error) {
-			await this.updateEmployeeBonus(
-				{
-					id: employeeBonus.id,
-					sup_performance_level_enc: select_value(
-						sup_performance_level_enc,
-						employeeBonus!.sup_performance_level_enc
-					),
-					sup_effective_salary_enc: select_value(
-						sup_effective_salary_enc,
-						employeeBonus!.sup_effective_salary_enc
-					),
-					sup_amount_enc: select_value(
-						sup_amount_enc,
-						employeeBonus!.sup_amount_enc
-					),
-					app_performance_level_enc: select_value(
-						app_performance_level_enc,
-						employeeBonus!.app_performance_level_enc
-					),
-					app_effective_salary_enc: select_value(
-						app_effective_salary_enc,
-						employeeBonus!.app_effective_salary_enc
-					),
-					app_amount_enc: select_value(
-						app_amount_enc,
-						employeeBonus!.app_amount_enc
-					),
-				},
-			);
+			await this.updateEmployeeBonus({
+				id: employeeBonus.id,
+				sup_performance_level_enc: select_value(
+					sup_performance_level_enc,
+					employeeBonus!.sup_performance_level_enc
+				),
+				sup_effective_salary_enc: select_value(
+					sup_effective_salary_enc,
+					employeeBonus!.sup_effective_salary_enc
+				),
+				sup_amount_enc: select_value(
+					sup_amount_enc,
+					employeeBonus!.sup_amount_enc
+				),
+				app_performance_level_enc: select_value(
+					app_performance_level_enc,
+					employeeBonus!.app_performance_level_enc
+				),
+				app_effective_salary_enc: select_value(
+					app_effective_salary_enc,
+					employeeBonus!.app_effective_salary_enc
+				),
+				app_amount_enc: select_value(
+					app_amount_enc,
+					employeeBonus!.app_amount_enc
+				),
+			});
 		}
 		return error ? emp_no : null;
 	}
@@ -410,14 +414,20 @@ export class EmployeeBonusService {
 			await this.getAllEmployeeBonus(period_id, bonus_type)
 		).map((e) => e.emp_no);
 		const promises = emp_no_list.map(async (emp_no) => {
-			const employee_payment_service = container.resolve(EmployeePaymentService);
-			const employee_payment_mapper = container.resolve(EmployeePaymentMapper);
-			const employee_bonus_mapper = container.resolve(EmployeeBonusMapper);
-
-			const employee_payment = await employee_payment_service.getCurrentEmployeePaymentByEmpNo(
-				emp_no,
-				period_id
+			const employee_payment_service = container.resolve(
+				EmployeePaymentService
 			);
+			const employee_payment_mapper = container.resolve(
+				EmployeePaymentMapper
+			);
+			const employee_bonus_mapper =
+				container.resolve(EmployeeBonusMapper);
+
+			const employee_payment =
+				await employee_payment_service.getCurrentEmployeePaymentByEmpNo(
+					emp_no,
+					period_id
+				);
 			if (!employee_payment) {
 				return;
 			}
@@ -431,33 +441,36 @@ export class EmployeeBonusService {
 				return;
 			}
 
-			const employee_payment_fe = await employee_payment_mapper.getEmployeePaymentFE(employee_payment);
-			const employee_bonus_fe = await employee_bonus_mapper.getEmployeeBonusFE(employee_bonus);
+			const employee_payment_fe =
+				await employee_payment_mapper.getEmployeePaymentFE(
+					employee_payment
+				);
+			const employee_bonus_fe =
+				await employee_bonus_mapper.getEmployeeBonusFE(employee_bonus);
 
 			const budget_amount =
-				(
-					employee_payment_fe.base_salary +
-						employee_payment_fe.food_allowance +
-						employee_payment_fe.supervisor_allowance +
-						employee_payment_fe.occupational_allowance +
-						employee_payment_fe.subsidy_allowance +
-						employee_payment_fe.long_service_allowance_type == LongServiceeEnum.Enum.月領
-						? employee_payment_fe.long_service_allowance
-						: 0
-				)
-				* employee_bonus_fe.special_multiplier
-				* employee_bonus_fe.multiplier
-				+ employee_bonus_fe.fixed_amount;
+				(employee_payment_fe.base_salary +
+					employee_payment_fe.food_allowance +
+					employee_payment_fe.supervisor_allowance +
+					employee_payment_fe.occupational_allowance +
+					employee_payment_fe.subsidy_allowance +
+					employee_payment_fe.long_service_allowance_type ==
+				LongServiceeEnum.Enum.月領
+					? employee_payment_fe.long_service_allowance
+					: 0) *
+					employee_bonus_fe.special_multiplier *
+					employee_bonus_fe.multiplier +
+				employee_bonus_fe.fixed_amount;
 
 			budget_amount_list.push({
 				emp_no: emp_no,
 				budget_effective_salary: Round(
 					budget_amount /
-					(employee_payment_fe.base_salary +
-						employee_payment_fe.food_allowance +
-						employee_payment_fe.supervisor_allowance +
-						employee_payment_fe.occupational_allowance +
-						employee_payment_fe.subsidy_allowance),
+						(employee_payment_fe.base_salary +
+							employee_payment_fe.food_allowance +
+							employee_payment_fe.supervisor_allowance +
+							employee_payment_fe.occupational_allowance +
+							employee_payment_fe.subsidy_allowance),
 					3
 				),
 				budget_amount: budget_amount,
@@ -490,8 +503,12 @@ export class EmployeeBonusService {
 
 			await this.updateEmployeeBonus({
 				id: employee_bonus.id,
-				bud_effective_salary_enc: CryptoHelper.encrypt(e.budget_effective_salary.toString()),
-				bud_amount_enc: CryptoHelper.encrypt(e.budget_amount.toString()),
+				bud_effective_salary_enc: CryptoHelper.encrypt(
+					e.budget_effective_salary.toString()
+				),
+				bud_amount_enc: CryptoHelper.encrypt(
+					e.budget_amount.toString()
+				),
 			});
 		});
 
