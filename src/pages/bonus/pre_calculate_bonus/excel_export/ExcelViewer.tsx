@@ -32,6 +32,7 @@ import { ColorPickerWrapper } from "./ColorPickerWrapper";
 
 import { useTranslation } from "react-i18next";
 import { MultiSelect } from "~/components/data_table/multi_select";
+import { Round } from "~/server/service/helper_function";
 
 const DEFAULT_TEXT_COLOR = "#000000";
 const DEFAULT_BACKGROUND_COLOR = "#ffffff";
@@ -52,153 +53,176 @@ interface ExcelSheetWithColor {
 
 interface ExcelViewerProps {
 	original_sheets: ExcelSheet[];
+	original_data: any;
 	selectedSheetIndex: number;
 	setSelectedSheetIndex: (index: number) => void;
 	filter_component: JSX.Element;
 }
 
-const standard_sheet_name = "Standard";
-const Standard: ExcelSheetWithColor = {
-	sheetName: standard_sheet_name,
-	data: [
-		[
-			{
-				content: "考績分佈比例",
-				textColor: "#000000",
-				backgroundColor: "#ccffcc",
-			},
-			{
-				content: "績效獎金月倍數",
-				textColor: "#000000",
-				backgroundColor: "#ffffff",
-			},
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{
-				content: "974考績等級",
-				textColor: "#ff0000",
-				backgroundColor: "#ffffff",
-			},
-			{
-				content: "個人績效獎金月倍數",
-				textColor: "#000000",
-				backgroundColor: "#ffffff",
-			},
-			{
-				content: "姓名",
-				textColor: "#0000ff",
-				backgroundColor: "#ffffff",
-			},
+function getStandard(department_total_count: number | string, department_AE: number | string, department_8A: number | string, department_5B: number | string, department_1C: number | string) {
+	const standard_sheet_name = "Standard";
+	return {
+		sheetName: standard_sheet_name,
+		data: [
+			[
+				{
+					content: "考績分佈比例",
+					textColor: "#000000",
+					backgroundColor: "#ccffcc",
+				},
+				{
+					content: "合格人數分配",
+					textColor: "#000000",
+					backgroundColor: "#ffffff",
+				},
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{
+					content: "績效獎金月倍數",
+					textColor: "#000000",
+					backgroundColor: "#ffffff",
+				},
+				{
+					content: "974考績等級",
+					textColor: "#ff0000",
+					backgroundColor: "#ffffff",
+				},
+				{
+					content: "個人績效獎金月倍數",
+					textColor: "#000000",
+					backgroundColor: "#ffffff",
+				},
+				{
+					content: "姓名",
+					textColor: "#0000ff",
+					backgroundColor: "#ffffff",
+				},
+			],
+			[
+				{
+					content: "10%",
+					textColor: "#000000",
+					backgroundColor: "#ffffff",
+				},
+				{ content: `${department_AE}`, textColor: "#ff0000", backgroundColor: "#ffffff" },
+				{ content: "AE", textColor: "#000000", backgroundColor: "#ffff00" },
+				{ content: "3", textColor: "#ff0000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			],
+			[
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "9E", textColor: "#000000", backgroundColor: "#ffff00" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{
+					content: "Average E",
+					textColor: "#000000",
+					backgroundColor: "#ffffff",
+				},
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			],
+			[
+				{
+					content: "30%",
+					textColor: "#000000",
+					backgroundColor: "#ffffff",
+				},
+				{ content: `${department_8A}`, textColor: "#ff0000", backgroundColor: "#ffffff" },
+				{ content: "8A", textColor: "#000000", backgroundColor: "#00ffff" },
+				{ content: "2", textColor: "#ff0000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			],
+			[
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "7A", textColor: "#000000", backgroundColor: "#00ffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{
+					content: "Average A",
+					textColor: "#000000",
+					backgroundColor: "#ffffff",
+				},
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			],
+			[
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "6A", textColor: "#000000", backgroundColor: "#00ffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			],
+			[
+				{
+					content: "55%",
+					textColor: "#000000",
+					backgroundColor: "#ffffff",
+				},
+				{ content: `${department_5B}`, textColor: "#ff0000", backgroundColor: "#ffffff" },
+				{ content: "5B", textColor: "#000000", backgroundColor: "#66ff33" },
+				{
+					content: "1.2",
+					textColor: "#ff0000",
+					backgroundColor: "#ffffff",
+				},
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			],
+			[
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "4B", textColor: "#000000", backgroundColor: "#66ff33" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{
+					content: "Average B",
+					textColor: "#000000",
+					backgroundColor: "#ffffff",
+				},
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			],
+			[
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "3B", textColor: "#000000", backgroundColor: "#66ff33" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			],
+			[
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "2B", textColor: "#000000", backgroundColor: "#66ff33" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			],
+			[
+				{ content: "5%", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: `${department_1C}`, textColor: "#ff0000", backgroundColor: "#ffffff" },
+				{ content: "1C", textColor: "#000000", backgroundColor: "#ff0000" },
+				{ content: "0", textColor: "#ff0000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
+			],
+			[],
+			[
+				{ content: "部門合格總人數", textColor: "#000000", backgroundColor: "#ffffff" },
+				{ content: `${department_total_count}`, textColor: "#000000", backgroundColor: "#ffffff" },
+			]
 		],
-		[
-			{
-				content: "10%",
-				textColor: "#000000",
-				backgroundColor: "#ffffff",
-			},
-			{ content: "3", textColor: "#ff0000", backgroundColor: "#ffffff" },
-			{ content: "AE", textColor: "#000000", backgroundColor: "#ffff00" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-		],
-		[
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "9E", textColor: "#000000", backgroundColor: "#ffff00" },
-			{
-				content: "Average E",
-				textColor: "#000000",
-				backgroundColor: "#ffffff",
-			},
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-		],
-		[
-			{
-				content: "30%",
-				textColor: "#000000",
-				backgroundColor: "#ffffff",
-			},
-			{ content: "2", textColor: "#ff0000", backgroundColor: "#ffffff" },
-			{ content: "8A", textColor: "#000000", backgroundColor: "#00ffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-		],
-		[
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "7A", textColor: "#000000", backgroundColor: "#00ffff" },
-			{
-				content: "Average A",
-				textColor: "#000000",
-				backgroundColor: "#ffffff",
-			},
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-		],
-		[
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "6A", textColor: "#000000", backgroundColor: "#00ffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-		],
-		[
-			{
-				content: "55%",
-				textColor: "#000000",
-				backgroundColor: "#ffffff",
-			},
-			{
-				content: "1.2",
-				textColor: "#ff0000",
-				backgroundColor: "#ffffff",
-			},
-			{ content: "5B", textColor: "#000000", backgroundColor: "#66ff33" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-		],
-		[
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "4B", textColor: "#000000", backgroundColor: "#66ff33" },
-			{
-				content: "Average B",
-				textColor: "#000000",
-				backgroundColor: "#ffffff",
-			},
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-		],
-		[
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "3B", textColor: "#000000", backgroundColor: "#66ff33" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-		],
-		[
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "2B", textColor: "#000000", backgroundColor: "#66ff33" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-		],
-		[
-			{ content: "5%", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "0", textColor: "#ff0000", backgroundColor: "#ffffff" },
-			{ content: "1C", textColor: "#000000", backgroundColor: "#ff0000" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-			{ content: "", textColor: "#000000", backgroundColor: "#ffffff" },
-		],
-	],
-};
+	};
+}
 
 interface Block {
 	content: string;
@@ -210,6 +234,7 @@ interface Block {
 
 const ExcelViewer: React.FC<ExcelViewerProps> = ({
 	original_sheets,
+	original_data,
 	selectedSheetIndex,
 	setSelectedSheetIndex,
 	filter_component,
@@ -335,30 +360,63 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 					console.log(department_data.sheetName, "not in toDownloadSheets");
 					console.log("toDownloadSheets", toDownloadSheets);
 					return 
-				};
+				}
+
 				const workbook = new ExcelJS.Workbook();
+				
+				const Standard = getStandard(
+					department_data.data.length,
+					Round(department_data.data.length * 0.1, 1),
+					Round(department_data.data.length * 0.3, 1),
+					Round(department_data.data.length * 0.55, 1),
+					Round(department_data.data.length * 0.05, 1),
+				);
+
+
 				[department_data].concat([Standard]).map((sheetdata: ExcelSheetWithColor, si: number) => {
 					let name = sheetdata.sheetName;
 					const worksheet = workbook.addWorksheet(
 						name === "" ? "blank" : name
 					);
+					const status_cnt: Array<number> = original_data.filter((d: any) => (d.department === department_data.sheetName))[0].status_cnt;
+					const columnNames = sheetdata.data[0]!.map((cell: Block) => {
+						return {
+							content: Translate(
+								`table.${cell.content}`
+							),
+							textColor: cell.textColor,
+							backgroundColor: cell.backgroundColor,
+						}
+					});
+					if (si === 0) {
+						sheetdata.data = sheetdata.data.slice(1);
+						sheetdata.data.splice(0, 0, columnNames);
+						sheetdata.data.splice((status_cnt[0] ?? 0) + 1, 0, columnNames);
+						sheetdata.data.splice((status_cnt[0] ?? 0) + (status_cnt[1] ?? 0) + 2, 0, columnNames);
+
+						sheetdata.data.splice(0, 0, [{content: Translate("table.qualified"), textColor: DEFAULT_TEXT_COLOR, backgroundColor: DEFAULT_BACKGROUND_COLOR}]);
+						sheetdata.data.splice((status_cnt[0] ?? 0)+2, 0, []);
+						sheetdata.data.splice((status_cnt[0] ?? 0)+3, 0, [{content: Translate("table.notQualified"), textColor: DEFAULT_TEXT_COLOR, backgroundColor: DEFAULT_BACKGROUND_COLOR}]);
+						sheetdata.data.splice((status_cnt[0] ?? 0) + (status_cnt[1] ?? 0) +5, 0, []);
+						sheetdata.data.splice((status_cnt[0] ?? 0) + (status_cnt[1] ?? 0)+6, 0, [{content: Translate("table.liuting"), textColor: DEFAULT_TEXT_COLOR, backgroundColor: DEFAULT_BACKGROUND_COLOR}]);
+					}
 					try {
 						sheetdata.data.map((row: Block[], i: number) => {
-							if (i === 0) {
-								worksheet.addRow(
-									row.map((cell: Block) => {
-										if (name !== standard_sheet_name)
-											return Translate(
-												`table.${cell.content}`
-											);
-										else return cell.content;
-									})
-								);
-							} else {
+							// if (i === 0) {
+							// 	worksheet.addRow(
+							// 		row.map((cell: Block) => {
+							// 			if (name !== Standard.sheetName)
+							// 				return Translate(
+							// 					`table.${cell.content}`
+							// 				);
+							// 			else return cell.content;
+							// 		})
+							// 	);
+							// } else {
 								worksheet.addRow(
 									row.map((cell: Block) => cell.content)
 								);
-							}
+							// }
 						});
 					} catch {}
 	
@@ -392,6 +450,21 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 							};
 						});
 					});
+
+
+					const max_y = Math.max(...sheetdata.data.map((row) => row.length));
+					for (let ri = 0 ; ri < department_data.data.length; ri++) {
+						for (let ci = 0 ; ci < max_y; ci++) {
+							const cellName = getCellName(ri, ci);
+							const cell = worksheet.getCell(cellName);
+							cell.border = {
+								top: { style: "thin" },
+								left: { style: "thin" },
+								bottom: { style: "thin" },
+								right: { style: "thin" },
+							};
+						}
+					}
 	
 					worksheet.columns.forEach((column) => {
 						column.width = 20;

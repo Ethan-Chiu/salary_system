@@ -67,6 +67,7 @@ export function BonusExcelExport() {
 				food_allowance: d.food_allowance,
 				long_service_allowance: d.long_service_allowance,
 				total: d.total,
+				status: d.status,
 
 				special_multiplier: d.special_multiplier,
 				multiplier: d.multiplier,
@@ -81,6 +82,21 @@ export function BonusExcelExport() {
 				approved_amount: d.approved_amount,
 			};
 		})
+
+		// Define the structure of your data objects
+		interface DataItem {
+			status: "符合資格" | "不符合資格" | "留停"; // Use union type for `status`
+			// Other properties can go here
+		}
+		
+		// Define your `order` object
+		const order: Record<DataItem["status"], number> = {
+			"符合資格": 1,
+			"不符合資格": 2,
+			"留停": 3
+		};
+  
+		frontend_data.sort((a: any, b: any) => (order as any)[a.status] - (order as any)[b.status]);
 
 		
 		const groupedByDepartment = frontend_data.reduce((acc: any, curr: any) => {
@@ -103,19 +119,37 @@ export function BonusExcelExport() {
 		const transformedData = Object.entries(groupedByDepartment).map(
 			([department, data]) => ({
 			department,
-			data
+			data,
+			status_cnt: [
+				(data as any).filter((d: any) => d.status === "符合資格").length,
+				(data as any).filter((d: any) => d.status === "不符合資格").length,
+				(data as any).filter((d: any) => d.status === "留停").length
+			]
 			})
 		);
 		
 		const transformedData_add_all = [{
 			department: "All",
-			data: frontend_data
+			data: frontend_data,
+			status_cnt: [
+				frontend_data.filter((d: any) => d.status === "符合資格").length,
+				frontend_data.filter((d: any) => d.status === "不符合資格").length,
+				frontend_data.filter((d: any) => d.status === "留停").length
+			]
 		}].concat(transformedData);
 
-		// 檢視結果
-		console.log(transformedData_add_all);
+		const cleanedData = transformedData_add_all.map(item => ({
+			...item,
+			data: item.data.map((d: any) => {
+				const { status, ...rest } = d; // Destructure and exclude `status`
+				return rest;
+			})
+		}));
 
-		return transformedData_add_all
+		// 檢視結果
+		console.log(cleanedData);
+
+		return cleanedData
 	}
 
 	useEffect(() => {
@@ -143,7 +177,8 @@ export function BonusExcelExport() {
 		const testDataList = dataList.map((d: any) => {
 			return {
 				name: d.department,
-				data: d.data
+				data: d.data,
+				status_cnt: d.status_cnt
 			}
 		})
 		return testDataList.map((data: any) => {
@@ -160,6 +195,7 @@ export function BonusExcelExport() {
 			return {
 				name: sheetName,
 				data: sheetData,
+				status_cnt: data.status_cnt
 			};
 		})
 	}
@@ -244,6 +280,9 @@ export function BonusExcelExport() {
 				<ExcelViewer
 					original_sheets={
 						toDisplayData ?? getExcelData(ExcludeDataColumn(getBonusExcel(getExcelA.data!), toExcludedColumns))
+					}
+					original_data={
+						getBonusExcel(getExcelA.data!)
 					}
 					filter_component={<FilterComponent />}
 					selectedSheetIndex={selectedSheetIndex}
