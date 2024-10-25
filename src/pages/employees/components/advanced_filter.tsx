@@ -21,7 +21,7 @@ function getFilterFunctionByValue<TData>(table: Table<TData>, value: string) {
         case "month_salary_paid":
             return table.getColumn("month_salary")?.setFilterValue(false);
         case "leave":
-            return table.getColumn("work_status")?.setFilterValue((cellValue: string) => cellValue === "離職人員");
+            return table.getColumn("work_status")?.setFilterValue("離職人員");
         default:
             return table.setGlobalFilter("");
     }

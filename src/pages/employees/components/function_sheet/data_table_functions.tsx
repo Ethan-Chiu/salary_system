@@ -1,5 +1,5 @@
 import { cn } from "~/lib/utils";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
 	type LucideIcon,
 	PenSquare,
@@ -35,6 +35,7 @@ import {
 import { EmployeeForm } from "./employee_form";
 import { getSchema } from "~/pages/employees/schemas/get_schemas";
 import { modeDescription } from "~/lib/utils/helper_function";
+import { employeeToolbarFunctionsContext } from "./employee_functions_context";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
@@ -54,6 +55,11 @@ export function DataTableFunctions({
 	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
 	const { t } = useTranslation(["common", "nav"]);
+	const functions = useContext(employeeToolbarFunctionsContext);
+	const updateFunction = functions.updateFunction;
+	const createFunction = functions.createFunction;
+	const deleteFunction = functions.deleteFunction;
+	const autoCalculateFunction = functions.autoCalculateFunction;
 
 	return (
 		<div className={cn(className, "flex h-full items-center")}>
@@ -74,26 +80,26 @@ export function DataTableFunctions({
 							{t("others.functions")}
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						<CompTriggerItem
+						{updateFunction && <CompTriggerItem
 							mode={"update"}
 							itemName={t("button.update")}
 							icon={PenSquare}
-						/>
-						<CompTriggerItem
+						/>}
+						{createFunction && <CompTriggerItem
 							mode={"create"}
 							itemName={t("button.create")}
 							icon={Plus}
-						/>
-						<CompTriggerItem
+						/>}
+						{deleteFunction && <CompTriggerItem
 							mode={"delete"}
 							itemName={t("button.delete")}
 							icon={Trash2}
-						/>
-						<CompTriggerItem
+						/>}
+						{autoCalculateFunction && <CompTriggerItem
 							mode={"auto_calculate"}
 							itemName={t("button.auto_calculate")}
 							icon={RefreshCcw}
-						/>
+						/>}
 					</DropdownMenuContent>
 				</DropdownMenu>
 				{/* Sheet */}

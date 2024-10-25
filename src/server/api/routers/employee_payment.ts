@@ -77,14 +77,13 @@ export const employeePaymentRouter = createTRPCRouter({
 
 	autoCalculateEmployeePayment: publicProcedure
 		.input(
-			z.object({ period_id: z.number(), emp_no_list: z.string().array(), start_date: z.date() })
+			z.object({ emp_no_list: z.string().array(), start_date: z.date() })
 		)
 		.mutation(async ({ input }) => {
 			const employeePaymentService = container.resolve(
 				EmployeePaymentService
 			);
 			await employeePaymentService.autoCalculateEmployeePayment(
-				// input.period_id,
 				input.emp_no_list,
 				get_date_string(input.start_date)
 			);

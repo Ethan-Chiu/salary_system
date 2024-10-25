@@ -179,6 +179,7 @@ export class EmployeePaymentService {
 				},
 				disabled: false,
 			},
+			raw: true,
 		});
 		return employeePayment;
 	}
@@ -288,12 +289,6 @@ export class EmployeePaymentService {
 		emp_no_list: string[],
 		start_date: string
 	): Promise<void> {
-		const levelRangeService = container.resolve(LevelRangeService);
-		const levelService = container.resolve(LevelService);
-		const employeeDataService = container.resolve(EmployeeDataService);
-		const employeePaymentMapper = container.resolve(EmployeePaymentMapper);
-		const levelRangeList = await levelRangeService.getCurrentLevelRangeByDate(start_date);
-
 		const promises = emp_no_list.map(async (emp_no: string) => {
 			const employeePayment = await this.getCurrentEmployeePaymentByEmpNoByDate(
 				emp_no,
@@ -308,57 +303,12 @@ export class EmployeePaymentService {
 				return;
 			}
 
-			const employeePaymentFE =
-				await employeePaymentMapper.getEmployeePaymentFE(
-					employeePayment
-				);
+			const updatedEmployeePayment = await this.getUpdatedEmployeePayment(employeePayment, start_date);
 
-			const salary =
-				employeePaymentFE.base_salary +
-				(employeePaymentFE.food_allowance ?? 0) +
-				(employeePaymentFE.supervisor_allowance ?? 0) +
-				(employeePaymentFE.occupational_allowance ?? 0) +
-				(employeePaymentFE.subsidy_allowance ?? 0);
-
-			const result = [];
-			for (const levelRange of levelRangeList) {
-				const level = await levelService.getCurrentLevelBySalaryByDate(
-					start_date,
-					salary,
-					levelRange.level_start_id,
-					levelRange.level_end_id
-				);
-				result.push({
-					type: levelRange.type,
-					level: level.level,
-				});
-			}
-
-			const employeeData =
-				await employeeDataService.getEmployeeDataByEmpNo(emp_no);
-			if (employeeData == null) {
-				throw new BaseResponseError("Employee Data does not exist");
-			}
-
-			const originalEmployeePayment = await employeePaymentMapper.getEmployeePayment(employeePaymentFE);
-
-			const updatedEmployeePayment =
-				await employeePaymentMapper.getEmployeePayment({
-					...employeePaymentFE,
-					l_i: result.find((r) => r.type === "勞保")?.level ?? 0,
-					h_i: result.find((r) => r.type === "健保")?.level ?? 0,
-					l_r:
-						employeeData.work_type != "外籍勞工"
-							? result.find((r) => r.type === "勞退")?.level ?? 0
-							: 0,
-					occupational_injury:
-						result.find((r) => r.type === "職災")?.level ?? 0,
-				});
-
-			if (originalEmployeePayment.l_i_enc != updatedEmployeePayment.l_i_enc ||
-				originalEmployeePayment.h_i_enc != updatedEmployeePayment.h_i_enc ||
-				originalEmployeePayment.l_r_enc != updatedEmployeePayment.l_r_enc ||
-				originalEmployeePayment.occupational_injury_enc != updatedEmployeePayment.occupational_injury_enc) {
+			if (employeePayment.l_i_enc != updatedEmployeePayment.l_i_enc ||
+				employeePayment.h_i_enc != updatedEmployeePayment.h_i_enc ||
+				employeePayment.l_r_enc != updatedEmployeePayment.l_r_enc ||
+				employeePayment.occupational_injury_enc != updatedEmployeePayment.occupational_injury_enc) {
 				await this.createEmployeePayment({
 					...updatedEmployeePayment,
 					start_date: start_date,
@@ -483,8 +433,6 @@ export class EmployeePaymentService {
 			l_r: employeeData.work_type != "外籍勞工" ? result.find((r) => r.type === "勞退")?.level ?? 0 : 0,
 			occupational_injury: result.find((r) => r.type === "職災")?.level ?? 0,
 		});
-
-		console.log(updatedEmployeePayment);
 
 		return updatedEmployeePayment;
 	}
