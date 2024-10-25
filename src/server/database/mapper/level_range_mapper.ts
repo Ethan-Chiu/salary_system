@@ -40,6 +40,8 @@ export class LevelRangeMapper {
             level_start: level_start.level,
             level_end: level_end.level,
             ...level_range,
+            start_date: level_range.start_date ? new Date(level_range.start_date) : null,
+            end_date: level_range.end_date ? new Date(level_range.end_date) : null,
         }), ["level_start_id", "level_end_id"])
 
         return levelRangeFE

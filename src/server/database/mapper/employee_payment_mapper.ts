@@ -53,8 +53,8 @@ export class EmployeePaymentMapper {
             l_r: Number(CryptoHelper.decrypt(employee_payment.l_r_enc)),
             occupational_injury: Number(CryptoHelper.decrypt(employee_payment.occupational_injury_enc)),
             ...employee_payment,
-            start_date: new Date(employee_payment.start_date ?? ''), // TODO: test
-            end_date: new Date(employee_payment.end_date ?? ''), // TODO: test
+            start_date: employee_payment.start_date ? new Date(employee_payment.start_date) : null,
+            end_date: employee_payment.end_date ? new Date(employee_payment.end_date) : null,
         })
 
         return deleteProperties(employeePaymentFE, ["base_salary_enc", "supervisor_allowance_enc", "occupational_allowance_enc", "subsidy_allowance_enc", "food_allowance_enc", "long_service_allowance_enc", "l_r_self_enc", "l_i_enc", "h_i_enc", "l_r_enc", "occupational_injury_enc"])
