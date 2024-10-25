@@ -388,8 +388,9 @@
   "sync_page": {
     "show_all": "All Employees",
     "select_employee": "Select Employee",
-    "select_department" : "Select Department",
-    "selected" : "Selected",
+    "select_department": "Select Department",
+    "selected": "Selected",
     "new_department": "New",
     "new_employee": "New"
   }
+}
