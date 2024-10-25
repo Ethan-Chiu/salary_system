@@ -53,13 +53,14 @@ export class BonusDepartmentService {
 		bonus_type: BonusTypeEnumType,
 		department: string
 	): Promise<number> {
+		const correct_department = department.split("\r")[0]?.split("\n")[0];
 		const multiplier = (
 			await BonusDepartment.findOne(
 				{
 					where: {
 						period_id: period_id,
 						bonus_type: bonus_type,
-						department: department,
+						department: correct_department,
 						disabled: false,
 					},
 				}

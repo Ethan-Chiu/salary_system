@@ -224,6 +224,12 @@ export class EmployeeBonusService {
 				await bonus_position_service.getMultiplier(period_id, bonus_type, employee_data.position, employee_data.position_type) *
 				await bonus_seniority_service.getMultiplier(period_id, bonus_type, Math.floor((new Date(issue_date).getTime() - new Date(employee_data.registration_date).getTime()) / (1000 * 60 * 60 * 24 * 365))) *
 				await bonus_department_service.getMultiplier(period_id, bonus_type, employee_data.department);
+			if(emp.emp_no == "U097003"){console.log("\n\n\n\n\n")
+				console.log(emp.emp_no)
+				console.log(await bonus_work_type_service.getMultiplier(period_id, bonus_type, employee_data.work_type))
+				console.log(await bonus_position_service.getMultiplier(period_id, bonus_type, employee_data.position, employee_data.position_type))
+				console.log(await bonus_seniority_service.getMultiplier(period_id, bonus_type, Math.floor((new Date(issue_date).getTime() - new Date(employee_data.registration_date).getTime()) / (1000 * 60 * 60 * 24 * 365))))
+				console.log(await bonus_department_service.getMultiplier(period_id, bonus_type, employee_data.department))}
 			await this.updateEmployeeBonus({
 				id: emp.id,
 				special_multiplier_enc: CryptoHelper.encrypt(special_multiplier.toString()),

@@ -8,10 +8,11 @@ import {
 import { BonusSeniority } from "../database/entity/SALARY/bonus_seniority";
 import { select_value } from "./helper_function";
 import { BonusTypeEnumType } from "../api/types/bonus_type_enum";
+import { Bonus } from "../database/entity/UMEDIA/bonus";
 
 @injectable()
 export class BonusSeniorityService {
-	constructor() { }
+	constructor() {}
 
 	async createBonusSeniority({
 		period_id,
@@ -19,17 +20,15 @@ export class BonusSeniorityService {
 		seniority,
 		multiplier,
 	}: z.infer<typeof createBonusSeniorityService>): Promise<BonusSeniority> {
-		const newData = await BonusSeniority.create(
-			{
-				period_id: period_id,
-				bonus_type: bonus_type,
-				seniority: seniority,
-				multiplier: multiplier,
-				disabled: false,
-				create_by: "system",
-				update_by: "system",
-			}
-		);
+		const newData = await BonusSeniority.create({
+			period_id: period_id,
+			bonus_type: bonus_type,
+			seniority: seniority,
+			multiplier: multiplier,
+			disabled: false,
+			create_by: "system",
+			update_by: "system",
+		});
 		return newData;
 	}
 	async batchCreateBonusSeniority(
@@ -50,13 +49,11 @@ export class BonusSeniorityService {
 	}
 
 	async getBonusSeniorityById(id: number): Promise<BonusSeniority | null> {
-		const bonusSeniority = await BonusSeniority.findOne(
-			{
-				where: {
-					id: id,
-				},
-			}
-		);
+		const bonusSeniority = await BonusSeniority.findOne({
+			where: {
+				id: id,
+			},
+		});
 		return bonusSeniority;
 	}
 	async getMultiplier(
@@ -65,41 +62,43 @@ export class BonusSeniorityService {
 		seniority: number
 	): Promise<number> {
 		const multiplier = (
-			await BonusSeniority.findOne(
-				{
-					where: {
-						period_id: period_id,
-						bonus_type: bonus_type,
-						seniority: seniority,
-						disabled: false,
-					},
-				}
-			)
+			await BonusSeniority.findOne({
+				where: {
+					period_id: period_id,
+					bonus_type: bonus_type,
+					seniority: seniority,
+					disabled: false,
+				},
+			})
 		)?.multiplier;
-		return multiplier ?? 0;
+		const list = await BonusSeniority.findAll({
+			where: {
+				period_id: period_id,
+				bonus_type: bonus_type,
+				disabled: false,
+			},
+		});
+		if (list.length == 0) return 1;
+		else return multiplier ?? 0;
 	}
 	async getBonusSeniorityByBonusType(
 		period_id: number,
 		bonus_type: BonusTypeEnumType
 	): Promise<BonusSeniority[] | null> {
-		const bonusSeniority = await BonusSeniority.findAll(
-			{
-				where: {
-					period_id: period_id,
-					bonus_type: bonus_type,
-					disabled: false,
-				},
-			}
-		);
+		const bonusSeniority = await BonusSeniority.findAll({
+			where: {
+				period_id: period_id,
+				bonus_type: bonus_type,
+				disabled: false,
+			},
+		});
 		return bonusSeniority;
 	}
 
 	async getAllBonusSeniority(): Promise<BonusSeniority[] | null> {
-		const bonusSeniority = await BonusSeniority.findAll(
-			{
-				where: { disabled: false },
-			}
-		);
+		const bonusSeniority = await BonusSeniority.findAll({
+			where: { disabled: false },
+		});
 		return bonusSeniority;
 	}
 
@@ -113,19 +112,14 @@ export class BonusSeniorityService {
 			throw new BaseResponseError("BonusSeniority does not exist");
 		}
 
-		await this.deleteBonusSeniority(id)
+		await this.deleteBonusSeniority(id);
 
-		await this.createBonusSeniority(
-			{
-				period_id: bonus_seniority.period_id,
-				bonus_type: bonus_seniority.bonus_type,
-				seniority: select_value(seniority, bonus_seniority.seniority),
-				multiplier: select_value(
-					multiplier,
-					bonus_seniority.multiplier
-				),
-			}
-		);
+		await this.createBonusSeniority({
+			period_id: bonus_seniority.period_id,
+			bonus_type: bonus_seniority.bonus_type,
+			seniority: select_value(seniority, bonus_seniority.seniority),
+			multiplier: select_value(multiplier, bonus_seniority.multiplier),
+		});
 	}
 
 	async deleteBonusSeniority(id: number): Promise<void> {
