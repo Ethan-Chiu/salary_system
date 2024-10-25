@@ -27,7 +27,7 @@ export type ExpenseWithType = Omit<Expense, "period_id" | "id"> & {
 	expense_type_name: string;
 };
 
-export type AllowanceWithType = Omit<Allowance,  "allowance_id"> & {
+export type AllowanceWithType = Omit<Allowance, "allowance_id"> & {
 	period_name: string;
 	allowance_type_name: string;
 };
@@ -173,6 +173,14 @@ export class EHRService {
 		});
 		const empList: Emp[] = dataList.map((d) => Emp.fromDB(d));
 		return empList;
+	}
+
+	async getPromotion(): Promise<any> {
+		const dbConnection = container.resolve(Database).connection;
+		const dataList = await dbConnection.query(this.GET_PROMOTION_QUERY(), {
+			type: QueryTypes.SELECT,
+		});
+		return dataList;
 	}
 
 	async getPeriodById(period_id: number): Promise<Period> {
@@ -446,6 +454,10 @@ export class EHRService {
 
 	private GET_EMP_QUERY(period_id: number): string {
 		return `SELECT * FROM "U_HR_PAYDRAFT_EMP" WHERE "U_HR_PAYDRAFT_EMP"."PERIOD_ID" = '${period_id}'`;
+	}
+
+	private GET_PROMOTION_QUERY(): string {
+		return `SELECT * FROM "U_HR_PROMOTION_V"`;
 	}
 
 	private GET_PERIOD_BY_ID_QUERY(period_id: number): string {

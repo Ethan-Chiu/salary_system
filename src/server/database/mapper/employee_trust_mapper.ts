@@ -39,6 +39,8 @@ export class EmployeeTrustMapper {
             emp_special_trust_incent: Number(CryptoHelper.decrypt(employee_trust.emp_special_trust_incent_enc)),
             org_special_trust_incent: Number(CryptoHelper.decrypt(employee_trust.org_special_trust_incent_enc)),
             ...employee_trust,
+            start_date: employee_trust.start_date ? new Date(employee_trust.start_date) : null,
+            end_date: employee_trust.end_date ? new Date(employee_trust.end_date) : null,
         })
 
         return deleteProperties(employeeTrustFE, ["emp_trust_reserve_enc", "org_trust_reserve_enc", "emp_special_trust_incent_enc", "org_special_trust_incent_enc"])

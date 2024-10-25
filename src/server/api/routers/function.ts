@@ -138,4 +138,12 @@ export const functionRouter = createTRPCRouter({
 			];
 			return Sheets;
 		}),
+
+	getPromotion: publicProcedure
+		.query(async () => {
+			const ehrService = container.resolve(EHRService);
+			const promotion = await ehrService.getPromotion();
+
+			return promotion;
+		})
 });

@@ -37,7 +37,7 @@ export const EmployeePaymentFE = z.object({
 export type EmployeePaymentFEType = z.infer<typeof EmployeePaymentFE>
 export type EmployeePaymentType = z.infer<typeof EmployeePayment>
 
-export const createEmployeePaymentAPI = EmployeePaymentFE;
+export const createEmployeePaymentAPI = EmployeePaymentFE.omit({ l_i: true, h_i: true, l_r: true, occupational_injury: true });
 export const createEmployeePaymentService = EmployeePayment;
 export const updateEmployeePaymentAPI = EmployeePaymentFE.partial().merge(Id);
 export const updateEmployeePaymentService = EmployeePayment.partial().merge(Id);
