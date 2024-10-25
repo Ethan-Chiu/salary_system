@@ -1,44 +1,69 @@
+import { z } from "zod";
+
+const dbOvertime = z.object({
+  PERIOD_ID: z.number(),
+  EMP_NO: z.string(),
+  EMP_NAME: z.string(),
+  PAY: z.number(),
+  TYPE_ID: z.number(),
+  DAYS_RADIO: z.string(),
+  TYPE_NAME: z.string(),
+  PAY_PERIOD: z.number(),
+  PERIOD_NAME: z.string(),
+  PAY_DELAY: z.number(),
+  HOURS_1: z.number(),
+  HOURS_134: z.number(),
+  HOURS_167: z.number(),
+  HOURS_267: z.number(),
+  HOURS_2: z.number(),
+  HOURS_134_TAX: z.number(),
+  HOURS_167_TAX: z.number(),
+  HOURS_267_TAX: z.number(),
+  HOURS_2_TAX: z.number(),
+})
+
 export class Overtime {
 	// id can be undefined during creation when using `autoIncrement`
-	declare period_id?: number;
-	declare emp_no?: string;
-	declare emp_name?: string;
-	declare pay?: number;
-	declare type_id?: number;
-	declare days_radio?: string;
-	declare type_name?: string;
-	declare pay_period?: number;
-	declare period_name?: string;
-	declare pay_delay?: number;
-	declare hours_1?: number;
-	declare hours_134?: number;
-	declare hours_167?: number;
-	declare hours_267?: number;
-	declare hours_2?: number;
-	declare hours_134_TAX?: number;
-	declare hours_167_TAX?: number;
-	declare hours_267_TAX?: number;
-	declare hours_2_TAX?: number;
+	period_id: number;
+	emp_no: string;
+	emp_name: string;
+	pay: number;
+	type_id: number;
+	days_radio: string;
+	type_name: string;
+	pay_period: number;
+	period_name: string;
+	pay_delay: number;
+	hours_1: number;
+	hours_134: number;
+	hours_167: number;
+	hours_267: number;
+	hours_2: number;
+	hours_134_TAX: number;
+	hours_167_TAX: number;
+	hours_267_TAX: number;
+	hours_2_TAX: number;
+
 	constructor(
-		period_id?: number,
-		period_name?: string,
-		emp_no?: string,
-		emp_name?: string,
-		pay?: number, //1：5日 2：15日
-		type_id?: number,
-		days_radio?: string,
-		type_name?: string,
-		pay_period?: number,
-		pay_delay?: number,
-		hours_1?: number,
-		hours_134?: number,
-		hours_167?: number,
-		hours_267?: number,
-		hours_2?: number,
-		hours_134_TAX?: number,
-		hours_167_TAX?: number,
-		hours_267_TAX?: number,
-		hours_2_TAX?: number
+		period_id: number,
+		period_name: string,
+		emp_no: string,
+		emp_name: string,
+		pay: number, //1：5日 2：15日
+		type_id: number,
+		days_radio: string,
+		type_name: string,
+		pay_period: number,
+		pay_delay: number,
+		hours_1: number,
+		hours_134: number,
+		hours_167: number,
+		hours_267: number,
+		hours_2: number,
+		hours_134_TAX: number,
+		hours_167_TAX: number,
+		hours_267_TAX: number,
+		hours_2_TAX: number
 	) {
 		this.period_id = period_id;
 		this.period_name = period_name;
@@ -60,49 +85,36 @@ export class Overtime {
 		this.hours_267_TAX = hours_267_TAX;
 		this.hours_2_TAX = hours_2_TAX;
 	}
-	static fromDB(data: any): Overtime {
-		const {
-			PERIOD_ID,
-			PERIOD_NAME,
-			EMP_NO,
-			EMP_NAME,
-			PAY,
-			TYPE_ID,
-			DAYS_RADIO,
-			TYPE_NAME,
-			PAY_PERIOD,
-			PAY_DELAY,
-			HOURS_1,
-			HOURS_134,
-			HOURS_167,
-			HOURS_267,
-			HOURS_2,
-			HOURS_134_TAX,
-			HOURS_167_TAX,
-			HOURS_267_TAX,
-			HOURS_2_TAX,
-		} = data;
+
+  static fromDB(db_data: any): Overtime {
+		const result = dbOvertime.safeParse(db_data);
+
+		if (!result.success) {
+			throw new Error(result.error.message);
+		}
+
+		const data = result.data;
 
 		return new Overtime(
-			PERIOD_ID,
-			PERIOD_NAME,
-			EMP_NO,
-			EMP_NAME,
-			PAY,
-			TYPE_ID,
-			DAYS_RADIO,
-			TYPE_NAME,
-			PAY_PERIOD,
-			PAY_DELAY,
-			HOURS_1,
-			HOURS_134,
-			HOURS_167,
-			HOURS_267,
-			HOURS_2,
-			HOURS_134_TAX,
-			HOURS_167_TAX,
-			HOURS_267_TAX,
-			HOURS_2_TAX
+			data.PERIOD_ID,
+			data.PERIOD_NAME,
+			data.EMP_NO,
+			data.EMP_NAME,
+			data.PAY,
+			data.TYPE_ID,
+			data.DAYS_RADIO,
+			data.TYPE_NAME,
+			data.PAY_PERIOD,
+			data.PAY_DELAY,
+			data.HOURS_1,
+			data.HOURS_134,
+			data.HOURS_167,
+			data.HOURS_267,
+			data.HOURS_2,
+			data.HOURS_134_TAX,
+			data.HOURS_167_TAX,
+			data.HOURS_267_TAX,
+			data.HOURS_2_TAX
 		);
 	}
 }

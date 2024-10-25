@@ -59,9 +59,9 @@ export class EHRService {
 		const holidayList: Holiday[] = dataList.map((o) => Holiday.fromDB(o))
 			.sort((a, b) => {
 				if (a.emp_no === b.emp_no) {
-					return a.pay_order! - b.pay_order!;
+					return a.pay_order - b.pay_order;
 				}
-				return a.emp_no!.localeCompare(b.emp_no!);
+				return a.emp_no.localeCompare(b.emp_no);
 			});
 
 		return holidayList;
@@ -73,7 +73,7 @@ export class EHRService {
 	): Promise<Holiday[]> {
 		const all_holiday = await this.getHoliday(period_id);
 		const filtered_holiday = all_holiday.filter((holiday) =>
-			emp_no_list.includes(holiday.emp_no!)
+			emp_no_list.includes(holiday.emp_no)
 		);
 		return filtered_holiday;
 	}
@@ -87,7 +87,7 @@ export class EHRService {
 		const holidays_type =
 			await holidaysTypeService.getCurrentHolidaysType();
 		const filtered_holiday = all_holiday.filter((holiday) =>
-			emp_no_list.includes(holiday.emp_no!)
+			emp_no_list.includes(holiday.emp_no)
 		);
 		const period_name = await this.getPeriodById(period_id).then(
 			(period) => period.period_name
@@ -118,9 +118,9 @@ export class EHRService {
 		const overtimeList: Overtime[] = dataList.map((o) => Overtime.fromDB(o))
 			.sort((a, b) => {
 				if (a.emp_no === b.emp_no) {
-					return a.type_name!.localeCompare(b.type_name!);
+					return a.type_name.localeCompare(b.type_name);
 				}
-				return a.emp_no!.localeCompare(b.emp_no!);
+				return a.emp_no.localeCompare(b.emp_no);
 			})
 
 		return overtimeList;
@@ -134,7 +134,7 @@ export class EHRService {
 		const pay = pay_type === PayTypeEnum.Enum.foreign_15_bonus ? 2 : 1;
 		const all_overtime = await this.getOvertime(period_id, pay);
 		const filtered_overtime = all_overtime.filter((overtime) =>
-			emp_no_list.includes(overtime.emp_no!)
+			emp_no_list.includes(overtime.emp_no)
 		);
 		return filtered_overtime;
 	}
@@ -149,7 +149,7 @@ export class EHRService {
 		);
 		const paysetList: Payset[] = dataList.map((o) => Payset.fromDB(o))
 			.sort((a, b) => {
-				return a.emp_no!.localeCompare(b.emp_no!);
+				return a.emp_no.localeCompare(b.emp_no);
 			});
 
 		return paysetList;
@@ -161,7 +161,7 @@ export class EHRService {
 	): Promise<Payset[]> {
 		const all_payset = await this.getPayset(period_id);
 		const filtered_payset = all_payset.filter((payset) =>
-			emp_no_list.includes(payset.emp_no!)
+			emp_no_list.includes(payset.emp_no)
 		);
 		return filtered_payset;
 	}
@@ -203,9 +203,9 @@ export class EHRService {
 		const bonusList: Bonus[] = dataList.map((o) => Bonus.fromDB(o))
 			.sort((a, b) => {
 				if (a.emp_no === b.emp_no) {
-					return a.bonus_id! - b.bonus_id!;
+					return a.bonus_id - b.bonus_id;
 				}
-				return a.emp_no!.localeCompare(b.emp_no!);
+				return a.emp_no.localeCompare(b.emp_no);
 			});
 
 		return bonusList;
@@ -219,7 +219,7 @@ export class EHRService {
 		const pay = pay_type === "foreign_15_bonus" ? 2 : 1;
 		const all_bonus = await this.getBonus(period_id, pay);
 		const filtered_bonus = all_bonus.filter((bonus) =>
-			emp_no_list.includes(bonus.emp_no!)
+			emp_no_list.includes(bonus.emp_no)
 		);
 		return filtered_bonus;
 	}
@@ -242,7 +242,7 @@ export class EHRService {
 		const pay = pay_type === "foreign_15_bonus" ? 2 : 1;
 		const all_bonus = await this.getBonus(period_id, pay);
 		const filtered_bonus = all_bonus.filter((bonus) =>
-			emp_no_list.includes(bonus.emp_no!)
+			emp_no_list.includes(bonus.emp_no)
 		);
 		const bonusTypeList = await this.getBonusType();
 		const period_name = await this.getPeriodById(period_id).then(
@@ -275,11 +275,11 @@ export class EHRService {
 			.sort((a, b) => {
 				if (a.emp_no === b.emp_no) {
 					if (a.kind === b.kind) {
-						return a.id! - b.id!;
+						return a.id - b.id;
 					}
-					return a.kind! - b.kind!;
+					return a.kind - b.kind;
 				}
-				return a.emp_no!.localeCompare(b.emp_no!);
+				return a.emp_no.localeCompare(b.emp_no);
 			});
 		return expenseList;
 	}
@@ -290,7 +290,7 @@ export class EHRService {
 	): Promise<Expense[]> {
 		const all_expense = await this.getExpense(period_id);
 		const filtered_expense = all_expense.filter((expense) =>
-			emp_no_list.includes(expense.emp_no!)
+			emp_no_list.includes(expense.emp_no)
 		);
 		return filtered_expense;
 	}
@@ -300,7 +300,7 @@ export class EHRService {
 	): Promise<ExpenseWithType[]> {
 		const all_expense = await this.getExpense(period_id);
 		const filtered_expense = all_expense.filter((expense) =>
-			emp_no_list.includes(expense.emp_no!)
+			emp_no_list.includes(expense.emp_no)
 		);
 		const expenseTypeList = await this.getExpenseClass();
 		const allowance_type_list = await this.getAllowanceType();
