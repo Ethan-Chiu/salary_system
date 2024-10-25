@@ -63,7 +63,8 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 	const { selectedPeriod } = useContext(periodContext);
 
 	const isList = Array.isArray(data);
-	const onlyOne = !(isList && data.length > 1);
+	// const onlyOne = !(isList && data.length > 1);
+	const onlyOne = false;
 
 	const [selectedData, setSelectedData] = useState((defaultValue) ?? (isList ? null : data));
 
@@ -305,6 +306,7 @@ const CompViewAllDatas = ({
 					<Table>
 						<TableHeader>
 							<TableRow>
+								&emsp;
 								{Object.keys(filteredDataList[0]).map(
 									(key: string) => {
 										return (

@@ -2,7 +2,7 @@ import { RootLayout } from "~/components/layout/root_layout";
 import { PerpageLayoutNav } from "~/components/layout/perpage_layout_nav";
 import { Header } from "~/components/header";
 import { type NextPageWithLayout } from "../../../_app";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ExcelViewer from "./ExcelViewer";
 import { LoadingSpinner } from "~/components/loading";
 import periodContext from "~/components/context/period_context";
@@ -38,18 +38,36 @@ export function BonusExcelExport() {
 	const { selectedPeriod } = useContext(periodContext);
 	const { selectedBonusType } = useContext(dataTableContext);
 
-	const getExcelA = api.bonus.getAllEmployeeBonus.useQuery({
+	// const getExcelA = api.bonus.getAllEmployeeBonus.useQuery({
+	// 	period_id: selectedPeriod?.period_id ?? 0,
+	// 	bonus_type: selectedBonusType,
+	// });
+	const getExcelA = api.bonus.getExcelEmployeeBonus.useQuery({
 		period_id: selectedPeriod?.period_id ?? 0,
 		bonus_type: selectedBonusType,
-	});
+	})
 
 	function getBonusExcel(data: any) {
-		return data.map((d: any) => {
+		const frontend_data = data.map((d: any) => {
 			return {
 				id: d.id,
 				period_id: d.period_id,
 				bonus_type: d.bonus_type,
+				department: d.department,
 				emp_no: d.emp_no,
+				emp_name: d.emp_name,
+				registration_date: d.registration_date,
+				seniority: d.seniority,
+				positionAndPositionType: d.position_position_type,
+				work_status: d.work_status,
+				base_salary: d.base_salary,
+				supervisor_allowance: d.supervisor_allowance,
+				subsidy_allowance: d.subsidy_allowance,
+				occupational_allowance: d.occupational_allowance,
+				food_allowance: d.food_allowance,
+				long_service_allowance: d.long_service_allowance,
+				total: d.total,
+
 				special_multiplier: d.special_multiplier,
 				multiplier: d.multiplier,
 				fixed_amount: d.fixed_amount,
@@ -63,12 +81,48 @@ export function BonusExcelExport() {
 				approved_amount: d.approved_amount,
 			};
 		})
+
+		
+		const groupedByDepartment = frontend_data.reduce((acc: any, curr: any) => {
+			const dept = curr.department.split("\n")[0].split("\r")[0];
+		
+			// 如果該部門的陣列不存在，先建立一個空陣列
+			if (!acc[dept]) {
+				acc[dept] = [];
+			}
+		
+			// 將當前項目加入對應部門的陣列中
+			acc[dept].push(curr);
+			return acc;
+		}, {});
+		
+		// 檢視結果
+		console.log(groupedByDepartment);
+
+		// 將部門資料轉換成 { department: ?, data: ? } 格式的陣列
+		const transformedData = Object.entries(groupedByDepartment).map(
+			([department, data]) => ({
+			department,
+			data
+			})
+		);
+		
+		const transformedData_add_all = [{
+			department: "All",
+			data: frontend_data
+		}].concat(transformedData);
+
+		// 檢視結果
+		console.log(transformedData_add_all);
+
+		return transformedData_add_all
 	}
 
-
-	if (getExcelA.isFetched) {
-		console.log(getExcelA.data)
-	}
+	useEffect(() => {
+		if (getExcelA.isFetched) {
+			console.log(getExcelA.data)
+		}
+	}, [])
 
 	// const getExcelA = api.transaction.getAllTransaction.useQuery({
 	// 	period_id: selectedPeriod?.period_id ?? 0
@@ -86,12 +140,12 @@ export function BonusExcelExport() {
 		interface keyValuePair {
 			[key: string]: any;
 		}
-		const testDataList = [
-			{
-				name: "test",
-				data: dataList
+		const testDataList = dataList.map((d: any) => {
+			return {
+				name: d.department,
+				data: d.data
 			}
-		]
+		})
 		return testDataList.map((data: any) => {
 			const sheetName = data.name;
 			const sheetData = data.data.map((row: keyValuePair) => {
@@ -111,10 +165,13 @@ export function BonusExcelExport() {
 	}
 
 	function createSchema() {
-		const testData = [{
-			name: "test",
-			data: getBonusExcel(getExcelA.data!)
-		}]
+		// const testData = [{
+		// 	name: "test",
+		// 	data: getBonusExcel(getExcelA.data!)
+		// }]
+		const testData = getBonusExcel(getExcelA.data!).map((d: any) => {
+			return {name: d.department, data: d.data}
+		})
 		const keys = (getExcelA.isFetched) ? Object.keys(
 			testData.map((sheet: any) => sheet.data[0])[selectedSheetIndex]
 		) : [];

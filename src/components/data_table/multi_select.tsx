@@ -14,12 +14,14 @@ interface MultiSelectProps {
 	options: OptionType[];
 	onChange: React.Dispatch<React.SetStateAction<string[]>>;
 	className?: string;
+	placeholder?: string;
 }
 
 export function MultiSelect({
 	options,
 	onChange,
 	className,
+	placeholder,
 }: MultiSelectProps) {
 	const inputRef = React.useRef<HTMLInputElement>(null);
 	const [open, setOpen] = React.useState(false);
@@ -102,7 +104,7 @@ export function MultiSelect({
 						onValueChange={setInputValue}
 						onBlur={() => setOpen(false)}
 						onFocus={() => setOpen(true)}
-						placeholder="Select frameworks..."
+						placeholder={placeholder ? placeholder : "Select frameworks..."}
 						className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
 					/>
 				</div>

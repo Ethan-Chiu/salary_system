@@ -8,6 +8,7 @@ import {
 import { BonusWorkType } from "../database/entity/SALARY/bonus_work_type";
 import { select_value } from "./helper_function";
 import { BonusTypeEnumType } from "../api/types/bonus_type_enum";
+import { WorkTypeEnumType } from "../api/types/work_type_enum";
 
 @injectable()
 export class BonusWorkTypeService {
@@ -76,8 +77,17 @@ export class BonusWorkTypeService {
 	async getMultiplier(
 		period_id: number,
 		bonus_type: BonusTypeEnumType,
-		work_type: string
+		work_type: WorkTypeEnumType
 	): Promise<number> {
+		//for develop
+		const list = await BonusWorkType.findAll({
+			where: {
+				period_id: period_id,
+				bonus_type: bonus_type,
+				disabled: false,
+			},
+		});
+		if (list.length == 0) return 1;
 		const multiplier = (
 			await BonusWorkType.findOne(
 				{
