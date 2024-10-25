@@ -1,34 +1,54 @@
+import { z } from "zod";
+
+const dbHoliday = z.object({
+	PERIOD_ID: z.number(),
+	EMP_NO: z.string(),
+	EMP_NAME: z.string(),
+	PAY_ORDER: z.number(),
+	PAY_PERIOD: z.number(),
+	PAY_DELAY: z.number(),
+	PERIOD_NAME: z.string(),
+	TOTAL_HOURS: z.number(),
+	ANNUAL_1: z.number(),
+	COMPENSATORY_134: z.number(),
+	COMPENSATORY_167: z.number(),
+	COMPENSATORY_267: z.number(),
+	COMPENSATORY_1: z.number(),
+	COMPENSATORY_2: z.number(),
+});
+
 export class Holiday {
 	// id can be undefined during creation when using `autoIncrement`
-	declare period_id?: number;
-	declare emp_no?: string;
-	declare emp_name?: string;
-	declare pay_order?: number;
-	declare pay_period?: number;
-	declare pay_delay?: number;
-	declare period_name?: string;
-	declare total_hours?: number;
-	declare annual_1?: number; //不休假
-	declare compensatory_134?: number; //不休假
-	declare compensatory_167?: number; //不休假
-	declare compensatory_267?: number; //不休假
-	declare compensatory_1?: number; //不休假
-	declare compensatory_2?: number; //不休假
+	period_id: number;
+	emp_no: string;
+	emp_name: string;
+	pay_order: number;
+	pay_period: number;
+	pay_delay: number;
+	period_name: string;
+	total_hours: number;
+	annual_1: number; //不休假
+	compensatory_134: number; //不休假
+	compensatory_167: number; //不休假
+	compensatory_267: number; //不休假
+	compensatory_1: number; //不休假
+	compensatory_2: number; //不休假
+
 	constructor(
-		period_id?: number,
-		period_name?: string,
-		emp_no?: string,
-		emp_name?: string,
-		pay_order?: number,
-		pay_period?: number,
-		pay_delay?: number,
-		total_hours?: number,
-		annual_1?: number,
-		compensatory_134?: number,
-		compensatory_167?: number,
-		compensatory_267?: number,
-		compensatory_1?: number,
-		compensatory_2?: number
+		period_id: number,
+		period_name: string,
+		emp_no: string,
+		emp_name: string,
+		pay_order: number,
+		pay_period: number,
+		pay_delay: number,
+		total_hours: number,
+		annual_1: number,
+		compensatory_134: number,
+		compensatory_167: number,
+		compensatory_267: number,
+		compensatory_1: number,
+		compensatory_2: number
 	) {
 		this.period_id = period_id;
 		this.period_name = period_name;
@@ -46,39 +66,30 @@ export class Holiday {
 		this.compensatory_2 = compensatory_2;
 	}
 
-	static fromDB(data: any): Holiday {
-		const {
-			PERIOD_ID,
-			PERIOD_NAME,
-			EMP_NO,
-			EMP_NAME,
-			PAY_ORDER,
-			PAY_PERIOD,
-			PAY_DELAY,
-			TOTAL_HOURS,
-			ANNUAL_1,
-			COMPENSATORY_134,
-			COMPENSATORY_167,
-			COMPENSATORY_267,
-			COMPENSATORY_1,
-			COMPENSATORY_2,
-		} = data;
+	static fromDB(db_data: any): Holiday {
+		const result = dbHoliday.safeParse(db_data);
+
+		if (!result.success) {
+			throw new Error(result.error.message);
+		}
+
+		const data = result.data;
 
 		return new Holiday(
-			PERIOD_ID,
-			PERIOD_NAME,
-			EMP_NO,
-			EMP_NAME,
-			PAY_ORDER,
-			PAY_PERIOD,
-			PAY_DELAY,
-			TOTAL_HOURS,
-			ANNUAL_1,
-			COMPENSATORY_134,
-			COMPENSATORY_167,
-			COMPENSATORY_267,
-			COMPENSATORY_1,
-			COMPENSATORY_2
+			data.PERIOD_ID,
+			data.PERIOD_NAME,
+			data.EMP_NO,
+			data.EMP_NAME,
+			data.PAY_ORDER,
+			data.PAY_PERIOD,
+			data.PAY_DELAY,
+			data.TOTAL_HOURS,
+			data.ANNUAL_1,
+			data.COMPENSATORY_134,
+			data.COMPENSATORY_167,
+			data.COMPENSATORY_267,
+			data.COMPENSATORY_1,
+			data.COMPENSATORY_2
 		);
 	}
 }

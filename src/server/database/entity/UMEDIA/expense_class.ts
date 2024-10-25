@@ -1,68 +1,81 @@
+import { z } from "zod";
+
+const dbExpenseClass = z.object({
+  ID: z.number(),
+  NAME: z.string(),
+  CLASS_TYPE: z.number(),
+  CLASS: z.number(),
+  OTHER_TAX: z.number(),
+  OTHER_LESS: z.number(),
+  RULE: z.number(),
+  FIELD_ORDER: z.number(),
+  HIDDE: z.number(),
+  MEMO: z.string(),
+  UPDATE_BY: z.string(),
+  UPDATE_DATE: z.date(),
+})
+
 export class ExpenseClass {
 	// id can be undefined during creation when using `autoIncrement`
-	declare id?: number;
-	declare name?: string;
-    declare class_type?: number; //class
-    declare other_tax?: number;
-    declare other_less?: number;
-    declare rule?: number;
-    declare field_order?: number;
-    declare hiddle?: number;
-    declare memo?: string;
-    declare update_by?: string;
-    declare update_date?: Date;
+	id: number;
+	name: string;
+	class_type: number; //class
+	other_tax: number;
+	other_less: number;
+	rule: number;
+	field_order: number;
+	hiddle: number;
+	memo: string;
+	update_by: string;
+	update_date: Date;
+
 	constructor(
-        id?: number,
-        name?: string,
-        class_type?: number,
-        other_tax?: number,
-        other_less?: number,
-        rule?: number,
-        field_order?: number,
-        hiddle?: number,
-        memo?: string,
-        update_by?: string,
-        update_date?: Date
+		id: number,
+		name: string,
+		class_type: number,
+		other_tax: number,
+		other_less: number,
+		rule: number,
+		field_order: number,
+		hiddle: number,
+		memo: string,
+		update_by: string,
+		update_date: Date
 	) {
-        this.id = id
-        this.name = name
-        this.class_type = class_type
-        this.other_tax = other_tax
-        this.other_less = other_less
-        this.rule = rule
-        this.field_order = field_order
-        this.hiddle = hiddle
-        this.memo = memo
-        this.update_by = update_by
-        this.update_date = update_date
+		this.id = id;
+		this.name = name;
+		this.class_type = class_type;
+		this.other_tax = other_tax;
+		this.other_less = other_less;
+		this.rule = rule;
+		this.field_order = field_order;
+		this.hiddle = hiddle;
+		this.memo = memo;
+		this.update_by = update_by;
+		this.update_date = update_date;
 	}
-	static fromDB(data: any): ExpenseClass {
-		const {
-           ID,
-           NAME,
-           CLASS,
-           OTHER_TAX,
-           OTHER_LESS,
-           RULE,
-           FIELD_ORDER,
-           HIDDE,
-           MEMO,
-           UPDATE_BY,
-           UPDATE_DATE
-		} = data;
+
+	static fromDB(db_data: any): ExpenseClass {
+		const result = dbExpenseClass.safeParse(db_data);
+
+		if (!result.success) {
+			throw new Error(result.error.message);
+		}
+
+		const data = result.data;
 
 		return new ExpenseClass(
-			ID,
-            NAME,
-            CLASS,
-            OTHER_TAX,
-            OTHER_LESS,
-            RULE,
-            FIELD_ORDER,
-            HIDDE,
-            MEMO,
-            UPDATE_BY,
-            UPDATE_DATE
+			data.ID,
+			data.NAME,
+			data.CLASS,
+			data.OTHER_TAX,
+			data.OTHER_LESS,
+			data.RULE,
+			data.FIELD_ORDER,
+			data.HIDDE,
+			data.MEMO,
+			data.UPDATE_BY,
+			data.UPDATE_DATE
 		);
 	}
 }
