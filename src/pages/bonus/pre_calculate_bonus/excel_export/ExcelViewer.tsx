@@ -363,13 +363,14 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 				}
 
 				const workbook = new ExcelJS.Workbook();
-				
+				const status_cnt: Array<number> = original_data.filter((d: any) => (d.department === department_data.sheetName))[0].status_cnt;
+				const qualified_amount = status_cnt[1] ?? 0;
 				const Standard = getStandard(
-					department_data.data.length,
-					Round(department_data.data.length * 0.1, 1),
-					Round(department_data.data.length * 0.3, 1),
-					Round(department_data.data.length * 0.55, 1),
-					Round(department_data.data.length * 0.05, 1),
+					qualified_amount,
+					Round(qualified_amount * 0.1, 1),
+					Round(qualified_amount * 0.3, 1),
+					Round(qualified_amount * 0.55, 1),
+					Round(qualified_amount * 0.05, 1),
 				);
 
 
