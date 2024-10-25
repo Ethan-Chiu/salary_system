@@ -214,7 +214,7 @@ export class EmployeeBonusService {
 			.issue_date;
 
 		const promises = all_emp_bonus_list.map(async (emp) => {
-			let employee_data =
+			const employee_data =
 				await employee_data_service.getEmployeeDataByEmpNo(emp.emp_no);
 			if (!employee_data) {
 				return;
