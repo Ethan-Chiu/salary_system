@@ -90,7 +90,7 @@ export class SyncService {
 	// 將EHR資料格式轉換為Salary資料格式
 	empToEmployee(ehr_data: Emp, period_id: number): CreateEmployeeDataType {
 		return {
-      period_id: period_id,
+			period_id: period_id,
 			emp_no: ehr_data.emp_no,
 			emp_name: ehr_data.emp_name,
 			position: ehr_data.position,
@@ -171,12 +171,12 @@ export class SyncService {
 		});
 
 		syncData.comparisons = [];
-		for (const key in ehrEmp.dataValues) {
+		for (const key in ehrEmp) {
 			if (key == "emp_no" || key == "id") continue;
 			syncData.comparisons.push(
 				this.dataComparison(
 					key as keyof EmployeeData,
-					ehrEmp.get(key),
+					ehrEmp[key],
 					salaryEmp?.get(key)
 				)
 			);
@@ -467,7 +467,7 @@ export class SyncService {
 					org_trust_reserve: 0,
 					emp_special_trust_incent: 0,
 					org_special_trust_incent: 0,
-          entry_date: (new Date()).toString(),
+					entry_date: (new Date()).toString(),
 					start_date: new Date(ehr_emp_data.registration_date),
 					end_date: null,
 				};
