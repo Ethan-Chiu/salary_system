@@ -23,7 +23,7 @@ export function deleteProperties<T extends object>(obj: T, props: string[]): T {
 }
 
 export function roundProperties<T extends object>(obj: T, decimal: number): T {
-    const dataValueObj = obj["dataValues" as keyof T];
+    const dataValueObj = obj["dataValues" as keyof T] as T ?? obj;
     for (const prop in dataValueObj) {
         if (Object.prototype.hasOwnProperty.call(dataValueObj, prop) && typeof dataValueObj[prop] === "number") {
             (dataValueObj[prop] as unknown) = Round(dataValueObj[prop] as number, decimal);

@@ -61,6 +61,15 @@ export class BonusSeniorityService {
 		bonus_type: BonusTypeEnumType,
 		seniority: number
 	): Promise<number> {
+		//for develop
+		const list = await BonusSeniority.findAll({
+			where: {
+				period_id: period_id,
+				bonus_type: bonus_type,
+				disabled: false,
+			},
+		});
+		if (list.length == 0) return 1;
 		const multiplier = (
 			await BonusSeniority.findOne({
 				where: {
@@ -71,15 +80,7 @@ export class BonusSeniorityService {
 				},
 			})
 		)?.multiplier;
-		const list = await BonusSeniority.findAll({
-			where: {
-				period_id: period_id,
-				bonus_type: bonus_type,
-				disabled: false,
-			},
-		});
-		if (list.length == 0) return 1;
-		else return multiplier ?? 0;
+		return multiplier ?? 0;
 	}
 	async getBonusSeniorityByBonusType(
 		period_id: number,

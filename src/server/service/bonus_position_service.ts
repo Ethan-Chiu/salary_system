@@ -82,6 +82,15 @@ export class BonusPositionService {
 		position: number,
 		position_type: string
 	): Promise<number> {
+		//for develop
+		const list = await BonusPosition.findAll({
+			where: {
+				period_id: period_id,
+				bonus_type: bonus_type,
+				disabled: false,
+			},
+		});
+		if (list.length == 0) return 1;
 		const position_multiplier = (
 			await BonusPosition.findOne({
 				where: {
