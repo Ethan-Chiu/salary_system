@@ -8,6 +8,7 @@ import { I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
 import { useContext, useEffect } from "react";
 import dataTableContext from "../components/context/data_table_context";
+import { Button } from "~/components/ui/button";
 
 export type RowItem = {
     emp_no: string,
