@@ -6,6 +6,8 @@ import { EmployeeTrustService } from "~/server/service/employee_trust_service";
 import { createEmployeeTrustAPI, updateEmployeeTrustAPI } from "../types/employee_trust";
 import { EmployeeTrustMapper } from "~/server/database/mapper/employee_trust_mapper";
 import { get_date_string } from "~/server/service/helper_function";
+import { TrustMoneyService } from "~/server/service/trust_money_service";
+import { EmployeeTrust } from "~/server/database/entity/SALARY/employee_trust";
 
 export const employeeTrustRouter = createTRPCRouter({
 	getCurrentEmployeeTrust: publicProcedure
@@ -24,16 +26,37 @@ export const employeeTrustRouter = createTRPCRouter({
 			return employeeTrustFE;
 		}),
 
-	getAllEmployeeTrust: publicProcedure.query(async () => {
-		const employeeTrustService = container.resolve(EmployeeTrustService);
-		const employeeTrustMapper = container.resolve(EmployeeTrustMapper);
-		const employeeTrust = await employeeTrustService.getAllEmployeeTrust();
-		if (employeeTrust == null) {
-			throw new BaseResponseError("EmployeeTrust does not exist");
-		}
-		const employeeTrustFE = await Promise.all(employeeTrust.map(async e => await employeeTrustMapper.getEmployeeTrustFE(e)));
-		return employeeTrustFE;
-	}),
+		getAllEmployeeTrust: publicProcedure.query(async () => {
+			const employeeTrustService = container.resolve(EmployeeTrustService);
+			const employeeTrustMapper = container.resolve(EmployeeTrustMapper);
+		
+			// 获取所有的员工信任记录
+			const allEmployeeTrustRecords = await employeeTrustService.getAllEmployeeTrust();
+			if (allEmployeeTrustRecords == null) {
+				throw new BaseResponseError("Employee trust records do not exist");
+			}
+		
+			// 将记录按工号分组
+			const groupedEmployeeTrustRecords = {} as { [empNo: string]: EmployeeTrust[] };
+		
+			allEmployeeTrustRecords.forEach((record) => {
+				if (!groupedEmployeeTrustRecords[record.emp_no]) {
+					groupedEmployeeTrustRecords[record.emp_no] = [];
+				}
+				groupedEmployeeTrustRecords[record.emp_no]!.push(record);
+			});
+		
+			// 将分组后的记录转换为数组格式，并映射为前端格式
+			const groupedRecordsArray = Object.values(groupedEmployeeTrustRecords);
+			const employeeTrustDataForFE = await Promise.all(
+				groupedRecordsArray.map(async (employeeTrustList) => 
+					await employeeTrustMapper.getEmployeeTrustFE(employeeTrustList)
+				)
+			);
+		
+			return employeeTrustDataForFE;
+		}),
+		
 
 	createEmployeeTrust: publicProcedure
 		.input(createEmployeeTrustAPI)
@@ -43,7 +66,7 @@ export const employeeTrustRouter = createTRPCRouter({
 			const employeeTrust = await employeeTrustMapper.getEmployeeTrust(input);
 			const newdata = await employeeTrustService.createEmployeeTrust(employeeTrust);
 			await employeeTrustService.rescheduleEmployeeTrust();
-			const employeeTrustFE = await employeeTrustMapper.getEmployeeTrustFE(newdata);
+			const employeeTrustFE = await employeeTrustMapper.getEmployeeTrustDec(newdata);
 			return employeeTrustFE;
 		}),
 
