@@ -56,6 +56,12 @@ export class EmployeeBonusMapper {
         const app_effective_salary = CryptoHelper.decrypt(employee_bonus.app_effective_salary_enc)
         const app_amount = CryptoHelper.decrypt(employee_bonus.app_amount_enc)
 
+        function getRandomStatus(): string {
+            const statuses = ["符合資格", "不符合資格", "留停"];
+            const randomIndex = Math.floor(Math.random() * statuses.length);
+            return statuses[randomIndex]!;
+        }
+
 
         const employeeBonusFE: EmployeeBonusFEType = convertDatePropertiesToISOString({
             period_id: employee_bonus.period_id,
@@ -85,6 +91,7 @@ export class EmployeeBonusMapper {
             app_performance_level: app_performance_level == "" ? null : app_performance_level,
             app_effective_salary: app_effective_salary == "" ? null : Number(app_effective_salary),
             app_amount: app_amount == "" ? null : Number(app_amount),
+            status: getRandomStatus()
         })
 
         return deleteProperties(employeeBonusFE, ["special_multiplier_enc", "multiplier_enc", "fixed_amount_enc", "bud_effective_salary_enc", "bud_amount_enc", "sup_performance_level_enc", "sup_effective_salary_enc", "sup_amount_enc", "app_performance_level_enc", "app_effective_salary_enc", "app_amount_enc"])

@@ -58,7 +58,7 @@ export const bonusRouter = createTRPCRouter({
 
 			const employeeBonusFE = await Promise.all(bonusData.map(async e => await bonusMapper.getEmployeeBonusFE(e)));
 
-			return employeeBonusFE // Not finished yet
+			return employeeBonusFE.map((e) => roundProperties(e, 2)) // Not finished yet
 		}),
 	getEmployeeBonus: publicProcedure
 		.input(

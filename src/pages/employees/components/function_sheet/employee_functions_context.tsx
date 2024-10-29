@@ -110,10 +110,10 @@ export default function EmployeeToolbarFunctionsProvider({
 		},
 		TableEmployeeTrust: {
 			queryFunction: getEmployeeTrust,
-			updateFunction: updateEmployeeTrust,
+			updateFunction: undefined,
 			createFunction: createEmployeeTrust,
 			deleteFunction: deleteEmployeeTrust,
-			autoCalculateFunction: autoCalculateEmployeeTrust,
+			autoCalculateFunction: undefined,
 		},
 	};
 

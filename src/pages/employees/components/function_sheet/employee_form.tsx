@@ -23,7 +23,7 @@ import {
 	DialogFooter,
 	DialogTrigger,
 } from "~/components/ui/dialog";
-import { PenSquare, Trash2 } from "lucide-react";
+import { Copy, PenSquare, Trash2 } from "lucide-react";
 import { useContext } from "react";
 import { type FunctionMode } from "./data_table_functions";
 import { LoadingSpinner } from "~/components/loading";
@@ -146,7 +146,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 	}
 
 	// Select one entry
-	if (mode !== "create" && isList && selectedData === null) {
+	if (isList && selectedData === null) {
 		const noIDData: DataTypeWithoutID[] = data.map((item: any) => {
 			const { ["id"]: id, ...rest } = item;
 			return rest as DataTypeWithoutID;
@@ -175,14 +175,11 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 						id: selectedId,
 					});
 				}}
-				onAutoCalculate={async (selectedEmpNoList: string[], start_date: Date) => {
+				onAutoCalculate={(selectedEmpNoList: string[], start_date: Date) => {
 					closeSheet();
-					await autoCalculateFunction.mutateAsync({
-						period_id: selectedPeriod!.period_id,
+					autoCalculateFunction.mutate({
 						emp_no_list: selectedEmpNoList,
 						start_date: start_date,
-					}, {
-
 					});
 				}}
 			/>
@@ -194,7 +191,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 		<>
 			<AutoForm
 				className="m-5"
-				_defaultValues={mode === "create" ? {} : selectedData}
+				_defaultValues={selectedData}
 				values={formValues}
 				onValuesChange={setFormValues}
 				onSubmit={handleSubmit}
@@ -371,6 +368,15 @@ const CompViewAllDatas = ({
 								return (
 									<TableRow key={data.emp_no}>
 										<TableCell className="items-center">
+											{mode === "create" && (
+												<Copy
+													size={18}
+													className="cursor-pointer"
+													onClick={() => {
+														onUpdate(data.emp_no);
+													}}
+												/>
+											)}
 											{mode === "update" && (
 												<PenSquare
 													size={18}
