@@ -33,6 +33,7 @@ import { BankSetting } from "~/server/database/entity/SALARY/bank_setting";
 import { BasicInfo } from "~/server/database/entity/SALARY/basic_info";
 import { BonusSetting } from "~/server/database/entity/SALARY/bonus_setting";
 import { EmployeeAccount } from "~/server/database/entity/SALARY/employee_account";
+import { BonusAll } from "~/server/database/entity/SALARY/bonus_all";
 
 export const debugRouter = createTRPCRouter({
 	getDatabases: publicProcedure.query(async () => {
@@ -125,6 +126,7 @@ export const debugRouter = createTRPCRouter({
 				// AttendanceSetting,
 				// BankSetting,
 				// BasicInfo,
+				BonusAll,
 				// BonusDepartment,
 				// BonusPosition,
 				// BonusPositionType,
@@ -133,9 +135,9 @@ export const debugRouter = createTRPCRouter({
 				// BonusSetting,
 				// EmployeeAccount,
 				// EmployeeBonus,
-				EmployeePayment,
-				EmployeeTrust,
-				EmployeeData
+				// EmployeePayment,
+				// EmployeeTrust,
+				// EmployeeData
 				// InsuranceRateSetting,
 				// LevelRange,
 				// Level,

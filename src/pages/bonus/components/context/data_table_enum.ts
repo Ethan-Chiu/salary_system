@@ -1,9 +1,10 @@
 export const TableEnumValues = [
 	// "TableBonusSetting",
+	"TableBonusAll",
 	"TableBonusWorkType",
 	"TableBonusDepartment",
 	"TableBonusPosition",
-	"TableBonusPositionType",
+	// "TableBonusPositionType",
 	"TableBonusSeniority",
 	"TableEmployeeBonus",
 	// "TablePerformanceLevel",
@@ -15,14 +16,16 @@ function getTableName(table: TableEnum) {
 	switch (table) {
 		// case "TableBonusSetting":
 		// 	return "bonusSetting";
+		case "TableBonusAll":
+			return "bonusAll";
 		case "TableBonusWorkType":
 			return "bonusWorkType";
 		case "TableBonusDepartment":
 			return "bonusDepartment";
 		case "TableBonusPosition":
 			return "bonusPosition";
-		case "TableBonusPositionType":
-			return "bonusPositionType";
+		// case "TableBonusPositionType":
+		// 	return "bonusPositionType";
 		case "TableBonusSeniority":
 			return "bonusSeniority";
 		case "TableEmployeeBonus":

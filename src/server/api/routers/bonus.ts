@@ -10,6 +10,7 @@ import { BonusDepartmentService } from "~/server/service/bonus_department_servic
 // import { BonusPositionTypeService } from "~/server/service/bonus_position_type_service";
 import { BonusPositionService } from "~/server/service/bonus_position_service";
 import {
+	batchCreateBonusAllAPI,
 	batchCreateBonusDepartmentAPI,
 	batchCreateBonusPositionAPI,
 	// batchCreateBonusPositionTypeAPI,
@@ -20,7 +21,7 @@ import { WorkTypeEnum } from "../types/work_type_enum";
 import { roundProperties } from "~/server/database/mapper/helper_function";
 import { EmployeeBonusMapper } from "~/server/database/mapper/employee_bonus_mapper";
 import { createEmployeeBonusAPI, updateEmployeeBonusAPI } from "../types/employee_bonus_type";
-import { EmployeeBonus } from "~/server/database/entity/SALARY/employee_bonus";
+import { BonusAllService } from "~/server/service/bonus_all_service";
 
 // 改Enum
 export const bonusRouter = createTRPCRouter({
@@ -186,6 +187,21 @@ export const bonusRouter = createTRPCRouter({
 			);
 			return result;
 		}),
+	getBonusAll: publicProcedure
+		.input(
+			z.object({
+				period_id: z.number(),
+				bonus_type: BonusTypeEnum,
+			})
+		)
+		.query(async ({ input }) => {
+			const bonusAllService = container.resolve(BonusAllService);
+			const result = await bonusAllService.getBonusAllByBonusType(
+				input.period_id,
+				input.bonus_type
+			);
+			return result?.map((e) => roundProperties(e, 2));
+		}),
 	getBonusWorkType: publicProcedure
 		.input(
 			z.object({
@@ -273,6 +289,20 @@ export const bonusRouter = createTRPCRouter({
 					input.bonus_type
 				);
 			return result?.map((e) => roundProperties(e, 2));
+		}),
+
+	createBonusAll: publicProcedure
+		.input(
+			z.object({
+				period_id: z.number(),
+				bonus_type: BonusTypeEnum,
+				multiplier: z.number(),
+			})
+		)
+		.mutation(async ({ input }) => {
+			const bonusAllService = container.resolve(BonusAllService);
+			const result = await bonusAllService.createBonusAll(input);
+			return result;
 		}),
 
 	createBonusWorkType: publicProcedure
@@ -364,6 +394,15 @@ export const bonusRouter = createTRPCRouter({
 			);
 			return result;
 		}),
+
+	batchCreateBonusAll: publicProcedure
+		.input(batchCreateBonusAllAPI)
+		.mutation(async ({ input }) => {
+			const bonusAllService = container.resolve(BonusAllService);
+			const result = await bonusAllService.batchCreateBonusAll(input);
+			return result;
+		}),
+
 	batchCreateBonusWorkType: publicProcedure
 		.input(batchCreateBonusWorkTypeAPI)
 		.mutation(async ({ input }) => {
@@ -416,6 +455,20 @@ export const bonusRouter = createTRPCRouter({
 			);
 			return result;
 		}),
+
+	updateBonusAll: publicProcedure
+		.input(
+			z.object({
+				id: z.number(),
+				multiplier: z.number(),
+			})
+		)
+		.mutation(async ({ input }) => {
+			const bonusAllService = container.resolve(BonusAllService);
+			const result = await bonusAllService.updateBonusAll(input);
+			return result;
+		}),
+
 	updateBonusWorkType: publicProcedure
 		.input(
 			z.object({
@@ -498,6 +551,17 @@ export const bonusRouter = createTRPCRouter({
 			const result = await bonusPositionService.updateBonusPosition(
 				input
 			);
+			return result;
+		}),
+	deleteBonusAll: publicProcedure
+		.input(
+			z.object({
+				id: z.number(),
+			})
+		)
+		.mutation(async ({ input }) => {
+			const bonusAllService = container.resolve(BonusAllService);
+			const result = await bonusAllService.deleteBonusAll(input.id);
 			return result;
 		}),
 	deleteBonusWorkType: publicProcedure
