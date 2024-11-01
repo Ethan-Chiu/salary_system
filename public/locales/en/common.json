@@ -240,7 +240,8 @@
     "superviser_amount": "Superviser Amount",
     "approved_amount": "Final Amount",
     "total_budgets": "Total Budgets",
-    "bonus_type": "Bonus Type"
+    "bonus_type": "Bonus Type",
+    "stats_panel": "Stats Panel"
   },
   "table_name": {
     "attendanceSetting": "Attendance Setting",
