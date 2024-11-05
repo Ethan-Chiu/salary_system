@@ -7,10 +7,10 @@ const dbAllowanceType = z.object({
 	OTHER_TAX: z.number(),
 	OTHER_ADD: z.number(),
 	RULE: z.number(),
-	FIELD_ORDER: z.number(),
+	FIELD_ORDER: z.number().nullable(),
 	HIDDE: z.number(),
-	MEMO: z.string(),
-	UPDATE_BY: z.string(),
+	MEMO: z.string().nullable(),
+	UPDATE_BY: z.string().nullable(),
 	UPDATE_DATE: z.date(),
 });
 
@@ -21,10 +21,10 @@ export class AllowanceType {
 	other_tax: number;
 	other_add: number;
 	rule: number;
-	field_order: number;
+	field_order: number | null;
 	hiddle: number;
-	memo: string;
-	update_by: string;
+	memo: string | null;
+	update_by: string | null;
 	update_date: Date;
 
 	constructor(
@@ -34,10 +34,10 @@ export class AllowanceType {
 		other_tax: number,
 		other_add: number,
 		rule: number,
-		field_order: number,
+		field_order: number | null,
 		hiddle: number,
-		memo: string,
-		update_by: string,
+		memo: string | null,
+		update_by: string | null,
 		update_date: Date
 	) {
 		this.id = id;

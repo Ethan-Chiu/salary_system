@@ -101,7 +101,7 @@ export class EmployeeTrustMapper {
 				start_dates.push(trust_money.start_date);
 			}
 		});
-		const promises = start_dates.sort().map(async (start_date,idx) => {
+		const promises = start_dates.sort().map(async (start_date, idx) => {
 			const employee_trust =
 				await employeeTrustService.getCurrentEmployeeTrustByEmpNoByDate(
 					employee_trust_list[0]!.emp_no,
@@ -113,20 +113,23 @@ export class EmployeeTrustMapper {
 					employee.position_type,
 					start_date!
 				);
-            const org_trust_reserve = Math.min(
-			trust_money!.org_trust_reserve_limit,
-			Number(CryptoHelper.decrypt(employee_trust!.emp_trust_reserve_enc))
-		);
-		    const org_special_trust_incent = Math.min(
-			trust_money!.org_special_trust_incent_limit,
-			Number(
-				CryptoHelper.decrypt(
-					employee_trust!.emp_special_trust_incent_enc
-				))
-			)
+			const org_trust_reserve = Math.min(
+				trust_money!.org_trust_reserve_limit,
+				Number(
+					CryptoHelper.decrypt(employee_trust!.emp_trust_reserve_enc)
+				)
+			);
+			const org_special_trust_incent = Math.min(
+				trust_money!.org_special_trust_incent_limit,
+				Number(
+					CryptoHelper.decrypt(
+						employee_trust!.emp_special_trust_incent_enc
+					)
+				)
+			);
 			const employeeTrustFE: z.infer<typeof EmployeeTrustFE> =
 				convertDatePropertiesToISOString({
-                    emp_no: employee.emp_no,
+					emp_no: employee.emp_no,
 					emp_name: employee.emp_name,
 					position: employee.position,
 					position_type: employee.position_type,
@@ -145,7 +148,11 @@ export class EmployeeTrustMapper {
 					org_special_trust_incent: org_special_trust_incent,
 					...employee_trust,
 					start_date: new Date(start_date!),
-					end_date: start_dates[idx+1]? new Date(start_dates[idx+1]!):null
+					end_date: start_dates[idx + 1]
+						? new Date (new Date(start_dates[idx + 1]!).setDate(
+								new Date(start_dates[idx + 1]!).getDate() - 1
+						))
+						: null,
 				});
 
 			return deleteProperties(employeeTrustFE, [
@@ -154,9 +161,9 @@ export class EmployeeTrustMapper {
 			]);
 			// return new_emp_trust
 		});
-        await Promise.all(promises);
-        const employee_trust_FE_list = await Promise.all(promises);
-        return employee_trust_FE_list
+		await Promise.all(promises);
+		const employee_trust_FE_list = await Promise.all(promises);
+		return employee_trust_FE_list;
 	}
 
 	async getEmployeeTrustNullable(

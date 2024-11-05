@@ -102,6 +102,7 @@ export class TrustMoneyService {
 				["position_type", "ASC"],
 				["start_date", "DESC"],
 			],
+			raw: true,
 		});
 		return trustMoney;
 	}
@@ -214,6 +215,7 @@ export class TrustMoneyService {
 				position_type: position_type,
 				disabled: false,
 			},
+			raw: true,
 		});
 		return trustMoney;
 	}

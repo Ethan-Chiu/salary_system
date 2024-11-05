@@ -5,16 +5,16 @@ const dbHoliday = z.object({
 	EMP_NO: z.string(),
 	EMP_NAME: z.string(),
 	PAY_ORDER: z.number(),
-	PAY_PERIOD: z.number(),
-	PAY_DELAY: z.number(),
-	PERIOD_NAME: z.string(),
+	PAY_PERIOD: z.number().nullable(),
+	PAY_DELAY: z.number().nullable(),
+	PERIOD_NAME: z.string().nullable(),
 	TOTAL_HOURS: z.number(),
-	ANNUAL_1: z.number(),
-	COMPENSATORY_134: z.number(),
-	COMPENSATORY_167: z.number(),
-	COMPENSATORY_267: z.number(),
-	COMPENSATORY_1: z.number(),
-	COMPENSATORY_2: z.number(),
+	ANNUAL_1: z.number().nullable(),
+	COMPENSATORY_134: z.number().nullable(),
+	COMPENSATORY_167: z.number().nullable(),
+	COMPENSATORY_267: z.number().nullable(),
+	COMPENSATORY_1: z.number().nullable(),
+	COMPENSATORY_2: z.number().nullable(),
 });
 
 export class Holiday {
@@ -23,32 +23,32 @@ export class Holiday {
 	emp_no: string;
 	emp_name: string;
 	pay_order: number;
-	pay_period: number;
-	pay_delay: number;
-	period_name: string;
+	pay_period: number | null;
+	pay_delay: number | null;
+	period_name: string | null;
 	total_hours: number;
-	annual_1: number; //不休假
-	compensatory_134: number; //不休假
-	compensatory_167: number; //不休假
-	compensatory_267: number; //不休假
-	compensatory_1: number; //不休假
-	compensatory_2: number; //不休假
+	annual_1: number | null;
+	compensatory_134: number | null;
+	compensatory_167: number | null;
+	compensatory_267: number | null;
+	compensatory_1: number | null;
+	compensatory_2: number | null;
 
 	constructor(
 		period_id: number,
-		period_name: string,
+		period_name: string | null,
 		emp_no: string,
 		emp_name: string,
 		pay_order: number,
-		pay_period: number,
-		pay_delay: number,
+		pay_period: number | null,
+		pay_delay: number | null,
 		total_hours: number,
-		annual_1: number,
-		compensatory_134: number,
-		compensatory_167: number,
-		compensatory_267: number,
-		compensatory_1: number,
-		compensatory_2: number
+		annual_1: number | null,
+		compensatory_134: number | null,
+		compensatory_167: number | null,
+		compensatory_267: number | null,
+		compensatory_1: number | null,
+		compensatory_2: number | null
 	) {
 		this.period_id = period_id;
 		this.period_name = period_name;
