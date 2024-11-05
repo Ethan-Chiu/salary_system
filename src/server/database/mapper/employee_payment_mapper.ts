@@ -28,14 +28,7 @@ export class EmployeePaymentMapper {
 	): Promise<CreationAttributes<EmployeePayment>> {
 		const encoded = enc.parse(employee_payment);
 
-		const dbenc = {
-			...encoded,
-			disabled: true,
-			create_by: "sysjjhjjj",
-			update_by: "syste",
-		};
-
-		return dbenc;
+		return encoded;
 	}
 
 	async decodeEmployeePayment (

@@ -17,6 +17,9 @@ import { decDate, encDate } from "../../mapper/mapper_utils";
 const dbEmployeePayment = z.object({
 	emp_no: z.string(),
 	long_service_allowance_type: LongServiceEnum,
+  create_by: z.string(),
+  update_by: z.string(),
+  disabled: z.boolean(),
 });
 
 const decFields = z.object({
