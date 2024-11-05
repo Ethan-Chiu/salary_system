@@ -15,7 +15,7 @@ import { EmployeePaymentService } from "./employee_payment_service";
 import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
 import { EmployeeBonusMapper } from "../database/mapper/employee_bonus_mapper";
 import { CryptoHelper } from "~/lib/utils/crypto";
-import { LongServiceeEnum } from "../api/types/long_service_enum";
+import { LongServiceEnum } from "../api/types/long_service_enum";
 import {
 	createEmployeeBonusService,
 	updateEmployeeBonusService,
@@ -442,7 +442,7 @@ export class EmployeeBonusService {
 			}
 
 			const employee_payment_fe =
-				await employee_payment_mapper.getEmployeePaymentFE(
+				await employee_payment_mapper.decodeEmployeePaymentFE(
 					employee_payment
 				);
 			const employee_bonus_fe =
@@ -455,7 +455,7 @@ export class EmployeeBonusService {
 					employee_payment_fe.occupational_allowance +
 					employee_payment_fe.subsidy_allowance +
 					employee_payment_fe.long_service_allowance_type ==
-				LongServiceeEnum.Enum.月領
+				LongServiceEnum.Enum.月領
 					? employee_payment_fe.long_service_allowance
 					: 0) *
 					employee_bonus_fe.special_multiplier *
