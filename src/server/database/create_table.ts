@@ -21,9 +21,10 @@ import { initInsuranceRateSetting } from "./entity/SALARY/insurance_rate_setting
 import { initPerformanceLevel } from "./entity/SALARY/performance_level";
 import { initTransaction } from "./entity/SALARY/transaction";
 import { initTrustMoney } from "./entity/SALARY/trust_money";
-import{ batchCreateSalaryIncomeTax } from "./entity/SALARY/salary_income_tax";
+import { batchCreateSalaryIncomeTax } from "./entity/SALARY/salary_income_tax";
 import { initUser } from "./entity/SALARY/user";
 import { initEmployeeBonus } from "./entity/SALARY/employee_bonus";
+import { initBonusAll } from "./entity/SALARY/bonus_all";
 // import { initEmployeeDataMut } from "./entity/SALARY/employee_data_mut";
 
 const sequelize = container.resolve(Database).connection;
@@ -32,6 +33,7 @@ initAccessSetting(sequelize);
 initAttendanceSetting(sequelize);
 initBankSetting(sequelize);
 initBasicInfo(sequelize);
+initBonusAll(sequelize);
 initBonusWorkType(sequelize);
 initBonusDepartment(sequelize);
 initBonusPositionType(sequelize);

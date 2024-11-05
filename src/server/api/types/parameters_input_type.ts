@@ -79,6 +79,18 @@ export const createInsuranceRateSettingService =
 export const updateInsuranceRateSettingAPI = InsuranceRateSetting.merge(DateAPI).partial().merge(Id);
 export const updateInsuranceRateSettingService = InsuranceRateSetting.merge(DateService).partial().merge(Id);
 
+const BonusAll = z.object({
+	period_id: z.number(),
+	bonus_type: BonusTypeEnum,
+	multiplier: z.number(),
+});
+
+export const createBonusAllAPI = BonusAll;
+export const createBonusAllService = BonusAll;
+export const updateBonusAllAPI = BonusAll.partial().merge(Id);
+export const updateBonusAllService = BonusAll.partial().merge(Id);
+export const batchCreateBonusAllAPI = z.array(createBonusAllAPI);
+
 const BonusWorkType = z.object({
 	period_id: z.number(),
 	bonus_type: BonusTypeEnum,

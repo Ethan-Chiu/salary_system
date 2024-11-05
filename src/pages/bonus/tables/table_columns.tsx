@@ -18,20 +18,23 @@ import {
 import { type TFunction } from "i18next";
 import { BonusTableEnum } from "../bonus_tables";
 import { bonus_work_type_columns, bonusWorkTypeMapper } from "./bonus_work_type_table";
+import { bonus_all_columns, bonusAllMapper } from "./bonus_all_table";
 
 export function getTableColumn(
 	selectedTableType: BonusTableEnum,
-  t: TFunction<[string], undefined>
+	t: TFunction<[string], undefined>
 ): ColumnDef<any, any>[] {
 	switch (selectedTableType) {
+		case "TableBonusAll":
+			return bonus_all_columns;
 		case "TableBonusWorkType":
 			return bonus_work_type_columns;
 		case "TableBonusDepartment":
 			return bonus_department_columns;
 		case "TableBonusPosition":
 			return bonus_position_columns;
-		case "TableBonusPositionType":
-			return bonus_position_type_columns;
+		// case "TableBonusPositionType":
+		// 	return bonus_position_type_columns;
 		case "TableBonusSeniority":
 			return bonus_seniority_columns;
 		// case "TableBonusSetting":
@@ -43,14 +46,16 @@ export function getTableColumn(
 
 export function getTableMapper(selectedTableType: BonusTableEnum) {
 	switch (selectedTableType) {
+		case "TableBonusAll":
+			return bonusAllMapper;
 		case "TableBonusWorkType":
 			return bonusWorkTypeMapper;
 		case "TableBonusDepartment":
 			return bonusDepartmentMapper;
 		case "TableBonusPosition":
 			return bonusPositionMapper;
-		case "TableBonusPositionType":
-			return bonusPositionTypeMapper;
+		// case "TableBonusPositionType":
+		// 	return bonusPositionTypeMapper;
 		case "TableBonusSeniority":
 			return bonusSeniorityMapper;
 		// case "TableBonusSetting":

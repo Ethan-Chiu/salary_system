@@ -9,6 +9,8 @@ import { useTranslation } from "react-i18next";
 import { useContext, useEffect } from "react";
 import dataTableContext from "../components/context/data_table_context";
 import { Button } from "~/components/ui/button";
+import { Column } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 
 export type RowItem = {
     emp_no: string,
@@ -38,7 +40,25 @@ const columns = (t: I18nType) =>
     ].map((key) => {
         return {
             accessorKey: key,
-            header: t(`table.${key}`),
+            header: ({ column }: { column: Column<any, any> }) => {
+                return (
+                    <div className="flex justify-center">
+                        <div className="text-center font-medium">
+                            <Button
+                                variant="ghost"
+                                onClick={() =>
+                                    column.toggleSorting(
+                                        column.getIsSorted() === "asc"
+                                    )
+                                }
+                            >
+                                {t(`table.${key}`)}
+                                <ArrowUpDown className="ml-2 h-4 w-4" />
+                            </Button>
+                        </div>
+                    </div>
+                );
+            },
         };
     });
 

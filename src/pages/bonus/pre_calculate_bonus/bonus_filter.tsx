@@ -6,6 +6,7 @@ import {
 } from "~/components/ui/resizable";
 import { cn } from "~/lib/utils";
 import {
+    Bookmark,
     Briefcase,
     Cake,
     Key,
@@ -26,6 +27,7 @@ import { BonusPositionTypeTable } from "../tables/bonus_position_type_table";
 import { BonusSeniorityTable } from "../tables/bonus_seniority_table";
 import { BonusWorkTypeTable } from "../tables/bonus_work_type_table";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
+import { BonusAllTable } from "../tables/bonus_all_table";
 
 export type TableComponentProps = {
     period_id: number;
@@ -42,6 +44,11 @@ function getTableComponent(
     table: BonusTableEnum,
 ): TableComponent {
     switch (table) {
+        case "TableBonusAll":
+            return {
+                component: BonusAllTable,
+                icon: Bookmark,
+            };
         case "TableBonusWorkType":
             return {
                 component: BonusWorkTypeTable,
