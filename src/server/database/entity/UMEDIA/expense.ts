@@ -1,18 +1,18 @@
 import { z } from "zod";
 
 const dbExpense = z.object({
-  PERIOD_ID: z.number(),
-  KIND: z.number(),
-  EMP_NO: z.string(),
-  EMP_NAME: z.string(),
-  ID: z.number(),
-  AMOUNT: z.number(),
-  REMARK: z.string(),
-  CREATE_BY: z.string(),
-  CREATE_DATE: z.date(),
-  UPDATE_BY: z.string(),
-  UPDATE_DATE: z.date(),
-  PAY_DELAY: z.number(),
+	PERIOD_ID: z.number(),
+	KIND: z.number(),
+	EMP_NO: z.string(),
+	EMP_NAME: z.string(),
+	ID: z.number(),
+	AMOUNT: z.number(),
+	REMARK: z.string().nullable(),
+	CREATE_BY: z.string(),
+	CREATE_DATE: z.date(),
+	UPDATE_BY: z.string().nullable(),
+	UPDATE_DATE: z.date().nullable(),
+	PAY_DELAY: z.number().nullable(),
 });
 
 export class Expense {
@@ -23,12 +23,12 @@ export class Expense {
 	emp_name: string;
 	id: number;
 	amount: number;
-	remark: string;
+	remark: string | null;
 	create_by: string;
 	create_date: Date;
-	update_by: string;
-	update_date: Date;
-	pay_delay: number;
+	update_by: string | null;
+	update_date: Date | null;
+	pay_delay: number | null;
 
 	constructor(
 		period_id: number,
@@ -37,12 +37,12 @@ export class Expense {
 		emp_name: string,
 		id: number,
 		amount: number,
-		remark: string,
+		remark: string | null,
 		create_by: string,
 		create_date: Date,
-		update_by: string,
-		update_date: Date,
-		pay_delay: number
+		update_by: string | null,
+		update_date: Date | null,
+		pay_delay: number | null
 	) {
 		this.period_id = period_id;
 		this.kind = kind;

@@ -137,7 +137,7 @@ export const debugRouter = createTRPCRouter({
 				// EmployeeAccount,
 				// EmployeeBonus,
 				// EmployeePayment,
-				// EmployeeTrust,
+				EmployeeTrust,
 				// EmployeeData
 				// InsuranceRateSetting,
 				// LevelRange,

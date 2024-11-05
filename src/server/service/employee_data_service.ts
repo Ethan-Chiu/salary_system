@@ -73,6 +73,7 @@ export class EmployeeDataService {
 			where: {
 				emp_no: emp_no,
 			},
+			raw: true,
 		});
 		return employeeData;
 	}

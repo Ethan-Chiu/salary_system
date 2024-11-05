@@ -1,26 +1,26 @@
 import { z } from "zod";
 
 const dbOvertime = z.object({
-  PERIOD_ID: z.number(),
-  EMP_NO: z.string(),
-  EMP_NAME: z.string(),
-  PAY: z.number(),
-  TYPE_ID: z.number(),
-  DAYS_RADIO: z.string(),
-  TYPE_NAME: z.string(),
-  PAY_PERIOD: z.number(),
-  PERIOD_NAME: z.string(),
-  PAY_DELAY: z.number(),
-  HOURS_1: z.number(),
-  HOURS_134: z.number(),
-  HOURS_167: z.number(),
-  HOURS_267: z.number(),
-  HOURS_2: z.number(),
-  HOURS_134_TAX: z.number(),
-  HOURS_167_TAX: z.number(),
-  HOURS_267_TAX: z.number(),
-  HOURS_2_TAX: z.number(),
-})
+	PERIOD_ID: z.number(),
+	EMP_NO: z.string(),
+	EMP_NAME: z.string(),
+	PAY: z.number(),
+	TYPE_ID: z.number(),
+	DAYS_RADIO: z.string(),
+	TYPE_NAME: z.string(),
+	PAY_PERIOD: z.number().nullable(),
+	PERIOD_NAME: z.string().nullable(),
+	PAY_DELAY: z.number().nullable(),
+	HOURS_1: z.number(),
+	HOURS_134: z.number(),
+	HOURS_167: z.number(),
+	HOURS_267: z.number(),
+	HOURS_2: z.number(),
+	HOURS_134_TAX: z.number(),
+	HOURS_167_TAX: z.number(),
+	HOURS_267_TAX: z.number(),
+	HOURS_2_TAX: z.number(),
+});
 
 export class Overtime {
 	// id can be undefined during creation when using `autoIncrement`
@@ -31,9 +31,9 @@ export class Overtime {
 	type_id: number;
 	days_radio: string;
 	type_name: string;
-	pay_period: number;
-	period_name: string;
-	pay_delay: number;
+	pay_period: number | null;
+	period_name: string | null;
+	pay_delay: number | null;
 	hours_1: number;
 	hours_134: number;
 	hours_167: number;
@@ -46,15 +46,15 @@ export class Overtime {
 
 	constructor(
 		period_id: number,
-		period_name: string,
+		period_name: string | null,
 		emp_no: string,
 		emp_name: string,
 		pay: number, //1：5日 2：15日
 		type_id: number,
 		days_radio: string,
 		type_name: string,
-		pay_period: number,
-		pay_delay: number,
+		pay_period: number | null,
+		pay_delay: number | null,
 		hours_1: number,
 		hours_134: number,
 		hours_167: number,
@@ -86,7 +86,7 @@ export class Overtime {
 		this.hours_2_TAX = hours_2_TAX;
 	}
 
-  static fromDB(db_data: any): Overtime {
+	static fromDB(db_data: any): Overtime {
 		const result = dbOvertime.safeParse(db_data);
 
 		if (!result.success) {

@@ -12,7 +12,7 @@ import { Op } from "sequelize";
 
 @injectable()
 export class TrustMoneyService {
-	constructor() { }
+	constructor() {}
 
 	async createTrustMoney({
 		position,
@@ -25,28 +25,24 @@ export class TrustMoneyService {
 		const current_date_string = get_date_string(new Date());
 		check_date(start_date, end_date, current_date_string);
 
-		const newData = await TrustMoney.create(
-			{
-				position: position,
-				position_type: position_type,
-				org_trust_reserve_limit: org_trust_reserve_limit,
-				org_special_trust_incent_limit: org_special_trust_incent_limit,
-				start_date: start_date ?? current_date_string,
-				end_date: end_date,
-				disabled: false,
-				create_by: "system",
-				update_by: "system",
-			}
-		);
+		const newData = await TrustMoney.create({
+			position: position,
+			position_type: position_type,
+			org_trust_reserve_limit: org_trust_reserve_limit,
+			org_special_trust_incent_limit: org_special_trust_incent_limit,
+			start_date: start_date ?? current_date_string,
+			end_date: end_date,
+			disabled: false,
+			create_by: "system",
+			update_by: "system",
+		});
 		return newData;
 	}
 
 	async getTrustMoneyById(id: number): Promise<TrustMoney | null> {
-		const trustMoney = await TrustMoney.findOne(
-			{
-				where: { id: id },
-			}
-		);
+		const trustMoney = await TrustMoney.findOne({
+			where: { id: id },
+		});
 		return trustMoney;
 	}
 
@@ -58,24 +54,22 @@ export class TrustMoneyService {
 		const ehr_service = container.resolve(EHRService);
 		const period = await ehr_service.getPeriodById(period_id);
 		const current_date_string = period.end_date;
-		const trustMoney = await TrustMoney.findOne(
-			{
-				where: {
-					start_date: {
-						[Op.lte]: current_date_string,
-					},
-					end_date: {
-						[Op.or]: [
-							{ [Op.gte]: current_date_string },
-							{ [Op.eq]: null },
-						],
-					},
-					position: position,
-					position_type: position_type,
-					disabled: false,
+		const trustMoney = await TrustMoney.findOne({
+			where: {
+				start_date: {
+					[Op.lte]: current_date_string,
 				},
-			}
-		);
+				end_date: {
+					[Op.or]: [
+						{ [Op.gte]: current_date_string },
+						{ [Op.eq]: null },
+					],
+				},
+				position: position,
+				position_type: position_type,
+				disabled: false,
+			},
+		});
 		return trustMoney;
 	}
 
@@ -83,32 +77,33 @@ export class TrustMoneyService {
 		const ehr_service = container.resolve(EHRService);
 		const period = await ehr_service.getPeriodById(period_id);
 		const current_date_string = period.end_date;
-		const trustMoney = await TrustMoney.findAll(
-			{
-				where: {
-					start_date: {
-						[Op.lte]: current_date_string,
-					},
-					end_date: {
-						[Op.or]: [
-							{ [Op.gte]: current_date_string },
-							{ [Op.eq]: null },
-						],
-					},
-					disabled: false,
+		const trustMoney = await TrustMoney.findAll({
+			where: {
+				start_date: {
+					[Op.lte]: current_date_string,
 				},
-			}
-		);
+				end_date: {
+					[Op.or]: [
+						{ [Op.gte]: current_date_string },
+						{ [Op.eq]: null },
+					],
+				},
+				disabled: false,
+			},
+		});
 		return trustMoney;
 	}
 
 	async getAllTrustMoney(): Promise<TrustMoney[]> {
-		const trustMoney = await TrustMoney.findAll(
-			{
-				where: { disabled: false },
-				order: [["position", "ASC"], ["position_type", "ASC"], ["start_date", "DESC"]],
-			}
-		);
+		const trustMoney = await TrustMoney.findAll({
+			where: { disabled: false },
+			order: [
+				["position", "ASC"],
+				["position_type", "ASC"],
+				["start_date", "DESC"],
+			],
+			raw: true,
+		});
 		return trustMoney;
 	}
 
@@ -128,28 +123,23 @@ export class TrustMoneyService {
 
 		await this.deleteTrustMoney(id);
 
-		await this.createTrustMoney(
-			{
-				position: select_value(position, trustMoney.position),
-				position_type: select_value(
-					position_type,
-					trustMoney.position_type
-				),
-				org_trust_reserve_limit: select_value(
-					org_trust_reserve_limit,
-					trustMoney.org_trust_reserve_limit
-				),
-				org_special_trust_incent_limit: select_value(
-					org_special_trust_incent_limit,
-					trustMoney.org_special_trust_incent_limit
-				),
-				start_date: select_value(
-					start_date,
-					trustMoney.start_date
-				),
-				end_date: select_value(end_date, trustMoney.end_date),
-			}
-		);
+		await this.createTrustMoney({
+			position: select_value(position, trustMoney.position),
+			position_type: select_value(
+				position_type,
+				trustMoney.position_type
+			),
+			org_trust_reserve_limit: select_value(
+				org_trust_reserve_limit,
+				trustMoney.org_trust_reserve_limit
+			),
+			org_special_trust_incent_limit: select_value(
+				org_special_trust_incent_limit,
+				trustMoney.org_special_trust_incent_limit
+			),
+			start_date: select_value(start_date, trustMoney.start_date),
+			end_date: select_value(end_date, trustMoney.end_date),
+		});
 	}
 
 	async deleteTrustMoney(id: number): Promise<void> {
@@ -176,17 +166,15 @@ export class TrustMoneyService {
 			const end_date_string = get_date_string(
 				new Date(trustMoneyList[i]!.end_date!)
 			);
-			const start_date = new Date(
-				trustMoneyList[i + 1]!.start_date
-			);
+			const start_date = new Date(trustMoneyList[i + 1]!.start_date);
 			const new_end_date_string = get_date_string(
 				new Date(start_date.setDate(start_date.getDate() - 1))
 			);
 			if (
 				trustMoneyList[i]!.position ==
-				trustMoneyList[i + 1]!.position &&
+					trustMoneyList[i + 1]!.position &&
 				trustMoneyList[i]!.position_type ==
-				trustMoneyList[i + 1]!.position_type
+					trustMoneyList[i + 1]!.position_type
 			) {
 				if (end_date_string != new_end_date_string) {
 					await this.updateTrustMoney({
@@ -205,10 +193,30 @@ export class TrustMoneyService {
 		}
 		if (trustMoneyList[trustMoneyList.length - 1]!.end_date != null) {
 			await this.updateTrustMoney({
-				id: trustMoneyList[trustMoneyList.length - 1]!
-					.id,
+				id: trustMoneyList[trustMoneyList.length - 1]!.id,
 				end_date: null,
 			});
 		}
+	}
+	async getCurrentTrustMoneyByPositionByDate(
+		position: number,
+		position_type: string,
+		date: string
+	): Promise<TrustMoney | null> {
+		const trustMoney = await TrustMoney.findOne({
+			where: {
+				start_date: {
+					[Op.lte]: date,
+				},
+				end_date: {
+					[Op.or]: [{ [Op.gte]: date }, { [Op.eq]: null }],
+				},
+				position: position,
+				position_type: position_type,
+				disabled: false,
+			},
+			raw: true,
+		});
+		return trustMoney;
 	}
 }

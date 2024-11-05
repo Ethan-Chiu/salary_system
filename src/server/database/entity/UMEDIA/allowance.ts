@@ -7,11 +7,11 @@ const dbAllowance = z.object({
 	EMP_NAME: z.string(),
 	ALLOWANCE_ID: z.number(),
 	AMOUNT: z.number(),
-	REMARK: z.string(),
+	REMARK: z.string().nullable(),
 	CREATE_BY: z.string(),
 	CREATE_DATE: z.date(),
-	UPDATE_BY: z.string(),
-	UPDATE_DATE: z.date(),
+	UPDATE_BY: z.string().nullable(),
+	UPDATE_DATE: z.date().nullable(),
 	PAY_DELAY: z.number(),
 });
 
@@ -22,11 +22,11 @@ export class Allowance {
 	emp_name: string;
 	allowance_id: number;
 	amount: number;
-	remark: string;
+	remark: string | null;
 	create_by: string;
 	create_date: Date;
-	update_by: string;
-	update_date: Date;
+	update_by: string | null;
+	update_date: Date | null;
 	pay_delay: number;
 
 	constructor(
@@ -36,11 +36,11 @@ export class Allowance {
 		emp_name: string,
 		allowance_id: number,
 		amount: number,
-		remark: string,
+		remark: string | null,
 		create_by: string,
 		create_date: Date,
-		update_by: string,
-		update_date: Date,
+		update_by: string | null,
+		update_date: Date | null,
 		pay_delay: number
 	) {
 		this.id = id;
