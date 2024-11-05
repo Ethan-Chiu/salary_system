@@ -3,7 +3,7 @@ import {
 	WorkTypeEnumType,
 	WorkTypeEnum,
 } from "~/server/api/types/work_type_enum";
-import { zStrTransEnum } from "~/server/api/types/z_utils";
+import { stringToEnum } from "~/server/api/types/z_utils";
 import { get_date_string } from "~/server/service/helper_function";
 
 const dbEmp = z.object({
@@ -14,7 +14,7 @@ const dbEmp = z.object({
 	POSITION_TYPE: z.string(),
 	GINSURANCE_TYPE: z.string(),
 	U_DEP: z.string(),
-	WORK_TYPE: zStrTransEnum(WorkTypeEnum),
+	WORK_TYPE: stringToEnum.pipe(WorkTypeEnum),
 	WORK_STATUS: z.string(),
 	ACCESSIBLE: z.string().nullable(),
 	SEX_TYPE: z.string(),

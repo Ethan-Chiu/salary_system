@@ -14,7 +14,7 @@ import { InsuranceRateSetting } from "../database/entity/SALARY/insurance_rate_s
 import { Holiday } from "../database/entity/UMEDIA/holiday";
 import { PayTypeEnum, PayTypeEnumType } from "../api/types/pay_type_enum";
 import { HolidaysType } from "../database/entity/SALARY/holidays_type";
-import { EmployeePaymentFE } from "../api/types/employee_payment_type";
+import { employeePaymentFE } from "../api/types/employee_payment_type";
 import { z } from "zod";
 import { Round } from "./helper_function";
 import { SalaryIncomeTaxService } from "./salary_income_tax_service";
@@ -44,7 +44,7 @@ export class CalculateService {
 	// MARK: 平日加班費
 	async getWeekdayOvertimePay(
 		employee_data: EmployeeData,
-		discounted_employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		overtime_list: Overtime[],
 		payset: Payset,
 		insurance_rate_setting: InsuranceRateSetting,
@@ -112,7 +112,7 @@ export class CalculateService {
 	//MARK: 假日加班費
 	async getHolidayOvertimePay(
 		employee_data: EmployeeData,
-		discounted_employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		overtime_list: Overtime[],
 		payset: Payset,
 		insurance_rate_setting: InsuranceRateSetting,
@@ -192,7 +192,7 @@ export class CalculateService {
 	// MARK: 超時加班費
 	async getExceedOvertimePay(
 		employee_data: EmployeeData,
-		discounted_employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		overtime_list: Overtime[],
 		payset: Payset,
 		insurance_rate_setting: InsuranceRateSetting,
@@ -257,7 +257,7 @@ export class CalculateService {
 	}
 	//MARK: 應發底薪
 	async getGrossSalary(
-		employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+		employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		payset: Payset,
 		professional_cert_allowance: number,
 		pay_type: PayTypeEnumType,
@@ -294,7 +294,7 @@ export class CalculateService {
 	//MARK: 勞保扣除額
 	async getLaborInsuranceDeduction(
 		employee_data: EmployeeData,
-		discounted_employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		payset: Payset,
 		insuranceRateSetting: InsuranceRateSetting
 	): Promise<number> {
@@ -370,7 +370,7 @@ export class CalculateService {
 	//MARK: 健保扣除額(要多考慮本人障礙 眷屬正常)
 	async getHealthInsuranceDeduction(
 		employee_data: EmployeeData,
-		discounted_employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		insurance_rate_setting: InsuranceRateSetting
 	): Promise<number> {
 		// rd("健保扣除額") = CalacHelTax(rd("健保"), rd("健保眷口數"), rd("工作形態"), CheckNull(rd("殘障等級"), "正常"), 0, rd("健保追加"))   'Jerry 07/03/30 加入殘障等級計算  , 07/11/26 增加健保追加計算
@@ -429,7 +429,7 @@ export class CalculateService {
 	//MARK:福利金提撥
 	async getWelfareContribution(
 		employee_data: EmployeeData,
-		discounted_employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		full_attendance_bonus: number,
 		operational_performance_bonus: number
 	): Promise<number> {
@@ -457,7 +457,7 @@ export class CalculateService {
 	//MARK: 請假扣款
 	async getLeaveDeduction(
 		employee_data: EmployeeData,
-		discounted_employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		holiday_list: Holiday[], // Maybe not this
 		payset: Payset,
 		holidays_type: HolidaysType[],
@@ -659,7 +659,7 @@ export class CalculateService {
 	//MARK: 薪資所得扣繳總額
 	async getSalaryIncomeDeduction(
 		// employee_data : EmployeeData,
-		discounted_employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		// payset : Payset,
 		reissue_salary: number,
 		full_attendance_bonus: number,
@@ -711,7 +711,7 @@ export class CalculateService {
 	async getSalaryAdvance(
 		pay_type: PayTypeEnumType,
 		payset: Payset | undefined,
-		discounted_employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		insurance_rate_setting: InsuranceRateSetting,
 		employee_data: EmployeeData
 	): Promise<number> {
@@ -860,7 +860,7 @@ export class CalculateService {
 	}
 	//MARK: 課稅所得
 	async getTaxableIncome(
-		discounted_employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		exceed_overtime_pay: number,
 		professional_cert_allowance: number
 	): Promise<number> {
@@ -877,7 +877,7 @@ export class CalculateService {
 	//MARK: 課稅小計
 	async getTaxableSubtotal(
 		pay_type: PayTypeEnumType,
-		discounted_employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		operational_performance_bonus: number,
 		reissue_salary: number,
 		exceed_overtime_pay: number,
@@ -1050,7 +1050,7 @@ export class CalculateService {
 	}
 	//MARK: 非課稅小計
 	async getNonTaxableSubtotal(
-		discounted_employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		weekday_overtime_pay: number,
 		holiday_overtime_pay: number,
 		non_leave_compensation: number,
@@ -1161,7 +1161,7 @@ export class CalculateService {
 	}
 	//MARK: 勞保費
 	async getLaborInsurancePay(
-		discounted_employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		employee_data: EmployeeData,
 		insurance_rate_setting: InsuranceRateSetting,
 		payset: Payset | undefined,
@@ -1274,7 +1274,7 @@ export class CalculateService {
 	}
 	//MARK: 健保費
 	async getHealthInsurancePay(
-		discounted_employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		employee_data: EmployeeData,
 		insurance_rate_setting: InsuranceRateSetting
 	): Promise<number> {
@@ -1408,7 +1408,7 @@ export class CalculateService {
 	//MARK: 勞退金自提
 	// 勞退級距＊勞退自提%
 	async getLRSelf(
-		discounted_employee_payment_fe: z.infer<typeof EmployeePaymentFE>
+		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>
 	): Promise<number> {
 		return (
 			discounted_employee_payment_fe.l_r *
@@ -1464,7 +1464,7 @@ export class CalculateService {
 	}
 	//MARK: 薪資總額
 	async getTotalSalary(
-		discounted_employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		full_attendance_bonus: number,
 		professional_cert_allowance: number,
 		shift_allowance: number
@@ -1484,7 +1484,7 @@ export class CalculateService {
 	//MARK: 勞退金提撥
 	async getLaborRetirementContribution(
 		employee_data: EmployeeData,
-		discounted_employee_payment_fe: z.infer<typeof EmployeePaymentFE>
+		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>
 	): Promise<number> {
 		/*
 			rd("勞退金提撥") = ComRetire(
@@ -1736,7 +1736,7 @@ export class CalculateService {
 		holidays_type: HolidaysType[],
 		holiday_list: Holiday[],
 		gross_salary: number,
-		discounted_employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		insurance_rate_setting: InsuranceRateSetting,
 		professional_cert_allowance: number
 	): Promise<number> {
@@ -1852,7 +1852,7 @@ export class CalculateService {
 		return full_attendance_sick_leave;
 	}
 	async discountedPayment(
-		employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+		employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		payset: Payset | undefined
 	) {
 		employee_payment_fe.base_salary =
