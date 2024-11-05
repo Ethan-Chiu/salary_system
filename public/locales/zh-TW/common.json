@@ -254,7 +254,8 @@
     "qualified": "符合資格",
     "notQualified": "不符合資格",
     "liuting": "留停",
-    "stats_panel": "統計面板"
+    "stats_panel": "統計面板",
+    "count": "數量"
   },
   "table_name": {
     "attendanceSetting": "請假加班",

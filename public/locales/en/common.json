@@ -241,7 +241,8 @@
     "approved_amount": "Final Amount",
     "total_budgets": "Total Budgets",
     "bonus_type": "Bonus Type",
-    "stats_panel": "Stats Panel"
+    "stats_panel": "Stats Panel",
+    "count": "Count"
   },
   "table_name": {
     "attendanceSetting": "Attendance Setting",
