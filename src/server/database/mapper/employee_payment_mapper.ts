@@ -1,83 +1,141 @@
 import { container, injectable } from "tsyringe";
 import { type z } from "zod";
 import { BaseResponseError } from "~/server/api/error/BaseResponseError";
-import { EmployeePayment, updateEmployeePaymentService, type updateEmployeePaymentAPI, type EmployeePaymentFEType, type EmployeePaymentType } from "~/server/api/types/employee_payment_type";
+import {
+	updateEmployeePaymentService,
+	type updateEmployeePaymentAPI,
+	type EmployeePaymentFEType,
+} from "~/server/api/types/employee_payment_type";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
-import { convertDatePropertiesToISOString, deleteProperties } from "./helper_function";
+import {
+	convertDatePropertiesToISOString,
+	deleteProperties,
+} from "./helper_function";
 import { CryptoHelper } from "~/lib/utils/crypto";
+import {
+	type EmployeePaymentCreateDecType,
+	type EmployeePaymentCreateEncType,
+	enc,
+	dec,
+	type EmployeePayment,
+} from "../entity/SALARY/employee_payment";
+import { type CreationAttributes } from "sequelize";
 
 @injectable()
 export class EmployeePaymentMapper {
-    async getEmployeePayment(employee_payment: EmployeePaymentFEType): Promise<EmployeePaymentType> {
-        const employeePayment: z.infer<typeof EmployeePayment> = EmployeePayment.parse(
-            convertDatePropertiesToISOString({
-                base_salary_enc: CryptoHelper.encrypt(employee_payment.base_salary.toString()),
-                food_allowance_enc: CryptoHelper.encrypt(employee_payment.food_allowance.toString()),
-                supervisor_allowance_enc: CryptoHelper.encrypt(employee_payment.supervisor_allowance.toString()),
-                occupational_allowance_enc: CryptoHelper.encrypt(employee_payment.occupational_allowance.toString()),
-                subsidy_allowance_enc: CryptoHelper.encrypt(employee_payment.subsidy_allowance.toString()),
-                long_service_allowance_enc: CryptoHelper.encrypt(employee_payment.long_service_allowance.toString()),
-                l_r_self_enc: CryptoHelper.encrypt(employee_payment.l_r_self.toString()),
-                l_i_enc: CryptoHelper.encrypt(employee_payment.l_i.toString()),
-                h_i_enc: CryptoHelper.encrypt(employee_payment.h_i.toString()),
-                l_r_enc: CryptoHelper.encrypt(employee_payment.l_r.toString()),
-                occupational_injury_enc: CryptoHelper.encrypt(employee_payment.occupational_injury.toString()),
-                ...employee_payment,
-            })
-        )
+	async encodeEmployeePayment(
+		employee_payment: EmployeePaymentCreateDecType
+	): Promise<CreationAttributes<EmployeePayment>> {
+		const encoded = enc.parse(employee_payment);
 
-        return employeePayment
-    }
+		return encoded;
+	}
 
-    async getEmployeePaymentFE(employee_payment: EmployeePaymentType): Promise<EmployeePaymentFEType> {
-        const employeeDataService = container.resolve(EmployeeDataService)
-        const employee = await employeeDataService.getEmployeeDataByEmpNo(employee_payment.emp_no)
-        if (employee == null) {
-            throw new BaseResponseError("Employee does not exist")
-        }
+	async decodeEmployeePayment (
+		employee_payment: EmployeePaymentCreateEncType
+	): Promise<EmployeePaymentCreateDecType> {
 
-        const employeePaymentFE: EmployeePaymentFEType = convertDatePropertiesToISOString({
-            emp_name: employee.emp_name,
-            position: employee.position,
-            position_type: employee.position_type,
-            department: employee.department,
-            base_salary: Number(CryptoHelper.decrypt(employee_payment.base_salary_enc)),
-            food_allowance: Number(CryptoHelper.decrypt(employee_payment.food_allowance_enc)),
-            supervisor_allowance: Number(CryptoHelper.decrypt(employee_payment.supervisor_allowance_enc)),
-            occupational_allowance: Number(CryptoHelper.decrypt(employee_payment.occupational_allowance_enc)),
-            subsidy_allowance: Number(CryptoHelper.decrypt(employee_payment.subsidy_allowance_enc)),
-            long_service_allowance: Number(CryptoHelper.decrypt(employee_payment.long_service_allowance_enc)),
-            l_r_self: Number(CryptoHelper.decrypt(employee_payment.l_r_self_enc)),
-            l_i: Number(CryptoHelper.decrypt(employee_payment.l_i_enc)),
-            h_i: Number(CryptoHelper.decrypt(employee_payment.h_i_enc)),
-            l_r: Number(CryptoHelper.decrypt(employee_payment.l_r_enc)),
-            occupational_injury: Number(CryptoHelper.decrypt(employee_payment.occupational_injury_enc)),
-            ...employee_payment,
-            start_date: employee_payment.start_date ? new Date(employee_payment.start_date) : null,
-            end_date: employee_payment.end_date ? new Date(employee_payment.end_date) : null,
-        })
+		const employeeDataService = container.resolve(EmployeeDataService);
+		const employee = await employeeDataService.getEmployeeDataByEmpNo(
+			employee_payment.emp_no
+		);
+		if (employee == null) {
+			throw new BaseResponseError("Employee does not exist");
+		}
 
-        return deleteProperties(employeePaymentFE, ["base_salary_enc", "supervisor_allowance_enc", "occupational_allowance_enc", "subsidy_allowance_enc", "food_allowance_enc", "long_service_allowance_enc", "l_r_self_enc", "l_i_enc", "h_i_enc", "l_r_enc", "occupational_injury_enc"])
-    }
+		const decoded = dec.parse(employee_payment);
 
-    async getEmployeePaymentNullable(employee_payment: z.infer<typeof updateEmployeePaymentAPI>): Promise<z.infer<typeof updateEmployeePaymentService>> {
-        const employeePayment: z.infer<typeof updateEmployeePaymentService> = updateEmployeePaymentService.parse(
-            convertDatePropertiesToISOString({
-                base_salary_enc: employee_payment.base_salary != undefined ? CryptoHelper.encrypt(employee_payment.base_salary.toString()) : undefined,
-                food_allowance_enc: employee_payment.food_allowance != undefined ? CryptoHelper.encrypt(employee_payment.food_allowance.toString()) : undefined,
-                supervisor_allowance_enc: employee_payment.supervisor_allowance != undefined ? CryptoHelper.encrypt(employee_payment.supervisor_allowance.toString()) : undefined,
-                occupational_allowance_enc: employee_payment.occupational_allowance != undefined ? CryptoHelper.encrypt(employee_payment.occupational_allowance.toString()) : undefined,
-                subsidy_allowance_enc: employee_payment.subsidy_allowance != undefined ? CryptoHelper.encrypt(employee_payment.subsidy_allowance.toString()) : undefined,
-                long_service_allowance_enc: employee_payment.long_service_allowance != undefined ? CryptoHelper.encrypt(employee_payment.long_service_allowance.toString()) : undefined,
-                l_r_self_enc: employee_payment.l_r_self != undefined ? CryptoHelper.encrypt(employee_payment.l_r_self.toString()) : undefined,
-                l_i_enc: employee_payment.l_i != undefined ? CryptoHelper.encrypt(employee_payment.l_i.toString()) : undefined,
-                h_i_enc: employee_payment.h_i != undefined ? CryptoHelper.encrypt(employee_payment.h_i.toString()) : undefined,
-                l_r_enc: employee_payment.l_r != undefined ? CryptoHelper.encrypt(employee_payment.l_r.toString()) : undefined,
-                occupational_injury_enc: employee_payment.occupational_injury != undefined ? CryptoHelper.encrypt(employee_payment.occupational_injury.toString()) : undefined,
-                ...employee_payment,
-            })
-        )
+		return deleteProperties(decoded, [
+			"base_salary_enc",
+			"supervisor_allowance_enc",
+			"occupational_allowance_enc",
+			"subsidy_allowance_enc",
+			"food_allowance_enc",
+			"long_service_allowance_enc",
+			"l_r_self_enc",
+			"l_i_enc",
+			"h_i_enc",
+			"l_r_enc",
+			"occupational_injury_enc",
+		]);
+	}
 
-        return employeePayment
-    }
+	async getEmployeePaymentNullable(
+		employee_payment: z.infer<typeof updateEmployeePaymentAPI>
+	): Promise<z.infer<typeof updateEmployeePaymentService>> {
+		const employeePayment: z.infer<typeof updateEmployeePaymentService> =
+			updateEmployeePaymentService.parse(
+				convertDatePropertiesToISOString({
+					base_salary_enc:
+						employee_payment.base_salary != undefined
+							? CryptoHelper.encrypt(
+									employee_payment.base_salary.toString()
+							  )
+							: undefined,
+					food_allowance_enc:
+						employee_payment.food_allowance != undefined
+							? CryptoHelper.encrypt(
+									employee_payment.food_allowance.toString()
+							  )
+							: undefined,
+					supervisor_allowance_enc:
+						employee_payment.supervisor_allowance != undefined
+							? CryptoHelper.encrypt(
+									employee_payment.supervisor_allowance.toString()
+							  )
+							: undefined,
+					occupational_allowance_enc:
+						employee_payment.occupational_allowance != undefined
+							? CryptoHelper.encrypt(
+									employee_payment.occupational_allowance.toString()
+							  )
+							: undefined,
+					subsidy_allowance_enc:
+						employee_payment.subsidy_allowance != undefined
+							? CryptoHelper.encrypt(
+									employee_payment.subsidy_allowance.toString()
+							  )
+							: undefined,
+					long_service_allowance_enc:
+						employee_payment.long_service_allowance != undefined
+							? CryptoHelper.encrypt(
+									employee_payment.long_service_allowance.toString()
+							  )
+							: undefined,
+					l_r_self_enc:
+						employee_payment.l_r_self != undefined
+							? CryptoHelper.encrypt(
+									employee_payment.l_r_self.toString()
+							  )
+							: undefined,
+					l_i_enc:
+						employee_payment.l_i != undefined
+							? CryptoHelper.encrypt(
+									employee_payment.l_i.toString()
+							  )
+							: undefined,
+					h_i_enc:
+						employee_payment.h_i != undefined
+							? CryptoHelper.encrypt(
+									employee_payment.h_i.toString()
+							  )
+							: undefined,
+					l_r_enc:
+						employee_payment.l_r != undefined
+							? CryptoHelper.encrypt(
+									employee_payment.l_r.toString()
+							  )
+							: undefined,
+					occupational_injury_enc:
+						employee_payment.occupational_injury != undefined
+							? CryptoHelper.encrypt(
+									employee_payment.occupational_injury.toString()
+							  )
+							: undefined,
+					...employee_payment,
+				})
+			);
+
+		return employeePayment;
+	}
 }

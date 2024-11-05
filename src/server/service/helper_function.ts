@@ -1,4 +1,3 @@
-import { BaseResponseError } from "../api/error/BaseResponseError";
 import { type Period } from "../database/entity/UMEDIA/period";
 
 export function check_date(

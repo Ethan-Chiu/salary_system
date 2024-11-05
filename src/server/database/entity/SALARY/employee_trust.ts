@@ -15,10 +15,10 @@ export class EmployeeTrust extends Model<
 	declare id: CreationOptional<number>;
 	declare emp_no: string;
 	declare emp_trust_reserve_enc: string;
-	declare org_trust_reserve_enc: string;
+	// declare org_trust_reserve_enc: string;
 	declare emp_special_trust_incent_enc: string;
-	declare org_special_trust_incent_enc: string;
-	declare entry_date: string;
+	// declare org_special_trust_incent_enc: string;
+	// declare entry_date: string;
 	declare start_date: string;
 	declare end_date: string | null;
 	declare disabled: boolean;
@@ -47,22 +47,22 @@ export function initEmployeeTrust(sequelize: Sequelize) {
 				type: DataTypes.STRING(128),
 				allowNull: false,
 			},
-			org_trust_reserve_enc: {
-				type: DataTypes.STRING(128),
-				allowNull: false,
-			},
+			// org_trust_reserve_enc: {
+			// 	type: DataTypes.STRING(128),
+			// 	allowNull: false,
+			// },
 			emp_special_trust_incent_enc: {
 				type: DataTypes.STRING(128),
 				allowNull: false,
 			},
-			org_special_trust_incent_enc: {
-				type: DataTypes.STRING(128),
-				allowNull: false,
-			},
-			entry_date: {
-				type: DataTypes.STRING(128),
-				allowNull: false,
-			},
+			// org_special_trust_incent_enc: {
+			// 	type: DataTypes.STRING(128),
+			// 	allowNull: false,
+			// },
+			// entry_date: {
+			// 	type: DataTypes.STRING(128),
+			// 	allowNull: false,
+			// },
 			start_date: {
 				type: DataTypes.STRING(128),
 				allowNull: false,

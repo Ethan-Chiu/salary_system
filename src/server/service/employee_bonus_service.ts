@@ -3,9 +3,8 @@ import { type z } from "zod";
 import { EmployeeBonus } from "../database/entity/SALARY/employee_bonus";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { Round, select_value } from "./helper_function";
-import { BonusTypeEnumType } from "../api/types/bonus_type_enum";
+import { type BonusTypeEnumType } from "../api/types/bonus_type_enum";
 import { BonusWorkTypeService } from "./bonus_work_type_service";
-import { BonusPositionTypeService } from "./bonus_position_type_service";
 import { BonusPositionService } from "./bonus_position_service";
 import { BonusSeniorityService } from "./bonus_seniority_service";
 import { BonusDepartmentService } from "./bonus_department_service";
@@ -15,10 +14,9 @@ import { EmployeePaymentService } from "./employee_payment_service";
 import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
 import { EmployeeBonusMapper } from "../database/mapper/employee_bonus_mapper";
 import { CryptoHelper } from "~/lib/utils/crypto";
-import { LongServiceeEnum } from "../api/types/long_service_enum";
 import {
-	createEmployeeBonusService,
-	updateEmployeeBonusService,
+	type createEmployeeBonusService,
+	type updateEmployeeBonusService,
 } from "../api/types/employee_bonus_type";
 import { BonusAllService } from "./bonus_all_service";
 
@@ -448,7 +446,7 @@ export class EmployeeBonusService {
 			}
 
 			const employee_payment_fe =
-				await employee_payment_mapper.getEmployeePaymentFE(
+				await employee_payment_mapper.decodeEmployeePayment(
 					employee_payment
 				);
 			const employee_bonus_fe =

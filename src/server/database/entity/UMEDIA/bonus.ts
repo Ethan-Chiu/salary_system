@@ -5,9 +5,9 @@ const dbBonus = z.object({
 	EMP_NO: z.string(),
 	EMP_NAME: z.string(),
 	BONUS_ID: z.number(),
-	AMOUNT: z.number(),
+	AMOUNT: z.string(),
 	PAY: z.number(),
-	REMARK: z.string(),
+	REMARK: z.string().nullable(),
 });
 
 export class Bonus {
@@ -18,22 +18,22 @@ export class Bonus {
 	bonus_id: number;
 	amount: number;
 	pay: number;
-	remark: string;
+	remark: string | null;
 
 	constructor(
 		period_id: number,
 		emp_no: string,
 		emp_name: string,
 		bonus_id: number,
-		amount: number,
+		amount: string,
 		pay: number,
-		remark: string
+		remark: string | null
 	) {
 		this.period_id = period_id;
 		this.emp_no = emp_no;
 		this.emp_name = emp_name;
 		this.bonus_id = bonus_id;
-		this.amount = amount;
+		this.amount = Number(amount);
 		this.pay = pay;
 		this.remark = remark;
 	}

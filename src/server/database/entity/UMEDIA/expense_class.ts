@@ -1,19 +1,19 @@
 import { z } from "zod";
 
 const dbExpenseClass = z.object({
-  ID: z.number(),
-  NAME: z.string(),
-  CLASS_TYPE: z.number(),
-  CLASS: z.number(),
-  OTHER_TAX: z.number(),
-  OTHER_LESS: z.number(),
-  RULE: z.number(),
-  FIELD_ORDER: z.number(),
-  HIDDE: z.number(),
-  MEMO: z.string(),
-  UPDATE_BY: z.string(),
-  UPDATE_DATE: z.date(),
-})
+	ID: z.number(),
+	NAME: z.string(),
+	CLASS_TYPE: z.number(),
+	CLASS: z.number(),
+	OTHER_TAX: z.number(),
+	OTHER_LESS: z.number(),
+	RULE: z.number(),
+	FIELD_ORDER: z.number().nullable(),
+	HIDDE: z.number(),
+	MEMO: z.string(),
+	UPDATE_BY: z.string(),
+	UPDATE_DATE: z.date(),
+});
 
 export class ExpenseClass {
 	// id can be undefined during creation when using `autoIncrement`
@@ -23,7 +23,7 @@ export class ExpenseClass {
 	other_tax: number;
 	other_less: number;
 	rule: number;
-	field_order: number;
+	field_order: number | null;
 	hiddle: number;
 	memo: string;
 	update_by: string;
@@ -36,7 +36,7 @@ export class ExpenseClass {
 		other_tax: number,
 		other_less: number,
 		rule: number,
-		field_order: number,
+		field_order: number | null,
 		hiddle: number,
 		memo: string,
 		update_by: string,

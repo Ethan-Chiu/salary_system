@@ -15,6 +15,7 @@ import { HolidaysTypeService } from "./holidays_type_service";
 import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { EmployeeTrustMapper } from "../database/mapper/employee_trust_mapper";
+
 @injectable()
 export class TransactionService {
 	async createTransaction(
@@ -64,7 +65,7 @@ export class TransactionService {
 			throw new BaseResponseError("Employee Payment does not exist");
 		}
 
-		const employee_payment_fe = await employeePaymentMapper.getEmployeePaymentFE(employee_payment)
+		const employee_payment_fe = await employeePaymentMapper.decodeEmployeePayment(employee_payment)
 		const discounted_employee_payment_fe = await calculateService.discountedPayment(
 			employee_payment_fe,
 			payset

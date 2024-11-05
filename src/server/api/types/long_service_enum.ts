@@ -1,4 +1,8 @@
 import { z } from "zod";
 
-export const LongServiceeEnum = z.enum(["月領", "一年領", "兩年領"]);
-export type LongServiceeEnumType = z.infer<typeof LongServiceeEnum>;
+export const LongServiceEnum = z.enum([
+	"month_allowance",
+	"one_year_allowance",
+	"two_year_allowance",
+]);
+export type LongServiceEnumType = z.infer<typeof LongServiceEnum>;

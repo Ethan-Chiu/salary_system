@@ -3,48 +3,51 @@ import { container } from "tsyringe";
 import { BaseResponseError } from "../error/BaseResponseError";
 import { z } from "zod";
 import { EmployeeTrustService } from "~/server/service/employee_trust_service";
-import { createEmployeeTrustAPI, updateEmployeeTrustAPI } from "../types/employee_trust";
+import {
+	createEmployeeTrustAPI,
+	updateEmployeeTrustAPI,
+} from "../types/employee_trust";
 import { EmployeeTrustMapper } from "~/server/database/mapper/employee_trust_mapper";
 import { get_date_string } from "~/server/service/helper_function";
+import { TrustMoneyService } from "~/server/service/trust_money_service";
+import { EmployeeTrust } from "~/server/database/entity/SALARY/employee_trust";
+import { EHRService } from "~/server/service/ehr_service";
+function delay(ms: number) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 export const employeeTrustRouter = createTRPCRouter({
 	getCurrentEmployeeTrust: publicProcedure
 		.input(z.object({ period_id: z.number() }))
 		.query(async ({ input }) => {
-			const employeeTrustService = container.resolve(EmployeeTrustService);
-			const employeeTrustMapper = container.resolve(EmployeeTrustMapper);
-			const employeeTrust =
-				await employeeTrustService.getCurrentEmployeeTrust(
-					input.period_id
-				);
-			if (employeeTrust == null) {
-				throw new BaseResponseError("EmployeeTrust does not exist");
-			}
-			const employeeTrustFE = await Promise.all(employeeTrust.map(async e => await employeeTrustMapper.getEmployeeTrustFE(e)));
-			return employeeTrustFE;
+			const employeeTrustService =
+				container.resolve(EmployeeTrustService);
+			const current_employee_trustFE = await employeeTrustService.getCurrentEmployeeTrustFE(input.period_id);
+			return current_employee_trustFE;
 		}),
 
 	getAllEmployeeTrust: publicProcedure.query(async () => {
 		const employeeTrustService = container.resolve(EmployeeTrustService);
-		const employeeTrustMapper = container.resolve(EmployeeTrustMapper);
-		const employeeTrust = await employeeTrustService.getAllEmployeeTrust();
-		if (employeeTrust == null) {
-			throw new BaseResponseError("EmployeeTrust does not exist");
-		}
-		const employeeTrustFE = await Promise.all(employeeTrust.map(async e => await employeeTrustMapper.getEmployeeTrustFE(e)));
-		return employeeTrustFE;
+		const allEmployeeTrustFE = await employeeTrustService.getAllEmployeeTrustFE()
+		return allEmployeeTrustFE;
 	}),
-
 	createEmployeeTrust: publicProcedure
 		.input(createEmployeeTrustAPI)
 		.mutation(async ({ input }) => {
-			const employeeTrustService = container.resolve(EmployeeTrustService);
+			const employeeTrustService =
+				container.resolve(EmployeeTrustService);
 			const employeeTrustMapper = container.resolve(EmployeeTrustMapper);
-			const employeeTrust = await employeeTrustMapper.getEmployeeTrust(input);
-			const newdata = await employeeTrustService.createEmployeeTrust(employeeTrust);
+			const employeeTrust = await employeeTrustMapper.getEmployeeTrust(
+				input
+			);
+			const newdata = await employeeTrustService.createEmployeeTrust(
+				employeeTrust
+			);
+			console.log("\n\n\nreschedule\n\n\n");
 			await employeeTrustService.rescheduleEmployeeTrust();
-			const employeeTrustFE = await employeeTrustMapper.getEmployeeTrustFE(newdata);
-			return employeeTrustFE;
+			const employeeTrustDec =
+				await employeeTrustMapper.getEmployeeTrustDec(newdata);
+			return employeeTrustDec;
 		}),
 
 	updateEmployeeTrust: publicProcedure
@@ -53,7 +56,8 @@ export const employeeTrustRouter = createTRPCRouter({
 			const employeeTrustService =
 				container.resolve(EmployeeTrustService);
 			const employeeTrustMapper = container.resolve(EmployeeTrustMapper);
-			const employeeTrust = await employeeTrustMapper.getEmployeeTrustNullable(input);
+			const employeeTrust =
+				await employeeTrustMapper.getEmployeeTrustNullable(input);
 			await employeeTrustService.updateEmployeeTrust(employeeTrust);
 			await employeeTrustService.rescheduleEmployeeTrust();
 		}),
@@ -67,18 +71,22 @@ export const employeeTrustRouter = createTRPCRouter({
 			await employeeTrustService.rescheduleEmployeeTrust();
 		}),
 
-	autoCalculateEmployeeTrust: publicProcedure
-		.input(
-			z.object({ period_id: z.number(), emp_no_list: z.string().array(), start_date: z.date() })
-		)
-		.mutation(async ({ input }) => {
-			const employeeTrustService =
-				container.resolve(EmployeeTrustService);
-			await employeeTrustService.autoCalculateEmployeeTrust(
-				input.period_id,
-				input.emp_no_list,
-				get_date_string(input.start_date)
-			);
-			await employeeTrustService.rescheduleEmployeeTrust();
-		}),
+	// autoCalculateEmployeeTrust: publicProcedure
+	// 	.input(
+	// 		z.object({
+	// 			period_id: z.number(),
+	// 			emp_no_list: z.string().array(),
+	// 			start_date: z.date(),
+	// 		})
+	// 	)
+	// 	.mutation(async ({ input }) => {
+	// 		const employeeTrustService =
+	// 			container.resolve(EmployeeTrustService);
+	// 		await employeeTrustService.autoCalculateEmployeeTrust(
+	// 			input.period_id,
+	// 			input.emp_no_list,
+	// 			get_date_string(input.start_date)
+	// 		);
+	// 		await employeeTrustService.rescheduleEmployeeTrust();
+	// 	}),
 });

@@ -33,6 +33,7 @@ import { BankSetting } from "~/server/database/entity/SALARY/bank_setting";
 import { BasicInfo } from "~/server/database/entity/SALARY/basic_info";
 import { BonusSetting } from "~/server/database/entity/SALARY/bonus_setting";
 import { EmployeeAccount } from "~/server/database/entity/SALARY/employee_account";
+import { where } from "sequelize";
 import { BonusAll } from "~/server/database/entity/SALARY/bonus_all";
 
 export const debugRouter = createTRPCRouter({
@@ -136,7 +137,7 @@ export const debugRouter = createTRPCRouter({
 				// EmployeeAccount,
 				// EmployeeBonus,
 				// EmployeePayment,
-				// EmployeeTrust,
+				EmployeeTrust,
 				// EmployeeData
 				// InsuranceRateSetting,
 				// LevelRange,
@@ -162,6 +163,16 @@ export const debugRouter = createTRPCRouter({
 				msg: "All models were synchronized successfully.",
 			};
 		}),
+	updateField: publicProcedure.query(async () => {
+		await EmployeePayment.update(
+			{
+				long_service_allowance_type: "month_allowance",
+			},
+			{
+        where: {}
+      }
+		);
+	}),
 	validate: publicProcedure.query(async () => {
 		const database = container.resolve(Database).connection;
 		try {
@@ -169,8 +180,9 @@ export const debugRouter = createTRPCRouter({
 			return { msg: "Connection has been established successfully." };
 		} catch (error) {
 			return {
-				msg: `Unable to connect to the database: ${(error as Error).message
-					}`,
+				msg: `Unable to connect to the database: ${
+					(error as Error).message
+				}`,
 			};
 		}
 	}),
