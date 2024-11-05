@@ -15,11 +15,12 @@ import { EmployeePaymentService } from "./employee_payment_service";
 import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
 import { EmployeeBonusMapper } from "../database/mapper/employee_bonus_mapper";
 import { CryptoHelper } from "~/lib/utils/crypto";
-import { LongServiceeEnum } from "../api/types/long_service_enum";
+import { LongServiceEnum } from "../api/types/long_service_enum";
 import {
 	createEmployeeBonusService,
 	updateEmployeeBonusService,
 } from "../api/types/employee_bonus_type";
+import { BonusAllService } from "./bonus_all_service";
 
 @injectable()
 export class EmployeeBonusService {
@@ -172,6 +173,7 @@ export class EmployeeBonusService {
 			period_id,
 			bonus_type
 		);
+		const bonus_all_service = container.resolve(BonusAllService);
 		const bonus_work_type_service = container.resolve(BonusWorkTypeService);
 		const bonus_position_service = container.resolve(BonusPositionService);
 		// const bonus_position_type_service = container.resolve(
@@ -195,6 +197,10 @@ export class EmployeeBonusService {
 				return;
 			}
 			const special_multiplier =
+				(await bonus_all_service.getMultiplier(
+					period_id,
+					bonus_type
+				)) *
 				(await bonus_work_type_service.getMultiplier(
 					period_id,
 					bonus_type,
@@ -214,7 +220,7 @@ export class EmployeeBonusService {
 							new Date(
 								employee_data.registration_date
 							).getTime()) /
-							(1000 * 60 * 60 * 24 * 365)
+						(1000 * 60 * 60 * 24 * 365)
 					)
 				)) *
 				(await bonus_department_service.getMultiplier(
@@ -442,7 +448,7 @@ export class EmployeeBonusService {
 			}
 
 			const employee_payment_fe =
-				await employee_payment_mapper.getEmployeePaymentFE(
+				await employee_payment_mapper.decodeEmployeePaymentFE(
 					employee_payment
 				);
 			const employee_bonus_fe =
@@ -455,22 +461,22 @@ export class EmployeeBonusService {
 					employee_payment_fe.occupational_allowance +
 					employee_payment_fe.subsidy_allowance +
 					employee_payment_fe.long_service_allowance_type ==
-				LongServiceeEnum.Enum.月領
+					LongServiceeEnum.Enum.月領
 					? employee_payment_fe.long_service_allowance
 					: 0) *
-					employee_bonus_fe.special_multiplier *
-					employee_bonus_fe.multiplier +
+				employee_bonus_fe.special_multiplier *
+				employee_bonus_fe.multiplier +
 				employee_bonus_fe.fixed_amount;
 
 			budget_amount_list.push({
 				emp_no: emp_no,
 				budget_effective_salary: Round(
 					budget_amount /
-						(employee_payment_fe.base_salary +
-							employee_payment_fe.food_allowance +
-							employee_payment_fe.supervisor_allowance +
-							employee_payment_fe.occupational_allowance +
-							employee_payment_fe.subsidy_allowance),
+					(employee_payment_fe.base_salary +
+						employee_payment_fe.food_allowance +
+						employee_payment_fe.supervisor_allowance +
+						employee_payment_fe.occupational_allowance +
+						employee_payment_fe.subsidy_allowance),
 					3
 				),
 				budget_amount: budget_amount,

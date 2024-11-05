@@ -11,6 +11,7 @@ interface FunctionsApi {
 	queryFunction: (() => UseTRPCQueryResult<any, any>) | undefined;
 	updateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	createFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
+	batchCreateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	deleteFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	autoCalculateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 }
@@ -19,6 +20,7 @@ export const bonusToolbarFunctionsContext = createContext<FunctionsApi>({
 	queryFunction: undefined,
 	updateFunction: undefined,
 	createFunction: undefined,
+	batchCreateFunction: undefined,
 	deleteFunction: undefined,
 	autoCalculateFunction: undefined,
 });
@@ -60,6 +62,25 @@ export default function BonusToolbarFunctionsProvider({
 	// });
 	// //#endregion
 
+	// #region <BonusAll>
+	const getBonusAll = () =>
+		api.bonus.getBonusAll.useQuery({ period_id, bonus_type });
+	const updateBonusAll = api.bonus.updateBonusAll.useMutation({
+		onSuccess: () => {
+			ctx.bonus.getBonusAll.invalidate();
+		},
+	});
+	const createBonusAll = api.bonus.createBonusAll.useMutation({
+		onSuccess: () => {
+			ctx.bonus.getBonusAll.invalidate();
+		},
+	});
+	const deleteBonusAll = api.bonus.deleteBonusAll.useMutation({
+		onSuccess: () => {
+			ctx.bonus.getBonusAll.invalidate();
+		},
+	});
+
 	//#region <BonusWorkType>
 	const getBonusWorkType = () =>
 		api.bonus.getBonusWorkType.useQuery({ period_id, bonus_type });
@@ -69,6 +90,11 @@ export default function BonusToolbarFunctionsProvider({
 		},
 	});
 	const createBonusWorkType = api.bonus.createBonusWorkType.useMutation({
+		onSuccess: () => {
+			ctx.bonus.getBonusWorkType.invalidate();
+		},
+	});
+	const batchCreateBonusWorkType = api.bonus.batchCreateBonusWorkType.useMutation({
 		onSuccess: () => {
 			ctx.bonus.getBonusWorkType.invalidate();
 		},
@@ -95,6 +121,12 @@ export default function BonusToolbarFunctionsProvider({
 				ctx.bonus.getBonusDepartment.invalidate();
 			},
 		});
+	const batchCreateBonusDepartment =
+		api.bonus.batchCreateBonusDepartment.useMutation({
+			onSuccess: () => {
+				ctx.bonus.getBonusDepartment.invalidate();
+			},
+		});
 	const deleteBonusDepartment =
 		api.bonus.deleteBonusDepartment.useMutation({
 			onSuccess: () => {
@@ -116,6 +148,11 @@ export default function BonusToolbarFunctionsProvider({
 			ctx.bonus.getBonusPosition.invalidate();
 		},
 	});
+	const batchCreateBonusPosition = api.bonus.batchCreateBonusPosition.useMutation({
+		onSuccess: () => {
+			ctx.bonus.getBonusPosition.invalidate();
+		},
+	});
 	const deleteBonusPosition = api.bonus.deleteBonusPosition.useMutation({
 		onSuccess: () => {
 			ctx.bonus.getBonusPosition.invalidate();
@@ -124,26 +161,26 @@ export default function BonusToolbarFunctionsProvider({
 	//#endregion
 
 	//#region <BonusPositionType>
-	const getBonusPositionType = () =>
-		api.bonus.getBonusPositionType.useQuery({ period_id, bonus_type });
-	const updateBonusPositionType =
-		api.bonus.updateBonusPositionType.useMutation({
-			onSuccess: () => {
-				ctx.bonus.getBonusPositionType.invalidate();
-			},
-		});
-	const createBonusPositionType =
-		api.bonus.createBonusPositionType.useMutation({
-			onSuccess: () => {
-				ctx.bonus.getBonusPositionType.invalidate();
-			},
-		});
-	const deleteBonusPositionType =
-		api.bonus.deleteBonusPositionType.useMutation({
-			onSuccess: () => {
-				ctx.bonus.getBonusPositionType.invalidate();
-			},
-		});
+	// const getBonusPositionType = () =>
+	// 	api.bonus.getBonusPositionType.useQuery({ period_id, bonus_type });
+	// const updateBonusPositionType =
+	// 	api.bonus.updateBonusPositionType.useMutation({
+	// 		onSuccess: () => {
+	// 			ctx.bonus.getBonusPositionType.invalidate();
+	// 		},
+	// 	});
+	// const createBonusPositionType =
+	// 	api.bonus.createBonusPositionType.useMutation({
+	// 		onSuccess: () => {
+	// 			ctx.bonus.getBonusPositionType.invalidate();
+	// 		},
+	// 	});
+	// const deleteBonusPositionType =
+	// 	api.bonus.deleteBonusPositionType.useMutation({
+	// 		onSuccess: () => {
+	// 			ctx.bonus.getBonusPositionType.invalidate();
+	// 		},
+	// 	});
 	//#endregion
 
 	//#region <BonusSeniority>
@@ -157,6 +194,12 @@ export default function BonusToolbarFunctionsProvider({
 		});
 	const createBonusSeniority =
 		api.bonus.createBonusSeniority.useMutation({
+			onSuccess: () => {
+				ctx.bonus.getBonusSeniority.invalidate();
+			},
+		});
+	const batchCreateBonusSeniority =
+		api.bonus.batchCreateBonusSeniority.useMutation({
 			onSuccess: () => {
 				ctx.bonus.getBonusSeniority.invalidate();
 			},
@@ -227,10 +270,19 @@ export default function BonusToolbarFunctionsProvider({
 		// 	createFunction: createBonusSetting,
 		// 	deleteFunction: deleteBonusSetting,
 		// },
+		TableBonusAll: {
+			queryFunction: getBonusAll,
+			updateFunction: updateBonusAll,
+			createFunction: createBonusAll,
+			batchCreateFunction: undefined,
+			deleteFunction: deleteBonusAll,
+			autoCalculateFunction: undefined,
+		},
 		TableBonusWorkType: {
 			queryFunction: getBonusWorkType,
 			updateFunction: updateBonusWorkType,
 			createFunction: createBonusWorkType,
+			batchCreateFunction: batchCreateBonusWorkType,
 			deleteFunction: deleteBonusWorkType,
 			autoCalculateFunction: undefined,
 		},
@@ -238,6 +290,7 @@ export default function BonusToolbarFunctionsProvider({
 			queryFunction: getBonusDepartment,
 			updateFunction: updateBonusDepartment,
 			createFunction: createBonusDepartment,
+			batchCreateFunction: batchCreateBonusDepartment,
 			deleteFunction: deleteBonusDepartment,
 			autoCalculateFunction: undefined,
 		},
@@ -245,20 +298,22 @@ export default function BonusToolbarFunctionsProvider({
 			queryFunction: getBonusPosition,
 			updateFunction: updateBonusPosition,
 			createFunction: createBonusPosition,
+			batchCreateFunction: batchCreateBonusPosition,
 			deleteFunction: deleteBonusPosition,
 			autoCalculateFunction: undefined,
 		},
-		TableBonusPositionType: {
-			queryFunction: getBonusPositionType,
-			updateFunction: updateBonusPositionType,
-			createFunction: createBonusPositionType,
-			deleteFunction: deleteBonusPositionType,
-			autoCalculateFunction: undefined,
-		},
+		// TableBonusPositionType: {
+		// 	queryFunction: getBonusPositionType,
+		// 	updateFunction: updateBonusPositionType,
+		// 	createFunction: createBonusPositionType,
+		// 	deleteFunction: deleteBonusPositionType,
+		// 	autoCalculateFunction: undefined,
+		// },
 		TableBonusSeniority: {
 			queryFunction: getBonusSeniority,
 			updateFunction: updateBonusSeniority,
 			createFunction: createBonusSeniority,
+			batchCreateFunction: batchCreateBonusSeniority,
 			deleteFunction: deleteBonusSeniority,
 			autoCalculateFunction: undefined,
 		},
@@ -271,8 +326,9 @@ export default function BonusToolbarFunctionsProvider({
 		TableEmployeeBonus: {
 			queryFunction: getEmployeeBonus,
 			updateFunction: updateEmployeeBonus,
-			createFunction: createEmployeeBonus,
-			deleteFunction: deleteEmployeeBonus,
+			createFunction: undefined,
+			batchCreateFunction: undefined,
+			deleteFunction: undefined,
 			autoCalculateFunction: autoCalculateEmployeeBonus,
 		}
 	};

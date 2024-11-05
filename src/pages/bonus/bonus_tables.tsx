@@ -7,6 +7,7 @@ export type BonusTableEnum = Extract<
 
 export const BonusTableEnumValues = [
 	// "TableBonusSetting",
+	"TableBonusAll",
 	"TableBonusWorkType",
 	"TableBonusDepartment",
 	"TableBonusPosition",

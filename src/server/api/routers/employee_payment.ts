@@ -3,7 +3,7 @@ import { container } from "tsyringe";
 import { BaseResponseError } from "../error/BaseResponseError";
 import { z } from "zod";
 import { EmployeePaymentService } from "~/server/service/employee_payment_service";
-import { createEmployeePaymentAPI, updateEmployeePaymentAPI } from "../types/employee_payment_type";
+import { employeePaymentCreateAPI, updateEmployeePaymentAPI } from "../types/employee_payment_type";
 import { EmployeePaymentMapper } from "~/server/database/mapper/employee_payment_mapper";
 import { get_date_string } from "~/server/service/helper_function";
 
@@ -20,7 +20,7 @@ export const employeePaymentRouter = createTRPCRouter({
 			if (employeePayment == null) {
 				throw new BaseResponseError("EmployeePayment does not exist");
 			}
-			const employeePaymentFE = await Promise.all(employeePayment.map(async e => await employeePaymentMapper.getEmployeePaymentFE(e)));
+			const employeePaymentFE = await Promise.all(employeePayment.map(async e => await employeePaymentMapper.decodeEmployeePaymentFE(e)));
 			return employeePaymentFE;
 		}),
 
@@ -32,12 +32,12 @@ export const employeePaymentRouter = createTRPCRouter({
 		if (employeePayment == null) {
 			throw new BaseResponseError("EmployeePayment does not exist");
 		}
-		const employeePaymentFE = await Promise.all(employeePayment.map(async e => await employeePaymentMapper.getEmployeePaymentFE(e)));
+		const employeePaymentFE = await Promise.all(employeePayment.map(async e => await employeePaymentMapper.decodeEmployeePaymentFE(e)));
 		return employeePaymentFE;
 	}),
 
 	createEmployeePayment: publicProcedure
-		.input(createEmployeePaymentAPI)
+		.input(employeePaymentCreateAPI)
 		.mutation(async ({ input }) => {
 			const employeePaymentService = container.resolve(EmployeePaymentService);
 			const employeePaymentMapper = container.resolve(EmployeePaymentMapper);
@@ -45,11 +45,11 @@ export const employeePaymentRouter = createTRPCRouter({
 			if (!previousEmployeePayment) {
 				throw new BaseResponseError(`EmployeePayment for emp_no: ${input.emp_no} not exists yet`);
 			}
-			const previousEmployeePaymentFE = await employeePaymentMapper.getEmployeePaymentFE(previousEmployeePayment);
-			const employeePayment = await employeePaymentMapper.getEmployeePayment({ l_i: previousEmployeePaymentFE.l_i, h_i: previousEmployeePaymentFE.h_i, l_r: previousEmployeePaymentFE.l_r, occupational_injury: previousEmployeePaymentFE.occupational_injury, ...input });
+			const previousEmployeePaymentFE = await employeePaymentMapper.decodeEmployeePaymentFE(previousEmployeePayment);
+			const employeePayment = await employeePaymentMapper.encodeEmployeePayment({ l_i: previousEmployeePaymentFE.l_i, h_i: previousEmployeePaymentFE.h_i, l_r: previousEmployeePaymentFE.l_r, occupational_injury: previousEmployeePaymentFE.occupational_injury, ...input });
 			const newdata = await employeePaymentService.createEmployeePayment(employeePayment);
 			await employeePaymentService.rescheduleEmployeePayment();
-			const employeePaymentFE = await employeePaymentMapper.getEmployeePaymentFE(newdata);
+			const employeePaymentFE = await employeePaymentMapper.decodeEmployeePaymentFE(newdata);
 			return employeePaymentFE;
 		}),
 

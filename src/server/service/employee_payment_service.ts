@@ -3,13 +3,14 @@ import { BaseResponseError } from "../api/error/BaseResponseError";
 import { check_date, get_date_string, select_value } from "./helper_function";
 import { type z } from "zod";
 import { EmployeePayment } from "../database/entity/SALARY/employee_payment";
-import { Op, or } from "sequelize";
+import { Op } from "sequelize";
 import { EHRService } from "./ehr_service";
 import { LevelRangeService } from "./level_range_service";
 import { LevelService } from "./level_service";
 import {
-	EmployeePayment as EmployeePaymentType,
-	createEmployeePaymentService,
+    EmployeePaymentCreateServiceType,
+	employeePayment as EmployeePaymentType,
+	employeePaymentCreateService,
 	updateEmployeePaymentService,
 } from "../api/types/employee_payment_type";
 import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
@@ -33,7 +34,7 @@ export class EmployeePaymentService {
 		occupational_injury_enc,
 		start_date,
 		end_date,
-	}: z.infer<typeof createEmployeePaymentService>): Promise<EmployeePayment> {
+	}: EmployeePaymentCreateServiceType): Promise<EmployeePayment> {
 		const current_date_string = get_date_string(new Date());
 		check_date(start_date, end_date, current_date_string);
 
@@ -337,7 +338,7 @@ export class EmployeePaymentService {
 		occupational_injury_enc,
 		start_date,
 		end_date,
-	}: z.infer<typeof updateEmployeePaymentService>): Promise<z.infer<typeof createEmployeePaymentService>> {
+	}: z.infer<typeof updateEmployeePaymentService>): Promise<z.infer<typeof employeePaymentCreateService>> {
 		const employeePayment = await this.getEmployeePaymentById(id);
 		if (employeePayment == null) {
 			throw new BaseResponseError("Employee Payment does not exist");
@@ -398,7 +399,7 @@ export class EmployeePaymentService {
 		const employeeDataService = container.resolve(EmployeeDataService);
 		const employeePaymentMapper = container.resolve(EmployeePaymentMapper);
 
-		const employeePaymentFE = await employeePaymentMapper.getEmployeePaymentFE(employeePayment);
+		const employeePaymentFE = await employeePaymentMapper.decodeEmployeePaymentFE(employeePayment);
 		const salary =
 			employeePaymentFE.base_salary +
 			employeePaymentFE.food_allowance +
@@ -426,7 +427,7 @@ export class EmployeePaymentService {
 			throw new BaseResponseError("Employee Data does not exist");
 		}
 
-		const updatedEmployeePayment = await employeePaymentMapper.getEmployeePayment({
+		const updatedEmployeePayment = await employeePaymentMapper.encodeEmployeePayment({
 			...employeePaymentFE,
 			l_i: result.find((r) => r.type === "勞保")?.level ?? 0,
 			h_i: result.find((r) => r.type === "健保")?.level ?? 0,

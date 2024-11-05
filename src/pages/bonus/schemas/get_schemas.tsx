@@ -1,4 +1,5 @@
 import { type TableEnum } from "../components/context/data_table_enum";
+import { bonusAllSchema } from "./configurations/bonus_all_schema";
 import { bonusDepartmentSchema } from "./configurations/bonus_department_schema";
 import { bonusPositionAndPositionTypeSchema } from "./configurations/bonus_position_and_position_type_schema";
 import { bonusPositionSchema } from "./configurations/bonus_position_schema";
@@ -12,14 +13,16 @@ export function getSchema(table: TableEnum) {
 		// bonus
 		// case "TableBonusSetting":
 		// 	return bonusSchema;
+		case "TableBonusAll":
+			return bonusAllSchema;
 		case "TableBonusWorkType":
 			return bonusWorkTypeSchema;
 		case "TableBonusDepartment":
 			return bonusDepartmentSchema;
 		case "TableBonusPosition":
 			return bonusPositionSchema;
-		case "TableBonusPositionType":
-			return bonusPositionTypeSchema;
+		// case "TableBonusPositionType":
+		// 	return bonusPositionTypeSchema;
 		case "TableBonusSeniority":
 			return bonusSenioritySchema;
 		case "TableEmployeeBonus":
