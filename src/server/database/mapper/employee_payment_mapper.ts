@@ -38,7 +38,7 @@ export class EmployeePaymentMapper {
 		return dbenc;
 	}
 
-	async decodeEmployeePaymentFE(
+	async decodeEmployeePayment (
 		employee_payment: EmployeePaymentCreateEncType
 	): Promise<EmployeePaymentCreateDecType> {
 

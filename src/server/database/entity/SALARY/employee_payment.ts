@@ -50,6 +50,9 @@ const encFields = z.object({
 const encF = dbEmployeePayment.merge(encFields).merge(encDate);
 const decF = dbEmployeePayment.merge(decFields).merge(decDate);
 
+export type EmployeePaymentCreateEncType = z.input<typeof encF>;
+export type EmployeePaymentCreateDecType = z.input<typeof decF>;
+
 export const dec = encF
 	.transform((v) => ({
 		...v,
@@ -83,8 +86,6 @@ export const enc = decF
     occupational_injury_enc: v.occupational_injury,
 	}))
 
-export type EmployeePaymentCreateEncType = z.infer<typeof enc>;
-export type EmployeePaymentCreateDecType = z.infer<typeof dec>;
 
 export class EmployeePayment extends Model<
 	InferAttributes<EmployeePayment>,

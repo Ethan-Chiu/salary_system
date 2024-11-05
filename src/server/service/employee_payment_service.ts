@@ -399,7 +399,7 @@ export class EmployeePaymentService {
 		const employeeDataService = container.resolve(EmployeeDataService);
 		const employeePaymentMapper = container.resolve(EmployeePaymentMapper);
 
-		const employeePaymentFE = await employeePaymentMapper.decodeEmployeePaymentFE(employeePayment);
+		const employeePaymentFE = await employeePaymentMapper.decodeEmployeePayment(employeePayment);
 		const salary =
 			employeePaymentFE.base_salary +
 			employeePaymentFE.food_allowance +
