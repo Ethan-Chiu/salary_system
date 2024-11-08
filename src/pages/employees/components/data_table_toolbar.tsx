@@ -3,6 +3,7 @@ import { DataTableToolbarWrapper } from "~/components/data_table/toolbar/data_ta
 import { DataTableViewOptions } from "~/components/data_table/toolbar/data_table_view_options";
 import { ToolbarFilter } from "~/components/data_table/toolbar/toolbar_filter";
 import { AdvancedFilter } from "./advanced_filter";
+import { StatsPanel } from "~/components/data_table/toolbar/stats_panel";
 
 interface DataTableSrandardToolbarProps<TData> {
 	table: Table<TData>;
@@ -16,6 +17,7 @@ export function DataTableToolbar<TData>({
 		<DataTableToolbarWrapper>
 			<div className="flex w-1/2">
 				<ToolbarFilter table={table} filterColumnKey={filterColumnKey} />
+				<StatsPanel table={table} />
 				<AdvancedFilter table={table} />
 			</div>
 			<DataTableViewOptions table={table} />
