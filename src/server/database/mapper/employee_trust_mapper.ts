@@ -129,6 +129,7 @@ export class EmployeeTrustMapper {
 			);
 			const employeeTrustFE: z.infer<typeof EmployeeTrustFE> =
 				convertDatePropertiesToISOString({
+					id: idx,
 					emp_no: employee.emp_no,
 					emp_name: employee.emp_name,
 					position: employee.position,
