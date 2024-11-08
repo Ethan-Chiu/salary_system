@@ -104,19 +104,19 @@ export function HistoryView<TData>({
 					<div className="h-0 flex-grow">
 						<ScrollArea className="h-full">
 							{((data.find((e: any) => (selectedEmpNo === null || e[0]!.emp_no === selectedEmpNo)) as any) ?? [])
-								.map((e: any, idx: number) => (
+								.map((e: any) => (
 									<div
 										key={e.id}
 										className={cn(
 											" relative m-2 flex flex-col rounded-md border p-1 hover:bg-muted",
-											idx === selectedId && "bg-muted",
+											e.id === selectedId && "bg-muted",
 											is_date_available(
 												selectedPeriod,
 												e.start_date.toString(),
 												e.end_date?.toString() ?? ""
 											) && "mb-3 border-blue-500"
 										)}
-										onClick={() => setSelectedId(idx)}
+										onClick={() => setSelectedId(e.id)}
 									>
 										<div className="m-1 flex flex-wrap items-center justify-center">
 											<div className="flex-1 whitespace-nowrap text-center">
