@@ -55,26 +55,8 @@ export const employeePaymentRouter = createTRPCRouter({
 		if (employeePayment == null) {
 			throw new BaseResponseError("EmployeePayment does not exist");
 		}
-		
-		const employeePaymentFE = await Promise.all(
-			employeePayment.map(async (e) => {
-				const employee =
-					await employeeDataService.getEmployeeDataByEmpNo(
-						e.emp_no
-					);
-				if (employee == null) {
-					throw new BaseResponseError("Employee does not exist");
-				}
-				return {
-					...e,
-					department: employee.department,
-					emp_name: employee.emp_name,
-					position: employee.position,
-					position_type: employee.position_type,
-				};
-			})
-		);
-		return employeePaymentFE;
+
+		return employeePayment;
 	}),
 
 	createEmployeePayment: publicProcedure
@@ -129,19 +111,10 @@ export const employeePaymentRouter = createTRPCRouter({
 			);
 			const employeePayment =
 				await employeePaymentMapper.getEmployeePaymentNullable(input);
-			const employeePaymentAfterSelectValue =
-				await employeePaymentService.getEmployeePaymentAfterSelectValue(
-					employeePayment
-				);
-			const updatedEmployeePayment =
-				await employeePaymentService._getUpdatedEmployeePayment(
-					employeePaymentAfterSelectValue,
-					employeePaymentAfterSelectValue.start_date!
-				);
-			await employeePaymentService.updateEmployeePayment({
-				id: employeePayment.id,
-				...updatedEmployeePayment,
-			});
+
+			await employeePaymentService.updateEmployeePaymentAndMatchLevel(
+				employeePayment
+			);
 			await employeePaymentService.rescheduleEmployeePayment();
 		}),
 

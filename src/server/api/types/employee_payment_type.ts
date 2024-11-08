@@ -35,12 +35,8 @@ export const employeePaymentFE = z.object({
 	occupational_injury: z.number(),
 }).merge(EmpData).merge(DateAPI);
 
-export type EmployeePaymentFEType = z.infer<typeof employeePaymentFE>
-
 export const employeePaymentCreateAPI = employeePaymentFE.omit({ l_i: true, h_i: true, l_r: true, occupational_injury: true });
 export const employeePaymentCreateService = employeePayment;
-
-export type EmployeePaymentCreateAPIType = z.infer<typeof employeePaymentCreateAPI>;
 
 export const updateEmployeePaymentAPI = employeePaymentFE.partial().merge(Id);
 export const updateEmployeePaymentService = employeePayment.partial().merge(Id);

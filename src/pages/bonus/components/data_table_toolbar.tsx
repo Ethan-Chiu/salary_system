@@ -8,6 +8,7 @@ import periodContext from "~/components/context/period_context";
 import { ToolbarFilter } from "~/components/data_table/toolbar/toolbar_filter";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 import { StatsPanel } from "~/components/data_table/toolbar/stats_panel";
+import { DataTableToolbarWrapper } from "~/components/data_table/toolbar/data_table_toolbar_wrapper";
 
 interface DataTableToolbarProps<TData> {
 	table: Table<TData>;
@@ -24,7 +25,7 @@ export function DataTableToolbar<TData>({
 	const { selectedPeriod } = useContext(periodContext);
 
 	return (
-		<div className="flex items-center justify-between space-x-2 px-2 py-2">
+		<DataTableToolbarWrapper>
 			{/* search bar */}
 			<div className="flex">
 				<ToolbarFilter table={table} filterColumnKey={filterColumnKey} />
@@ -45,6 +46,6 @@ export function DataTableToolbar<TData>({
 					)}
 				</div>
 			</div>
-		</div>
+		</DataTableToolbarWrapper>
 	);
 }
