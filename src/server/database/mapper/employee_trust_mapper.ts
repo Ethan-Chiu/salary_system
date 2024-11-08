@@ -102,7 +102,7 @@ export class EmployeeTrustMapper {
 			}
 		});
 		const promises = start_dates.sort().map(async (start_date, idx) => {
-			const employee_trust =
+			let employee_trust =
 				await employeeTrustService.getCurrentEmployeeTrustByEmpNoByDate(
 					employee_trust_list[0]!.emp_no,
 					start_date!
@@ -127,7 +127,8 @@ export class EmployeeTrustMapper {
 					)
 				)
 			);
-			const employeeTrustFE: z.infer<typeof EmployeeTrustFE> =
+
+			let employeeTrustFE: z.infer<typeof EmployeeTrustFE> =
 				convertDatePropertiesToISOString({
 					id: idx,
 					emp_no: employee.emp_no,
@@ -154,7 +155,8 @@ export class EmployeeTrustMapper {
 								new Date(start_dates[idx + 1]!).getDate() - 1
 						))
 						: null,
-				});
+					}
+			);
 
 			return deleteProperties(employeeTrustFE, [
 				"emp_trust_reserve_enc",
