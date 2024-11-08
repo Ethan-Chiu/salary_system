@@ -79,7 +79,7 @@ export function DataTableFunctions({
 
 	return (
 		<div className={cn(className, "flex h-full items-center")}>
-			<Sheet open={open} onOpenChange={setOpen}>
+			<Sheet open={open} onOpenChange={setOpen} >
 				{/* Dropdown */}
 				<DropdownMenu modal={false}>
 					<DropdownMenuTrigger asChild>
@@ -124,7 +124,7 @@ export function DataTableFunctions({
 					</DropdownMenuContent>
 				</DropdownMenu>
 				{/* Sheet */}
-				<SheetContent className="w-[50%]">
+				<SheetContent className="w-[60%]">
 					<SheetHeader>
 						<SheetTitle>
 							{`${t(`button.${mode}`)!}${t("button.form")} (${t(

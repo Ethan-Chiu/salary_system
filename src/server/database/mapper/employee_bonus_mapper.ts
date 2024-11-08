@@ -15,6 +15,7 @@ import {
 	updateEmployeeBonusService,
 } from "~/server/api/types/employee_bonus_type";
 import { EmployeePaymentService } from "~/server/service/employee_payment_service";
+import { EmployeeBonusService } from "~/server/service/employee_bonus_service";
 
 @injectable()
 export class EmployeeBonusMapper {
@@ -69,6 +70,7 @@ export class EmployeeBonusMapper {
 	async getEmployeeBonusFE(
 		employee_bonus: EmployeeBonusType
 	): Promise<EmployeeBonusFEType> {
+		const employeeBonusService = container.resolve(EmployeeBonusService);
 		const employeeDataService = container.resolve(EmployeeDataService);
 		const employeePaymentService = container.resolve(
 			EmployeePaymentService
@@ -115,8 +117,14 @@ export class EmployeeBonusMapper {
 			return statuses[randomIndex]!;
 		}
 
+		const employee_bonus_id = (await employeeBonusService.getEmployeeBonus(
+			employee_bonus.period_id,
+			employee_bonus.bonus_type,
+		) ?? []).filter((e: any) => e.emp_no === employee_bonus.emp_no)[0]!.id;
+
 		const employeeBonusFE: EmployeeBonusFEType =
 			convertDatePropertiesToISOString({
+				id: employee_bonus_id,
 				period_id: employee_bonus.period_id,
 				bonus_type: employee_bonus.bonus_type,
 				department: employee.department,

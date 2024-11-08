@@ -94,6 +94,7 @@ export function EmployeeBonusTable({ period_id, bonus_type, viewOnly }: Employee
 
     return (
         <>
+            {/* <Button onClick={() => console.log(data)}>debug</Button> */}
             {!viewOnly ? (
                 <DataTableWithFunctions
                     columns={columns(t)}

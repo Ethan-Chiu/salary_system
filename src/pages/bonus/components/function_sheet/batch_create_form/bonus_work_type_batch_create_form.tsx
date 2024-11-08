@@ -201,9 +201,9 @@ export function BonusWorkTypeBatchCreateForm<
 											<SelectContent>
 												<SelectGroup>
 												<SelectLabel>{t("table.work_type")}{" "}</SelectLabel>
-												<SelectItem value="直接人員">直接人員</SelectItem>
-												<SelectItem value="間接人員">間接人員</SelectItem>
-												<SelectItem value="外籍勞工">外籍勞工</SelectItem>
+												<SelectItem value="直接人員" className="cursor-pointer hover:bg-gray-100">直接人員</SelectItem>
+												<SelectItem value="間接人員" className="cursor-pointer hover:bg-gray-100">間接人員</SelectItem>
+												<SelectItem value="外籍勞工" className="cursor-pointer hover:bg-gray-100">外籍勞工</SelectItem>
 												</SelectGroup>
 											</SelectContent>
 										</Select>
@@ -223,7 +223,7 @@ export function BonusWorkTypeBatchCreateForm<
 										</Label>
 										<Input
 											className="flex-grow"
-											step={0.1}
+											step={0.01}
 											type="number"
 											{...register(
 												`bonus_work_types.${index}.multiplier` as const
