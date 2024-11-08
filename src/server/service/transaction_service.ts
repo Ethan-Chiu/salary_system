@@ -74,19 +74,16 @@ export class TransactionService {
 			await bonusSettingService.getCurrentBonusSetting();
 		const employee_acount =
 			await employeeAccountService.getEmployeeAccountByEmpNo(emp_no);
-		const employee_trust =
-			await employeeTrustService.getCurrentEmployeeTrustByEmpNo(
+		const employee_trust_fe =
+			await employeeTrustService.getCurrentEmployeeTrustFEByEmpNo(
 				emp_no,
 				period_id
 			);
 
-		if (employee_trust == null) {
+		if (employee_trust_fe == null) {
 			throw new BaseResponseError("Employee Trust does not exist");
 		}
 
-		const employee_trust_fe = await employeeTrustMapper.getEmployeeTrustFE(
-			employee_trust
-		);
 
 		const attendance_setting =
 			await attendanceSettingService.getCurrentAttendanceSetting(
