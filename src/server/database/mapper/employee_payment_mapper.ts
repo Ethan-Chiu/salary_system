@@ -32,15 +32,9 @@ export class EmployeePaymentMapper {
 
 	async decodeEmployeePayment (
 		employee_payment: EmployeePaymentCreateEncType
-	): Promise<EmployeePaymentDecType> {
+	): Promise<EmployeePaymentDecType > {
 
-		const employeeDataService = container.resolve(EmployeeDataService);
-		const employee = await employeeDataService.getEmployeeDataByEmpNo(
-			employee_payment.emp_no
-		);
-		if (employee == null) {
-			throw new BaseResponseError("Employee does not exist");
-		}
+		
 
 		const decoded = decEmployeePayment.parse(employee_payment);
 

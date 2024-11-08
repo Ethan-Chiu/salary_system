@@ -4,6 +4,7 @@ import { get_date_string, select_value } from "./helper_function";
 import { type z } from "zod";
 import {
 	EmployeePayment,
+	EmployeePaymentFEType,
 	type EmployeePaymentDecType,
 } from "../database/entity/SALARY/employee_payment";
 import { Op } from "sequelize";
@@ -242,9 +243,10 @@ export class EmployeePaymentService {
 		);
 	}
 
-	async getAllEmployeePayment(): Promise<EmployeePaymentDecType[]> {
+	async getAllEmployeePayment(): Promise<EmployeePaymentFEType[][]> {
 		const employeePaymentMapper = container.resolve(EmployeePaymentMapper);
-		const employeePayment = await EmployeePayment.findAll({
+		const employeeDataService = container.resolve(EmployeeDataService);
+		const allEmployeePayment = await EmployeePayment.findAll({
 			where: {
 				disabled: false,
 			},
@@ -254,14 +256,44 @@ export class EmployeePaymentService {
 			],
 			raw: true,
 		});
+		// 将记录按工号分组
+		const groupedEmployeePaymenttRecords = {} as {
+			[empNo: string]: EmployeePayment[];
+		};
 
-		const employeePaymentList = await Promise.all(
-			employeePayment.map(
-				async (e) =>
-					await employeePaymentMapper.decodeEmployeePayment(e)
-			)
+		allEmployeePayment.forEach((record) => {
+			if (!groupedEmployeePaymenttRecords[record.emp_no]) {
+				groupedEmployeePaymenttRecords[record.emp_no] = [];
+			}
+			groupedEmployeePaymenttRecords[record.emp_no]!.push(record);
+		});
+
+		// 将分组后的记录转换为数组格式，并映射为前端格式
+		const groupedRecordsArray = Object.values(
+			groupedEmployeePaymenttRecords
 		);
-
+		const employeePaymentList = await Promise.all(
+			groupedRecordsArray.map(async (emp) => {
+				const employee =
+					await employeeDataService.getEmployeeDataByEmpNo(
+						emp[0]!.emp_no
+					);
+				if (employee == null) {
+					throw new BaseResponseError("Employee does not exist");
+				}
+				return Promise.all(
+					emp.map((e) => {
+						return {
+							...e,
+							department: employee.department,
+							emp_name: employee.emp_name,
+							position: employee.position,
+							position_type: employee.position_type,
+						};
+					})
+				);
+			})
+		);
 		return employeePaymentList;
 	}
 
