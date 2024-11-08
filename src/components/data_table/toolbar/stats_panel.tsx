@@ -1,11 +1,12 @@
 import { type Table, type Column } from "@tanstack/react-table";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { number } from "zod";
 import { Button } from "~/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "~/components/ui/dialog";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "~/components/ui/resizable";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
-import { TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Separator } from "~/components/ui/separator";
+import { TableCell, TableHead, TableRow } from "~/components/ui/table";
 import { cn } from "~/lib/utils";
 
 interface StatsPanelProps<TData> {
@@ -30,7 +31,7 @@ export function StatsPanel<TData>({
                         </div>
                     </Button>
                 </DialogTrigger>
-                <DialogContent className="w-[500px] h-[200px] overflow-y-auto">
+                <DialogContent className="min-w-[50%] h-[50%]">
                     <StatsPanelContent table={table} />
                 </DialogContent>
             </Dialog>
@@ -47,49 +48,118 @@ function StatsPanelContent<TData>({ table }: { table: Table<TData> }) {
         return <div>{t("table.no_data")}</div>;
     }
 
+    const [selectedColumn, setSelectedColumn] = useState<Column<TData, unknown>>(columns[0]!);
+
     return (
-        <ScrollArea>
-            <Tabs defaultValue={columns[0]!.id}>
-                <TabsList className="w-full flex-row">
-                    {columns.map((column) => (
-                        <TabsTrigger value={column.id} className="grow">{t(`table.${column.id}`)}</TabsTrigger>
-                    ))}
-                    {columns.map((column) => (
-                        <TabsTrigger value={column.id} className="grow">{t(`table.${column.id}`)}</TabsTrigger>
-                    ))}
-                </TabsList>
-                {columns.map((column) => (
-                    <TabsContent value={column.id} className="w-full">
-                        <ColumnComponent key={column.id} column={column} />
-                    </TabsContent>
-                ))}
-            </Tabs>
-            <ScrollBar orientation="horizontal" hidden={true} />
-        </ScrollArea>
+        <div className="rounded-md border-2">
+            <ResizablePanelGroup direction="horizontal">
+                {/* left panel */}
+                <ResizablePanel defaultSize={25} minSize={10}>
+                    <StatsPanelSelector columns={columns} selectedColumn={selectedColumn} setSelectedColumn={setSelectedColumn} />
+                </ResizablePanel>
+                <ResizableHandle />
+                {/* right panel */}
+                <ResizablePanel minSize={40}>
+                    <ColumnComponent key={selectedColumn.id} column={selectedColumn} />
+                </ResizablePanel>
+            </ResizablePanelGroup>
+        </div>
     );
+}
+
+function StatsPanelSelector<TData>(
+    {
+        columns,
+        selectedColumn,
+        setSelectedColumn
+    }: {
+        columns: Column<TData, unknown>[],
+        selectedColumn: Column<TData, unknown>,
+        setSelectedColumn: (column: Column<TData, unknown>) => void
+    }
+) {
+    const { t } = useTranslation(['common']);
+
+    return (
+        <div className="flex h-full flex-col">
+            <div className="flex h-[48px] items-center justify-center text-lg">
+                <div>{t("table.column")} </div>
+            </div>
+            <Separator />
+            <div className="h-0 grow">
+                <ScrollArea className="h-full">
+                    {columns.map((column) => {
+                        return (
+                            <div
+                                key={column.id}
+                                className={cn(
+                                    "m-2 flex items-center rounded-md border p-1 hover:bg-muted",
+                                    column === selectedColumn && "bg-muted"
+                                )}
+                                onClick={() => {
+                                    setSelectedColumn(column);
+                                }}
+                            >
+                                <div className="m-1 line-clamp-1 break-all">
+                                    {t(`table.${column.id}`)}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </ScrollArea>
+            </div>
+        </div>
+    )
 }
 
 function ColumnComponent<TData>({ column }: { column: Column<TData, unknown> }) {
     const { t } = useTranslation(['common']);
     const uniqueValues = Array.from(column.getFacetedUniqueValues().entries());
     return (
-        <div className="mt-4 w-full">
-            <TableRow className="sticky top-0 flex w-full bg-secondary">
-                <TableHead key={"value"} align="center" className="text-center grow">{t(`table.value`)}</TableHead>
-                <TableHead key={"count"} align="center" className="text-center grow">{t(`table.count`)}</TableHead>
-            </TableRow>
-            {uniqueValues.map(([key, value]) =>
-                <TableRow className="flex w-full">
-                    <TableCell key={key} align="center" className="max-w-xs text-center grow">{key}</TableCell>
-                    <TableCell key={value} align="center" className="max-w-xs text-center grow">{value}</TableCell>
+        <ScrollArea className="h-full">
+            <div className="w-full">
+                <TableRow className="w-full bg-secondary">
+                    <TableHead key={"value"} align="center" className="text-center">{t(`table.value`)}</TableHead>
+                    <TableHead key={"count"} align="center" className="text-center">{t(`table.count`)}</TableHead>
                 </TableRow>
-            )}
-            {typeof uniqueValues[0]?.[0] === 'number' &&
-                <TableRow className="flex w-full">
-                    <TableCell key={"total"} align="center" className="max-w-xs text-center grow">{t(`table.total`)}</TableCell>
-                    <TableCell key={"sum"} align="center" className="max-w-xs text-center grow">{uniqueValues.reduce((sum, [key, value]) => sum + key * value, 0)}</TableCell>
-                </TableRow>
-            }
-        </div >
+                {uniqueValues.map(([key, value]) =>
+                    <TableRow className="w-full">
+                        <TableCell key={key} align="center" className="max-w-xs text-center">{key}</TableCell>
+                        <TableCell key={value} align="center" className="max-w-xs text-center">{value}</TableCell>
+                    </TableRow>
+                )}
+                {uniqueValues.map(([key, value]) =>
+                    <TableRow className="w-full">
+                        <TableCell key={key} align="center" className="max-w-xs text-center">{key}</TableCell>
+                        <TableCell key={value} align="center" className="max-w-xs text-center">{value}</TableCell>
+                    </TableRow>
+                )}
+                {uniqueValues.map(([key, value]) =>
+                    <TableRow className="w-full">
+                        <TableCell key={key} align="center" className="max-w-xs text-center">{key}</TableCell>
+                        <TableCell key={value} align="center" className="max-w-xs text-center">{value}</TableCell>
+                    </TableRow>
+                )}
+                {uniqueValues.map(([key, value]) =>
+                    <TableRow className="w-full">
+                        <TableCell key={key} align="center" className="max-w-xs text-center">{key}</TableCell>
+                        <TableCell key={value} align="center" className="max-w-xs text-center">{value}</TableCell>
+                    </TableRow>
+                )}
+                {uniqueValues.map(([key, value]) =>
+                    <TableRow className="w-full">
+                        <TableCell key={key} align="center" className="max-w-xs text-center">{key}</TableCell>
+                        <TableCell key={value} align="center" className="max-w-xs text-center">{value}</TableCell>
+                    </TableRow>
+                )}
+                {typeof uniqueValues[0]?.[0] === 'number' &&
+                    <TableRow className="w-full">
+                        <TableCell key={"total"} align="center" className="max-w-xs text-center">{t(`table.total`)}</TableCell>
+                        <TableCell key={"sum"} align="center" className="max-w-xs text-center">{uniqueValues.reduce((sum, [key, value]) => sum + key * value, 0)}</TableCell>
+                    </TableRow>
+                }
+            </div >
+            {/* <ScrollBar orientation="horizontal" hidden={true} /> */}
+        </ScrollArea>
     );
 }
