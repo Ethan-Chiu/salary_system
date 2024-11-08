@@ -4,7 +4,6 @@ import { BaseResponseError } from "~/server/api/error/BaseResponseError";
 import {
 	updateEmployeePaymentService,
 	type updateEmployeePaymentAPI,
-	type EmployeePaymentFEType,
 } from "~/server/api/types/employee_payment_type";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import {
@@ -13,10 +12,10 @@ import {
 } from "./helper_function";
 import { CryptoHelper } from "~/lib/utils/crypto";
 import {
-	type EmployeePaymentCreateDecType,
+	type EmployeePaymentDecType,
 	type EmployeePaymentCreateEncType,
-	enc,
-	dec,
+	encEmployeePayment,
+	decEmployeePayment,
 	type EmployeePayment,
 } from "../entity/SALARY/employee_payment";
 import { type CreationAttributes } from "sequelize";
@@ -24,16 +23,16 @@ import { type CreationAttributes } from "sequelize";
 @injectable()
 export class EmployeePaymentMapper {
 	async encodeEmployeePayment(
-		employee_payment: EmployeePaymentCreateDecType
+		employee_payment: EmployeePaymentDecType
 	): Promise<CreationAttributes<EmployeePayment>> {
-		const encoded = enc.parse(employee_payment);
+		const encoded = encEmployeePayment.parse(employee_payment);
 
 		return encoded;
 	}
 
 	async decodeEmployeePayment (
 		employee_payment: EmployeePaymentCreateEncType
-	): Promise<EmployeePaymentCreateDecType> {
+	): Promise<EmployeePaymentDecType> {
 
 		const employeeDataService = container.resolve(EmployeeDataService);
 		const employee = await employeeDataService.getEmployeeDataByEmpNo(
@@ -43,7 +42,7 @@ export class EmployeePaymentMapper {
 			throw new BaseResponseError("Employee does not exist");
 		}
 
-		const decoded = dec.parse(employee_payment);
+		const decoded = decEmployeePayment.parse(employee_payment);
 
 		return deleteProperties(decoded, [
 			"base_salary_enc",

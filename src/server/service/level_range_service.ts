@@ -69,7 +69,7 @@ export class LevelRangeService {
 		return levelRange;
 	}
 
-	async getCurrentLevelRangeByDate(date: string): Promise<LevelRange[]> {
+	async getCurrentLevelRangeByDate(date: Date): Promise<LevelRange[]> {
 		const levelRange = await LevelRange.findAll(
 			{
 				where: {
