@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogTrigger } from "~/components/ui/dialog";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "~/components/ui/resizable";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Separator } from "~/components/ui/separator";
-import { TableCell, TableHead, TableRow } from "~/components/ui/table";
+import { TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 import { cn } from "~/lib/utils";
 
 interface StatsPanelProps<TData> {
@@ -31,7 +31,7 @@ export function StatsPanel<TData>({
                         </div>
                     </Button>
                 </DialogTrigger>
-                <DialogContent className="min-w-[50%] h-[50%]">
+                <DialogContent className="min-w-[50%] h-[50%] flex">
                     <StatsPanelContent table={table} />
                 </DialogContent>
             </Dialog>
@@ -51,7 +51,7 @@ function StatsPanelContent<TData>({ table }: { table: Table<TData> }) {
     const [selectedColumn, setSelectedColumn] = useState<Column<TData, unknown>>(columns[0]!);
 
     return (
-        <div className="rounded-md border-2">
+        <div className="rounded-md border-2 grow">
             <ResizablePanelGroup direction="horizontal">
                 {/* left panel */}
                 <ResizablePanel defaultSize={25} minSize={10}>
@@ -117,49 +117,22 @@ function ColumnComponent<TData>({ column }: { column: Column<TData, unknown> }) 
     const uniqueValues = Array.from(column.getFacetedUniqueValues().entries());
     return (
         <ScrollArea className="h-full">
-            <div className="w-full">
-                <TableRow className="w-full bg-secondary">
-                    <TableHead key={"value"} align="center" className="text-center">{t(`table.value`)}</TableHead>
-                    <TableHead key={"count"} align="center" className="text-center">{t(`table.count`)}</TableHead>
+            <TableRow className="sticky top-0 bg-secondary">
+                <TableHead key={"value"} align="center" className="text-center">{t(`table.value`)}</TableHead>
+                <TableHead key={"count"} align="center" className="text-center">{t(`table.count`)}</TableHead>
+            </TableRow>
+            {uniqueValues.map(([key, value]) =>
+                <TableRow>
+                    <TableCell key={key} align="center" className="max-w-xs text-center">{key}</TableCell>
+                    <TableCell key={value} align="center" className="max-w-xs text-center">{value}</TableCell>
                 </TableRow>
-                {uniqueValues.map(([key, value]) =>
-                    <TableRow className="w-full">
-                        <TableCell key={key} align="center" className="max-w-xs text-center">{key}</TableCell>
-                        <TableCell key={value} align="center" className="max-w-xs text-center">{value}</TableCell>
-                    </TableRow>
-                )}
-                {uniqueValues.map(([key, value]) =>
-                    <TableRow className="w-full">
-                        <TableCell key={key} align="center" className="max-w-xs text-center">{key}</TableCell>
-                        <TableCell key={value} align="center" className="max-w-xs text-center">{value}</TableCell>
-                    </TableRow>
-                )}
-                {uniqueValues.map(([key, value]) =>
-                    <TableRow className="w-full">
-                        <TableCell key={key} align="center" className="max-w-xs text-center">{key}</TableCell>
-                        <TableCell key={value} align="center" className="max-w-xs text-center">{value}</TableCell>
-                    </TableRow>
-                )}
-                {uniqueValues.map(([key, value]) =>
-                    <TableRow className="w-full">
-                        <TableCell key={key} align="center" className="max-w-xs text-center">{key}</TableCell>
-                        <TableCell key={value} align="center" className="max-w-xs text-center">{value}</TableCell>
-                    </TableRow>
-                )}
-                {uniqueValues.map(([key, value]) =>
-                    <TableRow className="w-full">
-                        <TableCell key={key} align="center" className="max-w-xs text-center">{key}</TableCell>
-                        <TableCell key={value} align="center" className="max-w-xs text-center">{value}</TableCell>
-                    </TableRow>
-                )}
-                {typeof uniqueValues[0]?.[0] === 'number' &&
-                    <TableRow className="w-full">
-                        <TableCell key={"total"} align="center" className="max-w-xs text-center">{t(`table.total`)}</TableCell>
-                        <TableCell key={"sum"} align="center" className="max-w-xs text-center">{uniqueValues.reduce((sum, [key, value]) => sum + key * value, 0)}</TableCell>
-                    </TableRow>
-                }
-            </div >
-            {/* <ScrollBar orientation="horizontal" hidden={true} /> */}
+            )}
+            {typeof uniqueValues[0]?.[0] === 'number' &&
+                <TableRow>
+                    <TableCell key={"total"} align="center" className="max-w-xs text-center">{t(`table.total`)}</TableCell>
+                    <TableCell key={"sum"} align="center" className="max-w-xs text-center">{uniqueValues.reduce((sum, [key, value]) => sum + key * value, 0)}</TableCell>
+                </TableRow>
+            }
         </ScrollArea>
     );
 }
