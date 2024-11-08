@@ -23,7 +23,6 @@ import {
 	type PopoverSelectorDataType,
 } from "~/components/popover_selector";
 import periodContext from "~/components/context/period_context";
-import { Button } from "~/components/ui/button";
 
 export interface EmployeeHistoryViewCommonEmpInfo {
 	emp_name: string;
@@ -51,29 +50,12 @@ export function HistoryView<TData>({
 
 	// Select the first when data loaded
 	useEffect(() => {
-		if (!isLoading && data?.[0]) {
-			// setSelectedId(data[0].id);
-			setSelectedId(0);
-			setSelectedEmpNo(data[0].emp_no);
+		console.log(data);
+		if (!isLoading && data?.[0]?.[0]) {
+			setSelectedId(data[0][0].id);
+			setSelectedEmpNo(data[0][0].emp_no);
 		}
 	}, [isLoading, data]);
-
-	// Select employee in the filtered list
-	useEffect(() => {
-		if (data) {
-			const filteredData = data.filter(
-				(employee) => employee.emp_no === selectedEmpNo
-			);
-
-			if (
-				!filteredData?.find((employee) => employee.id === selectedId) &&
-				filteredData?.[0]
-			) {
-				// setSelectedId(filteredData[0].id);
-				console.log("here");
-			}
-		}
-	}, [data, selectedId, selectedEmpNo]);
 
 	if (isLoading) {
 		return (
@@ -180,9 +162,6 @@ export function HistoryView<TData>({
 				</div>
 			</ResizablePanel>
 			<ResizableHandle />
-			{/* <Button onClick={() => console.log(data)}>
-				TEST
-			</Button> */}
 			<ResizablePanel defaultSize={75}>
 				{((data.findLast((e: any) => e[0].emp_no === selectedEmpNo)! as any) ?? []).filter((e: any, idx: number) => idx === selectedId).length > 0 ? (
 					<>
@@ -190,11 +169,11 @@ export function HistoryView<TData>({
 							columns={columns}
 							data={((data.findLast((e: any) => e[0].emp_no === selectedEmpNo) ?? []) as any).filter((e: any, idx: number) => idx === selectedId) as any[]}
 						/>
-						
+
 					</>
 				) : (
 					<>
-					<p>No find selected</p>
+						<p>No find selected</p>
 					</>
 				)}
 			</ResizablePanel>
