@@ -28,10 +28,15 @@ export const dateToStringNullable = z
 	.nullable()
 	.transform((value) => (value ? get_date_string(value) : null));
 
-export const encodeString = z.
-  string()
-  .transform((value) => CryptoHelper.encrypt(value));
+export const encodeString = z
+	.string()
+	.transform((value) => CryptoHelper.encrypt(value));
 
 export const decodeString = z
-  .string()
-  .transform((value) => CryptoHelper.decrypt(value));
+	.string()
+	.transform((value) => CryptoHelper.decrypt(value));
+
+export const optionalNumDefaultZero = z
+	.number()
+	.optional()
+	.default(0)

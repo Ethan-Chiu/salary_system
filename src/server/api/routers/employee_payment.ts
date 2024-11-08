@@ -9,7 +9,7 @@ import {
 } from "../types/employee_payment_type";
 import { EmployeePaymentMapper } from "~/server/database/mapper/employee_payment_mapper";
 import { get_date_string } from "~/server/service/helper_function";
-import { type EmployeePayment } from "~/server/database/entity/SALARY/employee_payment";
+import { type EmployeePaymentDecType } from "~/server/database/entity/SALARY/employee_payment";
 
 export const employeePaymentRouter = createTRPCRouter({
 	getCurrentEmployeePayment: publicProcedure
@@ -18,23 +18,13 @@ export const employeePaymentRouter = createTRPCRouter({
 			const employeePaymentService = container.resolve(
 				EmployeePaymentService
 			);
-			const employeePaymentMapper = container.resolve(
-				EmployeePaymentMapper
-			);
-			const employeePayment: EmployeePayment[] =
+
+			const employeePayment: EmployeePaymentDecType[] =
 				await employeePaymentService.getCurrentEmployeePayment(
 					input.period_id
 				);
-			if (employeePayment == null) {
-				throw new BaseResponseError("EmployeePayment does not exist");
-			}
-			const employeePaymentFE = await Promise.all(
-				employeePayment.map(
-					async (e) =>
-						await employeePaymentMapper.decodeEmployeePayment(e)
-				)
-			);
-			return employeePaymentFE;
+
+			return employeePayment;
 		}),
 
 	getAllEmployeePayment: publicProcedure.query(async () => {
