@@ -23,6 +23,7 @@ import {
 	type PopoverSelectorDataType,
 } from "~/components/popover_selector";
 import periodContext from "~/components/context/period_context";
+import { Button } from "~/components/ui/button";
 
 export interface EmployeeHistoryViewCommonEmpInfo {
 	emp_name: string;
@@ -51,7 +52,8 @@ export function HistoryView<TData>({
 	// Select the first when data loaded
 	useEffect(() => {
 		if (!isLoading && data?.[0]) {
-			setSelectedId(data[0].id);
+			// setSelectedId(data[0].id);
+			setSelectedId(0);
 			setSelectedEmpNo(data[0].emp_no);
 		}
 	}, [isLoading, data]);
@@ -62,11 +64,13 @@ export function HistoryView<TData>({
 			const filteredData = data.filter(
 				(employee) => employee.emp_no === selectedEmpNo
 			);
+
 			if (
 				!filteredData?.find((employee) => employee.id === selectedId) &&
 				filteredData?.[0]
 			) {
-				setSelectedId(filteredData[0].id);
+				// setSelectedId(filteredData[0].id);
+				console.log("here");
 			}
 		}
 	}, [data, selectedId, selectedEmpNo]);
@@ -90,14 +94,19 @@ export function HistoryView<TData>({
 	const seen = new Set<string>();
 	const employees: PopoverSelectorDataType[] = [];
 
-	data.forEach((employee) => {
-		if (!seen.has(employee.emp_no)) {
-			seen.add(employee.emp_no);
-			employees.push({
-				key: employee.emp_no,
-				value: `${employee.emp_no} ${employee.emp_name}`,
-			});
-		}
+	data.forEach((employee: any) => {
+		seen.add(employee[0]!.emp_no);
+		employees.push({
+			key: employee[0]!.emp_no,
+			value: `${employee[0]!.emp_no} ${employee[0]!.emp_name}`,
+		})
+		// if (!seen.has(employee.emp_no)) {
+		// 	seen.add(employee.emp_no);
+		// 	employees.push({
+		// 		key: employee.emp_no,
+		// 		value: `${employee.emp_no} ${employee.emp_name}`,
+		// 	});
+		// }
 	});
 
 	return (
@@ -112,25 +121,20 @@ export function HistoryView<TData>({
 					<Separator />
 					<div className="h-0 flex-grow">
 						<ScrollArea className="h-full">
-							{data
-								.filter(
-									(e) =>
-										selectedEmpNo === null ||
-										e.emp_no === selectedEmpNo
-								)
-								.map((e) => (
+							{((data.find((e: any) => (selectedEmpNo === null || e[0]!.emp_no === selectedEmpNo)) as any) ?? [])
+								.map((e: any, idx: number) => (
 									<div
 										key={e.id}
 										className={cn(
 											" relative m-2 flex flex-col rounded-md border p-1 hover:bg-muted",
-											e.id === selectedId && "bg-muted",
+											idx === selectedId && "bg-muted",
 											is_date_available(
 												selectedPeriod,
 												e.start_date.toString(),
 												e.end_date?.toString() ?? ""
 											) && "mb-3 border-blue-500"
 										)}
-										onClick={() => setSelectedId(e.id)}
+										onClick={() => setSelectedId(idx)}
 									>
 										<div className="m-1 flex flex-wrap items-center justify-center">
 											<div className="flex-1 whitespace-nowrap text-center">
@@ -176,14 +180,22 @@ export function HistoryView<TData>({
 				</div>
 			</ResizablePanel>
 			<ResizableHandle />
+			{/* <Button onClick={() => console.log(data)}>
+				TEST
+			</Button> */}
 			<ResizablePanel defaultSize={75}>
-				{data.filter((e) => e.id === selectedId).length > 0 ? (
-					<DataTable
-						columns={columns}
-						data={data.filter((e) => e.id === selectedId) as any[]}
-					/>
+				{((data.findLast((e: any) => e[0].emp_no === selectedEmpNo)! as any) ?? []).filter((e: any, idx: number) => idx === selectedId).length > 0 ? (
+					<>
+						<DataTable
+							columns={columns}
+							data={((data.findLast((e: any) => e[0].emp_no === selectedEmpNo) ?? []) as any).filter((e: any, idx: number) => idx === selectedId) as any[]}
+						/>
+						
+					</>
 				) : (
-					<></>
+					<>
+					<p>No find selected</p>
+					</>
 				)}
 			</ResizablePanel>
 		</ResizablePanelGroup>
