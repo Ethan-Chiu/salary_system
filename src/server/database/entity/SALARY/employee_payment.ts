@@ -55,12 +55,6 @@ const decF = dbEmployeePayment.merge(decFields).merge(decDate);
 
 export type EmployeePaymentCreateEncType = z.input<typeof encF>;
 export type EmployeePaymentDecType = z.input<typeof decF>;
-export type EmployeePaymentFEType = EmployeePaymentDecType & {
-	department: string;
-	emp_name: string;
-	position: number;
-	position_type: string;
-};
 
 export const decEmployeePayment = encF.transform((v) => ({
 	...v,

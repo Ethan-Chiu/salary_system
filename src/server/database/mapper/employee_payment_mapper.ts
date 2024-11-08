@@ -33,9 +33,6 @@ export class EmployeePaymentMapper {
 	async decodeEmployeePayment (
 		employee_payment: EmployeePaymentCreateEncType
 	): Promise<EmployeePaymentDecType > {
-
-		
-
 		const decoded = decEmployeePayment.parse(employee_payment);
 
 		return deleteProperties(decoded, [

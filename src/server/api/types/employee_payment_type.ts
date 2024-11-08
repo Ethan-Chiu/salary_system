@@ -41,3 +41,4 @@ export const employeePaymentCreateService = employeePayment;
 export const updateEmployeePaymentAPI = employeePaymentFE.partial().merge(Id);
 export const updateEmployeePaymentService = employeePayment.partial().merge(Id);
 
+export type EmployeePaymentFEType = z.infer<typeof employeePaymentFE>;

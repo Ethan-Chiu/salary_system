@@ -4,7 +4,6 @@ import { get_date_string, select_value } from "./helper_function";
 import { type z } from "zod";
 import {
 	EmployeePayment,
-	EmployeePaymentFEType,
 	type EmployeePaymentDecType,
 } from "../database/entity/SALARY/employee_payment";
 import { Op } from "sequelize";
@@ -12,6 +11,7 @@ import { EHRService } from "./ehr_service";
 import { LevelRangeService } from "./level_range_service";
 import { LevelService } from "./level_service";
 import {
+	type EmployeePaymentFEType,
 	employeePaymentCreateService,
 	type updateEmployeePaymentService,
 } from "../api/types/employee_payment_type";
@@ -221,15 +221,23 @@ export class EmployeePaymentService {
 			raw: true,
 		});
 		// 将记录按工号分组
-		const groupedEmployeePaymenttRecords = {} as {
-			[empNo: string]: EmployeePayment[];
-		};
-		allEmployeePayment.forEach((record) => {
-			if (!groupedEmployeePaymenttRecords[record.emp_no]) {
-				groupedEmployeePaymenttRecords[record.emp_no] = [];
-			}
-			groupedEmployeePaymenttRecords[record.emp_no]!.push(record);
-		});
+		const groupedEmployeePaymenttRecords: Record<
+			string,
+			EmployeePaymentDecType[]
+		> = {};
+
+		await Promise.all(
+			allEmployeePayment.map(async (record) => {
+				const r =
+					await this.employeePaymentMapper.decodeEmployeePayment(
+						record
+					);
+				if (!groupedEmployeePaymenttRecords[r.emp_no]) {
+					groupedEmployeePaymenttRecords[r.emp_no] = [];
+				}
+				groupedEmployeePaymenttRecords[r.emp_no]!.push(r);
+			})
+		);
 
 		// 将分组后的记录转换为数组格式，并映射为前端格式
 		const groupedRecordsArray = Object.values(
@@ -257,6 +265,7 @@ export class EmployeePaymentService {
 				);
 			})
 		);
+
 		return employeePaymentList;
 	}
 
