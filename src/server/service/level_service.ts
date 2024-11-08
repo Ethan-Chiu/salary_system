@@ -132,7 +132,7 @@ export class LevelService {
 	}
 
 	async getCurrentLevelBySalaryByDate(
-		date: string,
+		date: Date,
 		salary: number,
 		level_start_id: number,
 		level_end_id: number

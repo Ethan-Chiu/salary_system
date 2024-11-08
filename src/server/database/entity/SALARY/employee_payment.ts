@@ -19,44 +19,44 @@ const dbEmployeePayment = z.object({
 	long_service_allowance_type: LongServiceEnum,
   create_by: z.string(),
   update_by: z.string(),
-  disabled: z.boolean(),
+  disabled: z.coerce.boolean(),
 });
 
 const decFields = z.object({
-	base_salary: encodeString,
-	food_allowance: encodeString,
-	supervisor_allowance: encodeString,
-	occupational_allowance: encodeString,
-	subsidy_allowance: encodeString,
-	long_service_allowance: encodeString,
-	l_r_self: encodeString,
-	l_i: encodeString,
-	h_i: encodeString,
-	l_r: encodeString,
-	occupational_injury: encodeString,
+	base_salary: z.number().pipe(encodeString),
+	food_allowance: z.number().pipe(encodeString),
+	supervisor_allowance: z.number().pipe(encodeString),
+	occupational_allowance: z.number().pipe(encodeString),
+	subsidy_allowance: z.number().pipe(encodeString),
+	long_service_allowance: z.number().pipe(encodeString),
+	l_r_self: z.number().pipe(encodeString),
+	l_i: z.number().pipe(encodeString),
+	h_i: z.number().pipe(encodeString),
+	l_r: z.number().pipe(encodeString),
+	occupational_injury: z.number().pipe(encodeString),
 });
 
 const encFields = z.object({
-	base_salary_enc: decodeString,
-	food_allowance_enc: decodeString,
-	supervisor_allowance_enc: decodeString,
-	occupational_allowance_enc: decodeString,
-	subsidy_allowance_enc: decodeString,
-	long_service_allowance_enc: decodeString,
-	l_r_self_enc: decodeString,
-	l_i_enc: decodeString,
-	h_i_enc: decodeString,
-	l_r_enc: decodeString,
-	occupational_injury_enc: decodeString,
+	base_salary_enc: decodeString.pipe(z.coerce.number()),
+	food_allowance_enc: decodeString.pipe(z.coerce.number()),
+	supervisor_allowance_enc: decodeString.pipe(z.coerce.number()),
+	occupational_allowance_enc: decodeString.pipe(z.coerce.number()),
+	subsidy_allowance_enc: decodeString.pipe(z.coerce.number()),
+	long_service_allowance_enc: decodeString.pipe(z.coerce.number()),
+	l_r_self_enc: decodeString.pipe(z.coerce.number()),
+	l_i_enc: decodeString.pipe(z.coerce.number()),
+	h_i_enc: decodeString.pipe(z.coerce.number()),
+	l_r_enc: decodeString.pipe(z.coerce.number()),
+	occupational_injury_enc: decodeString.pipe(z.coerce.number()),
 });
 
 const encF = dbEmployeePayment.merge(encFields).merge(encDate);
 const decF = dbEmployeePayment.merge(decFields).merge(decDate);
 
 export type EmployeePaymentCreateEncType = z.input<typeof encF>;
-export type EmployeePaymentCreateDecType = z.input<typeof decF>;
+export type EmployeePaymentDecType = z.input<typeof decF>;
 
-export const dec = encF
+export const decEmployeePayment = encF
 	.transform((v) => ({
 		...v,
     base_salary: v.base_salary_enc,
@@ -73,7 +73,7 @@ export const dec = encF
 	}))
   
 
-export const enc = decF
+export const encEmployeePayment = decF
 	.transform((v) => ({
 		...v,
     base_salary_enc: v.base_salary,

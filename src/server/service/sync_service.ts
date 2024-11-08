@@ -9,7 +9,6 @@ import {
 	FunctionsEnum,
 	type FunctionsEnumType,
 } from "../api/types/functions_enum";
-import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
 import { EmployeeTrustService } from "./employee_trust_service";
 import { EmployeeTrustMapper } from "../database/mapper/employee_trust_mapper";
 import {
@@ -21,7 +20,6 @@ import {
 	type SyncInputType,
 } from "../api/types/sync_type";
 import { type Period } from "../database/entity/UMEDIA/period";
-import { type EmployeePaymentFEType } from "../api/types/employee_payment_type";
 import { LongServiceEnum } from "../api/types/long_service_enum";
 import { type CreateEmployeeDataServiceType } from "../api/types/employee_data_type";
 import { Op } from "sequelize";
@@ -411,9 +409,6 @@ export class SyncService {
 		const employee_payment_service = container.resolve(
 			EmployeePaymentService
 		);
-		const employee_payment_mapper = container.resolve(
-			EmployeePaymentMapper
-		);
 		const employee_trust_setvice = container.resolve(EmployeeTrustService);
 		const employee_trust_mapper = container.resolve(EmployeeTrustMapper);
 
@@ -438,30 +433,12 @@ export class SyncService {
 						ehr_emp_data
 					);
 
-				const payment_input: EmployeePaymentFEType = {
+				await employee_payment_service.createEmployeePayment({
 					emp_no: ehr_emp_data.emp_no,
-					base_salary: 0,
-					food_allowance: 0,
-					supervisor_allowance: 0,
-					occupational_allowance: 0,
-					subsidy_allowance: 0,
-					long_service_allowance: 0,
 					long_service_allowance_type: LongServiceEnum.Enum.month_allowance,
-					l_r_self: 0,
-					l_i: 0,
-					h_i: 0,
-					l_r: 0,
-					occupational_injury: 0,
 					start_date: new Date(ehr_emp_data.registration_date),
 					end_date: null,
-				};
-				const employee_payment_input =
-					await employee_payment_mapper.encodeEmployeePayment(
-						payment_input
-					);
-				await employee_payment_service.createEmployeePayment(
-					employee_payment_input
-				);
+				});
 
 				const employee_trust_input = {
 					emp_no: ehr_emp_data.emp_no,
