@@ -59,7 +59,7 @@ export function OvertimeTable({ period, emp_no_list, pay_type }: OvertimeTablePr
 	}
 
 	if (data) {
-		return <DataTable columns={columns(t)} data={data} />;
+		return <DataTable columns={columns(t)} data={data} detailData={[1, 2, 3]}/>;
 	}
 	return <div />;
 }

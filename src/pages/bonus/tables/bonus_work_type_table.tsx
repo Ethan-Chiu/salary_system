@@ -10,8 +10,10 @@ import { type TableComponentProps } from "../pre_calculate_bonus/bonus_filter";
 import { useTranslation } from "react-i18next";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 
+import { WorkTypeEnumType } from "~/server/api/types/work_type_enum";
+
 export type RowItem = {
-	work_type: string;
+	work_type: WorkTypeEnumType;
 	multiplier: number;
 };
 type RowItemKey = keyof RowItem;
