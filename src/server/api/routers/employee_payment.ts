@@ -101,19 +101,10 @@ export const employeePaymentRouter = createTRPCRouter({
 			);
 			const employeePayment =
 				await employeePaymentMapper.getEmployeePaymentNullable(input);
-			const employeePaymentAfterSelectValue =
-				await employeePaymentService.getEmployeePaymentAfterSelectValue(
-					employeePayment
-				);
-			const updatedEmployeePayment =
-				await employeePaymentService.getUpdatedEmployeePayment(
-					employeePaymentAfterSelectValue,
-					employeePaymentAfterSelectValue.start_date!
-				);
-			await employeePaymentService.updateEmployeePayment({
-				id: employeePayment.id,
-				...updatedEmployeePayment,
-			});
+
+			await employeePaymentService.updateEmployeePaymentAndMatchLevel(
+				employeePayment
+			);
 			await employeePaymentService.rescheduleEmployeePayment();
 		}),
 
@@ -137,7 +128,7 @@ export const employeePaymentRouter = createTRPCRouter({
 			);
 			await employeePaymentService.autoCalculateEmployeePayment(
 				input.emp_no_list,
-				get_date_string(input.start_date)
+				input.start_date
 			);
 			await employeePaymentService.rescheduleEmployeePayment();
 		}),
