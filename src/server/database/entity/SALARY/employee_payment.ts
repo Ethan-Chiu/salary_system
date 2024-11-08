@@ -17,9 +17,9 @@ import { decDate, encDate } from "../../mapper/mapper_utils";
 const dbEmployeePayment = z.object({
 	emp_no: z.string(),
 	long_service_allowance_type: LongServiceEnum,
-  create_by: z.string(),
-  update_by: z.string(),
-  disabled: z.coerce.boolean(),
+	create_by: z.string(),
+	update_by: z.string(),
+	disabled: z.coerce.boolean(),
 });
 
 const decFields = z.object({
@@ -56,39 +56,35 @@ const decF = dbEmployeePayment.merge(decFields).merge(decDate);
 export type EmployeePaymentCreateEncType = z.input<typeof encF>;
 export type EmployeePaymentDecType = z.input<typeof decF>;
 
-export const decEmployeePayment = encF
-	.transform((v) => ({
-		...v,
-    base_salary: v.base_salary_enc,
-    food_allowance: v.food_allowance_enc,
-    supervisor_allowance: v.supervisor_allowance_enc,
-    occupational_allowance: v.occupational_allowance_enc,
-    subsidy_allowance: v.subsidy_allowance_enc,
-    long_service_allowance: v.long_service_allowance_enc,
-    l_r_self: v.l_r_self_enc,
-    l_i: v.l_i_enc,
-    h_i: v.h_i_enc,
-    l_r: v.l_r_enc,
-    occupational_injury: v.occupational_injury_enc,
-	}))
-  
+export const decEmployeePayment = encF.transform((v) => ({
+	...v,
+	base_salary: v.base_salary_enc,
+	food_allowance: v.food_allowance_enc,
+	supervisor_allowance: v.supervisor_allowance_enc,
+	occupational_allowance: v.occupational_allowance_enc,
+	subsidy_allowance: v.subsidy_allowance_enc,
+	long_service_allowance: v.long_service_allowance_enc,
+	l_r_self: v.l_r_self_enc,
+	l_i: v.l_i_enc,
+	h_i: v.h_i_enc,
+	l_r: v.l_r_enc,
+	occupational_injury: v.occupational_injury_enc,
+}));
 
-export const encEmployeePayment = decF
-	.transform((v) => ({
-		...v,
-    base_salary_enc: v.base_salary,
-    food_allowance_enc: v.food_allowance,
-    supervisor_allowance_enc: v.supervisor_allowance,
-    occupational_allowance_enc: v.occupational_allowance,
-    subsidy_allowance_enc: v.subsidy_allowance,
-    long_service_allowance_enc: v.long_service_allowance,
-    l_r_self_enc: v.l_r_self,
-    l_i_enc: v.l_i,
-    h_i_enc: v.h_i,
-    l_r_enc: v.l_r,
-    occupational_injury_enc: v.occupational_injury,
-	}))
-
+export const encEmployeePayment = decF.transform((v) => ({
+	...v,
+	base_salary_enc: v.base_salary,
+	food_allowance_enc: v.food_allowance,
+	supervisor_allowance_enc: v.supervisor_allowance,
+	occupational_allowance_enc: v.occupational_allowance,
+	subsidy_allowance_enc: v.subsidy_allowance,
+	long_service_allowance_enc: v.long_service_allowance,
+	l_r_self_enc: v.l_r_self,
+	l_i_enc: v.l_i,
+	h_i_enc: v.h_i,
+	l_r_enc: v.l_r,
+	occupational_injury_enc: v.occupational_injury,
+}));
 
 export class EmployeePayment extends Model<
 	InferAttributes<EmployeePayment>,

@@ -8,10 +8,6 @@ import {
 	updateEmployeeTrustAPI,
 } from "../types/employee_trust";
 import { EmployeeTrustMapper } from "~/server/database/mapper/employee_trust_mapper";
-import { get_date_string } from "~/server/service/helper_function";
-import { TrustMoneyService } from "~/server/service/trust_money_service";
-import { EmployeeTrust } from "~/server/database/entity/SALARY/employee_trust";
-import { EHRService } from "~/server/service/ehr_service";
 function delay(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }

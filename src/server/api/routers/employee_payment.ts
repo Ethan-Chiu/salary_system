@@ -10,6 +10,7 @@ import {
 import { EmployeePaymentMapper } from "~/server/database/mapper/employee_payment_mapper";
 import { get_date_string } from "~/server/service/helper_function";
 import { type EmployeePaymentDecType } from "~/server/database/entity/SALARY/employee_payment";
+import { EmployeeDataService } from "~/server/service/employee_data_service";
 
 export const employeePaymentRouter = createTRPCRouter({
 	getCurrentEmployeePayment: publicProcedure
@@ -18,13 +19,30 @@ export const employeePaymentRouter = createTRPCRouter({
 			const employeePaymentService = container.resolve(
 				EmployeePaymentService
 			);
-
 			const employeePayment: EmployeePaymentDecType[] =
 				await employeePaymentService.getCurrentEmployeePayment(
 					input.period_id
 				);
-
-			return employeePayment;
+			const employeeDataService = container.resolve(EmployeeDataService);
+			const employeePaymentFE = await Promise.all(
+				employeePayment.map(async (e) => {
+					const employee =
+						await employeeDataService.getEmployeeDataByEmpNo(
+							e.emp_no
+						);
+					if (employee == null) {
+						throw new BaseResponseError("Employee does not exist");
+					}
+					return {
+						...e,
+						department: employee.department,
+						emp_name: employee.emp_name,
+						position: employee.position,
+						position_type: employee.position_type,
+					};
+				})
+			);
+			return employeePaymentFE;
 		}),
 
 	getAllEmployeePayment: publicProcedure.query(async () => {
@@ -37,13 +55,8 @@ export const employeePaymentRouter = createTRPCRouter({
 		if (employeePayment == null) {
 			throw new BaseResponseError("EmployeePayment does not exist");
 		}
-		const employeePaymentFE = await Promise.all(
-			employeePayment.map(
-				async (e) =>
-					await employeePaymentMapper.decodeEmployeePayment(e)
-			)
-		);
-		return employeePaymentFE;
+
+		return employeePayment;
 	}),
 
 	createEmployeePayment: publicProcedure
@@ -55,29 +68,26 @@ export const employeePaymentRouter = createTRPCRouter({
 			const employeePaymentMapper = container.resolve(
 				EmployeePaymentMapper
 			);
-			const previousEmployeePayment =
+			const previousEmployeePaymentFE =
 				await employeePaymentService.getCurrentEmployeePaymentByEmpNoByDate(
 					input.emp_no,
-					get_date_string(input.start_date ?? new Date())
+					input.start_date ?? new Date()
 				);
-			if (!previousEmployeePayment) {
+			if (!previousEmployeePaymentFE) {
 				throw new BaseResponseError(
 					`EmployeePayment for emp_no: ${input.emp_no} not exists yet`
 				);
 			}
-			const previousEmployeePaymentFE =
-				await employeePaymentMapper.decodeEmployeePayment(
-					previousEmployeePayment
-				);
+			
 			const newdata = await employeePaymentService.createEmployeePayment({
 				...input,
-				base_salary: input.base_salary.toString(),
-				food_allowance: input.food_allowance.toString(),
-				supervisor_allowance: input.supervisor_allowance.toString(),
-				occupational_allowance: input.occupational_allowance.toString(),
-				subsidy_allowance: input.subsidy_allowance.toString(),
-				long_service_allowance: input.long_service_allowance.toString(),
-				l_r_self: input.l_r_self.toString(),
+				base_salary: input.base_salary,
+				food_allowance: input.food_allowance,
+				supervisor_allowance: input.supervisor_allowance,
+				occupational_allowance: input.occupational_allowance,
+				subsidy_allowance: input.subsidy_allowance,
+				long_service_allowance: input.long_service_allowance,
+				l_r_self: input.l_r_self,
 				l_i: previousEmployeePaymentFE.l_i,
 				h_i: previousEmployeePaymentFE.h_i,
 				l_r: previousEmployeePaymentFE.l_r,
@@ -101,19 +111,10 @@ export const employeePaymentRouter = createTRPCRouter({
 			);
 			const employeePayment =
 				await employeePaymentMapper.getEmployeePaymentNullable(input);
-			const employeePaymentAfterSelectValue =
-				await employeePaymentService.getEmployeePaymentAfterSelectValue(
-					employeePayment
-				);
-			const updatedEmployeePayment =
-				await employeePaymentService.getUpdatedEmployeePayment(
-					employeePaymentAfterSelectValue,
-					employeePaymentAfterSelectValue.start_date!
-				);
-			await employeePaymentService.updateEmployeePayment({
-				id: employeePayment.id,
-				...updatedEmployeePayment,
-			});
+
+			await employeePaymentService.updateEmployeePaymentAndMatchLevel(
+				employeePayment
+			);
 			await employeePaymentService.rescheduleEmployeePayment();
 		}),
 
@@ -137,7 +138,7 @@ export const employeePaymentRouter = createTRPCRouter({
 			);
 			await employeePaymentService.autoCalculateEmployeePayment(
 				input.emp_no_list,
-				get_date_string(input.start_date)
+				input.start_date
 			);
 			await employeePaymentService.rescheduleEmployeePayment();
 		}),
