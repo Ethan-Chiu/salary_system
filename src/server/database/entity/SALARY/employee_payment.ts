@@ -17,6 +17,9 @@ import { decDate, encDate } from "../../mapper/mapper_utils";
 const dbEmployeePayment = z.object({
 	emp_no: z.string(),
 	long_service_allowance_type: LongServiceEnum,
+  create_by: z.string(),
+  update_by: z.string(),
+  disabled: z.boolean(),
 });
 
 const decFields = z.object({
@@ -49,6 +52,9 @@ const encFields = z.object({
 
 const encF = dbEmployeePayment.merge(encFields).merge(encDate);
 const decF = dbEmployeePayment.merge(decFields).merge(decDate);
+
+export type EmployeePaymentCreateEncType = z.input<typeof encF>;
+export type EmployeePaymentCreateDecType = z.input<typeof decF>;
 
 export const dec = encF
 	.transform((v) => ({
@@ -83,8 +89,6 @@ export const enc = decF
     occupational_injury_enc: v.occupational_injury,
 	}))
 
-export type EmployeePaymentCreateEncType = z.infer<typeof enc>;
-export type EmployeePaymentCreateDecType = z.infer<typeof dec>;
 
 export class EmployeePayment extends Model<
 	InferAttributes<EmployeePayment>,
