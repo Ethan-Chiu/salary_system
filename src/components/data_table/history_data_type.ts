@@ -9,8 +9,8 @@ export interface HistoryDataType {
 }
 
 type ExtendableHistoryDataType<T> = T extends object
-	? (HistoryDataType & T)[]
-	: HistoryDataType[];
+	? (HistoryDataType & T)[][]
+	: HistoryDataType[][];
 
 export type HistoryQueryFunctionType<T = Record<string, never>> =
 	() => UseTRPCQueryResult<
