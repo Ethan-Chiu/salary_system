@@ -5,6 +5,16 @@ import { useState } from "react";
 import { ScrollArea } from "~/components/ui/scroll-area";
 
 import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
+} from "~/components/ui/select"
+
+import {
 	Table,
 	TableBody,
 	TableCell,
@@ -135,7 +145,7 @@ export function BonusWorkTypeBatchCreateForm<
 	const schema = z.object({
 		bonus_work_types: z.array(
 			z.object({
-				work_type: z.string(),
+				work_type: z.enum(["直接人員", "間接人員", "外籍勞工"]),
 				multiplier: z.coerce.number(),
 			})
 		),
@@ -144,7 +154,7 @@ export function BonusWorkTypeBatchCreateForm<
 	type FormValues = z.infer<typeof schema>;
 
 	function DynamicForm() {
-		const { control, handleSubmit, register } = useForm<FormValues>({
+		const { control, handleSubmit, register, setValue } = useForm<FormValues>({
 			resolver: zodResolver(schema),
 			defaultValues: {
 				bonus_work_types: [], // Start with an empty array
@@ -181,7 +191,23 @@ export function BonusWorkTypeBatchCreateForm<
 								>
 									<div className="flex w-full flex-row items-center justify-between gap-4">
 										{/* work_type Input */}
-										<Label className="min-w-[75px] text-center">
+										
+										<Select onValueChange={(v: any) => {
+											setValue(`bonus_work_types.${index}.work_type`, v);
+										}}>
+											<SelectTrigger className="min-w-[75px] text-center">
+												<SelectValue placeholder="Select Work Type" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectGroup>
+												<SelectLabel>{t("table.work_type")}{" "}</SelectLabel>
+												<SelectItem value="直接人員">直接人員</SelectItem>
+												<SelectItem value="間接人員">間接人員</SelectItem>
+												<SelectItem value="外籍勞工">外籍勞工</SelectItem>
+												</SelectGroup>
+											</SelectContent>
+										</Select>
+										{/* <Label className="min-w-[75px] text-center">
 											{t("table.work_type")}{" "}
 										</Label>
 										<Input
@@ -190,13 +216,14 @@ export function BonusWorkTypeBatchCreateForm<
 											{...register(
 												`bonus_work_types.${index}.work_type` as const
 											)}
-										/>
+										/> */}
 										{/* multiplier Input */}
 										<Label className="min-w-[75px] text-center">
 											{t("table.multiplier")}{" "}
 										</Label>
 										<Input
 											className="flex-grow"
+											step={0.1}
 											type="number"
 											{...register(
 												`bonus_work_types.${index}.multiplier` as const
@@ -218,7 +245,7 @@ export function BonusWorkTypeBatchCreateForm<
 								<Button
 									type={"button"}
 									variant={"ghost"}
-									onClick={() => append({ work_type: "", multiplier: 0 })}
+									onClick={() => append({ work_type: "直接人員", multiplier: 0 })}
 								>
 									<PlusCircle />
 								</Button>

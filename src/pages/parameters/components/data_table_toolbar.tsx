@@ -11,6 +11,8 @@ import { hasHistory } from "./data_table_tabs_config";
 import { ToolbarFilter } from "~/components/data_table/toolbar/toolbar_filter";
 import periodContext from "~/components/context/period_context";
 import { useTranslation } from "react-i18next";
+import { StatsPanel } from "~/components/data_table/toolbar/stats_panel";
+import { DataTableToolbarWrapper } from "~/components/data_table/toolbar/data_table_toolbar_wrapper";
 
 interface DataTableToolbarProps<TData> {
 	filterColumnKey?: keyof TData;
@@ -36,51 +38,56 @@ export function DataTableToolbar<TData>({
 	}
 
 	return (
-		<div className="flex flex-row items-center justify-between space-x-2 px-2 py-2">
+		<DataTableToolbarWrapper>
 			{/* search bar */}
-			<ToolbarFilter table={table} filterColumnKey={filterColumnKey} />
+			<div className="flex">
+				<ToolbarFilter table={table} filterColumnKey={filterColumnKey} />
+				<StatsPanel table={table} />
+			</div>
 			{/* tabs */}
-			{showTabs !== false && (
-				<TabsList className="grid h-8 w-96 grid-cols-3">
-					<TabsTrigger value={TabsEnum.Enum.current} className="h-6">
-						{t("table.current")}
-					</TabsTrigger>
-					<TabsTrigger
-						disabled={!hasHistory(selectedTableType)}
-						value={TabsEnum.Enum.history}
-						className="h-6"
-					>
-						{t("table.history")}
-					</TabsTrigger>
-					<TabsTrigger
-						disabled={!hasHistory(selectedTableType)}
-						value={TabsEnum.Enum.calendar}
-						className="h-6"
-					>
-						{t("table.calendar")} 
-					</TabsTrigger>
-				</TabsList>
-			)}
-			{/*  */}
-			<DataTableViewOptions table={table} />
-			{/* Toolbar functions */}
-			<div className="w-12">
-				{selectedPeriod && (
-					<ParameterToolbarFunctionsProvider
-						selectedTableType={selectedTableType}
-						period_id={selectedPeriod.period_id}
-					>
-						{selectedTab === TabsEnum.Enum.current && (
-							<DataTableFunctions tableType={selectedTableType} />
-						)}
-						{selectedTab === TabsEnum.Enum.calendar && (
-							<CalendarToolbarFunctions
-								tableType={selectedTableType}
-							/>
-						)}
-					</ParameterToolbarFunctionsProvider>
+			<div className="flex">
+				{showTabs !== false && (
+					<TabsList className="grid h-8 w-96 grid-cols-3">
+						<TabsTrigger value={TabsEnum.Enum.current} className="h-6">
+							{t("table.current")}
+						</TabsTrigger>
+						<TabsTrigger
+							disabled={!hasHistory(selectedTableType)}
+							value={TabsEnum.Enum.history}
+							className="h-6"
+						>
+							{t("table.history")}
+						</TabsTrigger>
+						<TabsTrigger
+							disabled={!hasHistory(selectedTableType)}
+							value={TabsEnum.Enum.calendar}
+							className="h-6"
+						>
+							{t("table.calendar")}
+						</TabsTrigger>
+					</TabsList>
 				)}
 			</div>
-		</div>
+			<div className="flex">
+				<DataTableViewOptions table={table} />
+				<div className="w-12">
+					{selectedPeriod && (
+						<ParameterToolbarFunctionsProvider
+							selectedTableType={selectedTableType}
+							period_id={selectedPeriod.period_id}
+						>
+							{selectedTab === TabsEnum.Enum.current && (
+								<DataTableFunctions tableType={selectedTableType} />
+							)}
+							{selectedTab === TabsEnum.Enum.calendar && (
+								<CalendarToolbarFunctions
+									tableType={selectedTableType}
+								/>
+							)}
+						</ParameterToolbarFunctionsProvider>
+					)}
+				</div>
+			</div>
+		</DataTableToolbarWrapper>
 	);
 }

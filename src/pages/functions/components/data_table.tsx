@@ -11,17 +11,19 @@ interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
 	data: TData[];
 	filterColumnKey?: keyof TData;
+	detailData?: any;
 }
 
 export function DataTable<TData>({
 	columns,
 	data,
 	filterColumnKey,
+	detailData,
 }: DataTableProps<TData>) {
 	return WithDataTableStandardState({
 		columns: columns,
 		data,
-		props: { filterColumnKey },
+		props: { filterColumnKey, detailData },
 		WrappedComponent: DataTableContent,
 	});
 }
@@ -29,9 +31,11 @@ export function DataTable<TData>({
 function DataTableContent<TData>({
 	table,
 	filterColumnKey,
+	detailData
 }: {
 	table: Table<TData>;
 	filterColumnKey?: keyof TData;
+	detailData?: any;
 }) {
 	const [dataPerRow, setDataPerRow] = React.useState(1);
 
@@ -43,7 +47,7 @@ function DataTableContent<TData>({
 			/>
 			<Separator />
 			<div className="h-0 flex-grow">
-				<DataTableStandardBody table={table} dataPerRow={dataPerRow} />
+				<DataTableStandardBody table={table} dataPerRow={dataPerRow} detailData={detailData} />
 			</div>
 			<DataTablePagination
 				table={table}
