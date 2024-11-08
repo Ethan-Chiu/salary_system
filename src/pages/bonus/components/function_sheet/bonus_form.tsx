@@ -73,6 +73,9 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 	>(getDefaults(formSchema));
 
 	const [openDialog, setOpenDialog] = useState(false);
+
+
+
 	const { t } = useTranslation(["common"]);
 
 	function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
@@ -94,17 +97,19 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 					period_id,
 					bonus_type,
 				});
+				closeSheet();
 			} else if (mode === "update") {
 				updateFunction.mutate({
 					...parsedValues.data,
 					id: selectedData.id,
 					bonus_type,
 				});
+				
+				setSelectedData(null);
 			}
 		} else {
 			// TODO: Error element with toast
 		}
-		closeSheet();
 	}
 
 	const handleSubmit = () => {

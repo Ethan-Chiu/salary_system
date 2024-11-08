@@ -177,6 +177,7 @@ export function BonusSeniorityBatchCreateForm<
 										<Input
 											className="flex-grow"
 											type="number"
+											step="0.01"
 											{...register(
 												`bonus_seniority.${index}.multiplier` as const
 											)}

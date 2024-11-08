@@ -190,6 +190,7 @@ export function BonusDepartmentBatchCreateForm<
 										<Input
 											className="flex-grow"
 											type="number"
+											step={0.01}
 											{...register(
 												`bonus_department.${index}.multiplier` as const
 											)}
