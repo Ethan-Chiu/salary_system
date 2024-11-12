@@ -1,11 +1,9 @@
-import { container, injectable } from "tsyringe";
+import { injectable } from "tsyringe";
 import { type z } from "zod";
-import { BaseResponseError } from "~/server/api/error/BaseResponseError";
 import {
 	updateEmployeePaymentService,
 	type updateEmployeePaymentAPI,
 } from "~/server/api/types/employee_payment_type";
-import { EmployeeDataService } from "~/server/service/employee_data_service";
 import {
 	convertDatePropertiesToISOString,
 	deleteProperties,
@@ -19,9 +17,13 @@ import {
 	type EmployeePayment,
 } from "../entity/SALARY/employee_payment";
 import { type CreationAttributes } from "sequelize";
+import { type EmployeeData } from "../entity/SALARY/employee_data";
+import { EmployeeDataService } from "~/server/service/employee_data_service";
 
 @injectable()
 export class EmployeePaymentMapper {
+	constructor(private readonly employeeDataServic: EmployeeDataService) {}
+
 	async encodeEmployeePayment(
 		employee_payment: EmployeePaymentDecType
 	): Promise<CreationAttributes<EmployeePayment>> {
@@ -30,9 +32,9 @@ export class EmployeePaymentMapper {
 		return encoded;
 	}
 
-	async decodeEmployeePayment (
+	async decodeEmployeePayment(
 		employee_payment: EmployeePaymentCreateEncType
-	): Promise<EmployeePaymentDecType > {
+	): Promise<EmployeePaymentDecType> {
 		const decoded = decEmployeePayment.parse(employee_payment);
 
 		return deleteProperties(decoded, [
@@ -48,6 +50,64 @@ export class EmployeePaymentMapper {
 			"l_r_enc",
 			"occupational_injury_enc",
 		]);
+	}
+  
+  async decodeEmployeePaymentList(
+    employee_payment: EmployeePaymentCreateEncType[]
+  ): Promise<EmployeePaymentDecType[]> {
+    const decoded = await Promise.all(
+      employee_payment.map(async (e) => this.decodeEmployeePayment(e))
+    );
+    return decoded;
+  }
+
+	async includeEmployee<
+		Data extends EmployeePaymentDecType | EmployeePaymentDecType[],
+		K extends Partial<keyof EmployeeData>
+	>(
+		data: Data,
+		keys: K[]
+	): Promise<(EmployeePaymentDecType & Pick<EmployeeData, K>)[]> {
+		const employeeDataRecord: Record<string, EmployeeData> = {};
+
+		const dataList: EmployeePaymentDecType[] = Array.isArray(data)
+			? data
+			: [data];
+
+		const uniqueEmpNos = new Set<string>();
+		dataList.forEach((item) => {
+			uniqueEmpNos.add(item.emp_no);
+		});
+		const uniqueEmpNoList = Array.from(uniqueEmpNos);
+
+		await Promise.all(
+			uniqueEmpNoList.map(async (empNo) => {
+				const emp =
+					await this.employeeDataServic.getEmployeeDataByEmpNo(empNo);
+				if (!emp) {
+					throw new Error(`Employee ${empNo} not found`);
+				}
+				employeeDataRecord[empNo] = emp;
+			})
+		);
+
+		const resultList: (EmployeePaymentDecType & Pick<EmployeeData, K>)[] =
+			dataList.map((d) => {
+				const empNo = d.emp_no;
+				const emp = employeeDataRecord[empNo];
+				const result = { ...d } as EmployeePaymentDecType &
+					Pick<EmployeeData, K>;
+				if (emp) {
+					keys.forEach((key) => {
+						result[key] = emp[key] as any;
+					});
+				} else {
+					throw new Error(`Employee ${empNo} not found`);
+				}
+				return result;
+			});
+
+		return resultList;
 	}
 
 	async getEmployeePaymentNullable(

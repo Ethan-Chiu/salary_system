@@ -20,13 +20,12 @@ import { Separator } from "~/components/ui/separator";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import periodContext from "~/components/context/period_context";
 import { useTranslation } from "react-i18next";
-import { BonusTableEnum, BonusTableEnumValues } from "../bonus_tables";
+import { type BonusTableEnum, BonusTableEnumValues } from "../bonus_tables";
 import { BonusDepartmentTable } from "../tables/bonus_department_table";
 import { BonusPositionTable } from "../tables/bonus_position_table";
-import { BonusPositionTypeTable } from "../tables/bonus_position_type_table";
 import { BonusSeniorityTable } from "../tables/bonus_seniority_table";
 import { BonusWorkTypeTable } from "../tables/bonus_work_type_table";
-import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
+import { type BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 import { BonusAllTable } from "../tables/bonus_all_table";
 
 export type TableComponentProps = {

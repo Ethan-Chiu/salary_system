@@ -220,53 +220,32 @@ export class EmployeePaymentService {
 			],
 			raw: true,
 		});
+
+		const decodedEmployeePayments: EmployeePaymentDecType[] =
+			await this.employeePaymentMapper.decodeEmployeePaymentList(
+				allEmployeePayment
+			);
+
+		const employeePaymentList =
+			await this.employeePaymentMapper.includeEmployee(
+				decodedEmployeePayments,
+				["department", "emp_name", "position", "position_type"]
+			);
+
 		// 将记录按工号分组
 		const groupedEmployeePaymenttRecords: Record<
 			string,
 			EmployeePaymentDecType[]
 		> = {};
 
-		await Promise.all(
-			allEmployeePayment.map(async (record) => {
-				const r =
-					await this.employeePaymentMapper.decodeEmployeePayment(
-						record
-					);
-				if (!groupedEmployeePaymenttRecords[r.emp_no]) {
-					groupedEmployeePaymenttRecords[r.emp_no] = [];
-				}
-				groupedEmployeePaymenttRecords[r.emp_no]!.push(r);
-			})
-		);
+		employeePaymentList.forEach((r) => {
+			if (!groupedEmployeePaymenttRecords[r.emp_no]) {
+				groupedEmployeePaymenttRecords[r.emp_no] = [];
+			}
+			groupedEmployeePaymenttRecords[r.emp_no]!.push(r);
+		});
 
-		// 将分组后的记录转换为数组格式，并映射为前端格式
-		const groupedRecordsArray = Object.values(
-			groupedEmployeePaymenttRecords
-		);
-		const employeePaymentList = await Promise.all(
-			groupedRecordsArray.map(async (emp) => {
-				const employee =
-					await this.employeeDataService.getEmployeeDataByEmpNo(
-						emp[0]!.emp_no
-					);
-				if (employee == null) {
-					throw new BaseResponseError("Employee does not exist");
-				}
-				return Promise.all(
-					emp.map((e) => {
-						return {
-							...e,
-							department: employee.department,
-							emp_name: employee.emp_name,
-							position: employee.position,
-							position_type: employee.position_type,
-						};
-					})
-				);
-			})
-		);
-
-		return employeePaymentList;
+		return Object.values(groupedEmployeePaymenttRecords);
 	}
 
 	async updateEmployeePayment(
