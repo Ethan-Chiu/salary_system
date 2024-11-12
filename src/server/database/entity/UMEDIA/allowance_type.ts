@@ -8,7 +8,7 @@ const dbAllowanceType = z.object({
 	OTHER_ADD: z.number(),
 	RULE: z.number(),
 	FIELD_ORDER: z.number().nullable(),
-	HIDDE: z.number(),
+	HIDDLE: z.number(),
 	MEMO: z.string().nullable(),
 	UPDATE_BY: z.string().nullable(),
 	UPDATE_DATE: z.date(),
@@ -70,7 +70,7 @@ export class AllowanceType {
 			data.OTHER_ADD,
 			data.RULE,
 			data.FIELD_ORDER,
-			data.HIDDE,
+			data.HIDDLE,
 			data.MEMO,
 			data.UPDATE_BY,
 			data.UPDATE_DATE

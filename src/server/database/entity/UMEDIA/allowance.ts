@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 const dbAllowance = z.object({
-	ID: z.number(),
+	// ID: z.number(),
 	PERIOD_ID: z.number(),
 	EMP_NO: z.string(),
 	EMP_NAME: z.string(),
 	ALLOWANCE_ID: z.number(),
-	AMOUNT: z.number(),
+	AMOUNT: z.string().pipe(z.coerce.number()),
 	REMARK: z.string().nullable(),
 	CREATE_BY: z.string(),
 	CREATE_DATE: z.date(),
@@ -16,7 +16,7 @@ const dbAllowance = z.object({
 });
 
 export class Allowance {
-	id: number;
+	// id: number;
 	period_id: number;
 	emp_no: string;
 	emp_name: string;
@@ -30,7 +30,7 @@ export class Allowance {
 	pay_delay: number;
 
 	constructor(
-		id: number,
+		// id: number,
 		period_id: number,
 		emp_no: string,
 		emp_name: string,
@@ -43,7 +43,7 @@ export class Allowance {
 		update_date: Date | null,
 		pay_delay: number
 	) {
-		this.id = id;
+		// this.id = id;
 		this.period_id = period_id;
 		this.emp_no = emp_no;
 		this.emp_name = emp_name;
@@ -67,7 +67,7 @@ export class Allowance {
 		const data = result.data;
 
 		return new Allowance(
-			data.ID,
+			// data.ID,
 			data.PERIOD_ID,
 			data.EMP_NO,
 			data.EMP_NAME,
