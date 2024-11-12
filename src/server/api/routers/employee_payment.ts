@@ -31,7 +31,6 @@ export const employeePaymentRouter = createTRPCRouter({
 		const employeePaymentService = container.resolve(
 			EmployeePaymentService
 		);
-		const employeePaymentMapper = container.resolve(EmployeePaymentMapper);
 		const employeePayment =
 			await employeePaymentService.getAllEmployeePayment();
 		if (employeePayment == null) {

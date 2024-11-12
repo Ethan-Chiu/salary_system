@@ -66,7 +66,7 @@ export function EmployeeBonusTable({ period_id, bonus_type, viewOnly }: Employee
     const ctx = api.useUtils();
     const initFunction = api.bonus.initCandidateEmployeeBonus.useMutation({
         onSuccess: () => {
-            ctx.bonus.getEmployeeBonus.invalidate();
+            void ctx.bonus.getEmployeeBonus.invalidate();
         },
     });
     const { isLoading, isError, data, error } =

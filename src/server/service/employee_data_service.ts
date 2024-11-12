@@ -2,9 +2,9 @@ import { injectable } from "tsyringe";
 import { EmployeeData } from "../database/entity/SALARY/employee_data";
 import { type z } from "zod";
 import {
-	createEmployeeDataService,
-	updateEmployeeDataByEmpNoService,
-	updateEmployeeDataService,
+	type createEmployeeDataService,
+	type updateEmployeeDataByEmpNoService,
+	type updateEmployeeDataService,
 } from "../api/types/employee_data_type";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { select_value } from "./helper_function";
@@ -112,7 +112,7 @@ export class EmployeeDataService {
 		// accumulated_bonus: accumulated_bonus,
 	}: // received_elderly_benefits: received_elderly_benefits,
 		z.infer<typeof updateEmployeeDataService>): Promise<void> {
-		const employeeData = await this.getEmployeeDataById(id!);
+		const employeeData = await this.getEmployeeDataById(id);
 		if (employeeData == null) {
 			throw new BaseResponseError("Employee account does not exist");
 		}
