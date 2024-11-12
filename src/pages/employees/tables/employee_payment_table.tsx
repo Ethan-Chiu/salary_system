@@ -5,6 +5,7 @@ import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
+import { formatDate } from "~/lib/utils/format_date";
 
 const columns = (t: I18nType) =>
 	[
@@ -28,6 +29,40 @@ const columns = (t: I18nType) =>
 		"start_date",
 		"end_date",
 	].map((key) => {
+		if (key === "start_date" || key === "end_date") {
+			return {
+				accessorKey: key,
+				header: ({ column }: any) => {
+					return (
+						<div className="flex justify-center">
+							<div className="text-center font-medium">
+								<Button
+									variant="ghost"
+									onClick={() =>
+										column.toggleSorting(
+											column.getIsSorted() === "asc"
+										)
+									}
+								>
+									{t(`table.${key}`)}
+									<ArrowUpDown className="ml-2 h-4 w-4" />
+								</Button>
+							</div>
+						</div>
+					);
+				},
+				cell: ({ row }: any) => {
+					const value = row.getValue(key) as Date;
+					return (
+						<div className="flex justify-center">
+							<div className="text-center font-medium">
+								{formatDate("day", value)}
+							</div>
+						</div>
+					);
+				},
+			};
+		}
 		return {
 			accessorKey: key,
 			header: ({ column }: any) => {
@@ -51,14 +86,12 @@ const columns = (t: I18nType) =>
 				);
 			},
 		};
+
 	});
 
 export function EmployeePaymentTable({ period_id }: any) {
 	const { isLoading, isFetched, isError, data, error } =
-		api.employeePayment.getCurrentEmployeePayment.useQuery(
-			{ period_id },
-			{}
-		);
+		api.employeePayment.getCurrentEmployeePayment.useQuery({ period_id });
 
 	const { t } = useTranslation(["common"]);
 

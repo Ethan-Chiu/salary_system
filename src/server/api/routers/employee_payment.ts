@@ -9,7 +9,6 @@ import {
 	updateEmployeePaymentAPI,
 } from "../types/employee_payment_type";
 import { EmployeePaymentMapper } from "~/server/database/mapper/employee_payment_mapper";
-import { get_date_string } from "~/server/service/helper_function";
 import { type EmployeePaymentDecType } from "~/server/database/entity/SALARY/employee_payment";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 
