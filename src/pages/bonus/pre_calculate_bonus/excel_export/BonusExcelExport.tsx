@@ -73,7 +73,7 @@ export function BonusExcelExport() {
 				multiplier: d.multiplier,
 				fixed_amount: d.fixed_amount,
 				budget_effective_salary: d.budget_effective_salary,
-				budget_amount: d.budget_amount,
+				bud_amount: d.bud_amount,
 				supervisor_performance_level: d.supervisor_performance_level,
 				supervisor_effective_salary: d.supervisor_effective_salary,
 				supervisor_amount: d.superviser_amount,

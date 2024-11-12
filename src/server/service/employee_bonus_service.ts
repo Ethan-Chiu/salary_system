@@ -478,7 +478,7 @@ export class EmployeeBonusService {
 		});
 
 		await Promise.all(promises);
-
+		
 		const total_budget_amount = budget_amount_list
 			.map((e) => e.budget_amount)
 			.reduce((a, b) => a + b, 0);

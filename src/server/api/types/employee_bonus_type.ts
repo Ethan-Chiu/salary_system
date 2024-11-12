@@ -20,7 +20,7 @@ export const employeeBonus = z.object({
 });
 
 export const employeeBonusFE = z.object({
-	id: z.coerce.number(),
+	// id: z.coerce.number(),
 	period_id: z.coerce.number(),
 	bonus_type: BonusTypeEnum,
 	department: z.coerce.string(),

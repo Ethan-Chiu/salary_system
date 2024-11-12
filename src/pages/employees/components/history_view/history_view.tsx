@@ -23,6 +23,7 @@ import {
 	type PopoverSelectorDataType,
 } from "~/components/popover_selector";
 import periodContext from "~/components/context/period_context";
+import { formatDate } from "~/lib/utils/format_date";
 
 export interface EmployeeHistoryViewCommonEmpInfo {
 	emp_name: string;
@@ -120,7 +121,7 @@ export function HistoryView<TData>({
 									>
 										<div className="m-1 flex flex-wrap items-center justify-center">
 											<div className="flex-1 whitespace-nowrap text-center">
-												{e.start_date.toString() ??
+												{formatDate("day", e.start_date) ??
 													t("others.now")}
 											</div>
 											<ArrowRightCircle
@@ -128,8 +129,7 @@ export function HistoryView<TData>({
 												className="mx-2 flex-shrink-0"
 											/>
 											<div className="flex-1 whitespace-nowrap text-center">
-												{e.end_date?.toString() ??
-													t("others.now")}
+												{ e.end_date.toString()}
 											</div>
 										</div>
 										<div className="m-1 flex text-sm">

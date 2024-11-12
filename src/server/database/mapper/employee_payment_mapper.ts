@@ -56,6 +56,7 @@ export class EmployeePaymentMapper {
 		const employeePayment: z.infer<typeof updateEmployeePaymentService> =
 			updateEmployeePaymentService.parse(
 				convertDatePropertiesToISOString({
+					...employee_payment,
 					base_salary_enc:
 						employee_payment.base_salary != undefined
 							? CryptoHelper.encrypt(
@@ -122,7 +123,7 @@ export class EmployeePaymentMapper {
 									employee_payment.occupational_injury.toString()
 							  )
 							: undefined,
-					...employee_payment,
+					
 				})
 			);
 

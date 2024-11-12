@@ -17,7 +17,7 @@ export type RowItem = {
     special_multiplier: number,
     multiplier: number,
     fixed_amount: number,
-    budget_amount: number,
+    bud_amount: number,
     superviser_amount: number,
     final_amount: number,
 };
@@ -36,7 +36,7 @@ const columns = (t: I18nType) =>
         "special_multiplier",
         "multiplier",
         "fixed_amount",
-        "budget_amount",
+        "bud_amount",
     ].map((key) => {
         return {
             accessorKey: key,
