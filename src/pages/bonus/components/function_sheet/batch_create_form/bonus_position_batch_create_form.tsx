@@ -191,6 +191,7 @@ export function BonusPositionBatchCreateForm<
 										<Input
 											className="flex-grow"
 											type="number"
+											step={0.01}
 											{...register(
 												`bonus_position.${index}.position_multiplier` as const
 											)}
@@ -223,6 +224,7 @@ export function BonusPositionBatchCreateForm<
 										<Input
 											className="flex-grow"
 											type="number"
+											step={0.01}
 											{...register(
 												`bonus_position.${index}.position_type_multiplier` as const
 											)}

@@ -3,16 +3,15 @@ import { z } from "zod";
 const dbExpenseClass = z.object({
 	ID: z.number(),
 	NAME: z.string(),
-	CLASS_TYPE: z.number(),
 	CLASS: z.number(),
 	OTHER_TAX: z.number(),
 	OTHER_LESS: z.number(),
 	RULE: z.number(),
 	FIELD_ORDER: z.number().nullable(),
-	HIDDE: z.number(),
-	MEMO: z.string(),
+	HIDDLE: z.number(),
+	MEMO: z.string().nullable(),
 	UPDATE_BY: z.string(),
-	UPDATE_DATE: z.date(),
+	UPDATE_DATE: z.date().nullable(),
 });
 
 export class ExpenseClass {
@@ -25,9 +24,9 @@ export class ExpenseClass {
 	rule: number;
 	field_order: number | null;
 	hiddle: number;
-	memo: string;
+	memo: string | null;
 	update_by: string;
-	update_date: Date;
+	update_date: Date | null;
 
 	constructor(
 		id: number,
@@ -38,9 +37,9 @@ export class ExpenseClass {
 		rule: number,
 		field_order: number | null,
 		hiddle: number,
-		memo: string,
+		memo: string | null,
 		update_by: string,
-		update_date: Date
+		update_date: Date | null
 	) {
 		this.id = id;
 		this.name = name;
@@ -72,7 +71,7 @@ export class ExpenseClass {
 			data.OTHER_LESS,
 			data.RULE,
 			data.FIELD_ORDER,
-			data.HIDDE,
+			data.HIDDLE,
 			data.MEMO,
 			data.UPDATE_BY,
 			data.UPDATE_DATE

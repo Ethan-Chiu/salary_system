@@ -19,6 +19,7 @@ import {
 	type updateEmployeeBonusService,
 } from "../api/types/employee_bonus_type";
 import { BonusAllService } from "./bonus_all_service";
+import { LongServiceEnum } from "../api/types/long_service_enum";
 
 @injectable()
 export class EmployeeBonusService {
@@ -195,10 +196,7 @@ export class EmployeeBonusService {
 				return;
 			}
 			const special_multiplier =
-				(await bonus_all_service.getMultiplier(
-					period_id,
-					bonus_type
-				)) *
+				(await bonus_all_service.getMultiplier(period_id, bonus_type)) *
 				(await bonus_work_type_service.getMultiplier(
 					period_id,
 					bonus_type,
@@ -218,7 +216,7 @@ export class EmployeeBonusService {
 							new Date(
 								employee_data.registration_date
 							).getTime()) /
-						(1000 * 60 * 60 * 24 * 365)
+							(1000 * 60 * 60 * 24 * 365)
 					)
 				)) *
 				(await bonus_department_service.getMultiplier(
@@ -445,10 +443,8 @@ export class EmployeeBonusService {
 				return;
 			}
 
-			const employee_payment_fe =
-				await employee_payment_mapper.decodeEmployeePayment(
-					employee_payment
-				);
+			const employee_payment_fe = employee_payment;
+
 			const employee_bonus_fe =
 				await employee_bonus_mapper.getEmployeeBonusFE(employee_bonus);
 
@@ -459,22 +455,22 @@ export class EmployeeBonusService {
 					employee_payment_fe.occupational_allowance +
 					employee_payment_fe.subsidy_allowance +
 					employee_payment_fe.long_service_allowance_type ==
-					LongServiceeEnum.Enum.月領
+				LongServiceEnum.enum.month_allowance
 					? employee_payment_fe.long_service_allowance
 					: 0) *
-				employee_bonus_fe.special_multiplier *
-				employee_bonus_fe.multiplier +
+					employee_bonus_fe.special_multiplier *
+					employee_bonus_fe.multiplier +
 				employee_bonus_fe.fixed_amount;
 
 			budget_amount_list.push({
 				emp_no: emp_no,
 				budget_effective_salary: Round(
 					budget_amount /
-					(employee_payment_fe.base_salary +
-						employee_payment_fe.food_allowance +
-						employee_payment_fe.supervisor_allowance +
-						employee_payment_fe.occupational_allowance +
-						employee_payment_fe.subsidy_allowance),
+						(employee_payment_fe.base_salary +
+							employee_payment_fe.food_allowance +
+							employee_payment_fe.supervisor_allowance +
+							employee_payment_fe.occupational_allowance +
+							employee_payment_fe.subsidy_allowance),
 					3
 				),
 				budget_amount: budget_amount,

@@ -1066,7 +1066,7 @@ export class CalculateService {
 		)?.id!;
 		const h_i_subsidy_id = (await ehrService.getExpenseClass()).find(
 			(ec) => ec.name === "健保補助"
-		);
+		)?.id!;
 		const expenseList = (
 			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
 		).filter((e) => e.kind === 1);

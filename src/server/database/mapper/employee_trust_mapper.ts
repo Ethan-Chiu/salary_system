@@ -130,6 +130,7 @@ export class EmployeeTrustMapper {
 
 			let employeeTrustFE: z.infer<typeof EmployeeTrustFE> =
 				convertDatePropertiesToISOString({
+					...employee_trust,
 					id: idx,
 					emp_no: employee.emp_no,
 					emp_name: employee.emp_name,
@@ -148,7 +149,6 @@ export class EmployeeTrustMapper {
 						)
 					),
 					org_special_trust_incent: org_special_trust_incent,
-					...employee_trust,
 					start_date: new Date(start_date!),
 					end_date: start_dates[idx + 1]
 						? new Date (new Date(start_dates[idx + 1]!).setDate(

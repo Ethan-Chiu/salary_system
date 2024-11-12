@@ -88,7 +88,7 @@ export class EmployeePaymentService {
 
 	async getCurrentEmployeePayment(
 		period_id: number
-	): Promise<EmployeePaymentDecType[]> {
+	): Promise<EmployeePaymentFEType[]> {
 		const period = await this.ehrService.getPeriodById(period_id);
 		const current_date_string = period.end_date;
 		const employeePayment = await EmployeePayment.findAll({
@@ -107,15 +107,32 @@ export class EmployeePaymentService {
 			order: [["emp_no", "ASC"]],
 			raw: true,
 		});
-
+		
 		const employeePaymentList = await Promise.all(
 			employeePayment.map(
 				async (e) =>
 					await this.employeePaymentMapper.decodeEmployeePayment(e)
 			)
 		);
-
-		return employeePaymentList;
+		const employeePaymentFE = await Promise.all(
+			employeePaymentList.map(async (e) => {
+				const employee =
+					await this.employeeDataService.getEmployeeDataByEmpNo(
+						e.emp_no
+					);
+				if (employee == null) {
+					throw new BaseResponseError("Employee does not exist");
+				}
+				return {
+					...e,
+					department: employee.department,
+					emp_name: employee.emp_name,
+					position: employee.position,
+					position_type: employee.position_type,
+				};
+			})
+		);
+		return employeePaymentFE;
 	}
 
 	async getCurrentEmployeePaymentById(

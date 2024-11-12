@@ -5,6 +5,7 @@ import { z } from "zod";
 import { EmployeePaymentService } from "~/server/service/employee_payment_service";
 import {
 	employeePaymentCreateAPI,
+	EmployeePaymentFEType,
 	updateEmployeePaymentAPI,
 } from "../types/employee_payment_type";
 import { EmployeePaymentMapper } from "~/server/database/mapper/employee_payment_mapper";
@@ -18,29 +19,11 @@ export const employeePaymentRouter = createTRPCRouter({
 			const employeePaymentService = container.resolve(
 				EmployeePaymentService
 			);
-			const employeePayment: EmployeePaymentDecType[] =
+			const employeePaymentFE: EmployeePaymentFEType[] =
 				await employeePaymentService.getCurrentEmployeePayment(
 					input.period_id
 				);
-			const employeeDataService = container.resolve(EmployeeDataService);
-			const employeePaymentFE = await Promise.all(
-				employeePayment.map(async (e) => {
-					const employee =
-						await employeeDataService.getEmployeeDataByEmpNo(
-							e.emp_no
-						);
-					if (employee == null) {
-						throw new BaseResponseError("Employee does not exist");
-					}
-					return {
-						...e,
-						department: employee.department,
-						emp_name: employee.emp_name,
-						position: employee.position,
-						position_type: employee.position_type,
-					};
-				})
-			);
+			
 			return employeePaymentFE;
 		}),
 
