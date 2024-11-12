@@ -129,7 +129,7 @@ export function HistoryView<TData>({
 												className="mx-2 flex-shrink-0"
 											/>
 											<div className="flex-1 whitespace-nowrap text-center">
-												{ e.end_date.toString()}
+												{ formatDate("day", e.end_date) ?? t("others.now") }
 											</div>
 										</div>
 										<div className="m-1 flex text-sm">
