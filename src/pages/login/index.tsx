@@ -59,6 +59,7 @@ export default function Login() {
 				callbackUrl: "/",
 				redirect: false,
 			});
+
 			if (!res?.ok) {
 				console.log(`error ${res?.error}`);
 				toast({
