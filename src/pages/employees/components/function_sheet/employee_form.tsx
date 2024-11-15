@@ -34,11 +34,14 @@ import { Input } from "~/components/ui/input";
 import { Checkbox } from "~/components/ui/checkbox";
 import periodContext from "~/components/context/period_context";
 import { get_date_string } from "~/server/service/helper_function";
+import { isDate } from "date-fns";
+import { formatDate } from "~/lib/utils/format_date";
 
 interface EmployeeFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
 	fieldConfig?: FieldConfig<z.infer<SchemaType>>;
 	mode: FunctionMode;
+	columns: any;
 	closeSheet: () => void;
 }
 
@@ -54,6 +57,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 	formSchema,
 	fieldConfig,
 	mode,
+	columns,
 	closeSheet,
 }: EmployeeFormProps<SchemaType>) {
 	const { t } = useTranslation(["common"]);
@@ -156,6 +160,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 			<CompViewAllDatas
 				dataNoID={noIDData}
 				mode={mode}
+				columns={columns}
 				onUpdate={(emp_no: string) => {
 					const selectedEmp = data.findLast(
 						(d) => d.emp_no === emp_no
@@ -224,7 +229,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 					</div>
 				</div>
 			</AutoForm>
-			{/* Submit change dialog */}
+
 			<Dialog open={openDialog} onOpenChange={setOpenDialog}>
 				<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
 					<DialogHeader>
@@ -248,12 +253,14 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 const CompViewAllDatas = ({
 	dataNoID,
 	mode,
+	columns,
 	onUpdate,
 	onDelete,
 	onAutoCalculate,
 }: {
 	dataNoID: any[];
 	mode: FunctionMode;
+	columns?: any;
 	onUpdate: (emp_no: string) => void;
 	onDelete: (index: number) => void;
 	onAutoCalculate: (selectedEmpNoList: string[], date: Date) => void;
@@ -349,7 +356,7 @@ const CompViewAllDatas = ({
 										/>
 									)}
 								</TableHead>
-								{Object.keys(filteredDataList[0]).map(
+								{(columns ?? Object.keys(filteredDataList[0])).map(
 									(key: string) => {
 										return (
 											<TableHead
@@ -424,13 +431,13 @@ const CompViewAllDatas = ({
 												/>
 											)}
 										</TableCell>
-										{Object.keys(data).map((key) => {
+										{(columns ?? Object.keys(filteredDataList[0])).map((key: string) => {
 											return (
 												<TableCell
 													key={key}
 													className="whitespace-nowrap text-center font-medium"
 												>
-													{data[key]}
+													{isDate(data[key]) ? formatDate("day", data[key]) : data[key]}
 												</TableCell>
 											);
 										})}

@@ -507,22 +507,4 @@ export class EmployeePaymentService {
 
 		return updatedEmployeePayment;
 	}
-	// async getSalaryAllowanceByEmpNoList(
-	// 	period_id: number,
-	// 	emp_no_list: string[]
-	// ) {
-	// 	const Promisises = emp_no_list.map(
-	// 		async (emp_no) =>
-	// 			await this.getCurrentEmployeePaymentByEmpNo(emp_no, period_id)
-	// 	);
-	// 	const employee_payment_list = await Promise.all(Promisises);
-	// 	const salary_allowance_list = employee_payment_list.map(
-	// 		(emp_paymnet) =>{
-	// 			return {
-	// 				emp_no: emp_paymnet!.emp_no,
-					
-	// 			}
-	// 		}
-	// 	)
-	// }
 }

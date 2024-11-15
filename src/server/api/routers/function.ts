@@ -12,6 +12,7 @@ import { EmployeePayment } from "~/server/database/entity/SALARY/employee_paymen
 import { th } from "date-fns/locale";
 import { BaseError } from "sequelize";
 import { BaseResponseError } from "../error/BaseResponseError";
+import { OtherMapper } from "~/server/database/mapper/other_mapper";
 
 export const functionRouter = createTRPCRouter({
 	getPeriod: publicProcedure.query(async () => {
@@ -109,7 +110,13 @@ export const functionRouter = createTRPCRouter({
 					input.period_id,
 					input.emp_no_list
 				);
-			return expense_with_type_list;
+			const otherMapper = container.resolve(OtherMapper);
+			const newOther_list = await otherMapper.getNewOther(
+				input.period_id,
+				expense_with_type_list,
+				input.emp_no_list
+			)
+			return newOther_list;
 		}),
 	getAllowanceFEByEmpNoList: publicProcedure
 		.input(
@@ -121,9 +128,6 @@ export const functionRouter = createTRPCRouter({
 				EmployeePaymentService
 			);
 			const allowance_mapper = container.resolve(AllowanceMapper);
-			const employee_payment_mapper = container.resolve(
-				EmployeePaymentMapper
-			)
 			const allowance_with_type_list =
 				await ehrService.getAllowanceWithTypeByEmpNoList(
 					input.period_id,

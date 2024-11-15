@@ -9,7 +9,7 @@ export const employeeTrustSchema = z.object({
 	// org_trust_reserve: zc.number(),
 	emp_special_trust_incent: zc.number(),
 	// org_sp
-	ecial_trust_incent: zc.number(),
+	// org_special_trust_incent: zc.number(),
 	start_date: zodRequiredDate("start_date"),
 	end_date: zodOptionalDate(),
 });
