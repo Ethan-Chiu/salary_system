@@ -65,7 +65,7 @@ export class TransactionService {
 			throw new BaseResponseError("Employee Payment does not exist");
 		}
 
-		const employee_payment_fe = await employeePaymentMapper.decodeEmployeePayment(employee_payment)
+		const employee_payment_fe = employee_payment;//await employeePaymentMapper.decodeEmployeePayment(employee_payment)
 		const discounted_employee_payment_fe = await calculateService.discountedPayment(
 			employee_payment_fe,
 			payset

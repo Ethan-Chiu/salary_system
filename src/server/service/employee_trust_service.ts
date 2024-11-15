@@ -101,7 +101,7 @@ export class EmployeeTrustService {
 					(emp_trust) =>
 						emp_trust.start_date! <= current_date_string &&
 						(emp_trust.end_date == null ||
-							emp_trust.end_date >= current_date_string)
+							emp_trust.end_date! >= current_date_string)
 				)
 			)
 		);

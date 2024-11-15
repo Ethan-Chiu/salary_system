@@ -6,6 +6,12 @@ import { EHRService } from "~/server/service/ehr_service";
 import { ExcelService } from "~/server/service/excel_service";
 import { PayTypeEnum, PayTypeEnumType } from "../types/pay_type_enum";
 import { AllowanceMapper } from "~/server/database/mapper/allowance_mapper";
+import { EmployeePaymentService } from "~/server/service/employee_payment_service";
+import { EmployeePaymentMapper } from "~/server/database/mapper/employee_payment_mapper";
+import { EmployeePayment } from "~/server/database/entity/SALARY/employee_payment";
+import { th } from "date-fns/locale";
+import { BaseError } from "sequelize";
+import { BaseResponseError } from "../error/BaseResponseError";
 
 export const functionRouter = createTRPCRouter({
 	getPeriod: publicProcedure.query(async () => {
@@ -111,19 +117,44 @@ export const functionRouter = createTRPCRouter({
 		)
 		.query(async ({ input }) => {
 			const ehrService = container.resolve(EHRService);
+			const employeePaymentService = container.resolve(
+				EmployeePaymentService
+			);
 			const allowance_mapper = container.resolve(AllowanceMapper);
+			const employee_payment_mapper = container.resolve(
+				EmployeePaymentMapper
+			)
 			const allowance_with_type_list =
 				await ehrService.getAllowanceWithTypeByEmpNoList(
 					input.period_id,
 					input.emp_no_list
 				);
+			const Promisises = input.emp_no_list.map(
+				async (emp_no) => {
+					const employeePayment = await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
+						emp_no,
+						input.period_id
+					)
+					if (employeePayment === null) {
+						throw new BaseResponseError("EmployeePayment does not exist");
+					}
+					return employeePayment
+				}
+			);
+			const employee_payment_list = await Promise.all(Promisises);
 			const allowanceFE_list: any = [];
 			const promises = allowance_with_type_list.map(async (allowance) => {
-				allowanceFE_list.push(await allowance_mapper.getAllowanceFE(allowance));
+				allowanceFE_list.push(
+					await allowance_mapper.getAllowanceFE(allowance)
+				);
 			});
-
 			await Promise.all(promises);
-			return allowanceFE_list;
+			const newAllowanceFE_list = allowance_mapper.getNewAllowanceFE(
+				input.period_id,
+				allowanceFE_list,
+				employee_payment_list
+			)
+			return newAllowanceFE_list;
 		}),
 	getExcelA: publicProcedure
 		.input(z.object({ ids: z.array(z.number()) }))
@@ -139,11 +170,10 @@ export const functionRouter = createTRPCRouter({
 			return Sheets;
 		}),
 
-	getPromotion: publicProcedure
-		.query(async () => {
-			const ehrService = container.resolve(EHRService);
-			const promotion = await ehrService.getPromotion();
+	getPromotion: publicProcedure.query(async () => {
+		const ehrService = container.resolve(EHRService);
+		const promotion = await ehrService.getPromotion();
 
-			return promotion;
-		})
+		return promotion;
+	}),
 });
