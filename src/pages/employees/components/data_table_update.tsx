@@ -14,6 +14,7 @@ import CalendarView from "./calendar_view/calendar_view";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
+	columnNames?: Array<String>;
 	data: TData[];
 	historyDataFunction: HistoryQueryFunctionType<EmployeeHistoryViewCommonEmpInfo>;
 	calendarDataFunction: CalenderQueryFunctionType<EmployeeHistoryViewCommonEmpInfo>;
@@ -22,6 +23,7 @@ interface DataTableProps<TData> {
 
 export function DataTableUpdate<TData>({
 	columns,
+	columnNames,
 	data,
 	historyDataFunction,
 	calendarDataFunction,
@@ -38,7 +40,7 @@ export function DataTableUpdate<TData>({
 			}}
 		>
 			<div className="flex h-full w-full flex-col rounded-md border">
-				<DataTableToolbarUpdate filterColumnKey={filterColumnKey} />
+				<DataTableToolbarUpdate filterColumnKey={filterColumnKey} columns={columnNames} />
 				<Separator />
 				<TabsContent value={EmpTabsEnum.Enum.current} asChild>
 					<div className="flex h-0 w-full flex-grow flex-col">

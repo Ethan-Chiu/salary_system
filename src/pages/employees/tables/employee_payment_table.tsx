@@ -111,6 +111,7 @@ export function EmployeePaymentTable({ period_id }: any) {
 					// TODO: figure out its type
 					<DataTableUpdate
 						columns={columns(t)}
+						columnNames={columnNames}
 						data={data}
 						historyDataFunction={() =>
 							api.employeePayment.getAllEmployeePayment.useQuery()

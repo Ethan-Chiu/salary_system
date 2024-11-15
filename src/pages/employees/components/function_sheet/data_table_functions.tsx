@@ -39,6 +39,7 @@ import { employeeToolbarFunctionsContext } from "./employee_functions_context";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
+	columns: any;
 }
 
 export type FunctionMode =
@@ -50,6 +51,7 @@ export type FunctionMode =
 
 export function DataTableFunctions({
 	tableType,
+	columns,
 	className,
 }: DataTableFunctionsProps) {
 	const [open, setOpen] = useState<boolean>(false);
@@ -120,6 +122,7 @@ export function DataTableFunctions({
 								<EmployeeForm
 									formSchema={getSchema(tableType)!}
 									mode={mode}
+									columns={columns}
 									closeSheet={() => setOpen(false)}
 								/>
 								<ScrollBar orientation="horizontal" />
