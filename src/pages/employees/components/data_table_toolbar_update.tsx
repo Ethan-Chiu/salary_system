@@ -15,10 +15,12 @@ import { StatsPanel } from "~/components/data_table/toolbar/stats_panel";
 
 interface DataTableToolbarProps<TData> {
 	filterColumnKey?: keyof TData;
+	columns?: any;
 }
 
 export function DataTableToolbarUpdate<TData>({
 	filterColumnKey,
+	columns,
 }: DataTableToolbarProps<TData>) {
 	const { selectedTab, selectedTableType, selectedTable } =
 		useContext(dataTableContext);
@@ -70,6 +72,7 @@ export function DataTableToolbarUpdate<TData>({
 							{selectedTab === EmpTabsEnum.Enum.current && (
 								<DataTableFunctions
 									tableType={selectedTableType}
+									columns={columns}
 								/>
 							)}
 							{selectedTab === EmpTabsEnum.Enum.calendar && (

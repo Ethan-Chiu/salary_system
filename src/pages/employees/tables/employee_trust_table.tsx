@@ -6,20 +6,21 @@ import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 
-const columns = (t: I18nType) =>
-	[
-		"department",
-		"emp_no",
-		"emp_name",
-		"position",
-		"position_type",
-		"emp_trust_reserve",
-		"org_trust_reserve",
-		"emp_special_trust_incent",
-		"org_special_trust_incent",
-		"start_date",
-		"end_date",
-	].map((key) => {
+const columnNames = [
+	"department",
+	"emp_no",
+	"emp_name",
+	"position",
+	"position_type",
+	"emp_trust_reserve",
+	"org_trust_reserve",
+	"emp_special_trust_incent",
+	"org_special_trust_incent",
+	"start_date",
+	"end_date",
+];
+
+const columns = (t: I18nType) => columnNames.map((key) => {
 		return {
 			accessorKey: key,
 			header: ({ column }: any) => {
@@ -66,6 +67,7 @@ export function EmployeeTrustTable({ period_id }: any) {
 		return (
 			<DataTableUpdate
 				columns={columns(t)}
+				columnNames={columnNames}
 				data={data}
 				historyDataFunction={() =>
 					api.employeeTrust.getAllEmployeeTrust.useQuery()
