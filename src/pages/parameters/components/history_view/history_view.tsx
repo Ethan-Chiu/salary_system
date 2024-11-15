@@ -94,6 +94,7 @@ function CompHistoryView() {
 							>
 								<div className="m-1 flex flex-wrap items-center justify-center">
 									<div className="flex-1 whitespace-nowrap text-center">
+										{/* {e.start_date.toString() ?? t("others.now")} */}
 										{e.start_date.toString() ?? t("others.now")}
 									</div>
 									<ArrowRightCircle
@@ -101,7 +102,8 @@ function CompHistoryView() {
 										className="mx-2 flex-shrink-0"
 									/>
 									<div className="flex-1 whitespace-nowrap text-center">
-										{e.end_date?.toString() ?? t("others.now")}
+										{/* {e.end_date?.toString() ?? t("others.now")} */}
+										{e.end_date?.toString() ?? ""}
 									</div>
 								</div>
 								<div className="m-1 flex text-sm">

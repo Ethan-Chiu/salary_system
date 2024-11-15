@@ -59,14 +59,14 @@ export class AllowanceMapper {
 				return {
 					...employee_payment,
 					emp_no: employee_payment.emp_no,
-					name: employee_data!.emp_name,
+					emp_name: employee_data!.emp_name,
 					department: employee_data!.department,
 					position: employee_data!.position,
-					work_day: payset!.work_day,
+					work_day: payset ? (payset.work_day ?? 30) : 30,
 					shift_allowance: allowanceFE_list.findLast(
 						(allowanceFE) => allowanceFE.emp_no === employee_payment.emp_no && allowanceFE.allowance_type_name === "輪班津貼"
 					)?.amount ?? 0,
-					certificate_allowance: allowanceFE_list.findLast(
+					professional_cert_allowance: allowanceFE_list.findLast(
 						(allowanceFE) => allowanceFE.emp_no === employee_payment.emp_no && allowanceFE.allowance_type_name === "證照津貼"
 					)?.amount ?? 0,
 				};
