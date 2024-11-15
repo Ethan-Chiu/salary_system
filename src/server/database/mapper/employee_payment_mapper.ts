@@ -11,7 +11,6 @@ import {
 import { CryptoHelper } from "~/lib/utils/crypto";
 import {
 	type EmployeePaymentDecType,
-	type EmployeePaymentCreateEncType,
 	encEmployeePayment,
 	decEmployeePayment,
 	type EmployeePayment,
@@ -25,7 +24,7 @@ export class EmployeePaymentMapper {
 	constructor(private readonly employeeDataServic: EmployeeDataService) {}
 
 	async encodeEmployeePayment(
-		employee_payment: EmployeePaymentDecType
+		employee_payment: z.input<typeof encEmployeePayment> 
 	): Promise<CreationAttributes<EmployeePayment>> {
 		const encoded = encEmployeePayment.parse(employee_payment);
 
@@ -33,7 +32,7 @@ export class EmployeePaymentMapper {
 	}
 
 	async decodeEmployeePayment(
-		employee_payment: EmployeePaymentCreateEncType
+		employee_payment: z.input<typeof decEmployeePayment> 
 	): Promise<EmployeePaymentDecType> {
 		const decoded = decEmployeePayment.parse(employee_payment);
 
@@ -53,7 +52,7 @@ export class EmployeePaymentMapper {
 	}
   
   async decodeEmployeePaymentList(
-    employee_payment: EmployeePaymentCreateEncType[]
+    employee_payment: z.input<typeof decEmployeePayment>[]
   ): Promise<EmployeePaymentDecType[]> {
     const decoded = await Promise.all(
       employee_payment.map(async (e) => this.decodeEmployeePayment(e))
