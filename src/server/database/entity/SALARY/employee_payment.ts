@@ -11,8 +11,15 @@ import {
 	LongServiceEnum,
 	type LongServiceEnumType,
 } from "~/server/api/types/long_service_enum";
-import { encodeString, decodeString } from "~/server/api/types/z_utils";
-import { decDate, encDate } from "../../mapper/mapper_utils";
+import {
+	encodeString,
+	decodeStringToNumber as dSN,
+	stringToDate,
+	stringToDateNullable,
+	dateToString,
+	dateToStringNullable,
+} from "~/server/api/types/z_utils";
+import { dateF, dateStringF } from "../../mapper/mapper_utils";
 
 const dbEmployeePayment = z.object({
 	emp_no: z.string(),
@@ -23,68 +30,87 @@ const dbEmployeePayment = z.object({
 });
 
 const decFields = z.object({
-	base_salary: z.number().pipe(encodeString),
-	food_allowance: z.number().pipe(encodeString),
-	supervisor_allowance: z.number().pipe(encodeString),
-	occupational_allowance: z.number().pipe(encodeString),
-	subsidy_allowance: z.number().pipe(encodeString),
-	long_service_allowance: z.number().pipe(encodeString),
-	l_r_self: z.number().pipe(encodeString),
-	l_i: z.number().pipe(encodeString),
-	h_i: z.number().pipe(encodeString),
-	l_r: z.number().pipe(encodeString),
-	occupational_injury: z.number().pipe(encodeString),
+	id: z.number(),
+	base_salary: z.number(),
+	food_allowance: z.number(),
+	supervisor_allowance: z.number(),
+	occupational_allowance: z.number(),
+	subsidy_allowance: z.number(),
+	long_service_allowance: z.number(),
+	l_r_self: z.number(),
+	l_i: z.number(),
+	h_i: z.number(),
+	l_r: z.number(),
+	occupational_injury: z.number(),
 });
 
 const encFields = z.object({
-	base_salary_enc: decodeString.pipe(z.coerce.number()),
-	food_allowance_enc: decodeString.pipe(z.coerce.number()),
-	supervisor_allowance_enc: decodeString.pipe(z.coerce.number()),
-	occupational_allowance_enc: decodeString.pipe(z.coerce.number()),
-	subsidy_allowance_enc: decodeString.pipe(z.coerce.number()),
-	long_service_allowance_enc: decodeString.pipe(z.coerce.number()),
-	l_r_self_enc: decodeString.pipe(z.coerce.number()),
-	l_i_enc: decodeString.pipe(z.coerce.number()),
-	h_i_enc: decodeString.pipe(z.coerce.number()),
-	l_r_enc: decodeString.pipe(z.coerce.number()),
-	occupational_injury_enc: decodeString.pipe(z.coerce.number()),
+	base_salary_enc: z.string(),
+	food_allowance_enc: z.string(),
+	supervisor_allowance_enc: z.string(),
+	occupational_allowance_enc: z.string(),
+	subsidy_allowance_enc: z.string(),
+	long_service_allowance_enc: z.string(),
+	l_r_self_enc: z.string(),
+	l_i_enc: z.string(),
+	h_i_enc: z.string(),
+	l_r_enc: z.string(),
+	occupational_injury_enc: z.string(),
 });
 
-const encF = dbEmployeePayment.merge(encFields).merge(encDate);
-const decF = dbEmployeePayment.merge(decFields).merge(decDate);
-
-export type EmployeePaymentCreateEncType = z.input<typeof encF>;
+const encF = dbEmployeePayment.merge(encFields).merge(dateStringF);
+const decF = dbEmployeePayment.merge(decFields).merge(dateF);
 export type EmployeePaymentDecType = z.input<typeof decF>;
 
-export const decEmployeePayment = encF.transform((v) => ({
-	...v,
-	base_salary: v.base_salary_enc,
-	food_allowance: v.food_allowance_enc,
-	supervisor_allowance: v.supervisor_allowance_enc,
-	occupational_allowance: v.occupational_allowance_enc,
-	subsidy_allowance: v.subsidy_allowance_enc,
-	long_service_allowance: v.long_service_allowance_enc,
-	l_r_self: v.l_r_self_enc,
-	l_i: v.l_i_enc,
-	h_i: v.h_i_enc,
-	l_r: v.l_r_enc,
-	occupational_injury: v.occupational_injury_enc,
-}));
+export const decEmployeePayment = encF
+	.merge(z.object({ id: z.number() }))
+	.transform((v) => ({
+		...v,
+		id: v.id,
+		base_salary: dSN.parse(v.base_salary_enc),
+		food_allowance: dSN.parse(v.food_allowance_enc),
+		supervisor_allowance: dSN.parse(v.supervisor_allowance_enc),
+		occupational_allowance: dSN.parse(
+			v.occupational_allowance_enc
+		),
+		subsidy_allowance: dSN.parse(v.subsidy_allowance_enc),
+		long_service_allowance: dSN.parse(
+			v.long_service_allowance_enc
+		),
+		l_r_self: dSN.parse(v.l_r_self_enc),
+		l_i: dSN.parse(v.l_i_enc),
+		h_i: dSN.parse(v.h_i_enc),
+		l_r: dSN.parse(v.l_r_enc),
+		occupational_injury: dSN.parse(v.occupational_injury_enc),
+		start_date: stringToDate.parse(v.start_date),
+		end_date: stringToDateNullable.parse(v.end_date),
+	}))
+	.pipe(decF);
 
-export const encEmployeePayment = decF.transform((v) => ({
-	...v,
-	base_salary_enc: v.base_salary,
-	food_allowance_enc: v.food_allowance,
-	supervisor_allowance_enc: v.supervisor_allowance,
-	occupational_allowance_enc: v.occupational_allowance,
-	subsidy_allowance_enc: v.subsidy_allowance,
-	long_service_allowance_enc: v.long_service_allowance,
-	l_r_self_enc: v.l_r_self,
-	l_i_enc: v.l_i,
-	h_i_enc: v.h_i,
-	l_r_enc: v.l_r,
-	occupational_injury_enc: v.occupational_injury,
-}));
+export const encEmployeePayment = decF
+	.omit({ id: true })
+	.transform((v) => ({
+		...v,
+		base_salary_enc: encodeString.parse(v.base_salary),
+		food_allowance_enc: encodeString.parse(v.food_allowance),
+		supervisor_allowance_enc: encodeString.parse(v.supervisor_allowance),
+		occupational_allowance_enc: encodeString.parse(
+			v.occupational_allowance
+		),
+		subsidy_allowance_enc: encodeString.parse(v.subsidy_allowance),
+		long_service_allowance_enc: encodeString.parse(
+			v.long_service_allowance
+		),
+		l_r_self_enc: encodeString.parse(v.l_r_self),
+		l_i_enc: encodeString.parse(v.l_i),
+		h_i_enc: encodeString.parse(v.h_i),
+		l_r_enc: encodeString.parse(v.l_r),
+		occupational_injury_enc: encodeString.parse(v.occupational_injury),
+		start_date: dateToString.parse(v.start_date),
+		end_date: dateToStringNullable.parse(v.end_date),
+	}))
+	.pipe(encF);
+
 
 export class EmployeePayment extends Model<
 	InferAttributes<EmployeePayment>,

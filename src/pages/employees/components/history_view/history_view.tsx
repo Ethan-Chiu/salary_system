@@ -1,7 +1,4 @@
-import {
-	ArrowRightCircle,
-	GitCommitHorizontal,
-} from "lucide-react";
+import { ArrowRightCircle, GitCommitHorizontal } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { LoadingSpinner } from "~/components/loading";
 import {
@@ -15,7 +12,10 @@ import { DataTable } from "./history_data_table";
 import { is_date_available } from "~/server/service/helper_function";
 import { Badge } from "~/components/ui/badge";
 import { useTranslation } from "react-i18next";
-import { type HistoryQueryFunctionType } from "~/components/data_table/history_data_type";
+import {
+	type HistoryDataType,
+	type HistoryQueryFunctionType,
+} from "~/components/data_table/history_data_type";
 import { type ColumnDef } from "@tanstack/react-table";
 import { Separator } from "~/components/ui/separator";
 import {
@@ -30,33 +30,60 @@ export interface EmployeeHistoryViewCommonEmpInfo {
 	emp_no: string;
 }
 
-interface DataTableProps<TData> {
+type DataRow = EmployeeHistoryViewCommonEmpInfo & HistoryDataType;
+
+interface DataTableProps<TData extends DataRow> {
 	columns: ColumnDef<TData, any>[];
-	dataFunction: HistoryQueryFunctionType<EmployeeHistoryViewCommonEmpInfo>;
+	dataFunction: HistoryQueryFunctionType<TData>;
 }
 
-export function HistoryView<TData>({
+export function HistoryView({
 	columns,
 	dataFunction,
-}: DataTableProps<TData>) {
+}: DataTableProps<DataRow>) {
 	const { isLoading, isError, data, error } = dataFunction();
 
 	const { selectedPeriod } = useContext(periodContext);
 
-	const [selectedId, setSelectedId] = useState<number>(0);
 	const [selectedEmpNo, setSelectedEmpNo] = useState<string | null>(null);
-
+	const [selectedEmpDataList, setSelectedEmpDataList] = useState<DataRow[]>(
+		[]
+	);
+	const [selectedEmpData, setSelectedEmpData] = useState<DataRow | null>(
+		null
+	);
 
 	const { t } = useTranslation(["common"]);
 
 	// Select the first when data loaded
 	useEffect(() => {
-		console.log(data);
-		if (!isLoading && data?.[0]?.[0]) {
-			setSelectedId(data[0][0].id);
+		if (!isLoading && data?.[0] && data?.[0]?.[0]) {
+			setSelectedEmpData(data[0][0]);
 			setSelectedEmpNo(data[0][0].emp_no);
+			const newSelectedEmpDataList = data?.find(
+				(empDataList) => empDataList[0]?.emp_no === data[0]?.[0]?.emp_no
+			);
+			if (newSelectedEmpDataList) {
+				setSelectedEmpDataList(newSelectedEmpDataList);
+			}
 		}
 	}, [isLoading, data]);
+
+	useEffect(() => {
+		const newSelectedEmpDataList = data?.find(
+			(empDataList) => empDataList[0]?.emp_no === selectedEmpNo
+		);
+		if (
+			newSelectedEmpDataList &&
+			!newSelectedEmpDataList.find(
+				(empData) => empData.id === selectedEmpData?.id
+			) &&
+			newSelectedEmpDataList[0]
+		) {
+			setSelectedEmpData(newSelectedEmpDataList[0]);
+			setSelectedEmpDataList(newSelectedEmpDataList);
+		}
+	}, [selectedEmpNo, data, selectedEmpData]);
 
 	if (isLoading) {
 		return (
@@ -74,22 +101,17 @@ export function HistoryView<TData>({
 		return <div />;
 	}
 
-	const seen = new Set<string>();
-	const employees: PopoverSelectorDataType[] = [];
+	const employeeOpts: PopoverSelectorDataType[] = [];
 
-	data.forEach((employee: any) => {
-		seen.add(employee[0]!.emp_no);
-		employees.push({
-			key: employee[0]!.emp_no,
-			value: `${employee[0]!.emp_no} ${employee[0]!.emp_name}`,
-		})
-		// if (!seen.has(employee.emp_no)) {
-		// 	seen.add(employee.emp_no);
-		// 	employees.push({
-		// 		key: employee.emp_no,
-		// 		value: `${employee.emp_no} ${employee.emp_name}`,
-		// 	});
-		// }
+	data.forEach((empDataList) => {
+		const firstEmpData = empDataList[0];
+		if (!firstEmpData) {
+			return;
+		}
+		employeeOpts.push({
+			key: firstEmpData.emp_no,
+			value: `${firstEmpData.emp_no} ${firstEmpData.emp_name}`,
+		});
 	});
 
 	return (
@@ -97,66 +119,66 @@ export function HistoryView<TData>({
 			<ResizablePanel defaultSize={25} minSize={15}>
 				<div className="flex h-full flex-col">
 					<PopoverSelector
-						data={employees}
+						data={employeeOpts}
 						selectedKey={selectedEmpNo}
 						setSelectedKey={setSelectedEmpNo}
 					/>
 					<Separator />
 					<div className="h-0 flex-grow">
 						<ScrollArea className="h-full">
-							{((data.find((e: any) => (selectedEmpNo === null || e[0]!.emp_no === selectedEmpNo)) as any) ?? [])
-								.map((e: any) => (
-									<div
-										key={e.id}
-										className={cn(
-											" relative m-2 flex flex-col rounded-md border p-1 hover:bg-muted",
-											e.id === selectedId && "bg-muted",
-											is_date_available(
-												selectedPeriod,
-												e.start_date.toString(),
-												e.end_date?.toString() ?? ""
-											) && "mb-3 border-blue-500"
-										)}
-										onClick={() => setSelectedId(e.id)}
-									>
-										<div className="m-1 flex flex-wrap items-center justify-center">
-											<div className="flex-1 whitespace-nowrap text-center">
-												{formatDate("day", e.start_date) ??
-													t("others.now")}
-											</div>
-											<ArrowRightCircle
-												size={18}
-												className="mx-2 flex-shrink-0"
-											/>
-											<div className="flex-1 whitespace-nowrap text-center">
-												{/* { formatDate("day", e.end_date) ?? t("others.now") } */}
-												{ formatDate("day", e.end_date) ?? "" }
-											</div>
-										</div>
-										<div className="m-1 flex text-sm">
-											<GitCommitHorizontal
-												size={18}
-												className="mr-2 flex-shrink-0"
-											/>
-											<div className="line-clamp-1 break-all">
-												{t("table.update_by") +
-													" " +
-													e.update_by}
-											</div>
-										</div>
-										{is_date_available(
+							{selectedEmpDataList.map((e) => (
+								<div
+									key={e.id}
+									className={cn(
+										" relative m-2 flex flex-col rounded-md border p-1 hover:bg-muted",
+										e.id === selectedEmpData?.id &&
+											"bg-muted",
+										is_date_available(
 											selectedPeriod,
 											e.start_date.toString(),
 											e.end_date?.toString() ?? ""
-										) && (
-												<div className="absolute -bottom-3 right-2 z-10">
-													<Badge>
-														{t("table.current")}
-													</Badge>
-												</div>
-											)}
+										) && "mb-3 border-blue-500"
+									)}
+									onClick={() => setSelectedEmpData(e)}
+								>
+									<div className="m-1 flex flex-wrap items-center justify-center">
+										<div className="flex-1 whitespace-nowrap text-center">
+											{formatDate("day", e.start_date) ??
+												t("others.now")}
+										</div>
+										<ArrowRightCircle
+											size={18}
+											className="mx-2 flex-shrink-0"
+										/>
+										<div className="flex-1 whitespace-nowrap text-center">
+											{formatDate("day", e.end_date) ??
+												t("others.now")}
+										</div>
 									</div>
-								))}
+									{/* Update by */}
+									<div className="m-1 flex text-sm">
+										<GitCommitHorizontal
+											size={18}
+											className="mr-2 flex-shrink-0"
+										/>
+										<div className="line-clamp-1 break-all">
+											{t("table.update_by") +
+												" " +
+												e.update_by}
+										</div>
+									</div>
+									{/* Current badge */}
+									{is_date_available(
+										selectedPeriod,
+										e.start_date.toString(),
+										e.end_date?.toString() ?? ""
+									) && (
+										<div className="absolute -bottom-3 right-2 z-10">
+											<Badge>{t("table.current")}</Badge>
+										</div>
+									)}
+								</div>
+							))}
 							<div className="h-4" />
 						</ScrollArea>
 					</div>
@@ -164,13 +186,12 @@ export function HistoryView<TData>({
 			</ResizablePanel>
 			<ResizableHandle />
 			<ResizablePanel defaultSize={75}>
-				{((data.findLast((e: any) => e[0].emp_no === selectedEmpNo)! as any) ?? []).filter((e: any, idx: number) => idx === selectedId).length > 0 ? (
+				{selectedEmpData ? (
 					<>
 						<DataTable
 							columns={columns}
-							data={((data.findLast((e: any) => e[0].emp_no === selectedEmpNo) ?? []) as any).filter((e: any, idx: number) => idx === selectedId) as any[]}
+							data={selectedEmpData ? [selectedEmpData] : []}
 						/>
-
 					</>
 				) : (
 					<>
