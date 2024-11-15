@@ -6,7 +6,7 @@ import { EmployeePaymentService } from "~/server/service/employee_payment_servic
 import {
 	employeePaymentCreateAPI,
 	employeePaymentFE,
-	EmployeePaymentFEType,
+	type EmployeePaymentFEType,
 	updateEmployeePaymentAPI,
 } from "../types/employee_payment_type";
 import { EmployeePaymentMapper } from "~/server/database/mapper/employee_payment_mapper";
