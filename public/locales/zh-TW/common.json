@@ -77,6 +77,7 @@
     "dependents": "扶養人數",
     "branch_full_name": "分行全稱",
     "disabilty_level": "殘障等級",
+    "l_i_disability_reduction":"勞保殘障減免",
     "tax_rate_category": "稅率別",
     "bonus_calculation": "計算獎金",
     "securities_account": "證券帳號",
@@ -88,6 +89,7 @@
     "accumulated_bonus": "累計獎金",
     "l_r_self_ratio": "勞退自提比例",
     "h_i": "健保",
+    "h_i_subsidy": "健保補助",
     "l_i": "勞保",
     "occupational_allowance": "職務津貼",
     "food_allowance": "伙食津貼",
@@ -227,6 +229,7 @@
     "v_2_h_i": "二代健保",
     "has_trust": "持股信託_YN",
     "g_i_deduction_promotion": "團保費代扣_升等",
+    "g_i_deduction_family": "團保費代扣_眷屬",
     "special_leave_deduction": "特別事假扣款",
     "special_leave": "特別事假時數",
     "full_attendance_personal_leave": "有全勤事假",
@@ -256,7 +259,8 @@
     "liuting": "留停",
     "stats_panel": "統計面板",
     "column": "欄位",
-    "count": "數量"
+    "count": "數量",
+    "dorm_deduction": "宿舍代扣費"
   },
   "table_name": {
     "attendanceSetting": "請假加班",
