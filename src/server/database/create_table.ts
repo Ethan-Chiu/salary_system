@@ -28,6 +28,7 @@ import { initBonusAll } from "./entity/SALARY/bonus_all";
 // import { initEmployeeDataMut } from "./entity/SALARY/employee_data_mut";
 
 const sequelize = container.resolve(Database).connection;
+console.log("Init Database Tables")
 
 initAccessSetting(sequelize);
 initAttendanceSetting(sequelize);

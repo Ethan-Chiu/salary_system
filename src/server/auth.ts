@@ -14,6 +14,8 @@ import { UserService } from "./service/user_service";
 import { RolesEnum, RolesEnumType } from "./api/types/role_type";
 import { DefaultJWT } from "next-auth/jwt";
 import { z } from "zod";
+import { initUser } from "./database/entity/SALARY/user";
+import { Database } from "./database/client";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -118,30 +120,28 @@ export const authOptions: NextAuthOptions = {
 				// e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
 				// You can also use the `req` object to obtain additional parameters
 				// (i.e., the request IP address)
+
 				const input = {
 					emp_no: credentials?.username ?? "",
 					password: credentials?.password ?? "",
 				};
 
 				const userService = container.resolve(UserService);
+
+				// NOTE: Make sure User table is initialized, such that getUserByEmpNo works
+				const sequelize = container.resolve(Database).connection;
+				initUser(sequelize);
+
 				// TODO: move following to user service
 				const user = await userService.getUserByEmpNo(input.emp_no);
 
 				if (!user) {
 					throw new BaseResponseError("User does not exist");
-				} else {
-					const match = await bcrypt.compare(
-						input.password,
-						user.hash
-					);
-					if (!match) {
-						throw new BaseResponseError("Wrong password");
-					} else {
-						await userService.updateUser({
-							emp_no: input.emp_no,
-							password: input.password,
-						});
-					}
+				}
+
+				const match = await bcrypt.compare(input.password, user.hash);
+				if (!match) {
+					throw new BaseResponseError("Wrong password");
 				}
 
 				const parseRole = RolesEnum.safeParse(user.auth_l);

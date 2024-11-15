@@ -4,15 +4,14 @@ import { User } from "../database/entity/SALARY/user";
 import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { check_date, get_date_string, select_value } from "./helper_function";
-import { z } from "zod";
+import { type z } from "zod";
 import {
-	createUserService,
-	updateUserService,
+	type createUserService,
+	type updateUserService,
 } from "../api/types/parameters_input_type";
 
 @injectable()
 export class UserService {
-	constructor() { }
 
 	async createUser({
 		emp_no,
