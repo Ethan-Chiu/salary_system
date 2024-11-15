@@ -20,6 +20,7 @@ const employeePayment = z.object({
 }).merge(DateAPI);
 
 export const employeePaymentFE = z.object({
+  id: z.number(),
 	emp_no: z.string(),
 	base_salary: z.number(),
 	food_allowance: z.number(),

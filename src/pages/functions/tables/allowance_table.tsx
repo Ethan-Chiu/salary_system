@@ -14,8 +14,16 @@ const columns = (t: I18nType) =>
 		"department",
 		"position",
 		"work_day",
-		"allowance_type_name",
-		"amount",
+
+		// "主管職務補助輪班證照久任"
+		"supervisor_allowance",
+		"occupational_allowance",
+		"subsidy_allowance",
+		"shift_allowance",
+		"professional_cert_allowance",
+		"long_service_allowance"
+
+		// "amount",
 		// "remark",
 		// "pay_delay"
 	].map((key) => {

@@ -28,15 +28,25 @@ export const dateToStringNullable = z
 	.nullable()
 	.transform((value) => (value ? get_date_string(value) : null));
 
+export const stringToDate = z.string().pipe(z.coerce.date());
+
+export const stringToDateNullable = z
+	.string()
+	.nullable()
+	.transform((value) => (value === null ? null : new Date(value)))
+	.pipe(z.date().nullable());
+
 export const encodeString = z
 	.string()
 	.transform((value) => CryptoHelper.encrypt(value));
 
-export const decodeString = z
+export const decodeStringToString = z
 	.string()
 	.transform((value) => CryptoHelper.decrypt(value));
 
-export const optionalNumDefaultZero = z
-	.number()
-	.optional()
-	.default(0)
+export const decodeStringToNumber = z
+	.string()
+	.transform((value) => CryptoHelper.decrypt(value))
+  .pipe(z.coerce.number());
+
+export const optionalNumDefaultZero = z.number().optional().default(0);

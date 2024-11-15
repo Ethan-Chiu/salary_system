@@ -5,12 +5,11 @@ import { z } from "zod";
 import { EmployeePaymentService } from "~/server/service/employee_payment_service";
 import {
 	employeePaymentCreateAPI,
+	employeePaymentFE,
 	EmployeePaymentFEType,
 	updateEmployeePaymentAPI,
 } from "../types/employee_payment_type";
 import { EmployeePaymentMapper } from "~/server/database/mapper/employee_payment_mapper";
-import { type EmployeePaymentDecType } from "~/server/database/entity/SALARY/employee_payment";
-import { EmployeeDataService } from "~/server/service/employee_data_service";
 
 export const employeePaymentRouter = createTRPCRouter({
 	getCurrentEmployeePayment: publicProcedure
@@ -23,22 +22,24 @@ export const employeePaymentRouter = createTRPCRouter({
 				await employeePaymentService.getCurrentEmployeePayment(
 					input.period_id
 				);
-			
+
 			return employeePaymentFE;
 		}),
 
-	getAllEmployeePayment: publicProcedure.query(async () => {
-		const employeePaymentService = container.resolve(
-			EmployeePaymentService
-		);
-		const employeePayment =
-			await employeePaymentService.getAllEmployeePayment();
-		if (employeePayment == null) {
-			throw new BaseResponseError("EmployeePayment does not exist");
-		}
+	getAllEmployeePayment: publicProcedure
+		.output(z.array(z.array(employeePaymentFE)))
+		.query(async () => {
+			const employeePaymentService = container.resolve(
+				EmployeePaymentService
+			);
+			const employeePayment =
+				await employeePaymentService.getAllEmployeePayment();
+			if (employeePayment == null) {
+				throw new BaseResponseError("EmployeePayment does not exist");
+			}
 
-		return employeePayment;
-	}),
+			return employeePayment;
+		}),
 
 	createEmployeePayment: publicProcedure
 		.input(employeePaymentCreateAPI)
@@ -59,7 +60,7 @@ export const employeePaymentRouter = createTRPCRouter({
 					`EmployeePayment for emp_no: ${input.emp_no} not exists yet`
 				);
 			}
-			
+
 			const newdata = await employeePaymentService.createEmployeePayment({
 				...input,
 				base_salary: input.base_salary,

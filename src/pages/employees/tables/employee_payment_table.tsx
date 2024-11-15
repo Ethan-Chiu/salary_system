@@ -6,33 +6,37 @@ import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { formatDate } from "~/lib/utils/format_date";
+import { createColumnHelper } from "@tanstack/react-table";
+import { type EmployeePaymentFEType } from "~/server/api/types/employee_payment_type";
 
+const columnHelper = createColumnHelper<EmployeePaymentFEType>();
+
+const columnNames: (keyof EmployeePaymentFEType)[] = [
+	"department",
+	"emp_no",
+	"emp_name",
+	"position",
+	"position_type",
+	"base_salary",
+	"food_allowance",
+	"supervisor_allowance",
+	"occupational_allowance",
+	"subsidy_allowance",
+	"long_service_allowance",
+	"long_service_allowance_type",
+	"l_r_self",
+	"l_i",
+	"h_i",
+	"l_r",
+	"occupational_injury",
+	"start_date",
+	"end_date",
+];
 const columns = (t: I18nType) =>
-	[
-		"department",
-		"emp_no",
-		"emp_name",
-		"position",
-		"position_type",
-		"base_salary",
-		"food_allowance",
-		"supervisor_allowance",
-		"occupational_allowance",
-		"subsidy_allowance",
-		"long_service_allowance",
-		"long_service_allowance_type",
-		"l_r_self",
-		"l_i",
-		"h_i",
-		"l_r",
-		"occupational_injury",
-		"start_date",
-		"end_date",
-	].map((key) => {
+	columnNames.map((key) => {
 		if (key === "start_date" || key === "end_date") {
-			return {
-				accessorKey: key,
-				header: ({ column }: any) => {
+			return columnHelper.accessor(key, {
+				header: ({ column }) => {
 					return (
 						<div className="flex justify-center">
 							<div className="text-center font-medium">
@@ -51,8 +55,8 @@ const columns = (t: I18nType) =>
 						</div>
 					);
 				},
-				cell: ({ row }: any) => {
-					const value = row.getValue(key) as Date;
+				cell: ({ row }) => {
+					const value: Date = row.getValue(key);
 					return (
 						<div className="flex justify-center">
 							<div className="text-center font-medium">
@@ -61,12 +65,10 @@ const columns = (t: I18nType) =>
 						</div>
 					);
 				},
-			};
+			});
 		}
-		return {
-			accessorKey: key,
-			header: ({ column }: any) => {
-				const { t } = useTranslation(["common"]);
+		return columnHelper.accessor(key, {
+			header: ({ column }) => {
 				return (
 					<div className="flex justify-center">
 						<div className="text-center font-medium">
@@ -85,8 +87,7 @@ const columns = (t: I18nType) =>
 					</div>
 				);
 			},
-		};
-
+		});
 	});
 
 export function EmployeePaymentTable({ period_id }: any) {

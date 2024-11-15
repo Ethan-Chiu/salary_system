@@ -13,7 +13,7 @@ export const allowanceFE = z.object({
 
 export const newAllowanceFE = z.object({
     emp_no: z.string(),
-    name: z.string(),
+    emp_name: z.string(),
     department: z.string(),
     position: z.number(),
     work_day: z.number(),
@@ -21,7 +21,7 @@ export const newAllowanceFE = z.object({
     occupational_allowance: z.number(),
     subsidy_allowance: z.number(),
     shift_allowance: z.number(),
-    certificate_allowance: z.number(),
+    professional_cert_allowance: z.number(),
     long_service_allowance: z.number(),
 })
 
