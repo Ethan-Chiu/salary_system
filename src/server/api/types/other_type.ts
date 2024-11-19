@@ -1,3 +1,4 @@
+import { workerData } from "worker_threads";
 import { z } from "zod";
 
 export const newOtherFE=z.object({
@@ -5,6 +6,7 @@ export const newOtherFE=z.object({
     emp_name: z.string(),
     department: z.string(),
     position: z.number(),
+    work_day: z.number(),
     other_addition: z.number(),
     other_addition_tax: z.number(),
     other_deduction: z.number(),

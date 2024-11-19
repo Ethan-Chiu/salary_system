@@ -1,7 +1,7 @@
 import { container } from "tsyringe";
 import { NewOtherFEType } from "~/server/api/types/other_type";
 import { CalculateService } from "~/server/service/calculate_service";
-import { ExpenseWithType } from "~/server/service/ehr_service";
+import { EHRService, ExpenseWithType } from "~/server/service/ehr_service";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { EmployeePaymentService } from "~/server/service/employee_payment_service";
 
@@ -13,6 +13,7 @@ export class OtherMapper {
 	): Promise<NewOtherFEType[]> {
 		const calculate_service = container.resolve(CalculateService);
 		const employee_data_service = container.resolve(EmployeeDataService);
+        const ehr_service = container.resolve(EHRService);
 		const employee_payment_service = container.resolve(
 			EmployeePaymentService
 		);
@@ -25,11 +26,13 @@ export class OtherMapper {
 						emp_no,
 						period_id
 					);
+                const work_day = (await ehr_service.getPaysetByEmpNoList(period_id, [emp_no]))[0]?.work_day??30;
 				return {
 					emp_no: emp_no,
 					emp_name: employee_data!.emp_name,
 					department: employee_data!.department,
 					position: employee_data!.position,
+                    work_day: work_day,
 					other_addition: await calculate_service.getOtherAddition(
 						period_id,
 						emp_no

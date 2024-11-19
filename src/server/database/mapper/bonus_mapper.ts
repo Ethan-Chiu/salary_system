@@ -1,6 +1,5 @@
 import { BonusWithType, EHRService } from "~/server/service/ehr_service";
 import { container } from "tsyringe";
-import { EmployeeBonus } from "../entity/SALARY/employee_bonus";
 import { NewBonusFEType } from "~/server/api/types/bonus_type";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { EmployeeBonusMapper } from "./employee_bonus_mapper";
