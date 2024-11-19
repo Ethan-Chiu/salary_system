@@ -10,13 +10,13 @@ import { ArrowUpDown } from "lucide-react";
 
 const columns = (t: I18nType) =>
 	[
-		"period_name",
+		"department",
 		"emp_no",
 		"emp_name",
-		"bonus_type_name",
-		"amount",
-		"pay",
-		"remark",
+		"position",
+		"work_day",
+		"project_bonus",
+		"full_attendance_bonus",
 	].map((key) => {
 		return {
 			accessorKey: key,

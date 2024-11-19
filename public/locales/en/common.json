@@ -243,7 +243,12 @@
     "bonus_type": "Bonus Type",
     "stats_panel": "Stats Panel",
     "column": "Column",
-    "count": "Count"
+    "count": "Count",
+    "dorm_deduction": "Dorm Deduction",
+    "project_bonus": "Project Bonus",
+    "q1_bonus": "Q1 Bonus",
+    "q2_bonus": "Q2 Bonus",
+    "q3_q4_bonus": "Q3-Q4 Bonus"
   },
   "table_name": {
     "attendanceSetting": "Attendance Setting",
@@ -330,10 +335,6 @@
     "employee_trust": "Employee Trust",
     "quarterly_bonus": "Quarterly Bonus",
     "employee_dividends": "Employee Dividends",
-    "project_bonus": "Project Bonus",
-    "q1_bonus": "Q1 Bonus",
-    "q2_bonus": "Q2 Bonus",
-    "q3_q4_bonus": "Q3-Q4 Bonus",
     "employee_dividends_bonus": "Employee Dividends Bouns",
     "now": "Now",
     "year": "Year",

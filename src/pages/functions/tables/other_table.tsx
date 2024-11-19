@@ -41,9 +41,9 @@ const columns = (t: I18nType) =>
 		// "remark",
 		// "pay_delay"
 
+		"department",
 		"emp_no",
 		"emp_name",
-		"department",
 		"position",
 		"other_addition",
 		"other_addition_tax",

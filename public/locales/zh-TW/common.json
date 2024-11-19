@@ -260,7 +260,11 @@
     "stats_panel": "統計面板",
     "column": "欄位",
     "count": "數量",
-    "dorm_deduction": "宿舍代扣費"
+    "dorm_deduction": "宿舍代扣費",
+    "project_bonus": "專案獎金",
+    "q1_bonus": "Q1獎金",
+    "q2_bonus": "Q2獎金",
+    "q3_q4_bonus": "Q3-Q4獎金"
   },
   "table_name": {
     "attendanceSetting": "請假加班",
@@ -353,10 +357,6 @@
     "employee_trust": "持股信託",
     "quarterly_bonus": "季獎金",
     "employee_dividends": "員工分紅",
-    "project_bonus": "專案獎金",
-    "q1_bonus": "Q1獎金",
-    "q2_bonus": "Q2獎金",
-    "q3_q4_bonus": "Q3-Q4獎金",
     "employee_dividends_bonus": "員工分紅獎金",
     "now": "現在",
     "year": "年",
