@@ -93,6 +93,7 @@ export class LevelRangeService {
 	async getAllLevelRange(): Promise<LevelRange[]> {
 		const levelRange = await LevelRange.findAll({
 			where: { disabled: false },
+			order: [["start_date", "DESC"], ["type", "ASC"]],
 			raw: true
 		});
 		return levelRange;

@@ -198,8 +198,8 @@ export function salaryIncomeTaxMapper(
 			salary_end: d.salary_end,
 			dependent: d.dependent,
 			tax_amount: d.tax_amount,
-			start_date: formatDate("day", d.start_date),
-			end_date: d.end_date ? formatDate("day", d.end_date) : "",
+			start_date: formatDate("day", d.start_date) ?? "",
+			end_date: formatDate("day", d.end_date) ?? "",
 		};
 	});
 }

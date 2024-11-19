@@ -8,18 +8,34 @@ export interface HistoryDataType {
 	update_by: string;
 }
 
-type ExtendableHistoryDataType<T> = T extends object
-	? (HistoryDataType & T)[][]
-	: HistoryDataType[][];
+type ParameterExtendableHistoryDataType<T> = T extends object
+	? (HistoryDataType & T)[]
+	: HistoryDataType[];
 
-export type HistoryQueryFunctionType<T = Record<string, never>> =
+export type ParameterHistoryQueryFunctionType<T = Record<string, never>> =
 	() => UseTRPCQueryResult<
-		ExtendableHistoryDataType<T>,
+		ParameterExtendableHistoryDataType<T>,
 		TRPCClientErrorLike<any>
 	>;
 
-export type CalenderQueryFunctionType<T = Record<string, never>> =
+export type ParameterCalenderQueryFunctionType<T = Record<string, never>> =
 	() => UseTRPCQueryResult<
-		ExtendableHistoryDataType<T>,
+		ParameterExtendableHistoryDataType<T>,
+		TRPCClientErrorLike<any>
+	>;
+
+type EmployeeExtendableHistoryDataType<T> = T extends object
+	? (HistoryDataType & T)[][]
+	: HistoryDataType[][];
+
+export type EmployeeHistoryQueryFunctionType<T = Record<string, never>> =
+	() => UseTRPCQueryResult<
+		EmployeeExtendableHistoryDataType<T>,
+		TRPCClientErrorLike<any>
+	>;
+
+export type EmployeeCalenderQueryFunctionType<T = Record<string, never>> =
+	() => UseTRPCQueryResult<
+		EmployeeExtendableHistoryDataType<T>,
 		TRPCClientErrorLike<any>
 	>;

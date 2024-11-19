@@ -142,19 +142,19 @@ export function insuranceRateMapper(
 		},
 		{
 			parameters: c_StartDateStr,
-			value: formatDate("day", data.start_date),
+			value: formatDate("day", data.start_date) ?? "",
 		},
 		{
 			parameters: c_EndDateStr,
-			value: data.end_date ? formatDate("day", data.end_date) : "",
+			value: formatDate("day", data.end_date) ?? "",
 		},
 		{
 			parameters: c_CreateDateStr,
-			value: formatDate("hour", data.create_date),
+			value: formatDate("hour", data.create_date) ?? "",
 		},
 		{
 			parameters: c_UpdateDateStr,
-			value: formatDate("hour", data.update_date),
+			value: formatDate("hour", data.update_date) ?? "",
 		},
 	];
 }

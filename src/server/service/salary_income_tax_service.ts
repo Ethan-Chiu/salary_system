@@ -87,7 +87,7 @@ export class SalaryIncomeTaxService {
 		const salaryIncomeTax = await SalaryIncomeTax.findAll(
 			{
 				where: { disabled: false },
-				order: [["dependent", "ASC"], ["salary_start", "ASC"]],
+				order: [["start_date", "DESC"], ["dependent", "ASC"], ["salary_start", "ASC"]],
 			}
 		);
 		return salaryIncomeTax;
