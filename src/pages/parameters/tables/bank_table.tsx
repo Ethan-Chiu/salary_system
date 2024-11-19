@@ -75,7 +75,7 @@ export const bank_columns = [
 		,
 	}),
 	columnHelper.accessor("start_date", {
-		header: ({column}) => {
+		header: ({ column }) => {
 			const { t } = useTranslation(["common"]);
 			return (
 				<div className="flex justify-center">
@@ -140,8 +140,8 @@ export function bankSettingMapper(bankSettingData: BankSetting[]): RowItem[] {
 			bank_code: d.bank_code,
 			org_name: d.org_name,
 			org_code: d.org_code,
-			start_date: formatDate("day", d.start_date),
-			end_date: d.end_date ? formatDate("day", d.end_date) : "",
+			start_date: formatDate("day", d.start_date) ?? "",
+			end_date: formatDate("day", d.end_date) ?? "",
 		};
 	});
 }

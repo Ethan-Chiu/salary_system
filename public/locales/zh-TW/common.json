@@ -264,7 +264,8 @@
     "project_bonus": "專案獎金",
     "q1_bonus": "Q1獎金",
     "q2_bonus": "Q2獎金",
-    "q3_q4_bonus": "Q3-Q4獎金"
+    "q3_q4_bonus": "Q3-Q4獎金",
+    "employee_dividends_bonus": "員工分紅獎金"
   },
   "table_name": {
     "attendanceSetting": "請假加班",
@@ -357,7 +358,6 @@
     "employee_trust": "持股信託",
     "quarterly_bonus": "季獎金",
     "employee_dividends": "員工分紅",
-    "employee_dividends_bonus": "員工分紅獎金",
     "now": "現在",
     "year": "年",
     "month": "月",
@@ -388,7 +388,9 @@
     "changed_data_msg": "按下更新按鈕以完成資料更新",
     "all_(un)click": "全選/取消全選",
     "search_employee": "搜尋員工...",
+    "search_start_date": "搜尋開始時間...",
     "no_employee_found": "未找到符合條件的員工",
+    "no_start_date_found": "未找到符合條件的開始時間",
     "well_done": "大功告成！",
     "well_done_msg": "已確認所有變更，請按更新按鈕",
     "sync_employee_data": "同步員工資料",

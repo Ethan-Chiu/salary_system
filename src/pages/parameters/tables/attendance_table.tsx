@@ -25,7 +25,7 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-export const attendance_columns = ({t}: {t: TFunction<[string], undefined>}) => [
+export const attendance_columns = ({ t }: { t: TFunction<[string], undefined> }) => [
 	columnHelper.accessor("parameters", {
 		header: ({ column }) => {
 			return (
@@ -141,19 +141,19 @@ export function attendanceMapper(
 		},
 		{
 			parameters: c_StartDateStr,
-			value: formatDate("day", data.start_date),
+			value: formatDate("day", data.start_date) ?? "",
 		},
 		{
 			parameters: c_EndDateStr,
-			value: data.end_date ? formatDate("day", data.end_date) : "",
+			value: formatDate("day", data.end_date) ?? "",
 		},
 		{
 			parameters: c_CreateDateStr,
-			value: formatDate("hour", data.create_date),
+			value: formatDate("hour", data.create_date) ?? "",
 		},
 		{
 			parameters: c_UpdateDateStr,
-			value: formatDate("hour", data.update_date),
+			value: formatDate("hour", data.update_date) ?? "",
 		},
 	];
 }
@@ -169,7 +169,7 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 		api.parameters.getCurrentAttendanceSetting.useQuery({ period_id });
 	const filterKey: RowItemKey = "parameters";
 
-  const { t } = useTranslation(["common"]);
+	const { t } = useTranslation(["common"]);
 
 	if (isLoading) {
 		return (
@@ -190,13 +190,13 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 		<>
 			{!viewOnly ? (
 				<DataTableWithFunctions
-					columns={attendance_columns({t: t})}
+					columns={attendance_columns({ t: t })}
 					data={attendanceMapper([data!])}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
-					columns={attendance_columns({t: t})}
+					columns={attendance_columns({ t: t })}
 					data={attendanceMapper([data!])}
 					filterColumnKey={filterKey}
 				/>

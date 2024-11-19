@@ -248,7 +248,8 @@
     "project_bonus": "Project Bonus",
     "q1_bonus": "Q1 Bonus",
     "q2_bonus": "Q2 Bonus",
-    "q3_q4_bonus": "Q3-Q4 Bonus"
+    "q3_q4_bonus": "Q3-Q4 Bonus",
+    "employee_dividends_bonus": "Employee Dividends Bouns"
   },
   "table_name": {
     "attendanceSetting": "Attendance Setting",
@@ -335,7 +336,6 @@
     "employee_trust": "Employee Trust",
     "quarterly_bonus": "Quarterly Bonus",
     "employee_dividends": "Employee Dividends",
-    "employee_dividends_bonus": "Employee Dividends Bouns",
     "now": "Now",
     "year": "Year",
     "month": "Month",
@@ -366,7 +366,9 @@
     "changed_data_msg": "Click the update button to finish the data update.",
     "all_(un)click": "All (Un)Click",
     "search_employee": "Search Employee...",
+    "search_start_date": "Search Start Date...",
     "no_employee_found": "No Employee Found",
+    "no_start_date_found": "No Start Date Found",
     "well_done": "Well Done!",
     "well_done_msg": "You have checked all the changes. Please click update button.",
     "sync_employee_data": "Sync Employee Data",

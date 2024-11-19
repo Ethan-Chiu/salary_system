@@ -14,12 +14,12 @@ import { Badge } from "~/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import {
 	type HistoryDataType,
-	type HistoryQueryFunctionType,
+	type EmployeeHistoryQueryFunctionType,
 } from "~/components/data_table/history_data_type";
 import { type ColumnDef } from "@tanstack/react-table";
 import { Separator } from "~/components/ui/separator";
 import {
-	PopoverSelector,
+	EmployeePopoverSelector,
 	type PopoverSelectorDataType,
 } from "~/components/popover_selector";
 import periodContext from "~/components/context/period_context";
@@ -34,7 +34,7 @@ type DataRow = EmployeeHistoryViewCommonEmpInfo & HistoryDataType;
 
 interface DataTableProps<TData extends DataRow> {
 	columns: ColumnDef<TData, any>[];
-	dataFunction: HistoryQueryFunctionType<TData>;
+	dataFunction: EmployeeHistoryQueryFunctionType<TData>;
 }
 
 export function HistoryView({
@@ -118,7 +118,7 @@ export function HistoryView({
 		<ResizablePanelGroup direction="horizontal">
 			<ResizablePanel defaultSize={25} minSize={15}>
 				<div className="flex h-full flex-col">
-					<PopoverSelector
+					<EmployeePopoverSelector
 						data={employeeOpts}
 						selectedKey={selectedEmpNo}
 						setSelectedKey={setSelectedEmpNo}
@@ -132,7 +132,7 @@ export function HistoryView({
 									className={cn(
 										" relative m-2 flex flex-col rounded-md border p-1 hover:bg-muted",
 										e.id === selectedEmpData?.id &&
-											"bg-muted",
+										"bg-muted",
 										is_date_available(
 											selectedPeriod,
 											e.start_date.toString(),
@@ -173,10 +173,10 @@ export function HistoryView({
 										e.start_date.toString(),
 										e.end_date?.toString() ?? ""
 									) && (
-										<div className="absolute -bottom-3 right-2 z-10">
-											<Badge>{t("table.current")}</Badge>
-										</div>
-									)}
+											<div className="absolute -bottom-3 right-2 z-10">
+												<Badge>{t("table.current")}</Badge>
+											</div>
+										)}
 								</div>
 							))}
 							<div className="h-4" />

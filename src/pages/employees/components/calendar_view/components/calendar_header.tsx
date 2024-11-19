@@ -5,7 +5,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { useTranslation } from "react-i18next";
 import {
-	PopoverSelector,
+	EmployeePopoverSelector,
 	type PopoverSelectorDataType,
 } from "~/components/popover_selector";
 
@@ -57,7 +57,7 @@ export default function CalendarHeader({
 			{/* Select employee */}
 			{
 				employees.length > 0 &&
-				<PopoverSelector
+				<EmployeePopoverSelector
 					data={employees}
 					selectedKey={selectedEmp}
 					setSelectedKey={setSelectedEmp}

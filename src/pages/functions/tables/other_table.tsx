@@ -45,6 +45,7 @@ const columns = (t: I18nType) =>
 		"emp_no",
 		"emp_name",
 		"position",
+		"work_day",
 		"other_addition",
 		"other_addition_tax",
 		"other_deduction",
