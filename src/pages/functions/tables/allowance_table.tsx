@@ -9,9 +9,9 @@ import { ArrowUpDown } from "lucide-react";
 const columns = (t: I18nType) =>
 	[
 		// "period_name",
+		"department",
 		"emp_no",
 		"emp_name",
-		"department",
 		"position",
 		"work_day",
 
@@ -59,7 +59,7 @@ interface AllowanceTableProps {
 
 export function AllowanceTable({ period, emp_no_list }: AllowanceTableProps) {
 	const { isLoading, isError, data, error } =
-		api.function.getAllowanceFEByEmpNoList.useQuery({
+		api.function.getNewAllowanceFEByEmpNoList.useQuery({
 			period_id: period,
 			emp_no_list: emp_no_list,
 		});

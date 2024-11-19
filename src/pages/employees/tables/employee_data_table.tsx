@@ -28,28 +28,29 @@ const columns = (t: I18nType) =>
 		"bank_account",
 		"month_salary",
 	].map((key) => {
+		const header = ({ column }: { column: any }) => {
+			return (
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t(`table.${key}`)}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
+			);
+		}
 		if (key === "registration_date" || key === "quit_date") {
 			return {
 				accessorKey: key,
-				header: ({ column }: any) => {
-					return (
-						<div className="flex justify-center">
-							<div className="text-center font-medium">
-								<Button
-									variant="ghost"
-									onClick={() =>
-										column.toggleSorting(
-											column.getIsSorted() === "asc"
-										)
-									}
-								>
-									{t(`table.${key}`)}
-									<ArrowUpDown className="ml-2 h-4 w-4" />
-								</Button>
-							</div>
-						</div>
-					);
-				},
+				header: header,
 				cell: ({ row }: any) => {
 					const value = row.getValue(key) as string;
 					return (
@@ -64,25 +65,7 @@ const columns = (t: I18nType) =>
 		}
 		return {
 			accessorKey: key,
-			header: ({ column }: { column: Column<any, any> }) => {
-				return (
-					<div className="flex justify-center">
-						<div className="text-center font-medium">
-							<Button
-								variant="ghost"
-								onClick={() =>
-									column.toggleSorting(
-										column.getIsSorted() === "asc"
-									)
-								}
-							>
-								{t(`table.${key}`)}
-								<ArrowUpDown className="ml-2 h-4 w-4" />
-							</Button>
-						</div>
-					</div>
-				);
-			},
+			header: header,
 		};
 	});
 

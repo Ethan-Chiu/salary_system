@@ -7,7 +7,7 @@ import { WorkTypeEnum } from "./work_type_enum";
 export const createUserAPI = User.merge(DateAPI);
 export const createUserService = User.merge(DateService);
 export const updateUserAPI = User.merge(DateAPI).partial().merge(Id);
-export const updateUserService = User.merge(DateService).partial().merge(Id);
+export const updateUserService = User.merge(DateService).partial()//.merge(Id);
 
 const BankSetting = z.object({
 	bank_code: z.string(),

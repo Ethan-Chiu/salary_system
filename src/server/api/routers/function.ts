@@ -13,6 +13,7 @@ import { th } from "date-fns/locale";
 import { BaseError } from "sequelize";
 import { BaseResponseError } from "../error/BaseResponseError";
 import { OtherMapper } from "~/server/database/mapper/other_mapper";
+import { BonusMapper } from "~/server/database/mapper/bonus_mapper";
 
 export const functionRouter = createTRPCRouter({
 	getPeriod: publicProcedure.query(async () => {
@@ -97,9 +98,15 @@ export const functionRouter = createTRPCRouter({
 					input.emp_no_list,
 					input.pay_type
 				);
-			return bonus_with_type_list;
+			const bonus_mapper = container.resolve(BonusMapper);
+			const new_bonusFE_list = await bonus_mapper.getNewBonusFE(
+				input.period_id,
+				bonus_with_type_list,
+				input.emp_no_list
+			)
+			return new_bonusFE_list;
 		}),
-	getExpenseWithTypeByEmpNoList: publicProcedure
+	getNewOtherByEmpNoList: publicProcedure
 		.input(
 			z.object({ period_id: z.number(), emp_no_list: z.string().array() })
 		)
@@ -118,7 +125,7 @@ export const functionRouter = createTRPCRouter({
 			)
 			return newOther_list;
 		}),
-	getAllowanceFEByEmpNoList: publicProcedure
+	getNewAllowanceFEByEmpNoList: publicProcedure
 		.input(
 			z.object({ period_id: z.number(), emp_no_list: z.string().array() })
 		)
