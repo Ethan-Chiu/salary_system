@@ -4,8 +4,56 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
-	Sequelize,
+	type Sequelize,
 } from "sequelize";
+import { z } from "zod";
+import { dateF, dateStringF } from "../../mapper/mapper_utils";
+import { decodeStringToNumber, encodeString, stringToDate, stringToDateNullable } from "~/server/api/types/z_utils";
+
+const dbEmployeeTrust = z.object({
+	emp_no: z.string(),
+	create_by: z.string(),
+	update_by: z.string(),
+	disabled: z.coerce.boolean(),
+});
+
+const decFields = z.object({
+	id: z.number(),
+  emp_trust_reserve: z.number(),
+  emp_special_trust_incent: z.number(),
+});
+
+const encFields = z.object({
+  emp_trust_reserve_enc: z.string(),
+	emp_special_trust_incent_enc: z.string(),
+});
+
+const encF = dbEmployeeTrust.merge(encFields).merge(dateStringF);
+const decF = dbEmployeeTrust.merge(decFields).merge(dateF);
+export type EmployeeTrustDecType = z.input<typeof decF>;
+
+export const decEmployeeTrust = encF
+	.merge(z.object({ id: z.number() }))
+	.transform((v) => ({
+		...v,
+		id: v.id,
+		emp_trust_reserve: decodeStringToNumber.parse(v.emp_trust_reserve_enc),
+		emp_special_trust_incent: decodeStringToNumber.parse(v.emp_special_trust_incent_enc),
+		start_date: stringToDate.parse(v.start_date),
+		end_date: stringToDateNullable.parse(v.end_date),
+	}))
+	.pipe(decF);
+
+export const encEmployeeTrust = decF
+	.omit({ id: true })
+	.transform((v) => ({
+		...v,
+		emp_trust_reserve_enc: encodeString.parse(v.emp_trust_reserve),
+		emp_special_trust_incent_enc: encodeString.parse(v.emp_special_trust_incent),
+		start_date: stringToDate.parse(v.start_date),
+		end_date: stringToDateNullable.parse(v.end_date),
+	}))
+	.pipe(encF);
 
 export class EmployeeTrust extends Model<
 	InferAttributes<EmployeeTrust>,
@@ -30,6 +78,9 @@ export class EmployeeTrust extends Model<
 	declare update_date: CreationOptional<Date>;
 	declare update_by: string;
 }
+
+
+
 
 export function initEmployeeTrust(sequelize: Sequelize) {
 	EmployeeTrust.init(

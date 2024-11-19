@@ -201,7 +201,7 @@ export class TrustMoneyService {
 	async getCurrentTrustMoneyByPositionByDate(
 		position: number,
 		position_type: string,
-		date: string
+		date: Date 
 	): Promise<TrustMoney | null> {
 		const trustMoney = await TrustMoney.findOne({
 			where: {
