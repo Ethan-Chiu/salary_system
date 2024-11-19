@@ -9,6 +9,7 @@ import { TrustMoney } from "../database/entity/SALARY/trust_money";
 import { check_date, get_date_string, select_value } from "./helper_function";
 import { EHRService } from "./ehr_service";
 import { Op } from "sequelize";
+import { dateToString } from "../api/types/z_utils";
 
 @injectable()
 export class TrustMoneyService {
@@ -203,13 +204,15 @@ export class TrustMoneyService {
 		position_type: string,
 		date: Date 
 	): Promise<TrustMoney | null> {
+    const date_str = dateToString.parse(date);
+
 		const trustMoney = await TrustMoney.findOne({
 			where: {
 				start_date: {
-					[Op.lte]: date,
+					[Op.lte]: date_str,
 				},
 				end_date: {
-					[Op.or]: [{ [Op.gte]: date }, { [Op.eq]: null }],
+					[Op.or]: [{ [Op.gte]: date_str }, { [Op.eq]: null }],
 				},
 				position: position,
 				position_type: position_type,

@@ -1,4 +1,4 @@
-import { injectable } from "tsyringe";
+import { container, injectable } from "tsyringe";
 import { type z } from "zod";
 import { BaseResponseError } from "~/server/api/error/BaseResponseError";
 import {
@@ -21,13 +21,13 @@ import {
 	encEmployeeTrust,
 } from "../entity/SALARY/employee_trust";
 import { type CreationAttributes } from "sequelize";
+import { stringToDate } from "~/server/api/types/z_utils";
 
 @injectable()
 export class EmployeeTrustMapper {
 	constructor(
 		private readonly employeeDataService: EmployeeDataService,
-		private readonly trustMoneyService: TrustMoneyService,
-		private readonly employeeTrustService: EmployeeTrustService
+		private readonly trustMoneyService: TrustMoneyService
 	) {}
 
 	async encodeEmployeeTrust(
@@ -61,6 +61,8 @@ export class EmployeeTrustMapper {
 	async getEmployeeTrustFE(
 		employee_trust_list: EmployeeTrustDecType[]
 	): Promise<z.infer<typeof employeeTrustFE>[]> {
+		const employeeTrustService = container.resolve(EmployeeTrustService);
+
 		const employee = await this.employeeDataService.getEmployeeDataByEmpNo(
 			employee_trust_list[0]!.emp_no
 		);
@@ -74,7 +76,9 @@ export class EmployeeTrustMapper {
 			.sort();
 
 		trust_money_list.forEach((trust_money) => {
-			const trust_money_start_date = new Date(trust_money.start_date);
+			const trust_money_start_date = stringToDate.parse(
+				trust_money.start_date
+			);
 			if (
 				trust_money_start_date > start_dates[0]! &&
 				!start_dates.includes(trust_money_start_date)
@@ -84,7 +88,7 @@ export class EmployeeTrustMapper {
 		});
 		const promises = start_dates.sort().map(async (start_date, idx) => {
 			const employee_trust =
-				await this.employeeTrustService.getCurrentEmployeeTrustByEmpNoByDate(
+				await employeeTrustService.getCurrentEmployeeTrustByEmpNoByDate(
 					employee_trust_list[0]!.emp_no,
 					start_date
 				);
@@ -109,37 +113,33 @@ export class EmployeeTrustMapper {
 				)
 			);
 
-			const employeeTrust: z.infer<typeof employeeTrustFE> =
-				convertDatePropertiesToISOString({
-					...employee_trust,
-					id: idx,
-					emp_no: employee.emp_no,
-					emp_name: employee.emp_name,
-					position: employee.position,
-					position_type: employee.position_type,
-					department: employee.department,
-					emp_trust_reserve: Number(
-						CryptoHelper.decrypt(
-							employee_trust!.emp_trust_reserve_enc
-						)
-					),
-					org_trust_reserve: org_trust_reserve,
-					emp_special_trust_incent: Number(
-						CryptoHelper.decrypt(
-							employee_trust!.emp_special_trust_incent_enc
-						)
-					),
-					org_special_trust_incent: org_special_trust_incent,
-					start_date: start_date,
-					end_date: start_dates[idx + 1]
-						? new Date(
-								new Date(start_dates[idx + 1]!).setDate(
-									new Date(start_dates[idx + 1]!).getDate() -
-										1
-								)
-						  )
-						: null,
-				});
+			const employeeTrust: z.infer<typeof employeeTrustFE> = {
+				...employee_trust,
+				id: idx,
+				emp_no: employee.emp_no,
+				emp_name: employee.emp_name,
+				position: employee.position,
+				position_type: employee.position_type,
+				department: employee.department,
+				emp_trust_reserve: Number(
+					CryptoHelper.decrypt(employee_trust!.emp_trust_reserve_enc)
+				),
+				org_trust_reserve: org_trust_reserve,
+				emp_special_trust_incent: Number(
+					CryptoHelper.decrypt(
+						employee_trust!.emp_special_trust_incent_enc
+					)
+				),
+				org_special_trust_incent: org_special_trust_incent,
+				start_date: start_date,
+				end_date: start_dates[idx + 1]
+					? new Date(
+							new Date(start_dates[idx + 1]!).setDate(
+								new Date(start_dates[idx + 1]!).getDate() - 1
+							)
+					  )
+					: null,
+			};
 
 			return deleteProperties(employeeTrust, [
 				"emp_trust_reserve_enc",

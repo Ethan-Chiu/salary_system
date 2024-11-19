@@ -1,27 +1,27 @@
-import { container, injectable } from "tsyringe";
+import { injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
-import { check_date, get_date_string, select_value } from "./helper_function";
+import { get_date_string, select_value } from "./helper_function";
 import { type z } from "zod";
-import { CreationAttributes, Op } from "sequelize";
+import { Op } from "sequelize";
 import {
 	EmployeeTrust,
-	EmployeeTrustDecType,
-	encEmployeeTrust,
+	type EmployeeTrustDecType,
+	type encEmployeeTrust,
 } from "../database/entity/SALARY/employee_trust";
 import { EHRService } from "./ehr_service";
 import {
 	employeeTrustCreateService,
-	employeeTrustFE,
-	updateEmployeeTrustService,
+	type employeeTrustFE,
+	type updateEmployeeTrustService,
 } from "../api/types/employee_trust";
 import { EmployeeTrustMapper } from "../database/mapper/employee_trust_mapper";
+import { dateToString, stringToDate } from "../api/types/z_utils";
 
 @injectable()
 export class EmployeeTrustService {
 	constructor(
 		private readonly employeeTrustMapper: EmployeeTrustMapper,
-		private readonly ehrService: EHRService,
-		private readonly employeeTrustService: EmployeeTrustService
+		private readonly ehrService: EHRService
 	) {}
 
 	async createEmployeeTrust(
@@ -97,11 +97,10 @@ export class EmployeeTrustService {
 		period_id: number
 	): Promise<z.infer<typeof employeeTrustFE>[]> {
 		const period = await this.ehrService.getPeriodById(period_id);
-		const current_date_string = new Date(period.end_date);
+		const current_date = stringToDate.parse(period.end_date);
 
 		// 获取所有的员工信任记录
-		const allEmployeeTrustRecords =
-			await this.employeeTrustService.getAllEmployeeTrust();
+		const allEmployeeTrustRecords = await this.getAllEmployeeTrust();
 		if (allEmployeeTrustRecords == null) {
 			throw new BaseResponseError("Employee trust records do not exist");
 		}
@@ -130,14 +129,15 @@ export class EmployeeTrustService {
 			)
 		);
 		const current_employee_trustFE = await Promise.all(
-			allEmployeeTrustFE.map((emp_trust_list) =>
-				emp_trust_list.find(
-					(emp_trust) =>
-						emp_trust.start_date! <= current_date_string &&
+			allEmployeeTrustFE.map((emp_trust_list) => {
+				return emp_trust_list.find((emp_trust) => {
+					return (
+						emp_trust.start_date! <= current_date &&
 						(emp_trust.end_date == null ||
-							emp_trust.end_date >= current_date_string)
-				)
-			)
+							emp_trust.end_date >= current_date)
+					);
+				});
+			})
 		);
 		return current_employee_trustFE;
 	}
@@ -158,8 +158,7 @@ export class EmployeeTrustService {
 		z.infer<typeof employeeTrustFE>[][]
 	> {
 		// 获取所有的员工信任记录
-		const allEmployeeTrustRecords =
-			await this.employeeTrustService.getAllEmployeeTrust();
+		const allEmployeeTrustRecords = await this.getAllEmployeeTrust();
 		if (allEmployeeTrustRecords == null) {
 			throw new BaseResponseError("Employee trust records do not exist");
 		}
@@ -447,14 +446,16 @@ export class EmployeeTrustService {
 		emp_no: string,
 		date: Date
 	): Promise<EmployeeTrust | null> {
+		const date_str = dateToString.parse(date);
+
 		const employeeTrust = await EmployeeTrust.findOne({
 			where: {
 				emp_no: emp_no,
 				start_date: {
-					[Op.lte]: date,
+					[Op.lte]: date_str,
 				},
 				end_date: {
-					[Op.or]: [{ [Op.gte]: date }, { [Op.eq]: null }],
+					[Op.or]: [{ [Op.gte]: date_str }, { [Op.eq]: null }],
 				},
 				disabled: false,
 			},
