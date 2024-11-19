@@ -1,34 +1,22 @@
 import { z } from "zod";
-import { DateAPI, DateService, EmpData, Id } from "./common_type";
+import { DateAPI, EmpData, Id } from "./common_type";
+import { optionalNumDefaultZero } from "./z_utils";
 
-export const EmployeeTrust = z.object({
+const employeeTrust = z.object({
 	emp_no: z.string(),
-	emp_trust_reserve_enc: z.string(),
-	// org_trust_reserve_enc: z.string(),
-	emp_special_trust_incent_enc: z.string(),
-	// org_special_trust_incent_enc: z.string(),
-	// entry_date: z.string(),
-}).merge(DateService);
-
-export const EmployeeTrustDec = z.object({
-	emp_no: z.string(),
-	emp_trust_reserve: z.number(),
-	// org_trust_reserve_enc: z.string(),
-	emp_special_trust_incent: z.number(),
-	// org_special_trust_incent_enc: z.string(),
-	// entry_date: z.string(),
+	emp_trust_reserve: optionalNumDefaultZero,
+	emp_special_trust_incent: optionalNumDefaultZero,
 }).merge(DateAPI);
 
-export const EmployeeTrustFE = z.object({
+export const employeeTrustFE = z.object({
+  id: z.number(),
 	emp_no: z.string(),
 	emp_trust_reserve: z.number(),
-	org_trust_reserve: z.number(),
 	emp_special_trust_incent: z.number(),
-	org_special_trust_incent: z.number(),
-	// entry_date: z.string(),
 }).merge(EmpData).merge(DateAPI);
 
-export const createEmployeeTrustAPI = EmployeeTrustDec;
-export const createEmployeeTrustService = EmployeeTrust;
-export const updateEmployeeTrustAPI = EmployeeTrustDec.partial().merge(Id);
-export const updateEmployeeTrustService = EmployeeTrust.partial().merge(Id);
+export const employeeTrustCreateAPI = employeeTrustFE;
+export const employeeTrustCreateService = employeeTrust;
+
+export const updateEmployeeTrustAPI = employeeTrustFE.partial().merge(Id);
+export const updateEmployeeTrustService = employeeTrust.partial().merge(Id);

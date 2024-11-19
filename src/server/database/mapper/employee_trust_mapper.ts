@@ -1,12 +1,10 @@
-import { container, injectable } from "tsyringe";
-import { z } from "zod";
+import { injectable } from "tsyringe";
+import { type z } from "zod";
 import { BaseResponseError } from "~/server/api/error/BaseResponseError";
 import {
-	EmployeeTrust,
-	EmployeeTrustDec,
-	EmployeeTrustFE,
-	updateEmployeeTrustAPI,
+	type updateEmployeeTrustAPI,
 	updateEmployeeTrustService,
+	type employeeTrustFE,
 } from "~/server/api/types/employee_trust";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import {
@@ -14,104 +12,87 @@ import {
 	deleteProperties,
 } from "./helper_function";
 import { CryptoHelper } from "~/lib/utils/crypto";
-import { TrustMoney } from "../entity/SALARY/trust_money";
 import { TrustMoneyService } from "~/server/service/trust_money_service";
 import { EmployeeTrustService } from "~/server/service/employee_trust_service";
+import {
+	type EmployeeTrust,
+	type EmployeeTrustDecType,
+	decEmployeeTrust,
+	encEmployeeTrust,
+} from "../entity/SALARY/employee_trust";
+import { type CreationAttributes } from "sequelize";
 
 @injectable()
 export class EmployeeTrustMapper {
-	async getEmployeeTrust(
-		employee_trust: z.infer<typeof EmployeeTrustDec>
-	): Promise<z.infer<typeof EmployeeTrust>> {
-		const employeeTrust: z.infer<typeof EmployeeTrust> =
-			EmployeeTrust.parse(
-				convertDatePropertiesToISOString({
-					emp_trust_reserve_enc: CryptoHelper.encrypt(
-						employee_trust.emp_trust_reserve.toString()
-					),
-					// org_trust_reserve_enc: CryptoHelper.encrypt(employee_trust.org_trust_reserve.toString()),
-					emp_special_trust_incent_enc: CryptoHelper.encrypt(
-						employee_trust.emp_special_trust_incent.toString()
-					),
-					// org_special_trust_incent_enc: CryptoHelper.encrypt(employee_trust.org_special_trust_incent.toString()),
-					...employee_trust,
-				})
-			);
+	constructor(
+		private readonly employeeDataService: EmployeeDataService,
+		private readonly trustMoneyService: TrustMoneyService,
+		private readonly employeeTrustService: EmployeeTrustService
+	) {}
 
-		return employeeTrust;
+	async encodeEmployeeTrust(
+		employee_trust: z.input<typeof encEmployeeTrust>
+	): Promise<CreationAttributes<EmployeeTrust>> {
+		const encoded = encEmployeeTrust.parse(employee_trust);
+
+		return encoded;
 	}
-	async getEmployeeTrustDec(
-		employee_trust: z.infer<typeof EmployeeTrust>
-		// trust_money: TrustMoney
-	): Promise<z.infer<typeof EmployeeTrustDec>> {
-		const employeeDataService = container.resolve(EmployeeDataService);
-		const employee = await employeeDataService.getEmployeeDataByEmpNo(
-			employee_trust!.emp_no
-		);
-		if (employee == null) {
-			throw new BaseResponseError("Employee does not exist");
-		}
 
-		const employeeTrustDec: z.infer<typeof EmployeeTrustDec> =
-			convertDatePropertiesToISOString({
-				emp_no: employee.emp_no,
-				emp_trust_reserve: Number(
-					CryptoHelper.decrypt(employee_trust.emp_trust_reserve_enc)
-				),
-				emp_special_trust_incent: Number(
-					CryptoHelper.decrypt(
-						employee_trust.emp_special_trust_incent_enc
-					)
-				),
-				start_date: employee_trust.start_date
-					? new Date(employee_trust.start_date)
-					: null,
-				end_date: employee_trust.end_date
-					? new Date(employee_trust.end_date)
-					: null,
-			});
+	async decodeEmployeeTrust(
+		employee_trust: z.input<typeof decEmployeeTrust>
+	): Promise<EmployeeTrustDecType> {
+		const decoded = decEmployeeTrust.parse(employee_trust);
 
-		return deleteProperties(employeeTrustDec, [
+		return deleteProperties(decoded, [
 			"emp_trust_reserve_enc",
 			"emp_special_trust_incent_enc",
 		]);
 	}
+
+	async decodeEmployeeTrustList(
+		employee_trust: z.input<typeof decEmployeeTrust>[]
+	): Promise<EmployeeTrustDecType[]> {
+		const decoded = await Promise.all(
+			employee_trust.map(async (e) => this.decodeEmployeeTrust(e))
+		);
+		return decoded;
+	}
+
 	async getEmployeeTrustFE(
-		employee_trust_list: z.infer<typeof EmployeeTrust>[]
-		// trust_money: TrustMoney
-	): Promise<z.infer<typeof EmployeeTrustFE>[]> {
-		const employeeDataService = container.resolve(EmployeeDataService);
-		const trustMoneyService = container.resolve(TrustMoneyService);
-		const employeeTrustService = container.resolve(EmployeeTrustService);
-		const employee = await employeeDataService.getEmployeeDataByEmpNo(
+		employee_trust_list: EmployeeTrustDecType[]
+	): Promise<z.infer<typeof employeeTrustFE>[]> {
+		const employee = await this.employeeDataService.getEmployeeDataByEmpNo(
 			employee_trust_list[0]!.emp_no
 		);
 		if (employee == null) {
 			throw new BaseResponseError("Employee does not exist");
 		}
-		const trust_money_list = await trustMoneyService.getAllTrustMoney();
-		let start_dates = employee_trust_list
+		const trust_money_list =
+			await this.trustMoneyService.getAllTrustMoney();
+		const start_dates = employee_trust_list
 			.map((emp_trust) => emp_trust.start_date)
 			.sort();
+
 		trust_money_list.forEach((trust_money) => {
+			const trust_money_start_date = new Date(trust_money.start_date);
 			if (
-				trust_money.start_date > start_dates[0]! &&
-				!start_dates.includes(trust_money.start_date)
+				trust_money_start_date > start_dates[0]! &&
+				!start_dates.includes(trust_money_start_date)
 			) {
-				start_dates.push(trust_money.start_date);
+				start_dates.push(trust_money_start_date);
 			}
 		});
 		const promises = start_dates.sort().map(async (start_date, idx) => {
-			let employee_trust =
-				await employeeTrustService.getCurrentEmployeeTrustByEmpNoByDate(
+			const employee_trust =
+				await this.employeeTrustService.getCurrentEmployeeTrustByEmpNoByDate(
 					employee_trust_list[0]!.emp_no,
-					start_date!
+					start_date
 				);
 			const trust_money =
-				await trustMoneyService.getCurrentTrustMoneyByPositionByDate(
+				await this.trustMoneyService.getCurrentTrustMoneyByPositionByDate(
 					employee.position,
 					employee.position_type,
-					start_date!
+					start_date
 				);
 			const org_trust_reserve = Math.min(
 				trust_money!.org_trust_reserve_limit,
@@ -128,7 +109,7 @@ export class EmployeeTrustMapper {
 				)
 			);
 
-			let employeeTrustFE: z.infer<typeof EmployeeTrustFE> =
+			const employeeTrust: z.infer<typeof employeeTrustFE> =
 				convertDatePropertiesToISOString({
 					...employee_trust,
 					id: idx,
@@ -149,16 +130,18 @@ export class EmployeeTrustMapper {
 						)
 					),
 					org_special_trust_incent: org_special_trust_incent,
-					start_date: new Date(start_date!),
+					start_date: start_date,
 					end_date: start_dates[idx + 1]
-						? new Date (new Date(start_dates[idx + 1]!).setDate(
-								new Date(start_dates[idx + 1]!).getDate() - 1
-						))
+						? new Date(
+								new Date(start_dates[idx + 1]!).setDate(
+									new Date(start_dates[idx + 1]!).getDate() -
+										1
+								)
+						  )
 						: null,
-					}
-			);
+				});
 
-			return deleteProperties(employeeTrustFE, [
+			return deleteProperties(employeeTrust, [
 				"emp_trust_reserve_enc",
 				"emp_special_trust_incent_enc",
 			]);
@@ -181,24 +164,12 @@ export class EmployeeTrustMapper {
 									employee_trust.emp_trust_reserve.toString()
 							  )
 							: undefined,
-					// org_trust_reserve_enc:
-					// 	employee_trust.org_trust_reserve != undefined
-					// 		? CryptoHelper.encrypt(
-					// 				employee_trust.org_trust_reserve.toString()
-					// 		  )
-					// 		: undefined,
 					emp_special_trust_incent_enc:
 						employee_trust.emp_special_trust_incent != undefined
 							? CryptoHelper.encrypt(
 									employee_trust.emp_special_trust_incent.toString()
 							  )
 							: undefined,
-					// org_special_trust_incent_enc:
-					// 	employee_trust.org_special_trust_incent != undefined
-					// 		? CryptoHelper.encrypt(
-					// 				employee_trust.org_special_trust_incent.toString()
-					// 		  )
-					// 		: undefined,
 					...employee_trust,
 				})
 			);

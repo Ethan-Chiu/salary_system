@@ -1,4 +1,4 @@
-import { container, injectable } from "tsyringe";
+import { injectable } from "tsyringe";
 import { EmployeeData } from "../database/entity/SALARY/employee_data";
 import { EHRService } from "./ehr_service";
 import { type Emp } from "../database/entity/UMEDIA/emp";
@@ -10,7 +10,6 @@ import {
 	type FunctionsEnumType,
 } from "../api/types/functions_enum";
 import { EmployeeTrustService } from "./employee_trust_service";
-import { EmployeeTrustMapper } from "../database/mapper/employee_trust_mapper";
 import {
 	type DataComparison,
 	type PaidEmployee,
@@ -26,6 +25,12 @@ import { Op } from "sequelize";
 
 @injectable()
 export class SyncService {
+	constructor(
+		private readonly ehrService: EHRService,
+		private readonly employeeDataService: EmployeeDataService,
+		private readonly employeePaymentService: EmployeePaymentService,
+		private readonly employeeTrustService: EmployeeTrustService
+	) {}
 	// TODO: move this
 	parsedPeriod(
 		period: Period
@@ -62,10 +67,7 @@ export class SyncService {
 		quit_date: string | null
 	): Promise<QuitDateEnumType> {
 		if (!quit_date) return QuitDateEnum.Values.null;
-
-		const ehrService = container.resolve(EHRService);
-
-		const periodInfo = await ehrService.getPeriodById(period);
+		const periodInfo = await this.ehrService.getPeriodById(period);
 		const parsedPeriod = this.parsedPeriod(periodInfo);
 
 		const leaving_year_str = quit_date.split("-")[0]!; //讀出來是2023-05-04的形式
@@ -86,7 +88,10 @@ export class SyncService {
 
 	// TODO: move this
 	// 將EHR資料格式轉換 Salary資料格式
-	empToEmployee(ehr_data: Emp, period_id: number): CreateEmployeeDataServiceType {
+	empToEmployee(
+		ehr_data: Emp,
+		period_id: number
+	): CreateEmployeeDataServiceType {
 		return {
 			period_id: period_id,
 			emp_no: ehr_data.emp_no,
@@ -188,8 +193,6 @@ export class SyncService {
 		func: FunctionsEnumType, // 要執行的功能
 		period: number // 期間
 	): Promise<PaidEmployee[]> {
-		const ehrService = container.resolve(EHRService); // 獲取EHR服務的實例
-
 		// 返回需支付的員工數組的Promise
 		let cand_paid_emps: PaidEmployee[] = [];
 		const paid_status = [
@@ -221,7 +224,7 @@ export class SyncService {
 				});
 
 			const salary_emp_nos = salary_emps.map((emp) => emp.emp_no); // 提取工資員工的員工編號
-			const ehr_emps = await ehrService.getEmp(period); // 從EHR服務中獲取員工數據
+			const ehr_emps = await this.ehrService.getEmp(period); // 從EHR服務中獲取員工數據
 
 			// 步驟1: 創建ehr_emps的字典
 			const ehrDict: Map<string, Emp> = new Map<string, Emp>();
@@ -239,8 +242,8 @@ export class SyncService {
 					newEmps.push(emp);
 			});
 			// 將新員工轉換為Employee
-			const new_employees: CreateEmployeeDataServiceType[] = newEmps.map((emp) =>
-				this.empToEmployee(emp, period)
+			const new_employees: CreateEmployeeDataServiceType[] = newEmps.map(
+				(emp) => this.empToEmployee(emp, period)
 			);
 
 			const all_emps = salary_emps.concat(new_employees); // 合併所有員工數據
@@ -324,8 +327,6 @@ export class SyncService {
 		func: FunctionsEnumType,
 		period: number
 	): Promise<SyncData[] | null> {
-		const ehrService = container.resolve(EHRService);
-
 		const cand_paid_emps = await this.getCandPaidEmployees(func, period); // 獲取候選需支付員工數據
 		const cand_emp_no_list = cand_paid_emps.map((emp) => emp.emp_no); // 提取候選員工的員工編號列表
 
@@ -344,10 +345,9 @@ export class SyncService {
 			salary_datas = await EmployeeData.findAll({}); // 否則查找所有工資數據
 		}
 
-		const ehr_datas: Emp[] = await ehrService.getEmp(period);
-		const ehr_datas_transformed: CreateEmployeeDataServiceType[] = ehr_datas.map(
-			(emp) => this.empToEmployee(emp, period)
-		);
+		const ehr_datas: Emp[] = await this.ehrService.getEmp(period);
+		const ehr_datas_transformed: CreateEmployeeDataServiceType[] =
+			ehr_datas.map((emp) => this.empToEmployee(emp, period));
 
 		// Lookup table by EMP_NO
 		const ehrDict: Map<string, EmployeeData> = new Map<
@@ -388,9 +388,8 @@ export class SyncService {
 	}
 
 	async synchronize(period: number, change_emp_list: SyncInputType[]) {
-		const ehrService = container.resolve(EHRService);
 		// NOTE: All employee data from EHR
-		const ehr_datas = await ehrService.getEmp(period);
+		const ehr_datas = await this.ehrService.getEmp(period);
 		const ehrDict: Map<string, Emp> = new Map<string, Emp>();
 		ehr_datas.forEach((emp) => {
 			ehrDict.set(emp.emp_no, emp);
@@ -405,22 +404,14 @@ export class SyncService {
 		});
 
 		// Get services
-		const employee_data_service = container.resolve(EmployeeDataService);
-		const employee_payment_service = container.resolve(
-			EmployeePaymentService
-		);
-		const employee_trust_setvice = container.resolve(EmployeeTrustService);
-		const employee_trust_mapper = container.resolve(EmployeeTrustMapper);
 
 		// Update fields
 		const updatedDatas: EmployeeData[] = [];
 		for (const changeEmp of change_emp_list) {
 			// TODO: the data type is incorrect, lacking type check (period_id is missing)
 			// TODO: append period_id
-			const ehr_emp_data: CreateEmployeeDataServiceType = this.empToEmployee(
-				ehrDict.get(changeEmp.emp_no)!,
-				period
-			);
+			const ehr_emp_data: CreateEmployeeDataServiceType =
+				this.empToEmployee(ehrDict.get(changeEmp.emp_no)!, period);
 
 			let salary_emp_data: EmployeeData | undefined = salary_datas.find(
 				(emp) => emp.emp_no == changeEmp.emp_no
@@ -429,34 +420,25 @@ export class SyncService {
 			// TODO: Refactor this
 			if (!salary_emp_data) {
 				salary_emp_data =
-					await employee_data_service.createEmployeeData(
+					await this.employeeDataService.createEmployeeData(
 						ehr_emp_data
 					);
 
-				await employee_payment_service.createEmployeePayment({
+				await this.employeePaymentService.createEmployeePayment({
 					emp_no: ehr_emp_data.emp_no,
-					long_service_allowance_type: LongServiceEnum.Enum.month_allowance,
+					long_service_allowance_type:
+						LongServiceEnum.Enum.month_allowance,
 					start_date: new Date(ehr_emp_data.registration_date),
 					end_date: null,
 				});
 
-				const employee_trust_input = {
+				await this.employeeTrustService.createEmployeeTrust({
 					emp_no: ehr_emp_data.emp_no,
 					emp_trust_reserve: 0,
-					org_trust_reserve: 0,
 					emp_special_trust_incent: 0,
-					org_special_trust_incent: 0,
-					entry_date: new Date().toString(),
 					start_date: new Date(ehr_emp_data.registration_date),
 					end_date: null,
-				};
-				const employee_trust =
-					await employee_trust_mapper.getEmployeeTrust(
-						employee_trust_input
-					);
-				await employee_trust_setvice.createEmployeeTrust(
-					employee_trust
-				);
+				});
 			}
 
 			if (!salary_emp_data) {
@@ -472,7 +454,9 @@ export class SyncService {
 				updatedData.set(data_key, ehr_emp_data[data_key]);
 			}
 
-			await employee_data_service.updateEmployeeDataByEmpNo(updatedData);
+			await this.employeeDataService.updateEmployeeDataByEmpNo(
+				updatedData
+			);
 			updatedDatas.push(updatedData);
 		}
 
