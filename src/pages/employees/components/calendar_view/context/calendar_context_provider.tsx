@@ -6,6 +6,7 @@ import calendarContext, {
 import dayjs from "dayjs";
 import { CalendarEvent } from "../utils/calendar_event";
 import { getEventLevel } from "../utils/event_level";
+import { formatDate } from "~/lib/utils/format_date";
 
 interface RecordData {
 	id: number;
@@ -53,9 +54,11 @@ export default function CalendarContextProvider<T extends RecordData>({
 			const year = date.getFullYear()
 			const month = date.getMonth() + 1
 			const formattedMonth = month.toString().padStart(2, '0');
-			setSelectedEmp(data.filter((d) =>
-				d.start_date.toString() <= `${year}-${formattedMonth}-31`
-				&& d.start_date.toString() >= `${year}-${formattedMonth}-01`
+			setSelectedEmp(data.flatMap((d) => d).filter((d) =>
+				(formatDate('day', d.start_date)! <= formatDate('day', `${year}-${formattedMonth}-31`)!
+					&& formatDate('day', d.start_date)! >= formatDate('day', `${year}-${formattedMonth}-01`)!)
+				|| (formatDate('day', d.end_date)! <= formatDate('day', `${year}-${formattedMonth}-31`)!
+					&& formatDate('day', d.end_date)! >= formatDate('day', `${year}-${formattedMonth}-01`)!)
 			)[0]?.emp_no ?? null);
 		}
 	}, [data, monthIndex]);

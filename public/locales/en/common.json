@@ -318,6 +318,11 @@
     "checked": "Checked",
     "ignored": "Ignored"
   },
+  "long_service_allowance_type": {
+    "month_allowance": "Month Allowance",
+    "one_year_allowance": "One Year Allowance",
+    "two_year_allowance": "Two Year Allowance"
+  },
   "others": {
     "functions": "Functions",
     "month_salary": "Month Salary",

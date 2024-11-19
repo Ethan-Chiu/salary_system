@@ -338,6 +338,11 @@
     "checked": "確認更改",
     "ignored": "暫不修改"
   },
+  "long_service_allowance_type": {
+    "month_allowance": "月領",
+    "one_year_allowance": "一年領",
+    "two_year_allowance": "二年領"
+  },
   "transaction": {
     "month_salary_report": "月薪報表"
   },

@@ -8,6 +8,7 @@ import { ArrowUpDown } from "lucide-react";
 import { formatDate } from "~/lib/utils/format_date";
 import { createColumnHelper } from "@tanstack/react-table";
 import { type EmployeePaymentFEType } from "~/server/api/types/employee_payment_type";
+import { el } from "date-fns/locale";
 
 const columnHelper = createColumnHelper<EmployeePaymentFEType>();
 
@@ -34,27 +35,28 @@ const columnNames: (keyof EmployeePaymentFEType)[] = [
 ];
 const columns = (t: I18nType) =>
 	columnNames.map((key) => {
+		const header = ({ column }: { column: any }) => {
+			return (
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t(`table.${key}`)}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
+				</div>
+			);
+		}
 		if (key === "start_date" || key === "end_date") {
 			return columnHelper.accessor(key, {
-				header: ({ column }) => {
-					return (
-						<div className="flex justify-center">
-							<div className="text-center font-medium">
-								<Button
-									variant="ghost"
-									onClick={() =>
-										column.toggleSorting(
-											column.getIsSorted() === "asc"
-										)
-									}
-								>
-									{t(`table.${key}`)}
-									<ArrowUpDown className="ml-2 h-4 w-4" />
-								</Button>
-							</div>
-						</div>
-					);
-				},
+				header: header,
 				cell: ({ row }) => {
 					const value: Date = row.getValue(key);
 					return (
@@ -67,26 +69,23 @@ const columns = (t: I18nType) =>
 				},
 			});
 		}
-		return columnHelper.accessor(key, {
-			header: ({ column }) => {
-				return (
-					<div className="flex justify-center">
-						<div className="text-center font-medium">
-							<Button
-								variant="ghost"
-								onClick={() =>
-									column.toggleSorting(
-										column.getIsSorted() === "asc"
-									)
-								}
-							>
-								{t(`table.${key}`)}
-								<ArrowUpDown className="ml-2 h-4 w-4" />
-							</Button>
+		else if (key === "long_service_allowance_type") {
+			return columnHelper.accessor(key, {
+				header: header,
+				cell: ({ row }) => {
+					const value: string = row.getValue(key);
+					return (
+						<div className="flex justify-center">
+							<div className="text-center font-medium">
+								{t(`long_service_allowance_type.${value}`)}
+							</div>
 						</div>
-					</div>
-				);
-			},
+					);
+				},
+			});
+		}
+		return columnHelper.accessor(key, {
+			header: header,
 		});
 	});
 

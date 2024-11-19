@@ -8,6 +8,7 @@ import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Separator } from "~/components/ui/separator";
 import { TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 import { cn } from "~/lib/utils";
+import { formatDate } from "~/lib/utils/format_date";
 
 interface StatsPanelProps<TData> {
     table: Table<TData>;
@@ -115,13 +116,28 @@ function StatsPanelSelector<TData>(
 function ColumnComponent<TData>({ column }: { column: Column<TData, unknown> }) {
     const { t } = useTranslation(['common']);
     const uniqueValues = Array.from(column.getFacetedUniqueValues().entries());
+    const displayValue = uniqueValues.reduce<[string | number, number][]>((acc, [key, value]) => {
+        if (column.id === "start_date" || column.id === "end_date") {
+            key = formatDate("day", key);
+        }
+        if (column.id === "long_service_allowance_type") {
+            key = t(`long_service_allowance_type.${key}`);
+        }
+        const existing = acc.find(([k]) => k === key);
+        if (existing) {
+            existing[1] += value;
+        } else {
+            acc.push([key, value]);
+        }
+        return acc;
+    }, []).sort((a, b) => (a[0] > b[0] ? 1 : -1));
     return (
         <ScrollArea className="h-full">
             <TableRow className="sticky top-0 bg-secondary">
                 <TableHead key={"value"} align="center" className="text-center">{t(`table.value`)}</TableHead>
                 <TableHead key={"count"} align="center" className="text-center">{t(`table.count`)}</TableHead>
             </TableRow>
-            {uniqueValues.map(([key, value]) =>
+            {displayValue.map(([key, value]) =>
                 <TableRow>
                     <TableCell key={key} align="center" className="max-w-xs text-center">{key}</TableCell>
                     <TableCell key={value} align="center" className="max-w-xs text-center">{value}</TableCell>

@@ -14,6 +14,7 @@ import { HistoryDataType, type CalenderQueryFunctionType } from "~/components/da
 import { type EmployeeHistoryViewCommonEmpInfo } from "../history_view/history_view";
 import EmployeeToolbarFunctionsProvider from "../function_sheet/employee_functions_context";
 import { PopoverSelectorDataType } from "~/components/popover_selector";
+import { formatDate } from "~/lib/utils/format_date";
 
 interface DataTableProps {
 	dataFunction: CalenderQueryFunctionType<EmployeeHistoryViewCommonEmpInfo>;
@@ -68,7 +69,7 @@ function CompCalendarContent({
 	const seen = new Set<string>();
 	const employees: PopoverSelectorDataType[] = [];
 
-	data.forEach((employee) => {
+	data.flatMap((d) => d).forEach((employee) => {
 		if (!seen.has(employee.emp_no)) {
 			seen.add(employee.emp_no);
 			employees.push({
@@ -79,8 +80,8 @@ function CompCalendarContent({
 	});
 
 	return (
-		<CalendarContextProvider data={data} target_date={target_date}>
-			<CompCalendarView target_date={target_date} data={data} />
+		<CalendarContextProvider data={data.flatMap((d) => d)} target_date={target_date}>
+			<CompCalendarView target_date={target_date} data={data.flatMap((d) => d)} />
 		</CalendarContextProvider>
 	);
 }
@@ -101,9 +102,11 @@ function CompCalendarView({ target_date, data }: { target_date: string, data: (H
 		const formattedMonth = month.toString().padStart(2, '0');
 		const seen = new Set<string>();
 		const employees: PopoverSelectorDataType[] = [];
-		data.filter((d) =>
-			d.start_date.toString() <= `${year}-${formattedMonth}-31`
-			&& d.start_date.toString() >= `${year}-${formattedMonth}-01`
+		data.flatMap((d) => d).filter((d) =>
+			(formatDate('day', d.start_date)! <= formatDate('day', `${year}-${formattedMonth}-31`)!
+				&& formatDate('day', d.start_date)! >= formatDate('day', `${year}-${formattedMonth}-01`)!)
+			|| (formatDate('day', d.end_date)! <= formatDate('day', `${year}-${formattedMonth}-31`)!
+				&& formatDate('day', d.end_date)! >= formatDate('day', `${year}-${formattedMonth}-01`)!)
 		).forEach((employee) => {
 			if (!seen.has(employee.emp_no)) {
 				seen.add(employee.emp_no);
