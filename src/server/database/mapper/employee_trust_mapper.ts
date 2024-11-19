@@ -5,7 +5,7 @@ import {
 	type updateEmployeeTrustAPI,
 	updateEmployeeTrustService,
 	type employeeTrustFE,
-} from "~/server/api/types/employee_trust";
+} from "~/server/api/types/employee_trust_type";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import {
 	convertDatePropertiesToISOString,

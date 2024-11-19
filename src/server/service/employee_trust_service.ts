@@ -13,7 +13,7 @@ import {
 	employeeTrustCreateService,
 	type employeeTrustFE,
 	type updateEmployeeTrustService,
-} from "../api/types/employee_trust";
+} from "../api/types/employee_trust_type";
 import { EmployeeTrustMapper } from "../database/mapper/employee_trust_mapper";
 import { dateToString, stringToDate } from "../api/types/z_utils";
 

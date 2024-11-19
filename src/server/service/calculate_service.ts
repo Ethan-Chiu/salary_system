@@ -20,7 +20,7 @@ import { Round } from "./helper_function";
 import { SalaryIncomeTaxService } from "./salary_income_tax_service";
 import { BonusTypeEnum } from "../api/types/bonus_type_enum";
 import { EmployeeTrust } from "../database/entity/SALARY/employee_trust";
-import { EmployeeTrustFE } from "../api/types/employee_trust";
+import { EmployeeTrustFE } from "../api/types/employee_trust_type";
 import { EmployeeDataService } from "./employee_data_service";
 
 const FOREIGN = "外籍勞工";

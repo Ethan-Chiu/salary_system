@@ -5,7 +5,7 @@ import { EmployeeTrustService } from "~/server/service/employee_trust_service";
 import {
 	employeeTrustCreateAPI,
 	updateEmployeeTrustAPI,
-} from "../types/employee_trust";
+} from "../types/employee_trust_type";
 import { EmployeeTrustMapper } from "~/server/database/mapper/employee_trust_mapper";
 
 export const employeeTrustRouter = createTRPCRouter({
