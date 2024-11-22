@@ -14,6 +14,8 @@ import { BaseError } from "sequelize";
 import { BaseResponseError } from "../error/BaseResponseError";
 import { OtherMapper } from "~/server/database/mapper/other_mapper";
 import { BonusMapper } from "~/server/database/mapper/bonus_mapper";
+import { CalculateService } from "~/server/service/calculate_service";
+import ca from "date-fns/esm/locale/ca/index";
 
 export const functionRouter = createTRPCRouter({
 	getPeriod: publicProcedure.query(async () => {
@@ -103,7 +105,7 @@ export const functionRouter = createTRPCRouter({
 				input.period_id,
 				bonus_with_type_list,
 				input.emp_no_list
-			)
+			);
 			return new_bonusFE_list;
 		}),
 	getNewOtherByEmpNoList: publicProcedure
@@ -122,9 +124,67 @@ export const functionRouter = createTRPCRouter({
 				input.period_id,
 				expense_with_type_list,
 				input.emp_no_list
-			)
+			);
 			return newOther_list;
 		}),
+	getOtherDetailsByEmpNoList: publicProcedure
+		.input(
+			z.object({ period_id: z.number(), emp_no_list: z.string().array() })
+		)
+		.query(async ({ input }) => {
+			const ehrService = container.resolve(EHRService);
+			const calculate_service = container.resolve(CalculateService);
+			const expense_with_type_list =
+				await ehrService.getExpenseWithTypeByEmpNoList(
+					input.period_id,
+					input.emp_no_list
+				);
+			const other_addition_list =
+				await calculate_service.getOtherAdditionDetail(
+					expense_with_type_list
+				);
+			const other_addition_tax_list =
+				await calculate_service.getOtherAdditionTaxDetail(
+					expense_with_type_list
+				);
+			const other_deduction_list =
+				await calculate_service.getOtherDeductionDetail(
+					expense_with_type_list
+				);
+			const other_deduction_tax_list =
+				await calculate_service.getOtherDeductionTaxDetail(
+					expense_with_type_list
+				);
+			console.log(other_addition_list);
+			console.log(other_deduction_list);
+			console.log(other_addition_tax_list);
+			console.log(other_deduction_tax_list);
+			const result = input.emp_no_list.map((emp_no) => {
+				return {
+					emp_no: emp_no,
+					other_addition: (other_addition_list ?? []).filter(
+						(a) => a.emp_no === emp_no
+					),
+					other_addition_tax: (other_addition_tax_list ?? []).filter(
+						(a) => a.emp_no === emp_no
+					),
+					other_deduction: (other_deduction_list ?? []).filter(
+						(d) => d.emp_no === emp_no
+					),
+					other_deduction_tax: (
+						other_deduction_tax_list ?? []
+					).filter((d) => d.emp_no === emp_no),
+				};
+			});
+			// const otherMapper = container.resolve(OtherMapper);
+			// const newOther_list = await otherMapper.getNewOther(
+			// 	input.period_id,
+			// 	expense_with_type_list,
+			// 	input.emp_no_list
+			// )
+			return result;
+		}),
+
 	getNewAllowanceFEByEmpNoList: publicProcedure
 		.input(
 			z.object({ period_id: z.number(), emp_no_list: z.string().array() })
@@ -140,18 +200,19 @@ export const functionRouter = createTRPCRouter({
 					input.period_id,
 					input.emp_no_list
 				);
-			const Promisises = input.emp_no_list.map(
-				async (emp_no) => {
-					const employeePayment = await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
+			const Promisises = input.emp_no_list.map(async (emp_no) => {
+				const employeePayment =
+					await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
 						emp_no,
 						input.period_id
-					)
-					if (employeePayment === null) {
-						throw new BaseResponseError("EmployeePayment does not exist");
-					}
-					return employeePayment
+					);
+				if (employeePayment === null) {
+					throw new BaseResponseError(
+						"EmployeePayment does not exist"
+					);
 				}
-			);
+				return employeePayment;
+			});
 			const employee_payment_list = await Promise.all(Promisises);
 			const allowanceFE_list: any = [];
 			const promises = allowance_with_type_list.map(async (allowance) => {
@@ -164,9 +225,10 @@ export const functionRouter = createTRPCRouter({
 				input.period_id,
 				allowanceFE_list,
 				employee_payment_list
-			)
+			);
 			return newAllowanceFE_list;
 		}),
+
 	getExcelA: publicProcedure
 		.input(z.object({ ids: z.array(z.number()) }))
 		.query(async ({ input }) => {

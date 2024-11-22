@@ -7,7 +7,7 @@
 */
 import { container, injectable } from "tsyringe";
 import { EmployeeData } from "../database/entity/SALARY/employee_data";
-import { EHRService } from "./ehr_service";
+import { AllowanceWithType, EHRService, ExpenseWithType } from "./ehr_service";
 import { Overtime } from "../database/entity/UMEDIA/overtime";
 import { Payset } from "../database/entity/UMEDIA/payset";
 import { InsuranceRateSetting } from "../database/entity/SALARY/insurance_rate_setting";
@@ -20,7 +20,6 @@ import { Round } from "./helper_function";
 import { SalaryIncomeTaxService } from "./salary_income_tax_service";
 import { BonusTypeEnum } from "../api/types/bonus_type_enum";
 import { EmployeeTrust } from "../database/entity/SALARY/employee_trust";
-import { EmployeeTrustFE } from "../api/types/employee_trust_type";
 import { EmployeeDataService } from "./employee_data_service";
 
 const FOREIGN = "外籍勞工";
@@ -971,6 +970,18 @@ export class CalculateService {
 		}
 		return other_deduction;
 	}
+	async getOtherDeductionDetail(
+		expense_with_type_list: ExpenseWithType[]
+	): Promise<ExpenseWithType[] | null> {
+		const ehrService = container.resolve(EHRService);
+		let other_deduction_ids = (await ehrService.getExpenseClass())
+			.filter((ec) => ec.other_less === 1)
+			.map((ec) => ec.id);
+		const other_deduction_list = expense_with_type_list.filter(
+			(e) => other_deduction_ids.includes(e.id) && e.kind === 2
+		);
+		return other_deduction_list;
+	}
 	//MARK: 其他加項?
 	async getOtherAddition(period_id: number, emp_no: string): Promise<number> {
 		const ehrService = container.resolve(EHRService);
@@ -987,6 +998,18 @@ export class CalculateService {
 			}
 		}
 		return other_addition;
+	}
+	async getOtherAdditionDetail(
+		expense_with_type_list: ExpenseWithType[]
+	): Promise<ExpenseWithType[] | null> {
+		const ehrService = container.resolve(EHRService);
+		let other_addition_ids = (await ehrService.getAllowanceType())
+			.filter((at) => at.other_add === 1)
+			.map((at) => at.id);
+		const other_addition_list = expense_with_type_list.filter(
+			(a) => other_addition_ids.includes(a.id) && a.kind === 1
+		);
+		return other_addition_list;
 	}
 	//MARK: 其他加項稅 ?
 	async getOtherAdditionTax(
@@ -1011,6 +1034,18 @@ export class CalculateService {
 		}
 		return other_addition_tax;
 	}
+	async getOtherAdditionTaxDetail(
+		expense_with_type_list: ExpenseWithType[]
+	): Promise<ExpenseWithType[] | null> {
+		const ehrService = container.resolve(EHRService);
+		let other_addition_tax_ids = (await ehrService.getAllowanceType())
+			.filter((at) => at.other_tax === 1)
+			.map((at) => at.id);
+		const other_addition_tax_list = expense_with_type_list.filter(
+			(a) => other_addition_tax_ids.includes(a.id) && a.kind === 1
+		);
+		return other_addition_tax_list;
+	}
 	//MARK: 其他減項稅 ?
 	async getOtherDeductionTax(
 		period_id: number,
@@ -1030,6 +1065,18 @@ export class CalculateService {
 			}
 		}
 		return other_deduction_tax;
+	}
+	async getOtherDeductionTaxDetail(
+		expense_with_type_list: ExpenseWithType[]
+	): Promise<ExpenseWithType[]> {
+		const ehrService = container.resolve(EHRService);
+		let other_deduction_tax_ids = (await ehrService.getExpenseClass())
+			.filter((ec) => ec.other_tax === 1)
+			.map((ec) => ec.id);
+		const other_deduction_tax_list = expense_with_type_list.filter(
+			(e) => other_deduction_tax_ids.includes(e.id) && e.kind === 2
+		);
+		return other_deduction_tax_list;
 	}
 	//MARK: 住宿代扣款（舊伙食扣款）
 	async getMealDeduction(period_id: number, emp_no: string): Promise<number> {
@@ -1588,16 +1635,15 @@ export class CalculateService {
 		return 0;
 	}
 	//MARK: 二代健保
-	async getSecondGenerationHealthInsurance(
-		// employee_data: EmployeeData,
-		// employee_trust_fe: z.infer<typeof EmployeeTrustFE> | undefined,
-		// employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
-		// insurance_rate_setting: InsuranceRateSetting,
-		// project_bonus: number,
-		// q1_bonus: number,
-		// q2_bonus: number,
-		// q3_q4_bonus: number
-	): Promise<number> {
+	async getSecondGenerationHealthInsurance(): // employee_data: EmployeeData,
+	// employee_trust_fe: z.infer<typeof EmployeeTrustFE> | undefined,
+	// employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
+	// insurance_rate_setting: InsuranceRateSetting,
+	// project_bonus: number,
+	// q1_bonus: number,
+	// q2_bonus: number,
+	// q3_q4_bonus: number
+	Promise<number> {
 		// const new_bonus =
 		// 	project_bonus +
 		// 	q1_bonus +
@@ -1617,7 +1663,7 @@ export class CalculateService {
 		// 		) * v2_h_i_rate;
 		// 	const employee_data_service =
 		// 		container.resolve(EmployeeDataService);
-			
+
 		// 	return v2_h_i;
 		// }
 		// return 0;
