@@ -9,6 +9,7 @@ const employeeTrust = z.object({
 }).merge(DateAPI);
 
 export const employeeTrustFE = z.object({
+	id: z.number(),
 	emp_no: z.string(),
 	emp_trust_reserve: z.number(),
 	org_trust_reserve: z.number(),
