@@ -180,7 +180,7 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 	return (
 		<>
 			<AutoForm
-				className="m-5"
+				className="mb-10 mr-5 ml-5 mt-5"
 				_defaultValues={selectedData}
 				values={formValues}
 				onValuesChange={setFormValues}
