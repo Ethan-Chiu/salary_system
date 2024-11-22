@@ -74,14 +74,17 @@ export class EmployeeTrustMapper {
 		const start_dates = employee_trust_list
 			.map((emp_trust) => emp_trust.start_date)
 			.sort((a, b) => a.getTime() - b.getTime());
-
+		console.log("\n\n\nstart_dates", start_dates);
 		trust_money_list.forEach((trust_money) => {
 			const trust_money_start_date = stringToDate.parse(
 				trust_money.start_date
 			);
+			console.log("trust_money_start_date", trust_money_start_date);
+			console.log(trust_money_start_date.getTime() > start_dates[0]!.getTime());
+			console.log(!start_dates.includes(trust_money_start_date))
 			if (
-				trust_money_start_date > start_dates[0]! &&
-				!start_dates.includes(trust_money_start_date)
+				trust_money_start_date.getTime() > start_dates[0]!.getTime() &&
+				!start_dates.map((d) => d.getTime()).includes(trust_money_start_date.getTime())
 			) {
 				start_dates.push(trust_money_start_date);
 			}

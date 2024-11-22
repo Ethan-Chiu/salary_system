@@ -148,9 +148,7 @@ export const parametersRouter = createTRPCRouter({
 				start_date: input.start_date
 					? get_date_string(input.start_date)
 					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
+				end_date: null,
 			});
 			await attendanceService.rescheduleAttendanceSetting();
 			return newdata;
@@ -226,9 +224,7 @@ export const parametersRouter = createTRPCRouter({
 					start_date: input.start_date
 						? get_date_string(input.start_date)
 						: null,
-					end_date: input.end_date
-						? get_date_string(input.end_date)
-						: null,
+					end_date: null,
 				});
 			await insuranceRateService.rescheduleInsuranceRateSetting();
 			return newdata;
@@ -487,7 +483,7 @@ export const parametersRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const levelRangeService = container.resolve(LevelRangeService);
 			const levelRangeMapper = container.resolve(LevelRangeMapper);
-			const levelRange = await levelRangeMapper.getLevelRange(input);
+			const levelRange = await levelRangeMapper.getLevelRange({...input, end_date: null});
 			const newdata = await levelRangeService.createLevelRange(levelRange);
 			const levelRangeFE = await levelRangeMapper.getLevelRangeFE(newdata)
 			await levelRangeService.rescheduleLevelRange();
@@ -545,9 +541,7 @@ export const parametersRouter = createTRPCRouter({
 				start_date: input.start_date
 					? get_date_string(input.start_date)
 					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
+				end_date: null,
 			});
 			await levelService.rescheduleLevel();
 			return newdata;
@@ -662,9 +656,7 @@ export const parametersRouter = createTRPCRouter({
 				start_date: input.start_date
 					? get_date_string(input.start_date)
 					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
+				end_date: null,
 			});
 			await trustMoneyService.rescheduleTrustMoney();
 			return newdata;
@@ -724,9 +716,7 @@ export const parametersRouter = createTRPCRouter({
 				start_date: input.start_date
 					? get_date_string(input.start_date)
 					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
+				end_date: null,
 			});
 			return newdata;
 		}),
@@ -741,9 +731,7 @@ export const parametersRouter = createTRPCRouter({
 				start_date: e.start_date
 					? get_date_string(e.start_date)
 					: null,
-				end_date: e.end_date
-					? get_date_string(e.end_date)
-					: null,
+				end_date: null,
 			}))
 			);
 			return newdata;

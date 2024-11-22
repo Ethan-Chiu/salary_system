@@ -14,7 +14,7 @@ export const LevelRange = z.object({
   level_end_id: z.number(),
 }).merge(DateService)
 
-export const createLevelRangeAPI = LevelRangeFE;
+export const createLevelRangeAPI = LevelRangeFE.omit({ end_date: true });
 export const createLevelRangeService = LevelRange;
 
 export const updateLevelRangeAPI = LevelRangeFE.partial().merge(Id);
