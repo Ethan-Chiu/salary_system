@@ -1,82 +1,115 @@
-import { container, injectable } from "tsyringe";
+import { injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
-import { check_date, get_date_string, select_value } from "./helper_function";
+import { get_date_string, select_value } from "./helper_function";
 import { type z } from "zod";
 import { Op } from "sequelize";
-import { EmployeeTrust } from "../database/entity/SALARY/employee_trust";
-import { EHRService } from "./ehr_service";
-import { EmployeeDataService } from "./employee_data_service";
-import { TrustMoneyService } from "./trust_money_service";
 import {
-	createEmployeeTrustService,
-	EmployeeTrustFE,
-	updateEmployeeTrustService,
-} from "../api/types/employee_trust";
+	EmployeeTrust,
+	type EmployeeTrustDecType,
+	type encEmployeeTrust,
+} from "../database/entity/SALARY/employee_trust";
+import { EHRService } from "./ehr_service";
+import {
+	employeeTrustCreateService,
+	type employeeTrustFE,
+	type updateEmployeeTrustService,
+} from "../api/types/employee_trust_type";
 import { EmployeeTrustMapper } from "../database/mapper/employee_trust_mapper";
+import { dateToString, stringToDate } from "../api/types/z_utils";
 
 @injectable()
 export class EmployeeTrustService {
-	/* constructor() {} */
+	constructor(
+		private readonly employeeTrustMapper: EmployeeTrustMapper,
+		private readonly ehrService: EHRService
+	) {}
 
-	async createEmployeeTrust({
-		emp_no,
-		emp_trust_reserve_enc,
-		// org_trust_reserve_enc,
-		emp_special_trust_incent_enc,
-		// org_special_trust_incent_enc,
-		// entry_date,
-		start_date,
-		end_date,
-	}: z.infer<typeof createEmployeeTrustService>): Promise<EmployeeTrust> {
-		const current_date_string = get_date_string(new Date());
-		check_date(start_date, end_date, current_date_string);
-		const newData = await EmployeeTrust.create({
-			emp_no: emp_no,
-			emp_trust_reserve_enc: emp_trust_reserve_enc,
-			// org_trust_reserve_enc: org_trust_reserve_enc,
-			emp_special_trust_incent_enc: emp_special_trust_incent_enc,
-			// org_special_trust_incent_enc: org_special_trust_incent_enc,
-			// entry_date: entry_date,
-			start_date: start_date ?? current_date_string,
-			end_date: end_date,
+	async createEmployeeTrust(
+		data: z.input<typeof employeeTrustCreateService>
+	): Promise<EmployeeTrust> {
+		const d = employeeTrustCreateService.parse(data);
+
+		const create_input = {
+			...d,
+			start_date: d.start_date ?? new Date(),
 			disabled: false,
 			create_by: "system",
 			update_by: "system",
+		};
+		const employeePayment =
+			await this.employeeTrustMapper.encodeEmployeeTrust(create_input);
+
+		const newData = await EmployeeTrust.create(employeePayment, {
+			raw: true,
 		});
-		await this.createAndScheduleEmployeeTrust(newData.dataValues);
+
+		await this.createAndScheduleEmployeeTrust(newData.id, create_input);
+
 		return newData;
 	}
 
-	async getEmployeeTrustById(id: number): Promise<EmployeeTrust | null> {
+	async getEmployeeTrustById(
+		id: number
+	): Promise<EmployeeTrustDecType | null> {
 		const employeeTrust = await EmployeeTrust.findOne({
 			where: {
 				id: id,
 			},
 			raw: true,
 		});
-		return employeeTrust;
+
+		if (employeeTrust == null) {
+			return null;
+		}
+
+		return await this.employeeTrustMapper.decodeEmployeeTrust(
+			employeeTrust
+		);
+	}
+
+	async getAllEmployeeTrust(): Promise<EmployeeTrustDecType[]> {
+		const employeeTrust = await EmployeeTrust.findAll({
+			where: { disabled: false },
+			order: [["emp_no", "ASC"]],
+			raw: true,
+		});
+
+		return await this.employeeTrustMapper.decodeEmployeeTrustList(
+			employeeTrust
+		);
+	}
+
+	async getAllEmployeeTrustByEmpNo(
+		emp_no: string
+	): Promise<EmployeeTrustDecType[]> {
+		const employeeTrust = await EmployeeTrust.findAll({
+			where: { disabled: false, emp_no: emp_no },
+			order: [["emp_no", "ASC"]],
+			raw: true,
+		});
+
+		return await this.employeeTrustMapper.decodeEmployeeTrustList(
+			employeeTrust
+		);
 	}
 
 	async getCurrentEmployeeTrustFE(
 		period_id: number
-	): Promise<z.infer<typeof EmployeeTrustFE>[]> {
-		const employeeTrustService = container.resolve(EmployeeTrustService);
-		const employeeTrustMapper = container.resolve(EmployeeTrustMapper);
-		const ehr_service = container.resolve(EHRService);
-		const period = await ehr_service.getPeriodById(period_id);
-		const current_date_string = period.end_date;
+	): Promise<z.infer<typeof employeeTrustFE>[]> {
+		const period = await this.ehrService.getPeriodById(period_id);
+		const current_date = stringToDate.parse(period.end_date);
 
 		// 获取所有的员工信任记录
-		const allEmployeeTrustRecords =
-			await employeeTrustService.getAllEmployeeTrust();
+		const allEmployeeTrustRecords = await this.getAllEmployeeTrust();
 		if (allEmployeeTrustRecords == null) {
 			throw new BaseResponseError("Employee trust records do not exist");
 		}
 
 		// 将记录按工号分组
-		const groupedEmployeeTrustRecords = {} as {
-			[empNo: string]: EmployeeTrust[];
-		};
+		const groupedEmployeeTrustRecords: Record<
+			string,
+			EmployeeTrustDecType[]
+		> = {};
 
 		allEmployeeTrustRecords.forEach((record) => {
 			if (!groupedEmployeeTrustRecords[record.emp_no]) {
@@ -90,20 +123,21 @@ export class EmployeeTrustService {
 		const allEmployeeTrustFE = await Promise.all(
 			groupedRecordsArray.map(
 				async (employeeTrustList) =>
-					await employeeTrustMapper.getEmployeeTrustFE(
+					await this.employeeTrustMapper.getEmployeeTrustFE(
 						employeeTrustList
 					)
 			)
 		);
 		const current_employee_trustFE = await Promise.all(
-			allEmployeeTrustFE.map((emp_trust_list) =>
-				emp_trust_list.find(
-					(emp_trust) =>
-						emp_trust.start_date! <= current_date_string &&
+			allEmployeeTrustFE.map((emp_trust_list) => {
+				return emp_trust_list.find((emp_trust) => {
+					return (
+						emp_trust.start_date! <= current_date &&
 						(emp_trust.end_date == null ||
-							emp_trust.end_date! >= current_date_string)
-				)
-			)
+							emp_trust.end_date >= current_date)
+					);
+				});
+			})
 		);
 		return current_employee_trustFE;
 	}
@@ -111,7 +145,7 @@ export class EmployeeTrustService {
 	async getCurrentEmployeeTrustFEByEmpNo(
 		emp_no: string,
 		period_id: number
-	): Promise<z.infer<typeof EmployeeTrustFE>> {
+	): Promise<z.infer<typeof employeeTrustFE>> {
 		const current_emp_trustFE = await this.getCurrentEmployeeTrustFE(
 			period_id
 		);
@@ -120,31 +154,20 @@ export class EmployeeTrustService {
 		)[0]!;
 	}
 
-	async getAllEmployeeTrust(): Promise<EmployeeTrust[]> {
-		const employeeTrust = await EmployeeTrust.findAll({
-			where: { disabled: false },
-			order: [["emp_no", "ASC"]],
-			raw: true,
-		});
-		return employeeTrust;
-	}
 	async getAllEmployeeTrustFE(): Promise<
-		z.infer<typeof EmployeeTrustFE>[][]
+		z.infer<typeof employeeTrustFE>[][]
 	> {
-		const employeeTrustService = container.resolve(EmployeeTrustService);
-		const employeeTrustMapper = container.resolve(EmployeeTrustMapper);
-
 		// 获取所有的员工信任记录
-		const allEmployeeTrustRecords =
-			await employeeTrustService.getAllEmployeeTrust();
+		const allEmployeeTrustRecords = await this.getAllEmployeeTrust();
 		if (allEmployeeTrustRecords == null) {
 			throw new BaseResponseError("Employee trust records do not exist");
 		}
 
 		// 将记录按工号分组
-		const groupedEmployeeTrustRecords = {} as {
-			[empNo: string]: EmployeeTrust[];
-		};
+		const groupedEmployeeTrustRecords: Record<
+			string,
+			EmployeeTrustDecType[]
+		> = {};
 
 		allEmployeeTrustRecords.forEach((record) => {
 			if (!groupedEmployeeTrustRecords[record.emp_no]) {
@@ -158,30 +181,19 @@ export class EmployeeTrustService {
 		const allEmployeeTrustFE = await Promise.all(
 			groupedRecordsArray.map(
 				async (employeeTrustList) =>
-					await employeeTrustMapper.getEmployeeTrustFE(
+					await this.employeeTrustMapper.getEmployeeTrustFE(
 						employeeTrustList
 					)
 			)
 		);
 		return allEmployeeTrustFE;
 	}
-	async getAllEmployeeTrustByEmpNo(emp_no: string): Promise<EmployeeTrust[]> {
-		const employeeTrust = await EmployeeTrust.findAll({
-			where: { disabled: false, emp_no: emp_no },
-			order: [["emp_no", "ASC"]],
-			raw: true,
-		});
-		return employeeTrust;
-	}
 
 	async updateEmployeeTrust({
 		id,
 		emp_no,
-		emp_trust_reserve_enc,
-		// org_trust_reserve_enc,
-		emp_special_trust_incent_enc,
-		// org_special_trust_incent_enc,
-		// entry_date,
+		emp_trust_reserve,
+		emp_special_trust_incent,
 		start_date,
 		end_date,
 	}: z.infer<typeof updateEmployeeTrustService>): Promise<void> {
@@ -194,14 +206,14 @@ export class EmployeeTrustService {
 
 		await this.createEmployeeTrust({
 			emp_no: select_value(emp_no, employeeTrust.emp_no),
-			emp_trust_reserve_enc: select_value(
-				emp_trust_reserve_enc,
-				employeeTrust.emp_trust_reserve_enc
+			emp_trust_reserve: select_value(
+				emp_trust_reserve,
+				employeeTrust.emp_trust_reserve
 			),
 			// org_trust_reserve_enc: employeeTrust.org_trust_reserve_enc,
-			emp_special_trust_incent_enc: select_value(
-				emp_special_trust_incent_enc,
-				employeeTrust.emp_special_trust_incent_enc
+			emp_special_trust_incent: select_value(
+				emp_special_trust_incent,
+				employeeTrust.emp_special_trust_incent
 			),
 			// org_special_trust_incent_enc: employeeTrust.org_special_trust_incent_enc,
 			// entry_date: select_value(entry_date, employeeTrust.entry_date),
@@ -243,7 +255,7 @@ export class EmployeeTrustService {
 				if (end_date_string != new_end_date_string) {
 					await this.updateEmployeeTrust({
 						id: employeeTrustList[i]!.id,
-						end_date: new_end_date_string,
+						end_date: new Date(new_end_date_string),
 					});
 				}
 			} else if (end_date_string != null) {
@@ -260,8 +272,10 @@ export class EmployeeTrustService {
 			});
 		}
 	}
+
 	async createAndScheduleEmployeeTrust(
-		new_emp_trust: EmployeeTrust
+		new_emp_id: number,
+		new_emp_trust: z.input<typeof encEmployeeTrust>
 	): Promise<void> {
 		const new_emp_trust_start_date = new Date(new_emp_trust.start_date);
 		const new_emp_trust_end_date = new_emp_trust.end_date
@@ -269,7 +283,7 @@ export class EmployeeTrustService {
 			: null;
 		const allEmployeeTrust = (
 			await this.getAllEmployeeTrustByEmpNo(new_emp_trust.emp_no)
-		).filter((emp_trust) => emp_trust.id != new_emp_trust.id);
+		).filter((emp_trust) => emp_trust.id != new_emp_id);
 		//右端在裡面
 		// const endOverlapList = allEmployeeTrust.filter(
 		// 	(emp_trust) =>
@@ -328,11 +342,9 @@ export class EmployeeTrustService {
 			startOverlapList.map(async (emp_trust) => {
 				await this.updateEmployeeTrust({
 					id: emp_trust.id,
-					start_date: get_date_string(
-						new Date(
-							new_emp_trust_end_date!.setDate(
-								new_emp_trust_end_date!.getDate() + 1
-							)
+					start_date: new Date(
+						new_emp_trust_end_date!.setDate(
+							new_emp_trust_end_date!.getDate() + 1
 						)
 					),
 				});
@@ -345,20 +357,17 @@ export class EmployeeTrustService {
 		);
 		await Promise.all(
 			twoEndOutsideList.map(async (emp_trust) => {
-				const originalEndDate = emp_trust.end_date;
 				await this.createEmployeeTrust({
 					emp_no: emp_trust.emp_no,
-					emp_trust_reserve_enc: emp_trust.emp_trust_reserve_enc,
-					emp_special_trust_incent_enc:
-						emp_trust.emp_special_trust_incent_enc,
-					start_date: get_date_string(
-						new Date(
-							new_emp_trust_end_date!.setDate(
-								new_emp_trust_end_date!.getDate() + 1
-							)
+					emp_trust_reserve: emp_trust.emp_trust_reserve,
+					emp_special_trust_incent:
+						emp_trust.emp_special_trust_incent,
+					start_date: new Date(
+						new_emp_trust_end_date!.setDate(
+							new_emp_trust_end_date!.getDate() + 1
 						)
 					),
-					end_date: originalEndDate,
+					end_date: emp_trust.end_date,
 				});
 			})
 		);
@@ -435,16 +444,18 @@ export class EmployeeTrustService {
 	// }
 	async getCurrentEmployeeTrustByEmpNoByDate(
 		emp_no: string,
-		date: string
+		date: Date
 	): Promise<EmployeeTrust | null> {
+		const date_str = dateToString.parse(date);
+
 		const employeeTrust = await EmployeeTrust.findOne({
 			where: {
 				emp_no: emp_no,
 				start_date: {
-					[Op.lte]: date,
+					[Op.lte]: date_str,
 				},
 				end_date: {
-					[Op.or]: [{ [Op.gte]: date }, { [Op.eq]: null }],
+					[Op.or]: [{ [Op.gte]: date_str }, { [Op.eq]: null }],
 				},
 				disabled: false,
 			},

@@ -17,8 +17,11 @@ import { DataTable } from "./data_table";
 import { is_date_available } from "~/server/service/helper_function";
 import { Badge } from "~/components/ui/badge";
 import { useTranslation } from "react-i18next";
-import { type HistoryQueryFunctionType } from "~/components/data_table/history_data_type";
+import { type ParameterHistoryQueryFunctionType } from "~/components/data_table/history_data_type";
 import periodContext from "~/components/context/period_context";
+import { formatDate } from "~/lib/utils/format_date";
+import { Separator } from "~/components/ui/separator";
+import { DateStringPopoverSelector, PopoverSelectorDataType } from "~/components/popover_selector";
 
 export default function HistoryView() {
 	const { selectedTableType } = useContext(dataTableContext);
@@ -36,19 +39,21 @@ function CompHistoryView() {
 	const { selectedTableType } = useContext(dataTableContext);
 
 	const queryFunctions = useContext(apiFunctionsContext);
-	const queryFunction = queryFunctions.queryFunction! as HistoryQueryFunctionType;
+	const queryFunction = queryFunctions.queryFunction! as ParameterHistoryQueryFunctionType;
 
 	const { isLoading, isError, data, error } = queryFunction();
 
 	const { selectedPeriod } = useContext(periodContext);
 
 	const [selectedId, setSelectedId] = useState<number>(0);
+	const [selectedDateString, setSelectedDateString] = useState<string | null>(null);
 	const filterKey = "name";
 	const { t } = useTranslation(['common']);
 
 	useEffect(() => {
 		if (!isLoading && data?.[0]) {
 			setSelectedId(data[0].id);
+			setSelectedDateString(formatDate("day", data[0].start_date) ?? t("others.now"));
 		}
 	}, [isLoading, data]);
 
@@ -64,11 +69,28 @@ function CompHistoryView() {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
+	const dateOpts: PopoverSelectorDataType[] = [];
+	data?.forEach((e) => {
+		if (e.start_date && !dateOpts.some((opt) => opt.key === formatDate("day", e.start_date))) {
+			dateOpts.push({
+				key: formatDate("day", e.start_date) ?? t("others.now"),
+				value: formatDate("day", e.start_date) ?? t("others.now"),
+			});
+		}
+	});
+
 	return (
 		<ResizablePanelGroup direction="horizontal">
-			<ResizablePanel defaultSize={25} minSize={15}>
+			<ResizablePanel defaultSize={30} minSize={15}>
+				<DateStringPopoverSelector
+					data={dateOpts}
+					selectedKey={selectedDateString}
+					setSelectedKey={setSelectedDateString}
+				/>
+				<Separator />
 				<ScrollArea className="h-full">
 					{data!
+						.filter((e) => formatDate("day", e.start_date) === selectedDateString)
 						.sort((a, b) => {
 							if (a.start_date == null) {
 								return -1;
@@ -95,7 +117,7 @@ function CompHistoryView() {
 								<div className="m-1 flex flex-wrap items-center justify-center">
 									<div className="flex-1 whitespace-nowrap text-center">
 										{/* {e.start_date.toString() ?? t("others.now")} */}
-										{e.start_date.toString() ?? t("others.now")}
+										{formatDate("day", e.start_date) ?? t("others.now")}
 									</div>
 									<ArrowRightCircle
 										size={18}
@@ -103,7 +125,7 @@ function CompHistoryView() {
 									/>
 									<div className="flex-1 whitespace-nowrap text-center">
 										{/* {e.end_date?.toString() ?? t("others.now")} */}
-										{e.end_date?.toString() ?? ""}
+										{formatDate("day", e.end_date) ?? ""}
 									</div>
 								</div>
 								<div className="m-1 flex text-sm">
@@ -129,7 +151,7 @@ function CompHistoryView() {
 				</ScrollArea>
 			</ResizablePanel>
 			<ResizableHandle />
-			<ResizablePanel defaultSize={75}>
+			<ResizablePanel defaultSize={70}>
 				{data!.filter((e) => e.id === selectedId).length > 0 ? (
 					<DataTable
 						columns={getTableColumn(selectedTableType, t)}

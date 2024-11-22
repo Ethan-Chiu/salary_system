@@ -109,8 +109,8 @@ export function levelMapper(levelData: Level[]): RowItem[] {
 	return levelData.map((d) => {
 		return {
 			level: d.level,
-			start_date: formatDate("day", d.start_date),
-			end_date: d.end_date ? formatDate("day", d.end_date) : "",
+			start_date: formatDate("day", d.start_date) ?? "",
+			end_date: formatDate("day", d.end_date) ?? "",
 		};
 	});
 }

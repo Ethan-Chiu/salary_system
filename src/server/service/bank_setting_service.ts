@@ -75,7 +75,7 @@ export class BankSettingService {
 		const bankSetting = await BankSetting.findAll(
 			{
 				where: { disabled: false },
-				order: [["bank_code", "ASC"]]
+				order: [["start_date", "DESC"], ["bank_code", "ASC"]]
 			}
 		);
 		return bankSetting;

@@ -9,9 +9,9 @@ import { ArrowUpDown } from "lucide-react";
 const columns = (t: I18nType) =>
 	[
 		// "period_name",
+		"department",
 		"emp_no",
 		"emp_name",
-		"department",
 		"position",
 		"work_day",
 

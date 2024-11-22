@@ -1,16 +1,12 @@
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { container } from "tsyringe";
-import { BaseResponseError } from "../error/BaseResponseError";
 import { z } from "zod";
 import { EmployeeTrustService } from "~/server/service/employee_trust_service";
 import {
-	createEmployeeTrustAPI,
+	employeeTrustCreateAPI,
 	updateEmployeeTrustAPI,
-} from "../types/employee_trust";
+} from "../types/employee_trust_type";
 import { EmployeeTrustMapper } from "~/server/database/mapper/employee_trust_mapper";
-function delay(ms: number) {
-	return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 export const employeeTrustRouter = createTRPCRouter({
 	getCurrentEmployeeTrust: publicProcedure
@@ -18,32 +14,30 @@ export const employeeTrustRouter = createTRPCRouter({
 		.query(async ({ input }) => {
 			const employeeTrustService =
 				container.resolve(EmployeeTrustService);
-			const current_employee_trustFE = await employeeTrustService.getCurrentEmployeeTrustFE(input.period_id);
+			const current_employee_trustFE =
+				await employeeTrustService.getCurrentEmployeeTrustFE(
+					input.period_id
+				);
 			return current_employee_trustFE;
 		}),
 
 	getAllEmployeeTrust: publicProcedure.query(async () => {
 		const employeeTrustService = container.resolve(EmployeeTrustService);
-		const allEmployeeTrustFE = await employeeTrustService.getAllEmployeeTrustFE()
+		const allEmployeeTrustFE =
+			await employeeTrustService.getAllEmployeeTrustFE();
 		return allEmployeeTrustFE;
 	}),
 	createEmployeeTrust: publicProcedure
-		.input(createEmployeeTrustAPI)
+		.input(employeeTrustCreateAPI)
 		.mutation(async ({ input }) => {
 			const employeeTrustService =
 				container.resolve(EmployeeTrustService);
-			const employeeTrustMapper = container.resolve(EmployeeTrustMapper);
-			const employeeTrust = await employeeTrustMapper.getEmployeeTrust(
-				input
-			);
 			const newdata = await employeeTrustService.createEmployeeTrust(
-				employeeTrust
+				input
 			);
 			console.log("\n\n\nreschedule\n\n\n");
 			await employeeTrustService.rescheduleEmployeeTrust();
-			const employeeTrustDec =
-				await employeeTrustMapper.getEmployeeTrustDec(newdata);
-			return employeeTrustDec;
+			return newdata;
 		}),
 
 	updateEmployeeTrust: publicProcedure

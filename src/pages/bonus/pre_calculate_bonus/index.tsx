@@ -73,7 +73,7 @@ const BonusHomePageContent = () => {
                                             key={bonus_type}
                                             value={bonus_type}
                                         >
-                                            {t(`others.${bonus_type}`)}
+                                            {t(`table.${bonus_type}`)}
                                         </SelectItem>
                                     );
                                 })}

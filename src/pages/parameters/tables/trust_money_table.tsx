@@ -10,6 +10,7 @@ import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
 import { TrustMoney } from "~/server/database/entity/SALARY/trust_money";
+import { formatDate } from "~/lib/utils/format_date";
 
 export type RowItem = {
 	position: number;
@@ -201,8 +202,8 @@ export function trustMoneyMapper(
 		position_type: data.position_type,
 		org_trust_reserve_limit: data.org_trust_reserve_limit,
 		org_special_trust_incent_limit: data.org_special_trust_incent_limit,
-		start_date: data.start_date,
-		end_date: data.end_date,
+		start_date: formatDate("day", data.start_date) ?? "",
+		end_date: formatDate("day", data.end_date) ?? "",
 	}));
 }
 
