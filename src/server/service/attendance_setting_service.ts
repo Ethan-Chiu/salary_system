@@ -117,6 +117,22 @@ export class AttendanceSettingService {
 		return attendanceSettingList;
 	}
 
+	async getAllFutureAttendanceSetting(date: Date): Promise<AttendanceSetting[]> {
+		const current_date_string = get_date_string(date);
+		const attendanceSettingList = await AttendanceSetting.findAll(
+			{
+				where: {
+					start_date: {
+						[Op.gt]: current_date_string,
+					},
+					disabled: false,
+				},
+				order: [["start_date", "ASC"]],
+			}
+		);
+		return attendanceSettingList;
+	}
+
 	async getAttendanceSettingById(
 		id: number
 	): Promise<AttendanceSetting | null> {
@@ -149,7 +165,7 @@ export class AttendanceSettingService {
 			throw new BaseResponseError("AttendanceSetting does not exist");
 		}
 
-		
+
 
 		await this.createAttendanceSetting(
 			{
@@ -268,9 +284,9 @@ export class AttendanceSettingService {
 		);
 
 		for (let i = 0; i < attendanceSettingList.length - 1; i += 1) {
-			const end_date_string = attendanceSettingList[i]!.end_date? get_date_string(
+			const end_date_string = attendanceSettingList[i]!.end_date ? get_date_string(
 				new Date(attendanceSettingList[i]!.end_date!)
-			):null;
+			) : null;
 			const start_date = new Date(
 				attendanceSettingList[i + 1]!.start_date
 			);

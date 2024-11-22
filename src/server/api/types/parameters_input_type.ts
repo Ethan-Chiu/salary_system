@@ -44,7 +44,7 @@ const AttendanceSetting = z.object({
 	// foreign_worker_holiday: z.number(),
 });
 
-export const createAttendanceSettingAPI = AttendanceSetting.merge(DateAPI);
+export const createAttendanceSettingAPI = AttendanceSetting.merge(DateAPI).omit({ end_date: true });
 export const createAttendanceSettingService =
 	AttendanceSetting.merge(DateService);
 export const updateAttendanceSettingAPI = AttendanceSetting.merge(DateAPI).partial().merge(Id);
@@ -73,7 +73,7 @@ const InsuranceRateSetting = z.object({
 	v2_h_i_multiplier: z.number(),
 });
 export const createInsuranceRateSettingAPI =
-	InsuranceRateSetting.merge(DateAPI);
+	InsuranceRateSetting.merge(DateAPI).omit({ end_date: true });
 export const createInsuranceRateSettingService =
 	InsuranceRateSetting.merge(DateService);
 export const updateInsuranceRateSettingAPI = InsuranceRateSetting.merge(DateAPI).partial().merge(Id);
@@ -176,7 +176,7 @@ const Level = z.object({
 	level: z.number(),
 });
 
-export const createLevelAPI = Level.merge(DateAPI);
+export const createLevelAPI = Level.merge(DateAPI).omit({ end_date: true });
 export const createLevelService = Level.merge(DateService);
 export const updateLevelAPI = Level.merge(DateAPI).partial().merge(Id);
 export const updateLevelService = Level.merge(DateService).partial().merge(Id);
@@ -197,7 +197,7 @@ const SalaryIncomeTax = z.object({
 	dependent: z.number(),
 	tax_amount: z.number(),
 });
-export const createSalaryIncomeTaxAPI = SalaryIncomeTax.merge(DateAPI);
+export const createSalaryIncomeTaxAPI = SalaryIncomeTax.merge(DateAPI).omit({ end_date: true });
 export const createSalaryIncomeTaxService = SalaryIncomeTax.merge(DateService);
 export const updateSalaryIncomeTaxAPI = SalaryIncomeTax.merge(DateAPI).partial().merge(Id);
 export const updateSalaryIncomeTaxService = SalaryIncomeTax.merge(DateService).partial().merge(Id);
@@ -210,7 +210,7 @@ const TrustMoney = z.object({
 	org_special_trust_incent_limit: z.number(),
 });
 
-export const createTrustMoneyAPI = TrustMoney.merge(DateAPI);
+export const createTrustMoneyAPI = TrustMoney.merge(DateAPI).omit({ end_date: true });
 export const createTrustMoneyService = TrustMoney.merge(DateService);
 export const updateTrustMoneyAPI = TrustMoney.merge(DateAPI).partial().merge(Id);
 export const updateTrustMoneyService = TrustMoney.merge(DateService).partial().merge(Id);
