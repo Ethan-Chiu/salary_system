@@ -13,7 +13,7 @@ import { dateToString } from "../api/types/z_utils";
 
 @injectable()
 export class TrustMoneyService {
-	constructor() {}
+	constructor() { }
 
 	async createTrustMoney({
 		position,
@@ -160,6 +160,7 @@ export class TrustMoneyService {
 				["position", "ASC"],
 				["position_type", "ASC"],
 				["start_date", "ASC"],
+				["update_date", "ASC"],
 			],
 		});
 
@@ -173,15 +174,20 @@ export class TrustMoneyService {
 			);
 			if (
 				trustMoneyList[i]!.position ==
-					trustMoneyList[i + 1]!.position &&
+				trustMoneyList[i + 1]!.position &&
 				trustMoneyList[i]!.position_type ==
-					trustMoneyList[i + 1]!.position_type
+				trustMoneyList[i + 1]!.position_type
 			) {
 				if (end_date_string != new_end_date_string) {
-					await this.updateTrustMoney({
-						id: trustMoneyList[i]!.id,
-						end_date: new_end_date_string,
-					});
+					if (new_end_date_string < trustMoneyList[i]!.start_date) {
+						await this.deleteTrustMoney(trustMoneyList[i]!.id);
+					}
+					else {
+						await this.updateTrustMoney({
+							id: trustMoneyList[i]!.id,
+							end_date: new_end_date_string,
+						});
+					}
 				}
 			} else {
 				if (trustMoneyList[i]!.end_date != null) {
@@ -202,9 +208,9 @@ export class TrustMoneyService {
 	async getCurrentTrustMoneyByPositionByDate(
 		position: number,
 		position_type: string,
-		date: Date 
+		date: Date
 	): Promise<TrustMoney | null> {
-    const date_str = dateToString.parse(date);
+		const date_str = dateToString.parse(date);
 
 		const trustMoney = await TrustMoney.findOne({
 			where: {

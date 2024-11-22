@@ -247,12 +247,13 @@ export class EmployeeTrustService {
 			order: [
 				["emp_no", "ASC"],
 				["start_date", "ASC"],
+				["update_date", "ASC"],
 			],
 		});
 		for (let i = 0; i < employeeTrustList.length - 1; i += 1) {
-			const end_date_string = employeeTrustList[i]!.end_date? get_date_string(
+			const end_date_string = employeeTrustList[i]!.end_date ? get_date_string(
 				new Date(employeeTrustList[i]!.end_date!)
-			):null;
+			) : null;
 			const start_date = new Date(employeeTrustList[i + 1]!.start_date);
 			const new_end_date_string = get_date_string(
 				new Date(start_date.setDate(start_date.getDate() - 1))
@@ -261,10 +262,15 @@ export class EmployeeTrustService {
 				employeeTrustList[i]!.emp_no == employeeTrustList[i + 1]!.emp_no
 			) {
 				if (end_date_string != new_end_date_string) {
-					await this.updateEmployeeTrust({
-						id: employeeTrustList[i]!.id,
-						end_date: new Date(new_end_date_string),
-					});
+					if (new_end_date_string < employeeTrustList[i]!.start_date) {
+						await this.deleteEmployeeTrust(employeeTrustList[i]!.id);
+					}
+					else {
+						await this.updateEmployeeTrust({
+							id: employeeTrustList[i]!.id,
+							end_date: new Date(new_end_date_string),
+						});
+					}
 				}
 			} else if (end_date_string != null) {
 				await this.updateEmployeeTrust({
