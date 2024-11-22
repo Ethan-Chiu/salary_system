@@ -36,7 +36,7 @@ export const stringToDateNullable = z
 	.transform((value) => (value === null ? null : new Date(value)))
 	.pipe(z.date().nullable());
 
-export const encodeString = z
+export const encodeString = z.coerce
 	.string()
 	.transform((value) => CryptoHelper.encrypt(value));
 

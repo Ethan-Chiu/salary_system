@@ -32,7 +32,7 @@ export class EmployeePaymentService {
 		data: z.input<typeof employeePaymentCreateService>
 	): Promise<EmployeePayment> {
 		const d = employeePaymentCreateService.parse(data);
-
+		
 		const employeePayment =
 			await this.employeePaymentMapper.encodeEmployeePayment({
 				...d,
@@ -41,7 +41,7 @@ export class EmployeePaymentService {
 				create_by: "system",
 				update_by: "system",
 			});
-
+		
 		const newData = await EmployeePayment.create(employeePayment, {
 			raw: true,
 		});
@@ -203,14 +203,15 @@ export class EmployeePaymentService {
 		emp_no: string,
 		date: Date
 	): Promise<EmployeePaymentDecType | null> {
+		const date_string = get_date_string(date);
 		const employeePayment = await EmployeePayment.findOne({
 			where: {
 				emp_no: emp_no,
 				start_date: {
-					[Op.lte]: date,
+					[Op.lte]: date_string,
 				},
 				end_date: {
-					[Op.or]: [{ [Op.gte]: date }, { [Op.eq]: null }],
+					[Op.or]: [{ [Op.gte]: date_string }, { [Op.eq]: null }],
 				},
 				disabled: false,
 			},
@@ -268,24 +269,23 @@ export class EmployeePaymentService {
 	async updateEmployeePayment(
 		data: z.input<typeof updateEmployeePaymentService>
 	): Promise<void> {
-		await this.deleteEmployeePayment(data.id);
-
 		const transData = await this.getEmployeePaymentAfterSelectValue(data);
 		await this.createEmployeePayment(transData);
+		await this.deleteEmployeePayment(data.id);
 	}
 
 	async updateEmployeePaymentAndMatchLevel(
 		data: z.input<typeof updateEmployeePaymentService>
 	): Promise<void> {
-		await this.deleteEmployeePayment(data.id);
-
 		const transData = await this.getEmployeePaymentAfterSelectValue(data);
 		const matchedLevelData = await this.getMatchedLevelEmployeePayment(
 			transData,
 			transData.start_date!
 		);
-
+		
 		await this.createEmployeePayment(matchedLevelData);
+		
+		await this.deleteEmployeePayment(data.id);
 	}
 
 	async deleteEmployeePayment(id: number): Promise<void> {
@@ -355,9 +355,9 @@ export class EmployeePaymentService {
 		});
 
 		for (let i = 0; i < employeePaymentList.length - 1; i += 1) {
-			const end_date_string = get_date_string(
+			const end_date_string = employeePaymentList[i]!.end_date? get_date_string(
 				new Date(employeePaymentList[i]!.end_date!)
-			);
+			):null;
 			const start_date = new Date(employeePaymentList[i + 1]!.start_date);
 			const new_end_date_string = get_date_string(
 				new Date(start_date.setDate(start_date.getDate() - 1))

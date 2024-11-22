@@ -64,7 +64,7 @@ export function DataTableFunctions({
 				level_start: levelSchema,
 				level_end: levelSchema,
 				start_date: zodRequiredDate("start_date"),
-				end_date: zodOptionalDate(),
+				// end_date: zodOptionalDate(),
 			})
 		}
 	}

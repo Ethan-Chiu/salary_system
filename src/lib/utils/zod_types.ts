@@ -21,10 +21,23 @@ export function zodRequiredDate(fieldName: string) {
 	}, z.coerce.date(getRequiredError(fieldName)));
 }
 
+// export function zodOptionalDate() {
+// 	return z.preprocess((d) => {
+// 		if (d === "") {
+// 			return undefined;
+// 		} else if (d === undefined) {
+// 			return null;
+// 		} else {
+// 			return d;
+// 		}
+// 	}, z.coerce.date().optional().nullable());
+// }
+
+
 export function zodOptionalDate() {
 	return z.preprocess((d) => {
 		if (d === "") {
-			return undefined;
+			return null;
 		} else if (d === undefined) {
 			return null;
 		} else {

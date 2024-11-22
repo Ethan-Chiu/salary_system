@@ -19,5 +19,5 @@ export const employeePaymentSchema = z.object({
 	// l_r: zc.number(),
 	// occupational_injury: zc.number(),
 	start_date: zodRequiredDate("start_date"),
-	end_date: zodOptionalDate(),
+	// end_date: zodOptionalDate(),
 });

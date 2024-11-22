@@ -6,5 +6,5 @@ const zc = z.coerce;
 export const levelSchema = z.object({
 	level: zc.number(),
 	start_date: zodRequiredDate("start_date"),
-	end_date: zodOptionalDate(),
+	// end_date: zodOptionalDate(),
 });

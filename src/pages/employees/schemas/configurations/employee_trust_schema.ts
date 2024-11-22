@@ -11,5 +11,5 @@ export const employeeTrustSchema = z.object({
 	// org_sp
 	// org_special_trust_incent: zc.number(),
 	start_date: zodRequiredDate("start_date"),
-	end_date: zodOptionalDate(),
+	// end_date: zodOptionalDate(),
 });

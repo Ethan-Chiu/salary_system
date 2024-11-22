@@ -93,8 +93,9 @@ function ExportPage() {
 	}
 
 	function createSchema() {
+		console.log(getExcelA.data);
 		const keys = (getExcelA.isFetched) ? Object.keys(
-			getExcelA!.data!.map((sheet: any) => sheet.data[0])[selectedSheetIndex]
+			getExcelA!.data!.map((sheet: any) => (sheet.data.length > 0) ? sheet.data[0] : [])[selectedSheetIndex]
 		) : [];
 		const schemaShape = keys.reduce((acc: any, key) => {
 			if (toExcludedColumns.includes(key)) {

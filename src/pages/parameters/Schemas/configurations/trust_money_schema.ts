@@ -9,5 +9,5 @@ export const trustMoneySchema = z.object({
 	org_trust_reserve_limit: zc.number(),
 	org_special_trust_incent_limit: zc.number(),
 	start_date: zodRequiredDate("start_date"),
-	end_date: zodOptionalDate(),
+	// end_date: zodOptionalDate(),
 });

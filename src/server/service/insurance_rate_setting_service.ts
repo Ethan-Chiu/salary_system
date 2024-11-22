@@ -205,9 +205,9 @@ export class InsuranceRateSettingService {
 		);
 
 		for (let i = 0; i < insuranceRateSettingList.length - 1; i += 1) {
-			const end_date_string = get_date_string(
+			const end_date_string = insuranceRateSettingList[i]!.end_date? get_date_string(
 				new Date(insuranceRateSettingList[i]!.end_date!)
-			);
+			):null;
 			const start_date = new Date(
 				insuranceRateSettingList[i + 1]!.start_date
 			);
