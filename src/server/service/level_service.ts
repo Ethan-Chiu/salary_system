@@ -139,6 +139,7 @@ export class LevelService {
 	): Promise<Level> {
 		const minLevel = await this.getLevelById(level_start_id);
 		const maxLevel = await this.getLevelById(level_end_id);
+		const date_string = get_date_string(date);
 		if (minLevel == null || maxLevel == null) {
 			throw new BaseResponseError("Level does not exist");
 		}
@@ -150,11 +151,11 @@ export class LevelService {
 						[Op.lte]: maxLevel.level,
 					},
 					start_date: {
-						[Op.lte]: date,
+						[Op.lte]: date_string,
 					},
 					end_date: {
 						[Op.or]: [
-							{ [Op.gte]: date },
+							{ [Op.gte]: date_string },
 							{ [Op.eq]: null },
 						],
 					},

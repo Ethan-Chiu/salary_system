@@ -70,15 +70,16 @@ export class LevelRangeService {
 	}
 
 	async getCurrentLevelRangeByDate(date: Date): Promise<LevelRange[]> {
+		const date_string = get_date_string(date);
 		const levelRange = await LevelRange.findAll(
 			{
 				where: {
 					start_date: {
-						[Op.lte]: date,
+						[Op.lte]: date_string,
 					},
 					end_date: {
 						[Op.or]: [
-							{ [Op.gte]: date },
+							{ [Op.gte]: date_string },
 							{ [Op.eq]: null },
 						],
 					},

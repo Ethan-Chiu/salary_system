@@ -149,7 +149,7 @@ export class AttendanceSettingService {
 			throw new BaseResponseError("AttendanceSetting does not exist");
 		}
 
-		await this.deleteAttendanceSetting(id);
+		
 
 		await this.createAttendanceSetting(
 			{
@@ -240,6 +240,7 @@ export class AttendanceSettingService {
 				end_date: select_value(end_date, attendance_setting.end_date),
 			}
 		);
+		await this.deleteAttendanceSetting(id);
 	}
 
 	async deleteAttendanceSetting(id: number): Promise<void> {
@@ -267,9 +268,9 @@ export class AttendanceSettingService {
 		);
 
 		for (let i = 0; i < attendanceSettingList.length - 1; i += 1) {
-			const end_date_string = get_date_string(
+			const end_date_string = attendanceSettingList[i]!.end_date? get_date_string(
 				new Date(attendanceSettingList[i]!.end_date!)
-			);
+			):null;
 			const start_date = new Date(
 				attendanceSettingList[i + 1]!.start_date
 			);

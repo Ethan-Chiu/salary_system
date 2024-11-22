@@ -114,7 +114,8 @@ export class EmployeePaymentMapper {
 	): Promise<z.infer<typeof updateEmployeePaymentService>> {
 		const employeePayment: z.infer<typeof updateEmployeePaymentService> =
 			updateEmployeePaymentService.parse(
-				convertDatePropertiesToISOString({
+				// convertDatePropertiesToISOString(
+				{
 					...employee_payment,
 					base_salary_enc:
 						employee_payment.base_salary != undefined
@@ -183,7 +184,8 @@ export class EmployeePaymentMapper {
 							  )
 							: undefined,
 					
-				})
+				}
+				// )
 			);
 
 		return employeePayment;
