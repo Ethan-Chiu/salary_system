@@ -294,7 +294,8 @@
     "save": "Save",
     "ignore": "Ignore",
     "select": "Select",
-    "login": "Login"
+    "login": "Login",
+    "no_default_value": "No Default Value"
   },
   "month": {
     "jan": "01",

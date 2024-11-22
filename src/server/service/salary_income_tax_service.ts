@@ -93,6 +93,22 @@ export class SalaryIncomeTaxService {
 		return salaryIncomeTax;
 	}
 
+	async getAllFutureSalaryIncomeTax(): Promise<SalaryIncomeTax[]> {
+		const current_date_string = get_date_string(new Date());
+		const salaryIncomeTax = await SalaryIncomeTax.findAll(
+			{
+				where: {
+					start_date: {
+						[Op.gt]: current_date_string,
+					},
+					disabled: false
+				},
+				order: [["start_date", "DESC"], ["dependent", "ASC"], ["salary_start", "ASC"]],
+			}
+		);
+		return salaryIncomeTax;
+	}
+
 	async getSalaryIncomeTaxById(id: number): Promise<SalaryIncomeTax | null> {
 		const salaryIncomeTax = await SalaryIncomeTax.findOne({
 			where: {

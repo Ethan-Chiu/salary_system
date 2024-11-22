@@ -77,7 +77,7 @@
     "dependents": "扶養人數",
     "branch_full_name": "分行全稱",
     "disabilty_level": "殘障等級",
-    "l_i_disability_reduction":"勞保殘障減免",
+    "l_i_disability_reduction": "勞保殘障減免",
     "tax_rate_category": "稅率別",
     "bonus_calculation": "計算獎金",
     "securities_account": "證券帳號",
@@ -313,7 +313,8 @@
     "save": "儲存",
     "ignore": "忽略",
     "select": "選擇",
-    "login": "登入"
+    "login": "登入",
+    "no_default_value": "不套用預設值"
   },
   "month": {
     "jan": "01",

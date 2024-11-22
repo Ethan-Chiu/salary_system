@@ -117,8 +117,8 @@ export class AttendanceSettingService {
 		return attendanceSettingList;
 	}
 
-	async getAllFutureAttendanceSetting(date: Date): Promise<AttendanceSetting[]> {
-		const current_date_string = get_date_string(date);
+	async getAllFutureAttendanceSetting(): Promise<AttendanceSetting[]> {
+		const current_date_string = get_date_string(new Date());
 		const attendanceSettingList = await AttendanceSetting.findAll(
 			{
 				where: {
@@ -127,7 +127,7 @@ export class AttendanceSettingService {
 					},
 					disabled: false,
 				},
-				order: [["start_date", "ASC"]],
+				order: [["start_date", "DESC"]],
 			}
 		);
 		return attendanceSettingList;

@@ -91,13 +91,13 @@ export default function EmployeeToolbarFunctionsProvider({
 				void ctx.employeeTrust.getAllEmployeeTrust.invalidate();
 			},
 		});
-	const autoCalculateEmployeeTrust =
-		api.employeeTrust.autoCalculateEmployeeTrust.useMutation({
-			onSuccess: () => {
-				void ctx.employeeTrust.getCurrentEmployeeTrust.invalidate();
-				void ctx.employeeTrust.getAllEmployeeTrust.invalidate();
-			},
-		});
+	// const autoCalculateEmployeeTrust =
+	// 	api.employeeTrust.autoCalculateEmployeeTrust.useMutation({
+	// 		onSuccess: () => {
+	// 			void ctx.employeeTrust.getCurrentEmployeeTrust.invalidate();
+	// 			void ctx.employeeTrust.getAllEmployeeTrust.invalidate();
+	// 		},
+	// 	});
 	//#endregion
 
 	const functionsDictionary: Record<EmployeeTableEnum, FunctionsApi> = {

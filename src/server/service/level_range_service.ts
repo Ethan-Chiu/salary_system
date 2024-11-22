@@ -100,6 +100,21 @@ export class LevelRangeService {
 		return levelRange;
 	}
 
+	async getAllFutureLevelRange(): Promise<LevelRange[]> {
+		const current_date_string = get_date_string(new Date());
+		const levelRange = await LevelRange.findAll({
+			where: {
+				start_date: {
+					[Op.gt]: current_date_string,
+				},
+				disabled: false,
+			},
+			order: [["start_date", "DESC"], ["type", "ASC"]],
+			raw: true
+		});
+		return levelRange;
+	}
+
 	async updateLevelRange({
 		id,
 		type,
