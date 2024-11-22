@@ -9,7 +9,6 @@ const employeeTrust = z.object({
 }).merge(DateAPI);
 
 export const employeeTrustFE = z.object({
-  id: z.number(),
 	emp_no: z.string(),
 	emp_trust_reserve: z.number(),
 	org_trust_reserve: z.number(),
@@ -17,7 +16,7 @@ export const employeeTrustFE = z.object({
 	org_special_trust_incent: z.number(),
 }).merge(EmpData).merge(DateAPI);
 
-export const employeeTrustCreateAPI = employeeTrustFE;
+export const employeeTrustCreateAPI = employeeTrust;
 export const employeeTrustCreateService = employeeTrust;
 
 export const updateEmployeeTrustAPI = employeeTrustFE.partial().merge(Id);

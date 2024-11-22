@@ -27,6 +27,7 @@ export const employeeTrustRouter = createTRPCRouter({
 			await employeeTrustService.getAllEmployeeTrustFE();
 		return allEmployeeTrustFE;
 	}),
+
 	createEmployeeTrust: publicProcedure
 		.input(employeeTrustCreateAPI)
 		.mutation(async ({ input }) => {
@@ -35,7 +36,6 @@ export const employeeTrustRouter = createTRPCRouter({
 			const newdata = await employeeTrustService.createEmployeeTrust(
 				input
 			);
-			console.log("\n\n\nreschedule\n\n\n");
 			await employeeTrustService.rescheduleEmployeeTrust();
 			return newdata;
 		}),

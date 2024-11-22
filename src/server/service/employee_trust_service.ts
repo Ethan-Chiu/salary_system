@@ -22,7 +22,7 @@ export class EmployeeTrustService {
 	constructor(
 		private readonly employeeTrustMapper: EmployeeTrustMapper,
 		private readonly ehrService: EHRService
-	) {}
+	) { }
 
 	async createEmployeeTrust(
 		data: z.input<typeof employeeTrustCreateService>
@@ -36,10 +36,12 @@ export class EmployeeTrustService {
 			create_by: "system",
 			update_by: "system",
 		};
-		const employeePayment =
+		const employeeTrust =
 			await this.employeeTrustMapper.encodeEmployeeTrust(create_input);
 
-		const newData = await EmployeeTrust.create(employeePayment, {
+		console.log("employeeTrust", employeeTrust);
+
+		const newData = await EmployeeTrust.create(employeeTrust, {
 			raw: true,
 		});
 

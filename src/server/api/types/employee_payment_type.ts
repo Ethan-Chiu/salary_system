@@ -5,22 +5,22 @@ import { optionalNumDefaultZero } from "./z_utils";
 
 const employeePayment = z.object({
 	emp_no: z.string(),
-	base_salary: optionalNumDefaultZero, 
+	base_salary: optionalNumDefaultZero,
 	food_allowance: optionalNumDefaultZero,
-	supervisor_allowance: optionalNumDefaultZero, 
-	occupational_allowance: optionalNumDefaultZero, 
-	subsidy_allowance: optionalNumDefaultZero, 
-	long_service_allowance: optionalNumDefaultZero, 
+	supervisor_allowance: optionalNumDefaultZero,
+	occupational_allowance: optionalNumDefaultZero,
+	subsidy_allowance: optionalNumDefaultZero,
+	long_service_allowance: optionalNumDefaultZero,
 	long_service_allowance_type: LongServiceEnum,
-	l_r_self: optionalNumDefaultZero, 
-	l_i: optionalNumDefaultZero, 
-	h_i: optionalNumDefaultZero, 
+	l_r_self: optionalNumDefaultZero,
+	l_i: optionalNumDefaultZero,
+	h_i: optionalNumDefaultZero,
 	l_r: optionalNumDefaultZero,
 	occupational_injury: optionalNumDefaultZero,
 }).merge(DateAPI);
 
 export const employeePaymentFE = z.object({
-  id: z.number(),
+	id: z.number(),
 	emp_no: z.string(),
 	base_salary: z.number(),
 	food_allowance: z.number(),

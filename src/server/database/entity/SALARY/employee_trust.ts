@@ -19,12 +19,12 @@ const dbEmployeeTrust = z.object({
 
 const decFields = z.object({
 	id: z.number(),
-  emp_trust_reserve: z.number(),
-  emp_special_trust_incent: z.number(),
+	emp_trust_reserve: z.number(),
+	emp_special_trust_incent: z.number(),
 });
 
 const encFields = z.object({
-  emp_trust_reserve_enc: z.string(),
+	emp_trust_reserve_enc: z.string(),
 	emp_special_trust_incent_enc: z.string(),
 });
 
