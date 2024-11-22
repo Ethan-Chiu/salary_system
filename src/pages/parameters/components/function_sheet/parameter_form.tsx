@@ -94,7 +94,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 		} else {
 			// TODO: Error element with toast
 		}
-		closeSheet();
+		// closeSheet();
 	}
 
 	const handleSubmit = () => {
@@ -147,7 +147,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	return (
 		<>
 			<AutoForm
-				className="m-5"
+				className="mb-10 mr-5 ml-5 mt-5"
 				_defaultValues={selectedData}
 				values={formValues}
 				onValuesChange={setFormValues}

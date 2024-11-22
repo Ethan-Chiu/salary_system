@@ -115,7 +115,7 @@ export class EmployeeTrustMapper {
 
 			const employeeTrust: z.infer<typeof employeeTrustFE> = {
 				...employee_trust,
-				// id: idx,
+				id: idx,
 				emp_no: employee.emp_no,
 				emp_name: employee.emp_name,
 				position: employee.position,
