@@ -8,7 +8,7 @@ import {
 } from "sequelize";
 import { z } from "zod";
 import { dateF, dateStringF } from "../../mapper/mapper_utils";
-import { decodeStringToNumber, encodeString, stringToDate, stringToDateNullable } from "~/server/api/types/z_utils";
+import { dateToString, dateToStringNullable, decodeStringToNumber, encodeString, stringToDate, stringToDateNullable } from "~/server/api/types/z_utils";
 
 const dbEmployeeTrust = z.object({
 	emp_no: z.string(),
@@ -50,8 +50,8 @@ export const encEmployeeTrust = decF
 		...v,
 		emp_trust_reserve_enc: encodeString.parse(v.emp_trust_reserve),
 		emp_special_trust_incent_enc: encodeString.parse(v.emp_special_trust_incent),
-		start_date: stringToDate.parse(v.start_date),
-		end_date: stringToDateNullable.parse(v.end_date),
+		start_date: dateToString.parse(v.start_date),
+		end_date: dateToStringNullable.parse(v.end_date),
 	}))
 	.pipe(encF);
 

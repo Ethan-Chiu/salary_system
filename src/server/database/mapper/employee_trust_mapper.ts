@@ -73,7 +73,7 @@ export class EmployeeTrustMapper {
 			await this.trustMoneyService.getAllTrustMoney();
 		const start_dates = employee_trust_list
 			.map((emp_trust) => emp_trust.start_date)
-			.sort();
+			.sort((a, b) => a.getTime() - b.getTime());
 
 		trust_money_list.forEach((trust_money) => {
 			const trust_money_start_date = stringToDate.parse(
@@ -86,7 +86,7 @@ export class EmployeeTrustMapper {
 				start_dates.push(trust_money_start_date);
 			}
 		});
-		const promises = start_dates.sort().map(async (start_date, idx) => {
+		const promises = start_dates.sort((a, b) => a.getTime() - b.getTime()).map(async (start_date, idx) => {
 			const employee_trust =
 				await employeeTrustService.getCurrentEmployeeTrustByEmpNoByDate(
 					employee_trust_list[0]!.emp_no,
@@ -115,7 +115,7 @@ export class EmployeeTrustMapper {
 
 			const employeeTrust: z.infer<typeof employeeTrustFE> = {
 				...employee_trust,
-				id: idx,
+				// id: idx,
 				emp_no: employee.emp_no,
 				emp_name: employee.emp_name,
 				position: employee.position,
@@ -157,7 +157,8 @@ export class EmployeeTrustMapper {
 	): Promise<z.infer<typeof updateEmployeeTrustService>> {
 		const employeeTrust: z.infer<typeof updateEmployeeTrustService> =
 			updateEmployeeTrustService.parse(
-				convertDatePropertiesToISOString({
+				// convertDatePropertiesToISOString(
+				{
 					emp_trust_reserve_enc:
 						employee_trust.emp_trust_reserve != undefined
 							? CryptoHelper.encrypt(
@@ -171,7 +172,8 @@ export class EmployeeTrustMapper {
 							  )
 							: undefined,
 					...employee_trust,
-				})
+				}
+			// )
 			);
 
 		return employeeTrust;
