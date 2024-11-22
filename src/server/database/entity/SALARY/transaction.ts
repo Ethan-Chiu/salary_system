@@ -95,10 +95,10 @@ export class Transaction extends Model<
 	declare received_elderly_benefits: boolean; // 已領老年給付
 	declare v_2_h_i: number; // 二代健保
 	declare has_trust: boolean; // 持股信託_YN
-	declare emp_trust_reserve: number; // 員工信託提存金
-	declare emp_special_trust_incent: number; // 特別信託獎勵金_員工
-	declare org_trust_reserve: number; // 公司獎勵金
-	declare org_special_trust_incent: number; // 特別信託獎勵金_公司
+	declare emp_trust_reserve: number | null; // 員工信託提存金
+	declare emp_special_trust_incent: number | null; // 特別信託獎勵金_員工
+	declare org_trust_reserve: number | null; // 公司獎勵金
+	declare org_special_trust_incent: number | null; // 特別信託獎勵金_公司
 	declare g_i_deduction_promotion: number; // 團保費代扣_升等
 	declare special_leave_deduction: number; // 特別事假扣款
 	declare special_leave: number; // 特別事假

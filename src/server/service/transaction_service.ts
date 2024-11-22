@@ -65,16 +65,18 @@ export class TransactionService {
 			throw new BaseResponseError("Employee Payment does not exist");
 		}
 
-		const employee_payment_fe = employee_payment;//await employeePaymentMapper.decodeEmployeePayment(employee_payment)
-		const discounted_employee_payment_fe = await calculateService.discountedPayment(
-			employee_payment_fe,
-			payset
-		);
+		const employee_payment_fe = employee_payment; //await employeePaymentMapper.decodeEmployeePayment(employee_payment)
+		const discounted_employee_payment_fe =
+			await calculateService.discountedPayment(
+				employee_payment_fe,
+				payset
+			);
 
 		const bonus_setting =
 			await bonusSettingService.getCurrentBonusSetting();
 		const employee_acount =
 			await employeeAccountService.getEmployeeAccountByEmpNo(emp_no);
+		let has_trust = true; // todo
 		const employee_trust_fe =
 			await employeeTrustService.getCurrentEmployeeTrustFEByEmpNo(
 				emp_no,
@@ -82,9 +84,9 @@ export class TransactionService {
 			);
 
 		if (employee_trust_fe == null) {
-			throw new BaseResponseError("Employee Trust does not exist");
+			has_trust = false;
+			// throw new BaseResponseError("Employee Trust does not exist");
 		}
-
 
 		const attendance_setting =
 			await attendanceSettingService.getCurrentAttendanceSetting(
@@ -139,8 +141,10 @@ export class TransactionService {
 		const l_i = discounted_employee_payment_fe!.l_i;
 		const h_i = discounted_employee_payment_fe!.h_i;
 		const l_r = discounted_employee_payment_fe!.l_r;
-		const occupational_injury = discounted_employee_payment_fe!.occupational_injury;
-		const supervisor_allowance = discounted_employee_payment_fe!.supervisor_allowance;
+		const occupational_injury =
+			discounted_employee_payment_fe!.occupational_injury;
+		const supervisor_allowance =
+			discounted_employee_payment_fe!.supervisor_allowance;
 		const shift_allowance = await ehrService.getTargetAllowance(
 			allowance_list,
 			allowance_type_list,
@@ -182,7 +186,7 @@ export class TransactionService {
 			full_attendance_bonus,
 			employee_data!,
 			operational_performance_bonus
-		)
+		);
 		const special_leave_deduction =
 			await calculateService.getSpecialLeaveDeduction(
 				employee_data!,
@@ -213,7 +217,8 @@ export class TransactionService {
 				full_attendance_bonus,
 				operational_performance_bonus
 			);
-		const subsidy_allowance = discounted_employee_payment_fe!.subsidy_allowance;
+		const subsidy_allowance =
+			discounted_employee_payment_fe!.subsidy_allowance;
 		const weekday_overtime_pay =
 			await calculateService.getWeekdayOvertimePay(
 				employee_data!,
@@ -322,7 +327,7 @@ export class TransactionService {
 				holidays_type,
 				gross_salary,
 				insurance_rate_setting!,
-				employee_data!,
+				employee_data!
 			);
 		const end_of_year_bonus = await calculateService.getYearEndBonus(
 			period_id,
@@ -388,7 +393,9 @@ export class TransactionService {
 
 		const income_tax_deduction =
 			await calculateService.getIncomeTaxDeduction(period_id, emp_no);
-		const l_r_self = await calculateService.getLRSelf(discounted_employee_payment_fe);
+		const l_r_self = await calculateService.getLRSelf(
+			discounted_employee_payment_fe
+		);
 		const parking_fee = await calculateService.getParkingFee(
 			period_id,
 			emp_no
@@ -414,7 +421,7 @@ export class TransactionService {
 		const bank_account_1 = employee_data!.bank_account;
 		// const bank_account_2 = employee_acount![1]?.bank_account!;
 		// const foreign_currency_account =("");
-		const bonus_ratio = -1 //bonus_setting!.fixed_multiplier;
+		const bonus_ratio = -1; //bonus_setting!.fixed_multiplier;
 		const annual_days_in_service = 365; // MARK: 年度在職天數不知道在哪
 		const l_r_contribution =
 			await calculateService.getLaborRetirementContribution(
@@ -437,13 +444,19 @@ export class TransactionService {
 
 		const v_2_h_i =
 			await calculateService.getSecondGenerationHealthInsurance();
-		const has_trust = true; // todo
-		const emp_trust_reserve = employee_trust_fe!.emp_trust_reserve;
-		const emp_special_trust_incent =
-			employee_trust_fe!.emp_special_trust_incent;
-		const org_trust_reserve = employee_trust_fe!.org_trust_reserve;
-		const org_special_trust_incent =
-			employee_trust_fe!.org_special_trust_incent;
+
+		const emp_trust_reserve = employee_trust_fe
+			? employee_trust_fe.emp_trust_reserve
+			: null;
+		const emp_special_trust_incent = employee_trust_fe
+			? employee_trust_fe!.emp_special_trust_incent
+			: null;
+		const org_trust_reserve = employee_trust_fe
+			? employee_trust_fe!.org_trust_reserve
+			: null;
+		const org_special_trust_incent = employee_trust_fe
+			? employee_trust_fe!.org_special_trust_incent
+			: null;
 		const g_i_deduction_promotion =
 			await calculateService.getGroupInsuranceDeductionPromotion(
 				period_id,
