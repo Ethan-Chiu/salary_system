@@ -414,7 +414,7 @@ export class TransactionService {
 		const bank_account_1 = employee_data!.bank_account;
 		// const bank_account_2 = employee_acount![1]?.bank_account!;
 		// const foreign_currency_account =("");
-		const bonus_ratio = bonus_setting!.fixed_multiplier;
+		const bonus_ratio = -1 //bonus_setting!.fixed_multiplier;
 		const annual_days_in_service = 365; // MARK: 年度在職天數不知道在哪
 		const l_r_contribution =
 			await calculateService.getLaborRetirementContribution(
