@@ -22,7 +22,7 @@ export type BonusWithType = Omit<Bonus, "bonus_id" | "period_id"> & {
 	bonus_type_name: string;
 };
 
-export type ExpenseWithType = Omit<Expense, "period_id" | "id"> & {
+export type ExpenseWithType = Omit<Expense, "period_id" > & {
 	period_name: string;
 	expense_type_name: string;
 };
