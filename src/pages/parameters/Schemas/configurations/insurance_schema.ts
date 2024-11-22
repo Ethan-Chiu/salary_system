@@ -15,5 +15,5 @@ export const insuranceSchema = z.object({
 	v2_h_i_deduction_tsx_thres: zc.number(),
 	v2_h_i_multiplier: zc.number(),
 	start_date: zodRequiredDate("start_date"),
-	end_date: zodOptionalDate(),
+	// end_date: zodOptionalDate(),
 });

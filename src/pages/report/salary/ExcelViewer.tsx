@@ -45,7 +45,7 @@ interface ExcelSheet {
 
 interface ExcelSheetWithColor {
 	sheetName: string;
-	data: Block[][];
+	data: Block[][] | null;
 }
 
 interface ExcelViewerProps {
@@ -93,6 +93,7 @@ const handleExportExcel = async (
 				name === "" ? "blank" : name
 			);
 			try {
+				if (!sheetdata.data) return;
 				sheetdata.data.map((row: Block[], i: number) => {
 					if (i === 0) {
 						worksheet.addRow(row.map((cell: Block) => Translate(`table.${cell.content}`)));
@@ -103,6 +104,7 @@ const handleExportExcel = async (
 				});
 			} catch {}
 
+			if (sheetdata.data)
 			sheetdata.data.forEach((row: Block[], ri: number) => {
 				row.forEach((cellProps: Block, ci: number) => {
 					const cellName = getCellName(ri, ci);
@@ -171,7 +173,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 		let tmpSheets: ExcelSheetWithColor[] = [];
 		original_sheets.map((s: ExcelSheet) => {
 			let tmpSheetName = s.sheetName;
-			let tmpSheetData: Block[][] = s.data.map(
+			let tmpSheetData: Block[][] | null = (s.data) ? s.data.map(
 				(row: string[], row_index: number) => {
 					return row.map((cell: string, col_index: number) => {
 						if (row_index === 0) {
@@ -189,7 +191,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 							};
 					});
 				}
-			);
+			) : null;
 			tmpSheets.push({
 				sheetName: tmpSheetName,
 				data: tmpSheetData,
@@ -249,6 +251,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 		rowIndex: number,
 		colIndex: number
 	) {
+
 		if (!sheetIndex && !rowIndex && !colIndex) {
 			sheetIndex = selectedSheetIndex;
 			rowIndex = selectedCell.rowIndex;
@@ -260,6 +263,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 		let selectedBlock: Block;
 		sheets.map((sheet: ExcelSheetWithColor, si: number) => {
 			if (si === sheetIndex) {
+				if (sheet.data)
 				sheet.data.map((row: Block[], ri: number) => {
 					if (ri === rowIndex) {
 						row.map((cell: Block, ci: number) => {
@@ -293,7 +297,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 		let tmpSheets: ExcelSheetWithColor[] = [];
 		sheets.map((s: ExcelSheetWithColor, si: number) => {
 			let tmpSheetName = s.sheetName;
-			let tmpSheetData: Block[][] = s.data.map(
+			let tmpSheetData: Block[][] | null = s.data ? s.data.map(
 				(row: Block[], ri: number) => {
 					return row.map((cell: Block, ci: number) => {
 						if (
@@ -316,7 +320,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 						else return cell;
 					});
 				}
-			);
+			) : null;
 			tmpSheets.push({
 				sheetName: tmpSheetName,
 				data: tmpSheetData,
@@ -329,12 +333,13 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 		const selectedSheet = sheets[selectedSheetIndex]!;
 		return (
 			<>
-				{selectedSheet && (
+				{/* <Button onClick={() => console.log(sheets)}>Console Log Sheets</Button> */}
+				{selectedSheet && selectedSheet.data ? (
 					<div className="mt-4 w-full overflow-x-auto  rounded border bg-white p-4 shadow-md">
 						<table className="w-full border-collapse border border-zinc-950">
 							<thead>
 								<tr>
-									{selectedSheet.data[0]!.map(
+									{selectedSheet.data && selectedSheet.data[0]!.map(
 										(cell, index) => (
 											<th
 												key={index}
@@ -357,7 +362,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 								</tr>
 							</thead>
 							<tbody>
-								{selectedSheet.data
+								{selectedSheet.data && selectedSheet.data
 									.slice(1)
 									.map((row, rowIndex) => (
 										<tr key={rowIndex}>
@@ -406,9 +411,16 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 							</tbody>
 						</table>
 					</div>
-				)}
+				) : <div>
+
+				</div>
+				}
 			</>
 		);
+	}
+
+	function noDataComponent() {
+
 	}
 
 	function BgColorControlComponent() {
@@ -424,7 +436,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 					<PopoverContent className="w-auto p-0">
 						<ColorPickerWrapper
 							initialColor={
-								sheets[selectedSheetIndex]!.data.findLast((rows, r_idx) => 
+								(sheets[selectedSheetIndex]!.data ?? []).findLast((rows, r_idx) => 
 									r_idx === selectedCell.rowIndex)?.findLast((cols, c_idx) => 
 									c_idx === selectedCell.colIndex)?.backgroundColor ?? "#FFFFFF"
 							}
@@ -459,7 +471,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 					<PopoverContent className="w-auto p-0">
 						<ColorPickerWrapper
 							initialColor={
-								sheets[selectedSheetIndex]!.data.findLast((rows, r_idx) => 
+								(sheets[selectedSheetIndex]!.data ?? []).findLast((rows, r_idx) => 
 								r_idx === selectedCell.rowIndex)?.findLast((cols, c_idx) => 
 								c_idx === selectedCell.colIndex)?.textColor ?? "#FFFFFF"
 							}

@@ -24,10 +24,7 @@ export function getExcelData(Alldatas: any[]) {
         } catch (e) {
             excelData.push({
                 sheetName: name,
-                data: [
-                    ["test col 1", "test col 2"],
-                    [123, 456],
-                ],
+                data: null,
             });
         }
     });
