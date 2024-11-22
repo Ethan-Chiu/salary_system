@@ -172,7 +172,7 @@ export class LevelService {
 		const levelList = await Level.findAll(
 			{
 				where: { disabled: false },
-				order: [["start_date", "DESC"], ["level", "ASC"]],
+				order: [["start_date", "DESC"], ["level", "ASC"], ["update_date", "ASC"]],
 			}
 		);
 		for (let i = 0; i < levelList.length; i += 1) {
@@ -185,18 +185,23 @@ export class LevelService {
 			const end_date_string = get_date_string(
 				new Date(start_date.setFullYear(start_date.getFullYear(), 11, 31))
 			);
-			if (i != 0 && (levelList[i]!.level == levelList[i - 1]!.level
-				&& levelList[i]!.start_date == levelList[i - 1]!.start_date)) {
-				await this.deleteLevel(levelList[i]!.id);
+			if (levelList[i]!.start_date != start_date_string || levelList[i]!.end_date != end_date_string) {
+				await this.updateLevel({
+					id: levelList[i]!.id,
+					start_date: start_date_string,
+					end_date: end_date_string,
+				});
 			}
-			else {
-				if (levelList[i]!.start_date != start_date_string || levelList[i]!.end_date != end_date_string) {
-					await this.updateLevel({
-						id: levelList[i]!.id,
-						start_date: start_date_string,
-						end_date: end_date_string,
-					});
-				}
+		}
+		const updatedLevelList = await Level.findAll(
+			{
+				where: { disabled: false },
+				order: [["start_date", "DESC"], ["level", "ASC"], ["update_date", "ASC"]],
+			}
+		);
+		for (let i = 0; i < updatedLevelList.length - 1; i += 1) {
+			if (updatedLevelList[i]!.level == updatedLevelList[i + 1]!.level && updatedLevelList[i]!.start_date == updatedLevelList[i + 1]!.start_date) {
+				await this.deleteLevel(updatedLevelList[i]!.id);
 			}
 		}
 	}

@@ -133,7 +133,7 @@ export class LevelRangeService {
 		old_id: number,
 		new_id: number,
 	}): Promise<void> {
-		const levelRangeList = await LevelRange.findAll({where: {disabled: false}});
+		const levelRangeList = await LevelRange.findAll({ where: { disabled: false } });
 		const promises = levelRangeList.map(async (levelRange) => {
 			if (levelRange.level_start_id == old_id || levelRange.level_end_id == old_id) {
 				this.updateLevelRange({
@@ -164,6 +164,7 @@ export class LevelRangeService {
 				order: [
 					['type', 'ASC'],
 					["start_date", "ASC"],
+					["update_date", "ASC"],
 				],
 			}
 		);
@@ -177,19 +178,29 @@ export class LevelRangeService {
 			const end_date_string = get_date_string(
 				new Date(start_date.setFullYear(start_date.getFullYear(), 11, 31))
 			);
-
-			if (i != 0 && (levelRangeList[i]!.type == levelRangeList[i - 1]!.type
-				&& levelRangeList[i]!.start_date == levelRangeList[i - 1]!.start_date)) {
-				await this.deleteLevelRange(levelRangeList[i]!.id);
+			if (levelRangeList[i]!.start_date != start_date_string || levelRangeList[i]!.end_date != end_date_string) {
+				await this.updateLevelRange({
+					id: levelRangeList[i]!.id,
+					start_date: start_date_string,
+					end_date: end_date_string,
+				});
 			}
-			else {
-				if (levelRangeList[i]!.start_date != start_date_string || levelRangeList[i]!.end_date != end_date_string) {
-					await this.updateLevelRange({
-						id: levelRangeList[i]!.id,
-						start_date: start_date_string,
-						end_date: end_date_string,
-					});
-				}
+		}
+
+		const updatedLevelRangeList = await LevelRange.findAll(
+			{
+				where: { disabled: false },
+				order: [
+					['type', 'ASC'],
+					["start_date", "ASC"],
+					["update_date", "ASC"],
+				],
+			}
+		);
+
+		for (let i = 0; i < updatedLevelRangeList.length - 1; i += 1) {
+			if (updatedLevelRangeList[i]!.type == updatedLevelRangeList[i + 1]!.type && updatedLevelRangeList[i]!.start_date == updatedLevelRangeList[i + 1]!.start_date) {
+				await this.deleteLevelRange(updatedLevelRangeList[i]!.id);
 			}
 		}
 	}

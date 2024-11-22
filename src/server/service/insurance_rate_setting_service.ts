@@ -200,14 +200,14 @@ export class InsuranceRateSettingService {
 		const insuranceRateSettingList = await InsuranceRateSetting.findAll(
 			{
 				where: { disabled: false },
-				order: [["start_date", "ASC"]],
+				order: [["start_date", "ASC"], ["update_date", "ASC"]],
 			}
 		);
 
 		for (let i = 0; i < insuranceRateSettingList.length - 1; i += 1) {
-			const end_date_string = insuranceRateSettingList[i]!.end_date? get_date_string(
+			const end_date_string = insuranceRateSettingList[i]!.end_date ? get_date_string(
 				new Date(insuranceRateSettingList[i]!.end_date!)
-			):null;
+			) : null;
 			const start_date = new Date(
 				insuranceRateSettingList[i + 1]!.start_date
 			);
@@ -215,10 +215,15 @@ export class InsuranceRateSettingService {
 				new Date(start_date.setDate(start_date.getDate() - 1))
 			);
 			if (end_date_string != new_end_date_string) {
-				await this.updateInsuranceRateSetting({
-					id: insuranceRateSettingList[i]!.id,
-					end_date: new_end_date_string,
-				});
+				if (new_end_date_string < insuranceRateSettingList[i]!.start_date) {
+					await this.deleteInsuranceRateSetting(insuranceRateSettingList[i]!.id);
+				}
+				else {
+					await this.updateInsuranceRateSetting({
+						id: insuranceRateSettingList[i]!.id,
+						end_date: new_end_date_string,
+					});
+				}
 			}
 		}
 

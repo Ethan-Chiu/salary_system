@@ -26,13 +26,13 @@ export class EmployeePaymentService {
 		private levelService: LevelService,
 		private levelRangeService: LevelRangeService,
 		private employeeDataService: EmployeeDataService
-	) {}
+	) { }
 
 	async createEmployeePayment(
 		data: z.input<typeof employeePaymentCreateService>
 	): Promise<EmployeePayment> {
 		const d = employeePaymentCreateService.parse(data);
-		
+
 		const employeePayment =
 			await this.employeePaymentMapper.encodeEmployeePayment({
 				...d,
@@ -41,7 +41,7 @@ export class EmployeePaymentService {
 				create_by: "system",
 				update_by: "system",
 			});
-		
+
 		const newData = await EmployeePayment.create(employeePayment, {
 			raw: true,
 		});
@@ -282,9 +282,9 @@ export class EmployeePaymentService {
 			transData,
 			transData.start_date!
 		);
-		
+
 		await this.createEmployeePayment(matchedLevelData);
-		
+
 		await this.deleteEmployeePayment(data.id);
 	}
 
@@ -332,7 +332,7 @@ export class EmployeePaymentService {
 				employeePayment.h_i != updatedEmployeePayment.h_i ||
 				employeePayment.l_r != updatedEmployeePayment.l_r ||
 				employeePayment.occupational_injury !=
-					updatedEmployeePayment.occupational_injury
+				updatedEmployeePayment.occupational_injury
 			) {
 				await this.createEmployeePayment({
 					...updatedEmployeePayment,
@@ -351,13 +351,14 @@ export class EmployeePaymentService {
 			order: [
 				["emp_no", "ASC"],
 				["start_date", "ASC"],
+				["update_date", "ASC"],
 			],
 		});
 
 		for (let i = 0; i < employeePaymentList.length - 1; i += 1) {
-			const end_date_string = employeePaymentList[i]!.end_date? get_date_string(
+			const end_date_string = employeePaymentList[i]!.end_date ? get_date_string(
 				new Date(employeePaymentList[i]!.end_date!)
-			):null;
+			) : null;
 			const start_date = new Date(employeePaymentList[i + 1]!.start_date);
 			const new_end_date_string = get_date_string(
 				new Date(start_date.setDate(start_date.getDate() - 1))
@@ -367,10 +368,15 @@ export class EmployeePaymentService {
 				employeePaymentList[i + 1]!.emp_no
 			) {
 				if (end_date_string != new_end_date_string) {
-					await this.updateEmployeePayment({
-						id: employeePaymentList[i]!.id,
-						end_date: new Date(new_end_date_string),
-					});
+					if (new_end_date_string < employeePaymentList[i]!.start_date) {
+						await this.deleteEmployeePayment(employeePaymentList[i]!.id);
+					}
+					else {
+						await this.updateEmployeePayment({
+							id: employeePaymentList[i]!.id,
+							end_date: new Date(new_end_date_string),
+						});
+					}
 				}
 			} else {
 				if (end_date_string != null) {

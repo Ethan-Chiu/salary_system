@@ -279,7 +279,7 @@ export class AttendanceSettingService {
 		const attendanceSettingList = await AttendanceSetting.findAll(
 			{
 				where: { disabled: false },
-				order: [["start_date", "ASC"]],
+				order: [["start_date", "ASC"], ["update_date", "ASC"]],
 			}
 		);
 
@@ -294,10 +294,15 @@ export class AttendanceSettingService {
 				new Date(start_date.setDate(start_date.getDate() - 1))
 			);
 			if (end_date_string != new_end_date_string) {
-				await this.updateAttendanceSetting({
-					id: attendanceSettingList[i]!.id,
-					end_date: new_end_date_string,
-				});
+				if (new_end_date_string < attendanceSettingList[i]!.start_date) {
+					await this.deleteAttendanceSetting(attendanceSettingList[i]!.id);
+				}
+				else {
+					await this.updateAttendanceSetting({
+						id: attendanceSettingList[i]!.id,
+						end_date: new_end_date_string,
+					});
+				}
 			}
 		}
 
