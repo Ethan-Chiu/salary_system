@@ -106,7 +106,7 @@ function EmptyCreateForm<SchemaType extends z.AnyZodObject>({
 				>
 					<>
 						<AutoForm
-							className="m-5"
+							className="mb-10 mr-5 ml-5 mt-5"
 							_defaultValues={{}}
 							values={formValues}
 							onValuesChange={setFormValues}

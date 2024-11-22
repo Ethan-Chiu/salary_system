@@ -130,6 +130,7 @@ function ExportPage() {
 						</SheetHeader>
 						<ScrollArea className="h-[85%] w-full">
 							<AutoForm 
+								className="mb-10 mr-5 ml-5 mt-5"
 								formSchema={createSchema()}
 								values={formValues}
 								onValuesChange={setFormValues}

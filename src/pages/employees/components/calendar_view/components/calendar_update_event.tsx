@@ -99,7 +99,7 @@ export default function CalendarUpdateEvent({}: CalendarUpdateEventProps) {
 				</SheetHeader>
 				<ScrollArea className="h-[85%] w-full">
 					<AutoForm
-						className="m-5"
+						className="mb-10 mr-5 ml-5 mt-5"
 						_defaultValues={selectedEvent?.getData()}
 						values={formValues}
 						onValuesChange={setFormValues}

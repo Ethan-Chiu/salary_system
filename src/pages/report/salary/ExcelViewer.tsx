@@ -402,7 +402,13 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({
 														}`}
 													></div>
 													<div className="relative z-10">
-														{cell.content}
+														{
+															(typeof cell.content) == "string" ? cell.content : 
+															(typeof cell.content) == "boolean" ? (cell.content ? "Y" : "N") : 
+															(typeof cell.content) == "string" ? cell.content : 
+															(typeof cell.content) == "string" ? cell.content : 
+															cell.content
+														}
 													</div>
 												</td>
 											))}
