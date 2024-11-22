@@ -27,8 +27,9 @@ export class EmployeeTrustService {
 	async createEmployeeTrust(
 		data: z.input<typeof employeeTrustCreateService>
 	): Promise<EmployeeTrust> {
+		console.log("data", data);
 		const d = employeeTrustCreateService.parse(data);
-
+		console.log("d", d);
 		const create_input = {
 			...d,
 			start_date: d.start_date ?? new Date(),
@@ -36,6 +37,7 @@ export class EmployeeTrustService {
 			create_by: "system",
 			update_by: "system",
 		};
+		console.log("create_input", create_input);
 		const employeeTrust =
 			await this.employeeTrustMapper.encodeEmployeeTrust(create_input);
 
@@ -132,16 +134,20 @@ export class EmployeeTrustService {
 		);
 		const current_employee_trustFE = await Promise.all(
 			allEmployeeTrustFE.map((emp_trust_list) => {
-				return emp_trust_list.find((emp_trust) => {
+				const current_emp_trust = emp_trust_list.find((emp_trust) => {
 					return (
 						emp_trust.start_date! <= current_date &&
 						(emp_trust.end_date == null ||
 							emp_trust.end_date >= current_date)
 					);
-				});
+				})
+				if (current_emp_trust) {
+					return current_emp_trust
+				}
+				return null;
 			})
 		);
-		return current_employee_trustFE;
+		return current_employee_trustFE.filter((emp_trust) => emp_trust != null) as z.infer<typeof employeeTrustFE>[];
 	}
 
 	async getCurrentEmployeeTrustFEByEmpNo(
