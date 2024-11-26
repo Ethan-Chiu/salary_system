@@ -20,6 +20,8 @@ import {
 } from "../api/types/employee_bonus_type";
 import { BonusAllService } from "./bonus_all_service";
 import { LongServiceEnum } from "../api/types/long_service_enum";
+import { Op } from "sequelize";
+
 
 @injectable()
 export class EmployeeBonusService {
@@ -113,7 +115,7 @@ export class EmployeeBonusService {
 		await Promise.all(promises);
 	}
 
-	async getEmployeeBonusByEmpNo(
+	async getEmployeeBonusByEmpNoByType(
 		period_id: number,
 		bonus_type: BonusTypeEnumType,
 		emp_no: string
@@ -127,6 +129,25 @@ export class EmployeeBonusService {
 			},
 		});
 		return result;
+	}
+	async getEmployeeBonusByEmpNo(
+		period_id: number,
+		emp_no: string
+	) {
+		const employee_bonus_mapper = container.resolve(EmployeeBonusMapper);
+		const result = await EmployeeBonus.findAll({
+			where: {
+				period_id: period_id,
+				emp_no: emp_no,
+				disabled: false,
+			},
+		});
+		const promises = result.map(async (e) => {
+			return await employee_bonus_mapper.getEmployeeBonusFE(e);
+		})
+
+		const result2 = await Promise.all(promises);
+		return result2;
 	}
 
 	async getAllEmployeeBonus(
@@ -162,6 +183,43 @@ export class EmployeeBonusService {
 	async getEmployeeBonusById(id: number) {
 		const result = await EmployeeBonus.findByPk(id);
 		return result;
+	}
+
+	async getAccumulatedBonus(period_id: number,  emp_no: string) {
+		const ehr_service = container.resolve(EHRService);
+		const employee_bonus_mapper = container.resolve(EmployeeBonusMapper);
+		const period_name = await ehr_service.getPeriodById(period_id).then(
+			(period) => period.period_name
+		);
+		let start_period_id = 0
+		if( period_name.split("-")[0] === "DEC"){
+			start_period_id = (await ehr_service.getPeriodByName(period_name)).period_id
+		}
+		else{
+			const year = String(parseInt(period_name.split("-")[1]!) - 1)
+			start_period_id = (await ehr_service.getPeriodByName("DEC-" + year)).period_id
+		}
+		const end_period_id = period_id
+		const result = await EmployeeBonus.findAll({
+			where: {
+				period_id: {
+					[Op.between]: [start_period_id, end_period_id-1],
+				},
+				emp_no: emp_no,
+				// special_multiplier: {
+				// 	[Op.gt]: 0,
+				// },
+				disabled: false,
+			},
+			order: [["emp_no", "ASC"]],
+		});
+		let sum = 0;
+		const promises = result.map(async (e) => {
+			const amount = (await employee_bonus_mapper.getEmployeeBonusFE(e)).app_amount!
+			sum += amount
+		})
+		await Promise.all(promises);
+		return sum;
 	}
 
 	async initCandidateEmployeeBonus(
@@ -342,7 +400,7 @@ export class EmployeeBonusService {
 		}: z.infer<typeof updateEmployeeBonusService>
 	) {
 		let error = false;
-		const employeeBonus = await this.getEmployeeBonusByEmpNo(
+		const employeeBonus = await this.getEmployeeBonusByEmpNoByType(
 			period_id!,
 			bonus_type!,
 			emp_no!
@@ -434,7 +492,7 @@ export class EmployeeBonusService {
 				return;
 			}
 
-			const employee_bonus = await this.getEmployeeBonusByEmpNo(
+			const employee_bonus = await this.getEmployeeBonusByEmpNoByType(
 				period_id,
 				bonus_type,
 				emp_no
@@ -492,7 +550,7 @@ export class EmployeeBonusService {
 		});
 
 		const promises2 = budget_amount_list.map(async (e) => {
-			const employee_bonus = await this.getEmployeeBonusByEmpNo(
+			const employee_bonus = await this.getEmployeeBonusByEmpNoByType(
 				period_id,
 				bonus_type,
 				e.emp_no

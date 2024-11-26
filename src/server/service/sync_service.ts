@@ -426,10 +426,20 @@ export class SyncService {
 
 				await this.employeePaymentService.createEmployeePayment({
 					emp_no: ehr_emp_data.emp_no,
-					long_service_allowance_type:
-						LongServiceEnum.Enum.month_allowance,
+					long_service_allowance_type: LongServiceEnum.Enum.month_allowance,
 					start_date: new Date(ehr_emp_data.registration_date),
 					end_date: null,
+					base_salary: 0,
+					food_allowance: 0,
+					supervisor_allowance: 0,
+					occupational_allowance: 0,
+					subsidy_allowance: 0,
+					long_service_allowance: 0,
+					l_r_self: 0,
+					l_i: 0,
+					h_i: 0,
+					l_r: 0,
+					occupational_injury: 0
 				});
 
 				await this.employeeTrustService.createEmployeeTrust({

@@ -265,6 +265,47 @@ export class EmployeePaymentService {
 
 		return Object.values(groupedEmployeePaymenttRecords);
 	}
+	async getAllFutureEmployeePayment(): Promise<EmployeePaymentFEType[][]> {
+		const current_date_string = get_date_string(new Date());
+		const allEmployeePayment = await EmployeePayment.findAll({
+			where: {
+				start_date: {
+					[Op.gt]: current_date_string,
+				},
+				disabled: false,
+			},
+			order: [
+				["emp_no", "ASC"],
+				["start_date", "DESC"],
+			],
+			raw: true,
+		});
+
+		const decodedEmployeePayments: EmployeePaymentDecType[] =
+			await this.employeePaymentMapper.decodeEmployeePaymentList(
+				allEmployeePayment
+			);
+
+		const employeePaymentList =
+			await this.employeePaymentMapper.includeEmployee(
+				decodedEmployeePayments,
+				["department", "emp_name", "position", "position_type"]
+			);
+
+		// 将记录按工号分组
+		const groupedEmployeePaymenttRecords: Record<
+			string,
+			EmployeePaymentDecType[]
+		> = {};
+
+		employeePaymentList.forEach((r) => {
+			if (!groupedEmployeePaymenttRecords[r.emp_no]) {
+				groupedEmployeePaymenttRecords[r.emp_no] = [];
+			}
+			groupedEmployeePaymenttRecords[r.emp_no]!.push(r);
+		});
+		return Object.values(groupedEmployeePaymenttRecords);
+	}
 
 	async updateEmployeePayment(
 		data: z.input<typeof updateEmployeePaymentService>

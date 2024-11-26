@@ -26,7 +26,7 @@ export class BonusMapper {
                         [emp_no]
                     )
                 )[0];
-                const employee_bonus = await employee_bonus_service.getEmployeeBonusByEmpNo(period_id, 
+                const employee_bonus = await employee_bonus_service.getEmployeeBonusByEmpNoByType(period_id, 
                     "project_bonus", emp_no);
                 let project_bonus = 0;
                 if (employee_bonus !== null) {
