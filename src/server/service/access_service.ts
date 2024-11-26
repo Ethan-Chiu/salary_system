@@ -1,7 +1,7 @@
 import { injectable } from "tsyringe";
-import { RolesEnumType } from "../api/types/role_type";
+import { type RolesEnumType } from "../api/types/role_type";
 import {
-	AccessiblePagesType,
+	type AccessiblePagesType,
 	accessiblePages,
 } from "../api/types/access_page_type";
 import { AccessSetting } from "../database/entity/SALARY/access_setting";
@@ -9,7 +9,7 @@ import "reflect-metadata";
 
 @injectable()
 export class AccessService {
-	constructor() { }
+	/* constructor() { } */
 
 	async getAccessByRole(
 		role: RolesEnumType | null
