@@ -44,7 +44,7 @@ import { createLevelRangeAPI, updateLevelRangeAPI } from "../types/level_range_t
 import { LevelRangeMapper } from "~/server/database/mapper/level_range_mapper";
 import { roundProperties } from "~/server/database/mapper/helper_function";
 import { SalaryIncomeTaxService } from "~/server/service/salary_income_tax_service";
-import { createAttendanceSettingAPI, updateAttendanceSettingAPI } from "../types/attendance_setting_type";
+import { attendanceSettingFE, createAttendanceSettingAPI, updateAttendanceSettingAPI } from "../types/attendance_setting_type";
 
 export const parametersRouter = createTRPCRouter({
 	createBankSetting: publicProcedure
@@ -111,6 +111,7 @@ export const parametersRouter = createTRPCRouter({
 
 	getCurrentAttendanceSetting: publicProcedure
 		.input(z.object({ period_id: z.number() }))
+    .output(attendanceSettingFE)
 		.query(async ({ input }) => {
 			const attendanceService = container.resolve(
 				AttendanceSettingService
@@ -119,6 +120,7 @@ export const parametersRouter = createTRPCRouter({
 				await attendanceService.getCurrentAttendanceSetting(
 					input.period_id
 				);
+
 			if (attendanceSetting == null) {
 				throw new BaseResponseError("AttendanceSetting does not exist");
 			}
