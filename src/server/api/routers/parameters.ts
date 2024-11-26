@@ -53,12 +53,8 @@ export const parametersRouter = createTRPCRouter({
 			const bankService = container.resolve(BankSettingService);
 			const newdata = await bankService.createBankSetting({
 				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
+				start_date: input.start_date,
+				end_date: input.end_date,
 			});
 			return newdata;
 		}),
@@ -91,12 +87,8 @@ export const parametersRouter = createTRPCRouter({
 			const bankService = container.resolve(BankSettingService);
 			const newdata = await bankService.updateBankSetting({
 				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
+				start_date: input.start_date,
+				end_date: input.end_date,
 			});
 			return newdata;
 		}),
