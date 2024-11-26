@@ -7,7 +7,7 @@ import {
 	type Sequelize,
 } from "sequelize";
 import { z } from "zod";
-import { dateF, dateStringF } from "../../mapper/mapper_utils";
+import { dateF, dateStringF, systemF, systemKeys } from "../../mapper/mapper_utils";
 import {
 	dateToString,
 	dateToStringNullable,
@@ -40,7 +40,7 @@ const decF = dbAttendanceSetting.merge(decFields).merge(dateF);
 export type AttendanceSettingDecType = z.input<typeof decF>;
 
 export const decAttendanceSetting = encF
-	.merge(z.object({ id: z.number() }))
+	.merge(systemF)
 	.transform((v) => ({
 		...v,
 		id: v.id,
@@ -50,7 +50,7 @@ export const decAttendanceSetting = encF
 	.pipe(decF);
 
 export const encAttendanceSetting = decF
-	.omit({ id: true })
+	.omit(systemKeys)
 	.transform((v) => ({
 		...v,
 		start_date: dateToString.parse(v.start_date),

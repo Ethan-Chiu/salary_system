@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DateAPI, DateService, EmpData, Id } from "./common_type";
+import { dateAPI, dateService, empData, Id } from "./common_type";
 import { LongServiceEnum } from "./long_service_enum";
 import { optionalNumDefaultZero } from "./z_utils";
 
@@ -35,29 +35,12 @@ const employeePaymentUpdate = z
 		l_r: optionalNumDefaultZero,
 		occupational_injury: optionalNumDefaultZero,
 	})
-	.merge(DateAPI);
+	.merge(dateAPI);
 
-const employeePaymentCreate = employeePaymentBase.merge(DateAPI);
-const employeePaymentCreate = z
-	.object({
-		emp_no: z.string(),
-		base_salary: z.number(),
-		food_allowance: z.number(),
-		supervisor_allowance: z.number(),
-		occupational_allowance: z.number(),
-		subsidy_allowance: z.number(),
-		long_service_allowance: z.number(),
-		long_service_allowance_type: LongServiceEnum,
-		l_r_self: z.number(),
-		l_i: z.number(),
-		h_i: z.number(),
-		l_r: z.number(),
-		occupational_injury: z.number(),
-	})
-	.merge(DateService);
+const employeePaymentCreate = employeePaymentBase.merge(dateService);
 
-
-// Exposed Types 
+// Exposed Types
+// Create Types
 export const employeePaymentCreateAPI = employeePaymentCreate.omit({
 	l_i: true,
 	h_i: true,
@@ -66,6 +49,7 @@ export const employeePaymentCreateAPI = employeePaymentCreate.omit({
 });
 export const employeePaymentCreateService = employeePaymentCreate;
 
+// Update Types
 export const updateEmployeePaymentAPI = employeePaymentUpdate
 	.partial()
 	.merge(Id);
@@ -73,13 +57,13 @@ export const updateEmployeePaymentService = employeePaymentUpdate
 	.partial()
 	.merge(Id);
 
-// Frontend 
+// Frontend
 export const employeePaymentFE = z
 	.object({
 		id: z.number(),
 	})
 	.merge(employeePaymentBase)
-	.merge(EmpData)
-	.merge(DateAPI);
+	.merge(empData)
+	.merge(dateAPI);
 
 export type EmployeePaymentFEType = z.infer<typeof employeePaymentFE>;

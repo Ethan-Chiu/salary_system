@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DateAPI, Id } from "./common_type";
+import { dateAPI, dateService, Id } from "./common_type";
 
 const attendanceSettingBase = z.object({
 	overtime_by_local_workers_1: z.number(),
@@ -15,27 +15,29 @@ const attendanceSettingBase = z.object({
 });
 
 
-// Exposed Types 
+// Exposed Types
+// Create Types
 export const createAttendanceSettingAPI = attendanceSettingBase
-	.merge(DateAPI)
+	.merge(dateService)
 	.omit({ end_date: true });
-export const createAttendanceSettingService = attendanceSettingBase.merge(DateAPI);
+export const createAttendanceSettingService = attendanceSettingBase.merge(dateService);
 
+// Update Types
 export const updateAttendanceSettingAPI = attendanceSettingBase
-	.merge(DateAPI)
+	.merge(dateAPI)
 	.partial()
 	.merge(Id);
 export const updateAttendanceSettingService = attendanceSettingBase
-	.merge(DateAPI)
+	.merge(dateAPI)
 	.partial()
 	.merge(Id);
 
-
+// Frontend Types
 export const attendanceSettingFE = z
 	.object({
 		id: z.number(),
 	})
 	.merge(attendanceSettingBase)
-	.merge(DateAPI);
+	.merge(dateAPI);
 
 export type AttendanceSettingFEType = z.infer<typeof attendanceSettingFE>;

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { EmpData, Id } from "./common_type";
+import { empData, Id } from "./common_type";
 import { BonusTypeEnum } from "./bonus_type_enum";
 
 export const employeeBonus = z.object({
@@ -48,7 +48,7 @@ export const employeeBonusFE = z.object({
 	app_performance_level: z.coerce.string().nullable(),
 	app_effective_salary: z.coerce.number().nullable(),
 	app_amount: z.coerce.number().nullable(),
-}).merge(EmpData);
+}).merge(empData);
 
 
 export type EmployeeBonusFEType = z.infer<typeof employeeBonusFE>

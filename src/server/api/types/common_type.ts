@@ -4,7 +4,7 @@ export const Id = z.object({
 	id: z.number(),
 });
 
-export const DateAPI = z.object({
+export const dateAPI = z.object({
 	start_date: z.date().nullable(),
 	end_date: z.date().nullable(),
 	create_by: z.string(),
@@ -13,19 +13,19 @@ export const DateAPI = z.object({
 	update_date: z.date(),
 });
 
-export const DateService = z.object({
+export const dateService = z.object({
 	start_date: z.date().nullable(),
 	end_date: z.date().nullable(),
 });
 
-export const EmpData = z.object({
+export const empData = z.object({
 	emp_name: z.string(),
 	department: z.string(),
 	position: z.number(),
 	position_type: z.string(),
 }).partial();
 
-export const User = z.object({
+export const user = z.object({
 	emp_no: z.string(),
 	password: z.string(),
 	auth_l: z.number(),
