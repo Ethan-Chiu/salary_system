@@ -314,6 +314,7 @@ const CompViewAllDatas = ({
 					<Table>
 						<TableHeader>
 							<TableRow>
+								<TableHead className="whitespace-nowrap text-center" />
 								{Object.keys(filteredDataList[0]).map(
 									(key: string) => {
 										return (
