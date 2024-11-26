@@ -69,17 +69,15 @@ export function DataTableToolbarUpdate<TData>({
 							tableType={selectedTableType}
 							period_id={selectedPeriod.period_id}
 						>
-							{selectedTab === EmpTabsEnum.Enum.current && (
-								<DataTableFunctions
-									tableType={selectedTableType}
-									columns={columns}
-								/>
-							)}
-							{selectedTab === EmpTabsEnum.Enum.calendar && (
+							<DataTableFunctions
+								tableType={selectedTableType}
+								columns={columns}
+							/>
+							{/* {selectedTab === EmpTabsEnum.Enum.calendar && (
 								<CalendarToolbarFunctions
 									tableType={selectedTableType}
 								/>
-							)}
+							)} */}
 						</EmployeeToolbarFunctionsProvider>
 					)}
 				</div>

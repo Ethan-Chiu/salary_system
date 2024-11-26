@@ -82,15 +82,15 @@ export function DataTableFunctions({
 							{t("others.functions")}
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						{updateFunction && <CompTriggerItem
-							mode={"update"}
-							itemName={t("button.update")}
-							icon={PenSquare}
-						/>}
 						{createFunction && <CompTriggerItem
 							mode={"create"}
 							itemName={t("button.create")}
 							icon={Plus}
+						/>}
+						{updateFunction && <CompTriggerItem
+							mode={"update"}
+							itemName={t("button.update")}
+							icon={PenSquare}
 						/>}
 						{deleteFunction && <CompTriggerItem
 							mode={"delete"}

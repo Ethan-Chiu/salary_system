@@ -153,7 +153,7 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 
 
 	// Select one entry
-	if (mode !== "create" && selectedData === null) {
+	if (selectedData === null) {
 		const noIDData: any[] = data.map((item: any) => {
 			const { ["id"]: id, ...rest } = item;
 			return rest;

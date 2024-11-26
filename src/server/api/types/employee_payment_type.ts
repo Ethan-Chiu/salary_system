@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DateAPI, EmpData, Id } from "./common_type";
+import { DateAPI, DateService, EmpData, Id } from "./common_type";
 import { LongServiceEnum } from "./long_service_enum";
 import { optionalNumDefaultZero } from "./z_utils";
 
@@ -38,6 +38,23 @@ const employeePaymentUpdate = z
 	.merge(DateAPI);
 
 const employeePaymentCreate = employeePaymentBase.merge(DateAPI);
+const employeePaymentCreate = z
+	.object({
+		emp_no: z.string(),
+		base_salary: z.number(),
+		food_allowance: z.number(),
+		supervisor_allowance: z.number(),
+		occupational_allowance: z.number(),
+		subsidy_allowance: z.number(),
+		long_service_allowance: z.number(),
+		long_service_allowance_type: LongServiceEnum,
+		l_r_self: z.number(),
+		l_i: z.number(),
+		h_i: z.number(),
+		l_r: z.number(),
+		occupational_injury: z.number(),
+	})
+	.merge(DateService);
 
 
 // Exposed Types 

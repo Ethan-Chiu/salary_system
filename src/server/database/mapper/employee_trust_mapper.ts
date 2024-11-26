@@ -28,7 +28,7 @@ export class EmployeeTrustMapper {
 	constructor(
 		private readonly employeeDataService: EmployeeDataService,
 		private readonly trustMoneyService: TrustMoneyService
-	) {}
+	) { }
 
 	async encodeEmployeeTrust(
 		employee_trust: z.input<typeof encEmployeeTrust>
@@ -74,14 +74,10 @@ export class EmployeeTrustMapper {
 		const start_dates = employee_trust_list
 			.map((emp_trust) => emp_trust.start_date)
 			.sort((a, b) => a.getTime() - b.getTime());
-		console.log("\n\n\nstart_dates", start_dates);
 		trust_money_list.forEach((trust_money) => {
 			const trust_money_start_date = stringToDate.parse(
 				trust_money.start_date
 			);
-			console.log("trust_money_start_date", trust_money_start_date);
-			console.log(trust_money_start_date.getTime() > start_dates[0]!.getTime());
-			console.log(!start_dates.includes(trust_money_start_date))
 			if (
 				trust_money_start_date.getTime() > start_dates[0]!.getTime() &&
 				!start_dates.map((d) => d.getTime()).includes(trust_money_start_date.getTime())
@@ -95,6 +91,11 @@ export class EmployeeTrustMapper {
 					employee_trust_list[0]!.emp_no,
 					start_date
 				);
+
+			if (employee_trust == null) {
+				throw new BaseResponseError("Employee Trust does not exist");
+			}
+
 			const trust_money =
 				await this.trustMoneyService.getCurrentTrustMoneyByPositionByDate(
 					employee.position,
@@ -104,14 +105,14 @@ export class EmployeeTrustMapper {
 			const org_trust_reserve = Math.min(
 				trust_money!.org_trust_reserve_limit,
 				Number(
-					CryptoHelper.decrypt(employee_trust!.emp_trust_reserve_enc)
+					CryptoHelper.decrypt(employee_trust.emp_trust_reserve_enc)
 				)
 			);
 			const org_special_trust_incent = Math.min(
 				trust_money!.org_special_trust_incent_limit,
 				Number(
 					CryptoHelper.decrypt(
-						employee_trust!.emp_special_trust_incent_enc
+						employee_trust.emp_special_trust_incent_enc
 					)
 				)
 			);
@@ -125,22 +126,22 @@ export class EmployeeTrustMapper {
 				position_type: employee.position_type,
 				department: employee.department,
 				emp_trust_reserve: Number(
-					CryptoHelper.decrypt(employee_trust!.emp_trust_reserve_enc)
+					CryptoHelper.decrypt(employee_trust.emp_trust_reserve_enc)
 				),
 				org_trust_reserve: org_trust_reserve,
 				emp_special_trust_incent: Number(
 					CryptoHelper.decrypt(
-						employee_trust!.emp_special_trust_incent_enc
+						employee_trust.emp_special_trust_incent_enc
 					)
 				),
 				org_special_trust_incent: org_special_trust_incent,
 				start_date: start_date,
 				end_date: start_dates[idx + 1]
 					? new Date(
-							new Date(start_dates[idx + 1]!).setDate(
-								new Date(start_dates[idx + 1]!).getDate() - 1
-							)
-					  )
+						new Date(start_dates[idx + 1]!).setDate(
+							new Date(start_dates[idx + 1]!).getDate() - 1
+						)
+					)
 					: null,
 			};
 
@@ -165,18 +166,18 @@ export class EmployeeTrustMapper {
 					emp_trust_reserve_enc:
 						employee_trust.emp_trust_reserve != undefined
 							? CryptoHelper.encrypt(
-									employee_trust.emp_trust_reserve.toString()
-							  )
+								employee_trust.emp_trust_reserve.toString()
+							)
 							: undefined,
 					emp_special_trust_incent_enc:
 						employee_trust.emp_special_trust_incent != undefined
 							? CryptoHelper.encrypt(
-									employee_trust.emp_special_trust_incent.toString()
-							  )
+								employee_trust.emp_special_trust_incent.toString()
+							)
 							: undefined,
 					...employee_trust,
 				}
-			// )
+				// )
 			);
 
 		return employeeTrust;

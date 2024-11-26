@@ -7,7 +7,8 @@ import {
 import { type EmployeeTableEnum } from "../../employee_tables";
 
 interface FunctionsApi {
-	queryFunction: (() => UseTRPCQueryResult<any, any>) | undefined;
+	queryCurrentFunction: (() => UseTRPCQueryResult<any, any>) | undefined;
+	queryFutureFunction: (() => UseTRPCQueryResult<any, any>) | undefined;
 	updateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	createFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	deleteFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
@@ -15,7 +16,8 @@ interface FunctionsApi {
 }
 
 export const employeeToolbarFunctionsContext = createContext<FunctionsApi>({
-	queryFunction: undefined,
+	queryCurrentFunction: undefined,
+	queryFutureFunction: undefined,
 	updateFunction: undefined,
 	createFunction: undefined,
 	deleteFunction: undefined,
@@ -35,13 +37,16 @@ export default function EmployeeToolbarFunctionsProvider({
 	const ctx = api.useUtils();
 
 	//#region <EmployeePayment>
-	const getEmployeePayment = () =>
+	const getCurrentEmployeePayment = () =>
 		api.employeePayment.getCurrentEmployeePayment.useQuery({ period_id });
+	const getFutureEmployeePayment = () =>
+		api.employeePayment.getAllFutureEmployeePayment.useQuery();
 	const updateEmployeePayment =
 		api.employeePayment.updateEmployeePayment.useMutation({
 			onSuccess: () => {
 				void ctx.employeePayment.getCurrentEmployeePayment.invalidate();
 				void ctx.employeePayment.getAllEmployeePayment.invalidate();
+				void ctx.employeePayment.getAllFutureEmployeePayment.invalidate();
 			},
 		});
 	const createEmployeePayment =
@@ -49,6 +54,7 @@ export default function EmployeeToolbarFunctionsProvider({
 			onSuccess: () => {
 				void ctx.employeePayment.getCurrentEmployeePayment.invalidate();
 				void ctx.employeePayment.getAllEmployeePayment.invalidate();
+				void ctx.employeePayment.getAllFutureEmployeePayment.invalidate();
 			},
 		});
 	const deleteEmployeePayment =
@@ -56,6 +62,7 @@ export default function EmployeeToolbarFunctionsProvider({
 			onSuccess: () => {
 				void ctx.employeePayment.getCurrentEmployeePayment.invalidate();
 				void ctx.employeePayment.getAllEmployeePayment.invalidate();
+				void ctx.employeePayment.getAllFutureEmployeePayment.invalidate();
 			},
 		});
 	const autoCalculateEmployeePayment =
@@ -63,12 +70,13 @@ export default function EmployeeToolbarFunctionsProvider({
 			onSuccess: () => {
 				void ctx.employeePayment.getCurrentEmployeePayment.invalidate();
 				void ctx.employeePayment.getAllEmployeePayment.invalidate();
+				void ctx.employeePayment.getAllFutureEmployeePayment.invalidate();
 			},
 		});
 	//#endregion
 
 	//#region <EmployeeTrust>
-	const getEmployeeTrust = () =>
+	const getCurrentEmployeeTrust = () =>
 		api.employeeTrust.getCurrentEmployeeTrust.useQuery({ period_id });
 	const updateEmployeeTrust =
 		api.employeeTrust.updateEmployeeTrust.useMutation({
@@ -102,17 +110,19 @@ export default function EmployeeToolbarFunctionsProvider({
 
 	const functionsDictionary: Record<EmployeeTableEnum, FunctionsApi> = {
 		TableEmployeePayment: {
-			queryFunction: getEmployeePayment,
+			queryCurrentFunction: getCurrentEmployeePayment,
+			queryFutureFunction: getFutureEmployeePayment,
 			updateFunction: updateEmployeePayment,
 			createFunction: createEmployeePayment,
 			deleteFunction: deleteEmployeePayment,
 			autoCalculateFunction: autoCalculateEmployeePayment,
 		},
 		TableEmployeeTrust: {
-			queryFunction: getEmployeeTrust,
+			queryCurrentFunction: getCurrentEmployeeTrust,
+			queryFutureFunction: undefined,
 			updateFunction: undefined,
 			createFunction: createEmployeeTrust,
-			deleteFunction: deleteEmployeeTrust,
+			deleteFunction: undefined,
 			autoCalculateFunction: undefined,
 		},
 	};

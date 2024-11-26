@@ -7,11 +7,15 @@ export const Id = z.object({
 export const DateAPI = z.object({
 	start_date: z.date().nullable(),
 	end_date: z.date().nullable(),
+	create_by: z.string(),
+	create_date: z.date(),
+	update_by: z.string(),
+	update_date: z.date(),
 });
 
 export const DateService = z.object({
-	start_date: z.string().nullable(),
-	end_date: z.string().nullable(),
+	start_date: z.date().nullable(),
+	end_date: z.date().nullable(),
 });
 
 export const EmpData = z.object({
