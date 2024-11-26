@@ -25,12 +25,12 @@ export const syncRouter = createTRPCRouter({
 		}),
 
 	checkEmployeeData: publicProcedure
-		.input(z.object({ func: FunctionsEnum, period: z.number() }))
+		.input(z.object({ func: FunctionsEnum, period_id: z.number() }))
 		.query(async ({ input }) => {
 			const syncService = container.resolve(SyncService);
 			const diffDatas = await syncService.checkEmployeeData(
 				input.func,
-				input.period
+				input.period_id
 			);
 			return diffDatas;
 		}),

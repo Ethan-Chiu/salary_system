@@ -22,7 +22,7 @@ export function SyncPage({
 	const { isLoading, isError, data, error } =
 		api.sync.checkEmployeeData.useQuery({
 			func: FunctionsEnum.Enum.month_salary,
-			period: period,
+			period_id: period,
 		});
 
 	if (isLoading) {

@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { Id } from "./common_type";
 import { WorkTypeEnum } from "./work_type_enum";
+import { WorkStatusEnum } from "./work_status_enum";
 
 //MARK:employee_data
 const employeeData = z.object({
@@ -13,7 +14,7 @@ const employeeData = z.object({
 	group_insurance_type: z.string(),
 	department: z.string(),
 	work_type: WorkTypeEnum,
-	work_status: z.string(),
+	work_status: WorkStatusEnum,
 	disabilty_level: z.string().nullable(),
 	sex_type: z.string(),
 	dependents: z.number().nullable(),
@@ -27,9 +28,6 @@ const employeeData = z.object({
 
 export const createEmployeeDataAPI = employeeData;
 export const createEmployeeDataService = employeeData;
-
-export type CreateEmployeeDataServiceType = z.infer<typeof createEmployeeDataService>;
-
 
 export const updateEmployeeDataAPI = employeeData.partial().merge(Id);
 export const updateEmployeeDataByEmpNoAPI = employeeData.partial();

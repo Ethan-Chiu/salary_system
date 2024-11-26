@@ -30,7 +30,7 @@ function SyncPage() {
 	const { isLoading, isError, data, error } =
 		api.sync.checkEmployeeData.useQuery({
 			func: FunctionsEnum.Enum.month_salary,
-			period: selectedPeriod!.period_id,
+			period_id: selectedPeriod!.period_id,
 		});
 
 	if (isLoading) {

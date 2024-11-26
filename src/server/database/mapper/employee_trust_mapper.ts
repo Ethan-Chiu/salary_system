@@ -152,7 +152,29 @@ export class EmployeeTrustMapper {
 		});
 		await Promise.all(promises);
 		const employee_trust_FE_list = await Promise.all(promises);
-		return employee_trust_FE_list;
+		const reduced: z.infer<typeof employeeTrustFE>[] = []
+		let merged_employee_trust_FE_list = employee_trust_FE_list.reduce(
+			(acc, cur) => {
+				if(acc.length == 0){
+					acc.push(cur)
+					return acc
+				}
+				if (acc[acc.length-1]!.emp_no == cur!.emp_no && 
+					acc[acc.length-1]!.emp_trust_reserve == cur!.emp_trust_reserve &&
+					acc[acc.length-1]!.emp_special_trust_incent == cur!.emp_special_trust_incent &&
+					acc[acc.length-1]!.org_trust_reserve == cur!.org_trust_reserve &&
+					acc[acc.length-1]!.org_special_trust_incent == cur!.org_special_trust_incent
+				) {
+					acc[acc.length-1]!.end_date = cur!.end_date
+					return acc
+				}else{
+					acc.push(cur)
+					return acc
+				}
+			},reduced);
+		console.log("\n\n\nmerged_employee_trust_FE_list", merged_employee_trust_FE_list)
+		return merged_employee_trust_FE_list;
+		// return employee_trust_FE_list
 	}
 
 	async getEmployeeTrustNullable(

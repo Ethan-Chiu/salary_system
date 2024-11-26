@@ -6,6 +6,7 @@ import {
 	type CreationOptional,
 	type Sequelize,
 } from "sequelize";
+import { WorkStatusEnumType } from "~/server/api/types/work_status_enum";
 import { type WorkTypeEnumType } from "~/server/api/types/work_type_enum";
 
 export class EmployeeData extends Model<
@@ -22,7 +23,7 @@ export class EmployeeData extends Model<
 	declare group_insurance_type: string;
 	declare department: string;
 	declare work_type: WorkTypeEnumType; //工作類別
-	declare work_status: string; //工作型態
+	declare work_status: WorkStatusEnumType; //工作型態
 	declare disabilty_level: string | null;
 	declare sex_type: string;
 	declare dependents: number | null;

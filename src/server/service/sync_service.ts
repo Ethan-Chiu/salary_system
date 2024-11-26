@@ -1,4 +1,4 @@
-import { injectable } from "tsyringe";
+import { container, injectable } from "tsyringe";
 import { EmployeeData } from "../database/entity/SALARY/employee_data";
 import { EHRService } from "./ehr_service";
 import { type Emp } from "../database/entity/UMEDIA/emp";
@@ -20,8 +20,10 @@ import {
 } from "../api/types/sync_type";
 import { type Period } from "../database/entity/UMEDIA/period";
 import { LongServiceEnum } from "../api/types/long_service_enum";
-import { type CreateEmployeeDataServiceType } from "../api/types/employee_data_type";
+import { createEmployeeDataService } from "../api/types/employee_data_type";
 import { Op } from "sequelize";
+import { WorkStatusEnum } from "../api/types/work_status_enum";
+import { z } from "zod";
 
 @injectable()
 export class SyncService {
@@ -62,6 +64,34 @@ export class SyncService {
 		return { ...period, period_year: year, period_month: month };
 	}
 
+	async getPreviousPeriodId(period_id: number): Promise<number> {
+		const ehr_service = container.resolve(EHRService);
+		const previousMonthDict: Record<string, string> = {
+			JAN: "DEC",
+			FEB: "JAN",
+			MAR: "FEB",
+			APR: "MAR",
+			MAY: "APR",
+			JUN: "MAY",
+			JUL: "JUN",
+			AUG: "JUL",
+			SEP: "AUG",
+			OCT: "SEP",
+			NOV: "OCT",
+			DEC: "NOV",
+		};
+		const period_name = (await ehr_service.getPeriodById(period_id))
+			.period_name;
+		const previous_month = previousMonthDict[period_name.split("-")[0]!];
+		const year =
+			previous_month === "DEC"
+				? String(parseInt(period_name.split("-")[1]!) - 1)
+				: period_name.split("-")[1];
+		const previous_period_id = (
+			await ehr_service.getPeriodByName(`${previous_month}-${year}`)
+		).period_id;
+		return previous_period_id;
+	}
 	async checkQuitDate(
 		period: number,
 		quit_date: string | null
@@ -91,7 +121,7 @@ export class SyncService {
 	empToEmployee(
 		ehr_data: Emp,
 		period_id: number
-	): CreateEmployeeDataServiceType {
+	): z.infer<typeof createEmployeeDataService> {
 		return {
 			period_id: period_id,
 			emp_no: ehr_data.emp_no,
@@ -141,7 +171,7 @@ export class SyncService {
 	}
 
 	compareEmpData<T>(
-		ehrEmp: Exact<T, EmployeeData>,
+		ehrEmp: Partial<Exact<T, EmployeeData>>,
 		salaryEmp?: Exact<T, EmployeeData>
 	): SyncData {
 		// TODO: change this
@@ -218,7 +248,7 @@ export class SyncService {
 			});
 
 			// 篩選符合支付工作狀態的員工
-			const salary_emps: CreateEmployeeDataServiceType[] =
+			const salary_emps: z.infer<typeof createEmployeeDataService>[] =
 				salary_emps_data.filter((emp) => {
 					return paid_status.includes(emp.work_status);
 				});
@@ -242,7 +272,7 @@ export class SyncService {
 					newEmps.push(emp);
 			});
 			// 將新員工轉換為Employee
-			const new_employees: CreateEmployeeDataServiceType[] = newEmps.map(
+			const new_employees: z.infer<typeof createEmployeeDataService>[] = newEmps.map(
 				(emp) => this.empToEmployee(emp, period)
 			);
 
@@ -321,15 +351,64 @@ export class SyncService {
 		}
 		return cand_paid_emps;
 	}
-
+	async createNewMonthData(period_id: number, emp_no_list: string[]) {
+		const salary_datas = await EmployeeData.findAll({
+			where: {
+				emp_no: {
+					[Op.in]: emp_no_list,
+				},
+				period_id: period_id,
+			},
+		});
+		const previous_period_id = await this.getPreviousPeriodId(period_id);
+		const employee_data_service = container.resolve(EmployeeDataService);
+		if (salary_datas.length == 0) {
+			emp_no_list.forEach(async (emp_no) => {
+				const old_employee_data =
+					await employee_data_service.getEmployeeDataByEmpNoByPeriod(
+						emp_no,
+						previous_period_id
+					);
+				if (!old_employee_data) return;
+				if (
+					old_employee_data?.work_status ==
+						WorkStatusEnum.Values.當月離職人員破月 ||
+					old_employee_data?.work_status ==
+						WorkStatusEnum.Values.當月離職人員全月
+				) {
+					employee_data_service.createEmployeeData({
+						...old_employee_data,
+						period_id: period_id,
+						work_status: WorkStatusEnum.Enum.離職人員,
+					});
+				} else if (
+					old_employee_data?.work_status ==
+						WorkStatusEnum.Values.當月新進人員破月 ||
+					old_employee_data?.work_status ==
+						WorkStatusEnum.Values.當月新進人員全月
+				) {
+					employee_data_service.createEmployeeData({
+						...old_employee_data,
+						period_id: period_id,
+						work_status: WorkStatusEnum.Values.一般員工,
+					});
+				} else {
+					employee_data_service.createEmployeeData({
+						...old_employee_data,
+						period_id: period_id,
+					});
+				}
+			});
+		}
+	}
 	// Stage 2
 	async checkEmployeeData(
 		func: FunctionsEnumType,
-		period: number
+		period_id: number
 	): Promise<SyncData[] | null> {
-		const cand_paid_emps = await this.getCandPaidEmployees(func, period); // 獲取候選需支付員工數據
+		const cand_paid_emps = await this.getCandPaidEmployees(func, period_id); // 獲取候選需支付員工數據
 		const cand_emp_no_list = cand_paid_emps.map((emp) => emp.emp_no); // 提取候選員工的員工編號列表
-
+		// await this.createNewMonthData(period_id, cand_emp_no_list);
 		// Get Data from Salary and EHR
 		let salary_datas: EmployeeData[] = [];
 
@@ -339,20 +418,22 @@ export class SyncService {
 					emp_no: {
 						[Op.in]: cand_emp_no_list,
 					},
+					period_id: period_id,
 				},
 			});
-		} else {
-			salary_datas = await EmployeeData.findAll({}); // 否則查找所有工資數據
-		}
+		} 
+		// else {
+		// 	salary_datas = await EmployeeData.findAll({}); // 否則查找所有工資數據
+		// }
 
-		const ehr_datas: Emp[] = await this.ehrService.getEmp(period);
-		const ehr_datas_transformed: CreateEmployeeDataServiceType[] =
-			ehr_datas.map((emp) => this.empToEmployee(emp, period));
+		const ehr_datas: Emp[] = await this.ehrService.getEmp(period_id);
+		const ehr_datas_transformed: z.infer<typeof createEmployeeDataService>[] =
+			ehr_datas.map((emp) => this.empToEmployee(emp, period_id));
 
 		// Lookup table by EMP_NO
-		const ehrDict: Map<string, EmployeeData> = new Map<
+		const ehrDict: Map<string, Partial<EmployeeData>> = new Map<
 			string,
-			EmployeeData
+			Partial<EmployeeData>
 		>();
 		const salaryDict: Map<string, EmployeeData> = new Map<
 			string,
@@ -410,7 +491,7 @@ export class SyncService {
 		for (const changeEmp of change_emp_list) {
 			// TODO: the data type is incorrect, lacking type check (period_id is missing)
 			// TODO: append period_id
-			const ehr_emp_data: CreateEmployeeDataServiceType =
+			const ehr_emp_data: z.infer<typeof createEmployeeDataService> =
 				this.empToEmployee(ehrDict.get(changeEmp.emp_no)!, period);
 
 			let salary_emp_data: EmployeeData | undefined = salary_datas.find(
@@ -426,7 +507,8 @@ export class SyncService {
 
 				await this.employeePaymentService.createEmployeePayment({
 					emp_no: ehr_emp_data.emp_no,
-					long_service_allowance_type: LongServiceEnum.Enum.month_allowance,
+					long_service_allowance_type:
+						LongServiceEnum.Enum.month_allowance,
 					start_date: new Date(ehr_emp_data.registration_date),
 					end_date: null,
 					base_salary: 0,
@@ -439,7 +521,7 @@ export class SyncService {
 					l_i: 0,
 					h_i: 0,
 					l_r: 0,
-					occupational_injury: 0
+					occupational_injury: 0,
 				});
 
 				await this.employeeTrustService.createEmployeeTrust({
@@ -459,8 +541,8 @@ export class SyncService {
 
 			const updatedData: EmployeeData = salary_emp_data;
 			for (const key of changeEmp.keys) {
-				const data_key: keyof CreateEmployeeDataServiceType =
-					key as keyof CreateEmployeeDataServiceType;
+				const data_key: keyof z.infer<typeof createEmployeeDataService> =
+					key as keyof z.infer<typeof createEmployeeDataService>;
 				updatedData.set(data_key, ehr_emp_data[data_key]);
 			}
 
