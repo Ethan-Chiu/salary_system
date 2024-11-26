@@ -76,14 +76,12 @@ export function DataTableToolbar<TData>({
 							selectedTableType={selectedTableType}
 							period_id={selectedPeriod.period_id}
 						>
-							{selectedTab === TabsEnum.Enum.current && (
-								<DataTableFunctions tableType={selectedTableType} />
-							)}
-							{selectedTab === TabsEnum.Enum.calendar && (
+							<DataTableFunctions tableType={selectedTableType} />
+							{/* {selectedTab === TabsEnum.Enum.calendar && (
 								<CalendarToolbarFunctions
 									tableType={selectedTableType}
 								/>
-							)}
+							)} */}
 						</ParameterToolbarFunctionsProvider>
 					)}
 				</div>

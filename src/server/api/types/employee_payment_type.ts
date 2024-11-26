@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DateAPI, EmpData, Id } from "./common_type";
+import { DateAPI, DateService, EmpData, Id } from "./common_type";
 import { LongServiceEnum } from "./long_service_enum";
 import { optionalNumDefaultZero } from "./z_utils";
 
@@ -52,7 +52,7 @@ const employeePaymentCreate = z
 		l_r: z.number(),
 		occupational_injury: z.number(),
 	})
-	.merge(DateAPI);
+	.merge(DateService);
 
 export const employeePaymentCreateAPI = employeePaymentCreate.omit({ l_i: true, h_i: true, l_r: true, occupational_injury: true });
 export const employeePaymentCreateService = employeePaymentCreate;

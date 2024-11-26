@@ -10,14 +10,14 @@ import { LoadingSpinner } from "~/components/loading";
 import CalendarUpdateEvent from "./components/calendar_update_event";
 import periodContext from "~/components/context/period_context";
 import { useTranslation } from "react-i18next";
-import { HistoryDataType, type CalenderQueryFunctionType } from "~/components/data_table/history_data_type";
+import { HistoryDataType, type EmployeeCalenderQueryFunctionType } from "~/components/data_table/history_data_type";
 import { type EmployeeHistoryViewCommonEmpInfo } from "../history_view/history_view";
 import EmployeeToolbarFunctionsProvider from "../function_sheet/employee_functions_context";
 import { PopoverSelectorDataType } from "~/components/popover_selector";
 import { formatDate } from "~/lib/utils/format_date";
 
 interface DataTableProps {
-	dataFunction: CalenderQueryFunctionType<EmployeeHistoryViewCommonEmpInfo>;
+	dataFunction: EmployeeCalenderQueryFunctionType<EmployeeHistoryViewCommonEmpInfo>;
 }
 
 export default function CalendarView({ dataFunction }: DataTableProps) {
@@ -49,7 +49,7 @@ function CompCalendarContent({
 	dataFunction,
 }: {
 	target_date: string;
-	dataFunction: CalenderQueryFunctionType<EmployeeHistoryViewCommonEmpInfo>;
+	dataFunction: EmployeeCalenderQueryFunctionType<EmployeeHistoryViewCommonEmpInfo>;
 }) {
 	const { isLoading, isError, data, error } = dataFunction();
 

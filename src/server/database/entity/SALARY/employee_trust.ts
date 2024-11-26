@@ -33,7 +33,7 @@ const decF = dbEmployeeTrust.merge(decFields).merge(dateF);
 export type EmployeeTrustDecType = z.input<typeof decF>;
 
 export const decEmployeeTrust = encF
-	.merge(z.object({ id: z.number() }))
+	.merge(z.object({ id: z.number(), create_date: z.date(), update_date: z.date() }))
 	.transform((v) => ({
 		...v,
 		id: v.id,
@@ -45,7 +45,7 @@ export const decEmployeeTrust = encF
 	.pipe(decF);
 
 export const encEmployeeTrust = decF
-	.omit({ id: true })
+	.omit({ id: true, create_date: true, update_date: true })
 	.transform((v) => ({
 		...v,
 		emp_trust_reserve_enc: encodeString.parse(v.emp_trust_reserve),

@@ -62,26 +62,21 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 	const { t } = useTranslation(["common"]);
 	const functions = useContext(employeeToolbarFunctionsContext);
 
-	const queryFunction = functions.queryFunction!;
+	const queryCurrentFunction = functions.queryCurrentFunction!;
+	const queryFutureFunction = functions.queryFutureFunction!;
 	const updateFunction = functions.updateFunction!;
 	const createFunction = functions.createFunction!;
 	const deleteFunction = functions.deleteFunction!;
 	const autoCalculateFunction = functions.autoCalculateFunction!;
-	const {
-		isLoading,
-		isError,
-		data,
-		error,
-	}: {
-		isLoading: boolean;
-		isError: boolean;
-		data?: DataType | DataType[];
-		error?: { message: string } | null;
-	} = queryFunction();
+	const { isLoading, isError, data, error } =
+		(mode === "create" || mode === "auto_calculate")
+			? queryCurrentFunction()
+			: queryFutureFunction();
 
 	const isList = Array.isArray(data);
 
 	const [selectedData, setSelectedData] = useState<DataType | null>(null);
+	const [withoutDeafultValue, setWithoutDeafultValue] = useState(false);
 
 	const [formValues, setFormValues] = useState<
 		Partial<z.infer<z.AnyZodObject>>
@@ -144,8 +139,8 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 	}
 
 	// Select one entry
-	if (selectedData === null) {
-		const dataList = isList ? data : [data]
+	if (selectedData === null && !withoutDeafultValue) {
+		const dataList = isList ? data.flat() : [data]
 		const noIDData: DataTypeWithoutID[] = dataList.map((item: any) => {
 			const { ["id"]: id, ...rest } = item;
 			return rest as DataTypeWithoutID;
@@ -182,6 +177,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 						start_date: start_date,
 					});
 				}}
+				setWithoutDeafultValue={setWithoutDeafultValue}
 			/>
 		);
 	}
@@ -252,6 +248,7 @@ const CompViewAllDatas = ({
 	onUpdate,
 	onDelete,
 	onAutoCalculate,
+	setWithoutDeafultValue,
 }: {
 	dataNoID: any[];
 	mode: FunctionMode;
@@ -259,6 +256,7 @@ const CompViewAllDatas = ({
 	onUpdate: (emp_no: string) => void;
 	onDelete: (index: number) => void;
 	onAutoCalculate: (selectedEmpNoList: string[], date: Date) => void;
+	setWithoutDeafultValue: (value: boolean) => void;
 }) => {
 	const [filterValue, setFilterValue] = useState<string>("");
 	const [filteredDataList, setFilteredDataList] =
@@ -286,6 +284,11 @@ const CompViewAllDatas = ({
 					placeholder={t("others.filter_setting")}
 					onChange={(e) => setFilterValue(e.target.value)}
 				></Input>
+				{mode == "create" && (
+					<Button className="absolute right-4 top-4" onClick={() => { setWithoutDeafultValue(true) }}>
+						{t("button.no_default_value")}
+					</Button>
+				)}
 				{mode == "auto_calculate" && (
 					<Dialog>
 						<DialogTrigger asChild>

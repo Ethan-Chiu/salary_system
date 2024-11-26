@@ -8,7 +8,9 @@ export const dateStringF = z.object({
 
 export const dateF = z.object({
 	start_date: z.date(),
-	end_date: z.date().nullable()
+	end_date: z.date().nullable(),
+	create_date: z.date(),
+	update_date: z.date(),
 })
 
 export const decDate = z.object({

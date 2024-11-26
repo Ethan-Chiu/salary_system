@@ -58,6 +58,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	const isList = Array.isArray(data);
 
 	const [selectedData, setSelectedData] = useState((defaultValue) ?? null);
+	const [withoutDeafultValue, setWithoutDeafultValue] = useState(false);
 
 	const [formValues, setFormValues] = useState<
 		Partial<z.infer<z.AnyZodObject>>
@@ -119,7 +120,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 
 
 	// Select one entry
-	if (selectedData === null) {
+	if (selectedData === null && !withoutDeafultValue) {
 		const dataList = isList ? data : [data]
 		const noIDData: any[] = dataList.map((item: any) => {
 			const { ["id"]: id, ...rest } = item;
@@ -132,7 +133,6 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 				mode={mode}
 				onUpdate={(index: number) => {
 					const dataList = isList ? data : [data]
-					console.log(dataList, index, dataList[index]);
 					setSelectedData(dataList[index]);
 				}}
 				onDelete={(index: number) => {
@@ -140,6 +140,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 						id: data[index].id,
 					});
 				}}
+				setWithoutDeafultValue={setWithoutDeafultValue}
 			/>
 		);
 	}
@@ -209,11 +210,13 @@ const CompViewAllDatas = ({
 	mode,
 	onUpdate,
 	onDelete,
+	setWithoutDeafultValue,
 }: {
 	dataNoID: any[];
 	mode: FunctionMode;
-	onUpdate: Function;
-	onDelete: Function;
+	onUpdate: (index: number) => void;
+	onDelete: (index: number) => void;
+	setWithoutDeafultValue: (value: boolean) => void;
 }) => {
 	const [filterValue, setFilterValue] = useState<string>("");
 	const [filteredDataList, setFilteredDataList] = useState(dataNoID);
@@ -237,7 +240,7 @@ const CompViewAllDatas = ({
 					onChange={(e) => setFilterValue(e.target.value)}
 				></Input>
 				{mode == "create" && (
-					<Button className="absolute right-4 top-4" onClick={() => {}}>
+					<Button className="absolute right-4 top-4" onClick={() => { setWithoutDeafultValue(true) }}>
 						{t("button.no_default_value")}
 					</Button>
 				)}

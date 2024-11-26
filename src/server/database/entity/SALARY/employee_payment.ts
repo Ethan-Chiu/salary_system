@@ -63,7 +63,7 @@ const decF = dbEmployeePayment.merge(decFields).merge(dateF);
 export type EmployeePaymentDecType = z.input<typeof decF>;
 
 export const decEmployeePayment = encF
-	.merge(z.object({ id: z.number() }))
+	.merge(z.object({ id: z.number(), create_date: z.date(), update_date: z.date() }))
 	.transform((v) => ({
 		...v,
 		id: v.id,
@@ -88,7 +88,7 @@ export const decEmployeePayment = encF
 	.pipe(decF);
 
 export const encEmployeePayment = decF
-	.omit({ id: true })
+	.omit({ id: true, create_date: true, update_date: true })
 	.transform((v) => ({
 		...v,
 		base_salary_enc: encodeString.parse(v.base_salary),
