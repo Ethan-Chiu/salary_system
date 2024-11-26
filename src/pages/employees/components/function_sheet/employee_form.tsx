@@ -258,6 +258,7 @@ const CompViewAllDatas = ({
 	onAutoCalculate: (selectedEmpNoList: string[], date: Date) => void;
 	setWithoutDeafultValue: (value: boolean) => void;
 }) => {
+	const { t } = useTranslation(["common"]);
 	const [filterValue, setFilterValue] = useState<string>("");
 	const [filteredDataList, setFilteredDataList] =
 		useState(dataNoID);
@@ -265,7 +266,6 @@ const CompViewAllDatas = ({
 		dataNoID.map((e) => e.emp_no)
 	);
 	const [date, setDate] = useState<Date>(new Date());
-	const { t } = useTranslation(["common"]);
 
 	useEffect(() => {
 		const filteredData = dataNoID?.filter((data) => {

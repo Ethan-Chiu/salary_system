@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { WorkStatusEnum, WorkStatusEnumType } from "~/server/api/types/work_status_enum";
 import {
 	WorkTypeEnumType,
 	WorkTypeEnum,
@@ -15,7 +16,7 @@ const dbEmp = z.object({
 	GINSURANCE_TYPE: z.string(),
 	U_DEP: z.string(),
 	WORK_TYPE: stringToEnum.pipe(WorkTypeEnum),
-	WORK_STATUS: z.string(),
+	WORK_STATUS: stringToEnum.pipe(WorkStatusEnum),
 	ACCESSIBLE: z.string().nullable(),
 	SEX_TYPE: z.string(),
 	DEPENDENTS: z.number().nullable(),
@@ -36,7 +37,7 @@ export class Emp {
 	group_insurance_type: string;
 	department: string;
 	work_type: WorkTypeEnumType;
-	work_status: string;
+	work_status: WorkStatusEnumType;
 	disabilty_level: string | null;
 	sex_type: string;
 	dependents: number | null;
@@ -55,7 +56,7 @@ export class Emp {
 		group_insurance_type: string,
 		department: string,
 		work_type: WorkTypeEnumType,
-		work_status: string,
+		work_status: WorkStatusEnumType,
 		disabilty_level: string | null,
 		sex_type: string,
 		dependents: number | null,

@@ -83,6 +83,17 @@ export class EmployeeDataService {
 		return employeeData;
 	}
 
+	async getEmployeeDataByEmpNoByPeriod(emp_no: string, period_id: number): Promise<EmployeeData | null> {
+		const employeeData = await EmployeeData.findOne({
+			where: {
+				emp_no: emp_no,
+				period_id: period_id,
+			},
+			raw: true,
+		});
+		return employeeData;
+	}
+
 	async getAllEmployeeData(): Promise<EmployeeData[]> {
 		const employeeData = await EmployeeData.findAll({
 			raw: true,
