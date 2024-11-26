@@ -442,8 +442,8 @@ export class TransactionService {
 
 		const disabilty_level = employee_data!.disabilty_level;
 
-		const v_2_h_i =
-			await calculateService.getSecondGenerationHealthInsurance();
+		const v_2_h_i = -1;
+			// await calculateService.getSecondGenerationHealthInsurance(period_id, emp_no, pay_type, insurance_rate_setting!, employee_payment_fe);
 
 		const emp_trust_reserve = employee_trust_fe
 			? employee_trust_fe.emp_trust_reserve

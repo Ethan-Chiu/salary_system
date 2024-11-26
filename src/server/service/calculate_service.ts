@@ -21,6 +21,7 @@ import { SalaryIncomeTaxService } from "./salary_income_tax_service";
 import { BonusTypeEnum } from "../api/types/bonus_type_enum";
 import { EmployeeTrust } from "../database/entity/SALARY/employee_trust";
 import { EmployeeDataService } from "./employee_data_service";
+import { EmployeeBonusService } from "./employee_bonus_service";
 
 const FOREIGN = "外籍勞工";
 const PROFESSOR = "顧問";
@@ -1635,38 +1636,43 @@ export class CalculateService {
 		return 0;
 	}
 	//MARK: 二代健保
-	async getSecondGenerationHealthInsurance(): // employee_data: EmployeeData,
-	// employee_trust_fe: z.infer<typeof EmployeeTrustFE> | undefined,
-	// employee_payment_fe: z.infer<typeof EmployeePaymentFE>,
-	// insurance_rate_setting: InsuranceRateSetting,
-	// project_bonus: number,
-	// q1_bonus: number,
-	// q2_bonus: number,
-	// q3_q4_bonus: number
-	Promise<number> {
-		// const new_bonus =
-		// 	project_bonus +
-		// 	q1_bonus +
-		// 	q2_bonus +
-		// 	q3_q4_bonus +
-		// 	(employee_trust_fe?.org_trust_reserve! ?? 0);
-		// const accumulated_bonus = employee_data.accumulated_bonus;
-		// const v2_h_i_rate = insurance_rate_setting.v2_h_i_supp_pay_rate;
-		// const v2_h_i_multiplier = insurance_rate_setting.v2_h_i_multiplier;
-		// const h_i = employee_payment_fe?.h_i ?? 0;
+	async getSecondGenerationHealthInsurance(period_id:number, emp_no: string, pay_type: PayTypeEnumType, insurance_rate_setting: InsuranceRateSetting, employee_payment_fe: z.infer<typeof employeePaymentFE>): Promise<number> {
+		const employee_bonus_service = container.resolve(EmployeeBonusService);
+		const employee_bonus_list = await employee_bonus_service.getEmployeeBonusByEmpNo(period_id, emp_no);
+		if (pay_type === PayTypeEnum.Enum.month_salary) {
+			const new_bonus = employee_bonus_list.filter((e) => e.bonus_type === BonusTypeEnum.Enum.project_bonus)[0]?.app_amount ?? 0;
+			const other_bonus = employee_bonus_list.filter((e) => e.bonus_type !== BonusTypeEnum.Enum.project_bonus)[0]?.app_amount ?? 0;
+			const accumulated_bonus = other_bonus + await employee_bonus_service.getAccumulatedBonus(period_id, emp_no);
+			const v2_h_i_rate = insurance_rate_setting.v2_h_i_supp_pay_rate;
+			const v2_h_i_multiplier = insurance_rate_setting.v2_h_i_multiplier;
+			const h_i = employee_payment_fe?.h_i ?? 0;
 
-		// if (new_bonus + accumulated_bonus > h_i * v2_h_i_multiplier) {
-		// 	const v2_h_i =
-		// 		Math.min(
-		// 			new_bonus,
-		// 			accumulated_bonus + new_bonus - h_i * v2_h_i_multiplier
-		// 		) * v2_h_i_rate;
-		// 	const employee_data_service =
-		// 		container.resolve(EmployeeDataService);
+			if (new_bonus + accumulated_bonus > h_i * v2_h_i_multiplier) {
+				const v2_h_i =
+					Math.min(
+						new_bonus,
+						accumulated_bonus + new_bonus - h_i * v2_h_i_multiplier
+					) * v2_h_i_rate;
+				return v2_h_i;
+			}
+		}
+		else{
+			const new_bonus = employee_bonus_list.filter((e) => e.bonus_type !== BonusTypeEnum.Enum.project_bonus)[0]?.app_amount ?? 0;
+			const accumulated_bonus = await employee_bonus_service.getAccumulatedBonus(period_id, emp_no);
+			const v2_h_i_rate = insurance_rate_setting.v2_h_i_supp_pay_rate;
+			const v2_h_i_multiplier = insurance_rate_setting.v2_h_i_multiplier;
+			const h_i = employee_payment_fe?.h_i ?? 0;
 
-		// 	return v2_h_i;
-		// }
-		// return 0;
+			if (new_bonus + accumulated_bonus > h_i * v2_h_i_multiplier) {
+				const v2_h_i =
+					Math.min(
+						new_bonus,
+						accumulated_bonus + new_bonus - h_i * v2_h_i_multiplier
+					) * v2_h_i_rate;
+				return v2_h_i;
+			}
+		}
+		return 0;
 		/*
 	rd("二代健保") = 0
 	    
