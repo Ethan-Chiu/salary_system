@@ -81,6 +81,22 @@ export class BankSettingService {
 		return bankSetting;
 	}
 
+	async getAllFutureBankSetting(): Promise<BankSetting[]> {
+		const current_date_string = get_date_string(new Date());
+		const bankSetting = await BankSetting.findAll(
+			{
+				where: {
+					start_date: {
+						[Op.gt]: current_date_string,
+					},
+					disabled: false,
+				},
+				order: [["start_date", "DESC"], ["bank_code", "ASC"]]
+			}
+		);
+		return bankSetting;
+	}
+
 	async updateBankSetting({
 		id,
 		bank_code,

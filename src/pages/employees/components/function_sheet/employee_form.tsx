@@ -32,7 +32,6 @@ import { employeeToolbarFunctionsContext } from "./employee_functions_context";
 import GeneralTable from "~/pages/employees/components/function_sheet/general_table";
 import { Input } from "~/components/ui/input";
 import { Checkbox } from "~/components/ui/checkbox";
-import periodContext from "~/components/context/period_context";
 import { get_date_string } from "~/server/service/helper_function";
 import { isDate } from "date-fns";
 import { formatDate } from "~/lib/utils/format_date";
@@ -62,7 +61,6 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 }: EmployeeFormProps<SchemaType>) {
 	const { t } = useTranslation(["common"]);
 	const functions = useContext(employeeToolbarFunctionsContext);
-	const { selectedPeriod } = useContext(periodContext);
 
 	const queryFunction = functions.queryFunction!;
 	const updateFunction = functions.updateFunction!;
@@ -82,9 +80,8 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 	} = queryFunction();
 
 	const isList = Array.isArray(data);
-	const onlyOne = !(isList && data.length > 1);
 
-	const [selectedData, setSelectedData] = useState(isList ? null : data);
+	const [selectedData, setSelectedData] = useState<DataType | null>(null);
 
 	const [formValues, setFormValues] = useState<
 		Partial<z.infer<z.AnyZodObject>>
@@ -142,17 +139,14 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 		return <span>Error: {error?.message}</span>; // TODO: Error element with toast
 	}
 
-	if (mode === "delete" && onlyOne) {
-		return <p>{t("others.delete_warning")}</p>;
-	}
-
 	if (!data) {
 		return <p>{t("others.no_data")}</p>;
 	}
 
 	// Select one entry
-	if (isList && selectedData === null) {
-		const noIDData: DataTypeWithoutID[] = data.map((item: any) => {
+	if (selectedData === null) {
+		const dataList = isList ? data : [data]
+		const noIDData: DataTypeWithoutID[] = dataList.map((item: any) => {
 			const { ["id"]: id, ...rest } = item;
 			return rest as DataTypeWithoutID;
 		});
@@ -163,7 +157,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 				mode={mode}
 				columns={columns}
 				onUpdate={(emp_no: string) => {
-					const selectedEmp = data.findLast(
+					const selectedEmp = dataList.findLast(
 						(d) => d.emp_no === emp_no
 					);
 					if (!selectedEmp) {
@@ -172,7 +166,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 					setSelectedData(selectedEmp);
 				}}
 				onDelete={(index: number) => {
-					const selectedId = data[index]?.id;
+					const selectedId = dataList[index]?.id;
 					if (!selectedId) {
 						return;
 					}
@@ -273,6 +267,7 @@ const CompViewAllDatas = ({
 		dataNoID.map((e) => e.emp_no)
 	);
 	const [date, setDate] = useState<Date>(new Date());
+	const { t } = useTranslation(["common"]);
 
 	useEffect(() => {
 		const filteredData = dataNoID?.filter((data) => {
@@ -283,11 +278,9 @@ const CompViewAllDatas = ({
 		setFilteredDataList(filteredData);
 	}, [dataNoID, filterValue]);
 
-	const { t } = useTranslation(["common"]);
-
 	return (
 		<>
-			<div className="flex h-10 items-center justify-between">
+			<div className="flex h-[4rem] items-center justify-between">
 				<Input
 					className="w-1/10 absolute left-4 top-4"
 					placeholder={t("others.filter_setting")}
@@ -330,7 +323,7 @@ const CompViewAllDatas = ({
 					</Dialog>
 				)}
 			</div>
-			<div className="m-4">
+			<div>
 				{filteredDataList.length != 0 && filteredDataList[0] ? (
 					<Table>
 						<TableHeader>
@@ -448,7 +441,7 @@ const CompViewAllDatas = ({
 						</TableBody>
 					</Table>
 				) : (
-					<div className="m-4"> {t("table.no_data")} </div>
+					<div className="m-4 text-center"> {t("table.no_data")} </div>
 				)}
 			</div>
 		</>

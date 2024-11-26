@@ -96,6 +96,22 @@ export class LevelService {
 		return level;
 	}
 
+	async getAllFutureLevel(): Promise<Level[]> {
+		const current_date_string = get_date_string(new Date());
+		const level = await Level.findAll(
+			{
+				where: {
+					start_date: {
+						[Op.gt]: current_date_string,
+					},
+					disabled: false,
+				},
+				order: [["start_date", "DESC"], ["level", "ASC"]]
+			}
+		);
+		return level;
+	}
+
 	async updateLevel({
 		id,
 		level,

@@ -101,6 +101,22 @@ export class InsuranceRateSettingService {
 		return insuranceRateSettingList;
 	}
 
+	async getAllFutureInsuranceRateSetting(): Promise<InsuranceRateSetting[]> {
+		const current_date_string = get_date_string(new Date());
+		const insuranceRateSettingList = await InsuranceRateSetting.findAll(
+			{
+				where: {
+					start_date: {
+						[Op.gt]: current_date_string,
+					},
+					disabled: false,
+				},
+				order: [["start_date", "DESC"]],
+			}
+		);
+		return insuranceRateSettingList;
+	}
+
 	async getInsuranceRateSettingById(
 		id: number
 	): Promise<InsuranceRateSetting | null> {

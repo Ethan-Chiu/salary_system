@@ -1,7 +1,7 @@
 import AutoForm from "~/components/ui/auto-form";
 import * as z from "zod";
 import { Button } from "~/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
 	Table,
@@ -22,15 +22,14 @@ import {
 	DialogClose,
 	DialogFooter,
 } from "~/components/ui/dialog";
-import { PenSquare, Trash2 } from "lucide-react";
-
+import { Copy, PenSquare, Trash2 } from "lucide-react";
 import { useContext } from "react";
 import { parameterToolbarFunctionsContext } from "./parameter_functions_context";
 import { FunctionMode } from "./data_table_functions";
 import GeneralTable from "./general_table";
+import { Input } from "~/components/ui/input";
 import { LoadingSpinner } from "~/components/loading";
 import { FieldConfig } from "~/components/ui/auto-form/types";
-import dataTableContext from "../context/data_table_context";
 
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
@@ -47,8 +46,8 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	mode,
 	closeSheet,
 }: ParameterFormProps<SchemaType>) {
+	const { t } = useTranslation(["common"]);
 	const functions = useContext(parameterToolbarFunctionsContext);
-	const { selectedTableType } = useContext(dataTableContext);
 
 	const queryFunction = functions.queryFunction!;
 	const updateFunction = functions.updateFunction!;
@@ -57,16 +56,14 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	const { isLoading, isError, data, error } = queryFunction();
 
 	const isList = Array.isArray(data);
-	const onlyOne = !(isList && data.length > 1);
 
-	const [selectedData, setSelectedData] = useState((defaultValue) ?? (isList ? null : data));
+	const [selectedData, setSelectedData] = useState((defaultValue) ?? null);
 
 	const [formValues, setFormValues] = useState<
 		Partial<z.infer<z.AnyZodObject>>
 	>(getDefaults(formSchema));
 
 	const [openDialog, setOpenDialog] = useState(false);
-	const { t } = useTranslation(["common"]);
 
 	function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
 		return Object.fromEntries(
@@ -86,6 +83,9 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 					...parsedValues.data,
 				});
 			} else if (mode === "update") {
+				if (!selectedData) {
+					return;
+				}
 				updateFunction.mutate({
 					...parsedValues.data,
 					id: selectedData.id,
@@ -95,6 +95,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 			// TODO: Error element with toast
 		}
 		// closeSheet();
+		setSelectedData(null);
 	}
 
 	const handleSubmit = () => {
@@ -112,16 +113,15 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-	if (mode === "delete" && onlyOne) {
-		return (
-			<p>{t("others.delete_warning")}</p>
-		);
+	if (!data) {
+		return <p>{t("others.no_data")}</p>;
 	}
 
 
 	// Select one entry
-	if (mode !== "create" && selectedData === null) {
-		const noIDData: any[] = data.map((item: any) => {
+	if (selectedData === null) {
+		const dataList = isList ? data : [data]
+		const noIDData: any[] = dataList.map((item: any) => {
 			const { ["id"]: id, ...rest } = item;
 			return rest;
 		});
@@ -131,7 +131,9 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 				dataNoID={noIDData}
 				mode={mode}
 				onUpdate={(index: number) => {
-					setSelectedData(data[index]);
+					const dataList = isList ? data : [data]
+					console.log(dataList, index, dataList[index]);
+					setSelectedData(dataList[index]);
 				}}
 				onDelete={(index: number) => {
 					deleteFunction.mutate({
@@ -213,43 +215,67 @@ const CompViewAllDatas = ({
 	onUpdate: Function;
 	onDelete: Function;
 }) => {
+	const [filterValue, setFilterValue] = useState<string>("");
+	const [filteredDataList, setFilteredDataList] = useState(dataNoID);
 	const { t } = useTranslation(["common"]);
+
+	useEffect(() => {
+		const filteredData = dataNoID?.filter((data) => {
+			return Object.values(data).some((value: any) =>
+				value ? value.toString().includes(filterValue) : false
+			);
+		});
+		setFilteredDataList(filteredData);
+	}, [dataNoID, filterValue]);
+
 	return (
 		<>
-			{dataNoID && (
-				<div className="m-4">
+			<div className="flex h-[4rem] items-center justify-between">
+				<Input
+					className="w-1/10 absolute left-4 top-4"
+					placeholder={t("others.filter_setting")}
+					onChange={(e) => setFilterValue(e.target.value)}
+				></Input>
+				{mode == "create" && (
+					<Button className="absolute right-4 top-4" onClick={() => {}}>
+						{t("button.no_default_value")}
+					</Button>
+				)}
+			</div>
+			<div>
+				{filteredDataList.length != 0 && filteredDataList[0] ? (
 					<Table>
 						<TableHeader>
 							<TableRow>
 								<TableHead className="whitespace-nowrap text-center"></TableHead>
-								{dataNoID[0] ? (
-									Object.keys(dataNoID[0]).map(
-										(key: string) => {
-											return (
-												<TableHead
-													key={key}
-													className="whitespace-nowrap text-center"
-												>
-													{t(`table.${key}`)}
-												</TableHead>
-											);
-										}
-									)
-								) : (
-									<TableCell
-										colSpan={5}
-										className="h-24 text-center"
-									>
-										{t('table.no_data')}
-									</TableCell>
+								{Object.keys(filteredDataList[0]).map(
+									(key: string) => {
+										return (
+											<TableHead
+												key={key}
+												className="whitespace-nowrap text-center"
+											>
+												{t(`table.${key}`)}
+											</TableHead>
+										);
+									}
 								)}
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{dataNoID?.map((data: any, index: number) => {
+							{filteredDataList.map((data: any, index: number) => {
 								return (
 									<TableRow key={data.id}>
 										<TableCell className="items-center">
+											{mode === "create" && (
+												<Copy
+													size={18}
+													className="cursor-pointer"
+													onClick={() => {
+														onUpdate(index);
+													}}
+												/>
+											)}
 											{mode === "update" && (
 												<PenSquare
 													size={18}
@@ -282,8 +308,10 @@ const CompViewAllDatas = ({
 							})}
 						</TableBody>
 					</Table>
-				</div>
-			)}
+				) : (
+					<div className="m-4 text-center"> {t("table.no_data")} </div>
+				)}
+			</div>
 		</>
 	);
 };

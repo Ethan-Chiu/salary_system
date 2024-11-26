@@ -108,6 +108,25 @@ export class TrustMoneyService {
 		return trustMoney;
 	}
 
+	async getAllFutureTrustMoney(): Promise<TrustMoney[]> {
+		const current_date_string = get_date_string(new Date());
+		const trustMoney = await TrustMoney.findAll({
+			where: {
+				start_date: {
+					[Op.gt]: current_date_string,
+				},
+				disabled: false,
+			},
+			order: [
+				["position", "ASC"],
+				["position_type", "ASC"],
+				["start_date", "DESC"],
+			],
+			raw: true,
+		});
+		return trustMoney;
+	}
+
 	async updateTrustMoney({
 		id,
 		position,
