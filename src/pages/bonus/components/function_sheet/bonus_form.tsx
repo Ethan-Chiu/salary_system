@@ -22,7 +22,7 @@ import {
 	DialogClose,
 	DialogFooter,
 } from "~/components/ui/dialog";
-import { PenSquare, Trash2 } from "lucide-react";
+import { Copy, PenSquare, Trash2 } from "lucide-react";
 
 import { useContext } from "react";
 import { bonusToolbarFunctionsContext } from "./bonus_functions_context";
@@ -51,6 +51,7 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 	bonus_type,
 	closeSheet,
 }: BonusFormProps<SchemaType>) {
+	const { t } = useTranslation(["common"]);
 	const functions = useContext(bonusToolbarFunctionsContext);
 
 	const queryFunction = functions.queryFunction!;
@@ -63,20 +64,15 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 	const { selectedPeriod } = useContext(periodContext);
 
 	const isList = Array.isArray(data);
-	// const onlyOne = !(isList && data.length > 1);
-	const onlyOne = false;
 
 	const [selectedData, setSelectedData] = useState((defaultValue) ?? (isList ? null : data));
+	const [withoutDeafultValue, setWithoutDeafultValue] = useState(false);
 
 	const [formValues, setFormValues] = useState<
 		Partial<z.infer<z.AnyZodObject>>
 	>(getDefaults(formSchema));
 
 	const [openDialog, setOpenDialog] = useState(false);
-
-
-
-	const { t } = useTranslation(["common"]);
 
 	function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
 		return Object.fromEntries(
@@ -97,19 +93,21 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 					period_id,
 					bonus_type,
 				});
-				closeSheet();
 			} else if (mode === "update") {
+				if (!selectedData) {
+					return;
+				}
 				updateFunction.mutate({
 					...parsedValues.data,
 					id: selectedData.id,
 					bonus_type,
 				});
-				
-				setSelectedData(null);
 			}
 		} else {
 			// TODO: Error element with toast
 		}
+		// closeSheet();
+		setSelectedData(null);
 	}
 
 	const handleSubmit = () => {
@@ -127,10 +125,8 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-	if (mode === "delete" && onlyOne) {
-		return (
-			<p>{t("others.delete_warning")}</p>
-		);
+	if (!data) {
+		return <p>{t("others.no_data")}</p>;
 	}
 
 	if (mode === "auto_calculate") {
@@ -153,7 +149,7 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 
 
 	// Select one entry
-	if (selectedData === null) {
+	if (selectedData === null && !withoutDeafultValue) {
 		const noIDData: any[] = data.map((item: any) => {
 			const { ["id"]: id, ...rest } = item;
 			return rest;
@@ -171,6 +167,7 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 						id: data[index].id,
 					});
 				}}
+				setWithoutDeafultValue={setWithoutDeafultValue}
 			/>
 		);
 	}
@@ -276,12 +273,15 @@ const CompViewAllDatas = ({
 	mode,
 	onUpdate,
 	onDelete,
+	setWithoutDeafultValue,
 }: {
 	dataNoID: any[];
 	mode: FunctionMode;
 	onUpdate: (index: number) => void;
 	onDelete: (index: number) => void;
+	setWithoutDeafultValue: (value: boolean) => void;
 }) => {
+	const { t } = useTranslation(["common"]);
 	const [filterValue, setFilterValue] = useState<string>("");
 	const [filteredDataList, setFilteredDataList] =
 		useState(dataNoID);
@@ -295,23 +295,25 @@ const CompViewAllDatas = ({
 		setFilteredDataList(filteredData);
 	}, [dataNoID, filterValue]);
 
-	const { t } = useTranslation(["common"]);
-
 	return (
 		<>
-			<div className="flex h-10 items-center justify-between">
+			<div className="flex h-[4rem] items-center justify-between">
 				<Input
 					className="w-1/10 absolute left-4 top-4"
 					placeholder={t("others.filter_setting")}
 					onChange={(e) => setFilterValue(e.target.value)}
 				></Input>
+				{mode == "create" && (
+					<Button className="absolute right-4 top-4" onClick={() => { setWithoutDeafultValue(true) }}>
+						{t("button.no_default_value")}
+					</Button>
+				)}
 			</div>
 			<div className="m-4">
 				{filteredDataList.length != 0 && filteredDataList[0] ? (
 					<Table>
 						<TableHeader>
 							<TableRow>
-								&emsp;
 								{Object.keys(filteredDataList[0]).map(
 									(key: string) => {
 										return (
@@ -331,6 +333,15 @@ const CompViewAllDatas = ({
 								return (
 									<TableRow key={data.emp_no}>
 										<TableCell className="items-center">
+											{mode === "create" && (
+												<Copy
+													size={18}
+													className="cursor-pointer"
+													onClick={() => {
+														onUpdate(data.emp_no);
+													}}
+												/>
+											)}
 											{mode === "update" && (
 												<PenSquare
 													size={18}

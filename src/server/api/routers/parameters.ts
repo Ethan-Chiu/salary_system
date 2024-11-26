@@ -138,6 +138,16 @@ export const parametersRouter = createTRPCRouter({
 		return attendanceSetting.map(e => roundProperties(e, 4));
 	}),
 
+	getAllFutureAttendanceSetting: publicProcedure.query(async () => {
+		const attendanceService = container.resolve(AttendanceSettingService);
+		const attendanceSetting =
+			await attendanceService.getAllFutureAttendanceSetting();
+		if (attendanceSetting.length == 0) {
+			throw new BaseResponseError("AttendanceSetting does not exist");
+		}
+		return attendanceSetting.map(e => roundProperties(e, 4));
+	}),
+
 	createAttendanceSetting: publicProcedure
 		.input(createAttendanceSettingAPI)
 		.mutation(async ({ input }) => {
