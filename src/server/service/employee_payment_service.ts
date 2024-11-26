@@ -34,7 +34,7 @@ export class EmployeePaymentService {
 		const d = employeePaymentCreateService.parse(data);
 
 		const employeePayment =
-			await this.employeePaymentMapper.encodeEmployeePayment({
+			await this.employeePaymentMapper.encode({
 				...d,
 				start_date: d.start_date ?? new Date(),
 				disabled: false,
@@ -62,7 +62,7 @@ export class EmployeePaymentService {
 			return null;
 		}
 
-		return await this.employeePaymentMapper.decodeEmployeePayment(
+		return await this.employeePaymentMapper.decode(
 			employeePayment
 		);
 	}
@@ -81,7 +81,7 @@ export class EmployeePaymentService {
 			return null;
 		}
 
-		return await this.employeePaymentMapper.decodeEmployeePayment(
+		return await this.employeePaymentMapper.decode(
 			employeePayment
 		);
 	}
@@ -111,7 +111,7 @@ export class EmployeePaymentService {
 		const employeePaymentList = await Promise.all(
 			employeePayment.map(
 				async (e) =>
-					await this.employeePaymentMapper.decodeEmployeePayment(e)
+					await this.employeePaymentMapper.decode(e)
 			)
 		);
 		const employeePaymentFE = await Promise.all(
@@ -161,7 +161,7 @@ export class EmployeePaymentService {
 		const employeePaymentList = await Promise.all(
 			employeePayment.map(
 				async (e) =>
-					await this.employeePaymentMapper.decodeEmployeePayment(e)
+					await this.employeePaymentMapper.decode(e)
 			)
 		);
 
@@ -194,7 +194,7 @@ export class EmployeePaymentService {
 			return null;
 		}
 
-		return await this.employeePaymentMapper.decodeEmployeePayment(
+		return await this.employeePaymentMapper.decode(
 			employeePayment
 		);
 	}
@@ -222,7 +222,7 @@ export class EmployeePaymentService {
 			return null;
 		}
 
-		return await this.employeePaymentMapper.decodeEmployeePayment(
+		return await this.employeePaymentMapper.decode(
 			employeePayment
 		);
 	}
@@ -240,7 +240,7 @@ export class EmployeePaymentService {
 		});
 
 		const decodedEmployeePayments: EmployeePaymentDecType[] =
-			await this.employeePaymentMapper.decodeEmployeePaymentList(
+			await this.employeePaymentMapper.decodeList(
 				allEmployeePayment
 			);
 
@@ -282,7 +282,7 @@ export class EmployeePaymentService {
 		});
 
 		const decodedEmployeePayments: EmployeePaymentDecType[] =
-			await this.employeePaymentMapper.decodeEmployeePaymentList(
+			await this.employeePaymentMapper.decodeList(
 				allEmployeePayment
 			);
 
