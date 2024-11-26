@@ -4,8 +4,59 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
-	Sequelize,
+	type Sequelize,
 } from "sequelize";
+import { z } from "zod";
+import { dateF, dateStringF } from "../../mapper/mapper_utils";
+import {
+	dateToString,
+	dateToStringNullable,
+	stringToDate,
+	stringToDateNullable,
+} from "~/server/api/types/z_utils";
+
+const dbAttendanceSetting = z.object({
+  overtime_by_local_workers_1: z.number(),
+  overtime_by_local_workers_2: z.number(),
+  overtime_by_local_workers_3: z.number(),
+  overtime_by_local_workers_4: z.number(),
+  overtime_by_local_workers_5: z.number(),
+  overtime_by_foreign_workers_1: z.number(),
+  overtime_by_foreign_workers_2: z.number(),
+  overtime_by_foreign_workers_3: z.number(),
+  overtime_by_foreign_workers_4: z.number(),
+  overtime_by_foreign_workers_5: z.number(),
+	create_by: z.string(),
+	update_by: z.string(),
+	disabled: z.coerce.boolean(),
+});
+
+const decFields = z.object({
+	id: z.number(),
+});
+
+const encF = dbAttendanceSetting.merge(dateStringF);
+const decF = dbAttendanceSetting.merge(decFields).merge(dateF);
+export type AttendanceSettingDecType = z.input<typeof decF>;
+
+export const decAttendanceSetting = encF
+	.merge(z.object({ id: z.number() }))
+	.transform((v) => ({
+		...v,
+		id: v.id,
+		start_date: stringToDate.parse(v.start_date),
+		end_date: stringToDateNullable.parse(v.end_date),
+	}))
+	.pipe(decF);
+
+export const encAttendanceSetting = decF
+	.omit({ id: true })
+	.transform((v) => ({
+		...v,
+		start_date: dateToString.parse(v.start_date),
+		end_date: dateToStringNullable.parse(v.end_date),
+	}))
+	.pipe(encF);
 
 export class AttendanceSetting extends Model<
 	InferAttributes<AttendanceSetting>,
@@ -189,3 +240,4 @@ export function initAttendanceSetting(sequelize: Sequelize) {
 		}
 	);
 }
+

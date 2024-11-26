@@ -1,13 +1,11 @@
-import { injectable } from "tsyringe";
-import { type ZodType, type z } from "zod";
+import { type ZodTypeDef, type ZodType, type z } from "zod";
 import { deleteProperties } from "./helper_function";
 import { type Model, type CreationAttributes } from "sequelize";
 
-@injectable()
 export class BaseMapper<DB extends Model, DEC extends object> {
 	constructor(
-		private encoder: ZodType<CreationAttributes<DB>>,
-		private decoder: ZodType<DEC>,
+		private encoder: ZodType<CreationAttributes<DB>, ZodTypeDef, any>,
+		private decoder: ZodType<DEC, ZodTypeDef, any>,
 		private deleteProperties: string[] = []
 	) {}
 
