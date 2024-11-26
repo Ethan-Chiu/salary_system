@@ -1,55 +1,64 @@
 import { container, injectable } from "tsyringe";
-import { BankSetting } from "../database/entity/SALARY/bank_setting";
+import {
+	BankSetting,
+	type BankSettingDecType,
+	decBankSetting,
+	encBankSetting,
+} from "../database/entity/SALARY/bank_setting";
 import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
-import { check_date, get_date_string, select_value } from "./helper_function";
-import { z } from "zod";
+import { get_date_string, select_value } from "./helper_function";
+import { type z } from "zod";
 import {
 	createBankSettingService,
-	updateBankSettingService,
+	type updateBankSettingService,
 } from "../api/types/parameters_input_type";
 import { EHRService } from "./ehr_service";
+import { BaseMapper } from "../database/mapper/base_mapper";
 
 @injectable()
 export class BankSettingService {
-	constructor() { }
+	private readonly bankSettingMapper: BaseMapper<
+		BankSetting,
+		BankSettingDecType
+	>;
 
-	async createBankSetting({
-		bank_code,
-		bank_name,
-		org_code,
-		org_name,
-		start_date,
-		end_date,
-	}: z.infer<typeof createBankSettingService>): Promise<BankSetting> {
-		const current_date_string = get_date_string(new Date());
-		check_date(start_date, end_date, current_date_string);
-		const newData = await BankSetting.create(
-			{
-				bank_code: bank_code,
-				bank_name: bank_name,
-				org_code: org_code,
-				org_name: org_name,
-				start_date: start_date ?? current_date_string,
-				end_date: end_date,
-				disabled: false,
-				create_by: "system",
-				update_by: "system",
-			}
-		);
+	constructor() {
+		this.bankSettingMapper = new BaseMapper<
+			BankSetting,
+			BankSettingDecType
+		>(encBankSetting, decBankSetting);
+	}
+
+	async createBankSetting(
+		data: z.infer<typeof createBankSettingService>
+	): Promise<BankSetting> {
+		const d = createBankSettingService.parse(data);
+
+		const bankSetting = await this.bankSettingMapper.encode({
+			...d,
+			start_date: d.start_date ?? new Date(),
+			disabled: false,
+			create_by: "system",
+			update_by: "system",
+		});
+
+		const newData = await BankSetting.create(bankSetting, {
+			raw: true,
+		});
+
 		return newData;
 	}
 
-	async getBankSettingById(id: number): Promise<BankSetting | null> {
-		const bankSetting = await BankSetting.findOne(
-			{
-				where: { id: id },
-			}
-		);
-		return bankSetting;
+	async getBankSettingById(id: number): Promise<BankSettingDecType | null> {
+		const bankSetting = await BankSetting.findOne({
+			where: { id: id },
+		});
+
+		return await this.bankSettingMapper.decode(bankSetting);
 	}
 
-	async getCurrentBankSetting(period_id: number): Promise<BankSetting[]> {
+	async getCurrentBankSetting(period_id: number): Promise<BankSettingDecType[]> {
 		const ehr_service = container.resolve(EHRService);
 		const period = await ehr_service.getPeriodById(period_id);
 		const current_date_string = period.end_date;
@@ -68,33 +77,38 @@ export class BankSettingService {
 			},
 			order: [["bank_code", "ASC"]],
 		});
-		return bankSetting;
+
+		return await this.bankSettingMapper.decodeList(bankSetting);
 	}
 
-	async getAllBankSetting(): Promise<BankSetting[]> {
-		const bankSetting = await BankSetting.findAll(
-			{
-				where: { disabled: false },
-				order: [["start_date", "DESC"], ["bank_code", "ASC"]]
-			}
-		);
-		return bankSetting;
+	async getAllBankSetting(): Promise<BankSettingDecType[]> {
+		const bankSetting = await BankSetting.findAll({
+			where: { disabled: false },
+			order: [
+				["start_date", "DESC"],
+				["bank_code", "ASC"],
+			],
+		});
+
+		return await this.bankSettingMapper.decodeList(bankSetting);
 	}
 
-	async getAllFutureBankSetting(): Promise<BankSetting[]> {
+	async getAllFutureBankSetting(): Promise<BankSettingDecType[]> {
 		const current_date_string = get_date_string(new Date());
-		const bankSetting = await BankSetting.findAll(
-			{
-				where: {
-					start_date: {
-						[Op.gt]: current_date_string,
-					},
-					disabled: false,
+		const bankSetting = await BankSetting.findAll({
+			where: {
+				start_date: {
+					[Op.gt]: current_date_string,
 				},
-				order: [["start_date", "DESC"], ["bank_code", "ASC"]]
-			}
-		);
-		return bankSetting;
+				disabled: false,
+			},
+			order: [
+				["start_date", "DESC"],
+				["bank_code", "ASC"],
+			],
+		});
+
+		return await this.bankSettingMapper.decodeList(bankSetting);
 	}
 
 	async updateBankSetting({
@@ -112,16 +126,14 @@ export class BankSettingService {
 		}
 		await this.deleteBankSetting(id);
 
-		await this.createBankSetting(
-			{
-				bank_code: select_value(bank_code, bankSetting.bank_code),
-				bank_name: select_value(bank_name, bankSetting.bank_name),
-				org_code: select_value(org_code, bankSetting.org_code),
-				org_name: select_value(org_name, bankSetting.org_name),
-				start_date: select_value(start_date, bankSetting.start_date),
-				end_date: select_value(end_date, bankSetting.end_date),
-			},
-		);
+		await this.createBankSetting({
+			bank_code: select_value(bank_code, bankSetting.bank_code),
+			bank_name: select_value(bank_name, bankSetting.bank_name),
+			org_code: select_value(org_code, bankSetting.org_code),
+			org_name: select_value(org_name, bankSetting.org_name),
+			start_date: select_value(start_date, bankSetting.start_date),
+			end_date: select_value(end_date, bankSetting.end_date),
+		});
 	}
 
 	async deleteBankSetting(id: number): Promise<void> {
@@ -129,8 +141,6 @@ export class BankSettingService {
 		if (bankSetting == null) {
 			throw new BaseResponseError("BankSetting does not exist");
 		}
-		const current_date_string = get_date_string(new Date());
-		check_date(bankSetting.start_date, bankSetting.end_date, current_date_string);
 		const destroyedRows = await BankSetting.update(
 			{ disabled: true },
 			{ where: { id: id } }

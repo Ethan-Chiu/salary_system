@@ -4,7 +4,6 @@ import {
 	updateEmployeePaymentService,
 	type updateEmployeePaymentAPI,
 } from "~/server/api/types/employee_payment_type";
-import { deleteProperties } from "./helper_function";
 import { CryptoHelper } from "~/lib/utils/crypto";
 import {
 	type EmployeePaymentDecType,
@@ -12,28 +11,17 @@ import {
 	decEmployeePayment,
 	type EmployeePayment,
 } from "../entity/SALARY/employee_payment";
-import { type CreationAttributes } from "sequelize";
 import { type EmployeeData } from "../entity/SALARY/employee_data";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
+import { BaseMapper } from "./base_mapper";
 
 @injectable()
-export class EmployeePaymentMapper {
-	constructor(private readonly employeeDataServic: EmployeeDataService) {}
-
-	async encodeEmployeePayment(
-		employee_payment: z.input<typeof encEmployeePayment>
-	): Promise<CreationAttributes<EmployeePayment>> {
-		const encoded = encEmployeePayment.parse(employee_payment);
-
-		return encoded;
-	}
-
-	async decodeEmployeePayment(
-		employee_payment: z.input<typeof decEmployeePayment>
-	): Promise<EmployeePaymentDecType> {
-		const decoded = decEmployeePayment.parse(employee_payment);
-
-		return deleteProperties(decoded, [
+export class EmployeePaymentMapper extends BaseMapper<
+	EmployeePayment,
+	EmployeePaymentDecType
+> {
+	constructor(private readonly employeeDataServic: EmployeeDataService) {
+		super(encEmployeePayment, decEmployeePayment, [
 			"base_salary_enc",
 			"supervisor_allowance_enc",
 			"occupational_allowance_enc",
@@ -46,15 +34,6 @@ export class EmployeePaymentMapper {
 			"l_r_enc",
 			"occupational_injury_enc",
 		]);
-	}
-
-	async decodeEmployeePaymentList(
-		employee_payment: z.input<typeof decEmployeePayment>[]
-	): Promise<EmployeePaymentDecType[]> {
-		const decoded = await Promise.all(
-			employee_payment.map(async (e) => this.decodeEmployeePayment(e))
-		);
-		return decoded;
 	}
 
 	async includeEmployee<

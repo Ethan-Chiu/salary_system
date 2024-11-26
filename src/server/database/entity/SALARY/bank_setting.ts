@@ -4,8 +4,58 @@ import {
 	type InferAttributes,
 	type InferCreationAttributes,
 	type CreationOptional,
-	Sequelize,
+	type Sequelize,
 } from "sequelize";
+import {
+	dateF,
+	dateStringF,
+	systemF,
+	systemKeys,
+} from "../../mapper/mapper_utils";
+import { z } from "zod";
+import {
+	dateToString,
+	dateToStringNullable,
+	stringToDate,
+	stringToDateNullable,
+} from "~/server/api/types/z_utils";
+
+const dbBankSetting = z.object({
+  bank_code: z.string(),
+  bank_name: z.string(),
+  org_code: z.string(),
+  org_name: z.string(),
+	create_by: z.string(),
+	update_by: z.string(),
+	disabled: z.coerce.boolean(),
+});
+
+const decFields = z.object({
+	id: z.number(),
+});
+
+const encF = dbBankSetting.merge(dateStringF);
+const decF = dbBankSetting.merge(decFields).merge(dateF);
+export type BankSettingDecType = z.input<typeof decF>;
+
+export const decBankSetting = encF
+	.merge(systemF)
+	.transform((v) => ({
+		...v,
+		id: v.id,
+		start_date: stringToDate.parse(v.start_date),
+		end_date: stringToDateNullable.parse(v.end_date),
+	}))
+	.pipe(decF);
+
+export const encBankSetting = decF
+	.omit(systemKeys)
+	.transform((v) => ({
+		...v,
+		start_date: dateToString.parse(v.start_date),
+		end_date: dateToStringNullable.parse(v.end_date),
+	}))
+	.pipe(encF);
 
 export class BankSetting extends Model<
 	InferAttributes<BankSetting>,
@@ -93,3 +143,4 @@ export function initBankSetting(sequelize: Sequelize) {
 		}
 	);
 }
+
