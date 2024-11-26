@@ -19,7 +19,7 @@ import {
 	dateToString,
 	dateToStringNullable,
 } from "~/server/api/types/z_utils";
-import { dateF, dateStringF } from "../../mapper/mapper_utils";
+import { dateF, dateStringF, systemF, systemKeys } from "../../mapper/mapper_utils";
 
 const dbEmployeePayment = z.object({
 	emp_no: z.string(),
@@ -63,7 +63,7 @@ const decF = dbEmployeePayment.merge(decFields).merge(dateF);
 export type EmployeePaymentDecType = z.input<typeof decF>;
 
 export const decEmployeePayment = encF
-	.merge(z.object({ id: z.number() }))
+	.merge(systemF)
 	.transform((v) => ({
 		...v,
 		id: v.id,
@@ -88,7 +88,7 @@ export const decEmployeePayment = encF
 	.pipe(decF);
 
 export const encEmployeePayment = decF
-	.omit({ id: true })
+	.omit(systemKeys)
 	.transform((v) => ({
 		...v,
 		base_salary_enc: encodeString.parse(v.base_salary),

@@ -3,7 +3,6 @@ import { container } from "tsyringe";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { get_date_string } from "~/server/service/helper_function";
 import {
-	createAttendanceSettingAPI,
 	createBankSettingAPI,
 	createBonusDepartmentAPI,
 	createBonusPositionAPI,
@@ -16,7 +15,6 @@ import {
 	createSalaryIncomeTaxAPI,
 	createTrustMoneyAPI,
 	batchCreateSalaryIncomeTaxAPI,
-	updateAttendanceSettingAPI,
 	updateBankSettingAPI,
 	updateBonusDepartmentAPI,
 	updateBonusPositionAPI,
@@ -46,6 +44,7 @@ import { createLevelRangeAPI, updateLevelRangeAPI } from "../types/level_range_t
 import { LevelRangeMapper } from "~/server/database/mapper/level_range_mapper";
 import { roundProperties } from "~/server/database/mapper/helper_function";
 import { SalaryIncomeTaxService } from "~/server/service/salary_income_tax_service";
+import { attendanceSettingFE, createAttendanceSettingAPI, updateAttendanceSettingAPI } from "../types/attendance_setting_type";
 
 export const parametersRouter = createTRPCRouter({
 	createBankSetting: publicProcedure
@@ -112,6 +111,7 @@ export const parametersRouter = createTRPCRouter({
 
 	getCurrentAttendanceSetting: publicProcedure
 		.input(z.object({ period_id: z.number() }))
+    .output(attendanceSettingFE)
 		.query(async ({ input }) => {
 			const attendanceService = container.resolve(
 				AttendanceSettingService
@@ -120,6 +120,7 @@ export const parametersRouter = createTRPCRouter({
 				await attendanceService.getCurrentAttendanceSetting(
 					input.period_id
 				);
+
 			if (attendanceSetting == null) {
 				throw new BaseResponseError("AttendanceSetting does not exist");
 			}
@@ -145,9 +146,7 @@ export const parametersRouter = createTRPCRouter({
 			);
 			const newdata = await attendanceService.createAttendanceSetting({
 				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
+				start_date: input.start_date,
 				end_date: null,
 			});
 			await attendanceService.rescheduleAttendanceSetting();
@@ -162,12 +161,8 @@ export const parametersRouter = createTRPCRouter({
 			);
 			await attendanceService.updateAttendanceSetting({
 				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
+				start_date: input.start_date,
+				end_date: input.end_date,
 			});
 			await attendanceService.rescheduleAttendanceSetting();
 		}),

@@ -1,22 +1,25 @@
 import { z } from "zod";
-import { dateToString, dateToStringNullable, stringToDate, stringToDateNullable } from "~/server/api/types/z_utils";
 
 export const dateStringF = z.object({
 	start_date: z.string(),
-	end_date: z.string().nullable()
-})
+	end_date: z.string().nullable(),
+});
 
 export const dateF = z.object({
 	start_date: z.date(),
-	end_date: z.date().nullable()
-})
-
-export const decDate = z.object({
-	start_date: stringToDate,
-	end_date: stringToDateNullable,
+	end_date: z.date().nullable(),
+	create_date: z.date(),
+	update_date: z.date(),
 });
 
-export const encDate = z.object({
-	start_date: dateToString,
-	end_date: dateToStringNullable,
+export const systemF = z.object({
+	id: z.number(),
+	create_date: z.date(),
+	update_date: z.date(),
 });
+
+export const systemKeys: { id: true; create_date: true; update_date: true } = {
+	id: true,
+	create_date: true,
+	update_date: true,
+};

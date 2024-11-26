@@ -4,10 +4,7 @@ import {
 	updateEmployeePaymentService,
 	type updateEmployeePaymentAPI,
 } from "~/server/api/types/employee_payment_type";
-import {
-	convertDatePropertiesToISOString,
-	deleteProperties,
-} from "./helper_function";
+import { deleteProperties } from "./helper_function";
 import { CryptoHelper } from "~/lib/utils/crypto";
 import {
 	type EmployeePaymentDecType,
@@ -24,7 +21,7 @@ export class EmployeePaymentMapper {
 	constructor(private readonly employeeDataServic: EmployeeDataService) {}
 
 	async encodeEmployeePayment(
-		employee_payment: z.input<typeof encEmployeePayment> 
+		employee_payment: z.input<typeof encEmployeePayment>
 	): Promise<CreationAttributes<EmployeePayment>> {
 		const encoded = encEmployeePayment.parse(employee_payment);
 
@@ -32,7 +29,7 @@ export class EmployeePaymentMapper {
 	}
 
 	async decodeEmployeePayment(
-		employee_payment: z.input<typeof decEmployeePayment> 
+		employee_payment: z.input<typeof decEmployeePayment>
 	): Promise<EmployeePaymentDecType> {
 		const decoded = decEmployeePayment.parse(employee_payment);
 
@@ -50,15 +47,15 @@ export class EmployeePaymentMapper {
 			"occupational_injury_enc",
 		]);
 	}
-  
-  async decodeEmployeePaymentList(
-    employee_payment: z.input<typeof decEmployeePayment>[]
-  ): Promise<EmployeePaymentDecType[]> {
-    const decoded = await Promise.all(
-      employee_payment.map(async (e) => this.decodeEmployeePayment(e))
-    );
-    return decoded;
-  }
+
+	async decodeEmployeePaymentList(
+		employee_payment: z.input<typeof decEmployeePayment>[]
+	): Promise<EmployeePaymentDecType[]> {
+		const decoded = await Promise.all(
+			employee_payment.map(async (e) => this.decodeEmployeePayment(e))
+		);
+		return decoded;
+	}
 
 	async includeEmployee<
 		Data extends EmployeePaymentDecType | EmployeePaymentDecType[],
@@ -183,7 +180,6 @@ export class EmployeePaymentMapper {
 									employee_payment.occupational_injury.toString()
 							  )
 							: undefined,
-					
 				}
 				// )
 			);

@@ -3,7 +3,7 @@ export function formatDate(
 	dateValue: Date | string | null
 ) {
 	if (dateValue === "" || dateValue === null) return dateValue;
-	const date = new Date(dateValue);
+	const date = typeof dateValue === "string" ? new Date(dateValue) : dateValue;
 	switch (type) {
 		case "day":
 			return formatDateString(type, date.toISOString());
