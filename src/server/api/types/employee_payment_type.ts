@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { dateAPI, dateService, empData, Id } from "./common_type";
+import { dateAll, dateCreate, empData, Id } from "./common_type";
 import { LongServiceEnum } from "./long_service_enum";
 import { optionalNumDefaultZero } from "./z_utils";
 
@@ -35,9 +35,9 @@ const employeePaymentUpdate = z
 		l_r: optionalNumDefaultZero,
 		occupational_injury: optionalNumDefaultZero,
 	})
-	.merge(dateAPI);
+	.merge(dateAll);
 
-const employeePaymentCreate = employeePaymentBase.merge(dateService);
+const employeePaymentCreate = employeePaymentBase.merge(dateCreate);
 
 // Exposed Types
 // Create Types
@@ -64,6 +64,6 @@ export const employeePaymentFE = z
 	})
 	.merge(employeePaymentBase)
 	.merge(empData)
-	.merge(dateAPI);
+	.merge(dateAll);
 
 export type EmployeePaymentFEType = z.infer<typeof employeePaymentFE>;

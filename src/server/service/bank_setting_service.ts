@@ -9,12 +9,9 @@ import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { get_date_string, select_value } from "./helper_function";
 import { type z } from "zod";
-import {
-	createBankSettingService,
-	type updateBankSettingService,
-} from "../api/types/parameters_input_type";
 import { EHRService } from "./ehr_service";
 import { BaseMapper } from "../database/mapper/base_mapper";
+import { createBankSettingService, updateBankSettingService } from "../api/types/bank_setting_type";
 
 @injectable()
 export class BankSettingService {

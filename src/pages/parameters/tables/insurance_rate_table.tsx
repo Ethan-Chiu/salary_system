@@ -18,6 +18,7 @@ import { type TableComponentProps } from "../tables_view";
 import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
 import { Round } from "~/server/service/helper_function";
+import { InsuranceRateSettingFEType } from "~/server/api/types/insurance_rate_setting_type";
 
 export type RowItem = {
 	parameters: string;
@@ -96,7 +97,7 @@ export const insurance_rate_columns = [
 ];
 
 export function insuranceRateMapper(
-	insuranceRateData: InsuranceRateSetting[]
+	insuranceRateData: InsuranceRateSettingFEType[]
 ): RowItem[] {
 	const data = insuranceRateData[0]!;
 	return [
