@@ -2,23 +2,11 @@ import { z } from "zod";
 import { container } from "tsyringe";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import {
-	createBonusDepartmentAPI,
-	createBonusPositionAPI,
-	createBonusPositionTypeAPI,
-	createBonusSeniorityAPI,
-	createBonusSettingAPI,
-	createInsuranceRateSettingAPI,
 	createLevelAPI,
 	createPerformanceLevelAPI,
 	createSalaryIncomeTaxAPI,
 	createTrustMoneyAPI,
 	batchCreateSalaryIncomeTaxAPI,
-	updateBonusDepartmentAPI,
-	updateBonusPositionAPI,
-	updateBonusPositionTypeAPI,
-	updateBonusSeniorityAPI,
-	updateBonusSettingAPI,
-	updateInsuranceRateSettingAPI,
 	updateLevelAPI,
 	updatePerformanceLevelAPI,
 	updateSalaryIncomeTaxAPI,
@@ -27,12 +15,7 @@ import {
 import { BankSettingService } from "~/server/service/bank_setting_service";
 import { AttendanceSettingService } from "~/server/service/attendance_setting_service";
 import { BaseResponseError } from "../error/BaseResponseError";
-import { BonusDepartmentService } from "~/server/service/bonus_department_service";
-import { BonusPositionService } from "~/server/service/bonus_position_service";
-import { BonusSeniorityService } from "~/server/service/bonus_seniority_service";
-import { BonusSettingService } from "~/server/service/bonus_setting_service";
 import { InsuranceRateSettingService } from "~/server/service/insurance_rate_setting_service";
-import { BonusPositionTypeService } from "~/server/service/bonus_position_type_service";
 import { LevelRangeService } from "~/server/service/level_range_service";
 import { LevelService } from "~/server/service/level_service";
 import { PerformanceLevelService } from "~/server/service/performance_level_service";
@@ -43,6 +26,7 @@ import { roundProperties } from "~/server/database/mapper/helper_function";
 import { SalaryIncomeTaxService } from "~/server/service/salary_income_tax_service";
 import { attendanceSettingFE, createAttendanceSettingAPI, updateAttendanceSettingAPI } from "../types/attendance_setting_type";
 import { createBankSettingAPI, updateBankSettingAPI } from "../types/bank_setting_type";
+import { createInsuranceRateSettingAPI, updateInsuranceRateSettingAPI } from "../types/insurance_rate_setting_type";
 
 export const parametersRouter = createTRPCRouter({
 	createBankSetting: publicProcedure

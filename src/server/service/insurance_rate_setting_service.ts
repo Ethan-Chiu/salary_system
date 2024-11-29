@@ -162,7 +162,7 @@ export class InsuranceRateSettingService {
 				start_date.setDate(start_date.getDate() - 1)
 			);
 
-			if (end_date != new_end_date) {
+			if (end_date?.getTime() != new_end_date.getTime()) {
 				if (new_end_date < insuranceRateSettingList[i]!.start_date) {
 					await this.deleteInsuranceRateSetting(
 						insuranceRateSettingList[i]!.id
@@ -174,18 +174,6 @@ export class InsuranceRateSettingService {
 					});
 				}
 			}
-		}
-
-		if (
-			insuranceRateSettingList[insuranceRateSettingList.length - 1]!
-				.end_date != null
-		) {
-			await this.updateInsuranceRateSetting({
-				id: insuranceRateSettingList[
-					insuranceRateSettingList.length - 1
-				]!.id,
-				end_date: null,
-			});
 		}
 
 		if (
