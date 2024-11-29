@@ -512,10 +512,7 @@ export class EmployeeBonusService {
 					employee_payment_fe.supervisor_allowance +
 					employee_payment_fe.occupational_allowance +
 					employee_payment_fe.subsidy_allowance +
-					employee_payment_fe.long_service_allowance_type ==
-				LongServiceEnum.enum.month_allowance
-					? employee_payment_fe.long_service_allowance
-					: 0) *
+					((employee_payment_fe.long_service_allowance_type == LongServiceEnum.enum.month_allowance) ? employee_payment_fe.long_service_allowance : 0)) *
 					employee_bonus_fe.special_multiplier *
 					employee_bonus_fe.multiplier +
 				employee_bonus_fe.fixed_amount;
