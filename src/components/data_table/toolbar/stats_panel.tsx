@@ -41,7 +41,6 @@ export function StatsPanel<TData>({
 }
 
 function StatsPanelContent<TData>({ table }: { table: Table<TData> }) {
-    const { t } = useTranslation(['common']);
     const excludedColumns = ['id', 'emp_no', 'emp_name', 'license_id', 'bank_account', 'month_salary', 'parameters', 'value', 'created_at', 'updated_at'];
     const columns = table.getAllColumns().filter((column) => !excludedColumns.includes(column.id));
 

@@ -179,6 +179,8 @@
     "month_salary_unpaid": "未發放月薪",
     "month_salary_paid": "已發放月薪",
     "leave": "離職人員",
+    "foreign_worker": "外籍勞工",
+    "normal_worker": "一般勞工",
     "salary_data": "當前資料",
     "ehr_data": "更新資料",
     "l_i_deduction": "勞保扣除額",
