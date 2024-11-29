@@ -9,8 +9,8 @@ import { type TableComponentProps } from "../tables_view";
 import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
-import { TrustMoney } from "~/server/database/entity/SALARY/trust_money";
 import { formatDate } from "~/lib/utils/format_date";
+import { TrustMoneyFEType } from "~/server/api/types/trust_money_type";
 
 export type RowItem = {
 	position: number;
@@ -195,7 +195,7 @@ export const trust_money_columns = ({ t }: { t: TFunction<[string], undefined> }
 ];
 
 export function trustMoneyMapper(
-	TrustMoneyData: TrustMoney[]
+	TrustMoneyData: TrustMoneyFEType[]
 ): RowItem[] {
 	return TrustMoneyData.map((data) => ({
 		position: data.position,

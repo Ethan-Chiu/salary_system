@@ -1,106 +1,104 @@
 import { container, injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { type z } from "zod";
-import { LevelRange } from "../database/entity/SALARY/level_range";
-import { check_date, get_date_string, select_value } from "./helper_function";
-import { type createLevelRangeService, type updateLevelRangeService } from "../api/types/level_range_type";
+import {
+	LevelRange,
+	type LevelRangeDecType,
+} from "../database/entity/SALARY/level_range";
+import { get_date_string, select_value } from "./helper_function";
+import {
+	createLevelRangeService,
+	type updateLevelRangeService,
+} from "../api/types/level_range_type";
 import { EHRService } from "./ehr_service";
 import { Op } from "sequelize";
+import { LevelRangeMapper } from "../database/mapper/level_range_mapper";
 
 @injectable()
 export class LevelRangeService {
-	async createLevelRange({
-		type,
-		level_start_id,
-		level_end_id,
-		start_date,
-		end_date
-	}: z.infer<typeof createLevelRangeService>): Promise<LevelRange> {
-		const current_date_string = get_date_string(new Date());
-		check_date(start_date, end_date, current_date_string);
+	constructor(private readonly levelRangeMapper: LevelRangeMapper) {}
 
-		const newData = await LevelRange.create(
-			{
-				type: type,
-				level_start_id: level_start_id,
-				level_end_id: level_end_id,
-				start_date: start_date ?? current_date_string,
-				end_date: end_date,
-				disabled: false,
-				create_by: "system",
-				update_by: "system",
-			},
-			{ raw: true }
-		);
+	async createLevelRange(
+		data: z.infer<typeof createLevelRangeService>
+	): Promise<LevelRange> {
+		const d = createLevelRangeService.parse(data);
+
+		const levelRange = await this.levelRangeMapper.encode({
+			...d,
+			start_date: d.start_date ?? new Date(),
+			disabled: false,
+			create_by: "system",
+			update_by: "system",
+		});
+
+		const newData = await LevelRange.create(levelRange, {
+			raw: true,
+		});
 
 		return newData;
 	}
 
-	async getLevelRangeById(id: number): Promise<LevelRange | null> {
-		const levelRange = await LevelRange.findOne(
-			{
-				where: { id: id },
-			}
-		);
-		return levelRange;
+	async getLevelRangeById(id: number): Promise<LevelRangeDecType | null> {
+		const levelRange = await LevelRange.findOne({
+			where: { id: id },
+		});
+		return this.levelRangeMapper.decode(levelRange);
 	}
 
-	async getCurrentLevelRange(period_id: number): Promise<LevelRange[]> {
+	async getCurrentLevelRange(
+		period_id: number
+	): Promise<LevelRangeDecType[]> {
 		const ehr_service = container.resolve(EHRService);
 		const period = await ehr_service.getPeriodById(period_id);
 		const current_date_string = period.end_date;
-		const levelRange = await LevelRange.findAll(
-			{
-				where: {
-					start_date: {
-						[Op.lte]: current_date_string,
-					},
-					end_date: {
-						[Op.or]: [
-							{ [Op.gte]: current_date_string },
-							{ [Op.eq]: null },
-						],
-					},
-					disabled: false,
+		const levelRange = await LevelRange.findAll({
+			where: {
+				start_date: {
+					[Op.lte]: current_date_string,
 				},
-				raw: true
-			}
-		);
-		return levelRange;
+				end_date: {
+					[Op.or]: [
+						{ [Op.gte]: current_date_string },
+						{ [Op.eq]: null },
+					],
+				},
+				disabled: false,
+			},
+			raw: true,
+		});
+		return this.levelRangeMapper.decodeList(levelRange);
 	}
 
-	async getCurrentLevelRangeByDate(date: Date): Promise<LevelRange[]> {
+	async getCurrentLevelRangeByDate(date: Date): Promise<LevelRangeDecType[]> {
 		const date_string = get_date_string(date);
-		const levelRange = await LevelRange.findAll(
-			{
-				where: {
-					start_date: {
-						[Op.lte]: date_string,
-					},
-					end_date: {
-						[Op.or]: [
-							{ [Op.gte]: date_string },
-							{ [Op.eq]: null },
-						],
-					},
-					disabled: false,
+		const levelRange = await LevelRange.findAll({
+			where: {
+				start_date: {
+					[Op.lte]: date_string,
 				},
-				raw: true
-			}
-		);
-		return levelRange;
+				end_date: {
+					[Op.or]: [{ [Op.gte]: date_string }, { [Op.eq]: null }],
+				},
+				disabled: false,
+			},
+			raw: true,
+		});
+		return this.levelRangeMapper.decodeList(levelRange);
 	}
 
-	async getAllLevelRange(): Promise<LevelRange[]> {
+	async getAllLevelRange(): Promise<LevelRangeDecType[]> {
 		const levelRange = await LevelRange.findAll({
 			where: { disabled: false },
-			order: [["start_date", "DESC"], ["type", "ASC"]],
-			raw: true
+			order: [
+				["start_date", "DESC"],
+				["type", "ASC"],
+			],
+			raw: true,
 		});
-		return levelRange;
+		return this.levelRangeMapper.decodeList(levelRange);
 	}
 
-	async getAllFutureLevelRange(): Promise<LevelRange[]> {
+	async getAllFutureLevelRange(): Promise<LevelRangeDecType[]> {
 		const current_date_string = get_date_string(new Date());
 		const levelRange = await LevelRange.findAll({
 			where: {
@@ -109,10 +107,13 @@ export class LevelRangeService {
 				},
 				disabled: false,
 			},
-			order: [["start_date", "DESC"], ["type", "ASC"]],
-			raw: true
+			order: [
+				["start_date", "DESC"],
+				["type", "ASC"],
+			],
+			raw: true,
 		});
-		return levelRange;
+		return this.levelRangeMapper.decodeList(levelRange);
 	}
 
 	async updateLevelRange({
@@ -121,7 +122,7 @@ export class LevelRangeService {
 		level_start_id,
 		level_end_id,
 		start_date,
-		end_date
+		end_date,
 	}: z.infer<typeof updateLevelRangeService>): Promise<void> {
 		const levelRange = await this.getLevelRangeById(id);
 		if (levelRange == null) {
@@ -130,31 +131,43 @@ export class LevelRangeService {
 
 		await this.deleteLevelRange(id);
 
-		await this.createLevelRange(
-			{
-				type: select_value(type, levelRange.type),
-				level_start_id: select_value(level_start_id, levelRange.level_start_id),
-				level_end_id: select_value(level_end_id, levelRange.level_end_id),
-				start_date: select_value(start_date, levelRange.start_date),
-				end_date: select_value(end_date, levelRange.end_date),
-			},
-		);
+		await this.createLevelRange({
+			type: select_value(type, levelRange.type),
+			level_start_id: select_value(
+				level_start_id,
+				levelRange.level_start_id
+			),
+			level_end_id: select_value(level_end_id, levelRange.level_end_id),
+			start_date: select_value(start_date, levelRange.start_date),
+			end_date: select_value(end_date, levelRange.end_date),
+		});
 	}
 
 	async updateLevelRangeId({
 		old_id,
-		new_id
+		new_id,
 	}: {
-		old_id: number,
-		new_id: number,
+		old_id: number;
+		new_id: number;
 	}): Promise<void> {
-		const levelRangeList = await LevelRange.findAll({ where: { disabled: false } });
+		const levelRangeList = await LevelRange.findAll({
+			where: { disabled: false },
+		});
 		const promises = levelRangeList.map(async (levelRange) => {
-			if (levelRange.level_start_id == old_id || levelRange.level_end_id == old_id) {
-				this.updateLevelRange({
+			if (
+				levelRange.level_start_id == old_id ||
+				levelRange.level_end_id == old_id
+			) {
+				await this.updateLevelRange({
 					id: levelRange.id,
-					level_start_id: levelRange.level_start_id == old_id ? new_id : levelRange.level_start_id,
-					level_end_id: levelRange.level_end_id == old_id ? new_id : levelRange.level_end_id,
+					level_start_id:
+						levelRange.level_start_id == old_id
+							? new_id
+							: levelRange.level_start_id,
+					level_end_id:
+						levelRange.level_end_id == old_id
+							? new_id
+							: levelRange.level_end_id,
 				});
 			}
 		});
@@ -173,48 +186,52 @@ export class LevelRangeService {
 	}
 
 	async rescheduleLevelRange(): Promise<void> {
-		const levelRangeList = await LevelRange.findAll(
-			{
-				where: { disabled: false },
-				order: [
-					['type', 'ASC'],
-					["start_date", "ASC"],
-					["update_date", "ASC"],
-				],
-			}
-		);
-		for (let i = 0; i < levelRangeList.length; i += 1) {
-			const start_date = new Date(
-				levelRangeList[i]!.start_date
+		const levelRangeListEnc = await LevelRange.findAll({
+			where: { disabled: false },
+			order: [
+				["type", "ASC"],
+				["start_date", "ASC"],
+				["update_date", "ASC"],
+			],
+		});
+    const levelRangeList = await this.levelRangeMapper.decodeList(levelRangeListEnc);
+
+		for (const levelRange of levelRangeList) {
+			const start_date = new Date(levelRange.start_date);
+			const start_date_adjust = new Date(
+				start_date.setFullYear(start_date.getFullYear(), 0, 1)
 			);
-			const start_date_string = get_date_string(
-				new Date(start_date.setFullYear(start_date.getFullYear(), 0, 1))
+			const end_date = new Date(
+				start_date.setFullYear(start_date.getFullYear(), 11, 31)
 			);
-			const end_date_string = get_date_string(
-				new Date(start_date.setFullYear(start_date.getFullYear(), 11, 31))
-			);
-			if (levelRangeList[i]!.start_date != start_date_string || levelRangeList[i]!.end_date != end_date_string) {
+			if (
+				levelRange.start_date != start_date_adjust ||
+				levelRange.end_date != end_date
+			) {
 				await this.updateLevelRange({
-					id: levelRangeList[i]!.id,
-					start_date: start_date_string,
-					end_date: end_date_string,
+					id: levelRange.id,
+					start_date: start_date_adjust,
+					end_date: end_date,
 				});
 			}
 		}
 
-		const updatedLevelRangeList = await LevelRange.findAll(
-			{
-				where: { disabled: false },
-				order: [
-					['type', 'ASC'],
-					["start_date", "ASC"],
-					["update_date", "ASC"],
-				],
-			}
-		);
+		const updatedLevelRangeList = await LevelRange.findAll({
+			where: { disabled: false },
+			order: [
+				["type", "ASC"],
+				["start_date", "ASC"],
+				["update_date", "ASC"],
+			],
+		});
 
 		for (let i = 0; i < updatedLevelRangeList.length - 1; i += 1) {
-			if (updatedLevelRangeList[i]!.type == updatedLevelRangeList[i + 1]!.type && updatedLevelRangeList[i]!.start_date == updatedLevelRangeList[i + 1]!.start_date) {
+			if (
+				updatedLevelRangeList[i]!.type ==
+					updatedLevelRangeList[i + 1]!.type &&
+				updatedLevelRangeList[i]!.start_date ==
+					updatedLevelRangeList[i + 1]!.start_date
+			) {
 				await this.deleteLevelRange(updatedLevelRangeList[i]!.id);
 			}
 		}

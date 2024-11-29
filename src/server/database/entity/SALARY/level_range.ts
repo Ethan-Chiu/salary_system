@@ -11,6 +11,7 @@ import { dateF, dateStringF, systemF, systemKeys } from "../../mapper/mapper_uti
 import { dateToString, dateToStringNullable, stringToDate, stringToDateNullable } from "~/server/api/types/z_utils";
 
 const dbLevelRange = z.object({
+    type: z.string(),
     level_start_id: z.number(),
     level_end_id: z.number(),
     create_by: z.string(),
@@ -44,6 +45,7 @@ export const encLevelRange = decF
         end_date: dateToStringNullable.parse(v.end_date),
     }))
     .pipe(encF);
+
 
 export class LevelRange extends Model<
     InferAttributes<LevelRange>,

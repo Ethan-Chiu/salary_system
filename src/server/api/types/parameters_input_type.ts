@@ -1,26 +1,13 @@
 import { z } from "zod";
 
-import { Id, dateAPI, dateService, user } from "./common_type";
+import { Id, dateAll, dateCreate, user } from "./common_type";
 import { BonusTypeEnum } from "./bonus_type_enum";
 import { WorkTypeEnum } from "./work_type_enum";
 
-export const createUserAPI = user.merge(dateAPI);
-export const createUserService = user.merge(dateService);
-export const updateUserAPI = user.merge(dateAPI).partial().merge(Id);
-export const updateUserService = user.merge(dateService).partial()//.merge(Id);
-
-const BankSetting = z.object({
-	bank_code: z.string(),
-	bank_name: z.string(),
-	org_code: z.string(),
-	org_name: z.string(),
-});
-
-export const createBankSettingAPI = BankSetting.merge(dateAPI);
-export const createBankSettingService = BankSetting.merge(dateService);
-export const updateBankSettingAPI = BankSetting.merge(dateAPI).partial().merge(Id);
-export const updateBankSettingService = BankSetting.merge(dateService).partial().merge(Id);
-
+export const createUserAPI = user.merge(dateAll);
+export const createUserService = user.merge(dateCreate);
+export const updateUserAPI = user.merge(dateAll).partial().merge(Id);
+export const updateUserService = user.merge(dateCreate).partial()//.merge(Id);
 
 const BasicInfo = z.object({
 	issue_date: z.date(),
@@ -31,25 +18,6 @@ export const createBasicInfoAPI = BasicInfo;
 export const createBasicInfoService = BasicInfo;
 export const updateBasicInfoAPI = BasicInfo.partial().merge(Id);
 export const updateBasicInfoService = BasicInfo.partial().merge(Id);
-
-const InsuranceRateSetting = z.object({
-	min_wage_rate: z.number(),
-	l_i_accident_rate: z.number(),
-	l_i_employment_pay_rate: z.number(),
-	l_i_occupational_injury_rate: z.number(),
-	l_i_wage_replacement_rate: z.number(),
-	h_i_standard_rate: z.number(),
-	h_i_avg_dependents_count: z.number(),
-	v2_h_i_supp_pay_rate: z.number(),
-	v2_h_i_deduction_tsx_thres: z.number(),
-	v2_h_i_multiplier: z.number(),
-});
-export const createInsuranceRateSettingAPI =
-	InsuranceRateSetting.merge(dateAPI).omit({ end_date: true });
-export const createInsuranceRateSettingService =
-	InsuranceRateSetting.merge(dateService);
-export const updateInsuranceRateSettingAPI = InsuranceRateSetting.merge(dateAPI).partial().merge(Id);
-export const updateInsuranceRateSettingService = InsuranceRateSetting.merge(dateService).partial().merge(Id);
 
 const BonusAll = z.object({
 	period_id: z.number(),
@@ -144,15 +112,6 @@ export const createBonusSettingService = BonusSetting;
 export const updateBonusSettingAPI = BonusSetting.partial().merge(Id);
 export const updateBonusSettingService = BonusSetting.partial().merge(Id);
 
-const Level = z.object({
-	level: z.number(),
-});
-
-export const createLevelAPI = Level.merge(dateAPI).omit({ end_date: true });
-export const createLevelService = Level.merge(dateService);
-export const updateLevelAPI = Level.merge(dateAPI).partial().merge(Id);
-export const updateLevelService = Level.merge(dateService).partial().merge(Id);
-
 const PerformanceLevel = z.object({
 	performance_level: z.string(),
 	multiplier: z.number(),
@@ -163,29 +122,6 @@ export const createPerformanceLevelService = PerformanceLevel;
 export const updatePerformanceLevelAPI = PerformanceLevel.partial().merge(Id);
 export const updatePerformanceLevelService = PerformanceLevel.partial().merge(Id);
 
-const SalaryIncomeTax = z.object({
-	salary_start: z.number(),
-	salary_end: z.number(),
-	dependent: z.number(),
-	tax_amount: z.number(),
-});
-export const createSalaryIncomeTaxAPI = SalaryIncomeTax.merge(dateAPI).omit({ end_date: true });
-export const createSalaryIncomeTaxService = SalaryIncomeTax.merge(dateService);
-export const updateSalaryIncomeTaxAPI = SalaryIncomeTax.merge(dateAPI).partial().merge(Id);
-export const updateSalaryIncomeTaxService = SalaryIncomeTax.merge(dateService).partial().merge(Id);
-export const batchCreateSalaryIncomeTaxAPI = z.array(createSalaryIncomeTaxAPI);
-//MARK:trust
-const TrustMoney = z.object({
-	position: z.number(),
-	position_type: z.string(),
-	org_trust_reserve_limit: z.number(),
-	org_special_trust_incent_limit: z.number(),
-});
-
-export const createTrustMoneyAPI = TrustMoney.merge(dateAPI).omit({ end_date: true });
-export const createTrustMoneyService = TrustMoney.merge(dateService);
-export const updateTrustMoneyAPI = TrustMoney.merge(dateAPI).partial().merge(Id);
-export const updateTrustMoneyService = TrustMoney.merge(dateService).partial().merge(Id);
 //MARK:account
 const EmployeeAccount = z.object({
 	emp_no: z.string(),

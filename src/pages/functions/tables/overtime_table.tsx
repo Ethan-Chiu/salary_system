@@ -7,14 +7,11 @@ import { useTranslation } from "react-i18next";
 import { PayTypeEnumType } from "~/server/api/types/pay_type_enum";
 import { Button } from "~/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
+import { OvertimeMapper } from "~/server/database/mapper/overtime_mapper";
+import { OvertimeFE } from "~/server/api/types/overtime_type";
 
-const keys = Object.keys(new Overtime());
-const firstThreeKeys = ["department", "emp_no", "emp_name"];
 const columns = (t: I18nType) =>
-	[
-		...firstThreeKeys.filter((key) => keys.includes(key)),
-		...keys.filter((key) => !firstThreeKeys.includes(key)),
-	].map((key) => {
+	Object.keys(OvertimeFE.shape).map((key) => {
 		return {
 			accessorKey: key,
 			header: ({ column }: any) => {
@@ -61,11 +58,11 @@ export function OvertimeTable({
 	const { t } = useTranslation(["common"]);
 
 	if (isLoading) {
-		return <LoadingSpinner />; // TODO: Loading element with toast
+		return <LoadingSpinner />; // ~ TODO: Loading element with toast
 	}
 
 	if (isError) {
-		return <span>Error: {error.message}</span>; // TODO: Error element with toast
+		return <span>Error: {error.message}</span>; // ~ TODO: Error element with toast
 	}
 
 	if (data) {

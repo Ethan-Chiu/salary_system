@@ -7,6 +7,7 @@ import {
 	PlusSquare,
 	Trash2,
 	Copy,
+	NotebookPen,
 	RefreshCcw,
 } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
@@ -54,6 +55,7 @@ export type FunctionMode =
 	| "create"
 	| "batch_create"
 	| "update"
+	| "batch_update"
 	| "delete"
 	| "auto_calculate"
 	| "none";
@@ -68,6 +70,7 @@ export function DataTableFunctions({
 	const { t } = useTranslation(["common", "nav"]);
 	const functions = useContext(bonusToolbarFunctionsContext);
 	const updateFunction = functions.updateFunction;
+	const batchUpdateFunction = functions.batchUpdateFunction;
 	const createFunction = functions.createFunction;
 	const batchCreateFunction = functions.batchCreateFunction;
 	const deleteFunction = functions.deleteFunction;
@@ -110,6 +113,11 @@ export function DataTableFunctions({
 							mode={"update"}
 							itemName={t("button.update")}
 							icon={PenSquare}
+						/>}
+						{batchUpdateFunction && <CompTriggerItem
+							mode={"batch_update"}
+							itemName={t("button.batch_update")}
+							icon={NotebookPen}
 						/>}
 						{deleteFunction && <CompTriggerItem
 							mode={"delete"}

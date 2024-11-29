@@ -4,12 +4,12 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
-import { type BankSetting } from "~/server/database/entity/SALARY/bank_setting";
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { formatDate } from "~/lib/utils/format_date";
 import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
+import { BankSettingFEType } from "~/server/api/types/bank_setting_type";
 
 export type RowItem = {
 	bank_name: string;
@@ -133,7 +133,7 @@ export const bank_columns = [
 	}),
 ];
 
-export function bankSettingMapper(bankSettingData: BankSetting[]): RowItem[] {
+export function bankSettingMapper(bankSettingData: BankSettingFEType[]): RowItem[] {
 	return bankSettingData.map((d) => {
 		return {
 			bank_name: d.bank_name,

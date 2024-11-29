@@ -5,7 +5,6 @@ import {
 	UseTRPCMutationResult,
 	UseTRPCQueryResult,
 } from "@trpc/react-query/shared";
-import periodContext from "~/components/context/period_context";
 
 interface FunctionsApi {
 	queryCurrentFunction: (() => UseTRPCQueryResult<any, any>) | undefined;
@@ -67,36 +66,44 @@ export default function ParameterToolbarFunctionsProvider({
 	//#endregion
 
 	//#region <BankSetting>
-	const getBankSetting = () =>
+	const getCurrentBankSetting = () =>
 		api.parameters.getCurrentBankSetting.useQuery({ period_id });
+	const getFutureBankSetting = () =>
+		api.parameters.getAllFutureBankSetting.useQuery();
 	const updateBankSetting = api.parameters.updateBankSetting.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentBankSetting.invalidate();
 			ctx.parameters.getAllBankSetting.invalidate();
+			ctx.parameters.getAllFutureBankSetting.invalidate();
 		},
 	});
 	const createBankSetting = api.parameters.createBankSetting.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentBankSetting.invalidate();
 			ctx.parameters.getAllBankSetting.invalidate();
+			ctx.parameters.getAllFutureBankSetting.invalidate();
 		},
 	});
 	const deleteBankSetting = api.parameters.deleteBankSetting.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentBankSetting.invalidate();
 			ctx.parameters.getAllBankSetting.invalidate();
+			ctx.parameters.getAllFutureBankSetting.invalidate();
 		},
 	});
 	//#endregion
 
 	//#region <InsuranceSetting>
-	const getInsuranceRateSetting = () =>
+	const getCurrentInsuranceRateSetting = () =>
 		api.parameters.getCurrentInsuranceRateSetting.useQuery({ period_id });
+	const getFutureInsuranceRateSetting = () =>
+		api.parameters.getAllFutureInsuranceRateSetting.useQuery();
 	const updateInsuranceRateSetting =
 		api.parameters.updateInsuranceRateSetting.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentInsuranceRateSetting.invalidate();
 				ctx.parameters.getAllInsuranceRateSetting.invalidate();
+				ctx.parameters.getAllFutureInsuranceRateSetting.invalidate();
 			},
 		});
 	const createInsuranceRateSetting =
@@ -104,6 +111,7 @@ export default function ParameterToolbarFunctionsProvider({
 			onSuccess: () => {
 				ctx.parameters.getCurrentInsuranceRateSetting.invalidate();
 				ctx.parameters.getAllInsuranceRateSetting.invalidate();
+				ctx.parameters.getAllFutureInsuranceRateSetting.invalidate();
 			},
 		});
 	const deleteInsuranceRateSetting =
@@ -111,18 +119,22 @@ export default function ParameterToolbarFunctionsProvider({
 			onSuccess: () => {
 				ctx.parameters.getCurrentInsuranceRateSetting.invalidate();
 				ctx.parameters.getAllInsuranceRateSetting.invalidate();
+				ctx.parameters.getAllFutureInsuranceRateSetting.invalidate();
 			},
 		});
 	//#endregion
 
 	//#region <TrustMoneySetting>
-	const getTrustMoneySetting = () =>
+	const getCurrentTrustMoneySetting = () =>
 		api.parameters.getCurrentTrustMoney.useQuery({ period_id });
+	const getFutureTrustMoneySetting = () =>
+		api.parameters.getAllFutureTrustMoney.useQuery();
 	const updateTrustMoneySetting =
 		api.parameters.updateTrustMoney.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentTrustMoney.invalidate();
 				ctx.parameters.getAllTrustMoney.invalidate();
+				ctx.parameters.getAllFutureTrustMoney.invalidate();
 			},
 		});
 	const createTrustMoneySetting =
@@ -130,6 +142,7 @@ export default function ParameterToolbarFunctionsProvider({
 			onSuccess: () => {
 				ctx.parameters.getCurrentTrustMoney.invalidate();
 				ctx.parameters.getAllTrustMoney.invalidate();
+				ctx.parameters.getAllFutureTrustMoney.invalidate();
 			},
 		});
 	const deleteTrustMoneySetting =
@@ -137,57 +150,69 @@ export default function ParameterToolbarFunctionsProvider({
 			onSuccess: () => {
 				ctx.parameters.getCurrentTrustMoney.invalidate();
 				ctx.parameters.getAllTrustMoney.invalidate();
+				ctx.parameters.getAllFutureTrustMoney.invalidate();
 			},
 		});
 	//#endregion
 
-	const getLevel = () => api.parameters.getCurrentLevel.useQuery({ period_id });
+	const getCurrentLevel = () => api.parameters.getCurrentLevel.useQuery({ period_id });
+	const getFutureLevel = () => api.parameters.getAllFutureLevel.useQuery();
 	const updateLevel = api.parameters.updateLevel.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentLevel.invalidate();
 			ctx.parameters.getAllLevel.invalidate();
+			ctx.parameters.getAllFutureLevel.invalidate();
 		},
 	});
 	const createLevel = api.parameters.createLevel.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentLevel.invalidate();
 			ctx.parameters.getAllLevel.invalidate();
+			ctx.parameters.getAllFutureLevel.invalidate();
 		},
 	});
 	const deleteLevel = api.parameters.deleteLevel.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentLevel.invalidate();
 			ctx.parameters.getAllLevel.invalidate();
+			ctx.parameters.getAllFutureLevel.invalidate();
 		},
 	});
-	const getLevelRange = () => api.parameters.getCurrentLevelRange.useQuery({ period_id });
+	const getCurrentLevelRange = () => api.parameters.getCurrentLevelRange.useQuery({ period_id });
+	const getFutureLevelRange = () => api.parameters.getAllFutureLevelRange.useQuery();
 	const updateLevelRange = api.parameters.updateLevelRange.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentLevelRange.invalidate();
 			ctx.parameters.getAllLevelRange.invalidate();
+			ctx.parameters.getAllFutureLevelRange.invalidate();
 		},
 	});
 	const createLevelRange = api.parameters.createLevelRange.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentLevelRange.invalidate();
 			ctx.parameters.getAllLevelRange.invalidate();
+			ctx.parameters.getAllFutureLevelRange.invalidate();
 		},
 	});
 	const deleteLevelRange = api.parameters.deleteLevelRange.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentLevelRange.invalidate();
 			ctx.parameters.getAllLevelRange.invalidate();
+			ctx.parameters.getAllFutureLevelRange.invalidate();
 		},
 	});
 
 	//#region <SalaryIncomeTax>
-	const getSalaryIncomeTax = () =>
+	const getCurrentSalaryIncomeTax = () =>
 		api.parameters.getCurrentSalaryIncomeTax.useQuery({ period_id });
+	const getFutureSalaryIncomeTax = () =>
+		api.parameters.getAllFutureSalaryIncomeTax.useQuery();
 	const updateSalaryIncomeTax =
 		api.parameters.updateSalaryIncomeTax.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentSalaryIncomeTax.invalidate();
 				ctx.parameters.getAllSalaryIncomeTax.invalidate();
+				ctx.parameters.getAllFutureSalaryIncomeTax.invalidate();
 			},
 		});
 	const createSalaryIncomeTax =
@@ -195,6 +220,7 @@ export default function ParameterToolbarFunctionsProvider({
 			onSuccess: () => {
 				ctx.parameters.getCurrentSalaryIncomeTax.invalidate();
 				ctx.parameters.getAllSalaryIncomeTax.invalidate();
+				ctx.parameters.getAllFutureSalaryIncomeTax.invalidate();
 			},
 		});
 	const deleteSalaryIncomeTax =
@@ -202,6 +228,7 @@ export default function ParameterToolbarFunctionsProvider({
 			onSuccess: () => {
 				ctx.parameters.getCurrentSalaryIncomeTax.invalidate();
 				ctx.parameters.getAllSalaryIncomeTax.invalidate();
+				ctx.parameters.getAllFutureSalaryIncomeTax.invalidate();
 			},
 		});
 	//#endregion
@@ -215,37 +242,43 @@ export default function ParameterToolbarFunctionsProvider({
 			deleteFunction: deleteAttendanceSetting,
 		},
 		TableBankSetting: {
-			queryFunction: getBankSetting,
+			queryCurrentFunction: getCurrentBankSetting,
+			queryFutureFunction: getFutureBankSetting,
 			updateFunction: updateBankSetting,
 			createFunction: createBankSetting,
 			deleteFunction: deleteBankSetting,
 		},
 		TableInsurance: {
-			queryFunction: getInsuranceRateSetting,
+			queryCurrentFunction: getCurrentInsuranceRateSetting,
+			queryFutureFunction: getFutureInsuranceRateSetting,
 			updateFunction: updateInsuranceRateSetting,
 			createFunction: createInsuranceRateSetting,
 			deleteFunction: deleteInsuranceRateSetting,
 		},
 		TableTrustMoney: {
-			queryFunction: getTrustMoneySetting,
+			queryCurrentFunction: getCurrentTrustMoneySetting,
+			queryFutureFunction: getFutureTrustMoneySetting,
 			updateFunction: updateTrustMoneySetting,
 			createFunction: createTrustMoneySetting,
 			deleteFunction: deleteTrustMoneySetting,
 		},
 		TableLevel: {
-			queryFunction: getLevel,
+			queryCurrentFunction: getCurrentLevel,
+			queryFutureFunction: getFutureLevel,
 			updateFunction: updateLevel,
 			createFunction: createLevel,
 			deleteFunction: deleteLevel,
 		},
 		TableLevelRange: {
-			queryFunction: getLevelRange,
+			queryCurrentFunction: getCurrentLevelRange,
+			queryFutureFunction: getFutureLevelRange,
 			updateFunction: updateLevelRange,
 			createFunction: createLevelRange,
 			deleteFunction: deleteLevelRange,
 		},
 		TableSalaryIncomeTax: {
-			queryFunction: getSalaryIncomeTax,
+			queryCurrentFunction: getCurrentSalaryIncomeTax,
+			queryFutureFunction: getFutureSalaryIncomeTax,
 			updateFunction: updateSalaryIncomeTax,
 			createFunction: createSalaryIncomeTax,
 			deleteFunction: deleteSalaryIncomeTax,
