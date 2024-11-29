@@ -112,15 +112,6 @@ export const createBonusSettingService = BonusSetting;
 export const updateBonusSettingAPI = BonusSetting.partial().merge(Id);
 export const updateBonusSettingService = BonusSetting.partial().merge(Id);
 
-const Level = z.object({
-	level: z.number(),
-});
-
-export const createLevelAPI = Level.merge(dateAll).omit({ end_date: true });
-export const createLevelService = Level.merge(dateCreate);
-export const updateLevelAPI = Level.merge(dateAll).partial().merge(Id);
-export const updateLevelService = Level.merge(dateCreate).partial().merge(Id);
-
 const PerformanceLevel = z.object({
 	performance_level: z.string(),
 	multiplier: z.number(),
@@ -131,29 +122,6 @@ export const createPerformanceLevelService = PerformanceLevel;
 export const updatePerformanceLevelAPI = PerformanceLevel.partial().merge(Id);
 export const updatePerformanceLevelService = PerformanceLevel.partial().merge(Id);
 
-const SalaryIncomeTax = z.object({
-	salary_start: z.number(),
-	salary_end: z.number(),
-	dependent: z.number(),
-	tax_amount: z.number(),
-});
-export const createSalaryIncomeTaxAPI = SalaryIncomeTax.merge(dateAll).omit({ end_date: true });
-export const createSalaryIncomeTaxService = SalaryIncomeTax.merge(dateCreate);
-export const updateSalaryIncomeTaxAPI = SalaryIncomeTax.merge(dateAll).partial().merge(Id);
-export const updateSalaryIncomeTaxService = SalaryIncomeTax.merge(dateCreate).partial().merge(Id);
-export const batchCreateSalaryIncomeTaxAPI = z.array(createSalaryIncomeTaxAPI);
-//MARK:trust
-const TrustMoney = z.object({
-	position: z.number(),
-	position_type: z.string(),
-	org_trust_reserve_limit: z.number(),
-	org_special_trust_incent_limit: z.number(),
-});
-
-export const createTrustMoneyAPI = TrustMoney.merge(dateAll).omit({ end_date: true });
-export const createTrustMoneyService = TrustMoney.merge(dateCreate);
-export const updateTrustMoneyAPI = TrustMoney.merge(dateAll).partial().merge(Id);
-export const updateTrustMoneyService = TrustMoney.merge(dateCreate).partial().merge(Id);
 //MARK:account
 const EmployeeAccount = z.object({
 	emp_no: z.string(),

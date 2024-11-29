@@ -2,15 +2,8 @@ import { z } from "zod";
 import { container } from "tsyringe";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import {
-	createLevelAPI,
 	createPerformanceLevelAPI,
-	createSalaryIncomeTaxAPI,
-	createTrustMoneyAPI,
-	batchCreateSalaryIncomeTaxAPI,
-	updateLevelAPI,
 	updatePerformanceLevelAPI,
-	updateSalaryIncomeTaxAPI,
-	updateTrustMoneyAPI,
 } from "../types/parameters_input_type";
 import { BankSettingService } from "~/server/service/bank_setting_service";
 import { AttendanceSettingService } from "~/server/service/attendance_setting_service";
@@ -20,13 +13,16 @@ import { LevelRangeService } from "~/server/service/level_range_service";
 import { LevelService } from "~/server/service/level_service";
 import { PerformanceLevelService } from "~/server/service/performance_level_service";
 import { TrustMoneyService } from "~/server/service/trust_money_service";
-import { createLevelRangeAPI, levelRangeFE, updateLevelRangeAPI } from "../types/level_range_type";
+import { createLevelRangeAPI, levelRangeFE, LevelRangeFEType, updateLevelRangeAPI } from "../types/level_range_type";
 import { LevelRangeMapper } from "~/server/database/mapper/level_range_mapper";
 import { roundProperties } from "~/server/database/mapper/helper_function";
 import { SalaryIncomeTaxService } from "~/server/service/salary_income_tax_service";
 import { attendanceSettingFE, createAttendanceSettingAPI, updateAttendanceSettingAPI } from "../types/attendance_setting_type";
 import { createBankSettingAPI, updateBankSettingAPI } from "../types/bank_setting_type";
 import { createInsuranceRateSettingAPI, updateInsuranceRateSettingAPI } from "../types/insurance_rate_setting_type";
+import { createTrustMoneyAPI, updateTrustMoneyAPI } from "../types/trust_money_type";
+import { createLevelAPI, updateLevelAPI } from "../types/level_type";
+import { batchCreateSalaryIncomeTaxAPI, createSalaryIncomeTaxAPI, updateSalaryIncomeTaxAPI } from "../types/salary_income_tax";
 
 export const parametersRouter = createTRPCRouter({
 	createBankSetting: publicProcedure
@@ -233,8 +229,9 @@ export const parametersRouter = createTRPCRouter({
 			const levelRangeMapper = container.resolve(LevelRangeMapper);
 			// TODO: Fix this
 			const levelRange = await levelRangeMapper.getLevelRange(input);
-			await levelRangeService.createLevelRange(levelRange);
-			const levelRangeFE = await levelRangeMapper.getLevelRangeFE(levelRange)
+			const newData = await levelRangeService.createLevelRange(levelRange);
+			const levelRangeFE = await levelRangeMapper.getLevelRangeFE({ ...levelRange, id: newData.id, disabled: newData.disabled, update_date: newData.update_date, create_date: newData.create_date, update_by: newData.update_by, create_by: newData.create_by, start_date: levelRange.start_date! });
+			console.log(levelRangeFE)
 			await levelRangeService.rescheduleLevelRange();
 			return levelRangeFE;
 		}),

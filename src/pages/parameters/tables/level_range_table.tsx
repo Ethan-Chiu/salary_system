@@ -7,7 +7,7 @@ import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/compon
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { useTranslation } from "react-i18next";
-import { levelRangeFE } from "~/server/api/types/level_range_type";
+import { levelRangeFE, LevelRangeFEType } from "~/server/api/types/level_range_type";
 import { z } from "zod";
 import { formatDate } from "~/lib/utils/format_date";
 
@@ -161,7 +161,7 @@ export const level_range_columns = [
 	}),
 ];
 
-export function levelRangeMapper(levelRangeData: z.infer<typeof levelRangeFE>[]): RowItem[] {
+export function levelRangeMapper(levelRangeData: LevelRangeFEType[]): RowItem[] {
 	return levelRangeData.map((d) => {
 		return {
 			type: d.type,

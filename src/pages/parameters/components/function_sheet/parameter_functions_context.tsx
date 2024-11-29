@@ -134,6 +134,7 @@ export default function ParameterToolbarFunctionsProvider({
 			onSuccess: () => {
 				ctx.parameters.getCurrentTrustMoney.invalidate();
 				ctx.parameters.getAllTrustMoney.invalidate();
+				ctx.parameters.getAllFutureTrustMoney.invalidate();
 			},
 		});
 	const createTrustMoneySetting =
@@ -141,6 +142,7 @@ export default function ParameterToolbarFunctionsProvider({
 			onSuccess: () => {
 				ctx.parameters.getCurrentTrustMoney.invalidate();
 				ctx.parameters.getAllTrustMoney.invalidate();
+				ctx.parameters.getAllFutureTrustMoney.invalidate();
 			},
 		});
 	const deleteTrustMoneySetting =
@@ -148,6 +150,7 @@ export default function ParameterToolbarFunctionsProvider({
 			onSuccess: () => {
 				ctx.parameters.getCurrentTrustMoney.invalidate();
 				ctx.parameters.getAllTrustMoney.invalidate();
+				ctx.parameters.getAllFutureTrustMoney.invalidate();
 			},
 		});
 	//#endregion
@@ -158,18 +161,21 @@ export default function ParameterToolbarFunctionsProvider({
 		onSuccess: () => {
 			ctx.parameters.getCurrentLevel.invalidate();
 			ctx.parameters.getAllLevel.invalidate();
+			ctx.parameters.getAllFutureLevel.invalidate();
 		},
 	});
 	const createLevel = api.parameters.createLevel.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentLevel.invalidate();
 			ctx.parameters.getAllLevel.invalidate();
+			ctx.parameters.getAllFutureLevel.invalidate();
 		},
 	});
 	const deleteLevel = api.parameters.deleteLevel.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentLevel.invalidate();
 			ctx.parameters.getAllLevel.invalidate();
+			ctx.parameters.getAllFutureLevel.invalidate();
 		},
 	});
 	const getCurrentLevelRange = () => api.parameters.getCurrentLevelRange.useQuery({ period_id });
@@ -178,18 +184,21 @@ export default function ParameterToolbarFunctionsProvider({
 		onSuccess: () => {
 			ctx.parameters.getCurrentLevelRange.invalidate();
 			ctx.parameters.getAllLevelRange.invalidate();
+			ctx.parameters.getAllFutureLevelRange.invalidate();
 		},
 	});
 	const createLevelRange = api.parameters.createLevelRange.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentLevelRange.invalidate();
 			ctx.parameters.getAllLevelRange.invalidate();
+			ctx.parameters.getAllFutureLevelRange.invalidate();
 		},
 	});
 	const deleteLevelRange = api.parameters.deleteLevelRange.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentLevelRange.invalidate();
 			ctx.parameters.getAllLevelRange.invalidate();
+			ctx.parameters.getAllFutureLevelRange.invalidate();
 		},
 	});
 
@@ -203,6 +212,7 @@ export default function ParameterToolbarFunctionsProvider({
 			onSuccess: () => {
 				ctx.parameters.getCurrentSalaryIncomeTax.invalidate();
 				ctx.parameters.getAllSalaryIncomeTax.invalidate();
+				ctx.parameters.getAllFutureSalaryIncomeTax.invalidate();
 			},
 		});
 	const createSalaryIncomeTax =
@@ -210,6 +220,7 @@ export default function ParameterToolbarFunctionsProvider({
 			onSuccess: () => {
 				ctx.parameters.getCurrentSalaryIncomeTax.invalidate();
 				ctx.parameters.getAllSalaryIncomeTax.invalidate();
+				ctx.parameters.getAllFutureSalaryIncomeTax.invalidate();
 			},
 		});
 	const deleteSalaryIncomeTax =
@@ -217,6 +228,7 @@ export default function ParameterToolbarFunctionsProvider({
 			onSuccess: () => {
 				ctx.parameters.getCurrentSalaryIncomeTax.invalidate();
 				ctx.parameters.getAllSalaryIncomeTax.invalidate();
+				ctx.parameters.getAllFutureSalaryIncomeTax.invalidate();
 			},
 		});
 	//#endregion

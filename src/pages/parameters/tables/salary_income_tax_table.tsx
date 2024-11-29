@@ -4,13 +4,12 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
-import { type BankSetting } from "~/server/database/entity/SALARY/bank_setting";
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { formatDate } from "~/lib/utils/format_date";
 import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
-import { SalaryIncomeTax } from "~/server/database/entity/SALARY/salary_income_tax";
+import { SalaryIncomeTaxFEType } from "~/server/api/types/salary_income_tax";
 
 export type RowItem = {
 	salary_start: number;
@@ -190,7 +189,7 @@ export const salary_income_tax_columns = [
 ];
 
 export function salaryIncomeTaxMapper(
-	salaryIncomeTaxData: SalaryIncomeTax[]
+	salaryIncomeTaxData: SalaryIncomeTaxFEType[]
 ): RowItem[] {
 	return salaryIncomeTaxData.map((d) => {
 		return {

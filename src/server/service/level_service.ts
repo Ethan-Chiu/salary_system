@@ -4,7 +4,7 @@ import { type z } from "zod";
 import {
 	createLevelService,
 	type updateLevelService,
-} from "../api/types/parameters_input_type";
+} from "../api/types/level_type";
 import {
 	Level,
 	type LevelDecType,
