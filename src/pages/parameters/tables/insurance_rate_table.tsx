@@ -11,13 +11,11 @@ import {
 	c_StartDateStr,
 	c_UpdateDateStr,
 } from "../constant";
-import { type InsuranceRateSetting } from "~/server/database/entity/SALARY/insurance_rate_setting";
 import { LoadingSpinner } from "~/components/loading";
 import { formatDate } from "~/lib/utils/format_date";
 import { type TableComponentProps } from "../tables_view";
 import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
-import { Round } from "~/server/service/helper_function";
 import { InsuranceRateSettingFEType } from "~/server/api/types/insurance_rate_setting_type";
 
 export type RowItem = {

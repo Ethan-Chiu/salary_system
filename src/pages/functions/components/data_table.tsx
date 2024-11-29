@@ -4,7 +4,7 @@ import { type ColumnDef, type Table } from "@tanstack/react-table";
 import { Separator } from "~/components/ui/separator";
 import { DataTablePagination } from "~/components/data_table/data_table_pagination";
 import { DataTableStandardToolbar } from "~/components/data_table/default/data_table_standard_toolbar";
-import { DataTableStandardBody } from "~/components/data_table/default/data_table_standard_body";
+import { DataTableStandardBody } from "./data_table_standard_body";
 import { WithDataTableStandardState } from "~/components/data_table/default/data_table_standard_state";
 
 interface DataTableProps<TData> {
