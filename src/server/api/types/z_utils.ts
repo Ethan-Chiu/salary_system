@@ -19,6 +19,7 @@ function get_date_string(date: Date): string {
 	return localISOTime.split("T")[0]!;
 }
 
+// TODO: change to objects?
 export const dateToString = z
 	.date()
 	.transform((value) => get_date_string(value));

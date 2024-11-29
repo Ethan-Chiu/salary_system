@@ -1,4 +1,4 @@
-import { injectable } from "tsyringe";
+import { delay, inject, injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { get_date_string, select_value } from "./helper_function";
 import { type z } from "zod";
@@ -21,26 +21,26 @@ import { EmployeeDataService } from "./employee_data_service";
 @injectable()
 export class EmployeePaymentService {
 	constructor(
-		private employeePaymentMapper: EmployeePaymentMapper,
-		private ehrService: EHRService,
-		private levelService: LevelService,
-		private levelRangeService: LevelRangeService,
-		private employeeDataService: EmployeeDataService
-	) { }
+		private readonly employeePaymentMapper: EmployeePaymentMapper,
+		private readonly ehrService: EHRService,
+    @inject(delay(() => LevelService))
+		private readonly levelService: LevelService,
+		private readonly levelRangeService: LevelRangeService,
+		private readonly employeeDataService: EmployeeDataService
+	) {}
 
 	async createEmployeePayment(
 		data: z.input<typeof employeePaymentCreateService>
 	): Promise<EmployeePayment> {
 		const d = employeePaymentCreateService.parse(data);
 
-		const employeePayment =
-			await this.employeePaymentMapper.encode({
-				...d,
-				start_date: d.start_date ?? new Date(),
-				disabled: false,
-				create_by: "system",
-				update_by: "system",
-			});
+		const employeePayment = await this.employeePaymentMapper.encode({
+			...d,
+			start_date: d.start_date ?? new Date(),
+			disabled: false,
+			create_by: "system",
+			update_by: "system",
+		});
 
 		const newData = await EmployeePayment.create(employeePayment, {
 			raw: true,
@@ -62,9 +62,7 @@ export class EmployeePaymentService {
 			return null;
 		}
 
-		return await this.employeePaymentMapper.decode(
-			employeePayment
-		);
+		return await this.employeePaymentMapper.decode(employeePayment);
 	}
 
 	async getEmployeePaymentByEmpNo(
@@ -81,9 +79,7 @@ export class EmployeePaymentService {
 			return null;
 		}
 
-		return await this.employeePaymentMapper.decode(
-			employeePayment
-		);
+		return await this.employeePaymentMapper.decode(employeePayment);
 	}
 
 	async getCurrentEmployeePayment(
@@ -110,8 +106,7 @@ export class EmployeePaymentService {
 
 		const employeePaymentList = await Promise.all(
 			employeePayment.map(
-				async (e) =>
-					await this.employeePaymentMapper.decode(e)
+				async (e) => await this.employeePaymentMapper.decode(e)
 			)
 		);
 		const employeePaymentFE = await Promise.all(
@@ -160,8 +155,7 @@ export class EmployeePaymentService {
 
 		const employeePaymentList = await Promise.all(
 			employeePayment.map(
-				async (e) =>
-					await this.employeePaymentMapper.decode(e)
+				async (e) => await this.employeePaymentMapper.decode(e)
 			)
 		);
 
@@ -194,9 +188,7 @@ export class EmployeePaymentService {
 			return null;
 		}
 
-		return await this.employeePaymentMapper.decode(
-			employeePayment
-		);
+		return await this.employeePaymentMapper.decode(employeePayment);
 	}
 
 	async getCurrentEmployeePaymentByEmpNoByDate(
@@ -222,9 +214,7 @@ export class EmployeePaymentService {
 			return null;
 		}
 
-		return await this.employeePaymentMapper.decode(
-			employeePayment
-		);
+		return await this.employeePaymentMapper.decode(employeePayment);
 	}
 
 	async getAllEmployeePayment(): Promise<EmployeePaymentFEType[][]> {
@@ -240,9 +230,7 @@ export class EmployeePaymentService {
 		});
 
 		const decodedEmployeePayments: EmployeePaymentDecType[] =
-			await this.employeePaymentMapper.decodeList(
-				allEmployeePayment
-			);
+			await this.employeePaymentMapper.decodeList(allEmployeePayment);
 
 		const employeePaymentList =
 			await this.employeePaymentMapper.includeEmployee(
@@ -282,9 +270,7 @@ export class EmployeePaymentService {
 		});
 
 		const decodedEmployeePayments: EmployeePaymentDecType[] =
-			await this.employeePaymentMapper.decodeList(
-				allEmployeePayment
-			);
+			await this.employeePaymentMapper.decodeList(allEmployeePayment);
 
 		const employeePaymentList =
 			await this.employeePaymentMapper.includeEmployee(
@@ -373,7 +359,7 @@ export class EmployeePaymentService {
 				employeePayment.h_i != updatedEmployeePayment.h_i ||
 				employeePayment.l_r != updatedEmployeePayment.l_r ||
 				employeePayment.occupational_injury !=
-				updatedEmployeePayment.occupational_injury
+					updatedEmployeePayment.occupational_injury
 			) {
 				await this.createEmployeePayment({
 					...updatedEmployeePayment,
@@ -397,9 +383,9 @@ export class EmployeePaymentService {
 		});
 
 		for (let i = 0; i < employeePaymentList.length - 1; i += 1) {
-			const end_date_string = employeePaymentList[i]!.end_date ? get_date_string(
-				new Date(employeePaymentList[i]!.end_date!)
-			) : null;
+			const end_date_string = employeePaymentList[i]!.end_date
+				? get_date_string(new Date(employeePaymentList[i]!.end_date!))
+				: null;
 			const start_date = new Date(employeePaymentList[i + 1]!.start_date);
 			const new_end_date_string = get_date_string(
 				new Date(start_date.setDate(start_date.getDate() - 1))
@@ -409,10 +395,13 @@ export class EmployeePaymentService {
 				employeePaymentList[i + 1]!.emp_no
 			) {
 				if (end_date_string != new_end_date_string) {
-					if (new_end_date_string < employeePaymentList[i]!.start_date) {
-						await this.deleteEmployeePayment(employeePaymentList[i]!.id);
-					}
-					else {
+					if (
+						new_end_date_string < employeePaymentList[i]!.start_date
+					) {
+						await this.deleteEmployeePayment(
+							employeePaymentList[i]!.id
+						);
+					} else {
 						await this.updateEmployeePayment({
 							id: employeePaymentList[i]!.id,
 							end_date: new Date(new_end_date_string),
