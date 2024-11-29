@@ -14,14 +14,14 @@ import {
 import { get_date_string, select_value } from "./helper_function";
 import { Op } from "sequelize";
 import { EHRService } from "./ehr_service";
-import { LevelRangeService } from "./level_range_service";
 import { BaseMapper } from "../database/mapper/base_mapper";
+import { LevelRangeService } from "./level_range_service";
 
 @injectable()
 export class LevelService {
 	private readonly levelMapper: BaseMapper<Level, LevelDecType>;
 
-	constructor() {
+	constructor(private readonly levelRangeService: LevelRangeService) {
 		this.levelMapper = new BaseMapper<Level, LevelDecType>(
 			encLevel,
 			decLevel
@@ -128,30 +128,11 @@ export class LevelService {
 		return this.levelMapper.decodeList(level);
 	}
 
-	async updateLevel({
-		id,
-		level,
-		start_date,
-		end_date,
-	}: z.infer<typeof updateLevelService>): Promise<void> {
-		const _level = await this.getLevelById(id);
-		if (_level == null) {
-			throw new BaseResponseError("Level does not exist");
-		}
-
-		await this.deleteLevel(id);
-
-		const newData = await this.createLevel({
-			level: select_value(level, _level.level),
-			start_date: select_value(start_date, _level.start_date),
-			end_date: select_value(end_date, _level.end_date),
-		});
-
-		const levelRangeService = container.resolve(LevelRangeService);
-		await levelRangeService.updateLevelRangeId({
-			old_id: id,
-			new_id: newData.id,
-		});
+	async updateLevel(data: z.infer<typeof updateLevelService>): Promise<void> {
+    const transData = await this.getLevelAfterSelectValue(data);
+    const newData = await this.createLevel(transData);
+    await this.deleteLevel(data.id);
+    await this.levelRangeService.updateLevelRangeId({old_id: data.id, new_id: newData.id});
 	}
 
 	async deleteLevel(id: number): Promise<void> {
