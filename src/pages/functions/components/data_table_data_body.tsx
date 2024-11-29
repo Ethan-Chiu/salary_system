@@ -33,6 +33,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table"
+import { cn } from "~/lib/utils";
 
 interface DataTableDataBodyProps<TData> {
 	table: Table<TData>;
@@ -63,9 +64,11 @@ export function DataTableDataBody<TData>({
 						key={row[0]!.id}
 						data-state={row[0]!.getIsSelected() && "selected"}
 						className={
-							detailData
+							cn(
+								detailData
 								? "cursor-pointer whitespace-nowrap"
-								: "whitespace-nowrap"
+								: "whitespace-nowrap",
+							)
 						}
 						onClick={() => {
 							if (detailData) {
@@ -79,7 +82,13 @@ export function DataTableDataBody<TData>({
 								<TableCell
 									key={cell.id}
 									align="center"
-									className="max-w-xs"
+									className={cn(
+										"max-w-xs",
+										cell.id.split("_").slice(1).join("_") == "department" ? "sticky left-[0px]" :
+										cell.id.split("_").slice(1).join("_") == "emp_no" ? "sticky left-[125px]" :
+										cell.id.split("_").slice(1).join("_") == "emp_name" ? "sticky left-[250px]" :
+										""
+									)}
 								>
 									{flexRender(
 										cell.column.columnDef.cell,

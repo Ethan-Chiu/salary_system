@@ -8,31 +8,37 @@ import { PayTypeEnumType } from "~/server/api/types/pay_type_enum";
 import { Button } from "~/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 
-const columns = (t: I18nType) => Object.keys(new Overtime()).map((key) => {
-	return {
-		accessorKey: key,
-		header: ({ column }: any) => {
-			const { t } = useTranslation(["common"]);
-			return (
-				<div className="flex justify-center">
-					<div className="text-center font-medium">
-						<Button
-							variant="ghost"
-							onClick={() =>
-								column.toggleSorting(
-									column.getIsSorted() === "asc"
-								)
-							}
-						>
-							{t(`table.${key}`)}
-							<ArrowUpDown className="ml-2 h-4 w-4" />
-						</Button>
+const keys = Object.keys(new Overtime());
+const firstThreeKeys = ["department", "emp_no", "emp_name"];
+const columns = (t: I18nType) =>
+	[
+		...firstThreeKeys.filter((key) => keys.includes(key)),
+		...keys.filter((key) => !firstThreeKeys.includes(key)),
+	].map((key) => {
+		return {
+			accessorKey: key,
+			header: ({ column }: any) => {
+				const { t } = useTranslation(["common"]);
+				return (
+					<div className="flex justify-center">
+						<div className="text-center font-medium">
+							<Button
+								variant="ghost"
+								onClick={() =>
+									column.toggleSorting(
+										column.getIsSorted() === "asc"
+									)
+								}
+							>
+								{t(`table.${key}`)}
+								<ArrowUpDown className="ml-2 h-4 w-4" />
+							</Button>
+						</div>
 					</div>
-				</div>
-			);
-		},
-	};
-});
+				);
+			},
+		};
+	});
 
 interface OvertimeTableProps {
 	period: number;
@@ -40,7 +46,11 @@ interface OvertimeTableProps {
 	pay_type: PayTypeEnumType;
 }
 
-export function OvertimeTable({ period, emp_no_list, pay_type }: OvertimeTableProps) {
+export function OvertimeTable({
+	period,
+	emp_no_list,
+	pay_type,
+}: OvertimeTableProps) {
 	const { isLoading, isError, data, error } =
 		api.function.getOvertimeByEmpNoList.useQuery({
 			period_id: period,
@@ -48,7 +58,7 @@ export function OvertimeTable({ period, emp_no_list, pay_type }: OvertimeTablePr
 			pay_type: pay_type,
 		});
 
-	const { t } = useTranslation(['common']);
+	const { t } = useTranslation(["common"]);
 
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast
@@ -59,7 +69,13 @@ export function OvertimeTable({ period, emp_no_list, pay_type }: OvertimeTablePr
 	}
 
 	if (data) {
-		return <DataTable columns={columns(t)} data={data} detailData={[1, 2, 3]}/>;
+		return (
+			<DataTable
+				columns={columns(t)}
+				data={data}
+				detailData={[1, 2, 3]}
+			/>
+		);
 	}
 	return <div />;
 }
