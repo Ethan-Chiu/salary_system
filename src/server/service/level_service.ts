@@ -155,6 +155,10 @@ export class LevelService {
 	}
 
 	async deleteLevel(id: number): Promise<void> {
+		const attendance_setting = await this.getLevelById(id);
+		if (attendance_setting == null) {
+			throw new BaseResponseError("Level does not exist");
+		}
 		const destroyedRows = await Level.update(
 			{ disabled: true },
 			{ where: { id: id } }
@@ -249,5 +253,26 @@ export class LevelService {
 				await this.deleteLevel(updatedLevelList[i]!.id);
 			}
 		}
+	}
+
+	private async getLevelAfterSelectValue({
+		id,
+		level,
+		start_date,
+		end_date,
+	}: z.infer<typeof updateLevelService>): Promise<
+		z.infer<typeof createLevelService>
+	> {
+		const _level = await this.getLevelById(id);
+
+		if (_level == null) {
+			throw new BaseResponseError("Level does not exist");
+		}
+
+		return {
+			level: select_value(level, _level.level),
+			start_date: select_value(start_date, _level.start_date),
+			end_date: select_value(end_date, _level.end_date),
+		};
 	}
 }

@@ -98,9 +98,9 @@ export function initLevelRange(sequelize: Sequelize) {
                 allowNull: true,
             },
             disabled: {
-				type: DataTypes.BOOLEAN,
-				allowNull: false,
-			},
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+            },
             create_date: {
                 type: DataTypes.DATE,
             },

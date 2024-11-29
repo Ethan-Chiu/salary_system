@@ -6,6 +6,7 @@ import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
+import { useEffect, useState } from "react";
 
 /*
     emp_no: z.string(),
@@ -97,10 +98,16 @@ export function OtherTable({ period, emp_no_list }: OtherTableProps) {
 			period_id: period,
 			emp_no_list: emp_no_list,
 		});
+	
+	const details =
+		api.function.getOtherDetailsByEmpNoList.useQuery({
+			period_id: period,
+			emp_no_list: emp_no_list,
+		});
 
 	const { t } = useTranslation(["common"]);
 
-	if (isLoading) {
+	if (isLoading || details.isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast
 	}
 
@@ -108,8 +115,51 @@ export function OtherTable({ period, emp_no_list }: OtherTableProps) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
+	// if (details.isFetched) {
+	// 	return <Button onClick={() => console.log(details.data)}>test</Button>
+	// }	
+
+
+
 	if (data) {
-		return <DataTable columns={columns(t)} data={data} />;
+		return <DataTable columns={columns(t)} data={data} detailData={
+			details.data!.map((emp_data: any) => {
+				return {
+					"other_addition": emp_data.other_addition.map((expense: ExpenseWithType) => {
+						return {
+							emp_no: emp_data.emp_no,
+							emp_name: expense.emp_name,
+							expense_type_name: expense.expense_type_name,
+							amount: expense.amount
+						}
+					}),
+					"other_addition_tax": emp_data.other_addition_tax.map((expense: ExpenseWithType) => {
+						return {
+							emp_no: emp_data.emp_no,
+							emp_name: expense.emp_name,
+							expense_type_name: expense.expense_type_name,
+							amount: expense.amount
+						}
+					}),
+					"other_deduction": emp_data.other_deduction.map((expense: ExpenseWithType) => {
+						return {
+							emp_no: emp_data.emp_no,
+							emp_name: expense.emp_name,
+							expense_type_name: expense.expense_type_name,
+							amount: expense.amount
+						}
+					}),
+					"other_deduction_tax": emp_data.other_deduction_tax.map((expense: ExpenseWithType) => {
+						return {
+							emp_no: emp_data.emp_no,
+							emp_name: expense.emp_name,
+							expense_type_name: expense.expense_type_name,
+							amount: expense.amount
+						}
+					}),					
+				}
+			})
+		}/>;
 	}
 	return <div />;
 }
