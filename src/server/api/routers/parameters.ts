@@ -2,25 +2,11 @@ import { z } from "zod";
 import { container } from "tsyringe";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import {
-	createBankSettingAPI,
-	createBonusDepartmentAPI,
-	createBonusPositionAPI,
-	createBonusPositionTypeAPI,
-	createBonusSeniorityAPI,
-	createBonusSettingAPI,
-	createInsuranceRateSettingAPI,
 	createLevelAPI,
 	createPerformanceLevelAPI,
 	createSalaryIncomeTaxAPI,
 	createTrustMoneyAPI,
 	batchCreateSalaryIncomeTaxAPI,
-	updateBankSettingAPI,
-	updateBonusDepartmentAPI,
-	updateBonusPositionAPI,
-	updateBonusPositionTypeAPI,
-	updateBonusSeniorityAPI,
-	updateBonusSettingAPI,
-	updateInsuranceRateSettingAPI,
 	updateLevelAPI,
 	updatePerformanceLevelAPI,
 	updateSalaryIncomeTaxAPI,
@@ -29,12 +15,7 @@ import {
 import { BankSettingService } from "~/server/service/bank_setting_service";
 import { AttendanceSettingService } from "~/server/service/attendance_setting_service";
 import { BaseResponseError } from "../error/BaseResponseError";
-import { BonusDepartmentService } from "~/server/service/bonus_department_service";
-import { BonusPositionService } from "~/server/service/bonus_position_service";
-import { BonusSeniorityService } from "~/server/service/bonus_seniority_service";
-import { BonusSettingService } from "~/server/service/bonus_setting_service";
 import { InsuranceRateSettingService } from "~/server/service/insurance_rate_setting_service";
-import { BonusPositionTypeService } from "~/server/service/bonus_position_type_service";
 import { LevelRangeService } from "~/server/service/level_range_service";
 import { LevelService } from "~/server/service/level_service";
 import { PerformanceLevelService } from "~/server/service/performance_level_service";
@@ -44,17 +25,15 @@ import { LevelRangeMapper } from "~/server/database/mapper/level_range_mapper";
 import { roundProperties } from "~/server/database/mapper/helper_function";
 import { SalaryIncomeTaxService } from "~/server/service/salary_income_tax_service";
 import { attendanceSettingFE, createAttendanceSettingAPI, updateAttendanceSettingAPI } from "../types/attendance_setting_type";
+import { createBankSettingAPI, updateBankSettingAPI } from "../types/bank_setting_type";
+import { createInsuranceRateSettingAPI, updateInsuranceRateSettingAPI } from "../types/insurance_rate_setting_type";
 
 export const parametersRouter = createTRPCRouter({
 	createBankSetting: publicProcedure
 		.input(createBankSettingAPI)
 		.mutation(async ({ input }) => {
 			const bankService = container.resolve(BankSettingService);
-			const newdata = await bankService.createBankSetting({
-				...input,
-				start_date: input.start_date,
-				end_date: input.end_date,
-			});
+			const newdata = await bankService.createBankSetting(input);
 			return newdata;
 		}),
 
@@ -80,15 +59,17 @@ export const parametersRouter = createTRPCRouter({
 		return bankSetting;
 	}),
 
+	getAllFutureBankSetting: publicProcedure.query(async () => {
+		const bankService = container.resolve(BankSettingService);
+		const bankSetting = await bankService.getAllFutureBankSetting();
+		return bankSetting;
+	}),
+
 	updateBankSetting: publicProcedure
 		.input(updateBankSettingAPI)
 		.mutation(async ({ input }) => {
 			const bankService = container.resolve(BankSettingService);
-			const newdata = await bankService.updateBankSetting({
-				...input,
-				start_date: input.start_date,
-				end_date: input.end_date,
-			});
+			const newdata = await bankService.updateBankSetting(input);
 			return newdata;
 		}),
 
@@ -102,7 +83,7 @@ export const parametersRouter = createTRPCRouter({
 
 	getCurrentAttendanceSetting: publicProcedure
 		.input(z.object({ period_id: z.number() }))
-    .output(attendanceSettingFE)
+		.output(attendanceSettingFE)
 		.query(async ({ input }) => {
 			const attendanceService = container.resolve(
 				AttendanceSettingService
@@ -133,9 +114,6 @@ export const parametersRouter = createTRPCRouter({
 		const attendanceService = container.resolve(AttendanceSettingService);
 		const attendanceSetting =
 			await attendanceService.getAllFutureAttendanceSetting();
-		if (attendanceSetting.length == 0) {
-			throw new BaseResponseError("AttendanceSetting does not exist");
-		}
 		return attendanceSetting.map(e => roundProperties(e, 4));
 	}),
 
@@ -147,7 +125,6 @@ export const parametersRouter = createTRPCRouter({
 			);
 			const newdata = await attendanceService.createAttendanceSetting({
 				...input,
-				start_date: input.start_date,
 				end_date: null,
 			});
 			await attendanceService.rescheduleAttendanceSetting();
@@ -160,11 +137,7 @@ export const parametersRouter = createTRPCRouter({
 			const attendanceService = container.resolve(
 				AttendanceSettingService
 			);
-			await attendanceService.updateAttendanceSetting({
-				...input,
-				start_date: input.start_date,
-				end_date: input.end_date,
-			});
+			await attendanceService.updateAttendanceSetting(input);
 			await attendanceService.rescheduleAttendanceSetting();
 		}),
 
@@ -208,6 +181,15 @@ export const parametersRouter = createTRPCRouter({
 		return insuranceRateSetting.map(e => roundProperties(e, 4));
 	}),
 
+	getAllFutureInsuranceRateSetting: publicProcedure.query(async () => {
+		const insuranceRateService = container.resolve(
+			InsuranceRateSettingService
+		);
+		const insuranceRateSetting =
+			await insuranceRateService.getAllFutureInsuranceRateSetting();
+		return insuranceRateSetting.map(e => roundProperties(e, 4));
+	}),
+
 	createInsuranceRateSetting: publicProcedure
 		.input(createInsuranceRateSettingAPI)
 		.mutation(async ({ input }) => {
@@ -217,7 +199,6 @@ export const parametersRouter = createTRPCRouter({
 			const newdata =
 				await insuranceRateService.createInsuranceRateSetting({
 					...input,
-					start_date: input.start_date,
 					end_date: null,
 				});
 			await insuranceRateService.rescheduleInsuranceRateSetting();
@@ -230,11 +211,7 @@ export const parametersRouter = createTRPCRouter({
 			const insuranceRateService = container.resolve(
 				InsuranceRateSettingService
 			);
-			await insuranceRateService.updateInsuranceRateSetting({
-				...input,
-				start_date: input.start_date,
-				end_date: input.end_date,
-			});
+			await insuranceRateService.updateInsuranceRateSetting(input);
 			await insuranceRateService.rescheduleInsuranceRateSetting();
 		}),
 
@@ -248,237 +225,15 @@ export const parametersRouter = createTRPCRouter({
 			await insuranceRateService.rescheduleInsuranceRateSetting();
 		}),
 
-	createBonusDepartment: publicProcedure
-		.input(createBonusDepartmentAPI)
-		.mutation(async ({ input }) => {
-			const bonusDepartmentService = container.resolve(
-				BonusDepartmentService
-			);
-			const newdata = await bonusDepartmentService.createBonusDepartment(
-				input
-			);
-			return newdata;
-		}),
-
-	getAllBonusDepartment: publicProcedure.query(async () => {
-		const bonusDepartmentService = container.resolve(
-			BonusDepartmentService
-		);
-		const bonusDepartment =
-			await bonusDepartmentService.getAllBonusDepartment();
-		if (bonusDepartment == null) {
-			throw new BaseResponseError("BonusDepartment does not exist");
-		}
-		return bonusDepartment;
-	}),
-
-	updateBonusDepartment: publicProcedure
-		.input(updateBonusDepartmentAPI)
-		.mutation(async ({ input }) => {
-			const bonusDepartmentService = container.resolve(
-				BonusDepartmentService
-			);
-			const newdata = await bonusDepartmentService.updateBonusDepartment(
-				input
-			);
-			return newdata;
-		}),
-
-	deleteBonusDepartment: publicProcedure
-		.input(z.object({ id: z.number() }))
-		.mutation(async (opts) => {
-			const { input } = opts;
-			const bonusDepartmentService = container.resolve(
-				BonusDepartmentService
-			);
-			await bonusDepartmentService.deleteBonusDepartment(input.id);
-		}),
-
-	createBonusPosition: publicProcedure
-		.input(createBonusPositionAPI)
-		.mutation(async ({ input }) => {
-			const bonusPositionService =
-				container.resolve(BonusPositionService);
-			const newdata = await bonusPositionService.createBonusPosition(
-				input
-			);
-			return newdata;
-		}),
-
-	getAllBonusPosition: publicProcedure.query(async () => {
-		const bonusPositionService = container.resolve(BonusPositionService);
-		const bonusPosition = await bonusPositionService.getAllBonusPosition();
-		if (bonusPosition == null) {
-			throw new BaseResponseError("BonusPosition does not exist");
-		}
-		return bonusPosition;
-	}),
-
-	updateBonusPosition: publicProcedure
-		.input(updateBonusPositionAPI)
-		.mutation(async ({ input }) => {
-			const bonusPositionService =
-				container.resolve(BonusPositionService);
-			const newdata = await bonusPositionService.updateBonusPosition(
-				input
-			);
-			return newdata;
-		}),
-
-	deleteBonusPosition: publicProcedure
-		.input(z.object({ id: z.number() }))
-		.mutation(async (opts) => {
-			const { input } = opts;
-			const bonusPositionService =
-				container.resolve(BonusPositionService);
-			await bonusPositionService.deleteBonusPosition(input.id);
-		}),
-
-	createBonusPositionType: publicProcedure
-		.input(createBonusPositionTypeAPI)
-		.mutation(async ({ input }) => {
-			const bonusPositionTypeService = container.resolve(
-				BonusPositionTypeService
-			);
-			const newdata =
-				await bonusPositionTypeService.createBonusPositionType(input);
-			return newdata;
-		}),
-
-
-
-	getAllBonusPositionType: publicProcedure.query(async () => {
-		const bonusPositionTypeService = container.resolve(
-			BonusPositionTypeService
-		);
-		const bonusPositionType =
-			await bonusPositionTypeService.getAllBonusPositionType();
-		if (bonusPositionType == null) {
-			throw new BaseResponseError("BonusPositionType does not exist");
-		}
-		return bonusPositionType;
-	}),
-
-	updateBonusPositionType: publicProcedure
-		.input(updateBonusPositionTypeAPI)
-		.mutation(async ({ input }) => {
-			const bonusPositionTypeService = container.resolve(
-				BonusPositionTypeService
-			);
-			const newdata =
-				await bonusPositionTypeService.updateBonusPositionType(input);
-			return newdata;
-		}),
-
-	deleteBonusPositionType: publicProcedure
-		.input(z.object({ id: z.number() }))
-		.mutation(async (opts) => {
-			const { input } = opts;
-			const bonusPositionTypeService = container.resolve(
-				BonusPositionTypeService
-			);
-			await bonusPositionTypeService.deleteBonusPositionType(input.id);
-		}),
-
-	createBonusSeniority: publicProcedure
-		.input(createBonusSeniorityAPI)
-		.mutation(async ({ input }) => {
-			const bonusSeniorityService = container.resolve(
-				BonusSeniorityService
-			);
-			const newdata = await bonusSeniorityService.createBonusSeniority(
-				input
-			);
-			return newdata;
-		}),
-
-
-
-	getAllBonusSeniority: publicProcedure.query(async () => {
-		const bonusSeniorityService = container.resolve(BonusSeniorityService);
-		const bonusSeniority =
-			await bonusSeniorityService.getAllBonusSeniority();
-		if (bonusSeniority == null) {
-			throw new BaseResponseError("BonusSeniority does not exist");
-		}
-		return bonusSeniority;
-	}),
-
-	updateBonusSeniority: publicProcedure
-		.input(updateBonusSeniorityAPI)
-		.mutation(async ({ input }) => {
-			const bonusSeniorityService = container.resolve(
-				BonusSeniorityService
-			);
-			const newdata = await bonusSeniorityService.updateBonusSeniority(
-				input
-			);
-			return newdata;
-		}),
-
-	deleteBonusSeniority: publicProcedure
-		.input(z.object({ id: z.number() }))
-		.mutation(async (opts) => {
-			const { input } = opts;
-			const bonusSeniorityService = container.resolve(
-				BonusSeniorityService
-			);
-			await bonusSeniorityService.deleteBonusSeniority(input.id);
-		}),
-
-	createBonusSetting: publicProcedure
-		.input(createBonusSettingAPI)
-		.mutation(async ({ input }) => {
-			const bonusSettingService = container.resolve(BonusSettingService);
-			const newdata = await bonusSettingService.createBonusSetting(input);
-			return newdata;
-		}),
-
-	getCurrentBonusSetting: publicProcedure.query(async () => {
-		const bonusSettingService = container.resolve(BonusSettingService);
-		const bonusSetting = await bonusSettingService.getCurrentBonusSetting();
-		if (bonusSetting == null) {
-			throw new BaseResponseError("BonusSetting does not exist");
-		}
-		return bonusSetting;
-	}),
-
-	getAllBonusSetting: publicProcedure.query(async () => {
-		const bonusSettingService = container.resolve(BonusSettingService);
-		const bonusSetting = await bonusSettingService.getAllBonusSetting();
-		if (bonusSetting == null) {
-			throw new BaseResponseError("BonusSetting does not exist");
-		}
-		return bonusSetting;
-	}),
-
-	updateBonusSetting: publicProcedure
-		.input(updateBonusSettingAPI)
-		.mutation(async ({ input }) => {
-			const bonusSettingService = container.resolve(BonusSettingService);
-			const newdata = await bonusSettingService.updateBonusSetting(input);
-			return newdata;
-		}),
-
-	deleteBonusSetting: publicProcedure
-		.input(z.object({ id: z.number() }))
-		.mutation(async (opts) => {
-			const { input } = opts;
-			const bonusSettingService = container.resolve(BonusSettingService);
-			await bonusSettingService.deleteBonusSetting(input.id);
-		}),
-
 	createLevelRange: publicProcedure
 		.input(createLevelRangeAPI)
-    .output(levelRangeFE)
+		.output(levelRangeFE)
 		.mutation(async ({ input }) => {
 			const levelRangeService = container.resolve(LevelRangeService);
 			const levelRangeMapper = container.resolve(LevelRangeMapper);
-
-      // TODO: move to service
+			// TODO: Fix this
 			const levelRange = await levelRangeMapper.getLevelRange(input);
 			await levelRangeService.createLevelRange(levelRange);
-
 			const levelRangeFE = await levelRangeMapper.getLevelRangeFE(levelRange)
 			await levelRangeService.rescheduleLevelRange();
 			return levelRangeFE;
@@ -502,6 +257,14 @@ export const parametersRouter = createTRPCRouter({
 		if (levelRange == null) {
 			throw new BaseResponseError("LevelRange does not exist");
 		}
+		const levelRangeFE = await Promise.all(levelRange.map(async e => await levelRangeMapper.getLevelRangeFE(e)))
+		return levelRangeFE;
+	}),
+
+	getAllFutureLevelRange: publicProcedure.query(async () => {
+		const levelRangeService = container.resolve(LevelRangeService);
+		const levelRangeMapper = container.resolve(LevelRangeMapper);
+		const levelRange = await levelRangeService.getAllFutureLevelRange();
 		const levelRangeFE = await Promise.all(levelRange.map(async e => await levelRangeMapper.getLevelRangeFE(e)))
 		return levelRangeFE;
 	}),
@@ -532,7 +295,6 @@ export const parametersRouter = createTRPCRouter({
 			const levelService = container.resolve(LevelService);
 			const newdata = await levelService.createLevel({
 				...input,
-				start_date: input.start_date,
 				end_date: null,
 			});
 			await levelService.rescheduleLevel();
@@ -557,15 +319,17 @@ export const parametersRouter = createTRPCRouter({
 		return level;
 	}),
 
+	getAllFutureLevel: publicProcedure.query(async () => {
+		const levelService = container.resolve(LevelService);
+		const level = await levelService.getAllFutureLevel();
+		return level;
+	}),
+
 	updateLevel: publicProcedure
 		.input(updateLevelAPI)
 		.mutation(async ({ input }) => {
 			const levelService = container.resolve(LevelService);
-			const newdata = await levelService.updateLevel({
-				...input,
-				start_date: input.start_date,
-				end_date: input.end_date,
-			});
+			const newdata = await levelService.updateLevel(input);
 			await levelService.rescheduleLevel();
 			return newdata;
 		}),
@@ -641,7 +405,6 @@ export const parametersRouter = createTRPCRouter({
 			const trustMoneyService = container.resolve(TrustMoneyService);
 			const newdata = await trustMoneyService.createTrustMoney({
 				...input,
-				start_date: input.start_date,
 				end_date: null,
 			});
 			await trustMoneyService.rescheduleTrustMoney();
@@ -666,15 +429,17 @@ export const parametersRouter = createTRPCRouter({
 		return trustMoney;
 	}),
 
+	getAllFutureTrustMoney: publicProcedure.query(async () => {
+		const trustMoneyService = container.resolve(TrustMoneyService);
+		const trustMoney = await trustMoneyService.getAllFutureTrustMoney();
+		return trustMoney;
+	}),
+
 	updateTrustMoney: publicProcedure
 		.input(updateTrustMoneyAPI)
 		.mutation(async ({ input }) => {
 			const trustMoneyService = container.resolve(TrustMoneyService);
-			const newdata = await trustMoneyService.updateTrustMoney({
-				...input,
-				start_date: input.start_date,
-				end_date: input.end_date,
-			});
+			const newdata = await trustMoneyService.updateTrustMoney(input);
 			await trustMoneyService.rescheduleTrustMoney();
 			return newdata;
 		}),
@@ -695,7 +460,6 @@ export const parametersRouter = createTRPCRouter({
 			);
 			const newdata = await salaryIncomeTaxService.createSalaryIncomeTax({
 				...input,
-				start_date: input.start_date,
 				end_date: null,
 			});
 			return newdata;
@@ -708,7 +472,6 @@ export const parametersRouter = createTRPCRouter({
 			);
 			const newdata = await salaryIncomeTaxService.batchCreateSalaryIncomeTax(input.map(e => ({
 				...e,
-				start_date: e.start_date,
 				end_date: null,
 			}))
 			);
@@ -720,11 +483,7 @@ export const parametersRouter = createTRPCRouter({
 			const salaryIncomeTaxService = container.resolve(
 				SalaryIncomeTaxService
 			);
-			const newdata = await salaryIncomeTaxService.updateSalaryIncomeTax({
-				...input,
-				start_date: input.start_date,
-				end_date: input.end_date,
-			});
+			const newdata = await salaryIncomeTaxService.updateSalaryIncomeTax(input);
 			return newdata;
 		}),
 
@@ -763,6 +522,16 @@ export const parametersRouter = createTRPCRouter({
 			if (salaryIncomeTax == null) {
 				throw new BaseResponseError("SalaryIncomeTax does not exist");
 			}
+			return salaryIncomeTax;
+		}),
+
+	getAllFutureSalaryIncomeTax: publicProcedure
+		.query(async () => {
+			const salaryIncomeTaxService = container.resolve(
+				SalaryIncomeTaxService
+			);
+			const salaryIncomeTax =
+				await salaryIncomeTaxService.getAllFutureSalaryIncomeTax();
 			return salaryIncomeTax;
 		}),
 });
