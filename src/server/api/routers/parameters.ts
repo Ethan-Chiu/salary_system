@@ -20,7 +20,7 @@ import { LevelRangeService } from "~/server/service/level_range_service";
 import { LevelService } from "~/server/service/level_service";
 import { PerformanceLevelService } from "~/server/service/performance_level_service";
 import { TrustMoneyService } from "~/server/service/trust_money_service";
-import { createLevelRangeAPI, updateLevelRangeAPI } from "../types/level_range_type";
+import { createLevelRangeAPI, levelRangeFE, updateLevelRangeAPI } from "../types/level_range_type";
 import { LevelRangeMapper } from "~/server/database/mapper/level_range_mapper";
 import { roundProperties } from "~/server/database/mapper/helper_function";
 import { SalaryIncomeTaxService } from "~/server/service/salary_income_tax_service";
@@ -227,12 +227,14 @@ export const parametersRouter = createTRPCRouter({
 
 	createLevelRange: publicProcedure
 		.input(createLevelRangeAPI)
+		.output(levelRangeFE)
 		.mutation(async ({ input }) => {
 			const levelRangeService = container.resolve(LevelRangeService);
 			const levelRangeMapper = container.resolve(LevelRangeMapper);
-			const levelRange = await levelRangeMapper.getLevelRange({ ...input, end_date: null });
-			const newdata = await levelRangeService.createLevelRange(levelRange);
-			const levelRangeFE = await levelRangeMapper.getLevelRangeFE(newdata)
+			// TODO: Fix this
+			const levelRange = await levelRangeMapper.getLevelRange(input);
+			await levelRangeService.createLevelRange(levelRange);
+			const levelRangeFE = await levelRangeMapper.getLevelRangeFE(levelRange)
 			await levelRangeService.rescheduleLevelRange();
 			return levelRangeFE;
 		}),

@@ -11,15 +11,16 @@ import { dateF, dateStringF, systemF, systemKeys } from "../../mapper/mapper_uti
 import { dateToString, dateToStringNullable, stringToDate, stringToDateNullable } from "~/server/api/types/z_utils";
 
 const dbLevelRange = z.object({
-    level_start_id: z.number(),
-    level_end_id: z.number(),
-    create_by: z.string(),
-    update_by: z.string(),
-    disabled: z.coerce.boolean(),
+  type: z.string(),
+  level_start_id: z.number(),
+  level_end_id: z.number(),
+	create_by: z.string(),
+	update_by: z.string(),
+	disabled: z.coerce.boolean(),
 });
 
 const decFields = z.object({
-    id: z.number(),
+	id: z.number(),
 });
 
 const encF = dbLevelRange.merge(dateStringF);
@@ -27,23 +28,24 @@ const decF = dbLevelRange.merge(decFields).merge(dateF);
 export type LevelRangeDecType = z.input<typeof decF>;
 
 export const decLevelRange = encF
-    .merge(systemF)
-    .transform((v) => ({
-        ...v,
-        id: v.id,
-        start_date: stringToDate.parse(v.start_date),
-        end_date: stringToDateNullable.parse(v.end_date),
-    }))
-    .pipe(decF);
+	.merge(systemF)
+	.transform((v) => ({
+		...v,
+		id: v.id,
+		start_date: stringToDate.parse(v.start_date),
+		end_date: stringToDateNullable.parse(v.end_date),
+	}))
+	.pipe(decF);
 
 export const encLevelRange = decF
-    .omit(systemKeys)
-    .transform((v) => ({
-        ...v,
-        start_date: dateToString.parse(v.start_date),
-        end_date: dateToStringNullable.parse(v.end_date),
-    }))
-    .pipe(encF);
+	.omit(systemKeys)
+	.transform((v) => ({
+		...v,
+		start_date: dateToString.parse(v.start_date),
+		end_date: dateToStringNullable.parse(v.end_date),
+	}))
+	.pipe(encF);
+
 
 export class LevelRange extends Model<
     InferAttributes<LevelRange>,
