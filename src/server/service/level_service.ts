@@ -21,7 +21,7 @@ import { LevelRangeService } from "./level_range_service";
 export class LevelService {
 	private readonly levelMapper: BaseMapper<Level, LevelDecType>;
 
-	constructor(private readonly levelRangeService: LevelRangeService) {
+	constructor() {
 		this.levelMapper = new BaseMapper<Level, LevelDecType>(
 			encLevel,
 			decLevel
@@ -129,10 +129,11 @@ export class LevelService {
 	}
 
 	async updateLevel(data: z.infer<typeof updateLevelService>): Promise<void> {
+	const levelRangeService = container.resolve(LevelRangeService);
     const transData = await this.getLevelAfterSelectValue(data);
     const newData = await this.createLevel(transData);
     await this.deleteLevel(data.id);
-    await this.levelRangeService.updateLevelRangeId({old_id: data.id, new_id: newData.id});
+    await levelRangeService.updateLevelRangeId({old_id: data.id, new_id: newData.id});
 	}
 
 	async deleteLevel(id: number): Promise<void> {

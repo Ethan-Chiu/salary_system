@@ -7,8 +7,10 @@ import { useTranslation } from "react-i18next";
 import { PayTypeEnumType } from "~/server/api/types/pay_type_enum";
 import { Button } from "~/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
+import { OvertimeMapper } from "~/server/database/mapper/overtime_mapper";
+import { OvertimeFE } from "~/server/api/types/overtime_type";
 
-const columns = (t: I18nType) => Object.keys(new Overtime()).map((key) => {
+const columns = (t: I18nType) => Object.keys(OvertimeFE.shape).map((key) => {
 	return {
 		accessorKey: key,
 		header: ({ column }: any) => {

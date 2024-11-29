@@ -4,8 +4,9 @@ import { Holiday } from "~/server/database/entity/UMEDIA/holiday";
 import { api } from "~/utils/api";
 import { type I18nType} from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
+import { HolidayFE } from "~/server/api/types/holiday_type";
 
-const columns = (t: I18nType) => Object.keys(new Holiday()).map((key) => {
+const columns = (t: I18nType) => Object.keys(HolidayFE.shape).map((key) => {
 	return {
 		accessorKey: key,
 		header: t(`table.${key}`),
