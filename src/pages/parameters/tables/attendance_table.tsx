@@ -7,13 +7,13 @@ import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { c_CreateDateStr, c_EndDateStr, c_StartDateStr, c_UpdateDateStr } from "../constant";
 import { z } from "zod";
-import { type AttendanceSetting } from "~/server/database/entity/SALARY/attendance_setting";
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { formatDate } from "~/lib/utils/format_date";
 import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
+import { AttendanceSettingFEType } from "~/server/api/types/attendance_setting_type";
 
 const rowSchema = z.object({
 	parameters: z.string(),
@@ -95,7 +95,7 @@ export const attendance_columns = ({ t }: { t: TFunction<[string], undefined> })
 ];
 
 export function attendanceMapper(
-	attendanceData: AttendanceSetting[]
+	attendanceData: AttendanceSettingFEType[]
 ): RowItem[] {
 	const data = attendanceData[0]!;
 	return [

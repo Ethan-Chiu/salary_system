@@ -380,6 +380,37 @@ export class EmployeeBonusService {
 			),
 		});
 	}
+	async updateMultipleBonusByEmpNoList(
+		emp_no_list: string[],
+		period_id: number,
+		bonus_type: BonusTypeEnumType,
+		multiplier: number,
+		fixed_amount: number
+	): Promise<void> {
+		await Promise.all(
+			emp_no_list.map(async (emp_no) => {
+				const emp_bonus = await this.getEmployeeBonusByEmpNoByType(
+					period_id,
+					bonus_type,
+					emp_no
+				)
+				if (!emp_bonus) {
+					throw new BaseResponseError(
+						"Employee bonus does not exist"
+					)
+				}
+				await this.updateEmployeeBonus({
+					id: emp_bonus.id,
+					multiplier_enc: CryptoHelper.encrypt(
+						multiplier.toString()
+					),
+					fixed_amount_enc: CryptoHelper.encrypt(
+						fixed_amount.toString()
+					)
+				});
+			})
+		);
+	}
 	async updateFromExcel(
 		force: boolean,
 		{
@@ -512,10 +543,7 @@ export class EmployeeBonusService {
 					employee_payment_fe.supervisor_allowance +
 					employee_payment_fe.occupational_allowance +
 					employee_payment_fe.subsidy_allowance +
-					employee_payment_fe.long_service_allowance_type ==
-				LongServiceEnum.enum.month_allowance
-					? employee_payment_fe.long_service_allowance
-					: 0) *
+					((employee_payment_fe.long_service_allowance_type == LongServiceEnum.enum.month_allowance) ? employee_payment_fe.long_service_allowance : 0)) *
 					employee_bonus_fe.special_multiplier *
 					employee_bonus_fe.multiplier +
 				employee_bonus_fe.fixed_amount;

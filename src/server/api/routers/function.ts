@@ -7,15 +7,13 @@ import { ExcelService } from "~/server/service/excel_service";
 import { PayTypeEnum, PayTypeEnumType } from "../types/pay_type_enum";
 import { AllowanceMapper } from "~/server/database/mapper/allowance_mapper";
 import { EmployeePaymentService } from "~/server/service/employee_payment_service";
-import { EmployeePaymentMapper } from "~/server/database/mapper/employee_payment_mapper";
-import { EmployeePayment } from "~/server/database/entity/SALARY/employee_payment";
-import { th } from "date-fns/locale";
-import { BaseError } from "sequelize";
 import { BaseResponseError } from "../error/BaseResponseError";
 import { OtherMapper } from "~/server/database/mapper/other_mapper";
 import { BonusMapper } from "~/server/database/mapper/bonus_mapper";
 import { CalculateService } from "~/server/service/calculate_service";
-import ca from "date-fns/esm/locale/ca/index";
+import { OvertimeMapper } from "~/server/database/mapper/overtime_mapper";
+import { HolidayMapper } from "~/server/database/mapper/holiday_mapper";
+import { PaysetMapper } from "~/server/database/mapper/payset_mapper";
 
 export const functionRouter = createTRPCRouter({
 	getPeriod: publicProcedure.query(async () => {
@@ -43,13 +41,14 @@ export const functionRouter = createTRPCRouter({
 			z.object({ period_id: z.number(), emp_no_list: z.string().array() })
 		)
 		.query(async ({ input }) => {
+			const holiday_mapper = container.resolve(HolidayMapper);
 			const ehrService = container.resolve(EHRService);
 			const holiday_with_type_list =
 				await ehrService.getHolidayWithTypeByEmpNoList(
 					input.period_id,
 					input.emp_no_list
 				);
-			return holiday_with_type_list;
+			return await holiday_mapper.getHolidayFE(input.period_id, holiday_with_type_list);
 		}),
 
 	getOvertimeByEmpNoList: publicProcedure
@@ -62,13 +61,14 @@ export const functionRouter = createTRPCRouter({
 		)
 		.query(async ({ input }) => {
 			const ehrService = container.resolve(EHRService);
+			const overtime_mapper = container.resolve(OvertimeMapper);
 			const overtime = await ehrService.getOvertimeByEmpNoList(
 				input.period_id,
 				input.emp_no_list,
 				input.pay_type
 			);
 
-			return overtime;
+			return await overtime_mapper.getOvertimeFE(input.period_id, overtime);
 		}),
 
 	getPaysetByEmpNoList: publicProcedure
@@ -77,12 +77,13 @@ export const functionRouter = createTRPCRouter({
 		)
 		.query(async ({ input }) => {
 			const ehrService = container.resolve(EHRService);
+			const payset_mapper = container.resolve(PaysetMapper);
 			const payset = await ehrService.getPaysetByEmpNoList(
 				input.period_id,
 				input.emp_no_list
 			);
 
-			return payset;
+			return await payset_mapper.getPaysetFE( payset);
 		}),
 	getBonusWithTypeByEmpNoList: publicProcedure
 		.input(

@@ -4,7 +4,7 @@ export const Id = z.object({
 	id: z.number(),
 });
 
-export const dateAPI = z.object({
+export const dateAll = z.object({
 	start_date: z.date().nullable(),
 	end_date: z.date().nullable(),
 	create_by: z.string(),
@@ -13,7 +13,7 @@ export const dateAPI = z.object({
 	update_date: z.date(),
 });
 
-export const dateService = z.object({
+export const dateCreate = z.object({
 	start_date: z.date().nullable(),
 	end_date: z.date().nullable(),
 });

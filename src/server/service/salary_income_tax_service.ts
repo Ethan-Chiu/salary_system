@@ -1,10 +1,6 @@
 import { container, injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { type z } from "zod";
-import {
-	createSalaryIncomeTaxService,
-	type updateSalaryIncomeTaxService,
-} from "../api/types/parameters_input_type";
 import { get_date_string, select_value } from "./helper_function";
 import {
 	SalaryIncomeTax,
@@ -15,6 +11,7 @@ import {
 import { Op } from "sequelize";
 import { EHRService } from "./ehr_service";
 import { BaseMapper } from "../database/mapper/base_mapper";
+import { createSalaryIncomeTaxService, updateSalaryIncomeTaxService } from "../api/types/salary_income_tax";
 
 @injectable()
 export class SalaryIncomeTaxService {

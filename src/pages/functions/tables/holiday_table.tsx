@@ -7,24 +7,9 @@ import { useTranslation } from "react-i18next";
 
 import { Button } from "~/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
+import { HolidayFE } from "~/server/api/types/holiday_type";
 
-const columns = (t: I18nType) => [
-	"period_id",
-	"period_name",
-	"emp_no",
-	"pay_order",
-	"emp_name",
-	"holiday_type_name",
-	"pay_period",
-	"pay_delay",
-	"total_hours",
-	// "annual_1",
-	// "compensatory_134",
-	// "compensatory_167",
-	// "compensatory_267",
-	// "compensatory_1",
-	// "compensatory_2"
-].map((key) => {
+const columns = (t: I18nType) => Object.keys(HolidayFE.shape).map((key) => {
 	// Object.keys(new Holiday()).concat("holiday_type_name")
 	return {
 		accessorKey: key,

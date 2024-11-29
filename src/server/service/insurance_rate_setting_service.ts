@@ -3,10 +3,6 @@ import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { z } from "zod";
 import {
-	createInsuranceRateSettingService,
-	updateInsuranceRateSettingService,
-} from "../api/types/parameters_input_type";
-import {
 	decInsuranceRateSetting,
 	encInsuranceRateSetting,
 	InsuranceRateSetting,
@@ -15,6 +11,7 @@ import {
 import { check_date, get_date_string, select_value } from "./helper_function";
 import { EHRService } from "./ehr_service";
 import { BaseMapper } from "../database/mapper/base_mapper";
+import { createInsuranceRateSettingService, updateInsuranceRateSettingService } from "../api/types/insurance_rate_setting_type";
 
 @injectable()
 export class InsuranceRateSettingService {
@@ -165,7 +162,7 @@ export class InsuranceRateSettingService {
 				start_date.setDate(start_date.getDate() - 1)
 			);
 
-			if (end_date != new_end_date) {
+			if (end_date?.getTime() != new_end_date.getTime()) {
 				if (new_end_date < insuranceRateSettingList[i]!.start_date) {
 					await this.deleteInsuranceRateSetting(
 						insuranceRateSettingList[i]!.id
@@ -177,18 +174,6 @@ export class InsuranceRateSettingService {
 					});
 				}
 			}
-		}
-
-		if (
-			insuranceRateSettingList[insuranceRateSettingList.length - 1]!
-				.end_date != null
-		) {
-			await this.updateInsuranceRateSetting({
-				id: insuranceRateSettingList[
-					insuranceRateSettingList.length - 1
-				]!.id,
-				end_date: null,
-			});
 		}
 
 		if (

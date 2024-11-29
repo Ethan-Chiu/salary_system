@@ -135,6 +135,26 @@ export const bonusRouter = createTRPCRouter({
 			const result = await empBonusService.updateEmployeeBonus(empBonus);
 			return result;
 		}),
+	updateMultipleBonusByEmpNoList: publicProcedure
+		.input(
+			z.object({
+				emp_no_list: z.array(z.string()),
+				period_id: z.number(),
+				bonus_type: BonusTypeEnum,
+				multiplier: z.number(),
+				fixed_amount: z.number(),
+			})
+		)
+		.mutation(async ({ input }) => {
+			const empBonusService = container.resolve(EmployeeBonusService);
+			await empBonusService.updateMultipleBonusByEmpNoList(
+				input.emp_no_list,
+				input.period_id,
+				input.bonus_type,
+				input.multiplier,
+				input.fixed_amount
+			)
+		}),
 	updateFromExcel: publicProcedure
 		.input(updateEmployeeBonusAPI.array())
 		.mutation(async ({ input }) => {

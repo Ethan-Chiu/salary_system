@@ -6,8 +6,9 @@ import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
+import { PaysetFE } from "~/server/api/types/payset_type";
 
-const columns = (t: I18nType) => Object.keys(new Payset()).map((key) => {
+const columns = (t: I18nType) => Object.keys(PaysetFE.shape).map((key) => {
 	return {
 		accessorKey: key,
 		header: ({ column }: any) => {

@@ -30,6 +30,8 @@ import GeneralTable from "./general_table";
 import { Input } from "~/components/ui/input";
 import { LoadingSpinner } from "~/components/loading";
 import { FieldConfig } from "~/components/ui/auto-form/types";
+import { formatDate } from "~/lib/utils/format_date";
+import { isDate } from "date-fns";
 
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
@@ -144,7 +146,10 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 						id: data[index].id,
 					});
 				}}
-				setWithoutDeafultValue={setWithoutDeafultValue}
+				clearDeafultValue={() => {
+					setWithoutDeafultValue(true);
+					setSelectedData(null);
+				}}
 			/>
 		);
 	}
@@ -214,13 +219,13 @@ const CompViewAllDatas = ({
 	mode,
 	onUpdate,
 	onDelete,
-	setWithoutDeafultValue,
+	clearDeafultValue,
 }: {
 	dataNoID: any[];
 	mode: FunctionMode;
 	onUpdate: (index: number) => void;
 	onDelete: (index: number) => void;
-	setWithoutDeafultValue: (value: boolean) => void;
+	clearDeafultValue: () => void;
 }) => {
 	const { t } = useTranslation(["common"]);
 	const [filterValue, setFilterValue] = useState<string>("");
@@ -244,7 +249,7 @@ const CompViewAllDatas = ({
 					onChange={(e) => setFilterValue(e.target.value)}
 				></Input>
 				{mode == "create" && (
-					<Button className="absolute right-4 top-4" onClick={() => { setWithoutDeafultValue(true) }}>
+					<Button className="absolute right-4 top-4" onClick={clearDeafultValue}>
 						{t("button.no_default_value")}
 					</Button>
 				)}
@@ -305,8 +310,8 @@ const CompViewAllDatas = ({
 										{Object.keys(data).map((key) => {
 											return (
 												<TableCell key={key} className="text-center font-medium whitespace-nowrap">
-													{/* {isDate(data[key]) ? data[key].toDateString() : data[key]} */}
-													{data[key]}
+													{isDate(data[key]) ? formatDate("day", data[key]) : data[key]}
+													{/* {data[key]} */}
 												</TableCell>
 											);
 										})}

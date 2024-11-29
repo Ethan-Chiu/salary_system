@@ -82,6 +82,7 @@ export const employeePaymentRouter = createTRPCRouter({
 				l_r: previousEmployeePaymentFE.l_r,
 				occupational_injury:
 					previousEmployeePaymentFE.occupational_injury,
+				end_date: null,
 			});
 
 			await employeePaymentService.rescheduleEmployeePayment();

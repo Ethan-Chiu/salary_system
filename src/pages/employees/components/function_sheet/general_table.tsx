@@ -9,6 +9,9 @@ import {
 } from "~/components/ui/table";
 import { isDateType } from "~/lib/utils/check_type";
 import { useTranslation } from "react-i18next";
+import { displayData } from "~/components/synchronize/utils/display";
+
+import { ifTranslate } from "~/components/synchronize/utils/display";
 
 export default function GeneralTable({ data }: { data: Record<string, any> }) {
 	const { t } = useTranslation(["common"]);
@@ -34,7 +37,8 @@ export default function GeneralTable({ data }: { data: Record<string, any> }) {
 							</TableCell>
 							<TableCell className="text-center font-medium">
 								{isDateType(entry_value)
-									? entry_value.toISOString().split("T")[0]
+									// ? entry_value.toISOString().split("T")[0]
+									? displayData(entry_value, t)
 									: entry_value}
 							</TableCell>
 						</TableRow>
