@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { container } from "tsyringe";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { get_date_string } from "~/server/service/helper_function";
 import {
 	createBankSettingAPI,
 	createBonusDepartmentAPI,
@@ -40,7 +39,7 @@ import { LevelRangeService } from "~/server/service/level_range_service";
 import { LevelService } from "~/server/service/level_service";
 import { PerformanceLevelService } from "~/server/service/performance_level_service";
 import { TrustMoneyService } from "~/server/service/trust_money_service";
-import { createLevelRangeAPI, updateLevelRangeAPI } from "../types/level_range_type";
+import { createLevelRangeAPI, levelRangeFE, updateLevelRangeAPI } from "../types/level_range_type";
 import { LevelRangeMapper } from "~/server/database/mapper/level_range_mapper";
 import { roundProperties } from "~/server/database/mapper/helper_function";
 import { SalaryIncomeTaxService } from "~/server/service/salary_income_tax_service";
@@ -218,9 +217,7 @@ export const parametersRouter = createTRPCRouter({
 			const newdata =
 				await insuranceRateService.createInsuranceRateSetting({
 					...input,
-					start_date: input.start_date
-						? get_date_string(input.start_date)
-						: null,
+					start_date: input.start_date,
 					end_date: null,
 				});
 			await insuranceRateService.rescheduleInsuranceRateSetting();
@@ -235,12 +232,8 @@ export const parametersRouter = createTRPCRouter({
 			);
 			await insuranceRateService.updateInsuranceRateSetting({
 				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
+				start_date: input.start_date,
+				end_date: input.end_date,
 			});
 			await insuranceRateService.rescheduleInsuranceRateSetting();
 		}),
@@ -477,12 +470,16 @@ export const parametersRouter = createTRPCRouter({
 
 	createLevelRange: publicProcedure
 		.input(createLevelRangeAPI)
+    .output(levelRangeFE)
 		.mutation(async ({ input }) => {
 			const levelRangeService = container.resolve(LevelRangeService);
 			const levelRangeMapper = container.resolve(LevelRangeMapper);
-			const levelRange = await levelRangeMapper.getLevelRange({...input, end_date: null});
-			const newdata = await levelRangeService.createLevelRange(levelRange);
-			const levelRangeFE = await levelRangeMapper.getLevelRangeFE(newdata)
+
+      // TODO: move to service
+			const levelRange = await levelRangeMapper.getLevelRange(input);
+			await levelRangeService.createLevelRange(levelRange);
+
+			const levelRangeFE = await levelRangeMapper.getLevelRangeFE(levelRange)
 			await levelRangeService.rescheduleLevelRange();
 			return levelRangeFE;
 		}),
@@ -535,9 +532,7 @@ export const parametersRouter = createTRPCRouter({
 			const levelService = container.resolve(LevelService);
 			const newdata = await levelService.createLevel({
 				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
+				start_date: input.start_date,
 				end_date: null,
 			});
 			await levelService.rescheduleLevel();
@@ -568,12 +563,8 @@ export const parametersRouter = createTRPCRouter({
 			const levelService = container.resolve(LevelService);
 			const newdata = await levelService.updateLevel({
 				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
+				start_date: input.start_date,
+				end_date: input.end_date,
 			});
 			await levelService.rescheduleLevel();
 			return newdata;
@@ -650,9 +641,7 @@ export const parametersRouter = createTRPCRouter({
 			const trustMoneyService = container.resolve(TrustMoneyService);
 			const newdata = await trustMoneyService.createTrustMoney({
 				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
+				start_date: input.start_date,
 				end_date: null,
 			});
 			await trustMoneyService.rescheduleTrustMoney();
@@ -683,12 +672,8 @@ export const parametersRouter = createTRPCRouter({
 			const trustMoneyService = container.resolve(TrustMoneyService);
 			const newdata = await trustMoneyService.updateTrustMoney({
 				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
+				start_date: input.start_date,
+				end_date: input.end_date,
 			});
 			await trustMoneyService.rescheduleTrustMoney();
 			return newdata;
