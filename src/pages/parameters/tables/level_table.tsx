@@ -5,10 +5,10 @@ import { ArrowUpDown } from "lucide-react";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { LoadingSpinner } from "~/components/loading";
-import { type Level } from "~/server/database/entity/SALARY/level";
 import { type TableComponentProps } from "../tables_view";
 import { useTranslation } from "react-i18next";
 import { formatDate } from "~/lib/utils/format_date";
+import { LevelFEType } from "~/server/api/types/level_type";
 
 export type RowItem = {
 	level: number;
@@ -105,7 +105,7 @@ export const level_columns = [
 	}),
 ];
 
-export function levelMapper(levelData: Level[]): RowItem[] {
+export function levelMapper(levelData: LevelFEType[]): RowItem[] {
 	return levelData.map((d) => {
 		return {
 			level: d.level,

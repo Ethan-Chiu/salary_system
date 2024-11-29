@@ -1,24 +1,25 @@
 import { z } from "zod";
-import { dateAPI, dateService, Id } from "./common_type";
+import { dateAll, dateCreate, Id } from "./common_type";
 const TrustMoneyBase = z.object({
 	position: z.number(),
 	position_type: z.string(),
 	org_trust_reserve_limit: z.number(),
 	org_special_trust_incent_limit: z.number()
 });
-export const createTrustMoneyAPI = TrustMoneyBase.merge(
-	dateService
-).omit({ end_date: true });
-export const createTrustMoneyService =
-	TrustMoneyBase.merge(dateService);
-export const updateTrustMoneyAPI = TrustMoneyBase.merge(
-	dateAPI
-)
+export const createTrustMoneyAPI = TrustMoneyBase
+	.merge(dateCreate)
+	.omit({ end_date: true });
+
+export const createTrustMoneyService = TrustMoneyBase
+	.merge(dateCreate);
+
+export const updateTrustMoneyAPI = TrustMoneyBase
+	.merge(dateAll)
 	.partial()
 	.merge(Id);
-export const updateTrustMoneyService = TrustMoneyBase.merge(
-	dateAPI
-)
+
+export const updateTrustMoneyService = TrustMoneyBase
+	.merge(dateAll)
 	.partial()
 	.merge(Id);
 // Frontend Types
@@ -27,6 +28,6 @@ export const TrustMoneyFE = z
 		id: z.number(),
 	})
 	.merge(TrustMoneyBase)
-	.merge(dateAPI);
+	.merge(dateAll);
 
 export type TrustMoneyFEType = z.infer<typeof TrustMoneyFE>;
