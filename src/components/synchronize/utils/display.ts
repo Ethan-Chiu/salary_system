@@ -2,6 +2,21 @@ import { TFunction } from "i18next";
 import { isDateType } from "~/lib/utils/check_type";
 import { formatDate } from "~/lib/utils/format_date";
 
+const long_service_allowance_type = [
+	"month_allowance",
+	"one_year_allowance",
+	"two_year_allowance"
+]
+
+export function ifTranslate(t: any, s: string) {
+	if (long_service_allowance_type.includes(s)) {
+		return t(`long_service_allowance_type.${s}`)
+	}
+	return s;
+}
+
+
+
 export function isValidDateString(input: string): string | undefined {
 	// Check if the string matches the yyyy/mm/dd format
 	const yyyy_mm_ddRegex = /^\d{4}\/\d{2}\/\d{2}$/;

@@ -46,6 +46,7 @@ export const employeePaymentCreateAPI = employeePaymentCreate.omit({
 	h_i: true,
 	l_r: true,
 	occupational_injury: true,
+	end_date: true,
 });
 export const employeePaymentCreateService = employeePaymentCreate;
 
