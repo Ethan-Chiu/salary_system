@@ -1,43 +1,52 @@
 import { container, injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
-import { z } from "zod";
+import { type z } from "zod";
 import {
 	createSalaryIncomeTaxService,
-	updateSalaryIncomeTaxService,
+	type updateSalaryIncomeTaxService,
 } from "../api/types/parameters_input_type";
-import { check_date, get_date_string, select_value } from "./helper_function";
-import { SalaryIncomeTax } from "../database/entity/SALARY/salary_income_tax";
+import { get_date_string, select_value } from "./helper_function";
+import {
+	SalaryIncomeTax,
+	type SalaryIncomeTaxDecType,
+	decSalaryIncomeTax,
+	encSalaryIncomeTax,
+} from "../database/entity/SALARY/salary_income_tax";
 import { Op } from "sequelize";
 import { EHRService } from "./ehr_service";
+import { BaseMapper } from "../database/mapper/base_mapper";
 
 @injectable()
 export class SalaryIncomeTaxService {
-	constructor() { }
+	private readonly salaryIncomeTaxMapper: BaseMapper<
+		SalaryIncomeTax,
+		SalaryIncomeTaxDecType
+	>;
 
-	async createSalaryIncomeTax({
-		salary_start,
-		salary_end,
-		dependent,
-		tax_amount,
-		start_date,
-		end_date,
-	}: z.infer<typeof createSalaryIncomeTaxService>): Promise<SalaryIncomeTax> {
-		const current_date_string = get_date_string(new Date());
-		check_date(start_date, end_date, current_date_string);
+	constructor() {
+		this.salaryIncomeTaxMapper = new BaseMapper<
+			SalaryIncomeTax,
+			SalaryIncomeTaxDecType
+		>(encSalaryIncomeTax, decSalaryIncomeTax);
+	}
 
-		const newData = await SalaryIncomeTax.create(
-			{
-				salary_start: salary_start,
-				salary_end: salary_end,
-				dependent: dependent,
-				tax_amount: tax_amount,
-				start_date: start_date ?? current_date_string,
-				end_date: end_date,
-				disabled: false,
-				create_by: "system",
-				update_by: "system",
-			}
-		);
+	async createSalaryIncomeTax(
+		data: z.infer<typeof createSalaryIncomeTaxService>
+	): Promise<SalaryIncomeTax> {
+		const d = createSalaryIncomeTaxService.parse(data);
+
+		const attendanceSetting = await this.salaryIncomeTaxMapper.encode({
+			...d,
+			start_date: d.start_date ?? new Date(),
+			disabled: false,
+			create_by: "system",
+			update_by: "system",
+		});
+
+		const newData = await SalaryIncomeTax.create(attendanceSetting, {
+			raw: true,
+		});
+
 		return newData;
 	}
 
@@ -46,94 +55,109 @@ export class SalaryIncomeTaxService {
 	) {
 		const current_date_string = get_date_string(new Date());
 		await SalaryIncomeTax.bulkCreate(
-			data_array.map(data => {
-				check_date(data.start_date, data.end_date, current_date_string);
-				return {
-					...data,
-					start_date: data.start_date ?? current_date_string,
-					disabled: false,
-					create_by: "system",
-					update_by: "system",
-				}
-			})
+			await Promise.all(
+				data_array.map(async (data) => {
+					return await this.salaryIncomeTaxMapper.encode({
+						...data,
+						start_date: data.start_date ?? current_date_string,
+						disabled: false,
+						create_by: "system",
+						update_by: "system",
+					});
+				})
+			)
 		);
 	}
 
-	async getCurrentSalaryIncomeTax(period_id: number): Promise<SalaryIncomeTax[]> {
+	async getCurrentSalaryIncomeTax(
+		period_id: number
+	): Promise<SalaryIncomeTaxDecType[]> {
 		const ehr_service = container.resolve(EHRService);
 		const period = await ehr_service.getPeriodById(period_id);
 		const current_date_string = period.end_date;
-		const salaryIncomeTax = await SalaryIncomeTax.findAll(
-			{
-				where: {
-					start_date: {
-						[Op.lte]: current_date_string,
-					},
-					end_date: {
-						[Op.or]: [
-							{ [Op.gte]: current_date_string },
-							{ [Op.eq]: null },
-						],
-					},
-					disabled: false
+		const salaryIncomeTax = await SalaryIncomeTax.findAll({
+			where: {
+				start_date: {
+					[Op.lte]: current_date_string,
 				},
-				order: [["dependent", "ASC"], ["salary_start", "ASC"]],
-			}
-		);
-		return salaryIncomeTax;
+				end_date: {
+					[Op.or]: [
+						{ [Op.gte]: current_date_string },
+						{ [Op.eq]: null },
+					],
+				},
+				disabled: false,
+			},
+			order: [
+				["dependent", "ASC"],
+				["salary_start", "ASC"],
+			],
+		});
+		return await this.salaryIncomeTaxMapper.decodeList(salaryIncomeTax);
 	}
 
-	async getAllSalaryIncomeTax(): Promise<SalaryIncomeTax[]> {
-		const salaryIncomeTax = await SalaryIncomeTax.findAll(
-			{
-				where: { disabled: false },
-				order: [["start_date", "DESC"], ["dependent", "ASC"], ["salary_start", "ASC"]],
-			}
-		);
-		return salaryIncomeTax;
+	async getAllSalaryIncomeTax(): Promise<SalaryIncomeTaxDecType[]> {
+		const salaryIncomeTax = await SalaryIncomeTax.findAll({
+			where: { disabled: false },
+			order: [
+				["start_date", "DESC"],
+				["dependent", "ASC"],
+				["salary_start", "ASC"],
+			],
+		});
+		return await this.salaryIncomeTaxMapper.decodeList(salaryIncomeTax);
 	}
 
-	async getAllFutureSalaryIncomeTax(): Promise<SalaryIncomeTax[]> {
+	async getAllFutureSalaryIncomeTax(): Promise<SalaryIncomeTaxDecType[]> {
 		const current_date_string = get_date_string(new Date());
-		const salaryIncomeTax = await SalaryIncomeTax.findAll(
-			{
-				where: {
-					start_date: {
-						[Op.gt]: current_date_string,
-					},
-					disabled: false
+		const salaryIncomeTax = await SalaryIncomeTax.findAll({
+			where: {
+				start_date: {
+					[Op.gt]: current_date_string,
 				},
-				order: [["start_date", "DESC"], ["dependent", "ASC"], ["salary_start", "ASC"]],
-			}
-		);
-		return salaryIncomeTax;
+				disabled: false,
+			},
+			order: [
+				["start_date", "DESC"],
+				["dependent", "ASC"],
+				["salary_start", "ASC"],
+			],
+		});
+		return this.salaryIncomeTaxMapper.decodeList(salaryIncomeTax);
 	}
 
-	async getSalaryIncomeTaxById(id: number): Promise<SalaryIncomeTax | null> {
+	async getSalaryIncomeTaxById(
+		id: number
+	): Promise<SalaryIncomeTaxDecType | null> {
 		const salaryIncomeTax = await SalaryIncomeTax.findOne({
 			where: {
 				id: id,
 			},
 		});
-		return salaryIncomeTax;
+
+		if (!salaryIncomeTax) return null;
+
+		return this.salaryIncomeTaxMapper.decode(salaryIncomeTax);
 	}
 
-	async getTargetSalaryIncomeTax(salary: number, dependent: number): Promise<SalaryIncomeTax | null> {
-		const salaryIncomeTax = await SalaryIncomeTax.findOne(
-			{
-				where: {
-					salary_start: {
-						[Op.lte]: salary
-					},
-					salary_end: {
-						[Op.gte]: salary
-					},
-					dependent: dependent,
-					disabled: false
+	async getTargetSalaryIncomeTax(
+		salary: number,
+		dependent: number
+	): Promise<SalaryIncomeTaxDecType | null> {
+		const salaryIncomeTax = await SalaryIncomeTax.findOne({
+			where: {
+				salary_start: {
+					[Op.lte]: salary,
 				},
-			}
-		);
-		return salaryIncomeTax;
+				salary_end: {
+					[Op.gte]: salary,
+				},
+				dependent: dependent,
+				disabled: false,
+			},
+		});
+
+		return this.salaryIncomeTaxMapper.decode(salaryIncomeTax);
 	}
 
 	async updateSalaryIncomeTax({
@@ -152,25 +176,17 @@ export class SalaryIncomeTaxService {
 
 		await this.deleteSalaryIncomeTax(id);
 
-		await this.createSalaryIncomeTax(
-			{
-				salary_start: select_value(
-					salary_start,
-					salaryIncomeTax.salary_start
-				),
-				salary_end: select_value(
-					salary_end,
-					salaryIncomeTax.salary_end
-				),
-				dependent: select_value(dependent, salaryIncomeTax.dependent),
-				tax_amount: select_value(
-					tax_amount,
-					salaryIncomeTax.tax_amount
-				),
-				start_date: select_value(start_date, salaryIncomeTax.start_date),
-				end_date: select_value(end_date, salaryIncomeTax.end_date),
-			}
-		);
+		await this.createSalaryIncomeTax({
+			salary_start: select_value(
+				salary_start,
+				salaryIncomeTax.salary_start
+			),
+			salary_end: select_value(salary_end, salaryIncomeTax.salary_end),
+			dependent: select_value(dependent, salaryIncomeTax.dependent),
+			tax_amount: select_value(tax_amount, salaryIncomeTax.tax_amount),
+			start_date: select_value(start_date, salaryIncomeTax.start_date),
+			end_date: select_value(end_date, salaryIncomeTax.end_date),
+		});
 	}
 
 	async deleteSalaryIncomeTax(id: number) {

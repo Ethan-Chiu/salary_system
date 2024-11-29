@@ -92,7 +92,7 @@ export const employeePaymentRouter = createTRPCRouter({
 			});
 			await employeePaymentService.rescheduleEmployeePayment();
 			const employeePaymentFE =
-				await employeePaymentMapper.decodeEmployeePayment(newdata);
+				await employeePaymentMapper.decode(newdata);
 			return employeePaymentFE;
 		}),
 

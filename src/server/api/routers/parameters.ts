@@ -53,12 +53,8 @@ export const parametersRouter = createTRPCRouter({
 			const bankService = container.resolve(BankSettingService);
 			const newdata = await bankService.createBankSetting({
 				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
+				start_date: input.start_date,
+				end_date: input.end_date,
 			});
 			return newdata;
 		}),
@@ -91,12 +87,8 @@ export const parametersRouter = createTRPCRouter({
 			const bankService = container.resolve(BankSettingService);
 			const newdata = await bankService.updateBankSetting({
 				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
+				start_date: input.start_date,
+				end_date: input.end_date,
 			});
 			return newdata;
 		}),
@@ -132,6 +124,16 @@ export const parametersRouter = createTRPCRouter({
 		const attendanceService = container.resolve(AttendanceSettingService);
 		const attendanceSetting =
 			await attendanceService.getAllAttendanceSetting();
+		if (attendanceSetting.length == 0) {
+			throw new BaseResponseError("AttendanceSetting does not exist");
+		}
+		return attendanceSetting.map(e => roundProperties(e, 4));
+	}),
+
+	getAllFutureAttendanceSetting: publicProcedure.query(async () => {
+		const attendanceService = container.resolve(AttendanceSettingService);
+		const attendanceSetting =
+			await attendanceService.getAllFutureAttendanceSetting();
 		if (attendanceSetting.length == 0) {
 			throw new BaseResponseError("AttendanceSetting does not exist");
 		}
@@ -708,9 +710,7 @@ export const parametersRouter = createTRPCRouter({
 			);
 			const newdata = await salaryIncomeTaxService.createSalaryIncomeTax({
 				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
+				start_date: input.start_date,
 				end_date: null,
 			});
 			return newdata;
@@ -723,9 +723,7 @@ export const parametersRouter = createTRPCRouter({
 			);
 			const newdata = await salaryIncomeTaxService.batchCreateSalaryIncomeTax(input.map(e => ({
 				...e,
-				start_date: e.start_date
-					? get_date_string(e.start_date)
-					: null,
+				start_date: e.start_date,
 				end_date: null,
 			}))
 			);
@@ -739,12 +737,8 @@ export const parametersRouter = createTRPCRouter({
 			);
 			const newdata = await salaryIncomeTaxService.updateSalaryIncomeTax({
 				...input,
-				start_date: input.start_date
-					? get_date_string(input.start_date)
-					: null,
-				end_date: input.end_date
-					? get_date_string(input.end_date)
-					: null,
+				start_date: input.start_date,
+				end_date: input.end_date,
 			});
 			return newdata;
 		}),

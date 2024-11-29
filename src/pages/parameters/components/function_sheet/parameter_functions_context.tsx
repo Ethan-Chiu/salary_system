@@ -8,14 +8,16 @@ import {
 import periodContext from "~/components/context/period_context";
 
 interface FunctionsApi {
-	queryFunction: (() => UseTRPCQueryResult<any, any>) | undefined;
+	queryCurrentFunction: (() => UseTRPCQueryResult<any, any>) | undefined;
+	queryFutureFunction: (() => UseTRPCQueryResult<any, any>) | undefined;
 	updateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	createFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	deleteFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 }
 
 export const parameterToolbarFunctionsContext = createContext<FunctionsApi>({
-	queryFunction: undefined,
+	queryCurrentFunction: undefined,
+	queryFutureFunction: undefined,
 	updateFunction: undefined,
 	createFunction: undefined,
 	deleteFunction: undefined,
@@ -34,13 +36,16 @@ export default function ParameterToolbarFunctionsProvider({
 	const ctx = api.useContext();
 
 	//#region <AttendanceSetting>
-	const getAttendanceSetting = () =>
+	const getCurrentAttendanceSetting = () =>
 		api.parameters.getCurrentAttendanceSetting.useQuery({ period_id });
+	const getFutureAttendanceSetting = () =>
+		api.parameters.getAllFutureAttendanceSetting.useQuery();
 	const updateAttendanceSetting =
 		api.parameters.updateAttendanceSetting.useMutation({
 			onSuccess: () => {
 				ctx.parameters.getCurrentAttendanceSetting.invalidate();
 				ctx.parameters.getAllAttendanceSetting.invalidate();
+				ctx.parameters.getAllFutureAttendanceSetting.invalidate();
 			},
 		});
 	const createAttendanceSetting =
@@ -48,6 +53,7 @@ export default function ParameterToolbarFunctionsProvider({
 			onSuccess: () => {
 				ctx.parameters.getCurrentAttendanceSetting.invalidate();
 				ctx.parameters.getAllAttendanceSetting.invalidate();
+				ctx.parameters.getAllFutureAttendanceSetting.invalidate();
 			},
 		});
 	const deleteAttendanceSetting =
@@ -55,6 +61,7 @@ export default function ParameterToolbarFunctionsProvider({
 			onSuccess: () => {
 				ctx.parameters.getCurrentAttendanceSetting.invalidate();
 				ctx.parameters.getAllAttendanceSetting.invalidate();
+				ctx.parameters.getAllFutureAttendanceSetting.invalidate();
 			},
 		});
 	//#endregion
@@ -201,7 +208,8 @@ export default function ParameterToolbarFunctionsProvider({
 
 	const functionsDictionary: Record<ParameterTableEnum, FunctionsApi> = {
 		TableAttendance: {
-			queryFunction: getAttendanceSetting,
+			queryCurrentFunction: getCurrentAttendanceSetting,
+			queryFutureFunction: getFutureAttendanceSetting,
 			updateFunction: updateAttendanceSetting,
 			createFunction: createAttendanceSetting,
 			deleteFunction: deleteAttendanceSetting,

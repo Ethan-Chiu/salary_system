@@ -161,7 +161,7 @@ export class AttendanceSettingService {
 				start_date.setDate(start_date.getDate() - 1)
 			);
 
-			if (end_date != new_end_date) {
+			if (end_date?.getTime() != new_end_date.getTime()) {
 				if (new_end_date < attendanceSettingList[i]!.start_date) {
 					await this.deleteAttendanceSetting(
 						attendanceSettingList[i]!.id

@@ -49,11 +49,15 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	const { t } = useTranslation(["common"]);
 	const functions = useContext(parameterToolbarFunctionsContext);
 
-	const queryFunction = functions.queryFunction!;
+	const queryCurrentFunction = functions.queryCurrentFunction!;
+	const queryFutureFunction = functions.queryFutureFunction!;
 	const updateFunction = functions.updateFunction!;
 	const createFunction = functions.createFunction!;
 	const deleteFunction = functions.deleteFunction!;
-	const { isLoading, isError, data, error } = queryFunction();
+	const { isLoading, isError, data, error } =
+		(mode === "create")
+			? queryCurrentFunction()
+			: queryFutureFunction();
 
 	const isList = Array.isArray(data);
 
@@ -121,7 +125,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 
 	// Select one entry
 	if (selectedData === null && !withoutDeafultValue) {
-		const dataList = isList ? data : [data]
+		const dataList = isList ? data.flat() : [data]
 		const noIDData: any[] = dataList.map((item: any) => {
 			const { ["id"]: id, ...rest } = item;
 			return rest;
@@ -218,9 +222,9 @@ const CompViewAllDatas = ({
 	onDelete: (index: number) => void;
 	setWithoutDeafultValue: (value: boolean) => void;
 }) => {
+	const { t } = useTranslation(["common"]);
 	const [filterValue, setFilterValue] = useState<string>("");
 	const [filteredDataList, setFilteredDataList] = useState(dataNoID);
-	const { t } = useTranslation(["common"]);
 
 	useEffect(() => {
 		const filteredData = dataNoID?.filter((data) => {

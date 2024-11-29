@@ -6,6 +6,47 @@ import {
 	type CreationOptional,
 	type Sequelize,
 } from "sequelize";
+import { z } from "zod";
+import { dateF, dateStringF, systemF, systemKeys } from "../../mapper/mapper_utils";
+import { dateToString, dateToStringNullable, stringToDate, stringToDateNullable } from "~/server/api/types/z_utils";
+
+const dbSalaryIncomeTax = z.object({
+  salary_start: z.number(),
+  salary_end: z.number(),
+  dependent: z.number(),
+  tax_amount: z.number(),
+	create_by: z.string(),
+	update_by: z.string(),
+	disabled: z.coerce.boolean(),
+});
+
+const decFields = z.object({
+	id: z.number(),
+});
+
+const encF = dbSalaryIncomeTax.merge(dateStringF);
+const decF = dbSalaryIncomeTax.merge(decFields).merge(dateF);
+export type SalaryIncomeTaxDecType = z.input<typeof decF>;
+
+export const decSalaryIncomeTax = encF
+	.merge(systemF)
+	.transform((v) => ({
+		...v,
+		id: v.id,
+		start_date: stringToDate.parse(v.start_date),
+		end_date: stringToDateNullable.parse(v.end_date),
+	}))
+	.pipe(decF);
+
+export const encSalaryIncomeTax = decF
+	.omit(systemKeys)
+	.transform((v) => ({
+		...v,
+		start_date: dateToString.parse(v.start_date),
+		end_date: dateToStringNullable.parse(v.end_date),
+	}))
+	.pipe(encF);
+
 
 export class SalaryIncomeTax extends Model<
 	InferAttributes<SalaryIncomeTax>,
