@@ -14,6 +14,10 @@ import { useState, useEffect, useRef } from "react";
 import React, { forwardRef, ReactNode } from "react";
 import { cn } from "~/lib/utils";
 import Select from "react-select";
+import { useTranslation } from "react-i18next";
+
+import { ifTranslate } from "~/components/synchronize/utils/display";
+
 
 export default function AutoFormEnum({
 	label,
@@ -22,6 +26,8 @@ export default function AutoFormEnum({
 	fieldConfigItem,
 	zodItem,
 }: AutoFormInputComponentProps) {
+
+
 	const baseValues = (getBaseSchema(zodItem) as unknown as z.ZodEnum<any>)
 		._def.values;
 	const options = baseValues.map((v: any) => {
@@ -97,6 +103,9 @@ function CustomSelect({ options, onSelect, defaultValue }: CustomSelectProps) {
 	const [selectedOption, setSelectedOption] = useState<string>(
 		defaultValue || "Select an option"
 	);
+
+	const {t} = useTranslation("common");
+
 	const [isDropdownOpen, setDropdownOpen] = useState<boolean>(false);
 	const selectContainerRef = useRef<HTMLDivElement>(null);
 
@@ -144,7 +153,7 @@ function CustomSelect({ options, onSelect, defaultValue }: CustomSelectProps) {
 						aria-haspopup="true"
 						aria-expanded="true"
 					>
-						{selectedOption}
+						{ifTranslate(t, selectedOption)}
 						<svg
 							className="-mr-1 ml-2 h-5 w-5"
 							xmlns="http://www.w3.org/2000/svg"
@@ -178,7 +187,7 @@ function CustomSelect({ options, onSelect, defaultValue }: CustomSelectProps) {
 								role="menuitem"
 								style={{ width: "100%" }}
 							>
-								{option}
+								{ifTranslate(t, option)}
 							</div>
 						))}
 					</div>

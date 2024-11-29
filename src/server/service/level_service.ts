@@ -15,7 +15,7 @@ import { get_date_string, select_value } from "./helper_function";
 import { Op } from "sequelize";
 import { EHRService } from "./ehr_service";
 import { BaseMapper } from "../database/mapper/base_mapper";
-import { LevelRangeService } from "./level_range_service";
+import { type LevelRangeService } from "./level_range_service";
 
 @injectable()
 export class LevelService {

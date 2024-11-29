@@ -13,6 +13,7 @@ import { BonusMapper } from "~/server/database/mapper/bonus_mapper";
 import { CalculateService } from "~/server/service/calculate_service";
 import { OvertimeMapper } from "~/server/database/mapper/overtime_mapper";
 import { HolidayMapper } from "~/server/database/mapper/holiday_mapper";
+import { PaysetMapper } from "~/server/database/mapper/payset_mapper";
 
 export const functionRouter = createTRPCRouter({
 	getPeriod: publicProcedure.query(async () => {
@@ -76,12 +77,13 @@ export const functionRouter = createTRPCRouter({
 		)
 		.query(async ({ input }) => {
 			const ehrService = container.resolve(EHRService);
+			const payset_mapper = container.resolve(PaysetMapper);
 			const payset = await ehrService.getPaysetByEmpNoList(
 				input.period_id,
 				input.emp_no_list
 			);
 
-			return payset;
+			return await payset_mapper.getPaysetFE( payset);
 		}),
 	getBonusWithTypeByEmpNoList: publicProcedure
 		.input(

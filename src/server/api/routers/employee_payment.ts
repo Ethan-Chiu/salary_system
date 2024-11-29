@@ -77,23 +77,17 @@ export const employeePaymentRouter = createTRPCRouter({
 
 			const newdata = await employeePaymentService.createEmployeePayment({
 				...input,
-				base_salary: input.base_salary,
-				food_allowance: input.food_allowance,
-				supervisor_allowance: input.supervisor_allowance,
-				occupational_allowance: input.occupational_allowance,
-				subsidy_allowance: input.subsidy_allowance,
-				long_service_allowance: input.long_service_allowance,
-				l_r_self: input.l_r_self,
 				l_i: previousEmployeePaymentFE.l_i,
 				h_i: previousEmployeePaymentFE.h_i,
 				l_r: previousEmployeePaymentFE.l_r,
 				occupational_injury:
 					previousEmployeePaymentFE.occupational_injury,
+				end_date: null,
 			});
+
 			await employeePaymentService.rescheduleEmployeePayment();
-			const employeePaymentFE =
-				await employeePaymentMapper.decode(newdata);
-			return employeePaymentFE;
+
+			return await employeePaymentMapper.decode(newdata);
 		}),
 
 	updateEmployeePayment: publicProcedure
