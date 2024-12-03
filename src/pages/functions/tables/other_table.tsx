@@ -9,24 +9,24 @@ import { ArrowUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 
 /*
-    emp_no: z.string(),
-    emp_name: z.string(),
-    department: z.string(),
-    position: z.number(),
-    other_addition: z.number(),
-    other_addition_tax: z.number(),
-    other_deduction: z.number(),
-    other_deduction_tax: z.number(),
-    dorm_deduction: z.number(),
-    g_i_deduction_promotion: z.number(),
-    g_i_deduction_family: z.number(),
-    income_tax_deduction: z.number(),
-    l_r_self: z.number(),
-    parking_fee: z.number(),
-    brokerage_fee: z.number(),
-    retirement_income: z.number(),
-    l_i_disability_reduction: z.number(),
-    h_i_subsidy: z.number(),	
+	emp_no: z.string(),
+	emp_name: z.string(),
+	department: z.string(),
+	position: z.number(),
+	other_addition: z.number(),
+	other_addition_tax: z.number(),
+	other_deduction: z.number(),
+	other_deduction_tax: z.number(),
+	dorm_deduction: z.number(),
+	g_i_deduction_promotion: z.number(),
+	g_i_deduction_family: z.number(),
+	income_tax_deduction: z.number(),
+	l_r_self: z.number(),
+	parking_fee: z.number(),
+	brokerage_fee: z.number(),
+	retirement_income: z.number(),
+	l_i_disability_reduction: z.number(),
+	h_i_subsidy: z.number(),	
 
 */
 
@@ -98,7 +98,7 @@ export function OtherTable({ period, emp_no_list }: OtherTableProps) {
 			period_id: period,
 			emp_no_list: emp_no_list,
 		});
-	
+
 	const details =
 		api.function.getOtherDetailsByEmpNoList.useQuery({
 			period_id: period,
@@ -122,7 +122,25 @@ export function OtherTable({ period, emp_no_list }: OtherTableProps) {
 
 
 	if (data) {
-		return <DataTable columns={columns(t)} data={data} detailData={
+		const filteredData = data.filter((d: any) =>
+			["other_addition",
+				"other_addition_tax",
+				"other_deduction",
+				"other_deduction_tax",
+				"dorm_deduction",
+				"g_i_deduction_promotion",
+				"g_i_deduction_family",
+				"income_tax_deduction",
+				"l_r_self",
+				"parking_fee",
+				"brokerage_fee",
+				"retirement_income",
+				"l_i_disability_reduction",
+				"h_i_subsidy",]
+				.some(key => d[key] > 0)
+		);
+
+		return <DataTable columns={columns(t)} data={filteredData} detailData={
 			details.data!.map((emp_data: any) => {
 				return {
 					"other_addition": emp_data.other_addition.map((expense: ExpenseWithType) => {
@@ -156,10 +174,10 @@ export function OtherTable({ period, emp_no_list }: OtherTableProps) {
 							expense_type_name: expense.expense_type_name,
 							amount: expense.amount
 						}
-					}),					
+					}),
 				}
 			})
-		}/>;
+		} />;
 	}
 	return <div />;
 }

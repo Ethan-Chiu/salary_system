@@ -68,7 +68,12 @@ export function BonusTable({ period, emp_no_list, pay_type }: BonusTableProps) {
 	}
 
 	if (data) {
-		return <DataTable columns={columns(t)} data={data} />;
+		const filteredData = data.filter((d: any) =>
+			["project_bonus",
+				"full_attendance_bonus"]
+				.some(key => d[key] > 0)
+		);
+		return <DataTable columns={columns(t)} data={filteredData} />;
 	}
 	return <div />;
 }

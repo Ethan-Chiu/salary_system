@@ -1,10 +1,9 @@
-import { getExpandedRowModel } from "@tanstack/react-table";
 import { container } from "tsyringe";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { EHRService } from "~/server/service/ehr_service";
 import { ExcelService } from "~/server/service/excel_service";
-import { PayTypeEnum, PayTypeEnumType } from "../types/pay_type_enum";
+import { PayTypeEnum } from "../types/pay_type_enum";
 import { AllowanceMapper } from "~/server/database/mapper/allowance_mapper";
 import { EmployeePaymentService } from "~/server/service/employee_payment_service";
 import { BaseResponseError } from "../error/BaseResponseError";
@@ -83,7 +82,7 @@ export const functionRouter = createTRPCRouter({
 				input.emp_no_list
 			);
 
-			return await payset_mapper.getPaysetFE( payset);
+			return await payset_mapper.getPaysetFE(payset);
 		}),
 	getBonusWithTypeByEmpNoList: publicProcedure
 		.input(
@@ -102,7 +101,7 @@ export const functionRouter = createTRPCRouter({
 					input.pay_type
 				);
 			const bonus_mapper = container.resolve(BonusMapper);
-			const new_bonusFE_list = await bonus_mapper.getNewBonusFE(
+			const new_bonusFE_list = await bonus_mapper.getBonusFE(
 				input.period_id,
 				bonus_with_type_list,
 				input.emp_no_list
@@ -121,7 +120,7 @@ export const functionRouter = createTRPCRouter({
 					input.emp_no_list
 				);
 			const otherMapper = container.resolve(OtherMapper);
-			const newOther_list = await otherMapper.getNewOther(
+			const newOther_list = await otherMapper.getOtherFE(
 				input.period_id,
 				expense_with_type_list,
 				input.emp_no_list
@@ -251,3 +250,13 @@ export const functionRouter = createTRPCRouter({
 		return promotion;
 	}),
 });
+
+function filterZero(object_list: any) {
+	const exclusion = ["emp_no", "emp_name", "department", "position", "work_day"];
+
+	return object_list.filter((object: any) => {
+		return Object.keys(object)
+			.filter(key => !exclusion.includes(key))
+			.reduce((acc, key) => acc + object[key], 0) == 0;
+	});
+}

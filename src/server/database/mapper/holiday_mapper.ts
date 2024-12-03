@@ -1,26 +1,29 @@
 import { EmployeeDataService } from "~/server/service/employee_data_service";
-import { container } from "tsyringe";
-import { EHRService, HolidayWithType } from "~/server/service/ehr_service";
-import { Holiday } from "../entity/UMEDIA/holiday";
-import { HolidayFE, HolidayFEType } from "~/server/api/types/holiday_type";
+import { EHRService, type HolidayWithType } from "~/server/service/ehr_service";
+import { HolidayFE, type HolidayFEType } from "~/server/api/types/holiday_type";
+import { injectable } from "tsyringe";
 
+@injectable()
 export class HolidayMapper {
+  constructor(
+    private readonly ehrService: EHRService,
+    private readonly employeeDataService: EmployeeDataService,
+  ) {}
+
 	async getHolidayFE(
 		period_id: number,
 		holiday_with_type_list: HolidayWithType[]
 	): Promise<HolidayFEType[]> {
-		const employee_data_service = container.resolve(EmployeeDataService);
-		const ehr_service = container.resolve(EHRService);
 		const HolidayFE_list = await Promise.all(
 			holiday_with_type_list.map(async (holiday) => {
 				const employee_data =
-					await employee_data_service.getEmployeeDataByEmpNo(
+					await this.employeeDataService.getEmployeeDataByEmpNo(
 						holiday.emp_no
 					);
 
 				const work_day =
 					(
-						await ehr_service.getPaysetByEmpNoList(period_id, [
+						await this.ehrService.getPaysetByEmpNoList(period_id, [
 							holiday.emp_no,
 						])
 					)[0]?.work_day ?? 30;

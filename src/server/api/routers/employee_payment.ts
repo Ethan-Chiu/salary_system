@@ -8,6 +8,7 @@ import {
 	employeePaymentFE,
 	type EmployeePaymentFEType,
 	updateEmployeePaymentAPI,
+	updateEmployeePaymentService,
 } from "../types/employee_payment_type";
 import { EmployeePaymentMapper } from "~/server/database/mapper/employee_payment_mapper";
 
@@ -40,6 +41,7 @@ export const employeePaymentRouter = createTRPCRouter({
 
 			return employeePayment;
 		}),
+
 	getAllFutureEmployeePayment: publicProcedure
 		.output(z.array(z.array(employeePaymentFE)))
 		.query(async () => {
@@ -96,12 +98,7 @@ export const employeePaymentRouter = createTRPCRouter({
 			const employeePaymentService = container.resolve(
 				EmployeePaymentService
 			);
-      // TODO: remove
-			const employeePaymentMapper = container.resolve(
-				EmployeePaymentMapper
-			);
-			const employeePayment =
-				await employeePaymentMapper.getEmployeePaymentNullable(input);
+			const employeePayment = updateEmployeePaymentService.parse(input);
 
 			await employeePaymentService.updateEmployeePaymentAndMatchLevel(
 				employeePayment

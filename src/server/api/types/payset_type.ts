@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const PaysetFE=z.object({
+export const paysetFE=z.object({
     department: z.string(),
     emp_no: z.string(),
     emp_name: z.string(),
@@ -9,4 +9,4 @@ export const PaysetFE=z.object({
     li_day: z.number()
 })
 
-export type PaysetFEType = z.infer<typeof PaysetFE>
+export type PaysetFEType = z.infer<typeof paysetFE>

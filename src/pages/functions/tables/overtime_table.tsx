@@ -1,20 +1,17 @@
 import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table";
-import { Overtime } from "~/server/database/entity/UMEDIA/overtime";
 import { api } from "~/utils/api";
 import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
 import { PayTypeEnumType } from "~/server/api/types/pay_type_enum";
 import { Button } from "~/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
-import { OvertimeMapper } from "~/server/database/mapper/overtime_mapper";
-import { OvertimeFE } from "~/server/api/types/overtime_type";
+import { overtimeFE } from "~/server/api/types/overtime_type";
 
-const columns = (t: I18nType) => Object.keys(OvertimeFE.shape).map((key) => {
+const columns = (t: I18nType) => Object.keys(overtimeFE.shape).map((key) => {
 	return {
 		accessorKey: key,
 		header: ({ column }: any) => {
-			const { t } = useTranslation(["common"]);
 			return (
 				<div className="flex justify-center">
 					<div className="text-center font-medium">
@@ -61,7 +58,19 @@ export function OvertimeTable({ period, emp_no_list, pay_type }: OvertimeTablePr
 	}
 
 	if (data) {
-		return <DataTable columns={columns(t)} data={data} detailData={[1, 2, 3]}/>;
+		const filteredData = data.filter((d: any) =>
+			["hours_1",
+				"hours_134",
+				"hours_167",
+				"hours_267",
+				"hours_2",
+				"hours_134_TAX",
+				"hours_167_TAX",
+				"hours_267_TAX",
+				"hours_2_TAX"]
+				.some(key => d[key] > 0)
+		);
+		return <DataTable columns={columns(t)} data={filteredData} detailData={[1, 2, 3]} />;
 	}
 	return <div />;
 }
