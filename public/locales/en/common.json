@@ -405,6 +405,7 @@
     "select_employee": "Select Employee",
     "select_department": "Select Department",
     "selected": "Selected",
+    "check": "Check",
     "new_department": "New",
     "new_employee": "New"
   }
