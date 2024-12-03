@@ -58,7 +58,19 @@ export function OvertimeTable({ period, emp_no_list, pay_type }: OvertimeTablePr
 	}
 
 	if (data) {
-		return <DataTable columns={columns(t)} data={data} detailData={[1, 2, 3]}/>;
+		const filteredData = data.filter((d: any) =>
+			["hours_1",
+				"hours_134",
+				"hours_167",
+				"hours_267",
+				"hours_2",
+				"hours_134_TAX",
+				"hours_167_TAX",
+				"hours_267_TAX",
+				"hours_2_TAX"]
+				.some(key => d[key] > 0)
+		);
+		return <DataTable columns={columns(t)} data={filteredData} detailData={[1, 2, 3]} />;
 	}
 	return <div />;
 }

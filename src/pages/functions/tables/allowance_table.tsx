@@ -75,7 +75,16 @@ export function AllowanceTable({ period, emp_no_list }: AllowanceTableProps) {
 	}
 
 	if (data) {
-		return <DataTable columns={columns(t)} data={data} />;
+		const filteredData = data.filter((d: any) =>
+			["supervisor_allowance",
+				"occupational_allowance",
+				"subsidy_allowance",
+				"shift_allowance",
+				"professional_cert_allowance",
+				"long_service_allowance"]
+				.some(key => d[key] > 0)
+		);
+		return <DataTable columns={columns(t)} data={filteredData} />;
 	}
 	return <div />;
 }

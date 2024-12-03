@@ -82,7 +82,7 @@ export const functionRouter = createTRPCRouter({
 				input.emp_no_list
 			);
 
-			return await payset_mapper.getPaysetFE( payset);
+			return await payset_mapper.getPaysetFE(payset);
 		}),
 	getBonusWithTypeByEmpNoList: publicProcedure
 		.input(
@@ -250,3 +250,13 @@ export const functionRouter = createTRPCRouter({
 		return promotion;
 	}),
 });
+
+function filterZero(object_list: any) {
+	const exclusion = ["emp_no", "emp_name", "department", "position", "work_day"];
+
+	return object_list.filter((object: any) => {
+		return Object.keys(object)
+			.filter(key => !exclusion.includes(key))
+			.reduce((acc, key) => acc + object[key], 0) == 0;
+	});
+}

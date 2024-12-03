@@ -59,9 +59,7 @@ export function HolidayTable({ period, emp_no_list }: HolidayTableProps) {
 	}
 
 	if (data) {
-		return <>
-			<DataTable columns={columns(t)} data={data} />
-		</>
+		return <DataTable columns={columns(t)} data={data} />
 	}
 	return <div />;
 }
