@@ -57,7 +57,12 @@ export function PaysetTable({ period, emp_no_list }: PaysetTableProps) {
 	}
 
 	if (data) {
-		return <DataTable columns={columns(t)} data={data} />;
+		const filteredData = data.filter((d: any) =>
+			["work_day",
+				"li_day"]
+				.some(key => d[key] > 0)
+		);
+		return <DataTable columns={columns(t)} data={filteredData} />;
 	}
 	return <div />;
 }
