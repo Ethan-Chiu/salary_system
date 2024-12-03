@@ -35,6 +35,8 @@ import { BonusSetting } from "~/server/database/entity/SALARY/bonus_setting";
 import { EmployeeAccount } from "~/server/database/entity/SALARY/employee_account";
 import { where } from "sequelize";
 import { BonusAll } from "~/server/database/entity/SALARY/bonus_all";
+import { createLevelAPI } from "../types/level_type";
+import { LevelService } from "~/server/service/level_service";
 
 export const debugRouter = createTRPCRouter({
 	getDatabases: publicProcedure.query(async () => {
@@ -170,8 +172,8 @@ export const debugRouter = createTRPCRouter({
 				long_service_allowance_type: "month_allowance",
 			},
 			{
-        where: {}
-      }
+				where: {},
+			}
 		);
 	}),
 	validate: publicProcedure.query(async () => {
@@ -219,5 +221,21 @@ export const debugRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const holidaysTypeService = container.resolve(HolidaysTypeService);
 			await holidaysTypeService.createHolidaysType(input);
+		}),
+
+	batchcreateLevel: publicProcedure
+		.input(z.object({ numbers: z.array(z.number()), start_date: z.date() }))
+		.mutation(async ({ input }) => {
+			const levelService = container.resolve(LevelService);
+			await Promise.all(
+				input.numbers.map(async (num) => {
+					await levelService.createLevel({
+						level: num,
+						start_date: input.start_date,
+						end_date: null,
+					});
+				})
+			);
+			await levelService.rescheduleLevel();
 		}),
 });
