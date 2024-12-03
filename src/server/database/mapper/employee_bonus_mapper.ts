@@ -8,7 +8,6 @@ import {
 } from "./helper_function";
 import { CryptoHelper } from "~/lib/utils/crypto";
 import {
-	employeeBonus,
 	type EmployeeBonusFEType,
 	type EmployeeBonusType,
 	type updateEmployeeBonusAPI,
@@ -16,65 +15,41 @@ import {
 } from "~/server/api/types/employee_bonus_type";
 import { EmployeePaymentService } from "~/server/service/employee_payment_service";
 import { EmployeeBonusService } from "~/server/service/employee_bonus_service";
+import { BaseMapper } from "./base_mapper";
+import {
+	type EmployeeBonus,
+	type EmployeeBonusDecType,
+	decEmployeeBonus,
+	encEmployeeBonus,
+} from "../entity/SALARY/employee_bonus";
 
 @injectable()
-export class EmployeeBonusMapper {
-	async getEmployeeBonus(
-		employee_bonus: EmployeeBonusFEType
-	): Promise<EmployeeBonusType> {
-		const result: z.infer<typeof employeeBonus> = employeeBonus.parse(
-			convertDatePropertiesToISOString({
-				...employee_bonus,
-				period_id: employee_bonus.period_id,
-				bonus_type: employee_bonus.bonus_type,
-				emp_no: employee_bonus.emp_no,
-				special_multiplier_enc: CryptoHelper.encrypt(
-					employee_bonus.special_multiplier.toString()
-				),
-				multiplier_enc: CryptoHelper.encrypt(
-					employee_bonus.multiplier.toString()
-				),
-				fixed_amount_enc: CryptoHelper.encrypt(
-					employee_bonus.fixed_amount.toString()
-				),
-				bud_effective_salary_enc: CryptoHelper.encrypt(
-					employee_bonus.bud_effective_salary.toString()
-				),
-				bud_amount_enc: CryptoHelper.encrypt(
-					employee_bonus.bud_amount.toString()
-				),
-				sup_performance_level_enc: CryptoHelper.encrypt(
-					(employee_bonus.sup_performance_level ?? "").toString()
-				),
-				sup_effective_salary_enc: CryptoHelper.encrypt(
-					(employee_bonus.sup_effective_salary ?? "").toString()
-				),
-				sup_amount_enc: CryptoHelper.encrypt(
-					(employee_bonus.sup_amount ?? "").toString()
-				),
-				app_performance_level_enc: CryptoHelper.encrypt(
-					(employee_bonus.app_performance_level ?? "").toString()
-				),
-				app_effective_salary_enc: CryptoHelper.encrypt(
-					(employee_bonus.app_effective_salary ?? "").toString()
-				),
-				app_amount_enc: CryptoHelper.encrypt(
-					(employee_bonus.app_amount ?? "").toString()
-				),
-			})
-		);
-
-		return result;
+export class EmployeeBonusMapper extends BaseMapper<
+	EmployeeBonus,
+	EmployeeBonusDecType
+> {
+	constructor() {
+		super(encEmployeeBonus, decEmployeeBonus, []);
 	}
 
+  // TODO: change to a FE mapper
 	async getEmployeeBonusFE(
 		employee_bonus: EmployeeBonusType
 	): Promise<EmployeeBonusFEType> {
+
+		function getRandomStatus(): string {
+			const statuses = ["符合資格", "不符合資格", "留停"];
+			const randomIndex = Math.floor(Math.random() * statuses.length);
+			return statuses[randomIndex]!;
+		}
+
 		const employeeBonusService = container.resolve(EmployeeBonusService);
 		const employeeDataService = container.resolve(EmployeeDataService);
 		const employeePaymentService = container.resolve(
 			EmployeePaymentService
 		);
+
+
 		const employee = await employeeDataService.getEmployeeDataByEmpNo(
 			employee_bonus.emp_no
 		);
@@ -87,6 +62,7 @@ export class EmployeeBonusMapper {
 			throw new BaseResponseError("Employee does not exist");
 		if (employeePayment == null)
 			throw new BaseResponseError("Employee Payment does not exist");
+
 
 		const total_amount =
 			employeePayment.base_salary +
@@ -111,16 +87,12 @@ export class EmployeeBonusMapper {
 		);
 		const app_amount = CryptoHelper.decrypt(employee_bonus.app_amount_enc);
 
-		function getRandomStatus(): string {
-			const statuses = ["符合資格", "不符合資格", "留停"];
-			const randomIndex = Math.floor(Math.random() * statuses.length);
-			return statuses[randomIndex]!;
-		}
-
-		const employee_bonus_id = (await employeeBonusService.getEmployeeBonus(
-			employee_bonus.period_id,
-			employee_bonus.bonus_type,
-		) ?? []).filter((e: any) => e.emp_no === employee_bonus.emp_no)[0]!.id;
+		const employee_bonus_id = (
+			(await employeeBonusService.getEmployeeBonus(
+				employee_bonus.period_id,
+				employee_bonus.bonus_type
+			)) ?? []
+		).filter((e: any) => e.emp_no === employee_bonus.emp_no)[0]!.id;
 
 		const employeeBonusFE: EmployeeBonusFEType =
 			convertDatePropertiesToISOString({

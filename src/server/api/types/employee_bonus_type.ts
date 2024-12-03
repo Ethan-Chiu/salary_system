@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { empData, Id } from "./common_type";
-import { BonusTypeEnum } from "./bonus_type_enum";
+import { bonusTypeEnum } from "./bonus_type_enum";
 
 export const employeeBonus = z.object({
 	period_id: z.number(),
-	bonus_type: BonusTypeEnum,
+	bonus_type: bonusTypeEnum,
 	emp_no: z.string(),
 	special_multiplier_enc: z.string(),
 	multiplier_enc: z.string(),
@@ -22,7 +22,7 @@ export const employeeBonus = z.object({
 export const employeeBonusFE = z.object({
 	// id: z.coerce.number(),
 	period_id: z.coerce.number(),
-	bonus_type: BonusTypeEnum,
+	bonus_type: bonusTypeEnum,
 	department: z.coerce.string(),
 	emp_no: z.coerce.string(),
 	emp_name: z.coerce.string(),

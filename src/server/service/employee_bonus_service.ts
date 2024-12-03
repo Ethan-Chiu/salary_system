@@ -77,7 +77,7 @@ export class EmployeeBonusService {
 			}
 			const employee_bonus_mapper =
 				container.resolve(EmployeeBonusMapper);
-			const employee_bonus = await employee_bonus_mapper.getEmployeeBonus(
+			const employee_bonus = await employee_bonus_mapper.encode(
 				{
 					period_id: period_id,
 					bonus_type: bonus_type,
@@ -380,6 +380,7 @@ export class EmployeeBonusService {
 			),
 		});
 	}
+
 	async updateMultipleBonusByEmpNoList(
 		emp_no_list: string[],
 		period_id: number,

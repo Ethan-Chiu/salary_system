@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { Id, dateAll, dateCreate, user } from "./common_type";
-import { BonusTypeEnum } from "./bonus_type_enum";
+import { bonusTypeEnum } from "./bonus_type_enum";
 import { WorkTypeEnum } from "./work_type_enum";
 
 export const createUserAPI = user.merge(dateAll);
@@ -21,7 +21,7 @@ export const updateBasicInfoService = BasicInfo.partial().merge(Id);
 
 const BonusAll = z.object({
 	period_id: z.number(),
-	bonus_type: BonusTypeEnum,
+	bonus_type: bonusTypeEnum,
 	multiplier: z.number(),
 });
 
@@ -33,7 +33,7 @@ export const batchCreateBonusAllAPI = z.array(createBonusAllAPI);
 
 const BonusWorkType = z.object({
 	period_id: z.number(),
-	bonus_type: BonusTypeEnum,
+	bonus_type: bonusTypeEnum,
 	work_type: WorkTypeEnum,
 	multiplier: z.number(),
 });
@@ -46,7 +46,7 @@ export const batchCreateBonusWorkTypeAPI = z.array(createBonusWorkTypeAPI);
 
 const BonusDepartment = z.object({
 	period_id: z.number(),
-	bonus_type: BonusTypeEnum,
+	bonus_type: bonusTypeEnum,
 	department: z.string(),
 	multiplier: z.number(),
 });
@@ -59,7 +59,7 @@ export const batchCreateBonusDepartmentAPI = z.array(createBonusDepartmentAPI);
 
 const BonusPosition = z.object({
 	period_id: z.number(),
-	bonus_type: BonusTypeEnum,
+	bonus_type: bonusTypeEnum,
 	position: z.number(),
 	position_multiplier: z.number(),
 	position_type: z.string(),
@@ -74,7 +74,7 @@ export const batchCreateBonusPositionAPI = z.array(createBonusPositionAPI);
 
 const BonusPositionType = z.object({
 	period_id: z.number(),
-	bonus_type: BonusTypeEnum,
+	bonus_type: bonusTypeEnum,
 	position_type: z.string(),
 	multiplier: z.number(),
 });
@@ -89,7 +89,7 @@ export const batchCreateBonusPositionTypeAPI = z.array(
 
 const BonusSeniority = z.object({
 	period_id: z.number(),
-	bonus_type: BonusTypeEnum,
+	bonus_type: bonusTypeEnum,
 	seniority: z.number(),
 	multiplier: z.number(),
 });

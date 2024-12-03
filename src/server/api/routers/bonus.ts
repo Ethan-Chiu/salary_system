@@ -2,7 +2,7 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { container } from "tsyringe";
 import { z } from "zod";
 import { EmployeeBonusService } from "~/server/service/employee_bonus_service";
-import { BonusTypeEnum } from "../types/bonus_type_enum";
+import { bonusTypeEnum } from "../types/bonus_type_enum";
 import { EmployeeData } from "~/server/database/entity/SALARY/employee_data";
 import { BonusWorkTypeService } from "~/server/service/bonus_work_type_service";
 import { BonusSeniorityService } from "~/server/service/bonus_seniority_service";
@@ -29,7 +29,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 			})
 		)
 		.query(async ({ input }) => {
@@ -46,7 +46,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 			})
 		)
 		.query(async ({ input }) => {
@@ -65,7 +65,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 			})
 		)
 		.query(async ({ input }) => {
@@ -93,7 +93,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 			})
 		)
 		.mutation(async ({ input }) => {
@@ -121,7 +121,7 @@ export const bonusRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
 			const empBonusMapper = container.resolve(EmployeeBonusMapper);
-			const empBonus = await empBonusMapper.getEmployeeBonus(input);
+			const empBonus = await empBonusMapper.encode(input);
 			const result = await empBonusService.createEmployeeBonus(empBonus);
 			const employeeBonusFE = await empBonusMapper.getEmployeeBonusFE(result);
 			return roundProperties(employeeBonusFE, 2);
@@ -140,7 +140,7 @@ export const bonusRouter = createTRPCRouter({
 			z.object({
 				emp_no_list: z.array(z.string()),
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 				multiplier: z.number(),
 				fixed_amount: z.number(),
 			})
@@ -194,7 +194,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 				total_budgets: z.number(),
 			})
 		)
@@ -211,7 +211,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 			})
 		)
 		.query(async ({ input }) => {
@@ -226,7 +226,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 			})
 		)
 		.query(async ({ input }) => {
@@ -243,7 +243,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 			})
 		)
 		.query(async ({ input }) => {
@@ -261,7 +261,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 			})
 		)
 		.query(async ({ input }) => {
@@ -297,7 +297,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 			})
 		)
 		.query(async ({ input }) => {
@@ -315,7 +315,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 				multiplier: z.number(),
 			})
 		)
@@ -329,7 +329,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 				work_type: WorkTypeEnum,
 				multiplier: z.number(),
 			})
@@ -346,7 +346,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 				seniority: z.number(),
 				multiplier: z.number(),
 			})
@@ -364,7 +364,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 				department: z.string(),
 				multiplier: z.number(),
 			})
@@ -399,7 +399,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 				position: z.number(),
 				position_multiplier: z.number(),
 				position_type: z.string(),
