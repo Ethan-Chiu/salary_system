@@ -1,18 +1,16 @@
 import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table";
-import { Payset } from "~/server/database/entity/UMEDIA/payset";
 import { api } from "~/utils/api";
 import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
-import { PaysetFE } from "~/server/api/types/payset_type";
+import { paysetFE } from "~/server/api/types/payset_type";
 
-const columns = (t: I18nType) => Object.keys(PaysetFE.shape).map((key) => {
+const columns = (t: I18nType) => Object.keys(paysetFE.shape).map((key) => {
 	return {
 		accessorKey: key,
 		header: ({ column }: any) => {
-			const { t } = useTranslation(["common"]);
 			return (
 				<div className="flex justify-center">
 					<div className="text-center font-medium">
