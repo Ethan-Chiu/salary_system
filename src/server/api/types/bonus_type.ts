@@ -10,4 +10,4 @@ export const newBonusFE = z.object({
     full_attendance_bonus: z.number(),
 })
 
-export type NewBonusFEType = z.infer<typeof newBonusFE>;
+export type BonusFEType = z.infer<typeof newBonusFE>;

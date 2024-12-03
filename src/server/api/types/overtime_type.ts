@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const OvertimeFE=z.object({
+export const overtimeFE=z.object({
     department: z.string(),
     emp_no: z.string(),
     emp_name: z.string(),
@@ -25,4 +25,4 @@ export const OvertimeFE=z.object({
 	hours_2_TAX: z.number()
 })
 
-export type OvertimeFEType = z.infer<typeof OvertimeFE>
+export type OvertimeFEType = z.infer<typeof overtimeFE>
