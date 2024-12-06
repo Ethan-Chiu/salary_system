@@ -109,7 +109,7 @@ export function trustMoneyMapper(
 		org_special_trust_incent_limit: data.org_special_trust_incent_limit,
 		start_date: formatDate("day", data.start_date) ?? "",
 		end_date: formatDate("day", data.end_date) ?? "",
-		functions: { create: true, update: true, delete: true },
+		functions: { create: data.creatable, update: data.updatable, delete: data.deletable },
 	}));
 }
 

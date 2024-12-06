@@ -112,7 +112,7 @@ export function bankSettingMapper(bankSettingData: BankSettingFEType[]): RowItem
 			org_code: d.org_code,
 			start_date: formatDate("day", d.start_date) ?? "",
 			end_date: formatDate("day", d.end_date) ?? "",
-			functions: { "create": true, "update": true, "delete": false },
+			functions: { "create": d.creatable, "update": d.updatable, "delete": d.deletable },
 		};
 	});
 }
