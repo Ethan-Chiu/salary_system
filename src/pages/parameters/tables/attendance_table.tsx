@@ -78,8 +78,8 @@ export const attendance_columns = ({ t }: { t: TFunction<[string], undefined> })
 			const value = row.getValue("value");
 			let formatted = "";
 			if (isNumber(value))
-				formatted = parseFloat(row.getValue("value")).toString();
-			else if (isString(value)) formatted = row.getValue("value");
+				formatted = parseFloat(value as string).toString();
+			else if (isString(value)) formatted = value as string;
 			else if (isDateType(value)) {
 				if (value) {
 					formatted = value.toISOString().split("T")[0] ?? "";
@@ -190,13 +190,13 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 		<>
 			{!viewOnly ? (
 				<DataTableWithFunctions
-					columns={attendance_columns({ t: t })}
+					columns={attendance_columns({ t })}
 					data={attendanceMapper([data!])}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
-					columns={attendance_columns({ t: t })}
+					columns={attendance_columns({ t })}
 					data={attendanceMapper([data!])}
 					filterColumnKey={filterKey}
 				/>
