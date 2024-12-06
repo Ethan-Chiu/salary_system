@@ -1,62 +1,74 @@
-import { container } from "tsyringe";
-import { NewOtherFEType } from "~/server/api/types/other_type";
+import { injectable } from "tsyringe";
+import { type OtherFEType } from "~/server/api/types/other_type";
 import { CalculateService } from "~/server/service/calculate_service";
-import { EHRService, ExpenseWithType } from "~/server/service/ehr_service";
+import { EHRService, type ExpenseWithType } from "~/server/service/ehr_service";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { EmployeePaymentService } from "~/server/service/employee_payment_service";
 
+@injectable()
 export class OtherMapper {
-	async getNewOther(
+  constructor(
+    private readonly calculateService: CalculateService,
+    private readonly ehrService: EHRService,
+    private readonly employeeDataService: EmployeeDataService,
+    private readonly employeePaymentService: EmployeePaymentService
+  ) {}
+  
+	async getOtherFE(
 		period_id: number,
 		expense_with_type_list: ExpenseWithType[],
 		emp_no_list: string[]
-	): Promise<NewOtherFEType[]> {
-		const calculate_service = container.resolve(CalculateService);
-		const employee_data_service = container.resolve(EmployeeDataService);
-        const ehr_service = container.resolve(EHRService);
-		const employee_payment_service = container.resolve(
-			EmployeePaymentService
-		);
+	): Promise<OtherFEType[]> {
 		const newOtherFE_list = await Promise.all(
 			emp_no_list.map(async (emp_no) => {
 				const employee_data =
-					await employee_data_service.getEmployeeDataByEmpNo(emp_no);
+					await this.employeeDataService.getEmployeeDataByEmpNo(emp_no);
 				const employee_payment =
-					await employee_payment_service.getCurrentEmployeePaymentByEmpNo(
+					await this.employeePaymentService.getCurrentEmployeePaymentByEmpNo(
 						emp_no,
 						period_id
 					);
-                const work_day = (await ehr_service.getPaysetByEmpNoList(period_id, [emp_no]))[0]?.work_day??30;
+				const work_day =
+					(
+						await this.ehrService.getPaysetByEmpNoList(period_id, [
+							emp_no,
+						])
+					)[0]?.work_day ?? 30;
 				return {
 					emp_no: emp_no,
 					emp_name: employee_data!.emp_name,
 					department: employee_data!.department,
 					position: employee_data!.position,
-                    work_day: work_day,
-					other_addition: await calculate_service.getOtherAddition(
+					work_day: work_day,
+					other_addition: await this.calculateService.getOtherAddition(
 						period_id,
 						emp_no
 					),
 					other_addition_tax:
-						await calculate_service.getOtherAdditionTax(
+						await this.calculateService.getOtherAdditionTax(
 							period_id,
 							emp_no
 						),
-					other_deduction: await calculate_service.getOtherDeduction(
+					other_deduction: await this.calculateService.getOtherDeduction(
 						period_id,
 						emp_no
 					),
 					other_deduction_tax:
-						await calculate_service.getOtherDeductionTax(
+						await this.calculateService.getOtherDeductionTax(
 							period_id,
 							emp_no
 						),
-					dorm_deduction: await calculate_service.getMealDeduction(
+					dorm_deduction: await this.calculateService.getMealDeduction(
+						period_id,
+						emp_no
+					),
+					reissue_salary:
+						await this.calculateService.getReissueSalary(
 						period_id,
 						emp_no
 					),
 					g_i_deduction_promotion:
-						await calculate_service.getGroupInsuranceDeductionPromotion(
+						await this.calculateService.getGroupInsuranceDeductionPromotion(
 							period_id,
 							emp_no
 						),
@@ -67,36 +79,38 @@ export class OtherMapper {
 								e.expense_type_name === "團保代扣-眷屬"
 						)?.amount ?? 0,
 					income_tax_deduction:
-						await calculate_service.getIncomeTaxDeduction(
+						await this.calculateService.getIncomeTaxDeduction(
 							period_id,
 							emp_no
 						),
-					l_r_self: await calculate_service.getLRSelf(
+					l_r_self: await this.calculateService.getLRSelf(
 						employee_payment!
 					),
-					parking_fee: await calculate_service.getParkingFee(
+					parking_fee: await this.calculateService.getParkingFee(
 						period_id,
 						emp_no
 					),
-					brokerage_fee: await calculate_service.getBrokerageFee(
+					brokerage_fee: await this.calculateService.getBrokerageFee(
 						period_id,
 						emp_no
 					),
 					retirement_income:
-						await calculate_service.getRetirementIncome(
+						await this.calculateService.getRetirementIncome(
 							period_id,
 							emp_no
 						),
-					l_i_disability_reduction: expense_with_type_list.findLast(
-						(e) =>
-							e.emp_no === emp_no &&
-							e.expense_type_name === "勞保殘障減免"
-					)?.amount ?? 0,
-					h_i_subsidy: expense_with_type_list.findLast(
-						(e) =>
-							e.emp_no === emp_no &&
-							e.expense_type_name === "健保補助"
-					)?.amount ?? 0,
+					l_i_disability_reduction:
+						expense_with_type_list.findLast(
+							(e) =>
+								e.emp_no === emp_no &&
+								e.expense_type_name === "勞保殘障減免"
+						)?.amount ?? 0,
+					h_i_subsidy:
+						expense_with_type_list.findLast(
+							(e) =>
+								e.emp_no === emp_no &&
+								e.expense_type_name === "健保補助"
+						)?.amount ?? 0,
 				};
 			})
 		);

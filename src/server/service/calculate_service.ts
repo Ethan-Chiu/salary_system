@@ -10,7 +10,7 @@ import { EmployeeData } from "../database/entity/SALARY/employee_data";
 import { AllowanceWithType, EHRService, ExpenseWithType } from "./ehr_service";
 import { Overtime } from "../database/entity/UMEDIA/overtime";
 import { Payset } from "../database/entity/UMEDIA/payset";
-import { InsuranceRateSetting } from "../database/entity/SALARY/insurance_rate_setting";
+import { InsuranceRateSetting, InsuranceRateSettingDecType } from "../database/entity/SALARY/insurance_rate_setting";
 import { Holiday } from "../database/entity/UMEDIA/holiday";
 import { PayTypeEnum, PayTypeEnumType } from "../api/types/pay_type_enum";
 import { HolidaysType } from "../database/entity/SALARY/holidays_type";
@@ -47,7 +47,7 @@ export class CalculateService {
 		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		overtime_list: Overtime[],
 		payset: Payset,
-		insurance_rate_setting: InsuranceRateSetting,
+		insurance_rate_setting: InsuranceRateSettingDecType,
 		full_attendance_bonus: number,
 		pay_type: PayTypeEnumType,
 		shift_allowance: number,
@@ -115,7 +115,7 @@ export class CalculateService {
 		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		overtime_list: Overtime[],
 		payset: Payset,
-		insurance_rate_setting: InsuranceRateSetting,
+		insurance_rate_setting: InsuranceRateSettingDecType,
 		full_attendance_bonus: number,
 		pay_type: PayTypeEnumType,
 		shift_allowance: number,
@@ -195,7 +195,7 @@ export class CalculateService {
 		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		overtime_list: Overtime[],
 		payset: Payset,
-		insurance_rate_setting: InsuranceRateSetting,
+		insurance_rate_setting: InsuranceRateSettingDecType,
 		full_attendance_bonus: number,
 		pay_type: PayTypeEnumType,
 		shift_allowance: number,
@@ -296,7 +296,7 @@ export class CalculateService {
 		employee_data: EmployeeData,
 		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		payset: Payset,
-		insuranceRateSetting: InsuranceRateSetting
+		insuranceRateSetting: InsuranceRateSettingDecType
 	): Promise<number> {
 		// rd("勞保扣除額") = CalacWorkTex(rd("勞保"), CheckNull(rd("工作天數"), 30), CheckNull(rd("勞保天數"), 30), rd("工作類別"), rd("工作形態"), CheckNull(rd("殘障等級"), "正常"), CheckNull(rd("勞保追加"), 30), rd("已領老年給付")) 'Jerry 07/03/30 加入殘障等級計算, 07/11/26 增加勞保追加計算,10/04/26增加"已領老年給付"判斷
 		// Tax: rd("勞保")
@@ -371,7 +371,7 @@ export class CalculateService {
 	async getHealthInsuranceDeduction(
 		employee_data: EmployeeData,
 		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
-		insurance_rate_setting: InsuranceRateSetting
+		insurance_rate_setting: InsuranceRateSettingDecType
 	): Promise<number> {
 		// rd("健保扣除額") = CalacHelTax(rd("健保"), rd("健保眷口數"), rd("工作形態"), CheckNull(rd("殘障等級"), "正常"), 0, rd("健保追加"))   'Jerry 07/03/30 加入殘障等級計算  , 07/11/26 增加健保追加計算
 		let Tax: number = discounted_employee_payment_fe.h_i;
@@ -461,7 +461,7 @@ export class CalculateService {
 		holiday_list: Holiday[], // Maybe not this
 		payset: Payset,
 		holidays_type: HolidaysType[],
-		insurance_rate_setting: InsuranceRateSetting,
+		insurance_rate_setting: InsuranceRateSettingDecType,
 		full_attendance_bonus: number,
 		shift_allowance: number,
 		gross_salary: number,
@@ -712,7 +712,7 @@ export class CalculateService {
 		pay_type: PayTypeEnumType,
 		payset: Payset | undefined,
 		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
-		insurance_rate_setting: InsuranceRateSetting,
+		insurance_rate_setting: InsuranceRateSettingDecType,
 		employee_data: EmployeeData
 	): Promise<number> {
 		const l_i = discounted_employee_payment_fe.l_i;
@@ -835,7 +835,7 @@ export class CalculateService {
 		holiday_list: Holiday[],
 		holidays_type: HolidaysType[],
 		gross_salary: number,
-		insurance_rate_setting: InsuranceRateSetting,
+		insurance_rate_setting: InsuranceRateSettingDecType,
 		employee_data: EmployeeData
 	): Promise<number> {
 		const non_leave_comp_id = holidays_type.find(
@@ -1211,7 +1211,7 @@ export class CalculateService {
 	async getLaborInsurancePay(
 		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		employee_data: EmployeeData,
-		insurance_rate_setting: InsuranceRateSetting,
+		insurance_rate_setting: InsuranceRateSettingDecType,
 		payset: Payset | undefined,
 		received_elderly_benefits: boolean,
 		pay_type: PayTypeEnumType
@@ -1324,7 +1324,7 @@ export class CalculateService {
 	async getHealthInsurancePay(
 		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
 		employee_data: EmployeeData,
-		insurance_rate_setting: InsuranceRateSetting
+		insurance_rate_setting: InsuranceRateSettingDecType
 	): Promise<number> {
 		// 		'公司付健保費(外籍勞工算法同本國籍)
 		// Function ComHel(ByVal money As Long, ByVal kind As String, ByVal HelAdd_YN As String)
@@ -1636,7 +1636,7 @@ export class CalculateService {
 		return 0;
 	}
 	//MARK: 二代健保
-	async getSecondGenerationHealthInsurance(period_id:number, emp_no: string, pay_type: PayTypeEnumType, insurance_rate_setting: InsuranceRateSetting, employee_payment_fe: z.infer<typeof employeePaymentFE>): Promise<number> {
+	async getSecondGenerationHealthInsurance(period_id:number, emp_no: string, pay_type: PayTypeEnumType, insurance_rate_setting: InsuranceRateSettingDecType, employee_payment_fe: z.infer<typeof employeePaymentFE>): Promise<number> {
 		const employee_bonus_service = container.resolve(EmployeeBonusService);
 		const employee_bonus_list = await employee_bonus_service.getEmployeeBonusByEmpNo(period_id, emp_no);
 		if (pay_type === PayTypeEnum.Enum.month_salary) {
@@ -1789,7 +1789,7 @@ export class CalculateService {
 		holiday_list: Holiday[],
 		gross_salary: number,
 		discounted_employee_payment_fe: z.infer<typeof employeePaymentFE>,
-		insurance_rate_setting: InsuranceRateSetting,
+		insurance_rate_setting: InsuranceRateSettingDecType,
 		professional_cert_allowance: number
 	): Promise<number> {
 		// 		'特別事假扣款:

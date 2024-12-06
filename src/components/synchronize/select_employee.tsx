@@ -25,14 +25,12 @@ export function SelectEmployee({
 
 		return {
 			key: d.emp_no,
-			value: `${d.emp_no} ${d.name.salary_value ?? d.name.ehr_value} ${
-				d.english_name.salary_value
-			}`,
+			value: `${d.emp_no} ${d.name.salary_value ?? d.name.ehr_value} ${d.english_name.salary_value
+				}`,
 			option: (
 				<div>
-					{`${d.emp_no} ${d.name.ehr_value ?? d.name.ehr_value} ${
-						d.english_name.ehr_value ?? d.name.ehr_value
-					}`}
+					{`${d.emp_no} ${d.name.ehr_value ?? d.name.ehr_value} ${d.english_name.ehr_value ?? d.name.ehr_value
+						}`}
 					{changed && (
 						<Badge variant="outline">
 							{t("sync_page.new_employee")}

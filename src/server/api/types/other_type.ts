@@ -1,7 +1,6 @@
-import { workerData } from "worker_threads";
 import { z } from "zod";
 
-export const newOtherFE=z.object({
+export const otherFE=z.object({
     emp_no: z.string(),
     emp_name: z.string(),
     department: z.string(),
@@ -12,6 +11,7 @@ export const newOtherFE=z.object({
     other_deduction: z.number(),
     other_deduction_tax: z.number(),
     dorm_deduction: z.number(),
+    reissue_salary: z.number(),
     g_i_deduction_promotion: z.number(),
     g_i_deduction_family: z.number(),
     income_tax_deduction: z.number(),
@@ -23,4 +23,4 @@ export const newOtherFE=z.object({
     h_i_subsidy: z.number(),
 })
 
-export type NewOtherFEType = z.infer<typeof newOtherFE>
+export type OtherFEType = z.infer<typeof otherFE>

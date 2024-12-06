@@ -101,7 +101,7 @@ export class TrustMoneyService {
 				disabled: false,
 			},
 		});
-		
+
 		return await this.trustMoneyMapper.decodeList(trustMoney);
 	}
 
@@ -109,13 +109,13 @@ export class TrustMoneyService {
 		const trustMoney = await TrustMoney.findAll({
 			where: { disabled: false },
 			order: [
+				["start_date", "DESC"],
 				["position", "ASC"],
 				["position_type", "ASC"],
-				["start_date", "DESC"],
 			],
 			raw: true,
 		});
-		return await this.trustMoneyMapper.decodeList(trustMoney); 
+		return await this.trustMoneyMapper.decodeList(trustMoney);
 	}
 
 	async getAllFutureTrustMoney(): Promise<TrustMoneyDecType[]> {
@@ -128,9 +128,9 @@ export class TrustMoneyService {
 				disabled: false,
 			},
 			order: [
+				["start_date", "DESC"],
 				["position", "ASC"],
 				["position_type", "ASC"],
-				["start_date", "DESC"],
 			],
 			raw: true,
 		});
@@ -168,18 +168,18 @@ export class TrustMoneyService {
 		});
 		const trustMoneyList = await this.trustMoneyMapper.decodeList(encodedList);
 		for (let i = 0; i < trustMoneyList.length - 1; i += 1) {
-			const end_date = 
+			const end_date =
 				trustMoneyList[i]!.end_date!
-			;
+				;
 			const start_date = trustMoneyList[i + 1]!.start_date;
-			const new_end_date = 
+			const new_end_date =
 				new Date(start_date.setDate(start_date.getDate() - 1))
-			;
+				;
 			if (
 				trustMoneyList[i]!.position ==
-					trustMoneyList[i + 1]!.position &&
+				trustMoneyList[i + 1]!.position &&
 				trustMoneyList[i]!.position_type ==
-					trustMoneyList[i + 1]!.position_type
+				trustMoneyList[i + 1]!.position_type
 			) {
 				if (end_date != new_end_date) {
 					if (new_end_date < trustMoneyList[i]!.start_date) {

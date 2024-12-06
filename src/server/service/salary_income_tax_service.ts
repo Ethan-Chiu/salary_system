@@ -153,7 +153,7 @@ export class SalaryIncomeTaxService {
 				disabled: false,
 			},
 		});
-
+		if (!salaryIncomeTax) return null;
 		return this.salaryIncomeTaxMapper.decode(salaryIncomeTax);
 	}
 

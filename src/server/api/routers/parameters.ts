@@ -231,7 +231,6 @@ export const parametersRouter = createTRPCRouter({
 			const levelRange = await levelRangeMapper.getLevelRange(input);
 			const newData = await levelRangeService.createLevelRange(levelRange);
 			const levelRangeFE = await levelRangeMapper.getLevelRangeFE({ ...levelRange, id: newData.id, disabled: newData.disabled, update_date: newData.update_date, create_date: newData.create_date, update_by: newData.update_by, create_by: newData.create_by, start_date: levelRange.start_date! });
-			console.log(levelRangeFE)
 			await levelRangeService.rescheduleLevelRange();
 			return levelRangeFE;
 		}),

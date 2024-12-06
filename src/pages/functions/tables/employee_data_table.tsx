@@ -1,5 +1,5 @@
 import { LoadingSpinner } from "~/components/loading";
-import { DataTable } from "../components/data_table";
+import { DataTable } from "../components/data_table_advanced_filter";
 import { api } from "~/utils/api";
 import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
@@ -59,6 +59,13 @@ const columns = (t: I18nType) =>
 						</div>
 					);
 				},
+			};
+		}
+		if (key === "work_type") {
+			return {
+				accessorKey: key,
+				header: header,
+				filterFn: 'arrIncludesSome',
 			};
 		}
 		return {

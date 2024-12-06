@@ -15,12 +15,14 @@ export function DataTableToolbar<TData>({
 }: DataTableSrandardToolbarProps<TData>) {
 	return (
 		<DataTableToolbarWrapper>
-			<div className="flex w-1/2">
+			<div className="flex">
 				<ToolbarFilter table={table} filterColumnKey={filterColumnKey} />
 				<StatsPanel table={table} />
-				<AdvancedFilter table={table} />
 			</div>
-			<DataTableViewOptions table={table} />
+			<div className="flex">
+				<AdvancedFilter table={table} />
+				<DataTableViewOptions table={table} />
+			</div>
 		</DataTableToolbarWrapper>
 	);
 }

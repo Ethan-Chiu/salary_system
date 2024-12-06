@@ -63,6 +63,13 @@ const columns = (t: I18nType) =>
 				},
 			};
 		}
+		else if (key === "work_status") {
+			return {
+				accessorKey: key,
+				header: header,
+				filterFn: 'equalsString',
+			};
+		}
 		return {
 			accessorKey: key,
 			header: header,

@@ -41,27 +41,27 @@ export function EmployeeDataChangeTable({
 				<Table>
 					<TableHeader className="bg-secondary">
 						<TableRow className="sticky top-0 bg-secondary hover:bg-secondary">
-							<TableHead className="w-1/4 text-center">
+							<TableHead className="text-center">
 								{t("table.department")}
 							</TableHead>
-							<TableHead className="w-1/4 text-center">
+							<TableHead className="text-center">
 								{t("table.emp_no")}
 							</TableHead>
-							<TableHead className="w-1/4 text-center">
+							<TableHead className="text-center">
 								{t("table.emp_name")}
 							</TableHead>
-							<TableHead className="w-1/4 text-center">
+							<TableHead className="text-center">
 								{t("table.key")}
 							</TableHead>
-							<TableHead className="w-1/4 min-w-[180px] text-center">
+							<TableHead className="text-center">
 								{t("table.salary_data")}
 							</TableHead>
-							<TableHead className="w-1/4 min-w-[180px] text-center">
+							<TableHead className="text-center">
 								{t("table.ehr_data")}
 							</TableHead>
-							<TableHead className="w-1/4 text-center">
-								Check
-								{/* {t("sync_page.check")} */}
+							<TableHead className="text-center">
+								{/* Check */}
+								{t("sync_page.check")}
 							</TableHead>
 						</TableRow>
 					</TableHeader>
@@ -136,7 +136,7 @@ export function EmployeeDataChangeTable({
 														className={cn(
 															"min-w-[180px] font-medium",
 															diff &&
-																"text-red-500"
+															"text-red-500"
 														)}
 													>
 														{displayData(
@@ -149,7 +149,7 @@ export function EmployeeDataChangeTable({
 														className={cn(
 															"min-w-[180px] font-medium",
 															diff &&
-																"text-red-500"
+															"text-red-500"
 														)}
 													>
 														{displayData(
@@ -171,8 +171,7 @@ export function EmployeeDataChangeTable({
 																	setDataStatus(
 																		d.emp_no,
 																		c.key,
-																		checked ===
-																			true
+																		checked === true
 																	)
 																}
 															/>

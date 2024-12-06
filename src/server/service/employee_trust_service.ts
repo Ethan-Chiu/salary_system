@@ -1,4 +1,4 @@
-import { injectable } from "tsyringe";
+import { delay, inject, injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { get_date_string, select_value } from "./helper_function";
 import { type z } from "zod";
@@ -17,19 +17,20 @@ import {
 import { EmployeeTrustMapper } from "../database/mapper/employee_trust_mapper";
 import { dateToString, stringToDate } from "../api/types/z_utils";
 
+type EmployeeTrustMapperType = EmployeeTrustMapper;
+
 @injectable()
 export class EmployeeTrustService {
 	constructor(
-		private readonly employeeTrustMapper: EmployeeTrustMapper,
+		@inject(delay(() => EmployeeTrustMapper)) private readonly employeeTrustMapper: EmployeeTrustMapperType,
 		private readonly ehrService: EHRService
 	) { }
 
 	async createEmployeeTrust(
 		data: z.input<typeof employeeTrustCreateService>
 	): Promise<EmployeeTrust> {
-		console.log("data", data);
 		const d = employeeTrustCreateService.parse(data);
-		console.log("d", d);
+
 		const create_input = {
 			...d,
 			start_date: d.start_date ?? new Date(),
@@ -37,11 +38,9 @@ export class EmployeeTrustService {
 			create_by: "system",
 			update_by: "system",
 		};
-		console.log("create_input", create_input);
-		const employeeTrust =
-			await this.employeeTrustMapper.encodeEmployeeTrust(create_input);
 
-		console.log("employeeTrust", employeeTrust);
+		const employeeTrust =
+			await this.employeeTrustMapper.encode(create_input);
 
 		const newData = await EmployeeTrust.create(employeeTrust, {
 			raw: true,
@@ -66,7 +65,7 @@ export class EmployeeTrustService {
 			return null;
 		}
 
-		return await this.employeeTrustMapper.decodeEmployeeTrust(
+		return await this.employeeTrustMapper.decode(
 			employeeTrust
 		);
 	}
@@ -78,7 +77,7 @@ export class EmployeeTrustService {
 			raw: true,
 		});
 
-		return await this.employeeTrustMapper.decodeEmployeeTrustList(
+		return await this.employeeTrustMapper.decodeList(
 			employeeTrust
 		);
 	}
@@ -92,7 +91,7 @@ export class EmployeeTrustService {
 			raw: true,
 		});
 
-		return await this.employeeTrustMapper.decodeEmployeeTrustList(
+		return await this.employeeTrustMapper.decodeList(
 			employeeTrust
 		);
 	}
@@ -132,6 +131,7 @@ export class EmployeeTrustService {
 					)
 			)
 		);
+
 		const current_employee_trustFE = await Promise.all(
 			allEmployeeTrustFE.map((emp_trust_list) => {
 				const current_emp_trust = emp_trust_list.find((emp_trust) => {

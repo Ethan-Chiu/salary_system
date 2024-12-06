@@ -47,7 +47,7 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 		new Set()
 	);
 
-  const [open, setOpen] = useState(false);
+	const [open, setOpen] = useState(false);
 
 	// Status
 	const [dataWithStatus, setDataWithStatus] = useState<SyncDataAndStatus[]>(
@@ -63,7 +63,7 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 				return {
 					emp_no: d.emp_no.ehr_value,
 					name: d.name,
-          english_name: d.english_name,
+					english_name: d.english_name,
 					department: d.department,
 					comparisons: d.comparisons.map((c) => {
 						return {
@@ -174,28 +174,28 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 					</Select>
 					{filterMode ===
 						SyncDataSelectModeEnum.Values.filter_emp && (
-						<div className="">
-							<SelectEmployee
-								data={dataWithStatus}
-								selectedKeys={selectedKeys}
-								setSelectedKeys={setSelectedKeys}
-                open={open}
-                setOpen={setOpen}
-							/>
-						</div>
-					)}
+							<div className="">
+								<SelectEmployee
+									data={dataWithStatus}
+									selectedKeys={selectedKeys}
+									setSelectedKeys={setSelectedKeys}
+									open={open}
+									setOpen={setOpen}
+								/>
+							</div>
+						)}
 					{filterMode ===
 						SyncDataSelectModeEnum.Values.filter_dep && (
-						<div className="">
-							<SelectDepartment
-								data={dataWithStatus}
-								selectedKeys={selectedDepartments}
-								setSelectedKeys={setSelectedDepartments}
-                open={open}
-                setOpen={setOpen}
-							/>
-						</div>
-					)}
+							<div className="">
+								<SelectDepartment
+									data={dataWithStatus}
+									selectedKeys={selectedDepartments}
+									setSelectedKeys={setSelectedDepartments}
+									open={open}
+									setOpen={setOpen}
+								/>
+							</div>
+						)}
 					<div className="ml-auto">
 						<SelectModeComponent mode={mode} setMode={setMode} />
 					</div>
@@ -213,8 +213,9 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 			{/* Main Content */}
 			<CompTopBar />
 			<div className="relative h-0 w-full flex-grow ">
-				<EmployeeDataChangeTable 
-					data={filterData} 
+				<EmployeeDataChangeTable
+					data={filterData}
+					mode={mode}
 					setDataStatus={(emp_no, key, checked) => {
 						setDataWithStatus((prevData) => {
 							return prevData.map((employee) => {
@@ -236,7 +237,6 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 							});
 						});
 					}}
-					mode={mode}
 				/>
 			</div>
 			{/* Bottom Buttons */}

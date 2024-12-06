@@ -1,5 +1,5 @@
 import {
-	NewAllowanceFEType,
+	type NewAllowanceFEType,
 	type AllowanceFEType,
 } from "~/server/api/types/allowance_type";
 import {
@@ -9,7 +9,7 @@ import {
 import { convertDatePropertiesToISOString } from "./helper_function";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { container } from "tsyringe";
-import { EmployeePayment, EmployeePaymentDecType } from "../entity/SALARY/employee_payment";
+import { type EmployeePaymentDecType } from "../entity/SALARY/employee_payment";
 
 export class AllowanceMapper {
 	async getAllowanceFE(
@@ -32,11 +32,12 @@ export class AllowanceMapper {
 			name: employee_data!.emp_name,
 			department: employee_data!.department,
 			position: employee_data!.position,
-			work_day: payset ? payset.work_day! : 30,
+			work_day: payset ? payset.work_day : 30,
 			// note: allowance_with_type.note,
 		};
 		return allowanceFE;
 	}
+
 	async getNewAllowanceFE(
 		period_id: number,
 		allowanceFE_list: AllowanceFEType[],
@@ -51,10 +52,9 @@ export class AllowanceMapper {
 						employee_payment.emp_no
 					);
 				const payset = (
-					await ehrService.getPaysetByEmpNoList(
-						period_id,
-						[employee_payment.emp_no]
-					)
+					await ehrService.getPaysetByEmpNoList(period_id, [
+						employee_payment.emp_no,
+					])
 				)[0];
 				return {
 					...employee_payment,
@@ -62,13 +62,21 @@ export class AllowanceMapper {
 					emp_name: employee_data!.emp_name,
 					department: employee_data!.department,
 					position: employee_data!.position,
-					work_day: payset ? (payset.work_day ?? 30) : 30,
-					shift_allowance: allowanceFE_list.findLast(
-						(allowanceFE) => allowanceFE.emp_no === employee_payment.emp_no && allowanceFE.allowance_type_name === "輪班津貼"
-					)?.amount ?? 0,
-					professional_cert_allowance: allowanceFE_list.findLast(
-						(allowanceFE) => allowanceFE.emp_no === employee_payment.emp_no && allowanceFE.allowance_type_name === "證照津貼"
-					)?.amount ?? 0,
+					work_day: payset ? payset.work_day ?? 30 : 30,
+					shift_allowance:
+						allowanceFE_list.findLast(
+							(allowanceFE) =>
+								allowanceFE.emp_no ===
+									employee_payment.emp_no &&
+								allowanceFE.allowance_type_name === "輪班津貼"
+						)?.amount ?? 0,
+					professional_cert_allowance:
+						allowanceFE_list.findLast(
+							(allowanceFE) =>
+								allowanceFE.emp_no ===
+									employee_payment.emp_no &&
+								allowanceFE.allowance_type_name === "證照津貼"
+						)?.amount ?? 0,
 				};
 			})
 		);

@@ -22,15 +22,15 @@ import { useTranslation } from "react-i18next";
 export interface PopoverSelectorDataType {
 	key: string;
 	value: string;
-  option: ReactElement;
+	option: ReactElement;
 }
 
 interface PopoverSelectorProps {
 	data: PopoverSelectorDataType[];
 	selectedKeys: Set<string>;
 	setSelectedKeys: (key: Set<string>) => void;
-  open: boolean;
-  setOpen: (open: boolean) => void;
+	open: boolean;
+	setOpen: (open: boolean) => void;
 	placeholder: string;
 	emptyPlaceholder: string;
 }
@@ -39,8 +39,8 @@ export function PopoverMultiSelector({
 	data,
 	selectedKeys,
 	setSelectedKeys,
-  open,
-  setOpen,
+	open,
+	setOpen,
 	placeholder,
 	emptyPlaceholder,
 }: PopoverSelectorProps) {
@@ -86,7 +86,7 @@ export function PopoverMultiSelector({
 											}
 											setSelectedKeys(newSet);
 										}}
-                    className="aria-selected:bg-none"
+										className="aria-selected:bg-none"
 									>
 										<Check
 											className={cn(
@@ -96,7 +96,7 @@ export function PopoverMultiSelector({
 													: "opacity-0"
 											)}
 										/>
-										{d.option} 
+										{d.option}
 									</CommandItem>
 								))}
 							</CommandGroup>

@@ -8,6 +8,7 @@ import {
 	employeePaymentFE,
 	type EmployeePaymentFEType,
 	updateEmployeePaymentAPI,
+	updateEmployeePaymentService,
 } from "../types/employee_payment_type";
 import { EmployeePaymentMapper } from "~/server/database/mapper/employee_payment_mapper";
 
@@ -40,6 +41,7 @@ export const employeePaymentRouter = createTRPCRouter({
 
 			return employeePayment;
 		}),
+
 	getAllFutureEmployeePayment: publicProcedure
 		.output(z.array(z.array(employeePaymentFE)))
 		.query(async () => {
@@ -77,13 +79,6 @@ export const employeePaymentRouter = createTRPCRouter({
 
 			const newdata = await employeePaymentService.createEmployeePayment({
 				...input,
-				base_salary: input.base_salary,
-				food_allowance: input.food_allowance,
-				supervisor_allowance: input.supervisor_allowance,
-				occupational_allowance: input.occupational_allowance,
-				subsidy_allowance: input.subsidy_allowance,
-				long_service_allowance: input.long_service_allowance,
-				l_r_self: input.l_r_self,
 				l_i: previousEmployeePaymentFE.l_i,
 				h_i: previousEmployeePaymentFE.h_i,
 				l_r: previousEmployeePaymentFE.l_r,
@@ -91,10 +86,10 @@ export const employeePaymentRouter = createTRPCRouter({
 					previousEmployeePaymentFE.occupational_injury,
 				end_date: null,
 			});
+
 			await employeePaymentService.rescheduleEmployeePayment();
-			const employeePaymentFE =
-				await employeePaymentMapper.decode(newdata);
-			return employeePaymentFE;
+
+			return await employeePaymentMapper.decode(newdata);
 		}),
 
 	updateEmployeePayment: publicProcedure
@@ -103,12 +98,7 @@ export const employeePaymentRouter = createTRPCRouter({
 			const employeePaymentService = container.resolve(
 				EmployeePaymentService
 			);
-      // TODO: remove
-			const employeePaymentMapper = container.resolve(
-				EmployeePaymentMapper
-			);
-			const employeePayment =
-				await employeePaymentMapper.getEmployeePaymentNullable(input);
+			const employeePayment = updateEmployeePaymentService.parse(input);
 
 			await employeePaymentService.updateEmployeePaymentAndMatchLevel(
 				employeePayment
