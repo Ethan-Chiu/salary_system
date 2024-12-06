@@ -482,7 +482,7 @@ export class CalculateService {
 		interface HolidaysTypeDict {
 			[key: number]: number;
 		}
-		const special_leave_id = holidays_type.find(
+		const special_personal_leave_id = holidays_type.find(
 			(ht) => ht.holidays_name === "特別事假"
 		)?.pay_id;
 		let holidays_type_dict: HolidaysTypeDict = {};
@@ -494,7 +494,7 @@ export class CalculateService {
 		});
 		let leave_deduction = 0;
 		holiday_list.forEach((holiday) => {
-			if (holiday.pay_order === special_leave_id) return;
+			if (holiday.pay_order === special_personal_leave_id) return;
 			leave_deduction +=
 				(holiday.total_hours ?? 0) *
 				holidays_type_dict[holiday.pay_order!]!;
