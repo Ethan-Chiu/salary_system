@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { i18n, locales } from '~/components/lang_config'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "~/components/ui/select";
-import { BonusTypeEnum, BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
+import { bonusTypeEnum, BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 import dataTableContext from "../components/context/data_table_context";
 import DataTableContextProvider from "../components/context/data_table_context_provider";
 import { ProgressBar } from "~/components/functions/progress_bar";
@@ -67,7 +67,7 @@ const BonusHomePageContent = () => {
                         <SelectContent>
                             <SelectGroup>
                                 <SelectLabel>{t('others.period')}</SelectLabel>
-                                {Object.values(BonusTypeEnum.Enum).map((bonus_type) => {
+                                {Object.values(bonusTypeEnum.Enum).map((bonus_type) => {
                                     return (
                                         <SelectItem
                                             key={bonus_type}

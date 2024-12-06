@@ -253,6 +253,7 @@ export class EmployeePaymentService {
 
 		return Object.values(groupedEmployeePaymenttRecords);
 	}
+
 	async getAllFutureEmployeePayment(): Promise<EmployeePaymentFEType[][]> {
 		const current_date_string = get_date_string(new Date());
 		const allEmployeePayment = await EmployeePayment.findAll({
