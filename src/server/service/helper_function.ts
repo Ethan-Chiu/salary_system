@@ -41,7 +41,7 @@ export function is_date_available(
 }
 
 export function select_value<T>(newData: T | undefined, oldData: T): T {
-	return newData !== undefined ? newData : oldData;
+	return newData ?? oldData;
 }
 
 export function Round(num: number, decimals = 0): number {

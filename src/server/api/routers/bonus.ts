@@ -121,18 +121,15 @@ export const bonusRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
 			const empBonusMapper = container.resolve(EmployeeBonusMapper);
-			const empBonus = await empBonusMapper.encode(input);
-			const result = await empBonusService.createEmployeeBonus(empBonus);
-			const employeeBonusFE = await empBonusMapper.getEmployeeBonusFE(result);
+			const result = await empBonusService.createEmployeeBonus(input);
+			const employeeBonusFE = await empBonusMapper.getEmployeeBonusFE({...input, ...result});
 			return roundProperties(employeeBonusFE, 2);
 		}),
 	updateEmployeeBonus: publicProcedure
 		.input(updateEmployeeBonusAPI)
 		.mutation(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
-			const empBonusMapper = container.resolve(EmployeeBonusMapper);
-			const empBonus = await empBonusMapper.getEmployeeBonusNullable(input);
-			const result = await empBonusService.updateEmployeeBonus(empBonus);
+			const result = await empBonusService.updateEmployeeBonus(input);
 			return result;
 		}),
 	updateMultipleBonusByEmpNoList: publicProcedure
@@ -159,10 +156,9 @@ export const bonusRouter = createTRPCRouter({
 		.input(updateEmployeeBonusAPI.array())
 		.mutation(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
-			const empBonusMapper = container.resolve(EmployeeBonusMapper);
 			const promises = input
 				.map(
-					async (e) => await empBonusService.updateFromExcel(false, await empBonusMapper.getEmployeeBonusNullable(e))
+					async (e) => await empBonusService.updateFromExcel(false, e)
 				)
 			const err_emp_no_list = (await Promise.all(promises)).filter((e) => e != null);
 			return err_emp_no_list;
@@ -171,10 +167,9 @@ export const bonusRouter = createTRPCRouter({
 		.input(updateEmployeeBonusAPI.array())
 		.mutation(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
-			const empBonusMapper = container.resolve(EmployeeBonusMapper);
 			const err_emp_no_list = input
 				.map(
-					async (e) => await empBonusService.updateFromExcel(true, await empBonusMapper.getEmployeeBonusNullable(e))
+					async (e) => await empBonusService.updateFromExcel(true, e)
 				)
 				.filter((e) => e != null);
 			return err_emp_no_list;

@@ -5,6 +5,11 @@ export const dateStringF = z.object({
 	end_date: z.string().nullable(),
 });
 
+export const dateCreateF = z.object({
+	create_date: z.date(),
+	update_date: z.date(),
+})
+
 export const dateF = z.object({
 	start_date: z.date(),
 	end_date: z.date().nullable(),
