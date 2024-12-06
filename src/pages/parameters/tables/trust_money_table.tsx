@@ -102,14 +102,14 @@ export const trust_money_columns = ({ t, period_id, open, setOpen, mode, setMode
 export function trustMoneyMapper(
 	TrustMoneyData: TrustMoneyFEType[]
 ): RowItem[] {
-	return TrustMoneyData.map((data) => ({
-		position: data.position,
-		position_type: data.position_type,
-		org_trust_reserve_limit: data.org_trust_reserve_limit,
-		org_special_trust_incent_limit: data.org_special_trust_incent_limit,
-		start_date: formatDate("day", data.start_date) ?? "",
-		end_date: formatDate("day", data.end_date) ?? "",
-		functions: { create: data.creatable, update: data.updatable, delete: data.deletable },
+	return TrustMoneyData.map((d) => ({
+		position: d.position,
+		position_type: d.position_type,
+		org_trust_reserve_limit: d.org_trust_reserve_limit,
+		org_special_trust_incent_limit: d.org_special_trust_incent_limit,
+		start_date: formatDate("day", d.start_date) ?? "",
+		end_date: formatDate("day", d.end_date) ?? "",
+		functions: { create: d.creatable, update: d.updatable, delete: d.deletable },
 	}));
 }
 
