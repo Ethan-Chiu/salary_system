@@ -21,6 +21,11 @@ import Dropzone, {
 import { cn } from "~/lib/utils";
 
 import ExcelJS from 'exceljs';
+import { isDateType } from "~/lib/utils/check_type";
+import { displayData } from "~/components/synchronize/utils/display";
+import { useTranslation } from "next-i18next";
+import { inverse_translate } from "public/locales/utils";
+import { formatDate } from "~/lib/utils/format_date";
 
 export function formatBytes(
 	bytes: number,
@@ -374,6 +379,22 @@ function isFileWithPreview(file: File): file is File & { preview: string } {
 const TEST: NextPageWithLayout = () => {
 	const [files, setFiles] = useState<File[]>([]);
 	const [data, setData] = useState<any[]>([]);
+
+
+	const {t} = useTranslation("common");
+
+	function recoverData(): Record<string, any>[] {
+		const keys = data[0].map((original_header: string) => inverse_translate(String(original_header)));
+	
+		return data.slice(1).map((row: any[]) => {
+			return row.reduce((obj: Record<string, any>, value: any, index: number) => {
+				obj[keys[index]] = value;
+				return obj;
+			}, {});
+		});
+	}
+	
+
 	return (
 		<>
 			<FileUploader 
@@ -388,38 +409,49 @@ const TEST: NextPageWithLayout = () => {
 			<Button onClick={() => console.log(data)}>Console Log Data</Button> */}
 
 
-<div>
-			{/* <h1>Upload and Read Excel File</h1> */}
-			
-			{/* <Input type="file" accept=".xlsx" onChange={handleFileUpload} /> */}
-			
-			{/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
-			<div style={{ overflowX: 'auto', maxHeight: '600px', border: '1px solid #ddd' }}>
-				<table style={{ borderCollapse: 'collapse', width: '100%' }}>
-					<thead>
-						<tr>
-							{/* Assuming the first row contains headers */}
-							{data[0] && data[0].map((header: any, index: number) => (
-								<th key={index} style={{ border: '1px solid #ddd', padding: '8px' }}>
-									{header}
-								</th>
-							))}
-						</tr>
-					</thead>
-					<tbody>
-						{data.slice(1).map((row: any, rowIndex: number) => (
-							<tr key={rowIndex}>
-								{row.map((cell: any, cellIndex: number) => (
-									<td key={cellIndex} style={{ border: '1px solid #ddd', padding: '8px' }}>
-										{cell}
-									</td>
+			<div>
+				{/* <h1>Upload and Read Excel File</h1> */}
+				
+				{/* <Input type="file" accept=".xlsx" onChange={handleFileUpload} /> */}
+				
+				{/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
+				<div style={{ overflowX: 'auto', maxHeight: '600px', border: '1px solid #ddd' }}>
+					<table style={{ borderCollapse: 'collapse', width: '100%' }}>
+						<thead>
+							<tr>
+								{/* Assuming the first row contains headers */}
+								{data[0] && data[0].map((header: any, index: number) => (
+									<th key={index} style={{ border: '1px solid #ddd', padding: '8px' }}>
+										{
+											inverse_translate(header)
+										}
+									</th>
 								))}
 							</tr>
-						))}
-					</tbody>
-				</table>
+						</thead>
+						<tbody>
+							{data.slice(1).map((row: any, rowIndex: number) => (
+								<tr key={rowIndex}>
+									{row.map((cell: any, cellIndex: number) => (
+										<td key={cellIndex} style={{ border: '1px solid #ddd', padding: '8px' }}>
+											{
+												isDateType(cell) ? formatDate("day", cell) : cell
+											}
+										</td>
+									))}
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
 			</div>
-		</div>
+
+
+			<Button onClick={() => {
+				console.log(recoverData())
+			}}>
+				TEST
+			</Button>
 		</>
 	);
 };
