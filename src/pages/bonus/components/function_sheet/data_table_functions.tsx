@@ -44,7 +44,12 @@ import { BonusPositionTypeBatchCreateForm } from "./batch_create_form/bonus_posi
 import { BonusSeniorityBatchCreateForm } from "./batch_create_form/bonus_seniority_batch_create_form";
 import { BonusTableEnumValues } from "../../bonus_tables";
 import { bonusToolbarFunctionsContext } from "./bonus_functions_context";
+import { UseTRPCQueryResult } from "@trpc/react-query/shared";
+import { Label } from "@radix-ui/react-label";
+import { Checkbox } from "@radix-ui/react-checkbox";
+import { Input } from "~/components/ui/input";
 
+import { BonusBatchUpdateForm } from "./batch_update_form";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
@@ -69,6 +74,7 @@ export function DataTableFunctions({
 	const [mode, setMode] = useState<FunctionMode>("none");
 	const { t } = useTranslation(["common", "nav"]);
 	const functions = useContext(bonusToolbarFunctionsContext);
+	const queryFunction = functions.queryFunction;
 	const updateFunction = functions.updateFunction;
 	const batchUpdateFunction = functions.batchUpdateFunction;
 	const createFunction = functions.createFunction;
@@ -76,13 +82,12 @@ export function DataTableFunctions({
 	const deleteFunction = functions.deleteFunction;
 	const autoCalculateFunction = functions.autoCalculateFunction;
 
-
 	// ========================= Additional Condition for Schema =====================================
 	let schema = getSchema(tableType);
 
 	return (
 		<div className={cn(className, "flex h-full items-center")}>
-			<Sheet open={open} onOpenChange={setOpen} >
+			<Sheet open={open} onOpenChange={setOpen}>
 				{/* Dropdown */}
 				<DropdownMenu modal={false}>
 					<DropdownMenuTrigger asChild>
@@ -99,36 +104,48 @@ export function DataTableFunctions({
 							{t("others.functions")}
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						{createFunction && <CompTriggerItem
-							mode={"create"}
-							itemName={t("button.create")}
-							icon={Plus}
-						/>}
-						{batchCreateFunction && <CompTriggerItem
-							mode={"batch_create"}
-							itemName={t("button.batch_create")}
-							icon={Copy}
-						/>}
-						{updateFunction && <CompTriggerItem
-							mode={"update"}
-							itemName={t("button.update")}
-							icon={PenSquare}
-						/>}
-						{batchUpdateFunction && <CompTriggerItem
-							mode={"batch_update"}
-							itemName={t("button.batch_update")}
-							icon={NotebookPen}
-						/>}
-						{deleteFunction && <CompTriggerItem
-							mode={"delete"}
-							itemName={t("button.delete")}
-							icon={Trash2}
-						/>}
-						{autoCalculateFunction && <CompTriggerItem
-							mode={"auto_calculate"}
-							itemName={t("button.auto_calculate")}
-							icon={RefreshCcw}
-						/>}
+						{createFunction && (
+							<CompTriggerItem
+								mode={"create"}
+								itemName={t("button.create")}
+								icon={Plus}
+							/>
+						)}
+						{batchCreateFunction && (
+							<CompTriggerItem
+								mode={"batch_create"}
+								itemName={t("button.batch_create")}
+								icon={Copy}
+							/>
+						)}
+						{updateFunction && (
+							<CompTriggerItem
+								mode={"update"}
+								itemName={t("button.update")}
+								icon={PenSquare}
+							/>
+						)}
+						{batchUpdateFunction && (
+							<CompTriggerItem
+								mode={"batch_update"}
+								itemName={t("button.batch_update")}
+								icon={NotebookPen}
+							/>
+						)}
+						{deleteFunction && (
+							<CompTriggerItem
+								mode={"delete"}
+								itemName={t("button.delete")}
+								icon={Trash2}
+							/>
+						)}
+						{autoCalculateFunction && (
+							<CompTriggerItem
+								mode={"auto_calculate"}
+								itemName={t("button.auto_calculate")}
+								icon={RefreshCcw}
+							/>
+						)}
 					</DropdownMenuContent>
 				</DropdownMenu>
 				{/* Sheet */}
@@ -149,6 +166,12 @@ export function DataTableFunctions({
 							bonusType={bonusType}
 							tableType={tableType}
 							schema={schema}
+							setOpen={setOpen}
+						/>
+					) : mode == "batch_update" ? (
+						<BonusBatchUpdateForm
+							bonusType={bonusType}
+							tableType={tableType}
 							setOpen={setOpen}
 						/>
 					) : (
@@ -189,36 +212,61 @@ export function DataTableFunctions({
 	}
 }
 
-function BatchCreateForm({ tableType, bonusType, schema, setOpen }: { tableType: TableEnum, bonusType: BonusTypeEnumType, schema: any, setOpen: (open: boolean) => void }) {
+function BatchCreateForm({
+	tableType,
+	bonusType,
+	schema,
+	setOpen,
+}: {
+	tableType: TableEnum;
+	bonusType: BonusTypeEnumType;
+	schema: any;
+	setOpen: (open: boolean) => void;
+}) {
 	const mode = "batch_create";
-	if (tableType == "TableBonusWorkType") return <BonusWorkTypeBatchCreateForm
-		bonusType={bonusType}
-		formSchema={z.object({ content: z.array(schema) })}
-		mode={mode}
-		closeSheet={() => setOpen(false)}
-	/>;
-	if (tableType == "TableBonusDepartment") return <BonusDepartmentBatchCreateForm
-		bonusType={bonusType}
-		formSchema={z.object({ content: z.array(schema) })}
-		mode={mode}
-		closeSheet={() => setOpen(false)}
-	/>;
-	if (tableType == "TableBonusPosition") return <BonusPositionBatchCreateForm
-		bonusType={bonusType}
-		formSchema={z.object({ content: z.array(schema) })}
-		mode={mode}
-		closeSheet={() => setOpen(false)}
-	/>;
+	if (tableType == "TableBonusWorkType")
+		return (
+			<BonusWorkTypeBatchCreateForm
+				bonusType={bonusType}
+				formSchema={z.object({ content: z.array(schema) })}
+				mode={mode}
+				closeSheet={() => setOpen(false)}
+			/>
+		);
+	if (tableType == "TableBonusDepartment")
+		return (
+			<BonusDepartmentBatchCreateForm
+				bonusType={bonusType}
+				formSchema={z.object({ content: z.array(schema) })}
+				mode={mode}
+				closeSheet={() => setOpen(false)}
+			/>
+		);
+	if (tableType == "TableBonusPosition")
+		return (
+			<BonusPositionBatchCreateForm
+				bonusType={bonusType}
+				formSchema={z.object({ content: z.array(schema) })}
+				mode={mode}
+				closeSheet={() => setOpen(false)}
+			/>
+		);
 	// if (tableType == "TableBonusPositionType") return <BonusPositionTypeBatchCreateForm
 	// 	bonusType={bonusType}
 	// 	formSchema={z.object({ content: z.array(schema) })}
 	// 	mode={mode}
 	// 	closeSheet={() => setOpen(false)}
 	// />;
-	if (tableType == "TableBonusSeniority") return <BonusSeniorityBatchCreateForm
-		bonusType={bonusType}
-		formSchema={z.object({ content: z.array(schema) })}
-		mode={mode}
-		closeSheet={() => setOpen(false)}
-	/>;
+	if (tableType == "TableBonusSeniority")
+		return (
+			<BonusSeniorityBatchCreateForm
+				bonusType={bonusType}
+				formSchema={z.object({ content: z.array(schema) })}
+				mode={mode}
+				closeSheet={() => setOpen(false)}
+			/>
+		);
 }
+
+
+

@@ -263,6 +263,11 @@ export default function BonusToolbarFunctionsProvider({
 			ctx.bonus.getEmployeeBonus.invalidate();
 		},
 	});
+	const updateMultipleBonus = api.bonus.updateMultipleBonusByEmpNoList.useMutation({
+		onSuccess: () => {
+			ctx.bonus.getEmployeeBonus.invalidate();
+		}
+	})
 	//#endregion
 
 	const functionsDictionary: Record<TableEnum, FunctionsApi> = {
@@ -335,7 +340,7 @@ export default function BonusToolbarFunctionsProvider({
 			updateFunction: updateEmployeeBonus,
 			createFunction: undefined,
 			batchCreateFunction: undefined,
-			batchUpdateFunction: undefined,
+			batchUpdateFunction: updateMultipleBonus,
 			deleteFunction: undefined,
 			autoCalculateFunction: autoCalculateEmployeeBonus,
 		}
