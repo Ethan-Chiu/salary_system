@@ -89,7 +89,6 @@ export class AttendanceSettingService {
 			where: { disabled: false },
 			order: [["start_date", "DESC"]],
 		});
-
 		return await this.attendanceMapper.decodeList(attendanceSettingList);
 	}
 

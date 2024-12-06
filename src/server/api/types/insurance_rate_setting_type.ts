@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { dateAll, dateCreate, Id } from "./common_type";
+import { dateAll, dateCreate, func, Id } from "./common_type";
 
 const InsuranceRateSettingBase = z.object({
     min_wage_rate: z.number(),
@@ -25,6 +25,7 @@ export const InsuranceRateSettingFE = z
         id: z.number(),
     })
     .merge(InsuranceRateSettingBase)
-    .merge(dateAll);
+    .merge(dateAll)
+    .merge(func);
 
 export type InsuranceRateSettingFEType = z.infer<typeof InsuranceRateSettingFE>;

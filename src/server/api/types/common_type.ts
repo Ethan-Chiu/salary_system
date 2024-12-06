@@ -1,9 +1,14 @@
+import { createTable } from "@tanstack/react-table";
 import { z } from "zod";
 
 export const Id = z.object({
 	id: z.number(),
 });
-
+export const func = z.object({
+	creatable: z.boolean(),
+	updatable: z.boolean(),
+	deletable: z.boolean(),
+})
 export const dateAll = z.object({
 	start_date: z.date().nullable(),
 	end_date: z.date().nullable(),
