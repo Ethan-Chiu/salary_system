@@ -9,7 +9,15 @@ import { type TableComponentProps } from "../tables_view";
 import { formatDate } from "~/lib/utils/format_date";
 import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
+import { type TFunction } from "i18next";
 import { BankSettingFEType } from "~/server/api/types/bank_setting_type";
+import { ParameterForm } from "../components/function_sheet/parameter_form";
+import { useState } from "react";
+import { FunctionMode } from "../components/function_sheet/data_table_functions";
+import { bankSchema } from "../schemas/configurations/bank_schema";
+import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
+import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
+import { FunctionsComponent, FunctionsItem } from "~/components/data_table/functions_component";
 
 export type RowItem = {
 	bank_name: string;
@@ -18,116 +26,78 @@ export type RowItem = {
 	org_code: string;
 	start_date: string;
 	end_date: string | null;
+	functions: FunctionsItem;
 };
 type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-export const bank_columns = [
-	columnHelper.accessor("bank_name", {
-		header: ({ column }) => {
-			const { t } = useTranslation(["common"]);
-			return (
-				<div className="flex justify-center">
-					<div className="text-center font-medium">
-						<Button
-							variant="ghost"
-							onClick={() =>
-								column.toggleSorting(
-									column.getIsSorted() === "asc"
-								)
-							}
-						>
-							{t("table.bank_name")}
-							<ArrowUpDown className="ml-2 h-4 w-4" />
-						</Button>
+export const bank_columns = ({ t, period_id, open, setOpen, mode, setMode }: { t: TFunction<[string], undefined>, period_id: number, open: boolean, setOpen: (open: boolean) => void, mode: FunctionMode, setMode: (mode: FunctionMode) => void }) => [
+	...["bank_name", "org_name", "start_date", "end_date"].map(
+		(key: string) => columnHelper.accessor(key as RowItemKey, {
+			header: ({ column }) => {
+				return (
+					<div className="flex justify-center">
+						<div className="text-center font-medium">
+							<Button
+								variant="ghost"
+								onClick={() =>
+									column.toggleSorting(
+										column.getIsSorted() === "asc"
+									)
+								}
+							>
+								{t(`table.${key}`)}
+								<ArrowUpDown className="ml-2 h-4 w-4" />
+							</Button>
+						</div>
 					</div>
-				</div>
-			);
-		},
-		cell: ({ row }) =>
-			<div className="text-center font-medium">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
-		,
-	}),
-	columnHelper.accessor("org_name", {
+				);
+			},
+			cell: ({ row }) => {
+				switch (key) {
+					case "bank_name":
+						return <div className="text-center font-medium">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
+					case "org_name":
+						return <div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>
+					case "end_date":
+						return row.original.end_date ? (
+							<div className="text-center font-medium">{`${row.original.end_date}`}</div>
+						) : (
+							<div className="text-center font-medium"></div>
+						);
+					default:
+						return <div className="text-center font-medium">{`${row.original[key as RowItemKey]}`}</div>
+				}
+			}
+		})),
+	columnHelper.accessor("functions", {
 		header: ({ column }) => {
-			const { t } = useTranslation(["common"]);
 			return (
 				<div className="flex justify-center">
 					<div className="text-center font-medium">
-						<Button
-							variant="ghost"
-							onClick={() =>
-								column.toggleSorting(
-									column.getIsSorted() === "asc"
-								)
-							}
-						>
-							{t("table.org_name")}
-							<ArrowUpDown className="ml-2 h-4 w-4" />
-						</Button>
-					</div>
-				</div>
-			);
-		},
-		cell: ({ row }) =>
-			<div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>
-		,
-	}),
-	columnHelper.accessor("start_date", {
-		header: ({ column }) => {
-			const { t } = useTranslation(["common"]);
-			return (
-				<div className="flex justify-center">
-					<div className="text-center font-medium">
-						<Button
-							variant="ghost"
-							onClick={() =>
-								column.toggleSorting(
-									column.getIsSorted() === "asc"
-								)
-							}
-						>
-							{t("table.start_date")}
-							<ArrowUpDown className="ml-2 h-4 w-4" />
-						</Button>
+						{t(`others.functions`)}
 					</div>
 				</div>
 			);
 		},
 		cell: ({ row }) => {
 			return (
-				<div className="text-center font-medium">{`${row.original.start_date
-					}`}</div>
-			);
-		},
-	}),
-	columnHelper.accessor("end_date", {
-		header: ({ column }) => {
-			const { t } = useTranslation(["common"]);
-			return (
-				<div className="flex justify-center">
-					<div className="text-center font-medium">
-						<Button
-							variant="ghost"
-							onClick={() =>
-								column.toggleSorting(
-									column.getIsSorted() === "asc"
-								)
-							}
-						>
-							{t("table.end_date")}
-							<ArrowUpDown className="ml-2 h-4 w-4" />
-						</Button>
-					</div>
-				</div>
-			);
-		},
-		cell: ({ row }) => {
-			return row.original.end_date ? (
-				<div className="text-center font-medium">{`${row.original.end_date}`}</div>
-			) : (
-				<div className="text-center font-medium"></div>
+				<FunctionsComponent t={t} open={open} setOpen={setOpen} mode={mode} setMode={setMode} functionsItem={row.original.functions} >
+					<ParameterToolbarFunctionsProvider
+						selectedTableType={"TableBankSetting"}
+						period_id={period_id}
+					>
+						<ScrollArea className="h-full w-full">
+							<ParameterForm
+								formSchema={bankSchema}
+								mode={mode}
+								closeSheet={() => setOpen(false)}
+							/>
+						</ScrollArea>
+						<ScrollBar orientation="horizontal" />
+					</ParameterToolbarFunctionsProvider>
+				</FunctionsComponent>
 			);
 		},
 	}),
@@ -142,6 +112,7 @@ export function bankSettingMapper(bankSettingData: BankSettingFEType[]): RowItem
 			org_code: d.org_code,
 			start_date: formatDate("day", d.start_date) ?? "",
 			end_date: formatDate("day", d.end_date) ?? "",
+			functions: { "create": d.creatable, "update": d.updatable, "delete": d.deletable },
 		};
 	});
 }
@@ -153,6 +124,10 @@ interface BankTableProps extends TableComponentProps {
 }
 
 export function BankTable({ period_id, viewOnly }: BankTableProps) {
+	const { t } = useTranslation(["common"]);
+	const [open, setOpen] = useState<boolean>(false);
+	const [mode, setMode] = useState<FunctionMode>("none");
+
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBankSetting.useQuery({ period_id });
 	const filterKey: RowItemKey = "bank_name";
@@ -176,13 +151,13 @@ export function BankTable({ period_id, viewOnly }: BankTableProps) {
 		<>
 			{!viewOnly ? (
 				<DataTableWithFunctions
-					columns={bank_columns}
+					columns={bank_columns({ t, period_id, open, setOpen, mode, setMode })}
 					data={bankSettingMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
-					columns={bank_columns}
+					columns={bank_columns({ t, period_id, open, setOpen, mode, setMode })}
 					data={bankSettingMapper(data!)}
 					filterColumnKey={filterKey}
 				/>

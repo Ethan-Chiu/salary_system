@@ -59,11 +59,8 @@ export const updateEmployeePaymentService = employeePaymentUpdate
 	.merge(Id);
 
 // Frontend
-export const employeePaymentFE = z
-	.object({
-		id: z.number(),
-	})
-	.merge(employeePaymentBase)
+export const employeePaymentFE = employeePaymentBase
+	.merge(Id)
 	.merge(empData)
 	.merge(dateAll);
 

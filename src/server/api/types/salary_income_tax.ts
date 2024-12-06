@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { dateAll, dateCreate, Id } from "./common_type";
+import { dateAll, dateCreate, func, Id } from "./common_type";
 const salaryIncomeTaxBase = z.object({
     salary_start: z.number(),
     salary_end: z.number(),
@@ -19,6 +19,7 @@ export const salaryIncomeTaxFE = z
         id: z.number(),
     })
     .merge(salaryIncomeTaxBase)
-    .merge(dateAll);
+    .merge(dateAll)
+    .merge(func);
 
 export type SalaryIncomeTaxFEType = z.infer<typeof salaryIncomeTaxFE>;

@@ -528,16 +528,16 @@ export class SyncService {
 					emp_no: ehr_emp_data.emp_no,
 					emp_trust_reserve: 0,
 					emp_special_trust_incent: 0,
-					start_date: new Date(ehr_emp_data.registration_date),
+					start_date: new Date(0),
 					end_date: null,
 				});
 			}
 
-			if (!salary_emp_data) {
-				throw new Error(
-					`Employee data for ${changeEmp.emp_no} does not exist`
-				);
-			}
+			// if (!salary_emp_data) {
+			// 	throw new Error(
+			// 		`Employee data for ${changeEmp.emp_no} does not exist`
+			// 	);
+			// }
 
 			const updatedData: EmployeeData = salary_emp_data;
 			for (const key of changeEmp.keys) {

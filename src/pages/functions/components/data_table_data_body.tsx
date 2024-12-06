@@ -181,10 +181,11 @@ export function DataTableDataBody<TData>({
 
 					<Tabs defaultValue="other_addition" className="w-full">
 						<TabsList className="grid w-full grid-cols-4">
-							<TabsTrigger value="other_addition">{t("table.other_addition")}</TabsTrigger>
 							<TabsTrigger value="other_addition_tax">{t("table.other_addition_tax")}</TabsTrigger>
-							<TabsTrigger value="other_deduction">{t("table.other_deduction")}</TabsTrigger>
+							<TabsTrigger value="other_addition">{t("table.other_addition")}</TabsTrigger>
 							<TabsTrigger value="other_deduction_tax">{t("table.other_deduction_tax")}</TabsTrigger>
+							<TabsTrigger value="other_deduction">{t("table.other_deduction")}</TabsTrigger>
+							
 						</TabsList>
 						<TabsContent value="other_addition">
 							{getAmountTable("other_addition")}

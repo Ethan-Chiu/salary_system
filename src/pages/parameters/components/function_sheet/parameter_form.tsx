@@ -58,7 +58,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	const deleteFunction = functions.deleteFunction!;
 	const { isLoading, isError, data, error } =
 		(mode === "create")
-			? queryCurrentFunction()
+			? queryFutureFunction()
 			: queryFutureFunction();
 
 	const isList = Array.isArray(data);
@@ -123,7 +123,6 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	if (!data) {
 		return <p>{t("others.no_data")}</p>;
 	}
-
 
 	// Select one entry
 	if (selectedData === null && !withoutDeafultValue) {

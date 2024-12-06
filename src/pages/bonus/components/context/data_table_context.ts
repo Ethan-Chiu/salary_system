@@ -3,8 +3,8 @@ import {
 	BonusTableEnumValues,
 } from "../../bonus_tables";
 import { type TableObject } from "./data_table_context_provider";
-import { BonusTypeEnum, BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
-import { TableEnum } from "./data_table_enum";
+import { bonusTypeEnum, type BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
+import { type TableEnum } from "./data_table_enum";
 
 const dataTableContext = React.createContext<{
 	selectedTableType: TableEnum;
@@ -16,7 +16,7 @@ const dataTableContext = React.createContext<{
 }>({
 	selectedTableType: BonusTableEnumValues[0],
 	setSelectedTableType: (_: TableEnum) => undefined,
-	selectedBonusType: Object.values(BonusTypeEnum.Enum)[0]!,
+	selectedBonusType: Object.values(bonusTypeEnum.Enum)[0]!,
 	setSelectedBonusType: (_: BonusTypeEnumType) => undefined,
 	selectedTable: null,
 	setSelectedTable: (_: TableObject | null) => undefined,

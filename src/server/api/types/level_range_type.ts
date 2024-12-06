@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { dateAll, dateCreate, Id } from "./common_type";
+import { dateAll, dateCreate, func, Id } from "./common_type";
 
 const levelRangeBase = z.object({
   type: z.string(),
@@ -28,5 +28,6 @@ export const levelRangeFE = z
     id: z.number(),
   })
   .merge(levelRangeBaseAPI)
-  .merge(dateAll);
+  .merge(dateAll)
+  .merge(func);
 export type LevelRangeFEType = z.infer<typeof levelRangeFE>;
