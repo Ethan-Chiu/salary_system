@@ -6,12 +6,12 @@ import {
 	type AllowanceWithType,
 	EHRService,
 } from "~/server/service/ehr_service";
-import { convertDatePropertiesToISOString } from "./helper_function";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { container } from "tsyringe";
 import { type EmployeePaymentDecType } from "../entity/SALARY/employee_payment";
 
 export class AllowanceMapper {
+
 	async getAllowanceFE(
 		allowance_with_type: AllowanceWithType
 	): Promise<AllowanceFEType> {
@@ -27,8 +27,9 @@ export class AllowanceMapper {
 				[allowance_with_type.emp_no]
 			)
 		)[0];
+
 		const allowanceFE: AllowanceFEType = {
-			...convertDatePropertiesToISOString(allowance_with_type),
+			...allowance_with_type,
 			name: employee_data!.emp_name,
 			department: employee_data!.department,
 			position: employee_data!.position,
