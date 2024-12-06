@@ -1,8 +1,16 @@
-import "./zh-TW/common.json";
+import common from "./zh-TW/common.json";
 
-function TEST() {
-    
-    return (
-        <></>
-    );
+export function inverse_translate(key: string) {
+    let inverse = undefined;
+    Object.keys(common).map((scope: string) => {
+        if (scope == "others") return;
+        Object.keys((common as any)[scope]).find((k: string) => {
+            if ((common as any)[scope][k] === key) {
+                // inverse = `${scope}.${k}`;
+                inverse = k;
+            }
+        })
+    });
+
+    return inverse;
 }

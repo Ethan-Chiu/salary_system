@@ -274,7 +274,8 @@
     "q1_bonus": "Q1獎金",
     "q2_bonus": "Q2獎金",
     "q3_q4_bonus": "Q3-Q4獎金",
-    "employee_dividends_bonus": "員工分紅獎金"
+    "employee_dividends_bonus": "員工分紅獎金",
+    "position_position_type": "職等職級"
   },
   "table_name": {
     "attendanceSetting": "請假加班",
@@ -312,6 +313,7 @@
     "previous_page": "上一頁",
     "create": "建立",
     "batch_create": "批量建立",
+    "batch_update": "批量修改",
     "update": "修正",
     "modify": "修改",
     "delete": "刪除",

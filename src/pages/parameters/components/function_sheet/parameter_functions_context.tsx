@@ -12,6 +12,7 @@ interface FunctionsApi {
 	updateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	createFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	deleteFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
+	batchCreateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 }
 
 export const parameterToolbarFunctionsContext = createContext<FunctionsApi>({
@@ -20,6 +21,7 @@ export const parameterToolbarFunctionsContext = createContext<FunctionsApi>({
 	updateFunction: undefined,
 	createFunction: undefined,
 	deleteFunction: undefined,
+	batchCreateFunction: undefined,
 });
 
 interface ToolbarFunctionsProviderProps {
@@ -223,6 +225,14 @@ export default function ParameterToolbarFunctionsProvider({
 				ctx.parameters.getAllFutureSalaryIncomeTax.invalidate();
 			},
 		});
+	const batchCreateSalaryIncomeTax = 
+		api.parameters.batchCreateSalaryIncomeTax.useMutation({
+			onSuccess: () => {
+				ctx.parameters.getCurrentSalaryIncomeTax.invalidate();
+				ctx.parameters.getAllSalaryIncomeTax.invalidate();
+				ctx.parameters.getAllFutureSalaryIncomeTax.invalidate();
+			}
+		})
 	const deleteSalaryIncomeTax =
 		api.parameters.deleteSalaryIncomeTax.useMutation({
 			onSuccess: () => {
@@ -240,6 +250,7 @@ export default function ParameterToolbarFunctionsProvider({
 			updateFunction: updateAttendanceSetting,
 			createFunction: createAttendanceSetting,
 			deleteFunction: deleteAttendanceSetting,
+			batchCreateFunction: undefined,
 		},
 		TableBankSetting: {
 			queryCurrentFunction: getCurrentBankSetting,
@@ -247,6 +258,7 @@ export default function ParameterToolbarFunctionsProvider({
 			updateFunction: updateBankSetting,
 			createFunction: createBankSetting,
 			deleteFunction: deleteBankSetting,
+			batchCreateFunction: undefined,
 		},
 		TableInsurance: {
 			queryCurrentFunction: getCurrentInsuranceRateSetting,
@@ -254,6 +266,7 @@ export default function ParameterToolbarFunctionsProvider({
 			updateFunction: updateInsuranceRateSetting,
 			createFunction: createInsuranceRateSetting,
 			deleteFunction: deleteInsuranceRateSetting,
+			batchCreateFunction: undefined,
 		},
 		TableTrustMoney: {
 			queryCurrentFunction: getCurrentTrustMoneySetting,
@@ -261,6 +274,7 @@ export default function ParameterToolbarFunctionsProvider({
 			updateFunction: updateTrustMoneySetting,
 			createFunction: createTrustMoneySetting,
 			deleteFunction: deleteTrustMoneySetting,
+			batchCreateFunction: undefined,
 		},
 		TableLevel: {
 			queryCurrentFunction: getCurrentLevel,
@@ -268,6 +282,7 @@ export default function ParameterToolbarFunctionsProvider({
 			updateFunction: updateLevel,
 			createFunction: createLevel,
 			deleteFunction: deleteLevel,
+			batchCreateFunction: undefined,
 		},
 		TableLevelRange: {
 			queryCurrentFunction: getCurrentLevelRange,
@@ -275,6 +290,7 @@ export default function ParameterToolbarFunctionsProvider({
 			updateFunction: updateLevelRange,
 			createFunction: createLevelRange,
 			deleteFunction: deleteLevelRange,
+			batchCreateFunction: undefined,
 		},
 		TableSalaryIncomeTax: {
 			queryCurrentFunction: getCurrentSalaryIncomeTax,
@@ -282,6 +298,7 @@ export default function ParameterToolbarFunctionsProvider({
 			updateFunction: updateSalaryIncomeTax,
 			createFunction: createSalaryIncomeTax,
 			deleteFunction: deleteSalaryIncomeTax,
+			batchCreateFunction: batchCreateSalaryIncomeTax,
 		}
 	};
 

@@ -32,6 +32,9 @@ import { LoadingSpinner } from "~/components/loading";
 import { FieldConfig } from "~/components/ui/auto-form/types";
 import { formatDate } from "~/lib/utils/format_date";
 import { isDate } from "date-fns";
+import { FileUploader, recoverData } from "~/pages/test";
+import { inverse_translate } from "public/locales/utils";
+import { isDateType } from "~/lib/utils/check_type";
 
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
@@ -54,16 +57,15 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	const queryCurrentFunction = functions.queryCurrentFunction!;
 	const queryFutureFunction = functions.queryFutureFunction!;
 	const updateFunction = functions.updateFunction!;
+	const batchCreateFunction = functions.batchCreateFunction!;
 	const createFunction = functions.createFunction!;
 	const deleteFunction = functions.deleteFunction!;
 	const { isLoading, isError, data, error } =
-		(mode === "create")
-			? queryFutureFunction()
-			: queryFutureFunction();
+		mode === "create" ? queryFutureFunction() : queryFutureFunction();
 
 	const isList = Array.isArray(data);
 
-	const [selectedData, setSelectedData] = useState((defaultValue) ?? null);
+	const [selectedData, setSelectedData] = useState(defaultValue ?? null);
 	const [withoutDeafultValue, setWithoutDeafultValue] = useState(false);
 
 	const [formValues, setFormValues] = useState<
@@ -126,7 +128,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 
 	// Select one entry
 	if (selectedData === null && !withoutDeafultValue) {
-		const dataList = isList ? data.flat() : [data]
+		const dataList = isList ? data.flat() : [data];
 		const noIDData: any[] = dataList.map((item: any) => {
 			const { ["id"]: id, ...rest } = item;
 			return rest;
@@ -136,8 +138,12 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 			<CompViewAllDatas
 				dataNoID={noIDData}
 				mode={mode}
+				onBatchCreate={(data: any) => {
+					console.log(functions);
+					batchCreateFunction.mutate(data);
+				}}
 				onUpdate={(index: number) => {
-					const dataList = isList ? data : [data]
+					const dataList = isList ? data : [data];
 					setSelectedData(dataList[index]);
 				}}
 				onDelete={(index: number) => {
@@ -153,12 +159,11 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 		);
 	}
 
-
 	// Create or update an entry
 	return (
 		<>
 			<AutoForm
-				className="mb-10 mr-5 ml-5 mt-5"
+				className="mb-10 ml-5 mr-5 mt-5"
 				_defaultValues={selectedData}
 				values={formValues}
 				onValuesChange={setFormValues}
@@ -216,12 +221,14 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 const CompViewAllDatas = ({
 	dataNoID,
 	mode,
+	onBatchCreate,
 	onUpdate,
 	onDelete,
 	clearDeafultValue,
 }: {
 	dataNoID: any[];
 	mode: FunctionMode;
+	onBatchCreate: (data: any) => void;
 	onUpdate: (index: number) => void;
 	onDelete: (index: number) => void;
 	clearDeafultValue: () => void;
@@ -229,6 +236,13 @@ const CompViewAllDatas = ({
 	const { t } = useTranslation(["common"]);
 	const [filterValue, setFilterValue] = useState<string>("");
 	const [filteredDataList, setFilteredDataList] = useState(dataNoID);
+
+
+	// Batch create
+	const [batchCreateOpen, setBatchCreateOpen] = useState(false);
+	const [files, setFiles] = useState<File[]>([]);
+	const [data, setData] = useState<any[]>([]);
+
 
 	useEffect(() => {
 		const filteredData = dataNoID?.filter((data) => {
@@ -248,9 +262,80 @@ const CompViewAllDatas = ({
 					onChange={(e) => setFilterValue(e.target.value)}
 				></Input>
 				{mode == "create" && (
-					<Button className="absolute right-4 top-4" onClick={clearDeafultValue}>
-						{t("button.no_default_value")}
-					</Button>
+					<>
+						<div className="absolute right-4 top-4">
+							<Button
+								className="mr-4"
+								onClick={() => {
+									setBatchCreateOpen(true);
+								}}
+							>
+								{t("button.batch_create")}
+							</Button>
+							<Button onClick={clearDeafultValue}>
+								{t("button.no_default_value")}
+							</Button>
+						</div>
+
+						<Dialog open={batchCreateOpen} onOpenChange={setBatchCreateOpen}>
+							<DialogContent className="sm:max-w-[1000px]">
+								<DialogHeader>
+									<DialogTitle>Batch Create Via Excel Upload</DialogTitle>
+								</DialogHeader>
+								<FileUploader 
+									onUpload={async(files: File[]) => console.log(files)}
+									files={files}
+									setFiles={setFiles}
+									data={data}
+									setData={setData}
+								/>
+								<div>
+									<div style={{ overflowX: 'auto', maxHeight: '600px', border: '1px solid #ddd' }}>
+										<table style={{ borderCollapse: 'collapse', width: '100%' }}>
+											<thead>
+												<tr>
+													{data[0] && data[0].map((header: any, index: number) => (
+														<th key={index} style={{ border: '1px solid #ddd', padding: '8px' }}>
+															{inverse_translate(header)}
+														</th>
+													))}
+												</tr>
+											</thead>
+											<tbody>
+												{data.slice(1).map((row: any, rowIndex: number) => (
+													<tr key={rowIndex}>
+														{row.map((cell: any, cellIndex: number) => (
+															<td key={cellIndex} style={{ border: '1px solid #ddd', padding: '8px' }}>
+																{
+																	isDateType(cell) ? formatDate("day", cell) : cell
+																}
+															</td>
+														))}
+													</tr>
+												))}
+											</tbody>
+										</table>
+									</div>
+								</div>
+								{data && data.length > 0 && (
+									<DialogFooter>
+										<DialogClose asChild>
+											<Button
+												onClick={() => {
+													console.log(onBatchCreate)
+													console.log(recoverData(data));
+													onBatchCreate(recoverData(data));
+													setBatchCreateOpen(false);
+												}}
+											>	
+												{t("button.save")}
+											</Button>
+										</DialogClose>
+									</DialogFooter>
+								)}
+							</DialogContent>
+						</Dialog>
+					</>
 				)}
 			</div>
 			<div>
@@ -274,53 +359,66 @@ const CompViewAllDatas = ({
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{filteredDataList.map((data: any, index: number) => {
-								return (
-									<TableRow key={data.id}>
-										<TableCell className="items-center">
-											{mode === "create" && (
-												<Copy
-													size={18}
-													className="cursor-pointer"
-													onClick={() => {
-														onUpdate(index);
-													}}
-												/>
-											)}
-											{mode === "update" && (
-												<PenSquare
-													size={18}
-													className="cursor-pointer"
-													onClick={() => {
-														onUpdate(index);
-													}}
-												/>
-											)}
-											{mode === "delete" && (
-												<Trash2
-													size={18}
-													className="cursor-pointer"
-													onClick={() => {
-														onDelete(index);
-													}}
-												/>
-											)}
-										</TableCell>
-										{Object.keys(data).map((key) => {
-											return (
-												<TableCell key={key} className="text-center font-medium whitespace-nowrap">
-													{isDate(data[key]) ? formatDate("day", data[key]) : data[key]}
-													{/* {data[key]} */}
-												</TableCell>
-											);
-										})}
-									</TableRow>
-								);
-							})}
+							{filteredDataList.map(
+								(data: any, index: number) => {
+									return (
+										<TableRow key={data.id}>
+											<TableCell className="items-center">
+												{mode === "create" && (
+													<Copy
+														size={18}
+														className="cursor-pointer"
+														onClick={() => {
+															onUpdate(index);
+														}}
+													/>
+												)}
+												{mode === "update" && (
+													<PenSquare
+														size={18}
+														className="cursor-pointer"
+														onClick={() => {
+															onUpdate(index);
+														}}
+													/>
+												)}
+												{mode === "delete" && (
+													<Trash2
+														size={18}
+														className="cursor-pointer"
+														onClick={() => {
+															onDelete(index);
+														}}
+													/>
+												)}
+											</TableCell>
+											{Object.keys(data).map((key) => {
+												return (
+													<TableCell
+														key={key}
+														className="whitespace-nowrap text-center font-medium"
+													>
+														{isDate(data[key])
+															? formatDate(
+																	"day",
+																	data[key]
+															  )
+															: data[key]}
+														{/* {data[key]} */}
+													</TableCell>
+												);
+											})}
+										</TableRow>
+									);
+								}
+							)}
 						</TableBody>
 					</Table>
 				) : (
-					<div className="m-4 text-center"> {t("table.no_data")} </div>
+					<div className="m-4 text-center">
+						{" "}
+						{t("table.no_data")}{" "}
+					</div>
 				)}
 			</div>
 		</>

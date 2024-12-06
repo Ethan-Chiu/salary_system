@@ -9,25 +9,25 @@ import { ArrowUpDown } from "lucide-react";
 import { overtimeFE } from "~/server/api/types/overtime_type";
 
 const columns = (t: I18nType) => Object.keys(overtimeFE.shape).map((key) => {
-	return {
-		accessorKey: key,
-		header: ({ column }: any) => {
-			return (
-				<div className="flex justify-center">
-					<div className="text-center font-medium">
-						<Button
-							variant="ghost"
-							onClick={() =>
-								column.toggleSorting(
-									column.getIsSorted() === "asc"
-								)
-							}
-						>
-							{t(`table.${key}`)}
-							<ArrowUpDown className="ml-2 h-4 w-4" />
-						</Button>
-					</div>
+return {
+	accessorKey: key,
+	header: ({ column }: any) => {
+		return (
+			<div className="flex justify-center">
+				<div className="text-center font-medium">
+					<Button
+						variant="ghost"
+						onClick={() =>
+							column.toggleSorting(
+								column.getIsSorted() === "asc"
+							)
+						}
+					>
+						{t(`table.${key}`)}
+						<ArrowUpDown className="ml-2 h-4 w-4" />
+					</Button>
 				</div>
+			</div>
 			);
 		},
 	};
@@ -39,7 +39,11 @@ interface OvertimeTableProps {
 	pay_type: PayTypeEnumType;
 }
 
-export function OvertimeTable({ period, emp_no_list, pay_type }: OvertimeTableProps) {
+export function OvertimeTable({
+	period,
+	emp_no_list,
+	pay_type,
+}: OvertimeTableProps) {
 	const { isLoading, isError, data, error } =
 		api.function.getOvertimeByEmpNoList.useQuery({
 			period_id: period,
@@ -47,14 +51,14 @@ export function OvertimeTable({ period, emp_no_list, pay_type }: OvertimeTablePr
 			pay_type: pay_type,
 		});
 
-	const { t } = useTranslation(['common']);
+	const { t } = useTranslation(["common"]);
 
 	if (isLoading) {
-		return <LoadingSpinner />; // TODO: Loading element with toast
+		return <LoadingSpinner />; // ~ TODO: Loading element with toast
 	}
 
 	if (isError) {
-		return <span>Error: {error.message}</span>; // TODO: Error element with toast
+		return <span>Error: {error.message}</span>; // ~ TODO: Error element with toast
 	}
 
 	if (data) {
