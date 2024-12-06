@@ -42,12 +42,12 @@ export const functionRouter = createTRPCRouter({
 		.query(async ({ input }) => {
 			const holiday_mapper = container.resolve(HolidayMapper);
 			const ehrService = container.resolve(EHRService);
-			const holiday_with_type_list =
-				await ehrService.getHolidayWithTypeByEmpNoList(
+			const holiday_list =
+				await ehrService.getHolidayByEmpNoList(
 					input.period_id,
 					input.emp_no_list
 				);
-			return await holiday_mapper.getHolidayFE(input.period_id, holiday_with_type_list);
+			return await holiday_mapper.getHolidayFE(input.period_id, holiday_list);
 		}),
 
 	getOvertimeByEmpNoList: publicProcedure

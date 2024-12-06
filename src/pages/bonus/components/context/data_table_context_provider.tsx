@@ -4,8 +4,8 @@ import {
 	BonusTableEnumValues,
 } from "../../bonus_tables";
 import { type Table } from "@tanstack/react-table";
-import { BonusTypeEnum, BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
-import { TableEnum } from "./data_table_enum";
+import { bonusTypeEnum, type BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
+import { type TableEnum } from "./data_table_enum";
 
 interface DataTableContextProviderProps { }
 
@@ -19,7 +19,7 @@ export default function DataTableContextProvider({
 	const [selectedTableType, setSelectedTableType] =
 		useState<TableEnum>(BonusTableEnumValues[0]);
 	const [selectedBonusType, setSelectedBonusType] = useState<BonusTypeEnumType>(
-		Object.values(BonusTypeEnum.Enum)[0]!
+		Object.values(bonusTypeEnum.Enum)[0]!
 	);
 	const [selectedTable, setSelectedTable] = useState<TableObject | null>(
 		null

@@ -1,13 +1,14 @@
 import { z } from "zod";
 
-export const BonusTypeEnum = z.enum([
+export const bonusTypeEnum = z.enum([
 	"project_bonus",
 	"q1_bonus",
 	"q2_bonus",
 	"q3_q4_bonus",
 	"employee_dividends_bonus",
 ]);
-export type BonusTypeEnumType = z.infer<typeof BonusTypeEnum>;
+
+export type BonusTypeEnumType = z.infer<typeof bonusTypeEnum>;
 export function bonusTypeLabel(bonus_type: BonusTypeEnumType): string {
 	switch (bonus_type) {
 		case "project_bonus":

@@ -18,7 +18,7 @@ import { employeePaymentFE } from "../api/types/employee_payment_type";
 import { z } from "zod";
 import { Round } from "./helper_function";
 import { SalaryIncomeTaxService } from "./salary_income_tax_service";
-import { BonusTypeEnum } from "../api/types/bonus_type_enum";
+import { bonusTypeEnum } from "../api/types/bonus_type_enum";
 import { EmployeeTrust } from "../database/entity/SALARY/employee_trust";
 import { EmployeeDataService } from "./employee_data_service";
 import { EmployeeBonusService } from "./employee_bonus_service";
@@ -482,7 +482,7 @@ export class CalculateService {
 		interface HolidaysTypeDict {
 			[key: number]: number;
 		}
-		const special_leave_id = holidays_type.find(
+		const special_personal_leave_id = holidays_type.find(
 			(ht) => ht.holidays_name === "特別事假"
 		)?.pay_id;
 		let holidays_type_dict: HolidaysTypeDict = {};
@@ -494,7 +494,7 @@ export class CalculateService {
 		});
 		let leave_deduction = 0;
 		holiday_list.forEach((holiday) => {
-			if (holiday.pay_order === special_leave_id) return;
+			if (holiday.pay_order === special_personal_leave_id) return;
 			leave_deduction +=
 				(holiday.total_hours ?? 0) *
 				holidays_type_dict[holiday.pay_order!]!;
@@ -1640,8 +1640,8 @@ export class CalculateService {
 		const employee_bonus_service = container.resolve(EmployeeBonusService);
 		const employee_bonus_list = await employee_bonus_service.getEmployeeBonusByEmpNo(period_id, emp_no);
 		if (pay_type === PayTypeEnum.Enum.month_salary) {
-			const new_bonus = employee_bonus_list.filter((e) => e.bonus_type === BonusTypeEnum.Enum.project_bonus)[0]?.app_amount ?? 0;
-			const other_bonus = employee_bonus_list.filter((e) => e.bonus_type !== BonusTypeEnum.Enum.project_bonus)[0]?.app_amount ?? 0;
+			const new_bonus = employee_bonus_list.filter((e) => e.bonus_type === bonusTypeEnum.Enum.project_bonus)[0]?.app_amount ?? 0;
+			const other_bonus = employee_bonus_list.filter((e) => e.bonus_type !== bonusTypeEnum.Enum.project_bonus)[0]?.app_amount ?? 0;
 			const accumulated_bonus = other_bonus + await employee_bonus_service.getAccumulatedBonus(period_id, emp_no);
 			const v2_h_i_rate = insurance_rate_setting.v2_h_i_supp_pay_rate;
 			const v2_h_i_multiplier = insurance_rate_setting.v2_h_i_multiplier;
@@ -1657,7 +1657,7 @@ export class CalculateService {
 			}
 		}
 		else{
-			const new_bonus = employee_bonus_list.filter((e) => e.bonus_type !== BonusTypeEnum.Enum.project_bonus)[0]?.app_amount ?? 0;
+			const new_bonus = employee_bonus_list.filter((e) => e.bonus_type !== bonusTypeEnum.Enum.project_bonus)[0]?.app_amount ?? 0;
 			const accumulated_bonus = await employee_bonus_service.getAccumulatedBonus(period_id, emp_no);
 			const v2_h_i_rate = insurance_rate_setting.v2_h_i_supp_pay_rate;
 			const v2_h_i_multiplier = insurance_rate_setting.v2_h_i_multiplier;

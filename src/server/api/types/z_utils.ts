@@ -41,13 +41,29 @@ export const encodeString = z.coerce
 	.string()
 	.transform((value) => CryptoHelper.encrypt(value));
 
+export const encodeStringNullable = z.coerce
+	.string()
+	.nullable()
+	.transform((value) => (value ? CryptoHelper.encrypt(value) : null));
+
 export const decodeStringToString = z
 	.string()
 	.transform((value) => CryptoHelper.decrypt(value));
 
+export const decodeStringToStringNullable = z
+	.string()
+	.nullable()
+	.transform((value) => value ? CryptoHelper.decrypt(value) : null);
+
 export const decodeStringToNumber = z
 	.string()
 	.transform((value) => CryptoHelper.decrypt(value))
-  .pipe(z.coerce.number());
+	.pipe(z.coerce.number());
+
+export const decodeStringToNumberNullable = z
+	.string()
+	.nullable()
+	.transform((value) => (value ? CryptoHelper.decrypt(value) : null))
+	.pipe(z.coerce.number().nullable());
 
 export const optionalNumDefaultZero = z.number().optional().default(0);

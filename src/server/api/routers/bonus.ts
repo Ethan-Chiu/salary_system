@@ -2,7 +2,7 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { container } from "tsyringe";
 import { z } from "zod";
 import { EmployeeBonusService } from "~/server/service/employee_bonus_service";
-import { BonusTypeEnum } from "../types/bonus_type_enum";
+import { bonusTypeEnum } from "../types/bonus_type_enum";
 import { EmployeeData } from "~/server/database/entity/SALARY/employee_data";
 import { BonusWorkTypeService } from "~/server/service/bonus_work_type_service";
 import { BonusSeniorityService } from "~/server/service/bonus_seniority_service";
@@ -29,7 +29,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 			})
 		)
 		.query(async ({ input }) => {
@@ -46,7 +46,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 			})
 		)
 		.query(async ({ input }) => {
@@ -65,7 +65,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 			})
 		)
 		.query(async ({ input }) => {
@@ -93,7 +93,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 			})
 		)
 		.mutation(async ({ input }) => {
@@ -121,18 +121,15 @@ export const bonusRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
 			const empBonusMapper = container.resolve(EmployeeBonusMapper);
-			const empBonus = await empBonusMapper.getEmployeeBonus(input);
-			const result = await empBonusService.createEmployeeBonus(empBonus);
-			const employeeBonusFE = await empBonusMapper.getEmployeeBonusFE(result);
+			const result = await empBonusService.createEmployeeBonus(input);
+			const employeeBonusFE = await empBonusMapper.getEmployeeBonusFE({...input, ...result});
 			return roundProperties(employeeBonusFE, 2);
 		}),
 	updateEmployeeBonus: publicProcedure
 		.input(updateEmployeeBonusAPI)
 		.mutation(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
-			const empBonusMapper = container.resolve(EmployeeBonusMapper);
-			const empBonus = await empBonusMapper.getEmployeeBonusNullable(input);
-			const result = await empBonusService.updateEmployeeBonus(empBonus);
+			const result = await empBonusService.updateEmployeeBonus(input);
 			return result;
 		}),
 	updateMultipleBonusByEmpNoList: publicProcedure
@@ -140,7 +137,7 @@ export const bonusRouter = createTRPCRouter({
 			z.object({
 				emp_no_list: z.array(z.string()),
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 				multiplier: z.number(),
 				fixed_amount: z.number(),
 			})
@@ -159,10 +156,9 @@ export const bonusRouter = createTRPCRouter({
 		.input(updateEmployeeBonusAPI.array())
 		.mutation(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
-			const empBonusMapper = container.resolve(EmployeeBonusMapper);
 			const promises = input
 				.map(
-					async (e) => await empBonusService.updateFromExcel(false, await empBonusMapper.getEmployeeBonusNullable(e))
+					async (e) => await empBonusService.updateFromExcel(false, e)
 				)
 			const err_emp_no_list = (await Promise.all(promises)).filter((e) => e != null);
 			return err_emp_no_list;
@@ -171,10 +167,9 @@ export const bonusRouter = createTRPCRouter({
 		.input(updateEmployeeBonusAPI.array())
 		.mutation(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
-			const empBonusMapper = container.resolve(EmployeeBonusMapper);
 			const err_emp_no_list = input
 				.map(
-					async (e) => await empBonusService.updateFromExcel(true, await empBonusMapper.getEmployeeBonusNullable(e))
+					async (e) => await empBonusService.updateFromExcel(true, e)
 				)
 				.filter((e) => e != null);
 			return err_emp_no_list;
@@ -194,7 +189,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 				total_budgets: z.number(),
 			})
 		)
@@ -211,7 +206,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 			})
 		)
 		.query(async ({ input }) => {
@@ -226,7 +221,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 			})
 		)
 		.query(async ({ input }) => {
@@ -243,7 +238,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 			})
 		)
 		.query(async ({ input }) => {
@@ -261,7 +256,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 			})
 		)
 		.query(async ({ input }) => {
@@ -297,7 +292,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 			})
 		)
 		.query(async ({ input }) => {
@@ -315,7 +310,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 				multiplier: z.number(),
 			})
 		)
@@ -329,7 +324,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 				work_type: WorkTypeEnum,
 				multiplier: z.number(),
 			})
@@ -346,7 +341,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 				seniority: z.number(),
 				multiplier: z.number(),
 			})
@@ -364,7 +359,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 				department: z.string(),
 				multiplier: z.number(),
 			})
@@ -399,7 +394,7 @@ export const bonusRouter = createTRPCRouter({
 		.input(
 			z.object({
 				period_id: z.number(),
-				bonus_type: BonusTypeEnum,
+				bonus_type: bonusTypeEnum,
 				position: z.number(),
 				position_multiplier: z.number(),
 				position_type: z.string(),

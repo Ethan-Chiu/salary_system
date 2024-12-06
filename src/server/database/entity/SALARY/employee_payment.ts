@@ -19,7 +19,12 @@ import {
 	dateToString,
 	dateToStringNullable,
 } from "~/server/api/types/z_utils";
-import { dateF, dateStringF, systemF, systemKeys } from "../../mapper/mapper_utils";
+import {
+	dateF,
+	dateStringF,
+	systemF,
+	systemKeys,
+} from "../../mapper/mapper_utils";
 
 const dbEmployeePayment = z.object({
 	emp_no: z.string(),
@@ -64,27 +69,25 @@ export type EmployeePaymentDecType = z.input<typeof decF>;
 
 export const decEmployeePayment = encF
 	.merge(systemF)
-	.transform((v) => ({
-		...v,
-		id: v.id,
-		base_salary: dSN.parse(v.base_salary_enc),
-		food_allowance: dSN.parse(v.food_allowance_enc),
-		supervisor_allowance: dSN.parse(v.supervisor_allowance_enc),
-		occupational_allowance: dSN.parse(
-			v.occupational_allowance_enc
-		),
-		subsidy_allowance: dSN.parse(v.subsidy_allowance_enc),
-		long_service_allowance: dSN.parse(
-			v.long_service_allowance_enc
-		),
-		l_r_self: dSN.parse(v.l_r_self_enc),
-		l_i: dSN.parse(v.l_i_enc),
-		h_i: dSN.parse(v.h_i_enc),
-		l_r: dSN.parse(v.l_r_enc),
-		occupational_injury: dSN.parse(v.occupational_injury_enc),
-		start_date: stringToDate.parse(v.start_date),
-		end_date: stringToDateNullable.parse(v.end_date),
-	}))
+	.transform((v) => {
+		return {
+			...v,
+			id: v.id,
+			base_salary: dSN.parse(v.base_salary_enc),
+			food_allowance: dSN.parse(v.food_allowance_enc),
+			supervisor_allowance: dSN.parse(v.supervisor_allowance_enc),
+			occupational_allowance: dSN.parse(v.occupational_allowance_enc),
+			subsidy_allowance: dSN.parse(v.subsidy_allowance_enc),
+			long_service_allowance: dSN.parse(v.long_service_allowance_enc),
+			l_r_self: dSN.parse(v.l_r_self_enc),
+			l_i: dSN.parse(v.l_i_enc),
+			h_i: dSN.parse(v.h_i_enc),
+			l_r: dSN.parse(v.l_r_enc),
+			occupational_injury: dSN.parse(v.occupational_injury_enc),
+			start_date: stringToDate.parse(v.start_date),
+			end_date: stringToDateNullable.parse(v.end_date),
+		};
+	})
 	.pipe(decF);
 
 export const encEmployeePayment = decF
@@ -110,7 +113,6 @@ export const encEmployeePayment = decF
 		end_date: dateToStringNullable.parse(v.end_date),
 	}))
 	.pipe(encF);
-
 
 export class EmployeePayment extends Model<
 	InferAttributes<EmployeePayment>,
