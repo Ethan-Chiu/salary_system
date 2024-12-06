@@ -136,6 +136,9 @@ export class EmployeeTrustMapper extends BaseMapper<
 								)
 						  )
 						: null,
+					creatable: true,
+					updatable: false,
+					deletable: false,
 				};
 
 				return deleteProperties(employeeTrust, [
