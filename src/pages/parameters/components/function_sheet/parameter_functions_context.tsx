@@ -32,7 +32,7 @@ export default function ParameterToolbarFunctionsProvider({
 	selectedTableType,
 	period_id,
 }: PropsWithChildren<ToolbarFunctionsProviderProps>) {
-	const ctx = api.useContext();
+	const ctx = api.useUtils();
 
 	//#region <AttendanceSetting>
 	const getCurrentAttendanceSetting = () =>
