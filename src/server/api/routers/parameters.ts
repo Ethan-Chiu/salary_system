@@ -332,15 +332,7 @@ export const parametersRouter = createTRPCRouter({
 				throw new BaseResponseError("LevelRange does not exist");
 			}
 			const levelRangeFE = await Promise.all(
-				levelRange.map(async (e) => {
-					const FE = await levelRangeMapper.getLevelRangeFE(e);
-					return {
-						...FE,
-						creatable: true,
-						updatable: FE.start_date! > new Date(),
-						deletable: FE.start_date! > new Date(),
-					};
-				})
+				levelRange.map(async (e) => await levelRangeMapper.getLevelRangeFE(e))
 			);
 			return levelRangeFE;
 		}),
@@ -353,15 +345,7 @@ export const parametersRouter = createTRPCRouter({
 			throw new BaseResponseError("LevelRange does not exist");
 		}
 		const levelRangeFE = await Promise.all(
-			levelRange.map(async (e) => {
-				const FE = await levelRangeMapper.getLevelRangeFE(e);
-				return {
-					...FE,
-					creatable: true,
-					updatable: FE.start_date! > new Date(),
-					deletable: FE.start_date! > new Date(),
-				};
-			})
+			levelRange.map(async (e) => await levelRangeMapper.getLevelRangeFE(e))
 		);
 		return levelRangeFE;
 	}),
