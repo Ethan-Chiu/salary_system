@@ -38,9 +38,8 @@ export class BonusMapper {
 						await this.employeeBonusMapper.getEmployeeBonusFE(
 							employee_bonus
 						)
-					).app_amount!;
+					).app_amount??-1;
 				}
-
 				return {
 					// ...employee_bonus,
 					emp_no: emp_no,

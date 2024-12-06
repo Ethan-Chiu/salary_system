@@ -101,7 +101,11 @@ export class EmployeeBonusService {
 				emp_no: emp_no,
 				disabled: false,
 			},
+			raw: true
 		});
+		if (result === null) {
+			return null
+		}
 		return await this.employeeBonusMapper.decode(result);
 	}
 
