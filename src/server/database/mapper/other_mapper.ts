@@ -62,6 +62,11 @@ export class OtherMapper {
 						period_id,
 						emp_no
 					),
+					reissue_salary:
+						await this.calculateService.getReissueSalary(
+						period_id,
+						emp_no
+					),
 					g_i_deduction_promotion:
 						await this.calculateService.getGroupInsuranceDeductionPromotion(
 							period_id,

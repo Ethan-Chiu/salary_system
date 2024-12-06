@@ -11,6 +11,7 @@ export const otherFE=z.object({
     other_deduction: z.number(),
     other_deduction_tax: z.number(),
     dorm_deduction: z.number(),
+    reissue_salary: z.number(),
     g_i_deduction_promotion: z.number(),
     g_i_deduction_family: z.number(),
     income_tax_deduction: z.number(),
