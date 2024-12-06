@@ -376,6 +376,38 @@ function isFileWithPreview(file: File): file is File & { preview: string } {
 // 	)
 //   }
 
+export function recoverData(data: any): Record<string, any>[] {
+    if (!Array.isArray(data) || data.length === 0) {
+        // Handle cases where data is not an array or is empty
+        return [];
+    }
+
+    // Step 1: Generate keys by applying inverse_translate to each header
+    const keys = data[0].map((original_header: string) => inverse_translate(String(original_header)));
+
+    // Step 2: Map each row to an object using the keys
+    const mappedData = data.slice(1).map((row: any[]) => {
+        return row.reduce((obj: Record<string, any>, value: any, index: number) => {
+            // Ensure that the index exists in keys to prevent undefined keys
+            if (keys[index] !== undefined) {
+                obj[keys[index]] = value;
+            }
+            return obj;
+        }, {});
+    });
+
+    // Step 3: Check if the last object is empty and remove it if so
+    if (
+        mappedData.length > 0 &&
+        Object.keys((mappedData as any)[mappedData.length - 1]).length === 0
+    ) {
+        mappedData.pop();
+    }
+
+    return mappedData;
+}
+
+
 const TEST: NextPageWithLayout = () => {
 	const [files, setFiles] = useState<File[]>([]);
 	const [data, setData] = useState<any[]>([]);
@@ -383,16 +415,7 @@ const TEST: NextPageWithLayout = () => {
 
 	const {t} = useTranslation("common");
 
-	function recoverData(): Record<string, any>[] {
-		const keys = data[0].map((original_header: string) => inverse_translate(String(original_header)));
-	
-		return data.slice(1).map((row: any[]) => {
-			return row.reduce((obj: Record<string, any>, value: any, index: number) => {
-				obj[keys[index]] = value;
-				return obj;
-			}, {});
-		});
-	}
+
 	
 
 	return (
@@ -410,21 +433,13 @@ const TEST: NextPageWithLayout = () => {
 
 
 			<div>
-				{/* <h1>Upload and Read Excel File</h1> */}
-				
-				{/* <Input type="file" accept=".xlsx" onChange={handleFileUpload} /> */}
-				
-				{/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
 				<div style={{ overflowX: 'auto', maxHeight: '600px', border: '1px solid #ddd' }}>
 					<table style={{ borderCollapse: 'collapse', width: '100%' }}>
 						<thead>
 							<tr>
-								{/* Assuming the first row contains headers */}
 								{data[0] && data[0].map((header: any, index: number) => (
 									<th key={index} style={{ border: '1px solid #ddd', padding: '8px' }}>
-										{
-											inverse_translate(header)
-										}
+										{inverse_translate(header)}
 									</th>
 								))}
 							</tr>
@@ -448,7 +463,7 @@ const TEST: NextPageWithLayout = () => {
 
 
 			<Button onClick={() => {
-				console.log(recoverData())
+				console.log(recoverData(data))
 			}}>
 				TEST
 			</Button>
