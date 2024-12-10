@@ -479,7 +479,7 @@ export default function BonusExcelImport() {
 				bud_amount: d[8],
 				sup_performance_level: d[9],
 				sup_effective_salary: d[10],
-				supervisor_amount: d[11],
+				sup_amount: d[11],
 				app_performance_level: d[12],
 				app_effective_salary: d[13],
 				app_amount: d[14],

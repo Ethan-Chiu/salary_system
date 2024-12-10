@@ -67,12 +67,12 @@ const employeeBonusFE = z
 		food_allowance: z.coerce.number(),
 		long_service_allowance: z.coerce.number(),
 		total: z.coerce.number(),
-    status: z.coerce.string(),
+		status: z.coerce.string(),
 	})
 	.merge(employeeBonusBase)
 	.merge(Id)
 	.merge(empData)
 	.merge(dateAll)
-  .omit({ start_date: true, end_date: true });
+	.omit({ start_date: true, end_date: true });
 
 export type EmployeeBonusFEType = z.infer<typeof employeeBonusFE>;

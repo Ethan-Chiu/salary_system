@@ -8,16 +8,9 @@ import { I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
 import { useContext, useEffect } from "react";
 import dataTableContext from "../components/context/data_table_context";
+import { EmployeeBonusFEType } from "~/server/api/types/employee_bonus_type";
 
-export type RowItem = {
-    emp_no: string,
-    special_multiplier: number,
-    multiplier: number,
-    fixed_amount: number,
-    bud_amount: number,
-    supervisor_amount: number,
-    app_amount: number,
-};
+export type RowItem = EmployeeBonusFEType;
 type RowItemKey = keyof RowItem;
 
 interface EmployeeBonusTableProps extends TableComponentProps {
@@ -29,12 +22,19 @@ interface EmployeeBonusTableProps extends TableComponentProps {
 
 const columns = (t: I18nType) =>
     [
+        "department",
         "emp_no",
-        "special_multiplier",
-        "multiplier",
-        "fixed_amount",
+        "emp_name",
+        // "special_multiplier",
+        // "multiplier",
+        // "fixed_amount",
+        "bud_effective_salary",
         "bud_amount",
-        "supervisor_amount",
+        // "sup_performance_level",
+        "sup_effective_salary",
+        "sup_amount",
+        // "app_performance_level",
+        "app_effective_salary",
         "app_amount",
     ].map((key) => {
         return {
