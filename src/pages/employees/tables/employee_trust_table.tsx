@@ -8,10 +8,25 @@ import { ArrowUpDown } from "lucide-react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { type EmployeeTrustFEType } from "~/server/api/types/employee_trust_type";
 import { formatDate } from "~/lib/utils/format_date";
+import { FunctionsComponent, FunctionsItem } from "~/components/data_table/functions_component";
+import { TFunction } from "i18next";
+import { FunctionMode } from "../components/function_sheet/data_table_functions";
+import EmployeeToolbarFunctionsProvider from "../components/function_sheet/employee_functions_context";
+import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
+import { EmployeeForm } from "../components/function_sheet/employee_form";
+import { employeeTrustSchema } from "../schemas/configurations/employee_trust_schema";
+import { useState } from "react";
 
-const columnHelper = createColumnHelper<EmployeeTrustFEType>();
+export type RowItem = Omit<EmployeeTrustFEType, "start_date" | "end_date"> & {
+	start_date: string;
+	end_date: string | null;
+	functions: FunctionsItem;
+};
+type RowItemKey = keyof RowItem;
 
-const columnNames: (keyof EmployeeTrustFEType)[] = [
+const columnHelper = createColumnHelper<RowItem>();
+
+const columnNames: RowItemKey[] = [
 	"department",
 	"emp_no",
 	"emp_name",
@@ -24,54 +39,94 @@ const columnNames: (keyof EmployeeTrustFEType)[] = [
 	"start_date",
 	"end_date",
 ];
-const columns = (t: I18nType) =>
-	columnNames.map((key) => {
-		const header = ({ column }: { column: any }) => {
+export const employee_trust_columns = ({ t, period_id, open, setOpen, mode, setMode }: { t: TFunction<[string], undefined>, period_id: number, open: boolean, setOpen: (open: boolean) => void, mode: FunctionMode, setMode: (mode: FunctionMode) => void }) => [
+	...columnNames.map((key: string) =>
+		columnHelper.accessor(key as RowItemKey, {
+			header: ({ column }) => {
+				return (
+					<div className="flex justify-center">
+						<div className="text-center font-medium">
+							<Button
+								variant="ghost"
+								onClick={() =>
+									column.toggleSorting(
+										column.getIsSorted() === "asc"
+									)
+								}
+							>
+								{t(`table.${key}`)}
+								<ArrowUpDown className="ml-2 h-4 w-4" />
+							</Button>
+						</div>
+					</div>
+				);
+			},
+			cell: ({ row }) => {
+				switch (key) {
+					case "end_date":
+						return row.original.end_date ? (
+							<div className="text-center font-medium">{`${row.original.end_date}`}</div>
+						) : (
+							<div className="text-center font-medium"></div>
+						);
+					default:
+						return <div className="text-center font-medium">{`${row.original[key as RowItemKey]}`}</div>
+				}
+			}
+		})),
+	columnHelper.accessor("functions", {
+		header: ({ column }) => {
 			return (
 				<div className="flex justify-center">
 					<div className="text-center font-medium">
-						<Button
-							variant="ghost"
-							onClick={() =>
-								column.toggleSorting(
-									column.getIsSorted() === "asc"
-								)
-							}
-						>
-							{t(`table.${key}`)}
-							<ArrowUpDown className="ml-2 h-4 w-4" />
-						</Button>
+						{t(`others.functions`)}
 					</div>
 				</div>
 			);
-		}
-		if (key === "start_date" || key === "end_date") {
-			return columnHelper.accessor(key, {
-				header: header,
-				cell: ({ row }) => {
-					const value: Date = row.getValue(key);
-					return (
-						<div className="flex justify-center">
-							<div className="text-center font-medium">
-								{formatDate("day", value)}
-							</div>
-						</div>
-					);
-				},
-			});
-		}
-		return columnHelper.accessor(key, {
-			header: header,
-		});
+		},
+		cell: ({ row }) => {
+			return (
+				<FunctionsComponent t={t} open={open} setOpen={setOpen} mode={mode} setMode={setMode} functionsItem={row.original.functions} >
+					<EmployeeToolbarFunctionsProvider
+						tableType={"TableEmployeeTrust"}
+						period_id={period_id}
+					>
+						<ScrollArea className="h-full w-full">
+							<EmployeeForm
+								formSchema={employeeTrustSchema}
+								mode={mode}
+								closeSheet={() => setOpen(false)}
+								columns={null}
+							/>
+						</ScrollArea>
+						<ScrollBar orientation="horizontal" />
+					</EmployeeToolbarFunctionsProvider>
+				</FunctionsComponent>
+			);
+		},
+	}),
+]
+
+export function employeeTrustMapper(t: TFunction<[string], undefined>, employeeTrustData: EmployeeTrustFEType[]): RowItem[] {
+	return employeeTrustData.map((d) => {
+		return {
+			...d,
+			start_date: formatDate("day", d.start_date) ?? "",
+			end_date: formatDate("day", d.end_date) ?? "",
+			functions: { create: d.creatable, update: d.updatable, delete: d.deletable }
+		};
 	});
+}
 
 export function EmployeeTrustTable({ period_id }: any) {
+	const { t } = useTranslation(["common"]);
+	const [open, setOpen] = useState<boolean>(false);
+	const [mode, setMode] = useState<FunctionMode>("none");
+
 	const { isLoading, isError, data, error } =
 		api.employeeTrust.getCurrentEmployeeTrust.useQuery({
 			period_id: period_id,
 		});
-
-	const { t } = useTranslation(["common"]);
 
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast
@@ -85,9 +140,9 @@ export function EmployeeTrustTable({ period_id }: any) {
 		// TODO: figure out its type
 		return (
 			<DataTableUpdate
-				columns={columns(t)}
+				columns={employee_trust_columns({ t, period_id, open, setOpen, mode, setMode })}
 				columnNames={columnNames}
-				data={data}
+				data={employeeTrustMapper(t, data)}
 				historyDataFunction={() =>
 					api.employeeTrust.getAllEmployeeTrust.useQuery()
 				}

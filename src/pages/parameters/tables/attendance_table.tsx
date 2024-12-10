@@ -165,11 +165,11 @@ interface AttendanceTableProps extends TableComponentProps {
 }
 
 export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
+	const { t } = useTranslation(["common"]);
+
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentAttendanceSetting.useQuery({ period_id });
 	const filterKey: RowItemKey = "parameters";
-
-	const { t } = useTranslation(["common"]);
 
 	if (isLoading) {
 		return (

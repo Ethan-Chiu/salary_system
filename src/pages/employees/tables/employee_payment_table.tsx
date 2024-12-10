@@ -49,7 +49,7 @@ const columnNames: RowItemKey[] = [
 	"end_date",
 ];
 
-const columns = ({ t, period_id, open, setOpen, mode, setMode }: { t: TFunction<[string], undefined>, period_id: number, open: boolean, setOpen: (open: boolean) => void, mode: FunctionMode, setMode: (mode: FunctionMode) => void }) => [
+export const employee_payment_columns = ({ t, period_id, open, setOpen, mode, setMode }: { t: TFunction<[string], undefined>, period_id: number, open: boolean, setOpen: (open: boolean) => void, mode: FunctionMode, setMode: (mode: FunctionMode) => void }) => [
 	...columnNames.map((key: string) =>
 		columnHelper.accessor(key as RowItemKey, {
 			header: ({ column }) => {
@@ -151,7 +151,7 @@ export function EmployeePaymentTable({ period_id }: any) {
 				{isFetched ? (
 					// TODO: figure out its type
 					<DataTableUpdate
-						columns={columns({ t, period_id, open, setOpen, mode, setMode })}
+						columns={employee_payment_columns({ t, period_id, open, setOpen, mode, setMode })}
 						columnNames={columnNames}
 						data={employeePaymentMapper(t, data)}
 						historyDataFunction={() =>

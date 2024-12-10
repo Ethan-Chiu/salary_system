@@ -17,6 +17,7 @@ import { type TableComponentProps } from "../tables_view";
 import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
 import { InsuranceRateSettingFEType } from "~/server/api/types/insurance_rate_setting_type";
+import { TFunction } from "i18next";
 
 export type RowItem = {
 	parameters: string;
@@ -26,7 +27,7 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-export const insurance_rate_columns = [
+export const insurance_rate_columns = ({ t }: { t: TFunction<[string], undefined> }) => [
 	columnHelper.accessor("parameters", {
 		header: ({ column }) => {
 			const { t } = useTranslation(["common"]);
@@ -168,6 +169,8 @@ export function InsuranceRateTable({
 	period_id,
 	viewOnly,
 }: InsuranceRateTableProps) {
+	const { t } = useTranslation(["common"]);
+
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentInsuranceRateSetting.useQuery({ period_id });
 	const filterKey: RowItemKey = "parameters";
@@ -184,20 +187,20 @@ export function InsuranceRateTable({
 		// return <span>Error: {error.message}</span>; // TODO: Error element with toast
 		const err_msg = error.message;
 		const emptyError = true;
-		return emptyError ? <EmptyTable err_msg={err_msg} selectedTableType="TableInsurance"  /> : <></>;
+		return emptyError ? <EmptyTable err_msg={err_msg} selectedTableType="TableInsurance" /> : <></>;
 	}
 
 	return (
 		<>
 			{!viewOnly ? (
 				<DataTableWithFunctions
-					columns={insurance_rate_columns}
+					columns={insurance_rate_columns({ t })}
 					data={insuranceRateMapper([data!])}
 					filterColumnKey={filterKey}
 				/>
 			) : (
 				<DataTableWithoutFunctions
-					columns={insurance_rate_columns}
+					columns={insurance_rate_columns({ t })}
 					data={insuranceRateMapper([data!])}
 					filterColumnKey={filterKey}
 				/>
