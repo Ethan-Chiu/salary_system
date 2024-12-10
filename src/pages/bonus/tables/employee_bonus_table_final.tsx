@@ -16,7 +16,7 @@ export type RowItem = {
     fixed_amount: number,
     bud_amount: number,
     supervisor_amount: number,
-    approved_amount: number,
+    app_amount: number,
 };
 type RowItemKey = keyof RowItem;
 
@@ -35,7 +35,7 @@ const columns = (t: I18nType) =>
         "fixed_amount",
         "bud_amount",
         "supervisor_amount",
-        "approved_amount",
+        "app_amount",
     ].map((key) => {
         return {
             accessorKey: key,

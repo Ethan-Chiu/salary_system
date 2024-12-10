@@ -11,16 +11,10 @@ import dataTableContext from "../components/context/data_table_context";
 import { Button } from "~/components/ui/button";
 import { Column } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
+import { EmployeeBonusFEType } from "~/server/api/types/employee_bonus_type";
 
-export type RowItem = {
-    emp_no: string,
-    special_multiplier: number,
-    multiplier: number,
-    fixed_amount: number,
-    bud_amount: number,
-    superviser_amount: number,
-    final_amount: number,
-};
+
+export type RowItem = EmployeeBonusFEType
 type RowItemKey = keyof RowItem;
 
 interface EmployeeBonusTableProps extends TableComponentProps {
@@ -32,10 +26,19 @@ interface EmployeeBonusTableProps extends TableComponentProps {
 
 const columns = (t: I18nType) =>
     [
+        "department",
         "emp_no",
+        "emp_name",
+        "base_salary",
+        "food_allowance",
+        "supervisor_allowance",
+        "occupational_allowance",
+        "subsidy_allowance",
+        "long_service_allowance",
         "special_multiplier",
         "multiplier",
         "fixed_amount",
+        "bud_effective_salary",
         "bud_amount",
     ].map((key) => {
         return {

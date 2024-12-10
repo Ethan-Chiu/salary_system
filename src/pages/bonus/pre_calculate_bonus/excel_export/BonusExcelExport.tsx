@@ -72,14 +72,14 @@ export function BonusExcelExport() {
 				special_multiplier: d.special_multiplier,
 				multiplier: d.multiplier,
 				fixed_amount: d.fixed_amount,
-				budget_effective_salary: d.budget_effective_salary,
+				bud_effective_salary: d.bud_effective_salary,
 				bud_amount: d.bud_amount,
-				supervisor_performance_level: d.supervisor_performance_level,
-				supervisor_effective_salary: d.supervisor_effective_salary,
-				supervisor_amount: d.superviser_amount,
-				approved_performance_level: d.approved_performance_level,
-				approved_effective_salary: d.approved_effective_salary,
-				approved_amount: d.approved_amount,
+				sup_performance_level: d.sup_performance_level,
+				sup_effective_salary: d.sup_effective_salary,
+				supervisor_amount: d.supervisor_amount,
+				app_performance_level: d.app_performance_level,
+				app_effective_salary: d.app_effective_salary,
+				app_amount: d.app_amount,
 			};
 		})
 

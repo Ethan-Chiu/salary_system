@@ -449,7 +449,7 @@ export class EmployeeBonusService {
 	) {
 		const budget_amount_list: {
 			emp_no: string;
-			budget_effective_salary: number;
+			bud_effective_salary: number;
 			budget_amount: number;
 		}[] = [];
 		const emp_no_list = (
@@ -500,7 +500,7 @@ export class EmployeeBonusService {
 
 			budget_amount_list.push({
 				emp_no: emp_no,
-				budget_effective_salary: Round(
+				bud_effective_salary: Round(
 					budget_amount /
 						(employee_payment_dec.base_salary +
 							employee_payment_dec.food_allowance +
@@ -521,8 +521,8 @@ export class EmployeeBonusService {
 		const ratio = total_budgets / total_budget_amount;
 		budget_amount_list.forEach((e) => {
 			e.budget_amount = Round(e.budget_amount * ratio, 1);
-			e.budget_effective_salary = Round(
-				e.budget_effective_salary * ratio,
+			e.bud_effective_salary = Round(
+				e.bud_effective_salary * ratio,
 				2
 			);
 		});
@@ -539,7 +539,7 @@ export class EmployeeBonusService {
 
 			await this.updateEmployeeBonus({
 				id: employee_bonus.id,
-				bud_effective_salary: e.budget_effective_salary,
+				bud_effective_salary: e.bud_effective_salary,
 				bud_amount: e.budget_amount,
 			});
 		});
