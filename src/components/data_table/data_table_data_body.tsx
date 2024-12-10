@@ -16,7 +16,7 @@ import {
 
 import { Button } from "~/components/ui/button";
 
-import {Table as SimpleTable} from "~/components/ui/table"
+import { Table as SimpleTable } from "~/components/ui/table"
 import {
 	TableBody,
 	TableCaption,
@@ -26,6 +26,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table"
+import { cn } from "~/lib/utils";
 
 interface DataTableDataBodyProps<TData> {
 	table: Table<TData>;
@@ -72,7 +73,13 @@ export function DataTableDataBody<TData>({
 								<TableCell
 									key={cell.id}
 									align="center"
-									className="max-w-xs"
+									className={cn(
+										"max-w-xs",
+										cell.id.split("_").slice(1).join("_") == "department" ? "sticky left-[0px] bg-white" :
+											cell.id.split("_").slice(1).join("_") == "emp_no" ? "sticky left-[116px] bg-white" :
+												cell.id.split("_").slice(1).join("_") == "emp_name" ? "sticky left-[260px] bg-white" :
+													""
+									)}
 								>
 									{flexRender(
 										cell.column.columnDef.cell,
@@ -101,7 +108,7 @@ export function DataTableDataBody<TData>({
 		// 	{/* <TableCaption>A list of your recent invoices.</TableCaption> */}
 		// 	<TableHeader>
 		// 		<TableRow>
-					
+
 		// 			{selectedDetailData && selectedDetailData.length > 0 && Object.keys((selectedDetailData[0])).map((key: string) => (
 		// 				<TableHead key={`header_${key}`}>{t(`table.${key}`)}</TableHead>
 		// 			))}
@@ -120,7 +127,7 @@ export function DataTableDataBody<TData>({
 		// 			<></>
 		// 		)}
 		// 	</TableBody>
-				
+
 		// 		{
 		// 			// selectedDetailData && selectedDetailData.length > 0 && <>
 		// 			<>
@@ -146,7 +153,7 @@ export function DataTableDataBody<TData>({
 					<Button onClick={() => console.log(selectedDetailData)}>
 						TEST
 					</Button>
-					
+
 					<DialogFooter></DialogFooter>
 				</DialogContent>
 			</Dialog>

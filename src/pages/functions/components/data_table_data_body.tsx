@@ -23,7 +23,7 @@ import {
 	TabsTrigger,
 } from "~/components/ui/tabs"
 
-import {Table as SimpleTable} from "~/components/ui/table"
+import { Table as SimpleTable } from "~/components/ui/table"
 import {
 	TableBody,
 	TableCaption,
@@ -66,8 +66,8 @@ export function DataTableDataBody<TData>({
 						className={
 							cn(
 								detailData
-								? "cursor-pointer whitespace-nowrap"
-								: "whitespace-nowrap",
+									? "cursor-pointer whitespace-nowrap"
+									: "whitespace-nowrap",
 							)
 						}
 						onClick={() => {
@@ -84,10 +84,10 @@ export function DataTableDataBody<TData>({
 									align="center"
 									className={cn(
 										"max-w-xs",
-										cell.id.split("_").slice(1).join("_") == "department" ? "sticky left-[0px]" :
-										cell.id.split("_").slice(1).join("_") == "emp_no" ? "sticky left-[125px]" :
-										cell.id.split("_").slice(1).join("_") == "emp_name" ? "sticky left-[250px]" :
-										""
+										cell.id.split("_").slice(1).join("_") == "department" ? "sticky left-[0px] bg-white" :
+											cell.id.split("_").slice(1).join("_") == "emp_no" ? "sticky left-[116px] bg-white" :
+												cell.id.split("_").slice(1).join("_") == "emp_name" ? "sticky left-[260px] bg-white" :
+													""
 									)}
 								>
 									{flexRender(
@@ -109,7 +109,7 @@ export function DataTableDataBody<TData>({
 	function getAmountTable(selectedType: string) {
 		const { t } = useTranslation(["common"]);
 
-		const amount_list = selectedDetailData ? 
+		const amount_list = selectedDetailData ?
 			selectedDetailData[selectedType].map((item: any) => item.amount) : [];
 		const total = amount_list.reduce((a: number, b: number) => a + b, 0);
 
@@ -149,17 +149,17 @@ export function DataTableDataBody<TData>({
 						</>
 					)}
 				</TableBody>
-					{
-						// selectedDetailData && selectedDetailData.length > 0 && <>
-						<>
+				{
+					// selectedDetailData && selectedDetailData.length > 0 && <>
+					<>
 						<TableFooter>
-						<TableRow>
-						<TableCell colSpan={3}>{t("table.total")}</TableCell>
-						<TableCell className="">{total}</TableCell>
-						</TableRow>
+							<TableRow>
+								<TableCell colSpan={3}>{t("table.total")}</TableCell>
+								<TableCell className="">{total}</TableCell>
+							</TableRow>
 						</TableFooter>
-						</>
-					}
+					</>
+				}
 			</SimpleTable>
 		);
 	}
@@ -185,7 +185,7 @@ export function DataTableDataBody<TData>({
 							<TabsTrigger value="other_addition">{t("table.other_addition")}</TabsTrigger>
 							<TabsTrigger value="other_deduction_tax">{t("table.other_deduction_tax")}</TabsTrigger>
 							<TabsTrigger value="other_deduction">{t("table.other_deduction")}</TabsTrigger>
-							
+
 						</TabsList>
 						<TabsContent value="other_addition">
 							{getAmountTable("other_addition")}
@@ -199,7 +199,7 @@ export function DataTableDataBody<TData>({
 						<TabsContent value="other_deduction_tax">
 							{getAmountTable("other_deduction_tax")}
 						</TabsContent>
-						</Tabs>
+					</Tabs>
 					<DialogFooter></DialogFooter>
 				</DialogContent>
 			</Dialog>

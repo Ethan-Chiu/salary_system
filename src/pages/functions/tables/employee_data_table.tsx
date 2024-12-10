@@ -9,12 +9,12 @@ import { formatDate } from "~/lib/utils/format_date";
 
 const columns = (t: I18nType) =>
 	[
+		"department",
 		"emp_no",
 		"emp_name",
 		"position",
 		"position_type",
 		"group_insurance_type",
-		"department",
 		"work_type",
 		"work_status",
 		"disabilty_level",
