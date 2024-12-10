@@ -194,6 +194,13 @@ export class EmployeeTrustService {
 					)
 			)
 		);
+		let cnt =0;
+		allEmployeeTrustFE.forEach((emp_trust_list) => {
+			emp_trust_list.forEach((emp_trust) => {
+				emp_trust.id = cnt;
+				cnt += 1;
+			})
+		})
 		return allEmployeeTrustFE;
 	}
 
