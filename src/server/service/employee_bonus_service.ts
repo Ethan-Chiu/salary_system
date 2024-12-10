@@ -460,12 +460,12 @@ export class EmployeeBonusService {
 				EmployeePaymentService
 			);
 
-			const employee_payment =
+			const employee_payment_dec =
 				await employee_payment_service.getCurrentEmployeePaymentByEmpNo(
 					emp_no,
 					period_id
 				);
-			if (!employee_payment) {
+			if (!employee_payment_dec) {
 				return;
 			}
 
@@ -478,7 +478,6 @@ export class EmployeeBonusService {
 				return;
 			}
 
-			const employee_payment_fe = employee_payment;
 
 			const employee_bonus_fe =
 				await this.employeeBonusMapper.getEmployeeBonusFE(
@@ -486,14 +485,14 @@ export class EmployeeBonusService {
 				);
 
 			const budget_amount =
-				(employee_payment_fe.base_salary +
-					employee_payment_fe.food_allowance +
-					employee_payment_fe.supervisor_allowance +
-					employee_payment_fe.occupational_allowance +
-					employee_payment_fe.subsidy_allowance +
-					(employee_payment_fe.long_service_allowance_type ==
+				(employee_payment_dec.base_salary +
+					employee_payment_dec.food_allowance +
+					employee_payment_dec.supervisor_allowance +
+					employee_payment_dec.occupational_allowance +
+					employee_payment_dec.subsidy_allowance +
+					(employee_payment_dec.long_service_allowance_type ==
 					LongServiceEnum.enum.month_allowance
-						? employee_payment_fe.long_service_allowance
+						? employee_payment_dec.long_service_allowance
 						: 0)) *
 					employee_bonus_fe.special_multiplier *
 					employee_bonus_fe.multiplier +
@@ -503,11 +502,11 @@ export class EmployeeBonusService {
 				emp_no: emp_no,
 				budget_effective_salary: Round(
 					budget_amount /
-						(employee_payment_fe.base_salary +
-							employee_payment_fe.food_allowance +
-							employee_payment_fe.supervisor_allowance +
-							employee_payment_fe.occupational_allowance +
-							employee_payment_fe.subsidy_allowance),
+						(employee_payment_dec.base_salary +
+							employee_payment_dec.food_allowance +
+							employee_payment_dec.supervisor_allowance +
+							employee_payment_dec.occupational_allowance +
+							employee_payment_dec.subsidy_allowance),
 					3
 				),
 				budget_amount: budget_amount,

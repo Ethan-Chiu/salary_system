@@ -10,7 +10,10 @@ import { EmployeeData } from "../database/entity/SALARY/employee_data";
 import { AllowanceWithType, EHRService, ExpenseWithType } from "./ehr_service";
 import { Overtime } from "../database/entity/UMEDIA/overtime";
 import { Payset } from "../database/entity/UMEDIA/payset";
-import { InsuranceRateSetting, InsuranceRateSettingDecType } from "../database/entity/SALARY/insurance_rate_setting";
+import {
+	InsuranceRateSetting,
+	InsuranceRateSettingDecType,
+} from "../database/entity/SALARY/insurance_rate_setting";
 import { Holiday } from "../database/entity/UMEDIA/holiday";
 import { PayTypeEnum, PayTypeEnumType } from "../api/types/pay_type_enum";
 import { HolidaysType } from "../database/entity/SALARY/holidays_type";
@@ -23,6 +26,7 @@ import { EmployeeTrust } from "../database/entity/SALARY/employee_trust";
 import { EmployeeDataService } from "./employee_data_service";
 import { EmployeeBonusService } from "./employee_bonus_service";
 import { EmployeePaymentDecType } from "../database/entity/SALARY/employee_payment";
+import { LongServiceEnum } from "../api/types/long_service_enum";
 
 const FOREIGN = "外籍勞工";
 const PROFESSOR = "顧問";
@@ -158,7 +162,7 @@ export class CalculateService {
 				// t3 += overtime.hours_167 ?? 0;
 				// t4 += overtime.hours_2 ?? 0;
 				// t5 += overtime.hours_267 ?? 0;
-			} 
+			}
 		});
 		// rate存哪裡？
 		if (employee_data.work_type === FOREIGN) {
@@ -278,7 +282,11 @@ export class CalculateService {
 				(employee_payment_dec.food_allowance ?? 0) +
 				(employee_payment_dec.supervisor_allowance ?? 0) +
 				(employee_payment_dec.occupational_allowance ?? 0) +
-				(employee_payment_dec.subsidy_allowance ?? 0);
+				(employee_payment_dec.subsidy_allowance ?? 0) +
+				(employee_payment_dec.long_service_allowance_type ==
+				LongServiceEnum.enum.month_allowance
+					? employee_payment_dec.long_service_allowance
+					: 0);
 			return gross_salary;
 		}
 	}
@@ -682,6 +690,10 @@ export class CalculateService {
 			professional_cert_allowance +
 			(discounted_employee_payment_dec.occupational_allowance ?? 0) +
 			operational_performance_bonus +
+			(discounted_employee_payment_dec.long_service_allowance_type ==
+			LongServiceEnum.enum.month_allowance
+				? discounted_employee_payment_dec.long_service_allowance
+				: 0) +
 			reissue_salary +
 			exceed_overtime_pay +
 			other_addition_tax +
@@ -898,6 +910,10 @@ export class CalculateService {
 				(discounted_employee_payment_dec.supervisor_allowance ?? 0) +
 				(professional_cert_allowance ?? 0) +
 				(discounted_employee_payment_dec.occupational_allowance ?? 0) +
+				(discounted_employee_payment_dec.long_service_allowance_type ==
+				LongServiceEnum.Enum.month_allowance
+					? discounted_employee_payment_dec.long_service_allowance
+					: 0) +
 				operational_performance_bonus + //在bonus裡 id=2
 				reissue_salary +
 				exceed_overtime_pay +
@@ -1512,6 +1528,10 @@ export class CalculateService {
 			(professional_cert_allowance ?? 0) +
 			(discounted_employee_payment_dec.occupational_allowance ?? 0) +
 			(discounted_employee_payment_dec.subsidy_allowance ?? 0) +
+			(discounted_employee_payment_dec.long_service_allowance_type ==
+			LongServiceEnum.enum.month_allowance
+				? discounted_employee_payment_dec.long_service_allowance
+				: 0) +
 			full_attendance_bonus +
 			(shift_allowance ?? 0);
 		return total_salary;
@@ -1623,13 +1643,34 @@ export class CalculateService {
 		return 0;
 	}
 	//MARK: 二代健保
-	async getSecondGenerationHealthInsurance(period_id:number, emp_no: string, pay_type: PayTypeEnumType, insurance_rate_setting: InsuranceRateSettingDecType, employee_payment_dec: EmployeePaymentDecType): Promise<number> {
+	async getSecondGenerationHealthInsurance(
+		period_id: number,
+		emp_no: string,
+		pay_type: PayTypeEnumType,
+		insurance_rate_setting: InsuranceRateSettingDecType,
+		employee_payment_dec: EmployeePaymentDecType
+	): Promise<number> {
 		const employee_bonus_service = container.resolve(EmployeeBonusService);
-		const employee_bonus_list = await employee_bonus_service.getEmployeeBonusByEmpNo(period_id, emp_no);
+		const employee_bonus_list =
+			await employee_bonus_service.getEmployeeBonusByEmpNo(
+				period_id,
+				emp_no
+			);
 		if (pay_type === PayTypeEnum.Enum.month_salary) {
-			const new_bonus = employee_bonus_list.filter((e) => e.bonus_type === bonusTypeEnum.Enum.project_bonus)[0]?.app_amount ?? 0;
-			const other_bonus = employee_bonus_list.filter((e) => e.bonus_type !== bonusTypeEnum.Enum.project_bonus)[0]?.app_amount ?? 0;
-			const accumulated_bonus = other_bonus + await employee_bonus_service.getAccumulatedBonus(period_id, emp_no);
+			const new_bonus =
+				employee_bonus_list.filter(
+					(e) => e.bonus_type === bonusTypeEnum.Enum.project_bonus
+				)[0]?.app_amount ?? 0;
+			const other_bonus =
+				employee_bonus_list.filter(
+					(e) => e.bonus_type !== bonusTypeEnum.Enum.project_bonus
+				)[0]?.app_amount ?? 0;
+			const accumulated_bonus =
+				other_bonus +
+				(await employee_bonus_service.getAccumulatedBonus(
+					period_id,
+					emp_no
+				));
 			const v2_h_i_rate = insurance_rate_setting.v2_h_i_supp_pay_rate;
 			const v2_h_i_multiplier = insurance_rate_setting.v2_h_i_multiplier;
 			const h_i = employee_payment_dec?.h_i ?? 0;
@@ -1642,10 +1683,16 @@ export class CalculateService {
 					) * v2_h_i_rate;
 				return v2_h_i;
 			}
-		}
-		else{
-			const new_bonus = employee_bonus_list.filter((e) => e.bonus_type !== bonusTypeEnum.Enum.project_bonus)[0]?.app_amount ?? 0;
-			const accumulated_bonus = await employee_bonus_service.getAccumulatedBonus(period_id, emp_no);
+		} else {
+			const new_bonus =
+				employee_bonus_list.filter(
+					(e) => e.bonus_type !== bonusTypeEnum.Enum.project_bonus
+				)[0]?.app_amount ?? 0;
+			const accumulated_bonus =
+				await employee_bonus_service.getAccumulatedBonus(
+					period_id,
+					emp_no
+				);
 			const v2_h_i_rate = insurance_rate_setting.v2_h_i_supp_pay_rate;
 			const v2_h_i_multiplier = insurance_rate_setting.v2_h_i_multiplier;
 			const h_i = employee_payment_dec?.h_i ?? 0;
@@ -1911,6 +1958,13 @@ export class CalculateService {
 			30;
 		employee_payment_dec.supervisor_allowance =
 			(employee_payment_dec.supervisor_allowance *
+				(payset ? payset.work_day! : 30)) /
+			30;
+		employee_payment_dec.long_service_allowance =
+			((employee_payment_dec.long_service_allowance_type ==
+			LongServiceEnum.Enum.month_allowance
+				? employee_payment_dec.long_service_allowance
+				: 0) *
 				(payset ? payset.work_day! : 30)) /
 			30;
 		return employee_payment_dec;
