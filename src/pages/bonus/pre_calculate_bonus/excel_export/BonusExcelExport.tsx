@@ -76,7 +76,7 @@ export function BonusExcelExport() {
 				bud_amount: d.bud_amount,
 				sup_performance_level: d.sup_performance_level,
 				sup_effective_salary: d.sup_effective_salary,
-				supervisor_amount: d.supervisor_amount,
+				sup_amount: d.sup_amount,
 				app_performance_level: d.app_performance_level,
 				app_effective_salary: d.app_effective_salary,
 				app_amount: d.app_amount,
