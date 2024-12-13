@@ -1,6 +1,6 @@
 import { cn } from "~/lib/utils";
 import { useState } from "react";
-import { type LucideIcon, Copy, EllipsisVertical } from "lucide-react";
+import { type LucideIcon, Copy, Download, EllipsisVertical, RefreshCcw, Upload } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
 	DropdownMenu,
@@ -35,7 +35,15 @@ interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
 }
 
-export type FunctionMode = "create" | "batch_create" | "update" | "delete" | "none";
+export type FunctionMode =
+	"create"
+	| "batch_create"
+	| "update"
+	| "delete"
+	| "excel_download"
+	| "excel_upload"
+	| "initialize"
+	| "none";
 
 export function DataTableFunctions({
 	tableType,
@@ -91,6 +99,21 @@ export function DataTableFunctions({
 							itemName={t("button.batch_create")}
 							icon={Copy}
 						/>}
+						<CompTriggerItem
+							mode={"excel_download"}
+							itemName={t("button.excel_download")}
+							icon={Download}
+						/>
+						<CompTriggerItem
+							mode={"excel_upload"}
+							itemName={t("button.excel_upload")}
+							icon={Upload}
+						/>
+						<CompTriggerItem
+							mode={"initialize"}
+							itemName={t("button.initialize")}
+							icon={RefreshCcw}
+						/>
 					</DropdownMenuContent>
 				</DropdownMenu>
 				{/* Sheet */}

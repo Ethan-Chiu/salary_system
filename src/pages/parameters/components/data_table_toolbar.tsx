@@ -70,7 +70,7 @@ export function DataTableToolbar<TData>({
 			</div>
 			<div className="flex">
 				<DataTableViewOptions table={table} />
-				<div className="w-12">
+				<div className="w-12 ml-2">
 					{selectedPeriod && (
 						<ParameterToolbarFunctionsProvider
 							selectedTableType={selectedTableType}

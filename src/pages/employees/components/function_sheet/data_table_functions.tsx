@@ -1,9 +1,12 @@
 import { cn } from "~/lib/utils";
 import { useContext, useState } from "react";
 import {
+	Calculator,
+	Download,
 	EllipsisVertical,
 	type LucideIcon,
 	RefreshCcw,
+	Upload,
 } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
@@ -43,6 +46,9 @@ export type FunctionMode =
 	| "create"
 	| "update"
 	| "delete"
+	| "excel_download"
+	| "excel_upload"
+	| "initialize"
 	| "auto_calculate"
 	| "none";
 
@@ -79,10 +85,25 @@ export function DataTableFunctions({
 							{t("others.functions")}
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
+						<CompTriggerItem
+							mode={"excel_download"}
+							itemName={t("button.excel_download")}
+							icon={Download}
+						/>
+						<CompTriggerItem
+							mode={"excel_upload"}
+							itemName={t("button.excel_upload")}
+							icon={Upload}
+						/>
+						<CompTriggerItem
+							mode={"initialize"}
+							itemName={t("button.initialize")}
+							icon={RefreshCcw}
+						/>
 						{autoCalculateFunction && <CompTriggerItem
 							mode={"auto_calculate"}
 							itemName={t("button.auto_calculate")}
-							icon={RefreshCcw}
+							icon={Calculator}
 						/>}
 					</DropdownMenuContent>
 				</DropdownMenu>
