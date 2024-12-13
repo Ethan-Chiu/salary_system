@@ -3,7 +3,7 @@ import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { isString, isNumber, isDateType } from "~/lib/utils/check_type";
-import { DataTable as DataTableWithFunctions } from "../components/data_table";
+import { DataTable as DataTableWithFunctions } from "../components/data_table_single";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import {
 	c_CreateDateStr,
@@ -28,71 +28,34 @@ type RowItemKey = keyof RowItem;
 const columnHelper = createColumnHelper<RowItem>();
 
 export const insurance_rate_columns = ({ t }: { t: TFunction<[string], undefined> }) => [
-	columnHelper.accessor("parameters", {
-		header: ({ column }) => {
-			const { t } = useTranslation(["common"]);
-			return (
-				<div className="flex justify-center pl-3">
-					<div className="text-center font-medium">
-						<Button
-							variant="ghost"
-							onClick={() =>
-								column.toggleSorting(
-									column.getIsSorted() === "asc"
-								)
-							}
-						>
-							{t("table.parameters")}
-							<ArrowUpDown className="ml-2 h-4 w-4" />
-						</Button>
+	...["parameters", "value"].map(
+		(key: string) => columnHelper.accessor(key as RowItemKey, {
+			header: ({ column }) => {
+				return (
+					<div className="flex justify-center">
+						<div className="text-center font-medium">
+							<Button
+								variant="ghost"
+								onClick={() =>
+									column.toggleSorting(
+										column.getIsSorted() === "asc"
+									)
+								}
+							>
+								{t(`table.${key}`)}
+								<ArrowUpDown className="ml-2 h-4 w-4" />
+							</Button>
+						</div>
 					</div>
-				</div>
-			);
-		},
-		cell: ({ row }) => (
-			<div className="text-center font-medium">{row.getValue("parameters")}</div>
-		),
-	}),
-	columnHelper.accessor("value", {
-		header: ({ column }) => {
-			const { t } = useTranslation(["common"]);
-			return (
-				<div className="flex justify-center pl-3">
-					<div className="text-center font-medium">
-						<Button
-							variant="ghost"
-							onClick={() =>
-								column.toggleSorting(
-									column.getIsSorted() === "asc"
-								)
-							}
-						>
-							{t("table.value")}
-							<ArrowUpDown className="ml-2 h-4 w-4" />
-						</Button>
-					</div>
-				</div>
-			);
-		},
-		cell: ({ row }) => {
-			const value = row.getValue("value");
-			let formatted = "";
-			if (isNumber(value))
-				formatted = parseFloat(row.getValue("value")).toString();
-			else if (isString(value)) formatted = row.getValue("value");
-			else if (isDateType(value)) {
-				if (value) {
-					formatted =
-						value.toISOString().split("T")[0] ?? "";
-				} else formatted = "";
+				);
+			},
+			cell: ({ row }) => {
+				switch (key) {
+					default:
+						return <div className="text-center font-medium">{`${row.original[key as RowItemKey]}`}</div>
+				}
 			}
-			return (
-				<div className="flex justify-center">
-					<div className="text-center font-medium">{formatted}</div>
-				</div>
-			);
-		},
-	}),
+		})),
 ];
 
 export function insuranceRateMapper(
@@ -148,14 +111,14 @@ export function insuranceRateMapper(
 			parameters: c_EndDateStr,
 			value: formatDate("day", data.end_date) ?? "",
 		},
-		{
-			parameters: c_CreateDateStr,
-			value: formatDate("hour", data.create_date) ?? "",
-		},
-		{
-			parameters: c_UpdateDateStr,
-			value: formatDate("hour", data.update_date) ?? "",
-		},
+		// {
+		// 	parameters: c_CreateDateStr,
+		// 	value: formatDate("hour", data.create_date) ?? "",
+		// },
+		// {
+		// 	parameters: c_UpdateDateStr,
+		// 	value: formatDate("hour", data.update_date) ?? "",
+		// },
 	];
 }
 

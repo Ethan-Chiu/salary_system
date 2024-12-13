@@ -60,6 +60,12 @@ function CompHistoryView() {
 		}
 	}, [isLoading, data]);
 
+	useEffect(() => {
+		if (!isLoading && selectedDateString && data?.[0]) {
+			setSelectedId(data.filter((e) => formatDate("day", e.start_date) === selectedDateString)[0]!.id);
+		}
+	}, [selectedDateString]);
+
 	if (isLoading) {
 		return (
 			<div className="flex grow items-center justify-center">
@@ -93,7 +99,10 @@ function CompHistoryView() {
 				<Separator />
 				<ScrollArea className="h-full">
 					{data!
-						.filter((e) => formatDate("day", e.start_date) === selectedDateString)
+						.filter((e, index, self) =>
+							formatDate("day", e.start_date) === selectedDateString &&
+							self.findIndex(t => formatDate("day", t.start_date) === formatDate("day", e.start_date) && formatDate("day", t.end_date) === formatDate("day", e.end_date)) === index
+						)
 						.sort((a, b) => {
 							if (a.start_date == null) {
 								return -1;
@@ -157,7 +166,10 @@ function CompHistoryView() {
 					<DataTable
 						columns={getTableColumn(selectedTableType, t, selectedPeriod!.period_id, open, setOpen, mode, setMode)}
 						data={getTableMapper(selectedTableType)!(
-							data!.filter((e) => e.id === selectedId) as any[]
+							data!.filter((e) =>
+								formatDate("day", e.start_date) === formatDate("day", data!.filter((e) => e.id === selectedId)[0]!.start_date) &&
+								formatDate("day", e.end_date) === formatDate("day", data!.filter((e) => e.id === selectedId)[0]!.end_date)
+							) as any[]
 						)}
 						filterColumnKey={filterKey}
 					/>

@@ -3,6 +3,7 @@ import { TabsList, TabsTrigger } from "~/components/ui/tabs";
 import ParameterToolbarFunctionsProvider from "./function_sheet/parameter_functions_context";
 import { useContext } from "react";
 import dataTableContext from "./context/data_table_context";
+import { DataTableFunctions as DataTableFunctionsSingle } from "./function_sheet/data_table_functions_single";
 import { DataTableFunctions } from "./function_sheet/data_table_functions";
 import { LoadingSpinner } from "~/components/loading";
 import { TabsEnum } from "./context/tabs_enum";
@@ -70,13 +71,16 @@ export function DataTableToolbar<TData>({
 			</div>
 			<div className="flex">
 				<DataTableViewOptions table={table} />
-				<div className="w-12 ml-2">
+				<div className="w-24 ml-2">
 					{selectedPeriod && (
 						<ParameterToolbarFunctionsProvider
 							selectedTableType={selectedTableType}
 							period_id={selectedPeriod.period_id}
 						>
-							<DataTableFunctions tableType={selectedTableType} />
+							<div className="flex">
+								<DataTableFunctionsSingle tableType={selectedTableType} />
+								<DataTableFunctions tableType={selectedTableType} />
+							</div>
 							{/* {selectedTab === TabsEnum.Enum.calendar && (
 								<CalendarToolbarFunctions
 									tableType={selectedTableType}

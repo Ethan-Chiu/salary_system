@@ -1,12 +1,12 @@
 import { cn } from "~/lib/utils";
 import { useContext, useState } from "react";
 import {
+	Calculator,
+	Download,
+	EllipsisVertical,
 	type LucideIcon,
-	PenSquare,
-	Plus,
-	PlusSquare,
 	RefreshCcw,
-	Trash2,
+	Upload,
 } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
@@ -46,6 +46,9 @@ export type FunctionMode =
 	| "create"
 	| "update"
 	| "delete"
+	| "excel_download"
+	| "excel_upload"
+	| "initialize"
 	| "auto_calculate"
 	| "none";
 
@@ -74,7 +77,7 @@ export function DataTableFunctions({
 							size="sm"
 							className="ml-auto hidden h-8 lg:flex"
 						>
-							<PlusSquare className="cursor-pointer stroke-[1.5]" />
+							<EllipsisVertical className="cursor-pointer stroke-[1.5]" />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-[150px]">
@@ -82,25 +85,25 @@ export function DataTableFunctions({
 							{t("others.functions")}
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						{createFunction && <CompTriggerItem
-							mode={"create"}
-							itemName={t("button.create")}
-							icon={Plus}
-						/>}
-						{updateFunction && <CompTriggerItem
-							mode={"update"}
-							itemName={t("button.update")}
-							icon={PenSquare}
-						/>}
-						{deleteFunction && <CompTriggerItem
-							mode={"delete"}
-							itemName={t("button.delete")}
-							icon={Trash2}
-						/>}
+						<CompTriggerItem
+							mode={"excel_download"}
+							itemName={t("button.excel_download")}
+							icon={Download}
+						/>
+						<CompTriggerItem
+							mode={"excel_upload"}
+							itemName={t("button.excel_upload")}
+							icon={Upload}
+						/>
+						<CompTriggerItem
+							mode={"initialize"}
+							itemName={t("button.initialize")}
+							icon={RefreshCcw}
+						/>
 						{autoCalculateFunction && <CompTriggerItem
 							mode={"auto_calculate"}
 							itemName={t("button.auto_calculate")}
-							icon={RefreshCcw}
+							icon={Calculator}
 						/>}
 					</DropdownMenuContent>
 				</DropdownMenu>

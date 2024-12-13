@@ -60,12 +60,6 @@ export const bank_columns = ({ t, period_id, open, setOpen, mode, setMode }: { t
 						return <div className="text-center font-medium">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
 					case "org_name":
 						return <div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>
-					case "end_date":
-						return row.original.end_date ? (
-							<div className="text-center font-medium">{`${row.original.end_date}`}</div>
-						) : (
-							<div className="text-center font-medium"></div>
-						);
 					default:
 						return <div className="text-center font-medium">{`${row.original[key as RowItemKey]}`}</div>
 				}

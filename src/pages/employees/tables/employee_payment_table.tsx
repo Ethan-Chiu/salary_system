@@ -73,12 +73,6 @@ export const employee_payment_columns = ({ t, period_id, open, setOpen, mode, se
 			},
 			cell: ({ row }) => {
 				switch (key) {
-					case "end_date":
-						return row.original.end_date ? (
-							<div className="text-center font-medium">{`${row.original.end_date}`}</div>
-						) : (
-							<div className="text-center font-medium"></div>
-						);
 					default:
 						return <div className="text-center font-medium">{`${row.original[key as RowItemKey]}`}</div>
 				}

@@ -176,10 +176,6 @@ export class EmployeeTrustMapper extends BaseMapper<
 			},
 			reduced
 		);
-		console.log(
-			"\n\n\nmerged_employee_trust_FE_list",
-			merged_employee_trust_FE_list
-		);
 		return merged_employee_trust_FE_list;
 		// return employee_trust_FE_list
 	}
