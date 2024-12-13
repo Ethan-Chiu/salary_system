@@ -3,7 +3,7 @@ import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { isString, isNumber, isDateType } from "~/lib/utils/check_type";
-import { DataTable as DataTableWithFunctions } from "../components/data_table";
+import { DataTable as DataTableWithFunctions } from "../components/data_table_single";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import {
 	c_CreateDateStr,

@@ -1,12 +1,9 @@
 import { cn } from "~/lib/utils";
 import { useContext, useState } from "react";
 import {
+	EllipsisVertical,
 	type LucideIcon,
-	PenSquare,
-	Plus,
-	PlusSquare,
 	RefreshCcw,
-	Trash2,
 } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
@@ -74,7 +71,7 @@ export function DataTableFunctions({
 							size="sm"
 							className="ml-auto hidden h-8 lg:flex"
 						>
-							<PlusSquare className="cursor-pointer stroke-[1.5]" />
+							<EllipsisVertical className="cursor-pointer stroke-[1.5]" />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-[150px]">
@@ -82,21 +79,6 @@ export function DataTableFunctions({
 							{t("others.functions")}
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						{createFunction && <CompTriggerItem
-							mode={"create"}
-							itemName={t("button.create")}
-							icon={Plus}
-						/>}
-						{updateFunction && <CompTriggerItem
-							mode={"update"}
-							itemName={t("button.update")}
-							icon={PenSquare}
-						/>}
-						{deleteFunction && <CompTriggerItem
-							mode={"delete"}
-							itemName={t("button.delete")}
-							icon={Trash2}
-						/>}
 						{autoCalculateFunction && <CompTriggerItem
 							mode={"auto_calculate"}
 							itemName={t("button.auto_calculate")}

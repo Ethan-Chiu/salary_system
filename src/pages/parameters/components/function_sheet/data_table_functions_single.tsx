@@ -1,6 +1,6 @@
 import { cn } from "~/lib/utils";
 import { useState } from "react";
-import { type LucideIcon, Copy, EllipsisVertical } from "lucide-react";
+import { type LucideIcon, PenSquare, Plus, Trash2, Copy, PencilLine } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
 	DropdownMenu,
@@ -80,17 +80,32 @@ export function DataTableFunctions({
 							size="sm"
 							className="ml-auto hidden h-8 lg:flex"
 						>
-							<EllipsisVertical className="cursor-pointer stroke-[1.5]" />
+							<PencilLine className="cursor-pointer stroke-[1.5]" />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-[120px]">
 						<DropdownMenuLabel>{t("others.functions")}</DropdownMenuLabel>
 						<DropdownMenuSeparator />
+						<CompTriggerItem
+							mode={"create"}
+							itemName={t("button.create")}
+							icon={Plus}
+						/>
 						{tableType == "TableLevel" && <CompTriggerItem
 							mode={"batch_create"}
 							itemName={t("button.batch_create")}
 							icon={Copy}
 						/>}
+						<CompTriggerItem
+							mode={"update"}
+							itemName={t("button.update")}
+							icon={PenSquare}
+						/>
+						<CompTriggerItem
+							mode={"delete"}
+							itemName={t("button.delete")}
+							icon={Trash2}
+						/>
 					</DropdownMenuContent>
 				</DropdownMenu>
 				{/* Sheet */}

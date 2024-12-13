@@ -2,7 +2,7 @@ import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "../ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
-import { PenSquare, Plus, PlusSquare, Trash2 } from "lucide-react";
+import { PencilLine, PenSquare, Plus, Trash2 } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { PropsWithChildren } from "react";
 import { TFunction } from "i18next";
@@ -29,12 +29,10 @@ export function FunctionsComponent<TMode>({ children, t, open, setOpen, mode, se
                         size="sm"
                         className="hidden h-8 lg:flex"
                     >
-                        <PlusSquare className="cursor-pointer stroke-[1.5]" />
+                        <PencilLine className="cursor-pointer stroke-[1.5]" />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[120px]">
-                    <DropdownMenuLabel>{t("others.functions")}</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
                     {(["create", "update", "delete"] as FunctionsItemKey[]).map((key: FunctionsItemKey) => (
                         <SheetTrigger
                             className="w-full"
