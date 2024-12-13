@@ -114,15 +114,9 @@ export const functionRouter = createTRPCRouter({
 		)
 		.query(async ({ input }) => {
 			const ehrService = container.resolve(EHRService);
-			const expense_with_type_list =
-				await ehrService.getExpenseWithTypeByEmpNoList(
-					input.period_id,
-					input.emp_no_list
-				);
 			const otherMapper = container.resolve(OtherMapper);
 			const newOther_list = await otherMapper.getOtherFE(
 				input.period_id,
-				expense_with_type_list,
 				input.emp_no_list
 			);
 			return newOther_list;
@@ -217,7 +211,7 @@ export const functionRouter = createTRPCRouter({
 			const allowanceFE_list: any = [];
 			const promises = allowance_with_type_list.map(async (allowance) => {
 				allowanceFE_list.push(
-					await allowance_mapper.getAllowanceFE(allowance)
+					await allowance_mapper.getAllowanceFE(input.period_id,allowance)
 				);
 			});
 			await Promise.all(promises);

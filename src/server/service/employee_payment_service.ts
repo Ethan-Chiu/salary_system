@@ -1,4 +1,4 @@
-import { delay, inject, injectable } from "tsyringe";
+import { container, delay, inject, injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { get_date_string, select_value } from "./helper_function";
 import { type z } from "zod";
@@ -17,6 +17,7 @@ import {
 } from "../api/types/employee_payment_type";
 import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
 import { EmployeeDataService } from "./employee_data_service";
+import { Period } from "../database/entity/UMEDIA/period";
 
 @injectable()
 export class EmployeePaymentService {
@@ -172,6 +173,37 @@ export class EmployeePaymentService {
 		}
 
 		return await this.employeePaymentMapper.decode(employeePayment);
+	}
+
+	async getCurrentEmployeePaymentByEmpNoList(
+		emp_no_list: string[],
+		period_id: number
+	): Promise<EmployeePaymentDecType[] | null> {
+		const period = await this.ehrService.getPeriodById(period_id);
+		const current_date_string = period.end_date;
+		const employeePayment = await EmployeePayment.findAll({
+			where: {
+				emp_no: {
+					[Op.in]: emp_no_list,
+				},
+				start_date: {
+					[Op.lte]: current_date_string,
+				},
+				end_date: {
+					[Op.or]: [
+						{ [Op.gte]: current_date_string },
+						{ [Op.eq]: null },
+					],
+				},
+				disabled: false,
+			},
+		});
+
+		if (employeePayment == null) {
+			return null;
+		}
+
+		return await this.employeePaymentMapper.decodeList(employeePayment);
 	}
 
 	async getCurrentEmployeePaymentByEmpNoByDate(
@@ -477,6 +509,8 @@ export class EmployeePaymentService {
 		employeePayment: z.infer<typeof employeePaymentCreateService>,
 		date: Date
 	): Promise<z.infer<typeof employeePaymentCreateService>> {
+		const ehr_service = container.resolve(EHRService);
+		const period_id = await ehr_service.getPeriodIdByDate(date);
 		const salary =
 			employeePayment.base_salary +
 			employeePayment.food_allowance +
@@ -502,6 +536,7 @@ export class EmployeePaymentService {
 
 		const employeeData =
 			await this.employeeDataService.getEmployeeDataByEmpNo(
+				period_id!,
 				employeePayment.emp_no
 			);
 		if (employeeData == null) {

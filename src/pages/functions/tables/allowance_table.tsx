@@ -53,14 +53,14 @@ const columns = (t: I18nType) =>
 	});
 
 interface AllowanceTableProps {
-	period: number;
+	period_id: number;
 	emp_no_list: string[];
 }
 
-export function AllowanceTable({ period, emp_no_list }: AllowanceTableProps) {
+export function AllowanceTable({ period_id, emp_no_list }: AllowanceTableProps) {
 	const { isLoading, isError, data, error } =
 		api.function.getNewAllowanceFEByEmpNoList.useQuery({
-			period_id: period,
+			period_id: period_id,
 			emp_no_list: emp_no_list,
 		});
 

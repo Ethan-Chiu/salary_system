@@ -40,13 +40,13 @@ interface OvertimeTableProps {
 }
 
 export function OvertimeTable({
-	period,
+	period_id,
 	emp_no_list,
 	pay_type,
 }: OvertimeTableProps) {
 	const { isLoading, isError, data, error } =
 		api.function.getOvertimeByEmpNoList.useQuery({
-			period_id: period,
+			period_id: period_id,
 			emp_no_list: emp_no_list,
 			pay_type: pay_type,
 		});

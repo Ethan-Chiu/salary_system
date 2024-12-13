@@ -12,7 +12,7 @@ const dbAllowance = z.object({
 	CREATE_DATE: z.date(),
 	UPDATE_BY: z.string().nullable(),
 	UPDATE_DATE: z.date().nullable(),
-	PAY_DELAY: z.number(),
+	PAY_DELAY: z.number().nullable(),
 });
 
 export class Allowance {
@@ -27,7 +27,7 @@ export class Allowance {
 	create_date: Date;
 	update_by: string | null;
 	update_date: Date | null;
-	pay_delay: number;
+	pay_delay: number | null;
 
 	constructor(
 		// id: number,
@@ -41,7 +41,7 @@ export class Allowance {
 		create_date: Date,
 		update_by: string | null,
 		update_date: Date | null,
-		pay_delay: number
+		pay_delay: number | null
 	) {
 		// this.id = id;
 		this.period_id = period_id;

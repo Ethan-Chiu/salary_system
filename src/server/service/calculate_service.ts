@@ -27,6 +27,9 @@ import { EmployeeDataService } from "./employee_data_service";
 import { EmployeeBonusService } from "./employee_bonus_service";
 import { EmployeePaymentDecType } from "../database/entity/SALARY/employee_payment";
 import { LongServiceEnum } from "../api/types/long_service_enum";
+import { Expense } from "../database/entity/UMEDIA/expense";
+import { AllowanceType } from "../database/entity/UMEDIA/allowance_type";
+import { ExpenseClass } from "../database/entity/UMEDIA/expense_class";
 
 const FOREIGN = "外籍勞工";
 const PROFESSOR = "顧問";
@@ -957,13 +960,15 @@ export class CalculateService {
 	//MARK: 其他減項?
 	async getOtherDeduction(
 		period_id: number,
-		emp_no: string
+		emp_no: string,
+		expense_list?: Expense[], expense_class_list?: ExpenseClass[]
 	): Promise<number> {
 		const ehrService = container.resolve(EHRService);
-		let other_deduction_ids = (await ehrService.getExpenseClass())
+		const expenseClassList = expense_class_list??(await ehrService.getExpenseClass());
+		let other_deduction_ids = expenseClassList
 			.filter((ec) => ec.other_less === 1)
 			.map((ec) => ec.id);
-		const expenseList = (
+		const expenseList = expense_list??(
 			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
 		).filter((e) => e.kind === 2);
 		let other_deduction = 0;
@@ -987,12 +992,13 @@ export class CalculateService {
 		return other_deduction_list;
 	}
 	//MARK: 其他加項?
-	async getOtherAddition(period_id: number, emp_no: string): Promise<number> {
+	async getOtherAddition(period_id: number, emp_no: string, expense_list?: Expense[], allowance_type_list?: AllowanceType[] ): Promise<number> {
 		const ehrService = container.resolve(EHRService);
-		let other_addition_ids = (await ehrService.getAllowanceType())
+		const allowanceTypeList = allowance_type_list ?? (await ehrService.getAllowanceType());
+		let other_addition_ids = allowanceTypeList
 			.filter((at) => at.other_add === 1)
 			.map((at) => at.id);
-		const expenseList = (
+		const expenseList = expense_list ?? (
 			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
 		).filter((e) => e.kind === 1);
 		let other_addition = 0;
@@ -1018,16 +1024,19 @@ export class CalculateService {
 	//MARK: 其他加項稅 ?
 	async getOtherAdditionTax(
 		period_id: number,
-		emp_no: string
+		emp_no: string,
+		expense_list?: Expense[], 
+		allowance_type_list?: AllowanceType[]
 	): Promise<number> {
 		// const other_addition_tax = 0
 		// return other_addition_tax
 		const ehrService = container.resolve(EHRService);
-		let other_addition_tax_ids = (await ehrService.getAllowanceType())
+		const allowanceTypeList = allowance_type_list ?? (await ehrService.getAllowanceType());
+		let other_addition_tax_ids = allowanceTypeList
 			.filter((at) => at.other_tax === 1)
 			.map((at) => at.id);
 
-		const expenseList = (
+		const expenseList = expense_list ?? (
 			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
 		).filter((e) => e.kind === 1);
 		let other_addition_tax = 0;
@@ -1053,13 +1062,16 @@ export class CalculateService {
 	//MARK: 其他減項稅 ?
 	async getOtherDeductionTax(
 		period_id: number,
-		emp_no: string
+		emp_no: string,
+		expense_list?: Expense[],
+		expense_class_list?: ExpenseClass[]
 	): Promise<number> {
 		const ehrService = container.resolve(EHRService);
-		let other_deduction_tax_ids = (await ehrService.getExpenseClass())
+		const expenseClassList = expense_class_list??(await ehrService.getExpenseClass());
+		let other_deduction_tax_ids = expenseClassList
 			.filter((ec) => ec.other_tax === 1)
 			.map((ec) => ec.id);
-		const expenseList = (
+		const expenseList = expense_list??(
 			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
 		).filter((e) => e.kind === 2);
 		let other_deduction_tax = 0;

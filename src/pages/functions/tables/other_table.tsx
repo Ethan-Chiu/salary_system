@@ -89,20 +89,20 @@ const columns = (t: I18nType) =>
 	});
 
 interface OtherTableProps {
-	period: number;
+	period_id: number;
 	emp_no_list: string[];
 }
 
-export function OtherTable({ period, emp_no_list }: OtherTableProps) {
+export function OtherTable({ period_id, emp_no_list }: OtherTableProps) {
 	const { isLoading, isError, data, error } =
 		api.function.getNewOtherByEmpNoList.useQuery({
-			period_id: period,
+			period_id: period_id,
 			emp_no_list: emp_no_list,
 		});
 
 	const details =
 		api.function.getOtherDetailsByEmpNoList.useQuery({
-			period_id: period,
+			period_id: period_id,
 			emp_no_list: emp_no_list,
 		});
 

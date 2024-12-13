@@ -51,6 +51,7 @@ export const debugRouter = createTRPCRouter({
 		const tables = await database.getQueryInterface().showAllTables();
 		return {
 			msg: tables,
+			// msg: "finished",
 		};
 	}),
 	describeTable: publicProcedure
