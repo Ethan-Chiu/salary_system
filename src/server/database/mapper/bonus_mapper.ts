@@ -3,16 +3,16 @@ import { type BonusFEType } from "~/server/api/types/bonus_type";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { EmployeeBonusMapper } from "./employee_bonus_mapper";
 import { EmployeeBonusService } from "~/server/service/employee_bonus_service";
-import { injectable } from "tsyringe";
+import { container, injectable } from "tsyringe";
 
 @injectable()
 export class BonusMapper {
 	constructor(
-    private readonly ehrService: EHRService,
-    private readonly employeeDataService: EmployeeDataService,
-    private readonly employeeBonusService: EmployeeBonusService, 
-    private readonly employeeBonusMapper: EmployeeBonusMapper,
-  ) {}
+		private readonly ehrService: EHRService,
+		private readonly employeeDataService: EmployeeDataService,
+		private readonly employeeBonusService: EmployeeBonusService,
+		private readonly employeeBonusMapper: EmployeeBonusMapper
+	) {}
 
 	async getBonusFE(
 		period_id: number,
@@ -22,9 +22,13 @@ export class BonusMapper {
 		const new_bonusFE_list: BonusFEType[] = await Promise.all(
 			emp_no_list.map(async (emp_no) => {
 				const employee_data =
-					await this.employeeDataService.getEmployeeDataByEmpNo(emp_no);
+					await this.employeeDataService.getLatestEmployeeDataByEmpNo(
+						emp_no
+					);
 				const payset = (
-					await this.ehrService.getPaysetByEmpNoList(period_id, [emp_no])
+					await this.ehrService.getPaysetByEmpNoList(period_id, [
+						emp_no,
+					])
 				)[0];
 				const employee_bonus =
 					await this.employeeBonusService.getEmployeeBonusByEmpNoByType(
@@ -34,11 +38,12 @@ export class BonusMapper {
 					);
 				let project_bonus = 0;
 				if (employee_bonus !== null) {
-					project_bonus = (
-						await this.employeeBonusMapper.getEmployeeBonusFE(
-							employee_bonus
-						)
-					).app_amount??-1;
+					project_bonus =
+						(
+							await this.employeeBonusMapper.getEmployeeBonusFE(
+								employee_bonus
+							)
+						).app_amount ?? -1;
 				}
 				return {
 					// ...employee_bonus,
@@ -60,4 +65,3 @@ export class BonusMapper {
 		return new_bonusFE_list;
 	}
 }
-

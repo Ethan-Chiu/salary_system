@@ -23,7 +23,7 @@ export const employeePaymentRouter = createTRPCRouter({
 				await employeePaymentService.getCurrentEmployeePayment(
 					input.period_id
 				);
-				
+
 			return employeePaymentFE;
 		}),
 
@@ -42,20 +42,20 @@ export const employeePaymentRouter = createTRPCRouter({
 			return employeePayment;
 		}),
 
-	getAllFutureEmployeePayment: publicProcedure
-		.output(z.array(z.array(employeePaymentFE)))
-		.query(async () => {
-			const employeePaymentService = container.resolve(
-				EmployeePaymentService
-			);
-			const employeePayment =
-				await employeePaymentService.getAllFutureEmployeePayment();
-			if (employeePayment == null) {
-				throw new BaseResponseError("EmployeePayment does not exist");
-			}
+	// getAllFutureEmployeePayment: publicProcedure
+	// 	.output(z.array(z.array(employeePaymentFE)))
+	// 	.query(async () => {
+	// 		const employeePaymentService = container.resolve(
+	// 			EmployeePaymentService
+	// 		);
+	// 		const employeePayment =
+	// 			await employeePaymentService.getAllFutureEmployeePayment();
+	// 		if (employeePayment == null) {
+	// 			throw new BaseResponseError("EmployeePayment does not exist");
+	// 		}
 
-			return employeePayment;
-		}),
+	// 		return employeePayment;
+	// 	}),
 
 	createEmployeePayment: publicProcedure
 		.input(employeePaymentCreateAPI)

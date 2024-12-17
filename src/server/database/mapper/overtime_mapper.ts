@@ -1,4 +1,7 @@
-import { overtimeFE, type OvertimeFEType } from "~/server/api/types/overtime_type";
+import {
+	overtimeFE,
+	type OvertimeFEType,
+} from "~/server/api/types/overtime_type";
 import { type Overtime } from "../entity/UMEDIA/overtime";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { EHRService } from "~/server/service/ehr_service";
@@ -6,10 +9,10 @@ import { injectable } from "tsyringe";
 
 @injectable()
 export class OvertimeMapper {
-  constructor(
-    private readonly employeeDataService: EmployeeDataService,
-    private readonly ehrService: EHRService,
-  ) {}
+	constructor(
+		private readonly employeeDataService: EmployeeDataService,
+		private readonly ehrService: EHRService
+	) {}
 
 	async getOvertimeFE(
 		period_id: number,
@@ -19,6 +22,7 @@ export class OvertimeMapper {
 			overtime_list.map(async (overtime) => {
 				const employee_data =
 					await this.employeeDataService.getEmployeeDataByEmpNo(
+						period_id,
 						overtime.emp_no
 					);
 

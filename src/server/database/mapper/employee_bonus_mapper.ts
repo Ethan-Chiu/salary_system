@@ -1,12 +1,8 @@
 import { container, injectable } from "tsyringe";
 import { BaseResponseError } from "~/server/api/error/BaseResponseError";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
-import {
-	deleteProperties,
-} from "./helper_function";
-import {
-	type EmployeeBonusFEType,
-} from "~/server/api/types/employee_bonus_type";
+import { deleteProperties } from "./helper_function";
+import { type EmployeeBonusFEType } from "~/server/api/types/employee_bonus_type";
 import { EmployeePaymentService } from "~/server/service/employee_payment_service";
 import { EmployeeBonusService } from "~/server/service/employee_bonus_service";
 import { BaseMapper } from "./base_mapper";
@@ -42,19 +38,13 @@ export class EmployeeBonusMapper extends BaseMapper<
 			EmployeePaymentService
 		);
 
-		const employee = await employeeDataService.getEmployeeDataByEmpNo(
+		const employee = await employeeDataService.getLatestEmployeeDataByEmpNo(
 			employee_bonus.emp_no
 		);
 		const employeePayment =
 			await employeePaymentService.getEmployeePaymentByEmpNo(
 				employee_bonus.emp_no
 			);
-
-		if (employee == null)
-			throw new BaseResponseError("Employee does not exist");
-		if (employeePayment == null)
-			throw new BaseResponseError("Employee Payment does not exist");
-
 		const total_amount =
 			employeePayment.base_salary +
 			employeePayment.supervisor_allowance +
@@ -100,10 +90,10 @@ export class EmployeeBonusMapper extends BaseMapper<
 			app_effective_salary: employee_bonus.app_effective_salary,
 			app_amount: employee_bonus.app_amount,
 			status: getRandomStatus(),
-      create_by: employee_bonus.create_by,
-      update_by: employee_bonus.update_by,
-      create_date: employee_bonus.create_date,
-      update_date: employee_bonus.update_date
+			create_by: employee_bonus.create_by,
+			update_by: employee_bonus.update_by,
+			create_date: employee_bonus.create_date,
+			update_date: employee_bonus.update_date,
 		};
 
 		return deleteProperties(employeeBonusFE, [

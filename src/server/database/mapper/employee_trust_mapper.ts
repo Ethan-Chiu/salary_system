@@ -36,19 +36,19 @@ export class EmployeeTrustMapper extends BaseMapper<
 	}
 
 	async getEmployeeTrustFE(
-		employee_trust_list: EmployeeTrustDecType[]
+		employee_trust_list: EmployeeTrustDecType[],
 	): Promise<z.infer<typeof employeeTrustFE>[]> {
 		const emp_first = employee_trust_list[0];
 		if (!emp_first) {
 			throw new BaseResponseError("Employee trust records do not exist");
 		}
 
-		const employee = await this.employeeDataService.getEmployeeDataByEmpNo(
+		const employee = await this.employeeDataService.getLatestEmployeeDataByEmpNo(
 			emp_first.emp_no
 		);
 
 		if (employee == null) {
-			throw new BaseResponseError("Employee does not exist");
+			throw new Error(`Employee does not exist, emp_no: ${emp_first.emp_no}`);
 		}
 
 		const trust_money_list =
@@ -78,11 +78,7 @@ export class EmployeeTrustMapper extends BaseMapper<
 						start_date
 					);
 
-				if (employee_trust == null) {
-					throw new BaseResponseError(
-						"Employee Trust does not exist"
-					);
-				}
+				
 
 				const trust_money =
 					await this.trustMoneyService.getCurrentTrustMoneyByPositionByDate(
@@ -90,6 +86,7 @@ export class EmployeeTrustMapper extends BaseMapper<
 						employee.position_type,
 						start_date
 					);
+				
 				const org_trust_reserve = Math.min(
 					trust_money!.org_trust_reserve_limit,
 					Number(

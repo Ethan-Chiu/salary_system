@@ -6,7 +6,7 @@
 
 */
 import { container, injectable } from "tsyringe";
-import { EmployeeData } from "../database/entity/SALARY/employee_data";
+import { EmployeeDataDecType } from "../database/entity/SALARY/employee_data";
 import { AllowanceWithType, EHRService, ExpenseWithType } from "./ehr_service";
 import { Overtime } from "../database/entity/UMEDIA/overtime";
 import { Payset } from "../database/entity/UMEDIA/payset";
@@ -51,7 +51,7 @@ export class CalculateService {
 
 	// MARK: 平日加班費
 	async getWeekdayOvertimePay(
-		employee_data: EmployeeData,
+		employee_data: EmployeeDataDecType,
 		discounted_employee_payment_dec: EmployeePaymentDecType,
 		overtime_list: Overtime[],
 		payset: Payset,
@@ -119,7 +119,7 @@ export class CalculateService {
 	}
 	//MARK: 假日加班費
 	async getHolidayOvertimePay(
-		employee_data: EmployeeData,
+		employee_data: EmployeeDataDecType,
 		discounted_employee_payment_dec: EmployeePaymentDecType,
 		overtime_list: Overtime[],
 		payset: Payset,
@@ -189,7 +189,7 @@ export class CalculateService {
 
 	// MARK: 超時加班費
 	async getExceedOvertimePay(
-		employee_data: EmployeeData,
+		employee_data: EmployeeDataDecType,
 		discounted_employee_payment_dec: EmployeePaymentDecType,
 		overtime_list: Overtime[],
 		payset: Payset,
@@ -260,7 +260,7 @@ export class CalculateService {
 		professional_cert_allowance: number,
 		pay_type: PayTypeEnumType,
 		full_attendance_bonus: number,
-		employee_data: EmployeeData,
+		employee_data: EmployeeDataDecType,
 		operational_performance_bonus: number
 	): Promise<number> {
 		// F底薪＋伙食津貼＋營運績效獎金＋全勤獎金
@@ -295,7 +295,7 @@ export class CalculateService {
 	}
 	//MARK: 勞保扣除額
 	async getLaborInsuranceDeduction(
-		employee_data: EmployeeData,
+		employee_data: EmployeeDataDecType,
 		discounted_employee_payment_dec: EmployeePaymentDecType,
 		payset: Payset,
 		insuranceRateSetting: InsuranceRateSettingDecType
@@ -371,7 +371,7 @@ export class CalculateService {
 	}
 	//MARK: 健保扣除額(要多考慮本人障礙 眷屬正常)
 	async getHealthInsuranceDeduction(
-		employee_data: EmployeeData,
+		employee_data: EmployeeDataDecType,
 		discounted_employee_payment_dec: EmployeePaymentDecType,
 		insurance_rate_setting: InsuranceRateSettingDecType
 	): Promise<number> {
@@ -430,7 +430,7 @@ export class CalculateService {
 	}
 	//MARK:福利金提撥
 	async getWelfareContribution(
-		employee_data: EmployeeData,
+		employee_data: EmployeeDataDecType,
 		discounted_employee_payment_dec: EmployeePaymentDecType,
 		full_attendance_bonus: number,
 		operational_performance_bonus: number
@@ -458,7 +458,7 @@ export class CalculateService {
 	}
 	//MARK: 請假扣款
 	async getLeaveDeduction(
-		employee_data: EmployeeData,
+		employee_data: EmployeeDataDecType,
 		holiday_list: Holiday[], // Maybe not this
 		holidays_type: HolidaysType[],
 		insurance_rate_setting: InsuranceRateSettingDecType,
@@ -715,7 +715,7 @@ export class CalculateService {
 		payset: Payset | undefined,
 		discounted_employee_payment_dec: EmployeePaymentDecType,
 		insurance_rate_setting: InsuranceRateSettingDecType,
-		employee_data: EmployeeData
+		employee_data: EmployeeDataDecType
 	): Promise<number> {
 		const l_i = discounted_employee_payment_dec.l_i;
 		const wci_apf = insurance_rate_setting.l_i_wage_replacement_rate;
@@ -757,7 +757,7 @@ export class CalculateService {
 	}
 	//MARK: 薪資所得稅 (缺表)
 	async getSalaryIncomeTax(
-		employee_data: EmployeeData,
+		employee_data: EmployeeDataDecType,
 		issue_date: string,
 		salary_income_deduction: number
 	): Promise<number> {
@@ -838,7 +838,7 @@ export class CalculateService {
 		holidays_type: HolidaysType[],
 		gross_salary: number,
 		insurance_rate_setting: InsuranceRateSettingDecType,
-		employee_data: EmployeeData
+		employee_data: EmployeeDataDecType
 	): Promise<number> {
 		const non_leave_comp_id = holidays_type.find(
 			(h) => h.holidays_name === "不休假"
@@ -1225,7 +1225,7 @@ export class CalculateService {
 	//MARK: 勞保費
 	async getLaborInsurancePay(
 		discounted_employee_payment_dec: EmployeePaymentDecType,
-		employee_data: EmployeeData,
+		employee_data: EmployeeDataDecType,
 		insurance_rate_setting: InsuranceRateSettingDecType,
 		payset: Payset | undefined,
 		received_elderly_benefits: boolean,
@@ -1338,7 +1338,7 @@ export class CalculateService {
 	//MARK: 健保費
 	async getHealthInsurancePay(
 		discounted_employee_payment_dec: EmployeePaymentDecType,
-		employee_data: EmployeeData,
+		employee_data: EmployeeDataDecType,
 		insurance_rate_setting: InsuranceRateSettingDecType
 	): Promise<number> {
 		// 		'公司付健保費(外籍勞工算法同本國籍)
@@ -1393,7 +1393,7 @@ export class CalculateService {
 		}
 	}
 	//MARK: 團保費
-	async getGroupInsurancePay(employee_data: EmployeeData): Promise<number> {
+	async getGroupInsurancePay(employee_data: EmployeeDataDecType): Promise<number> {
 		/*
 			rd("團保費") = ComInsurance(
 				CheckNull(rd("團保類別"), X),
@@ -1550,7 +1550,7 @@ export class CalculateService {
 	}
 	//MARK: 勞退金提撥
 	async getLaborRetirementContribution(
-		employee_data: EmployeeData,
+		employee_data: EmployeeDataDecType,
 		discounted_employee_payment_dec: EmployeePaymentDecType
 	): Promise<number> {
 		/*
@@ -1591,7 +1591,7 @@ export class CalculateService {
 	}
 	//MARK: 勞退金提撥_舊制?
 	async getOldLaborRetirementContribution(
-		employee_data: EmployeeData,
+		employee_data: EmployeeDataDecType,
 		taxable_subtotal: number,
 		non_taxable_subtotal: number,
 		payset: Payset | undefined
@@ -1830,7 +1830,7 @@ export class CalculateService {
 	}
 	//MARK: 特別事假扣款
 	async getSpecialLeaveDeduction(
-		employee_data: EmployeeData,
+		employee_data: EmployeeDataDecType,
 		holidays_type: HolidaysType[],
 		holiday_list: Holiday[],
 		gross_salary: number,

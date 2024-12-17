@@ -1,5 +1,5 @@
-import { injectable } from "tsyringe";
-import { EmployeeData } from "../database/entity/SALARY/employee_data";
+import { container, injectable } from "tsyringe";
+import { EmployeeData, EmployeeDataDecType } from "../database/entity/SALARY/employee_data";
 import { type z } from "zod";
 import {
 	type createEmployeeDataService,
@@ -9,6 +9,8 @@ import {
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { select_value } from "./helper_function";
 import { Op } from "sequelize";
+import { EmployeeDataMapper } from "../database/mapper/employee_data_mapper";
+import { EHRService } from "./ehr_service";
 
 @injectable()
 export class EmployeeDataService {
@@ -61,15 +63,16 @@ export class EmployeeDataService {
 		return newData;
 	}
 
-	async getEmployeeDataById(id: number): Promise<EmployeeData | null> {
+	async getEmployeeDataById(id: number): Promise<EmployeeDataDecType | null> {
 		const employeeData = await EmployeeData.findOne({
 			where: {
 				id: id,
 			},
 		});
-		return employeeData;
+		const employee_data_mapper = container.resolve(EmployeeDataMapper);
+		return await employee_data_mapper.decode(employeeData);
 	}
-	async getEmployeeDataByEmpNo(period_id: number,emp_no: string): Promise<EmployeeData | null> {
+	async getEmployeeDataByEmpNo(period_id: number,emp_no: string): Promise<EmployeeDataDecType > {
 		const employeeData = await EmployeeData.findOne({
 			where: {
 				emp_no: emp_no,
@@ -77,9 +80,45 @@ export class EmployeeDataService {
 			},
 			raw: true,
 		});
-		return employeeData;
+		if (employeeData == null ){
+			throw new Error(`Employee data does not exist,emp_no: ${emp_no},period_id: ${period_id}`)
+		}
+		const employee_data_mapper = container.resolve(EmployeeDataMapper);
+		return await employee_data_mapper.decode(employeeData);
 	}
-	async getEmployeeDataByEmpNoList(period_id:number,emp_no_list: string[]): Promise<EmployeeData[] | null> {
+	async getLatestEmployeeDataByEmpNo(emp_no: string): Promise<EmployeeDataDecType > {
+		const employeeData = await EmployeeData.findAll({
+			where: {
+				emp_no: emp_no,
+			},
+			order: [["period_id", "DESC"]],
+			raw: true,
+		});
+		if (employeeData == null ){
+			throw new Error(`Employee data does not exist,emp_no: ${emp_no}`)
+		}
+		const employee_data_mapper = container.resolve(EmployeeDataMapper);
+		return await employee_data_mapper.decode(employeeData[0]);
+	}
+	// async getEmployeeDataByEmpNoByDate(date: Date,emp_no: string): Promise<EmployeeDataDecType | null> {
+	// 	const ehr_service = container.resolve(EHRService);
+	// 	const period_id = await ehr_service.getPeriodIdByDate(date);
+	// 	const employeeData = await EmployeeData.findOne({
+	// 		where: {
+	// 			emp_no: emp_no,
+	// 			period_id: period_id,
+	// 		},
+	// 		raw: true,
+	// 	});
+	// 	const employee_data_mapper = container.resolve(EmployeeDataMapper);
+	// 	if (employeeData == null ){
+	// 		this.getLatestEmployeeDataByEmpNo(emp_no);
+	// 		throw new BaseResponseError("Employee data does not exist");
+	// 	}
+	// 	return await employee_data_mapper.decode(employeeData);
+	// }
+	
+	async getEmployeeDataByEmpNoList(period_id:number,emp_no_list: string[]): Promise<EmployeeDataDecType[] | null> {
 		const employeeDataList = await EmployeeData.findAll({
 			where:{
 				emp_no: {
@@ -89,16 +128,22 @@ export class EmployeeDataService {
 			},
 			raw: true,
 		});
-
-		return employeeDataList;
+		const employee_data_mapper = container.resolve(EmployeeDataMapper);
+		return await employee_data_mapper.decodeList(employeeDataList);
 	}
 
-	async getCurrentEmployeeData(): Promise<EmployeeData[]> {
-		const employeeData = await this.getAllEmployeeData();
-		return employeeData;
+	async getCurrentEmployeeData(period_id:number): Promise<EmployeeDataDecType[]> {
+		const employeeDataList = await EmployeeData.findAll({
+			where:{
+				period_id:period_id
+			},
+			raw: true,
+		});
+		const employee_data_mapper = container.resolve(EmployeeDataMapper);
+		return await employee_data_mapper.decodeList(employeeDataList);
 	}
 
-	async getEmployeeDataByEmpNoByPeriod(emp_no: string, period_id: number): Promise<EmployeeData | null> {
+	async getEmployeeDataByEmpNoByPeriod(emp_no: string, period_id: number): Promise<EmployeeDataDecType | null> {
 		const employeeData = await EmployeeData.findOne({
 			where: {
 				emp_no: emp_no,
@@ -106,15 +151,17 @@ export class EmployeeDataService {
 			},
 			raw: true,
 		});
-		return employeeData;
+		const employee_data_mapper = container.resolve(EmployeeDataMapper);
+		return await employee_data_mapper.decode(employeeData);
 	}
 
-	async getAllEmployeeData(): Promise<EmployeeData[]> {
-		const employeeData = await EmployeeData.findAll({
+	async getAllEmployeeData(): Promise<EmployeeDataDecType[]> {
+		const employeeDataList = await EmployeeData.findAll({
 			raw: true,
 			order: [["emp_no", "ASC"]],
 		});
-		return employeeData;
+		const employee_data_mapper = container.resolve(EmployeeDataMapper);
+		return await employee_data_mapper.decodeList(employeeDataList);
 	}
 
 	async updateEmployeeData({

@@ -6,9 +6,71 @@ import {
 	type CreationOptional,
 	type Sequelize,
 } from "sequelize";
-import { WorkStatusEnumType } from "~/server/api/types/work_status_enum";
-import { type WorkTypeEnumType } from "~/server/api/types/work_type_enum";
+import { z } from "zod";
+import {
+	WorkStatusEnum,
+	WorkStatusEnumType,
+} from "~/server/api/types/work_status_enum";
+import {
+	WorkTypeEnum,
+	type WorkTypeEnumType,
+} from "~/server/api/types/work_type_enum";
+import {
+	dateCreateF,
+	dateF,
+	dateStringF,
+	systemF,
+	systemKeys,
+} from "../../mapper/mapper_utils";
 
+const dbEmployeeData = z.object({
+	period_id: z.number(),
+	emp_no: z.string(),
+	emp_name: z.string(),
+	position: z.number(), //職等
+	position_type: z.string(), //職級
+	group_insurance_type: z.string(),
+	department: z.string(),
+	work_type: WorkTypeEnum, //工作類別
+	work_status: WorkStatusEnum, //工作型態
+	disabilty_level: z.string().nullable(),
+	sex_type: z.string(),
+	dependents: z.number().nullable(),
+	healthcare_dependents: z.number().nullable(),
+	registration_date: z.string(),
+	quit_date: z.string().nullable(),
+	license_id: z.string().nullable(),
+	bank_account: z.string(),
+	create_by: z.string(),
+	update_by: z.string(),
+});
+
+const decFields = z.object({
+	id: z.number(),
+});
+
+const encFields = z.object({});
+
+const encF = dbEmployeeData.merge(encFields);
+const decF = dbEmployeeData.merge(decFields).merge(dateCreateF);
+export type EmployeeDataDecType = z.input<typeof decF>;
+
+export const decEmployeeData = encF
+	.merge(systemF)
+	.transform((v) => {
+		return {
+			...v,
+			id: v.id,
+		};
+	})
+	.pipe(decF);
+
+export const encEmployeeData = decF
+	.omit(systemKeys)
+	.transform((v) => ({
+		...v,
+	}))
+	.pipe(encF);
 export class EmployeeData extends Model<
 	InferAttributes<EmployeeData>,
 	InferCreationAttributes<EmployeeData>
@@ -32,8 +94,8 @@ export class EmployeeData extends Model<
 	declare quit_date: string | null;
 	declare license_id: string | null;
 	declare bank_account: string;
-	// declare accumulated_bonus: number;
-	// declare received_elderly_benefits: boolean;
+	// accumulated_bonus: z.number;
+	// received_elderly_benefits: boolean;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -42,7 +104,6 @@ export class EmployeeData extends Model<
 	// updatedAt can be undefined during creation
 	declare update_date: CreationOptional<Date>;
 	declare update_by: string;
-  
 }
 
 export function initEmployeeData(sequelize: Sequelize) {

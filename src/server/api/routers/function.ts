@@ -88,7 +88,7 @@ export const functionRouter = createTRPCRouter({
 				input.emp_no_list
 			);
 
-			return await payset_mapper.getPaysetFE(payset);
+			return await payset_mapper.getPaysetFE(payset, input.period_id);
 		}),
 	getBonusWithTypeByEmpNoList: publicProcedure
 		.input(

@@ -21,12 +21,13 @@ import {
 	type DataComparisonAndStatus,
 	type SyncDataAndStatus,
 } from "./update_table";
-import { CircleCheckBigIcon } from "lucide-react";
+import { CheckCheck, CircleCheckBigIcon } from "lucide-react";
+import { Button } from "../ui/button";
 
 interface EmployeeDataChangeAllProps {
 	data: SyncDataAndStatus[];
 	mode: SyncDataDisplayModeEnumType;
-	setDataStatus: (emp_no: string, key: string, checked: boolean) => void;
+	setDataStatus: (emp_no: string, key?: string, checked?: boolean) => void;
 }
 
 export function EmployeeDataChangeTable({
@@ -40,7 +41,7 @@ export function EmployeeDataChangeTable({
 			<ScrollArea className="h-full overflow-y-auto rounded-md border text-center">
 				<Table>
 					<TableHeader className="bg-secondary">
-						<TableRow className="sticky top-0 bg-secondary hover:bg-secondary">
+						<TableRow className="sticky top-0 bg-secondary hover:bg-secondary z-10">
 							<TableHead className="text-center">
 								{t("table.department")}
 							</TableHead>
@@ -60,15 +61,16 @@ export function EmployeeDataChangeTable({
 								{t("table.ehr_data")}
 							</TableHead>
 							<TableHead className="text-center">
-								{/* Check */}
 								{t("sync_page.check")}
+							</TableHead>
+							<TableHead className="text-center">
+								{t("sync_page.all_(un)click")}
 							</TableHead>
 						</TableRow>
 					</TableHeader>
 					{data.map((d: SyncDataAndStatus, _index: number) => {
 						// Filter data based on mode
-						let comparisons: DataComparisonAndStatus[] =
-							d.comparisons;
+						let comparisons: DataComparisonAndStatus[] = d.comparisons;
 
 						if (mode === SyncDataDisplayModeEnum.Values.changed) {
 							comparisons = d.comparisons.filter(
@@ -97,10 +99,12 @@ export function EmployeeDataChangeTable({
 													{/* Department */}
 													{index === 0 ? (
 														<TableCell
-															className={cn("font-medium hover:bg-muted/50", d.department.is_different && "text-red-500")}
+															className={cn("font-medium align-top", d.department.is_different && "text-red-500")}
 															rowSpan={rowSpan}
 														>
-															{d.department.salary_value ?? d.department.ehr_value}
+															<div className="sticky top-16">
+																{d.department.salary_value ?? d.department.ehr_value}
+															</div>
 														</TableCell>
 													) : (
 														<></>
@@ -108,10 +112,12 @@ export function EmployeeDataChangeTable({
 													{/* Emp No */}
 													{index === 0 ? (
 														<TableCell
-															className="font-medium hover:bg-muted/50"
+															className="font-medium align-top"
 															rowSpan={rowSpan}
 														>
-															{d.emp_no}
+															<div className="sticky top-16">
+																{d.emp_no}
+															</div>
 														</TableCell>
 													) : (
 														<></>
@@ -119,10 +125,12 @@ export function EmployeeDataChangeTable({
 													{/* Name */}
 													{index === 0 ? (
 														<TableCell
-															className={cn("font-medium hover:bg-muted/50", d.name.is_different && "text-red-500")}
+															className={cn("font-medium align-top", d.name.is_different && "text-red-500")}
 															rowSpan={rowSpan}
 														>
-															{d.name.salary_value ?? d.name.ehr_value}
+															<div className="sticky top-16">
+																{d.name.salary_value ?? d.name.ehr_value}
+															</div>
 														</TableCell>
 													) : (
 														<></>
@@ -171,7 +179,7 @@ export function EmployeeDataChangeTable({
 																	setDataStatus(
 																		d.emp_no,
 																		c.key,
-																		checked === true
+																		checked === true,
 																	)
 																}
 															/>
@@ -182,6 +190,25 @@ export function EmployeeDataChangeTable({
 															/>
 														)}
 													</TableCell>
+													{index === 0 ? (
+														<TableCell
+															className={cn("align-top")}
+															rowSpan={rowSpan}
+														>
+															<div className="flex sticky top-16 justify-center">
+																<Button
+																	variant="link"
+																	size="sm"
+																	className="hidden h-6 w-6 p-0 lg:flex bg-transparent text-black rounded border-black border"
+																	onClick={() => setDataStatus(d.emp_no)}
+																>
+																	<CheckCheck className="h-4 w-4"/>
+																</Button>
+															</div>
+														</TableCell>
+													) : (
+														<></>
+													)}
 												</TableRow>
 											);
 										}

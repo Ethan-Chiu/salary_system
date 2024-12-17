@@ -24,7 +24,7 @@ export class EmployeePaymentService {
 	constructor(
 		private readonly employeePaymentMapper: EmployeePaymentMapper,
 		private readonly ehrService: EHRService,
-    @inject(delay(() => LevelService))
+		@inject(delay(() => LevelService))
 		private readonly levelService: LevelService,
 		private readonly levelRangeService: LevelRangeService,
 		private readonly employeeDataService: EmployeeDataService
@@ -68,7 +68,7 @@ export class EmployeePaymentService {
 
 	async getEmployeePaymentByEmpNo(
 		emp_no: string
-	): Promise<EmployeePaymentDecType | null> {
+	): Promise<EmployeePaymentDecType> {
 		const employeePayment = await EmployeePayment.findOne({
 			where: {
 				emp_no: emp_no,
@@ -77,7 +77,7 @@ export class EmployeePaymentService {
 		});
 
 		if (employeePayment == null) {
-			return null;
+			throw new Error(`Employee payment does not exist,emp_no: ${emp_no}`);
 		}
 
 		return await this.employeePaymentMapper.decode(employeePayment);
@@ -111,7 +111,9 @@ export class EmployeePaymentService {
 			)
 		);
 
-		return this.employeePaymentMapper.getEmployeePaymentFE(employeePaymentList)
+		return this.employeePaymentMapper.getEmployeePaymentFE(
+			employeePaymentList
+		);
 	}
 
 	async getCurrentEmployeePaymentById(
@@ -248,7 +250,9 @@ export class EmployeePaymentService {
 			await this.employeePaymentMapper.decodeList(allEmployeePayment);
 
 		const employeePaymentList =
-		 await this.employeePaymentMapper.getEmployeePaymentFE(decodedEmployeePayments);
+			await this.employeePaymentMapper.getEmployeePaymentFE(
+				decodedEmployeePayments
+			);
 
 		// 将记录按工号分组
 		const groupedEmployeePaymenttRecords: Record<
@@ -266,7 +270,8 @@ export class EmployeePaymentService {
 		return Object.values(groupedEmployeePaymenttRecords);
 	}
 
-	async getAllFutureEmployeePayment(): Promise<EmployeePaymentFEType[][]> {
+	async getAllFutureEmployeePayment(
+	): Promise<EmployeePaymentFEType[][]> {
 		const current_date_string = get_date_string(new Date());
 		const allEmployeePayment = await EmployeePayment.findAll({
 			where: {
@@ -285,23 +290,25 @@ export class EmployeePaymentService {
 		const decodedEmployeePayments: EmployeePaymentDecType[] =
 			await this.employeePaymentMapper.decodeList(allEmployeePayment);
 
-			const employeePaymentList =
-			await this.employeePaymentMapper.getEmployeePaymentFE(decodedEmployeePayments);
-   
-		   // 将记录按工号分组
-		   const groupedEmployeePaymenttRecords: Record<
-			   string,
-			   EmployeePaymentFEType[]
-		   > = {};
-   
-		   employeePaymentList.forEach((r) => {
-			   if (!groupedEmployeePaymenttRecords[r.emp_no]) {
-				   groupedEmployeePaymenttRecords[r.emp_no] = [];
-			   }
-			   groupedEmployeePaymenttRecords[r.emp_no]!.push(r);
-		   });
-   
-		   return Object.values(groupedEmployeePaymenttRecords);
+		const employeePaymentList =
+			await this.employeePaymentMapper.getEmployeePaymentFE(
+				decodedEmployeePayments
+			);
+
+		// 将记录按工号分组
+		const groupedEmployeePaymenttRecords: Record<
+			string,
+			EmployeePaymentFEType[]
+		> = {};
+
+		employeePaymentList.forEach((r) => {
+			if (!groupedEmployeePaymenttRecords[r.emp_no]) {
+				groupedEmployeePaymenttRecords[r.emp_no] = [];
+			}
+			groupedEmployeePaymenttRecords[r.emp_no]!.push(r);
+		});
+
+		return Object.values(groupedEmployeePaymenttRecords);
 	}
 
 	async updateEmployeePayment(
