@@ -214,7 +214,7 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 			<CompTopBar />
 			<div className="relative h-0 w-full flex-grow ">
 				<EmployeeDataChangeTable
-					data={filterData.concat(filterData)}
+					data={filterData}
 					mode={mode}
 					setDataStatus={(emp_no, key, checked) => {
 						setDataWithStatus((prevData) => {
