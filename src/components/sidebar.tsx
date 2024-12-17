@@ -118,7 +118,7 @@ function CompSelectItemWrap(props: PropsWithChildren<SelectItemProp>) {
 						<DialogTrigger
 							className={cn(
 								buttonVariants({ variant: "ghost" }),
-                "w-full items-center justify-center"
+								"w-full items-center justify-center"
 							)}
 						>
 							<props.selectItemEntry.icon className="h-4 w-4" />
@@ -253,13 +253,13 @@ export function Sidebar({
 
 	const { t } = useTranslation(["nav", "common"]);
 
-  const { ref, width } = useComponentSize();
+	const { ref, width } = useComponentSize();
 
-  useEffect(() => {
-    if (width < 100 ) {
-      collapseFunction();
-    }
-  })
+	useEffect(() => {
+		if (width < 100) {
+			collapseFunction();
+		}
+	})
 
 	if (isLoading) {
 		return <></>;
@@ -268,7 +268,7 @@ export function Sidebar({
 	return (
 		<div ref={ref} className={cn("pb-12", className)}>
 			<div className="space-y-2 py-4">
-        {/* Select */}
+				{/* Select */}
 				<div className={cn("py-2", !isCollapsed && "px-3")}>
 					{!isCollapsed && (
 						<div className="mb-2 line-clamp-1 break-all px-4 text-lg font-semibold tracking-tight">
@@ -290,7 +290,7 @@ export function Sidebar({
 					</div>
 				</div>
 				{isCollapsed && <Separator />}
-        {/* Action */}
+				{/* Action */}
 				{data?.actions && (
 					<div className={cn("py-2", !isCollapsed && "px-3")}>
 						{!isCollapsed && (
@@ -315,7 +315,7 @@ export function Sidebar({
 					</div>
 				)}
 				{isCollapsed && <Separator />}
-        {/* Setting */}
+				{/* Setting */}
 				<div className={cn("py-2", !isCollapsed && "px-3")}>
 					{!isCollapsed && (
 						<div className="mb-2 line-clamp-1 break-all px-4 text-lg font-semibold tracking-tight">

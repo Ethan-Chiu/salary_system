@@ -15,7 +15,7 @@ import { type SyncCheckStatusEnumType } from "~/components/synchronize/utils/syn
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import periodContext from "../context/period_context";
 import { useTranslation } from "react-i18next";
-import { EmployeeDataChangeTable } from "./emp_data_table_all";
+import { EmployeeDataChangeTable } from "./emp_data_change_table";
 import { type DataComparison, type SyncInputType } from "~/server/api/types/sync_type";
 
 export interface DataComparisonAndStatus extends DataComparison {

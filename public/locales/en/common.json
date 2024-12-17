@@ -410,6 +410,7 @@
     "selected": "Selected",
     "check": "Check",
     "new_department": "New",
-    "new_employee": "New"
+    "new_employee": "New",
+    "all_(un)click": "All (Un)Click"
   }
 }
