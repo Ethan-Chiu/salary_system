@@ -5,15 +5,17 @@ import { injectable } from "tsyringe";
 
 @injectable()
 export class PaysetMapper {
-  constructor(
-    private readonly employeeDataService: EmployeeDataService
-  ) {}
+	constructor(private readonly employeeDataService: EmployeeDataService) {}
 
-	async getPaysetFE(payset_list: Payset[]): Promise<PaysetFEType[]> {
+	async getPaysetFE(
+		payset_list: Payset[],
+		period_id: number
+	): Promise<PaysetFEType[]> {
 		const PaysetFE_list = await Promise.all(
 			payset_list.map(async (payset) => {
 				const employee_data =
 					await this.employeeDataService.getEmployeeDataByEmpNo(
+						period_id,
 						payset.emp_no
 					);
 

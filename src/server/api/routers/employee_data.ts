@@ -8,20 +8,41 @@ import {
 	updateEmployeeDataByEmpNoAPI,
 } from "../types/employee_data_type";
 import { z } from "zod";
-import { EmployeeInformationService } from "~/server/service/employee_information_service";
+import { EmployeeDataMapper } from "~/server/database/mapper/employee_data_mapper";
 
 export const employeeDataRouter = createTRPCRouter({
+	getCurrentEmployeeDataWithInfo: publicProcedure
+		.input(z.object({ period_id: z.number() }))
+		.query(async ({ input }) => {
+			const employeeDataService = container.resolve(EmployeeDataService);
+			const employeeData =
+				await employeeDataService.getCurrentEmployeeData(
+					input.period_id
+				);
+			const employee_data_mapper = container.resolve(EmployeeDataMapper);
+			const empDataWithInfo =
+				await employee_data_mapper.getEmployeeDataWithInfo(
+					employeeData,
+					input.period_id
+				);
+			return empDataWithInfo;
+		}),
+
 	getAllEmployeeDataWithInfo: publicProcedure
 		.input(z.object({ period_id: z.number() }))
 		.query(async ({ input }) => {
 			const employeeDataService = container.resolve(EmployeeDataService);
-			const employeeInformationService = container.resolve(EmployeeInformationService);
 			const employeeData = await employeeDataService.getAllEmployeeData();
 			if (employeeData == null) {
 				throw new BaseResponseError("EmployeeData does not exist");
 			}
-			const employeeDataWithInformation = await employeeInformationService.addEmployeeInformation(input.period_id, employeeData);
-			return employeeDataWithInformation;
+			const employee_data_mapper = container.resolve(EmployeeDataMapper);
+			const empDataWithInfo =
+				await employee_data_mapper.getEmployeeDataWithInfo(
+					employeeData,
+					input.period_id
+				);
+			return empDataWithInfo;
 		}),
 
 	getAllEmployeeData: publicProcedure.query(async () => {

@@ -51,6 +51,7 @@ export class TransactionService {
 		)[0];
 		const calculateService = container.resolve(CalculateService);
 		const employee_data = await employeeDataService.getEmployeeDataByEmpNo(
+			period_id,
 			emp_no
 		);
 		const employee_payment_dec =

@@ -221,7 +221,10 @@ export class EmployeeBonusService {
 
 		const promises = all_emp_bonus_list.map(async (emp) => {
 			const employee_data =
-				await employee_data_service.getEmployeeDataByEmpNo(emp.emp_no);
+				await employee_data_service.getEmployeeDataByEmpNo(
+					period_id,
+					emp.emp_no
+				);
 			if (!employee_data) {
 				return;
 			}

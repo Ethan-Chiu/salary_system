@@ -78,7 +78,7 @@ const columns = (t: I18nType) =>
 
 export function EmployeeDataTable({ period_id }: any) {
 	const { isLoading, isError, data, error } =
-		api.employeeData.getAllEmployeeDataWithInfo.useQuery({ period_id });
+		api.employeeData.getCurrentEmployeeDataWithInfo.useQuery({ period_id });
 
 	const { t } = useTranslation(["common"]);
 

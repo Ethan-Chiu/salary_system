@@ -42,12 +42,14 @@ export const functionRouter = createTRPCRouter({
 		.query(async ({ input }) => {
 			const holiday_mapper = container.resolve(HolidayMapper);
 			const ehrService = container.resolve(EHRService);
-			const holiday_list =
-				await ehrService.getHolidayByEmpNoList(
-					input.period_id,
-					input.emp_no_list
-				);
-			return await holiday_mapper.getHolidayFE(input.period_id, holiday_list);
+			const holiday_list = await ehrService.getHolidayByEmpNoList(
+				input.period_id,
+				input.emp_no_list
+			);
+			return await holiday_mapper.getHolidayFE(
+				input.period_id,
+				holiday_list
+			);
 		}),
 
 	getOvertimeByEmpNoList: publicProcedure
@@ -67,7 +69,10 @@ export const functionRouter = createTRPCRouter({
 				input.pay_type
 			);
 
-			return await overtime_mapper.getOvertimeFE(input.period_id, overtime);
+			return await overtime_mapper.getOvertimeFE(
+				input.period_id,
+				overtime
+			);
 		}),
 
 	getPaysetByEmpNoList: publicProcedure
@@ -82,7 +87,7 @@ export const functionRouter = createTRPCRouter({
 				input.emp_no_list
 			);
 
-			return await payset_mapper.getPaysetFE(payset);
+			return await payset_mapper.getPaysetFE(payset, input.period_id);
 		}),
 	getBonusWithTypeByEmpNoList: publicProcedure
 		.input(
@@ -201,8 +206,8 @@ export const functionRouter = createTRPCRouter({
 						input.period_id
 					);
 				if (employeePayment === null) {
-					throw new BaseResponseError(
-						"EmployeePayment does not exist"
+					throw new Error(
+						`EmployeePayment does not exist, emp_no = ${emp_no}, period_id = ${input.period_id}`
 					);
 				}
 				return employeePayment;
@@ -211,7 +216,10 @@ export const functionRouter = createTRPCRouter({
 			const allowanceFE_list: any = [];
 			const promises = allowance_with_type_list.map(async (allowance) => {
 				allowanceFE_list.push(
-					await allowance_mapper.getAllowanceFE(input.period_id,allowance)
+					await allowance_mapper.getAllowanceFE(
+						input.period_id,
+						allowance
+					)
 				);
 			});
 			await Promise.all(promises);
@@ -246,11 +254,19 @@ export const functionRouter = createTRPCRouter({
 });
 
 function filterZero(object_list: any) {
-	const exclusion = ["emp_no", "emp_name", "department", "position", "work_day"];
+	const exclusion = [
+		"emp_no",
+		"emp_name",
+		"department",
+		"position",
+		"work_day",
+	];
 
 	return object_list.filter((object: any) => {
-		return Object.keys(object)
-			.filter(key => !exclusion.includes(key))
-			.reduce((acc, key) => acc + object[key], 0) == 0;
+		return (
+			Object.keys(object)
+				.filter((key) => !exclusion.includes(key))
+				.reduce((acc, key) => acc + object[key], 0) == 0
+		);
 	});
 }

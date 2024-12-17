@@ -83,6 +83,9 @@ export class EHRService {
 		const period_id = (dataList.find((period) => {
 			return date >= new Date(period.start_date) && date <= new Date(period.end_date);
 		}))?.period_id;
+		if (!period_id) {
+			throw new BaseResponseError("Period Not Found");
+		}
 		return period_id;
 	}
 	async getHoliday(period_id: number): Promise<Holiday[]> {

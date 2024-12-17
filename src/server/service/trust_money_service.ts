@@ -211,7 +211,7 @@ export class TrustMoneyService {
 		position: number,
 		position_type: string,
 		date: Date
-	): Promise<TrustMoneyDecType | null> {
+	): Promise<TrustMoneyDecType > {
 		const date_str = dateToString.parse(date);
 
 		const trustMoney = await TrustMoney.findOne({
@@ -228,6 +228,9 @@ export class TrustMoneyService {
 			},
 			raw: true,
 		});
+		if (trustMoney == null) {
+			throw new Error(`TrustMoney does not exist position = ${position}, position type = ${position_type}, date = ${date}`);
+		}
 		return await this.trustMoneyMapper.decode(trustMoney);
 	}
 	private async getTrustMoneyAfterSelectValue({
@@ -246,7 +249,7 @@ export class TrustMoneyService {
 		);
 
 		if (trustMoney == null) {
-			throw new BaseResponseError("TrustMoney does not exist");
+			throw new Error(`TrustMoney does not exist position = ${position} position type = ${position_type}`);
 		}
 
 		return {

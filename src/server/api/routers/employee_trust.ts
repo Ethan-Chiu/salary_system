@@ -21,7 +21,7 @@ export const employeeTrustRouter = createTRPCRouter({
 			return current_employee_trustFE;
 		}),
 
-	getAllEmployeeTrust: publicProcedure.query(async () => {
+	getAllEmployeeTrust: publicProcedure.query(async ({ input }) => {
 		const employeeTrustService = container.resolve(EmployeeTrustService);
 		const allEmployeeTrustFE =
 			await employeeTrustService.getAllEmployeeTrustFE();

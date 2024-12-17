@@ -33,7 +33,7 @@ export const calculateRouter = createTRPCRouter({
 			);
 			const ehrService = container.resolve(EHRService);
 			const employee_data =
-				await employeeDataService.getEmployeeDataByEmpNo(input.emp_no);
+				await employeeDataService.getEmployeeDataByEmpNo(input.period_id,input.emp_no);
 			const employee_payment =
 				await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
 					input.emp_no,
@@ -41,7 +41,7 @@ export const calculateRouter = createTRPCRouter({
 				);
 			const overtime_list = await ehrService.getOvertimeByEmpNoList(
 				input.period_id,
-				[input.emp_no]
+				[input.emp_no],
 			);
 			const payset = (
 				await ehrService.getPaysetByEmpNoList(input.period_id, [

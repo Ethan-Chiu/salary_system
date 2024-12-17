@@ -20,7 +20,10 @@ import {
 import { WorkTypeEnum } from "../types/work_type_enum";
 import { roundProperties } from "~/server/database/mapper/helper_function";
 import { EmployeeBonusMapper } from "~/server/database/mapper/employee_bonus_mapper";
-import { createEmployeeBonusAPI, updateEmployeeBonusAPI } from "../types/employee_bonus_type";
+import {
+	createEmployeeBonusAPI,
+	updateEmployeeBonusAPI,
+} from "../types/employee_bonus_type";
 import { BonusAllService } from "~/server/service/bonus_all_service";
 
 // 改Enum
@@ -39,7 +42,12 @@ export const bonusRouter = createTRPCRouter({
 				input.period_id,
 				input.bonus_type
 			);
-			const employeeBonusFE = (await Promise.all(result.map(async e => await bonusMapper.getEmployeeBonusFE(e))));
+			const employeeBonusFE = await Promise.all(
+				result.map(
+					async (e) =>
+						await bonusMapper.getEmployeeBonusFE(e)
+				)
+			);
 			return employeeBonusFE.map((e) => roundProperties(e, 2));
 		}),
 	getExcelEmployeeBonus: publicProcedure
@@ -55,11 +63,16 @@ export const bonusRouter = createTRPCRouter({
 			const bonusData = await bonusService.getAllEmployeeBonus(
 				input.period_id,
 				input.bonus_type
-			)
+			);
 
-			const employeeBonusFE = await Promise.all(bonusData.map(async e => await bonusMapper.getEmployeeBonusFE(e)));
+			const employeeBonusFE = await Promise.all(
+				bonusData.map(
+					async (e) =>
+						await bonusMapper.getEmployeeBonusFE(e)
+				)
+			);
 
-			return employeeBonusFE.map((e) => roundProperties(e, 2)) // Not finished yet
+			return employeeBonusFE.map((e) => roundProperties(e, 2)); // Not finished yet
 		}),
 	getEmployeeBonus: publicProcedure
 		.input(
@@ -75,7 +88,16 @@ export const bonusRouter = createTRPCRouter({
 				input.period_id,
 				input.bonus_type
 			);
-			const employeeBonusFE = (await Promise.all(result.map(async e => await bonusMapper.getEmployeeBonusFE(e)))).filter(e => e.special_multiplier > 0);
+			const employeeBonusFE = (
+				await Promise.all(
+					result.map(
+						async (e) =>
+							await bonusMapper.getEmployeeBonusFE(
+								e
+							)
+					)
+				)
+			).filter((e) => e.special_multiplier > 0);
 			return employeeBonusFE.map((e) => roundProperties(e, 2));
 		}),
 	// getExportedSheets: publicProcedure.input(
@@ -122,7 +144,9 @@ export const bonusRouter = createTRPCRouter({
 			const empBonusService = container.resolve(EmployeeBonusService);
 			const empBonusMapper = container.resolve(EmployeeBonusMapper);
 			const result = await empBonusService.createEmployeeBonus(input);
-			const employeeBonusFE = await empBonusMapper.getEmployeeBonusFE({...input, ...result});
+			const employeeBonusFE = await empBonusMapper.getEmployeeBonusFE(
+				{ ...input, ...result },
+			);
 			return roundProperties(employeeBonusFE, 2);
 		}),
 	updateEmployeeBonus: publicProcedure
@@ -150,17 +174,18 @@ export const bonusRouter = createTRPCRouter({
 				input.bonus_type,
 				input.multiplier,
 				input.fixed_amount
-			)
+			);
 		}),
 	updateFromExcel: publicProcedure
 		.input(updateEmployeeBonusAPI.array())
 		.mutation(async ({ input }) => {
 			const empBonusService = container.resolve(EmployeeBonusService);
-			const promises = input
-				.map(
-					async (e) => await empBonusService.updateFromExcel(false, e)
-				)
-			const err_emp_no_list = (await Promise.all(promises)).filter((e) => e != null);
+			const promises = input.map(
+				async (e) => await empBonusService.updateFromExcel(false, e)
+			);
+			const err_emp_no_list = (await Promise.all(promises)).filter(
+				(e) => e != null
+			);
 			return err_emp_no_list;
 		}),
 	confirmUpdateFromExcel: publicProcedure
