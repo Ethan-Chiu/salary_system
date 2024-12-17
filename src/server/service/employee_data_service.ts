@@ -8,6 +8,7 @@ import {
 } from "../api/types/employee_data_type";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { select_value } from "./helper_function";
+import { Op } from "sequelize";
 
 @injectable()
 export class EmployeeDataService {
@@ -68,14 +69,28 @@ export class EmployeeDataService {
 		});
 		return employeeData;
 	}
-	async getEmployeeDataByEmpNo(emp_no: string): Promise<EmployeeData | null> {
+	async getEmployeeDataByEmpNo(period_id: number,emp_no: string): Promise<EmployeeData | null> {
 		const employeeData = await EmployeeData.findOne({
 			where: {
 				emp_no: emp_no,
+				period_id: period_id,
 			},
 			raw: true,
 		});
 		return employeeData;
+	}
+	async getEmployeeDataByEmpNoList(period_id:number,emp_no_list: string[]): Promise<EmployeeData[] | null> {
+		const employeeDataList = await EmployeeData.findAll({
+			where:{
+				emp_no: {
+					[Op.in]: emp_no_list,
+				},
+				period_id:period_id
+			},
+			raw: true,
+		});
+
+		return employeeDataList;
 	}
 
 	async getCurrentEmployeeData(): Promise<EmployeeData[]> {
@@ -104,6 +119,7 @@ export class EmployeeDataService {
 
 	async updateEmployeeData({
 		id,
+		period_id:period_id,
 		emp_no: emp_no,
 		emp_name: emp_name,
 		position: position,
@@ -129,6 +145,7 @@ export class EmployeeDataService {
 		}
 		const affectedCount = await EmployeeData.update(
 			{
+				period_id: select_value(period_id, employeeData.period_id),
 				emp_no: select_value(emp_no, employeeData.emp_no),
 				emp_name: select_value(emp_name, employeeData.emp_name),
 				work_type: select_value(work_type, employeeData.work_type),
@@ -183,7 +200,8 @@ export class EmployeeDataService {
 		}
 	}
 
-	async updateEmployeeDataByEmpNo({
+	async updateEmployeeDataByEmpNoByPeriod({
+		period_id: period_id,
 		emp_no: emp_no,
 		emp_name: emp_name,
 		position: position,
@@ -202,7 +220,7 @@ export class EmployeeDataService {
 		bank_account: bank_account,
 	}: // received_elderly_benefits: received_elderly_benefits,
 		z.infer<typeof updateEmployeeDataByEmpNoService>): Promise<void> {
-		const employeeData = await this.getEmployeeDataByEmpNo(emp_no!);
+		const employeeData = await this.getEmployeeDataByEmpNo(period_id!,emp_no!);
 		if (employeeData == null) {
 			throw new BaseResponseError("Employee account does not exist");
 		}

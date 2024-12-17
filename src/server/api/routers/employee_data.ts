@@ -48,14 +48,14 @@ export const employeeDataRouter = createTRPCRouter({
 				...input,
 			});
 		}),
-	updateEmployeeDataByEmpNo: publicProcedure
-		.input(updateEmployeeDataByEmpNoAPI)
-		.mutation(async ({ input }) => {
-			const employeeDataService = container.resolve(EmployeeDataService);
-			await employeeDataService.updateEmployeeDataByEmpNo({
-				...input,
-			});
-		}),
+	// updateEmployeeDataByEmpNo: publicProcedure
+	// 	.input(updateEmployeeDataByEmpNoAPI)
+	// 	.mutation(async ({ input }) => {
+	// 		const employeeDataService = container.resolve(EmployeeDataService);
+	// 		await employeeDataService.updateEmployeeDataByEmpNo({
+	// 			...input,
+	// 		});
+	// 	}),
 
 	deleteEmployeeData: publicProcedure
 		.input(z.object({ id: z.number() }))

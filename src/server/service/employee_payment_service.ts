@@ -1,4 +1,4 @@
-import { delay, inject, injectable } from "tsyringe";
+import { container, delay, inject, injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
 import { get_date_string, select_value } from "./helper_function";
 import { type z } from "zod";
@@ -17,6 +17,7 @@ import {
 } from "../api/types/employee_payment_type";
 import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
 import { EmployeeDataService } from "./employee_data_service";
+import { Period } from "../database/entity/UMEDIA/period";
 
 @injectable()
 export class EmployeePaymentService {
@@ -109,25 +110,8 @@ export class EmployeePaymentService {
 				async (e) => await this.employeePaymentMapper.decode(e)
 			)
 		);
-		const employeePaymentFE = await Promise.all(
-			employeePaymentList.map(async (e) => {
-				const employee =
-					await this.employeeDataService.getEmployeeDataByEmpNo(
-						e.emp_no
-					);
-				if (employee == null) {
-					throw new BaseResponseError("Employee does not exist");
-				}
-				return {
-					...e,
-					department: employee.department,
-					emp_name: employee.emp_name,
-					position: employee.position,
-					position_type: employee.position_type,
-				};
-			})
-		);
-		return employeePaymentFE;
+
+		return this.employeePaymentMapper.getEmployeePaymentFE(employeePaymentList)
 	}
 
 	async getCurrentEmployeePaymentById(
@@ -191,6 +175,37 @@ export class EmployeePaymentService {
 		return await this.employeePaymentMapper.decode(employeePayment);
 	}
 
+	async getCurrentEmployeePaymentByEmpNoList(
+		emp_no_list: string[],
+		period_id: number
+	): Promise<EmployeePaymentDecType[] | null> {
+		const period = await this.ehrService.getPeriodById(period_id);
+		const current_date_string = period.end_date;
+		const employeePayment = await EmployeePayment.findAll({
+			where: {
+				emp_no: {
+					[Op.in]: emp_no_list,
+				},
+				start_date: {
+					[Op.lte]: current_date_string,
+				},
+				end_date: {
+					[Op.or]: [
+						{ [Op.gte]: current_date_string },
+						{ [Op.eq]: null },
+					],
+				},
+				disabled: false,
+			},
+		});
+
+		if (employeePayment == null) {
+			return null;
+		}
+
+		return await this.employeePaymentMapper.decodeList(employeePayment);
+	}
+
 	async getCurrentEmployeePaymentByEmpNoByDate(
 		emp_no: string,
 		date: Date
@@ -233,15 +248,12 @@ export class EmployeePaymentService {
 			await this.employeePaymentMapper.decodeList(allEmployeePayment);
 
 		const employeePaymentList =
-			await this.employeePaymentMapper.includeEmployee(
-				decodedEmployeePayments,
-				["department", "emp_name", "position", "position_type"]
-			);
+		 await this.employeePaymentMapper.getEmployeePaymentFE(decodedEmployeePayments);
 
 		// 将记录按工号分组
 		const groupedEmployeePaymenttRecords: Record<
 			string,
-			EmployeePaymentDecType[]
+			EmployeePaymentFEType[]
 		> = {};
 
 		employeePaymentList.forEach((r) => {
@@ -273,25 +285,23 @@ export class EmployeePaymentService {
 		const decodedEmployeePayments: EmployeePaymentDecType[] =
 			await this.employeePaymentMapper.decodeList(allEmployeePayment);
 
-		const employeePaymentList =
-			await this.employeePaymentMapper.includeEmployee(
-				decodedEmployeePayments,
-				["department", "emp_name", "position", "position_type"]
-			);
-
-		// 将记录按工号分组
-		const groupedEmployeePaymenttRecords: Record<
-			string,
-			EmployeePaymentDecType[]
-		> = {};
-
-		employeePaymentList.forEach((r) => {
-			if (!groupedEmployeePaymenttRecords[r.emp_no]) {
-				groupedEmployeePaymenttRecords[r.emp_no] = [];
-			}
-			groupedEmployeePaymenttRecords[r.emp_no]!.push(r);
-		});
-		return Object.values(groupedEmployeePaymenttRecords);
+			const employeePaymentList =
+			await this.employeePaymentMapper.getEmployeePaymentFE(decodedEmployeePayments);
+   
+		   // 将记录按工号分组
+		   const groupedEmployeePaymenttRecords: Record<
+			   string,
+			   EmployeePaymentFEType[]
+		   > = {};
+   
+		   employeePaymentList.forEach((r) => {
+			   if (!groupedEmployeePaymenttRecords[r.emp_no]) {
+				   groupedEmployeePaymenttRecords[r.emp_no] = [];
+			   }
+			   groupedEmployeePaymenttRecords[r.emp_no]!.push(r);
+		   });
+   
+		   return Object.values(groupedEmployeePaymenttRecords);
 	}
 
 	async updateEmployeePayment(
@@ -499,6 +509,8 @@ export class EmployeePaymentService {
 		employeePayment: z.infer<typeof employeePaymentCreateService>,
 		date: Date
 	): Promise<z.infer<typeof employeePaymentCreateService>> {
+		const ehr_service = container.resolve(EHRService);
+		const period_id = await ehr_service.getPeriodIdByDate(date);
 		const salary =
 			employeePayment.base_salary +
 			employeePayment.food_allowance +
@@ -524,6 +536,7 @@ export class EmployeePaymentService {
 
 		const employeeData =
 			await this.employeeDataService.getEmployeeDataByEmpNo(
+				period_id!,
 				employeePayment.emp_no
 			);
 		if (employeeData == null) {

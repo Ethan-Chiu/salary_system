@@ -70,7 +70,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 	const autoCalculateFunction = functions.autoCalculateFunction!;
 	const { isLoading, isError, data, error } =
 		(mode === "create" || mode === "auto_calculate")
-			? queryCurrentFunction()
+			? queryFutureFunction()
 			: queryFutureFunction();
 
 	const isList = Array.isArray(data);

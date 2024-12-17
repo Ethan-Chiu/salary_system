@@ -9,10 +9,7 @@ import {
 	Copy,
 	NotebookPen,
 	RefreshCcw,
-	EllipsisVertical,
-	Download,
-	Upload,
-	Calculator,
+	PencilLine,
 } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
@@ -67,9 +64,6 @@ export type FunctionMode =
 	| "batch_update"
 	| "delete"
 	| "auto_calculate"
-	| "excel_download"
-	| "excel_upload"
-	| "initialize"
 	| "none";
 
 export function DataTableFunctions({
@@ -103,7 +97,7 @@ export function DataTableFunctions({
 							size="sm"
 							className="ml-auto h-8"
 						>
-							<EllipsisVertical className="cursor-pointer stroke-[1.5]" />
+							<PencilLine className="cursor-pointer stroke-[1.5]" />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-[120px]">
@@ -111,21 +105,27 @@ export function DataTableFunctions({
 							{t("others.functions")}
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						<CompTriggerItem
-							mode={"excel_download"}
-							itemName={t("button.excel_download")}
-							icon={Download}
-						/>
-						<CompTriggerItem
-							mode={"excel_upload"}
-							itemName={t("button.excel_upload")}
-							icon={Upload}
-						/>
-						<CompTriggerItem
-							mode={"initialize"}
-							itemName={t("button.initialize")}
-							icon={RefreshCcw}
-						/>
+						{createFunction && (
+							<CompTriggerItem
+								mode={"create"}
+								itemName={t("button.create")}
+								icon={Plus}
+							/>
+						)}
+						{batchCreateFunction && (
+							<CompTriggerItem
+								mode={"batch_create"}
+								itemName={t("button.batch_create")}
+								icon={Copy}
+							/>
+						)}
+						{updateFunction && (
+							<CompTriggerItem
+								mode={"update"}
+								itemName={t("button.update")}
+								icon={PenSquare}
+							/>
+						)}
 						{batchUpdateFunction && (
 							<CompTriggerItem
 								mode={"batch_update"}
@@ -133,11 +133,18 @@ export function DataTableFunctions({
 								icon={NotebookPen}
 							/>
 						)}
+						{deleteFunction && (
+							<CompTriggerItem
+								mode={"delete"}
+								itemName={t("button.delete")}
+								icon={Trash2}
+							/>
+						)}
 						{autoCalculateFunction && (
 							<CompTriggerItem
 								mode={"auto_calculate"}
 								itemName={t("button.auto_calculate")}
-								icon={Calculator}
+								icon={RefreshCcw}
 							/>
 						)}
 					</DropdownMenuContent>

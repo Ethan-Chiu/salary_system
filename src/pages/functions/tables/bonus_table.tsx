@@ -44,15 +44,15 @@ const columns = (t: I18nType) =>
 	});
 
 interface BonusTableProps {
-	period: number;
+	period_id: number;
 	emp_no_list: string[];
 	pay_type: PayTypeEnumType;
 }
 
-export function BonusTable({ period, emp_no_list, pay_type }: BonusTableProps) {
+export function BonusTable({ period_id, emp_no_list, pay_type }: BonusTableProps) {
 	const { isLoading, isError, data, error } =
 		api.function.getBonusWithTypeByEmpNoList.useQuery({
-			period_id: period,
+			period_id: period_id,
 			emp_no_list: emp_no_list,
 			pay_type: pay_type,
 		});

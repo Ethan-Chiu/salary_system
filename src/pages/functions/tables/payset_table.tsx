@@ -33,14 +33,14 @@ const columns = (t: I18nType) => Object.keys(paysetFE.shape).map((key) => {
 });
 
 interface PaysetTableProps {
-	period: number;
+	period_id: number;
 	emp_no_list: string[];
 }
 
-export function PaysetTable({ period, emp_no_list }: PaysetTableProps) {
+export function PaysetTable({ period_id, emp_no_list }: PaysetTableProps) {
 	const { isLoading, isError, data, error } =
 		api.function.getPaysetByEmpNoList.useQuery({
-			period_id: period,
+			period_id: period_id,
 			emp_no_list: emp_no_list,
 		});
 

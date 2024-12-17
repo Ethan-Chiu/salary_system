@@ -77,6 +77,9 @@ export class LevelRangeMapper extends BaseMapper<
 			{
 				level_start: level_start.level,
 				level_end: level_end.level,
+				creatable: true,
+				updatable: level_range.start_date! > new Date(),
+				deletable: level_range.start_date! > new Date(),
 				...level_range,
 			}
 		);

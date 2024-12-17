@@ -30,49 +30,58 @@ export class HolidayMapper {
 		const holidaysTypeService = container.resolve(HolidaysTypeService);
 		const holidays_type =
 			await holidaysTypeService.getCurrentHolidaysType();
-		const special_personal_leave_id = holidays_type.findLast(
-			(holidayType) => holidayType.holidays_name === "特別事假"
-		)?.pay_id ?? -1;
-		const personal_leave_id = holidays_type.findLast(
-			(holidayType) => holidayType.holidays_name === "事假"
-		)?.pay_id ?? -1;
-		const full_attendance_personal_leave_id = holidays_type.findLast(
-			(holidayType) => holidayType.holidays_name === "有全勤事假"
-		)?.pay_id ?? -1;
-		const sick_leave_id = holidays_type.findLast(
-			(holidayType) => holidayType.holidays_name === "病假"
-		)?.pay_id ?? -1;
-		const full_attendance_sick_leave_id = holidays_type.findLast(
-			(holidayType) => holidayType.holidays_name === "有全勤病假"
-		)?.pay_id ?? -1;
-		const special_leave_id = holidays_type.findLast(
-			(holidayType) => holidayType.holidays_name === "特休"
-		)?.pay_id ?? -1;
-		const compensatory_leave_id = holidays_type.findLast(
-			(holidayType) => holidayType.holidays_name === "補休"
-		)?.pay_id ?? -1;
-		const non_leave_special_id = holidays_type.findLast(
-			(holidayType) => holidayType.holidays_name === "不休假-特休"
-		)?.pay_id ?? -1;
-		const non_leave_compensatory_1_id = holidays_type.findLast(
-			(holidayType) => holidayType.holidays_name === "不休假-補休1"
-		)?.pay_id ?? -1;
-		const non_leave_compensatory_2_id = holidays_type.findLast(
-			(holidayType) => holidayType.holidays_name === "不休假-補休2"
-		)?.pay_id ?? -1;
-		const non_leave_compensatory_3_id = holidays_type.findLast(
-			(holidayType) => holidayType.holidays_name === "不休假-補休3"
-		)?.pay_id ?? -1;
-		const non_leave_compensatory_4_id = holidays_type.findLast(
-			(holidayType) => holidayType.holidays_name === "不休假-補休4"
-		)?.pay_id ?? -1;
-		const non_leave_compensatory_5_id = holidays_type.findLast(
-			(holidayType) => holidayType.holidays_name === "不休假-補休5"
-		)?.pay_id ?? -1;
+		const special_personal_leave_id =
+			holidays_type.findLast(
+				(holidayType) => holidayType.holidays_name === "特別事假"
+			)?.pay_id ?? -1;
+		const personal_leave_id =
+			holidays_type.findLast(
+				(holidayType) => holidayType.holidays_name === "事假"
+			)?.pay_id ?? -1;
+		const full_attendance_personal_leave_id =
+			holidays_type.findLast(
+				(holidayType) => holidayType.holidays_name === "有全勤事假"
+			)?.pay_id ?? -1;
+		const sick_leave_id =
+			holidays_type.findLast(
+				(holidayType) => holidayType.holidays_name === "病假"
+			)?.pay_id ?? -1;
+		const full_attendance_sick_leave_id =
+			holidays_type.findLast(
+				(holidayType) => holidayType.holidays_name === "有全勤病假"
+			)?.pay_id ?? -1;
+		const special_leave_id =
+			holidays_type.findLast(
+				(holidayType) => holidayType.holidays_name === "特休"
+			)?.pay_id ?? -1;
+		const compensatory_leave_id =
+			holidays_type.findLast(
+				(holidayType) => holidayType.holidays_name === "補休"
+			)?.pay_id ?? -1;
+		const non_leave_special_id =
+			holidays_type.findLast(
+				(holidayType) => holidayType.holidays_name === "不休假"
+			)?.pay_id ?? -1;
+		// const non_leave_compensatory_1_id = holidays_type.findLast(
+		// 	(holidayType) => holidayType.holidays_name === "不休假-補休1"
+		// )?.pay_id ?? -1;
+		// const non_leave_compensatory_2_id = holidays_type.findLast(
+		// 	(holidayType) => holidayType.holidays_name === "不休假-補休2"
+		// )?.pay_id ?? -1;
+		// const non_leave_compensatory_3_id = holidays_type.findLast(
+		// 	(holidayType) => holidayType.holidays_name === "不休假-補休3"
+		// )?.pay_id ?? -1;
+		// const non_leave_compensatory_4_id = holidays_type.findLast(
+		// 	(holidayType) => holidayType.holidays_name === "不休假-補休4"
+		// )?.pay_id ?? -1;
+		// const non_leave_compensatory_5_id = holidays_type.findLast(
+		// 	(holidayType) => holidayType.holidays_name === "不休假-補休5"
+		// )?.pay_id ?? -1;
 		const HolidayFE_list = await Promise.all(
 			groupedHolidayArray.map(async (holiday_list) => {
 				const employee_data =
 					await this.employeeDataService.getEmployeeDataByEmpNo(
+						period_id,
 						holiday_list[0]!.emp_no
 					);
 				const work_day =
@@ -120,28 +129,39 @@ export class HolidayMapper {
 						) {
 							compensatory_leave += holiday.total_hours;
 						} else if (holiday.pay_order === non_leave_special_id) {
-							non_leave_special += holiday.total_hours;
-						} else if (
-							holiday.pay_order === non_leave_compensatory_1_id
-						) {
-							non_leave_compensatory_1 += holiday.total_hours;
-						} else if (
-							holiday.pay_order === non_leave_compensatory_2_id
-						) {
-							non_leave_compensatory_2 += holiday.total_hours;
-						} else if (
-							holiday.pay_order === non_leave_compensatory_3_id
-						) {
-							non_leave_compensatory_3 += holiday.total_hours;
-						} else if (
-							holiday.pay_order === non_leave_compensatory_4_id
-						) {
-							non_leave_compensatory_4 += holiday.total_hours;
-						} else if (
-							holiday.pay_order === non_leave_compensatory_5_id
-						) {
-							non_leave_compensatory_5 += holiday.total_hours;
+							non_leave_special += holiday.annual_1 ?? 0;
+							non_leave_compensatory_1 +=
+								holiday.compensatory_1 ?? 0;
+							non_leave_compensatory_2 +=
+								holiday.compensatory_134 ?? 0;
+							non_leave_compensatory_3 +=
+								holiday.compensatory_167 ?? 0;
+							non_leave_compensatory_4 +=
+								holiday.compensatory_2 ?? 0;
+							non_leave_compensatory_5 +=
+								holiday.compensatory_267 ?? 0;
 						}
+						// } else if (
+						// 	holiday.pay_order === non_leave_compensatory_1_id
+						// ) {
+						// 	non_leave_compensatory_1 += holiday.total_hours;
+						// } else if (
+						// 	holiday.pay_order === non_leave_compensatory_2_id
+						// ) {
+						// 	non_leave_compensatory_2 += holiday.total_hours;
+						// } else if (
+						// 	holiday.pay_order === non_leave_compensatory_3_id
+						// ) {
+						// 	non_leave_compensatory_3 += holiday.total_hours;
+						// } else if (
+						// 	holiday.pay_order === non_leave_compensatory_4_id
+						// ) {
+						// 	non_leave_compensatory_4 += holiday.total_hours;
+						// } else if (
+						// 	holiday.pay_order === non_leave_compensatory_5_id
+						// ) {
+						// 	non_leave_compensatory_5 += holiday.total_hours;
+						// }
 					})
 				);
 				return HolidayFE.parse({

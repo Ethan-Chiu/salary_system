@@ -24,6 +24,10 @@ import {
 } from "~/components/popover_selector";
 import periodContext from "~/components/context/period_context";
 import { formatDate } from "~/lib/utils/format_date";
+import { employeePaymentMapper } from "../../tables/employee_payment_table";
+import { getTableMapper } from "../../tables/table_columns";
+import dataTableContext from "../context/data_table_context";
+import { FunctionMode } from "../function_sheet/data_table_functions";
 
 export interface EmployeeHistoryViewCommonEmpInfo {
 	emp_name: string;
@@ -41,6 +45,11 @@ export function HistoryView({
 	columns,
 	dataFunction,
 }: DataTableProps<DataRow>) {
+	const { t } = useTranslation(['common']);
+	const [open, setOpen] = useState<boolean>(false);
+	const [mode, setMode] = useState<FunctionMode>("none");
+	const { selectedTableType } = useContext(dataTableContext);
+
 	const { isLoading, isError, data, error } = dataFunction();
 
 	const { selectedPeriod } = useContext(periodContext);
@@ -52,8 +61,6 @@ export function HistoryView({
 	const [selectedEmpData, setSelectedEmpData] = useState<DataRow | null>(
 		null
 	);
-
-	const { t } = useTranslation(["common"]);
 
 	// Select the first when data loaded
 	useEffect(() => {
@@ -190,7 +197,7 @@ export function HistoryView({
 					<>
 						<DataTable
 							columns={columns}
-							data={selectedEmpData ? [selectedEmpData] : []}
+							data={selectedEmpData ? getTableMapper(selectedTableType)(t, [selectedEmpData]) : []}
 						/>
 					</>
 				) : (

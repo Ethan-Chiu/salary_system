@@ -16,6 +16,7 @@ import { Button } from "./ui/button";
 import { DialogClose } from "./ui/dialog";
 import { type Period } from "~/server/database/entity/UMEDIA/period";
 import { useTranslation } from "react-i18next";
+import { ScrollArea } from "./ui/scroll-area";
 
 export default function PeriodSelector() {
 	const getPeriod = api.function.getPeriod.useQuery();
@@ -61,6 +62,7 @@ export default function PeriodSelector() {
 								<SelectContent>
 									<SelectGroup>
 										<SelectLabel>{t('others.period')}</SelectLabel>
+										<ScrollArea className="h-40">
 										{getPeriod.data!.map((period_info) => {
 											const original_name = period_info.period_name
 											return (
@@ -76,6 +78,7 @@ export default function PeriodSelector() {
 												</SelectItem>
 											);
 										})}
+										</ScrollArea>
 									</SelectGroup>
 								</SelectContent>
 							</Select>

@@ -29,12 +29,13 @@ const columns = (t: I18nType) => [
 });
 
 interface EmployeeDataTableProps {
+	period_id: number;
 	func: any;
 }
 
-export function EmployeeDataTable({ func }: EmployeeDataTableProps) {
+export function EmployeeDataTable({ period_id, func }: EmployeeDataTableProps) {
 	const { isLoading, isError, data, error } =
-		api.sync.getPaidEmployees.useQuery({ func });
+		api.sync.getPaidEmployees.useQuery({ period_id, func });
 
   const { t } = useTranslation(['common']);
 

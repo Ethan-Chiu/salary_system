@@ -101,7 +101,11 @@ export class EmployeeBonusService {
 				emp_no: emp_no,
 				disabled: false,
 			},
+			raw: true,
 		});
+		if (result === null) {
+			return null;
+		}
 		return await this.employeeBonusMapper.decode(result);
 	}
 
@@ -176,7 +180,7 @@ export class EmployeeBonusService {
 			},
 			order: [["emp_no", "ASC"]],
 		});
-    const empBonusList = await this.employeeBonusMapper.decodeList(result);
+		const empBonusList = await this.employeeBonusMapper.decodeList(result);
 
 		let sum = 0;
 		const promises = empBonusList.map(async (e) => {
@@ -445,7 +449,7 @@ export class EmployeeBonusService {
 	) {
 		const budget_amount_list: {
 			emp_no: string;
-			budget_effective_salary: number;
+			bud_effective_salary: number;
 			budget_amount: number;
 		}[] = [];
 		const emp_no_list = (
@@ -456,12 +460,12 @@ export class EmployeeBonusService {
 				EmployeePaymentService
 			);
 
-			const employee_payment =
+			const employee_payment_dec =
 				await employee_payment_service.getCurrentEmployeePaymentByEmpNo(
 					emp_no,
 					period_id
 				);
-			if (!employee_payment) {
+			if (!employee_payment_dec) {
 				return;
 			}
 
@@ -474,40 +478,45 @@ export class EmployeeBonusService {
 				return;
 			}
 
-			const employee_payment_fe = employee_payment;
-
 			const employee_bonus_fe =
 				await this.employeeBonusMapper.getEmployeeBonusFE(
 					employee_bonus
 				);
 
 			const budget_amount =
-				(employee_payment_fe.base_salary +
-					employee_payment_fe.food_allowance +
-					employee_payment_fe.supervisor_allowance +
-					employee_payment_fe.occupational_allowance +
-					employee_payment_fe.subsidy_allowance +
-					(employee_payment_fe.long_service_allowance_type ==
+				(employee_payment_dec.base_salary +
+					employee_payment_dec.food_allowance +
+					employee_payment_dec.supervisor_allowance +
+					employee_payment_dec.occupational_allowance +
+					employee_payment_dec.subsidy_allowance +
+					(employee_payment_dec.long_service_allowance_type ==
 					LongServiceEnum.enum.month_allowance
-						? employee_payment_fe.long_service_allowance
+						? employee_payment_dec.long_service_allowance
 						: 0)) *
 					employee_bonus_fe.special_multiplier *
 					employee_bonus_fe.multiplier +
 				employee_bonus_fe.fixed_amount;
-
-			budget_amount_list.push({
-				emp_no: emp_no,
-				budget_effective_salary: Round(
-					budget_amount /
-						(employee_payment_fe.base_salary +
-							employee_payment_fe.food_allowance +
-							employee_payment_fe.supervisor_allowance +
-							employee_payment_fe.occupational_allowance +
-							employee_payment_fe.subsidy_allowance),
-					3
-				),
-				budget_amount: budget_amount,
-			});
+			if (budget_amount <= 0) {
+				budget_amount_list.push({
+					emp_no: emp_no,
+					bud_effective_salary: 0,
+					budget_amount: 0,
+				});
+			} else {
+				budget_amount_list.push({
+					emp_no: emp_no,
+					bud_effective_salary: Round(
+						budget_amount /
+							(employee_payment_dec.base_salary +
+								employee_payment_dec.food_allowance +
+								employee_payment_dec.supervisor_allowance +
+								employee_payment_dec.occupational_allowance +
+								employee_payment_dec.subsidy_allowance),
+						3
+					),
+					budget_amount: budget_amount,
+				});
+			}
 		});
 
 		await Promise.all(promises);
@@ -515,14 +524,16 @@ export class EmployeeBonusService {
 		const total_budget_amount = budget_amount_list
 			.map((e) => e.budget_amount)
 			.reduce((a, b) => a + b, 0);
-		const ratio = total_budgets / total_budget_amount;
-		budget_amount_list.forEach((e) => {
-			e.budget_amount = Round(e.budget_amount * ratio, 1);
-			e.budget_effective_salary = Round(
-				e.budget_effective_salary * ratio,
-				2
-			);
-		});
+		if (total_budget_amount > 0) {
+			const ratio = total_budgets / total_budget_amount;
+			budget_amount_list.forEach((e) => {
+				e.budget_amount = Round(e.budget_amount * ratio, 1);
+				e.bud_effective_salary = Round(
+					e.bud_effective_salary * ratio,
+					2
+				);
+			});
+		}
 
 		const promises2 = budget_amount_list.map(async (e) => {
 			const employee_bonus = await this.getEmployeeBonusByEmpNoByType(
@@ -536,11 +547,13 @@ export class EmployeeBonusService {
 
 			await this.updateEmployeeBonus({
 				id: employee_bonus.id,
-				bud_effective_salary: e.budget_effective_salary,
+				bud_effective_salary: e.bud_effective_salary,
 				bud_amount: e.budget_amount,
 			});
 		});
 
 		await Promise.all(promises2);
+
+		return budget_amount_list;
 	}
 }

@@ -15,12 +15,12 @@ import { AllowanceTable } from "../tables/allowance_table";
 const tabOptions = ["table_name.allowance", "table_name.overtime", "table_name.holiday", "table_name.other", "table_name.bonus", "table_name.payset"];
 
 export function DataPage({
-	period,
+	period_id,
 	func,
 	selectedIndex,
 	setSelectedIndex,
 }: {
-	period: number;
+	period_id: number;
 	func: FunctionsEnumType;
 	selectedIndex: number;
 	setSelectedIndex: (index: number) => void;
@@ -29,21 +29,21 @@ export function DataPage({
 	const { t } = useTranslation("common");
 
 	function getTable(table_name: string) {
-		const employee_data_list = api.sync.getPaidEmployees.useQuery({ func }).data
+		const employee_data_list = api.sync.getPaidEmployees.useQuery({ period_id, func }).data
 		const emp_no_list = employee_data_list!.map(emp => emp.emp_no)
 		switch (table_name) {
 			case tabOptions[0]:
-				return <AllowanceTable period={period} emp_no_list={emp_no_list} />;
+				return <AllowanceTable period_id={period_id} emp_no_list={emp_no_list} />;
 			case tabOptions[1]:
-				return <OvertimeTable period={period} emp_no_list={emp_no_list} pay_type={PayTypeEnum.Enum.month_salary} />;
+				return <OvertimeTable period_id={period_id} emp_no_list={emp_no_list} pay_type={PayTypeEnum.Enum.month_salary} />;
 			case tabOptions[2]:
-				return <HolidayTable period={period} emp_no_list={emp_no_list} />;
+				return <HolidayTable period_id={period_id} emp_no_list={emp_no_list} />;
 			case tabOptions[3]:
-				return <OtherTable period={period} emp_no_list={emp_no_list} />;
+				return <OtherTable period_id={period_id} emp_no_list={emp_no_list} />;
 			case tabOptions[4]:
-				return <BonusTable period={period} emp_no_list={emp_no_list} pay_type={PayTypeEnum.Enum.month_salary} />;
+				return <BonusTable period_id={period_id} emp_no_list={emp_no_list} pay_type={PayTypeEnum.Enum.month_salary} />;
 			case tabOptions[5]:
-				return <PaysetTable period={period} emp_no_list={emp_no_list} />;
+				return <PaysetTable period_id={period_id} emp_no_list={emp_no_list} />;
 			default:
 				return <p>No implement</p>;
 		}
@@ -70,7 +70,7 @@ export function DataPage({
 						{tabOptions.map((option) => {
 							return (
 								<TabsContent key={option} value={option} className="h-full">
-									{period > 0 ? getTable(option) : <></>}
+									{period_id > 0 ? getTable(option) : <></>}
 								</TabsContent>
 							);
 						})}

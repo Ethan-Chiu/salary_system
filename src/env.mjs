@@ -20,6 +20,7 @@ export const env = createEnv({
 			process.env.VERCEL ? z.string().min(1) : z.string().url()
 		),
 		USE_LOCAL_DB: z.preprocess((str) => str === "true", z.boolean()),
+		ORACLE_LIB_PATH: z.preprocess((str) => (process.env.HOME ?? "") + str, z.string()),
 	},
 
 	/**
@@ -41,6 +42,7 @@ export const env = createEnv({
 		NEXTAUTH_URL: process.env.NEXTAUTH_URL,
 		// NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 		USE_LOCAL_DB: process.env.USE_LOCAL_DB,
+		ORACLE_LIB_PATH: process.env.ORACLE_LIB_PATH
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

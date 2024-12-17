@@ -7,13 +7,13 @@ import { FunctionsEnum } from "~/server/api/types/functions_enum";
 import { useTranslation } from 'next-i18next'
 
 interface SyncPageProps {
-	period: number;
+	period_id: number;
 	selectedIndex: number;
 	setSelectedIndex: (index: number) => void;
 }
 
 export function SyncPage({
-	period,
+	period_id,
 	selectedIndex,
 	setSelectedIndex,
 }: SyncPageProps) {
@@ -22,7 +22,7 @@ export function SyncPage({
 	const { isLoading, isError, data, error } =
 		api.sync.checkEmployeeData.useQuery({
 			func: FunctionsEnum.Enum.month_salary,
-			period_id: period,
+			period_id: period_id,
 		});
 
 	if (isLoading) {

@@ -27,19 +27,19 @@ export function DataTableDataHeader<TData>({
 									key={header.id}
 									className={cn(
 										"text-center z-10",
-										header.id == "department" ? "sticky left-[0px] bg-gray-100" :
-											header.id == "emp_no" ? "sticky left-[116px] bg-gray-100" :
-												header.id == "emp_name" ? "sticky left-[260px] bg-gray-100" :
-													""
+										header.id == "department" ? "sticky left-[0px]" :
+										header.id == "emp_no" ? "sticky left-[125px]" :
+										header.id == "emp_name" ? "sticky left-[250px]" :
+										"overflow-auto"
 									)}
 									colSpan={header.colSpan}
 								>
 									{header.isPlaceholder
 										? null
 										: flexRender(
-											header.column.columnDef.header,
-											header.getContext()
-										)}
+												header.column.columnDef.header,
+												header.getContext()
+										  )}
 								</TableHead>
 							);
 						})

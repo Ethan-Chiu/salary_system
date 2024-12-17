@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { dateAll, dateCreate, empData, Id } from "./common_type";
+import { dateAll, dateCreate, empData, func, Id } from "./common_type";
 import { optionalNumDefaultZero } from "./z_utils";
 
 const employeeTrust = z.object({
@@ -15,7 +15,7 @@ export const employeeTrustFE = z.object({
 	org_trust_reserve: z.number(),
 	emp_special_trust_incent: z.number(),
 	org_special_trust_incent: z.number(),
-}).merge(empData).merge(dateAll);
+}).merge(empData).merge(dateAll).merge(func);
 
 export const employeeTrustCreateAPI = employeeTrust;
 export const employeeTrustCreateService = employeeTrust;

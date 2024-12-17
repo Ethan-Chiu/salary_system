@@ -22,6 +22,7 @@ import periodContext from "~/components/context/period_context";
 import { formatDate } from "~/lib/utils/format_date";
 import { Separator } from "~/components/ui/separator";
 import { DateStringPopoverSelector, PopoverSelectorDataType } from "~/components/popover_selector";
+import { FunctionMode } from "../function_sheet/data_table_functions";
 
 export default function HistoryView() {
 	const { selectedTableType } = useContext(dataTableContext);
@@ -36,6 +37,9 @@ export default function HistoryView() {
 }
 
 function CompHistoryView() {
+	const { t } = useTranslation(['common']);
+	const [open, setOpen] = useState<boolean>(false);
+	const [mode, setMode] = useState<FunctionMode>("none");
 	const { selectedTableType } = useContext(dataTableContext);
 
 	const queryFunctions = useContext(apiFunctionsContext);
@@ -48,7 +52,6 @@ function CompHistoryView() {
 	const [selectedId, setSelectedId] = useState<number>(0);
 	const [selectedDateString, setSelectedDateString] = useState<string | null>(null);
 	const filterKey = "name";
-	const { t } = useTranslation(['common']);
 
 	useEffect(() => {
 		if (!isLoading && data?.[0]) {
@@ -56,6 +59,12 @@ function CompHistoryView() {
 			setSelectedDateString(formatDate("day", data[0].start_date) ?? t("others.now"));
 		}
 	}, [isLoading, data]);
+
+	useEffect(() => {
+		if (!isLoading && selectedDateString && data?.[0]) {
+			setSelectedId(data.filter((e) => formatDate("day", e.start_date) === selectedDateString)[0]!.id);
+		}
+	}, [selectedDateString]);
 
 	if (isLoading) {
 		return (
@@ -90,7 +99,10 @@ function CompHistoryView() {
 				<Separator />
 				<ScrollArea className="h-full">
 					{data!
-						.filter((e) => formatDate("day", e.start_date) === selectedDateString)
+						.filter((e, index, self) =>
+							formatDate("day", e.start_date) === selectedDateString &&
+							self.findIndex(t => formatDate("day", t.start_date) === formatDate("day", e.start_date) && formatDate("day", t.end_date) === formatDate("day", e.end_date)) === index
+						)
 						.sort((a, b) => {
 							if (a.start_date == null) {
 								return -1;
@@ -116,7 +128,6 @@ function CompHistoryView() {
 							>
 								<div className="m-1 flex flex-wrap items-center justify-center">
 									<div className="flex-1 whitespace-nowrap text-center">
-										{/* {e.start_date.toString() ?? t("others.now")} */}
 										{formatDate("day", e.start_date) ?? t("others.now")}
 									</div>
 									<ArrowRightCircle
@@ -124,7 +135,6 @@ function CompHistoryView() {
 										className="mx-2 flex-shrink-0"
 									/>
 									<div className="flex-1 whitespace-nowrap text-center">
-										{/* {e.end_date?.toString() ?? t("others.now")} */}
 										{formatDate("day", e.end_date) ?? ""}
 									</div>
 								</div>
@@ -154,9 +164,12 @@ function CompHistoryView() {
 			<ResizablePanel defaultSize={70}>
 				{data!.filter((e) => e.id === selectedId).length > 0 ? (
 					<DataTable
-						columns={getTableColumn(selectedTableType, t)}
+						columns={getTableColumn(selectedTableType, t, selectedPeriod!.period_id, open, setOpen, mode, setMode)}
 						data={getTableMapper(selectedTableType)!(
-							data!.filter((e) => e.id === selectedId) as any[]
+							data!.filter((e) =>
+								formatDate("day", e.start_date) === formatDate("day", data!.filter((e) => e.id === selectedId)[0]!.start_date) &&
+								formatDate("day", e.end_date) === formatDate("day", data!.filter((e) => e.id === selectedId)[0]!.end_date)
+							) as any[]
 						)}
 						filterColumnKey={filterKey}
 					/>

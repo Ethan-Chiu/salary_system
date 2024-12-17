@@ -43,8 +43,6 @@ export class TransactionService {
 			InsuranceRateSettingService
 		);
 		const holidaysTypeService = container.resolve(HolidaysTypeService);
-		const employeePaymentMapper = container.resolve(EmployeePaymentMapper);
-		const employeeTrustMapper = container.resolve(EmployeeTrustMapper);
 		// MARK: Data
 		const allowance_list = await ehrService.getAllowance(period_id);
 		const allowance_type_list = await ehrService.getAllowanceType();
@@ -55,20 +53,19 @@ export class TransactionService {
 		const employee_data = await employeeDataService.getEmployeeDataByEmpNo(
 			emp_no
 		);
-		const employee_payment =
+		const employee_payment_dec =
 			await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
 				emp_no,
 				period_id
 			);
 
-		if (employee_payment == null) {
+		if (employee_payment_dec == null) {
 			throw new BaseResponseError("Employee Payment does not exist");
 		}
 
-		const employee_payment_fe = employee_payment; //await employeePaymentMapper.decodeEmployeePayment(employee_payment)
-		const discounted_employee_payment_fe =
+		const discounted_employee_payment_dec =
 			await calculateService.discountedPayment(
-				employee_payment_fe,
+				employee_payment_dec,
 				payset
 			);
 
@@ -138,13 +135,13 @@ export class TransactionService {
 		const group_insurance_type = employee_data!.group_insurance_type;
 		const dependents = employee_data!.dependents;
 		const healthcare_dependents = employee_data!.healthcare_dependents;
-		const l_i = discounted_employee_payment_fe!.l_i;
-		const h_i = discounted_employee_payment_fe!.h_i;
-		const l_r = discounted_employee_payment_fe!.l_r;
+		const l_i = discounted_employee_payment_dec!.l_i;
+		const h_i = discounted_employee_payment_dec!.h_i;
+		const l_r = discounted_employee_payment_dec!.l_r;
 		const occupational_injury =
-			discounted_employee_payment_fe!.occupational_injury;
+			discounted_employee_payment_dec!.occupational_injury;
 		const supervisor_allowance =
-			discounted_employee_payment_fe!.supervisor_allowance;
+			discounted_employee_payment_dec!.supervisor_allowance;
 		const shift_allowance = await ehrService.getTargetAllowance(
 			allowance_list,
 			allowance_type_list,
@@ -160,8 +157,8 @@ export class TransactionService {
 			)) *
 				(payset ? payset.work_day! : 30)) /
 			30;
-		const food_allowance = discounted_employee_payment_fe!.food_allowance;
-		const base_salary = discounted_employee_payment_fe!.base_salary;
+		const food_allowance = discounted_employee_payment_dec!.food_allowance;
+		const base_salary = discounted_employee_payment_dec!.base_salary;
 		const received_elderly_benefits = false;
 		const long_service_allowance = 0; //Todo
 		// MARK: Calculated Results
@@ -170,7 +167,7 @@ export class TransactionService {
 			emp_no
 		);
 		const gross_salary = await calculateService.getGrossSalary(
-			employee_payment_fe!,
+			employee_payment_dec!,
 			payset!,
 			professional_cert_allowance,
 			pay_type,
@@ -179,7 +176,7 @@ export class TransactionService {
 			operational_performance_bonus
 		);
 		const discounted_gross_salary = await calculateService.getGrossSalary(
-			discounted_employee_payment_fe!,
+			discounted_employee_payment_dec!,
 			payset!,
 			professional_cert_allowance,
 			pay_type,
@@ -193,36 +190,35 @@ export class TransactionService {
 				holidays_type,
 				holiday_list,
 				gross_salary,
-				discounted_employee_payment_fe!,
 				insurance_rate_setting!,
 				professional_cert_allowance
 			);
 
 		const l_i_deduction = await calculateService.getLaborInsuranceDeduction(
 			employee_data!,
-			discounted_employee_payment_fe!,
+			discounted_employee_payment_dec!,
 			payset!,
 			insurance_rate_setting!
 		);
 		const h_i_deduction =
 			await calculateService.getHealthInsuranceDeduction(
 				employee_data!,
-				discounted_employee_payment_fe!,
+				discounted_employee_payment_dec!,
 				insurance_rate_setting!
 			);
 		const welfare_contribution =
 			await calculateService.getWelfareContribution(
 				employee_data!,
-				discounted_employee_payment_fe!,
+				discounted_employee_payment_dec!,
 				full_attendance_bonus,
 				operational_performance_bonus
 			);
 		const subsidy_allowance =
-			discounted_employee_payment_fe!.subsidy_allowance;
+			discounted_employee_payment_dec!.subsidy_allowance;
 		const weekday_overtime_pay =
 			await calculateService.getWeekdayOvertimePay(
 				employee_data!,
-				discounted_employee_payment_fe!,
+				discounted_employee_payment_dec!,
 				overtime_list,
 				payset!,
 				insurance_rate_setting!,
@@ -235,7 +231,7 @@ export class TransactionService {
 		const holiday_overtime_pay =
 			await calculateService.getHolidayOvertimePay(
 				employee_data!,
-				discounted_employee_payment_fe!,
+				discounted_employee_payment_dec!,
 				overtime_list,
 				payset!,
 				insurance_rate_setting!,
@@ -247,9 +243,7 @@ export class TransactionService {
 			); // change name
 		const leave_deduction = await calculateService.getLeaveDeduction(
 			employee_data!,
-			discounted_employee_payment_fe!,
 			holiday_list!,
-			payset!,
 			holidays_type,
 			insurance_rate_setting!,
 			full_attendance_bonus,
@@ -259,7 +253,7 @@ export class TransactionService {
 		);
 		const exceed_overtime_pay = await calculateService.getExceedOvertimePay(
 			employee_data!,
-			discounted_employee_payment_fe!,
+			discounted_employee_payment_dec!,
 			overtime_list!,
 			payset!,
 			insurance_rate_setting!,
@@ -272,7 +266,7 @@ export class TransactionService {
 		const salary_income_deduction =
 			await calculateService.getSalaryIncomeDeduction(
 				// employee_data!,
-				discounted_employee_payment_fe!,
+				discounted_employee_payment_dec!,
 				// payset!,
 				reissue_salary!,
 				full_attendance_bonus!,
@@ -308,7 +302,7 @@ export class TransactionService {
 		const taxable_income = await calculateService.getTaxableIncome(
 			// period_id,
 			// emp_no
-			discounted_employee_payment_fe!,
+			discounted_employee_payment_dec!,
 			exceed_overtime_pay,
 			professional_cert_allowance
 		);
@@ -319,7 +313,7 @@ export class TransactionService {
 		);
 		const bonus_tax = await calculateService.getBonusTax();
 		const occupational_allowance =
-			discounted_employee_payment_fe!.occupational_allowance;
+			discounted_employee_payment_dec!.occupational_allowance;
 
 		const non_leave_compensation =
 			await calculateService.getNonLeaveCompensation(
@@ -336,7 +330,7 @@ export class TransactionService {
 		);
 		const taxable_subtotal = await calculateService.getTaxableSubtotal(
 			pay_type,
-			discounted_employee_payment_fe!,
+			discounted_employee_payment_dec!,
 			operational_performance_bonus,
 			reissue_salary,
 			exceed_overtime_pay,
@@ -352,7 +346,7 @@ export class TransactionService {
 		);
 		const non_taxable_subtotal =
 			await calculateService.getNonTaxableSubtotal(
-				discounted_employee_payment_fe!,
+				discounted_employee_payment_dec!,
 				weekday_overtime_pay,
 				holiday_overtime_pay,
 				non_leave_compensation,
@@ -368,7 +362,7 @@ export class TransactionService {
 		);
 
 		const l_i_pay = await calculateService.getLaborInsurancePay(
-			discounted_employee_payment_fe!,
+			discounted_employee_payment_dec!,
 			employee_data!,
 			insurance_rate_setting!,
 			payset,
@@ -378,12 +372,12 @@ export class TransactionService {
 		const salary_advance = await calculateService.getSalaryAdvance(
 			pay_type,
 			payset,
-			discounted_employee_payment_fe!,
+			discounted_employee_payment_dec!,
 			insurance_rate_setting!,
 			employee_data!
 		);
 		const h_i_pay = await calculateService.getHealthInsurancePay(
-			discounted_employee_payment_fe!,
+			discounted_employee_payment_dec!,
 			employee_data!,
 			insurance_rate_setting!
 		);
@@ -394,7 +388,7 @@ export class TransactionService {
 		const income_tax_deduction =
 			await calculateService.getIncomeTaxDeduction(period_id, emp_no);
 		const l_r_self = await calculateService.getLRSelf(
-			discounted_employee_payment_fe
+			discounted_employee_payment_dec
 		);
 		const parking_fee = await calculateService.getParkingFee(
 			period_id,
@@ -405,7 +399,7 @@ export class TransactionService {
 			emp_no
 		);
 		const total_salary = await calculateService.getTotalSalary(
-			discounted_employee_payment_fe!,
+			discounted_employee_payment_dec!,
 			full_attendance_bonus,
 			professional_cert_allowance,
 			shift_allowance
@@ -426,7 +420,7 @@ export class TransactionService {
 		const l_r_contribution =
 			await calculateService.getLaborRetirementContribution(
 				employee_data!,
-				discounted_employee_payment_fe!
+				discounted_employee_payment_dec!
 			);
 		const old_l_r_contribution =
 			await calculateService.getOldLaborRetirementContribution(

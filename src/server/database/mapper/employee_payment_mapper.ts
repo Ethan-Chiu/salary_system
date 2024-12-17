@@ -30,7 +30,25 @@ export class EmployeePaymentMapper extends BaseMapper<
 		]);
 	}
 
-	async includeEmployee<
+	async getEmployeePaymentFE(
+		dec: EmployeePaymentDecType[]
+	) {
+		const list = await this.includeEmployee(
+			dec,
+			["department", "emp_name", "position", "position_type"]
+		);
+		const EmployeePaymentFE = await Promise.all(list.map(async (e) => {
+			return {
+				...e,
+				creatable:true,
+				updatable: (e.start_date>new Date() ) || e.base_salary == 0,
+				deletable: (e.start_date>new Date() ),
+			}
+		}))
+		return EmployeePaymentFE;
+	}
+
+	private async includeEmployee<
 		Data extends EmployeePaymentDecType | EmployeePaymentDecType[],
 		K extends Partial<keyof EmployeeData>
 	>(

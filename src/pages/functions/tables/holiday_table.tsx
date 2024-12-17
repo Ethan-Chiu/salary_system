@@ -37,14 +37,14 @@ const columns = (t: I18nType) => Object.keys(HolidayFE.shape).map((key) => {
 });
 
 interface HolidayTableProps {
-	period: number;
+	period_id: number;
 	emp_no_list: string[];
 }
 
-export function HolidayTable({ period, emp_no_list }: HolidayTableProps) {
+export function HolidayTable({ period_id, emp_no_list }: HolidayTableProps) {
 	const { isLoading, isError, data, error } =
 		api.function.getHolidayWithTypeByEmpNoList.useQuery({
-			period_id: period,
+			period_id: period_id,
 			emp_no_list: emp_no_list,
 		});
 

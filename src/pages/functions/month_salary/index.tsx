@@ -93,7 +93,7 @@ function MonthSalaryContent({ period }: { period: Period }) {
 			page: (
 				<SyncPage
 					key="sync"
-					period={periodId}
+					period_id={periodId}
 					selectedIndex={selectedIndex}
 					setSelectedIndex={setSelectedIndex}
 				/>
@@ -104,7 +104,7 @@ function MonthSalaryContent({ period }: { period: Period }) {
 			page: (
 				<EmployeePage
 					key="employee"
-					period={periodId}
+					period_id={periodId}
 					func={FunctionsEnum.enum.month_salary}
 					selectedIndex={selectedIndex}
 					setSelectedIndex={setSelectedIndex}
@@ -116,7 +116,7 @@ function MonthSalaryContent({ period }: { period: Period }) {
 			page: (
 				<DataPage
 					key="data"
-					period={periodId}
+					period_id={periodId}
 					func={FunctionsEnum.enum.month_salary}
 					selectedIndex={selectedIndex}
 					setSelectedIndex={setSelectedIndex}
@@ -128,7 +128,7 @@ function MonthSalaryContent({ period }: { period: Period }) {
 			page: (
 				<ParameterPage
 					key="parameter"
-					period={periodId}
+					period_id={periodId}
 					selectedIndex={selectedIndex}
 					setSelectedIndex={setSelectedIndex}
 				/>

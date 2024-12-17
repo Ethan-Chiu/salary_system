@@ -12,6 +12,7 @@ interface FunctionsApi {
 	updateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	createFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	batchCreateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
+	batchUpdateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	deleteFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 	autoCalculateFunction: UseTRPCMutationResult<any, any, any, any> | undefined;
 }
@@ -21,6 +22,7 @@ export const bonusToolbarFunctionsContext = createContext<FunctionsApi>({
 	updateFunction: undefined,
 	createFunction: undefined,
 	batchCreateFunction: undefined,
+	batchUpdateFunction: undefined,
 	deleteFunction: undefined,
 	autoCalculateFunction: undefined,
 });
@@ -261,6 +263,11 @@ export default function BonusToolbarFunctionsProvider({
 			ctx.bonus.getEmployeeBonus.invalidate();
 		},
 	});
+	const updateMultipleBonus = api.bonus.updateMultipleBonusByEmpNoList.useMutation({
+		onSuccess: () => {
+			ctx.bonus.getEmployeeBonus.invalidate();
+		}
+	})
 	//#endregion
 
 	const functionsDictionary: Record<TableEnum, FunctionsApi> = {
@@ -275,6 +282,7 @@ export default function BonusToolbarFunctionsProvider({
 			updateFunction: updateBonusAll,
 			createFunction: createBonusAll,
 			batchCreateFunction: undefined,
+			batchUpdateFunction: undefined,
 			deleteFunction: deleteBonusAll,
 			autoCalculateFunction: undefined,
 		},
@@ -283,6 +291,7 @@ export default function BonusToolbarFunctionsProvider({
 			updateFunction: updateBonusWorkType,
 			createFunction: createBonusWorkType,
 			batchCreateFunction: batchCreateBonusWorkType,
+			batchUpdateFunction: undefined,
 			deleteFunction: deleteBonusWorkType,
 			autoCalculateFunction: undefined,
 		},
@@ -291,6 +300,7 @@ export default function BonusToolbarFunctionsProvider({
 			updateFunction: updateBonusDepartment,
 			createFunction: createBonusDepartment,
 			batchCreateFunction: batchCreateBonusDepartment,
+			batchUpdateFunction: undefined,
 			deleteFunction: deleteBonusDepartment,
 			autoCalculateFunction: undefined,
 		},
@@ -299,6 +309,7 @@ export default function BonusToolbarFunctionsProvider({
 			updateFunction: updateBonusPosition,
 			createFunction: createBonusPosition,
 			batchCreateFunction: batchCreateBonusPosition,
+			batchUpdateFunction: undefined,
 			deleteFunction: deleteBonusPosition,
 			autoCalculateFunction: undefined,
 		},
@@ -314,6 +325,7 @@ export default function BonusToolbarFunctionsProvider({
 			updateFunction: updateBonusSeniority,
 			createFunction: createBonusSeniority,
 			batchCreateFunction: batchCreateBonusSeniority,
+			batchUpdateFunction: undefined,
 			deleteFunction: deleteBonusSeniority,
 			autoCalculateFunction: undefined,
 		},
@@ -328,6 +340,7 @@ export default function BonusToolbarFunctionsProvider({
 			updateFunction: updateEmployeeBonus,
 			createFunction: undefined,
 			batchCreateFunction: undefined,
+			batchUpdateFunction: updateMultipleBonus,
 			deleteFunction: undefined,
 			autoCalculateFunction: autoCalculateEmployeeBonus,
 		}

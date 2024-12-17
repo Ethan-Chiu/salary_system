@@ -13,16 +13,38 @@ import { LevelRangeService } from "~/server/service/level_range_service";
 import { LevelService } from "~/server/service/level_service";
 import { PerformanceLevelService } from "~/server/service/performance_level_service";
 import { TrustMoneyService } from "~/server/service/trust_money_service";
-import { createLevelRangeAPI, levelRangeFE, LevelRangeFEType, updateLevelRangeAPI } from "../types/level_range_type";
+import {
+	createLevelRangeAPI,
+	levelRangeFE,
+	LevelRangeFEType,
+	updateLevelRangeAPI,
+} from "../types/level_range_type";
 import { LevelRangeMapper } from "~/server/database/mapper/level_range_mapper";
 import { roundProperties } from "~/server/database/mapper/helper_function";
 import { SalaryIncomeTaxService } from "~/server/service/salary_income_tax_service";
-import { attendanceSettingFE, createAttendanceSettingAPI, updateAttendanceSettingAPI } from "../types/attendance_setting_type";
-import { createBankSettingAPI, updateBankSettingAPI } from "../types/bank_setting_type";
-import { createInsuranceRateSettingAPI, updateInsuranceRateSettingAPI } from "../types/insurance_rate_setting_type";
-import { createTrustMoneyAPI, updateTrustMoneyAPI } from "../types/trust_money_type";
+import {
+	attendanceSettingFE,
+	createAttendanceSettingAPI,
+	updateAttendanceSettingAPI,
+} from "../types/attendance_setting_type";
+import {
+	createBankSettingAPI,
+	updateBankSettingAPI,
+} from "../types/bank_setting_type";
+import {
+	createInsuranceRateSettingAPI,
+	updateInsuranceRateSettingAPI,
+} from "../types/insurance_rate_setting_type";
+import {
+	createTrustMoneyAPI,
+	updateTrustMoneyAPI,
+} from "../types/trust_money_type";
 import { createLevelAPI, updateLevelAPI } from "../types/level_type";
-import { batchCreateSalaryIncomeTaxAPI, createSalaryIncomeTaxAPI, updateSalaryIncomeTaxAPI } from "../types/salary_income_tax";
+import {
+	batchCreateSalaryIncomeTaxAPI,
+	createSalaryIncomeTaxAPI,
+	updateSalaryIncomeTaxAPI,
+} from "../types/salary_income_tax";
 
 export const parametersRouter = createTRPCRouter({
 	createBankSetting: publicProcedure
@@ -43,7 +65,17 @@ export const parametersRouter = createTRPCRouter({
 			if (bankSetting.length == 0) {
 				throw new BaseResponseError("BankSetting does not exist");
 			}
-			return bankSetting;
+			const bankSettingFE = await Promise.all(
+				bankSetting.map(async (b) => {
+					return {
+						...b,
+						creatable: true,
+						updatable: b.start_date > new Date(),
+						deletable: b.start_date > new Date(),
+					};
+				})
+			);
+			return bankSettingFE;
 		}),
 
 	getAllBankSetting: publicProcedure.query(async () => {
@@ -52,7 +84,17 @@ export const parametersRouter = createTRPCRouter({
 		if (bankSetting.length == 0) {
 			throw new BaseResponseError("BankSetting does not exist");
 		}
-		return bankSetting;
+		const bankSettingFE = await Promise.all(
+			bankSetting.map(async (b) => {
+				return {
+					...b,
+					creatable: true,
+					updatable: b.start_date > new Date(),
+					deletable: b.start_date > new Date(),
+				};
+			})
+		);
+		return bankSettingFE;
 	}),
 
 	getAllFutureBankSetting: publicProcedure.query(async () => {
@@ -92,8 +134,14 @@ export const parametersRouter = createTRPCRouter({
 			if (attendanceSetting == null) {
 				throw new BaseResponseError("AttendanceSetting does not exist");
 			}
+			const AttendanceSettingFE = {
+				...roundProperties(attendanceSetting, 4),
+				creatable: true,
+				updatable: attendanceSetting.start_date > new Date(),
+				deletable: attendanceSetting.start_date > new Date(),
+			};
 
-			return roundProperties(attendanceSetting, 4);
+			return AttendanceSettingFE;
 		}),
 
 	getAllAttendanceSetting: publicProcedure.query(async () => {
@@ -103,14 +151,24 @@ export const parametersRouter = createTRPCRouter({
 		if (attendanceSetting.length == 0) {
 			throw new BaseResponseError("AttendanceSetting does not exist");
 		}
-		return attendanceSetting.map(e => roundProperties(e, 4));
+		const AttendanceSettingFE = await Promise.all(
+			attendanceSetting.map(async (a) => {
+				return {
+					...roundProperties(a, 4),
+					creatable: true,
+					updatable: a.start_date > new Date(),
+					deletable: a.start_date > new Date(),
+				};
+			})
+		);
+		return AttendanceSettingFE;
 	}),
 
 	getAllFutureAttendanceSetting: publicProcedure.query(async () => {
 		const attendanceService = container.resolve(AttendanceSettingService);
 		const attendanceSetting =
 			await attendanceService.getAllFutureAttendanceSetting();
-		return attendanceSetting.map(e => roundProperties(e, 4));
+		return attendanceSetting.map((e) => roundProperties(e, 4));
 	}),
 
 	createAttendanceSetting: publicProcedure
@@ -162,7 +220,13 @@ export const parametersRouter = createTRPCRouter({
 					"InsuranceRateSetting does not exist"
 				);
 			}
-			return roundProperties(insuranceRateSetting, 4);
+			const InsuranceRateSettingFE = {
+				...roundProperties(insuranceRateSetting, 4),
+				creatable: true,
+				updatable: insuranceRateSetting.start_date > new Date(),
+				deletable: insuranceRateSetting.start_date > new Date(),
+			};
+			return InsuranceRateSettingFE;
 		}),
 
 	getAllInsuranceRateSetting: publicProcedure.query(async () => {
@@ -174,7 +238,17 @@ export const parametersRouter = createTRPCRouter({
 		if (insuranceRateSetting.length == 0) {
 			throw new BaseResponseError("InsuranceRateSetting does not exist");
 		}
-		return insuranceRateSetting.map(e => roundProperties(e, 4));
+		const InsuranceRateSettingFE = await Promise.all(
+			insuranceRateSetting.map(async (a) => {
+				return {
+					...roundProperties(a, 4),
+					creatable: true,
+					updatable: a.start_date > new Date(),
+					deletable: a.start_date > new Date(),
+				};
+			})
+		);
+		return InsuranceRateSettingFE;
 	}),
 
 	getAllFutureInsuranceRateSetting: publicProcedure.query(async () => {
@@ -183,7 +257,7 @@ export const parametersRouter = createTRPCRouter({
 		);
 		const insuranceRateSetting =
 			await insuranceRateService.getAllFutureInsuranceRateSetting();
-		return insuranceRateSetting.map(e => roundProperties(e, 4));
+		return insuranceRateSetting.map((e) => roundProperties(e, 4));
 	}),
 
 	createInsuranceRateSetting: publicProcedure
@@ -229,22 +303,39 @@ export const parametersRouter = createTRPCRouter({
 			const levelRangeMapper = container.resolve(LevelRangeMapper);
 			// TODO: Fix this
 			const levelRange = await levelRangeMapper.getLevelRange(input);
-			const newData = await levelRangeService.createLevelRange(levelRange);
-			const levelRangeFE = await levelRangeMapper.getLevelRangeFE({ ...levelRange, id: newData.id, disabled: newData.disabled, update_date: newData.update_date, create_date: newData.create_date, update_by: newData.update_by, create_by: newData.create_by, start_date: levelRange.start_date! });
+			const newData = await levelRangeService.createLevelRange(
+				levelRange
+			);
+			const levelRangeFE = await levelRangeMapper.getLevelRangeFE({
+				...levelRange,
+				id: newData.id,
+				disabled: newData.disabled,
+				update_date: newData.update_date,
+				create_date: newData.create_date,
+				update_by: newData.update_by,
+				create_by: newData.create_by,
+				start_date: levelRange.start_date!,
+			});
 			await levelRangeService.rescheduleLevelRange();
 			return levelRangeFE;
 		}),
 
-	getCurrentLevelRange: publicProcedure.input(z.object({ period_id: z.number() })).query(async ({ input }) => {
-		const levelRangeService = container.resolve(LevelRangeService);
-		const levelRangeMapper = container.resolve(LevelRangeMapper);
-		const levelRange = await levelRangeService.getCurrentLevelRange(input.period_id);
-		if (levelRange == null) {
-			throw new BaseResponseError("LevelRange does not exist");
-		}
-		const levelRangeFE = await Promise.all(levelRange.map(async e => await levelRangeMapper.getLevelRangeFE(e)))
-		return levelRangeFE;
-	}),
+	getCurrentLevelRange: publicProcedure
+		.input(z.object({ period_id: z.number() }))
+		.query(async ({ input }) => {
+			const levelRangeService = container.resolve(LevelRangeService);
+			const levelRangeMapper = container.resolve(LevelRangeMapper);
+			const levelRange = await levelRangeService.getCurrentLevelRange(
+				input.period_id
+			);
+			if (levelRange == null) {
+				throw new BaseResponseError("LevelRange does not exist");
+			}
+			const levelRangeFE = await Promise.all(
+				levelRange.map(async (e) => await levelRangeMapper.getLevelRangeFE(e))
+			);
+			return levelRangeFE;
+		}),
 
 	getAllLevelRange: publicProcedure.query(async () => {
 		const levelRangeService = container.resolve(LevelRangeService);
@@ -253,7 +344,9 @@ export const parametersRouter = createTRPCRouter({
 		if (levelRange == null) {
 			throw new BaseResponseError("LevelRange does not exist");
 		}
-		const levelRangeFE = await Promise.all(levelRange.map(async e => await levelRangeMapper.getLevelRangeFE(e)))
+		const levelRangeFE = await Promise.all(
+			levelRange.map(async (e) => await levelRangeMapper.getLevelRangeFE(e))
+		);
 		return levelRangeFE;
 	}),
 
@@ -261,7 +354,11 @@ export const parametersRouter = createTRPCRouter({
 		const levelRangeService = container.resolve(LevelRangeService);
 		const levelRangeMapper = container.resolve(LevelRangeMapper);
 		const levelRange = await levelRangeService.getAllFutureLevelRange();
-		const levelRangeFE = await Promise.all(levelRange.map(async e => await levelRangeMapper.getLevelRangeFE(e)))
+		const levelRangeFE = await Promise.all(
+			levelRange.map(
+				async (e) => await levelRangeMapper.getLevelRangeFE(e)
+			)
+		);
 		return levelRangeFE;
 	}),
 
@@ -270,8 +367,12 @@ export const parametersRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const levelRangeService = container.resolve(LevelRangeService);
 			const levelRangeMapper = container.resolve(LevelRangeMapper);
-			const levelRange = await levelRangeMapper.getLevelRangeNullable(input);
-			const newdata = await levelRangeService.updateLevelRange(levelRange);
+			const levelRange = await levelRangeMapper.getLevelRangeNullable(
+				input
+			);
+			const newdata = await levelRangeService.updateLevelRange(
+				levelRange
+			);
 			await levelRangeService.rescheduleLevelRange();
 			return newdata;
 		}),
@@ -297,22 +398,44 @@ export const parametersRouter = createTRPCRouter({
 			return newdata;
 		}),
 
-	getCurrentLevel: publicProcedure.input(z.object({ period_id: z.number() })).query(async ({ input }) => {
-		const levelService = container.resolve(LevelService);
-		const level = await levelService.getCurrentLevel(input.period_id);
-		if (level == null) {
-			throw new BaseResponseError("Level does not exist");
-		}
-		return level;
-	}),
+	getCurrentLevel: publicProcedure
+		.input(z.object({ period_id: z.number() }))
+		.query(async ({ input }) => {
+			const levelService = container.resolve(LevelService);
+			const level = await levelService.getCurrentLevel(input.period_id);
+			if (level == null) {
+				throw new BaseResponseError("Level does not exist");
+			}
+			const levelFE = await Promise.all(
+				level.map(async (e) => {
+					return {
+						...e,
+						creatable: true,
+						updatable: e.start_date > new Date(),
+						deletable: e.start_date > new Date(),
+					};
+				})
+			);
+			return levelFE;
+		}),
 
 	getAllLevel: publicProcedure.query(async () => {
 		const levelService = container.resolve(LevelService);
 		const level = await levelService.getAllLevel();
+		const levelFE = await Promise.all(
+			level.map(async (l) => {
+				return {
+					...l,
+					creatable: true,
+					updatable: l.start_date > new Date(),
+					deletable: l.start_date > new Date(),
+				};
+			})
+		);
 		if (level == null) {
 			throw new BaseResponseError("Level does not exist");
 		}
-		return level;
+		return levelFE;
 	}),
 
 	getAllFutureLevel: publicProcedure.query(async () => {
@@ -407,14 +530,28 @@ export const parametersRouter = createTRPCRouter({
 			return newdata;
 		}),
 
-	getCurrentTrustMoney: publicProcedure.input(z.object({ period_id: z.number() })).query(async ({ input }) => {
-		const trustMoneyService = container.resolve(TrustMoneyService);
-		const trustMoney = await trustMoneyService.getCurrentTrustMoney(input.period_id);
-		if (trustMoney == null) {
-			throw new BaseResponseError("TrustMoney does not exist");
-		}
-		return trustMoney;
-	}),
+	getCurrentTrustMoney: publicProcedure
+		.input(z.object({ period_id: z.number() }))
+		.query(async ({ input }) => {
+			const trustMoneyService = container.resolve(TrustMoneyService);
+			const trustMoney = await trustMoneyService.getCurrentTrustMoney(
+				input.period_id
+			);
+			if (trustMoney == null) {
+				throw new BaseResponseError("TrustMoney does not exist");
+			}
+			const trustMoneyFE = await Promise.all(
+				trustMoney.map(async (e) => {
+					return {
+						...e,
+						creatable: true,
+						updatable: e.start_date > new Date(),
+						deletable: e.start_date > new Date(),
+					};
+				})
+			)
+			return trustMoneyFE;
+		}),
 
 	getAllTrustMoney: publicProcedure.query(async () => {
 		const trustMoneyService = container.resolve(TrustMoneyService);
@@ -422,7 +559,17 @@ export const parametersRouter = createTRPCRouter({
 		if (trustMoney == null) {
 			throw new BaseResponseError("TrustMoney does not exist");
 		}
-		return trustMoney;
+		const trustMoneyFE = await Promise.all(
+			trustMoney.map(async (e) => {
+				return {
+					...e,
+					creatable: true,
+					updatable: e.start_date > new Date(),
+					deletable: e.start_date > new Date(),
+				};
+			})
+		)
+		return trustMoneyFE;
 	}),
 
 	getAllFutureTrustMoney: publicProcedure.query(async () => {
@@ -466,11 +613,13 @@ export const parametersRouter = createTRPCRouter({
 			const salaryIncomeTaxService = container.resolve(
 				SalaryIncomeTaxService
 			);
-			const newdata = await salaryIncomeTaxService.batchCreateSalaryIncomeTax(input.map(e => ({
-				...e,
-				end_date: null,
-			}))
-			);
+			const newdata =
+				await salaryIncomeTaxService.batchCreateSalaryIncomeTax(
+					input.map((e) => ({
+						...e,
+						end_date: null,
+					}))
+				);
 			return newdata;
 		}),
 	updateSalaryIncomeTax: publicProcedure
@@ -479,7 +628,9 @@ export const parametersRouter = createTRPCRouter({
 			const salaryIncomeTaxService = container.resolve(
 				SalaryIncomeTaxService
 			);
-			const newdata = await salaryIncomeTaxService.updateSalaryIncomeTax(input);
+			const newdata = await salaryIncomeTaxService.updateSalaryIncomeTax(
+				input
+			);
 			return newdata;
 		}),
 
@@ -506,28 +657,47 @@ export const parametersRouter = createTRPCRouter({
 			if (salaryIncomeTax == null) {
 				throw new BaseResponseError("SalaryIncomeTax does not exist");
 			}
-			return salaryIncomeTax;
+			const salaryIncomeTaxFE = await Promise.all(
+				salaryIncomeTax.map(async (e) => {
+					return {
+						...e,
+						creatable: true,
+						updatable: e.start_date > new Date(),
+						deletable: e.start_date > new Date(),
+					};
+				})
+			)
+			return salaryIncomeTaxFE;
 		}),
 
-	getAllSalaryIncomeTax: publicProcedure
-		.query(async () => {
-			const salaryIncomeTaxService = container.resolve(
-				SalaryIncomeTaxService
-			);
-			const salaryIncomeTax = await salaryIncomeTaxService.getAllSalaryIncomeTax();
-			if (salaryIncomeTax == null) {
-				throw new BaseResponseError("SalaryIncomeTax does not exist");
-			}
-			return salaryIncomeTax;
-		}),
+	getAllSalaryIncomeTax: publicProcedure.query(async () => {
+		const salaryIncomeTaxService = container.resolve(
+			SalaryIncomeTaxService
+		);
+		const salaryIncomeTax =
+			await salaryIncomeTaxService.getAllSalaryIncomeTax();
+		if (salaryIncomeTax == null) {
+			throw new BaseResponseError("SalaryIncomeTax does not exist");
+		}
+		const salaryIncomeTaxFE = await Promise.all(
+			salaryIncomeTax.map(async (e) => {
+				return {
+					...e,
+					creatable: true,
+					updatable: e.start_date > new Date(),
+					deletable: e.start_date > new Date(),
+				};
+			})
+		)
+		return salaryIncomeTaxFE;
+	}),
 
-	getAllFutureSalaryIncomeTax: publicProcedure
-		.query(async () => {
-			const salaryIncomeTaxService = container.resolve(
-				SalaryIncomeTaxService
-			);
-			const salaryIncomeTax =
-				await salaryIncomeTaxService.getAllFutureSalaryIncomeTax();
-			return salaryIncomeTax;
-		}),
+	getAllFutureSalaryIncomeTax: publicProcedure.query(async () => {
+		const salaryIncomeTaxService = container.resolve(
+			SalaryIncomeTaxService
+		);
+		const salaryIncomeTax =
+			await salaryIncomeTaxService.getAllFutureSalaryIncomeTax();
+		return salaryIncomeTax;
+	}),
 });

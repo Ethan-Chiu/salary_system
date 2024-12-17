@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import TablesView from "~/pages/parameters/tables_view";
 
 interface ParameterPageProps {
-	period: number;
+	period_id: number;
 	selectedIndex: number;
 	setSelectedIndex: (index: number) => void;
 }

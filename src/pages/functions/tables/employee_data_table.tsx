@@ -9,12 +9,12 @@ import { formatDate } from "~/lib/utils/format_date";
 
 const columns = (t: I18nType) =>
 	[
+		"department",
 		"emp_no",
 		"emp_name",
 		"position",
 		"position_type",
 		"group_insurance_type",
-		"department",
 		"work_type",
 		"work_status",
 		"disabilty_level",
@@ -75,12 +75,13 @@ const columns = (t: I18nType) =>
 	});
 
 interface EmployeeDataTableProps {
+	period_id: number;
 	func: any;
 }
 
-export function EmployeeDataTable({ func }: EmployeeDataTableProps) {
+export function EmployeeDataTable({ period_id, func }: EmployeeDataTableProps) {
 	const { isLoading, isError, data, error } =
-		api.sync.getPaidEmployees.useQuery({ func });
+		api.sync.getPaidEmployees.useQuery({ period_id, func });
 
 	const { t } = useTranslation(["common"]);
 

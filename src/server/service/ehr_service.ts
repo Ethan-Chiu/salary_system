@@ -39,7 +39,7 @@ export type HolidayWithType = Omit<Holiday, "pay_order"> & {
 @injectable()
 export class EHRService {
 	async getPeriod(): Promise<Period[]> {
-		const dbConnection = container.resolve(Database).connection;
+		const dbConnection = container.resolve(Database).ehr_connection;
 		const dataList = await dbConnection.query(this.GET_PERIOD_QUERY(), {
 			type: QueryTypes.SELECT,
 		});
@@ -49,7 +49,7 @@ export class EHRService {
 	}
 
 	async getPeriodById(period_id: number): Promise<Period> {
-		const dbConnection = container.resolve(Database).connection;
+		const dbConnection = container.resolve(Database).ehr_connection;
 		const dataList = await dbConnection.query(
 			this.GET_PERIOD_BY_ID_QUERY(period_id),
 			{
@@ -63,7 +63,7 @@ export class EHRService {
 	}
 
 	async getPeriodByName(period_name:string){
-		const dbConnection = container.resolve(Database).connection;
+		const dbConnection = container.resolve(Database).ehr_connection;
 		const dataList = await dbConnection.query(
 			this.GET_PERIOD_BY_NAME_QUERY(period_name),
 			{
@@ -75,9 +75,18 @@ export class EHRService {
 		}
 		return Period.fromDB(dataList[0]!);
 	}
-
+	async getPeriodIdByDate(date:Date){
+		const dataList = await this.getPeriod();
+		if (dataList.length === 0) {
+			throw new BaseResponseError("Period Not Found");
+		}
+		const period_id = (dataList.find((period) => {
+			return date >= new Date(period.start_date) && date <= new Date(period.end_date);
+		}))?.period_id;
+		return period_id;
+	}
 	async getHoliday(period_id: number): Promise<Holiday[]> {
-		const dbConnection = container.resolve(Database).connection;
+		const dbConnection = container.resolve(Database).ehr_connection;
 		const dataList = await dbConnection.query(
 			this.GET_Holiday_QUERY(period_id),
 			{
@@ -136,7 +145,7 @@ export class EHRService {
 	}
 
 	async getOvertime(period_id: number, pay: number): Promise<Overtime[]> {
-		const dbConnection = container.resolve(Database).connection;
+		const dbConnection = container.resolve(Database).ehr_connection;
 		const dataList = await dbConnection.query(
 			this.GET_OVERTIME_QUERY(period_id, pay),
 			{
@@ -168,7 +177,7 @@ export class EHRService {
 	}
 
 	async getPayset(period_id: number): Promise<Payset[]> {
-		const dbConnection = container.resolve(Database).connection;
+		const dbConnection = container.resolve(Database).ehr_connection;
 		const dataList = await dbConnection.query(
 			this.GET_PAYSET_QUERY(period_id),
 			{
@@ -195,7 +204,7 @@ export class EHRService {
 	}
 
 	async getEmp(period_id: number): Promise<Emp[]> {
-		const dbConnection = container.resolve(Database).connection;
+		const dbConnection = container.resolve(Database).ehr_connection;
 		const dataList = await dbConnection.query(this.GET_EMP_QUERY(period_id), {
 			type: QueryTypes.SELECT,
 		});
@@ -204,7 +213,7 @@ export class EHRService {
 	}
 
 	async getPromotion(): Promise<any> {
-		const dbConnection = container.resolve(Database).connection;
+		const dbConnection = container.resolve(Database).ehr_connection;
 		const dataList = await dbConnection.query(this.GET_PROMOTION_QUERY(), {
 			type: QueryTypes.SELECT,
 		});
@@ -214,7 +223,7 @@ export class EHRService {
 	
 
 	async getBonus(period_id: number, pay: number): Promise<Bonus[]> {
-		const dbConnection = container.resolve(Database).connection;
+		const dbConnection = container.resolve(Database).ehr_connection;
 		const dataList = await dbConnection.query(
 			this.GET_BONUS_QUERY(period_id, pay),
 			{
@@ -249,7 +258,7 @@ export class EHRService {
 	}
 
 	async getBonusType(): Promise<BonusType[]> {
-		const dbConnection = container.resolve(Database).connection;
+		const dbConnection = container.resolve(Database).ehr_connection;
 		const dataList = await dbConnection.query(this.GET_BONUS_TYPE_QUERY(), {
 			type: QueryTypes.SELECT,
 		});
@@ -288,7 +297,7 @@ export class EHRService {
 	}
 
 	async getExpense(period_id: number): Promise<Expense[]> {
-		const dbConnection = container.resolve(Database).connection;
+		const dbConnection = container.resolve(Database).ehr_connection;
 		const dataList = await dbConnection.query(
 			this.GET_EXPENSE_QUERY(period_id),
 			{
@@ -357,7 +366,7 @@ export class EHRService {
 		return expenseWithTypeList;
 	}
 	async getExpenseClass(): Promise<ExpenseClass[]> {
-		const dbConnection = container.resolve(Database).connection;
+		const dbConnection = container.resolve(Database).ehr_connection;
 		const dataList = await dbConnection.query(
 			this.GET_EXPENSE_CLASS_QUERY(),
 			{
@@ -398,7 +407,7 @@ export class EHRService {
 	}
 
 	async getAllowanceType(): Promise<AllowanceType[]> {
-		const dbConnection = container.resolve(Database).connection;
+		const dbConnection = container.resolve(Database).ehr_connection;
 		const dataList = await dbConnection.query(
 			this.GET_ALLOWANCE_TYPE_QUERY(),
 			{
@@ -412,7 +421,7 @@ export class EHRService {
 	}
 
 	async getAllowance(period_id: number): Promise<Allowance[]> {
-		const dbConnection = container.resolve(Database).connection;
+		const dbConnection = container.resolve(Database).ehr_connection;
 		const dataList = await dbConnection.query(
 			this.GET_ALLOWANCE_QUERY(period_id),
 			{
@@ -453,53 +462,55 @@ export class EHRService {
 	}
 
 	private GET_PERIOD_QUERY(): string {
-		return `SELECT "PERIOD_ID", "PERIOD_NAME", "START_DATE", "END_DATE", "STATUS", "ISSUE_DATE" FROM "U_HR_PERIOD" WHERE "U_HR_PERIOD"."STATUS" = 'OPEN'`;
+		return `SELECT "PERIOD_ID", "PERIOD_NAME", "START_DATE", "END_DATE", "STATUS", "ISSUE_DATE" FROM SYSTEM."U_HR_PERIOD_V" `;
+		
 	}
+		// WHERE "U_HR_PERIOD_V"."STATUS" = 'OPEN'`
 	private GET_PERIOD_BY_ID_QUERY(period_id: number): string {
-		return `SELECT "PERIOD_ID", "PERIOD_NAME", "START_DATE", "END_DATE", "STATUS", "ISSUE_DATE" FROM "U_HR_PERIOD" WHERE "U_HR_PERIOD"."PERIOD_ID" = '${period_id}'`;
+		return `SELECT "PERIOD_ID", "PERIOD_NAME", "START_DATE", "END_DATE", "STATUS", "ISSUE_DATE" FROM SYSTEM."U_HR_PERIOD_V" WHERE "U_HR_PERIOD_V"."PERIOD_ID" = '${period_id}'`;
 	}
 	private GET_PERIOD_BY_NAME_QUERY(period_name: string): string {
-		return `SELECT "PERIOD_ID", "PERIOD_NAME", "START_DATE", "END_DATE", "STATUS", "ISSUE_DATE" FROM "U_HR_PERIOD" WHERE "U_HR_PERIOD"."PERIOD_NAME" = '${period_name}'`;
+		return `SELECT "PERIOD_ID", "PERIOD_NAME", "START_DATE", "END_DATE", "STATUS", "ISSUE_DATE" FROM SYSTEM."U_HR_PERIOD_V" WHERE "U_HR_PERIOD_V"."PERIOD_NAME" = '${period_name}'`;
 	}
 
 	private GET_Holiday_QUERY(period_id: number): string {
-		return `SELECT * FROM "U_HR_PAYDRAFT_HOLIDAYS_V" WHERE "U_HR_PAYDRAFT_HOLIDAYS_V"."PERIOD_ID" = '${period_id}'`;
+		return `SELECT * FROM SYSTEM."U_HR_PAYDRAFT_HOLIDAYS_V" WHERE "U_HR_PAYDRAFT_HOLIDAYS_V"."PERIOD_ID" = '${period_id}'`;
 	}
 
 	private GET_OVERTIME_QUERY(period_id: number, pay: number): string {
-		return `SELECT * FROM "U_HR_PAYDRAFT_OVERTIME_V" WHERE "U_HR_PAYDRAFT_OVERTIME_V"."PERIOD_ID" = '${period_id}' AND "U_HR_PAYDRAFT_OVERTIME_V"."PAY" = '${pay}'`;
+		return `SELECT * FROM SYSTEM."U_HR_PAYDRAFT_OVERTIME_V" WHERE "U_HR_PAYDRAFT_OVERTIME_V"."PERIOD_ID" = '${period_id}' AND "U_HR_PAYDRAFT_OVERTIME_V"."PAY" = '${pay}'`;
 	}
 
 	private GET_PAYSET_QUERY(period_id: number): string {
-		return `SELECT * FROM "U_HR_PAYSET_V" WHERE "U_HR_PAYSET_V"."PERIOD_ID" = '${period_id}'`;
+		return `SELECT * FROM SYSTEM."U_HR_PAYSET_V" WHERE "U_HR_PAYSET_V"."PERIOD_ID" = '${period_id}'`;
 	}
 
 	private GET_EMP_QUERY(period_id: number): string {
-		return `SELECT * FROM "U_HR_PAYDRAFT_EMP" WHERE "U_HR_PAYDRAFT_EMP"."PERIOD_ID" = '${period_id}'`;
+		return `SELECT * FROM SYSTEM."U_HR_PAYDRAFT_EMP_V" WHERE "U_HR_PAYDRAFT_EMP_V"."PERIOD_ID" = '${period_id}'`;
 	}
 
 	private GET_PROMOTION_QUERY(): string {
-		return `SELECT * FROM "U_HR_PROMOTION_V"`;
+		return `SELECT * FROM SYSTEM."U_HR_PROMOTION_V"`;
 	}
 
 	
 	private GET_BONUS_QUERY(period_id: number, pay: number): string {
-		return `SELECT * FROM "U_HR_PAYDRAFT_BONUS" WHERE "U_HR_PAYDRAFT_BONUS"."PERIOD_ID" = '${period_id}' AND "U_HR_PAYDRAFT_BONUS"."PAY" = '${pay}'`;
+		return `SELECT * FROM SYSTEM."U_HR_PAYDRAFT_BONUS_V" WHERE "U_HR_PAYDRAFT_BONUS_V"."PERIOD_ID" = '${period_id}' AND "U_HR_PAYDRAFT_BONUS_V"."PAY" = '${pay}'`;
 	}
 	private GET_BONUS_TYPE_QUERY(): string {
-		return `SELECT * FROM UMEDIA."U_HR_BONUS_TYPE"`;
+		return `SELECT * FROM SYSTEM."U_HR_BONUS_TYPE_V"`;
 	}
 	private GET_EXPENSE_QUERY(period_id: number): string {
-		return `SELECT * FROM "U_HR_PAYDRAFT_EXPENSE" WHERE "U_HR_PAYDRAFT_EXPENSE"."PERIOD_ID" = '${period_id}'`;
+		return `SELECT * FROM SYSTEM."U_HR_PAYDRAFT_EXPENSE_V" WHERE "U_HR_PAYDRAFT_EXPENSE_V"."PERIOD_ID" = '${period_id}'`;
 	}
 
 	private GET_EXPENSE_CLASS_QUERY(): string {
-		return `SELECT * FROM "U_HR_EXPENSE_CLASS"`;
+		return `SELECT * FROM SYSTEM."U_HR_EXPENSE_CLASS_V"`;
 	}
 	private GET_ALLOWANCE_TYPE_QUERY(): string {
-		return `SELECT * FROM "U_HR_ALLOWANCE_TYPE"`;
+		return `SELECT * FROM SYSTEM."U_HR_ALLOWANCE_TYPE_V"`;
 	}
 	private GET_ALLOWANCE_QUERY(period_id: number): string {
-		return `SELECT * FROM "U_HR_PAYDRAFT_ALLOWANCE" WHERE "U_HR_PAYDRAFT_ALLOWANCE"."PERIOD_ID" = '${period_id}'`;
+		return `SELECT * FROM SYSTEM."U_HR_PAYDRAFT_ALLOWANCE_V" WHERE "U_HR_PAYDRAFT_ALLOWANCE_V"."PERIOD_ID" = '${period_id}'`;
 	}
 }

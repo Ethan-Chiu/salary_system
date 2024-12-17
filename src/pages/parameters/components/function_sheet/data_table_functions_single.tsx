@@ -1,6 +1,6 @@
 import { cn } from "~/lib/utils";
 import { useState } from "react";
-import { type LucideIcon, Copy, Download, EllipsisVertical, RefreshCcw, Upload } from "lucide-react";
+import { type LucideIcon, PenSquare, Plus, Trash2, Copy, PencilLine } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
 	DropdownMenu,
@@ -35,15 +35,7 @@ interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
 }
 
-export type FunctionMode =
-	"create"
-	| "batch_create"
-	| "update"
-	| "delete"
-	| "excel_download"
-	| "excel_upload"
-	| "initialize"
-	| "none";
+export type FunctionMode = "create" | "batch_create" | "update" | "delete" | "none";
 
 export function DataTableFunctions({
 	tableType,
@@ -88,31 +80,31 @@ export function DataTableFunctions({
 							size="sm"
 							className="ml-auto hidden h-8 lg:flex"
 						>
-							<EllipsisVertical className="cursor-pointer stroke-[1.5]" />
+							<PencilLine className="cursor-pointer stroke-[1.5]" />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-[120px]">
 						<DropdownMenuLabel>{t("others.functions")}</DropdownMenuLabel>
 						<DropdownMenuSeparator />
+						<CompTriggerItem
+							mode={"create"}
+							itemName={t("button.create")}
+							icon={Plus}
+						/>
 						{tableType == "TableLevel" && <CompTriggerItem
 							mode={"batch_create"}
 							itemName={t("button.batch_create")}
 							icon={Copy}
 						/>}
 						<CompTriggerItem
-							mode={"excel_download"}
-							itemName={t("button.excel_download")}
-							icon={Download}
+							mode={"update"}
+							itemName={t("button.update")}
+							icon={PenSquare}
 						/>
 						<CompTriggerItem
-							mode={"excel_upload"}
-							itemName={t("button.excel_upload")}
-							icon={Upload}
-						/>
-						<CompTriggerItem
-							mode={"initialize"}
-							itemName={t("button.initialize")}
-							icon={RefreshCcw}
+							mode={"delete"}
+							itemName={t("button.delete")}
+							icon={Trash2}
 						/>
 					</DropdownMenuContent>
 				</DropdownMenu>

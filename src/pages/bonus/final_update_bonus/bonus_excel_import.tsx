@@ -475,14 +475,14 @@ export default function BonusExcelImport() {
 				special_multiplier: d[4],
 				multiplier: d[5],
 				fixed_amount: d[6],
-				budget_effective_salary: d[7],
+				bud_effective_salary: d[7],
 				bud_amount: d[8],
-				supervisor_performance_level: d[9],
-				supervisor_effective_salary: d[10],
-				supervisor_amount: d[11],
-				approved_performance_level: d[12],
-				approved_effective_salary: d[13],
-				approved_amount: d[14],
+				sup_performance_level: d[9],
+				sup_effective_salary: d[10],
+				sup_amount: d[11],
+				app_performance_level: d[12],
+				app_effective_salary: d[13],
+				app_amount: d[14],
 			}
 		})
 	}

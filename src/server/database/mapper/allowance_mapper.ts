@@ -13,12 +13,14 @@ import { type EmployeePaymentDecType } from "../entity/SALARY/employee_payment";
 export class AllowanceMapper {
 
 	async getAllowanceFE(
+		period_id:number,
 		allowance_with_type: AllowanceWithType
 	): Promise<AllowanceFEType> {
 		const employee_data_service = container.resolve(EmployeeDataService);
 		const ehrService = container.resolve(EHRService);
 		const employee_data =
 			await employee_data_service.getEmployeeDataByEmpNo(
+				period_id,
 				allowance_with_type.emp_no
 			);
 		const payset = (
@@ -50,6 +52,7 @@ export class AllowanceMapper {
 			employee_payment_list.map(async (employee_payment) => {
 				const employee_data =
 					await employee_data_service.getEmployeeDataByEmpNo(
+						period_id,
 						employee_payment.emp_no
 					);
 				const payset = (

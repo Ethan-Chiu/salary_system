@@ -177,27 +177,27 @@ export function initEmployeeBonus(sequelize: Sequelize) {
 			},
 			sup_performance_level_enc: {
 				type: new DataTypes.STRING(128),
-				allowNull: false,
+				allowNull: true,
 			},
 			sup_effective_salary_enc: {
 				type: new DataTypes.STRING(128),
-				allowNull: false,
+				allowNull: true,
 			},
 			sup_amount_enc: {
 				type: new DataTypes.STRING(128),
-				allowNull: false,
+				allowNull: true,
 			},
 			app_performance_level_enc: {
 				type: new DataTypes.STRING(128),
-				allowNull: false,
+				allowNull: true,
 			},
 			app_effective_salary_enc: {
 				type: new DataTypes.STRING(128),
-				allowNull: false,
+				allowNull: true,
 			},
 			app_amount_enc: {
 				type: new DataTypes.STRING(128),
-				allowNull: false,
+				allowNull: true,
 			},
 			disabled: {
 				type: DataTypes.BOOLEAN,

@@ -136,6 +136,9 @@ export class EmployeeTrustMapper extends BaseMapper<
 								)
 						  )
 						: null,
+					creatable: true,
+					updatable: false,
+					deletable: false,
 				};
 
 				return deleteProperties(employeeTrust, [
@@ -172,10 +175,6 @@ export class EmployeeTrustMapper extends BaseMapper<
 				}
 			},
 			reduced
-		);
-		console.log(
-			"\n\n\nmerged_employee_trust_FE_list",
-			merged_employee_trust_FE_list
 		);
 		return merged_employee_trust_FE_list;
 		// return employee_trust_FE_list

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { dateAll, dateCreate, Id } from "./common_type";
+import { dateAll, dateCreate, func, Id } from "./common_type";
 
 const attendanceSettingBase = z.object({
 	overtime_by_local_workers_1: z.number(),
@@ -38,6 +38,7 @@ export const attendanceSettingFE = z
 		id: z.number(),
 	})
 	.merge(attendanceSettingBase)
-	.merge(dateAll);
+	.merge(dateAll)
+	.merge(func);
 
 export type AttendanceSettingFEType = z.infer<typeof attendanceSettingFE>;

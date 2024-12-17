@@ -49,10 +49,10 @@ export const syncRouter = createTRPCRouter({
 		}),
 
 	getPaidEmployees: publicProcedure
-		.input(z.object({ func: FunctionsEnum }))
+		.input(z.object({ func: FunctionsEnum, period_id: z.number() }))
 		.query(async ({ input }) => {
 			const syncService = container.resolve(SyncService);
-			const paidEmployees = await syncService.getPaidEmps(input.func);
+			const paidEmployees = await syncService.getPaidEmps(input.func, input.period_id);
 			return paidEmployees;
 		}),
 });

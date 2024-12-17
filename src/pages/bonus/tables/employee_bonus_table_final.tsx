@@ -8,17 +8,15 @@ import { I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
 import { useContext, useEffect } from "react";
 import dataTableContext from "../components/context/data_table_context";
+import { EmployeeBonusFEType } from "~/server/api/types/employee_bonus_type";
+import { createColumnHelper } from "@tanstack/react-table";
+import { Button } from "~/components/ui/button";
+import { ArrowUpDown } from "lucide-react";
+import { TFunction } from "i18next";
 
-export type RowItem = {
-    emp_no: string,
-    special_multiplier: number,
-    multiplier: number,
-    fixed_amount: number,
-    bud_amount: number,
-    supervisor_amount: number,
-    approved_amount: number,
-};
+export type RowItem = EmployeeBonusFEType;
 type RowItemKey = keyof RowItem;
+const columnHelper = createColumnHelper<RowItem>();
 
 interface EmployeeBonusTableProps extends TableComponentProps {
     period_id: number;
@@ -27,27 +25,58 @@ interface EmployeeBonusTableProps extends TableComponentProps {
     viewOnly?: boolean;
 }
 
-const columns = (t: I18nType) =>
-    [
+const employee_bonus_final_columns = ({ t }: { t: TFunction<[string], undefined> }) => [
+    ...[
+        "department",
         "emp_no",
-        "special_multiplier",
-        "multiplier",
-        "fixed_amount",
+        "emp_name",
+        // "special_multiplier",
+        // "multiplier",
+        // "fixed_amount",
+        "bud_effective_salary",
         "bud_amount",
-        "supervisor_amount",
-        "approved_amount",
-    ].map((key) => {
-        return {
-            accessorKey: key,
-            header: t(`table.${key}`),
-        };
-    });
+        // "sup_performance_level",
+        "sup_effective_salary",
+        "sup_amount",
+        // "app_performance_level",
+        "app_effective_salary",
+        "app_amount",
+    ].map(
+        (key: string) => columnHelper.accessor(key as RowItemKey, {
+            header: ({ column }) => {
+                return (
+                    <div className="flex justify-center">
+                        <div className="text-center font-medium">
+                            <Button
+                                variant="ghost"
+                                onClick={() =>
+                                    column.toggleSorting(
+                                        column.getIsSorted() === "asc"
+                                    )
+                                }
+                            >
+                                {t(`table.${key}`)}
+                                <ArrowUpDown className="ml-2 h-4 w-4" />
+                            </Button>
+                        </div>
+                    </div>
+                );
+            },
+            cell: ({ row }) => {
+                switch (key) {
+                    default:
+                        return <div className="text-center font-medium">{`${row.original[key as RowItemKey] ?? ""}`}</div>
+                }
+            }
+        })),
+]
 
 export function EmployeeBonusTable({ period_id, bonus_type, viewOnly }: EmployeeBonusTableProps) {
+    const { t } = useTranslation(["common"]);
+
     const { isLoading, isError, data, error } =
         api.bonus.getAllEmployeeBonus.useQuery({ period_id, bonus_type });
     const filterKey: RowItemKey = "emp_no";
-    const { t } = useTranslation(["common"]);
     const { setSelectedTableType } = useContext(dataTableContext);
 
     useEffect(() => {
@@ -70,14 +99,14 @@ export function EmployeeBonusTable({ period_id, bonus_type, viewOnly }: Employee
         <>
             {!viewOnly ? (
                 <DataTableWithFunctions
-                    columns={columns(t)}
+                    columns={employee_bonus_final_columns({ t })}
                     data={data!}
                     bonusType={bonus_type}
                     filterColumnKey={filterKey}
                 />
             ) : (
                 <DataTableWithoutFunctions
-                    columns={columns(t)}
+                    columns={employee_bonus_final_columns({ t })}
                     data={data!}
                     filterColumnKey={filterKey}
                 />

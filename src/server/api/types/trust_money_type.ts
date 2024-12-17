@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { dateAll, dateCreate, Id } from "./common_type";
+import { dateAll, dateCreate, func, Id } from "./common_type";
 const TrustMoneyBase = z.object({
 	position: z.number(),
 	position_type: z.string(),
@@ -28,6 +28,7 @@ export const TrustMoneyFE = z
 		id: z.number(),
 	})
 	.merge(TrustMoneyBase)
-	.merge(dateAll);
+	.merge(dateAll)
+	.merge(func);
 
 export type TrustMoneyFEType = z.infer<typeof TrustMoneyFE>;
