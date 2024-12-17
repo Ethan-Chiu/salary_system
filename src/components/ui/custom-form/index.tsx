@@ -1,7 +1,7 @@
 "use client";
 
-import React, { PropsWithChildren } from "react";
-import { z } from "zod";
+import { type PropsWithChildren, type ReactNode } from "react";
+import { type z } from "zod";
 import { Form } from "../form";
 import { useForm } from "react-hook-form";
 
@@ -9,13 +9,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../button";
 import { cn } from "~/lib/utils";
 
-import {
-	ZodObjectOrWrapped,
-} from "./utils";
+import { type ZodObjectOrWrapped } from "./utils";
 import { parseSchema } from "./parser";
 import { AutoFormField } from "./field";
 
-export function AutoFormSubmit({ children }: { children?: React.ReactNode }) {
+export function AutoFormSubmit({ children }: { children?: ReactNode }) {
 	return <Button type="submit">{children ?? "Submit"}</Button>;
 }
 
