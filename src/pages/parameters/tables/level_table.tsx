@@ -34,17 +34,11 @@ const columnHelper = createColumnHelper<RowItem>();
 
 export const level_columns = ({
 	t,
-	period_id,
-	open,
 	setOpen,
-	mode,
 	setMode,
 }: {
 	t: TFunction<[string], undefined>;
-	period_id: number;
-	open: boolean;
 	setOpen: (open: boolean) => void;
-	mode: FunctionMode;
 	setMode: (mode: FunctionMode) => void;
 }) => [
 	...["level", "start_date", "end_date"].map((key: string) =>
@@ -73,7 +67,7 @@ export const level_columns = ({
 					default:
 						return (
 							<div className="text-center font-medium">{`${
-								row.original[key as RowItemKey]
+								row.original[key as RowItemKey]?.toString() 
 							}`}</div>
 						);
 				}
@@ -94,12 +88,10 @@ export const level_columns = ({
 			return (
 				<FunctionsComponent
 					t={t}
-					open={open}
 					setOpen={setOpen}
-					mode={mode}
 					setMode={setMode}
 					functionsItem={row.original.functions}
-				></FunctionsComponent>
+				/>
 			);
 		},
 	}),
@@ -152,10 +144,7 @@ export function LevelTable({ period_id, viewOnly }: LevelTableProps) {
 			<DataTableWithFunctions
 				columns={level_columns({
 					t,
-					period_id,
-					open,
 					setOpen,
-					mode,
 					setMode,
 				})}
 				data={levelMapper(data!)}
@@ -180,10 +169,7 @@ export function LevelTable({ period_id, viewOnly }: LevelTableProps) {
 		<DataTableWithoutFunctions
 			columns={level_columns({
 				t,
-				period_id,
-				open,
 				setOpen,
-				mode,
 				setMode,
 			})}
 			data={levelMapper(data!)}

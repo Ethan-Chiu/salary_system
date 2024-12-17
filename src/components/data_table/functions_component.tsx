@@ -1,17 +1,14 @@
-import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-} from "../ui/dropdown-menu";
-import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
+} from "~/components/ui/dropdown-menu";
+import { SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { PencilLine, PenSquare, Plus, Trash2 } from "lucide-react";
 import { cn } from "~/lib/utils";
-import { PropsWithChildren } from "react";
-import { TFunction } from "i18next";
+import { type TFunction } from "i18next";
 
 export type FunctionsItem = {
 	create: boolean;
@@ -20,21 +17,16 @@ export type FunctionsItem = {
 };
 export type FunctionsItemKey = keyof FunctionsItem;
 
-interface FunctionsComponentProps<TMode> extends PropsWithChildren {
+interface FunctionsComponentProps<TMode> {
 	t: TFunction<[string], undefined>;
-	open: boolean;
 	setOpen: (open: boolean) => void;
-	mode: TMode;
 	setMode: (mode: TMode) => void;
 	functionsItem: FunctionsItem;
 }
 
 export function FunctionsComponent<TMode>({
-	children,
 	t,
-	open,
 	setOpen,
-	mode,
 	setMode,
 	functionsItem,
 }: FunctionsComponentProps<TMode>) {
