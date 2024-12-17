@@ -39,23 +39,6 @@ const ehrDatabaseConfig: DatabaseConfig = {
 	port: 1521,
 };
 
-// const config = {
-// 	user: "SALARY",
-  
-// 	// Get the password from the environment variable
-// 	// NODE_ORACLEDB_PASSWORD.  The password could also be a hard coded
-// 	// string (not recommended), or it could be prompted for.
-// 	// Alternatively use External Authentication so that no password is needed.
-// 	password: "salary",
-  
-// 	// For information on connection strings see:
-// 	// https://node-oracledb.readthedocs.io/en/latest/user_guide/connection_handling.html#connectionstrings
-// 	connectString: "10.4.3.11:1521/flow_utf8",
-  
-// 	// Setting externalAuth is optional.  It defaults to false.  See:
-// 	// https://node-oracledb.readthedocs.io/en/latest/user_guide/connection_handling.html#extauth
-// 	externalAuth:  false,
-//   };
 
 @singleton()
 export class Database {
@@ -67,19 +50,6 @@ export class Database {
 
 	connection: Sequelize;
 	ehr_connection: Sequelize;
-
-	// async initEhrConnection() {
-	// 	console.log("init\n\n\n\n")
-	// 	this.ehr_connection = await oracledb.getConnection(config)
-
-	// 	console.log("here\n\n\n\n")
-
-	// 	const sql = "SELECT * FROM SYSTEM.U_HR_PERIOD_V";
-
-	// 	const result = await this.ehr_connection.execute(sql);
-
-	// 	console.log(result)
-	// }
 
 	initDatabaseConnection(config: DatabaseConfig) {
 		if (process.env.NODE_ENV == "development") {

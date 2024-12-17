@@ -13,6 +13,7 @@ import { CalculateService } from "~/server/service/calculate_service";
 import { OvertimeMapper } from "~/server/database/mapper/overtime_mapper";
 import { HolidayMapper } from "~/server/database/mapper/holiday_mapper";
 import { PaysetMapper } from "~/server/database/mapper/payset_mapper";
+import { AllowanceFEType } from "../types/allowance_type";
 
 export const functionRouter = createTRPCRouter({
 	getPeriod: publicProcedure.query(async () => {
@@ -42,12 +43,14 @@ export const functionRouter = createTRPCRouter({
 		.query(async ({ input }) => {
 			const holiday_mapper = container.resolve(HolidayMapper);
 			const ehrService = container.resolve(EHRService);
-			const holiday_list =
-				await ehrService.getHolidayByEmpNoList(
-					input.period_id,
-					input.emp_no_list
-				);
-			return await holiday_mapper.getHolidayFE(input.period_id, holiday_list);
+			const holiday_list = await ehrService.getHolidayByEmpNoList(
+				input.period_id,
+				input.emp_no_list
+			);
+			return await holiday_mapper.getHolidayFE(
+				input.period_id,
+				holiday_list
+			);
 		}),
 
 	getOvertimeByEmpNoList: publicProcedure
@@ -67,7 +70,10 @@ export const functionRouter = createTRPCRouter({
 				input.pay_type
 			);
 
-			return await overtime_mapper.getOvertimeFE(input.period_id, overtime);
+			return await overtime_mapper.getOvertimeFE(
+				input.period_id,
+				overtime
+			);
 		}),
 
 	getPaysetByEmpNoList: publicProcedure
@@ -194,24 +200,30 @@ export const functionRouter = createTRPCRouter({
 					input.period_id,
 					input.emp_no_list
 				);
-			const Promisises = input.emp_no_list.map(async (emp_no) => {
-				const employeePayment =
-					await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
-						emp_no,
-						input.period_id
-					);
-				if (employeePayment === null) {
-					throw new BaseResponseError(
-						"EmployeePayment does not exist"
-					);
-				}
-				return employeePayment;
-			});
-			const employee_payment_list = await Promise.all(Promisises);
-			const allowanceFE_list: any = [];
+
+			const employee_payment_list = await Promise.all(
+				input.emp_no_list.map(async (emp_no) => {
+					const employeePayment =
+						await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
+							emp_no,
+							input.period_id
+						);
+					if (employeePayment === null) {
+						throw new BaseResponseError(
+							"EmployeePayment does not exist"
+						);
+					}
+					return employeePayment;
+				})
+			);
+
+			const allowanceFE_list: AllowanceFEType[] = [];
 			const promises = allowance_with_type_list.map(async (allowance) => {
 				allowanceFE_list.push(
-					await allowance_mapper.getAllowanceFE(input.period_id,allowance)
+					await allowance_mapper.getAllowanceFE(
+						input.period_id,
+						allowance
+					)
 				);
 			});
 			await Promise.all(promises);
@@ -245,12 +257,3 @@ export const functionRouter = createTRPCRouter({
 	}),
 });
 
-function filterZero(object_list: any) {
-	const exclusion = ["emp_no", "emp_name", "department", "position", "work_day"];
-
-	return object_list.filter((object: any) => {
-		return Object.keys(object)
-			.filter(key => !exclusion.includes(key))
-			.reduce((acc, key) => acc + object[key], 0) == 0;
-	});
-}
