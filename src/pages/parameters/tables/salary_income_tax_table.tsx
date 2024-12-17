@@ -18,6 +18,7 @@ import ParameterToolbarFunctionsProvider from "../components/function_sheet/para
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { salaryIncomeTaxSchema } from "../schemas/configurations/salary_income_tax_schema";
+import { Sheet, SheetContent } from "~/components/ui/sheet";
 
 export type RowItem = {
 	salary_start: number;
@@ -73,21 +74,12 @@ export const salary_income_tax_columns = ({ t, period_id, open, setOpen, mode, s
 		},
 		cell: ({ row }) => {
 			return (
-				<FunctionsComponent t={t} open={open} setOpen={setOpen} mode={mode} setMode={setMode} functionsItem={row.original.functions} >
-					<ParameterToolbarFunctionsProvider
-						selectedTableType={"TableBankSetting"}
-						period_id={period_id}
-					>
-						<ScrollArea className="h-full w-full">
-							<ParameterForm
-								formSchema={salaryIncomeTaxSchema}
-								mode={mode}
-								closeSheet={() => setOpen(false)}
-							/>
-						</ScrollArea>
-						<ScrollBar orientation="horizontal" />
-					</ParameterToolbarFunctionsProvider>
-				</FunctionsComponent>
+				<FunctionsComponent
+					t={t}
+					setOpen={setOpen}
+					setMode={setMode}
+					functionsItem={row.original.functions}
+				/>
 			);
 		},
 	}),
@@ -146,21 +138,33 @@ export function SalaryIncomeTaxTable({ viewOnly, period_id }: SalaryIncomeTaxTab
 		);
 	}
 
-	return (
-		<>
-			{!viewOnly ? (
-				<DataTableWithFunctions
-					columns={salary_income_tax_columns({ t, period_id, open, setOpen, mode, setMode })}
-					data={salaryIncomeTaxMapper(data!)}
-					filterColumnKey={filterKey}
-				/>
-			) : (
-				<DataTableWithoutFunctions
-					columns={salary_income_tax_columns({ t, period_id, open, setOpen, mode, setMode })}
-					data={salaryIncomeTaxMapper(data!)}
-					filterColumnKey={filterKey}
-				/>
-			)}
-		</>
-	);
+	return !viewOnly ? (
+		<Sheet open={open} onOpenChange={setOpen}>
+			<DataTableWithFunctions
+				columns={salary_income_tax_columns({ t, period_id, open, setOpen, mode, setMode })}
+				data={salaryIncomeTaxMapper(data!)}
+				filterColumnKey={filterKey}
+			/>
+			<SheetContent className="w-[50%] px-12 py-6">
+				<ScrollArea className="h-full w-full">
+					<ParameterToolbarFunctionsProvider
+						selectedTableType={"TableSalaryIncomeTax"}
+						period_id={period_id}
+					>
+						<ParameterForm
+							formSchema={salaryIncomeTaxSchema}
+							mode={mode}
+							closeSheet={() => setOpen(false)}
+						/>
+					</ParameterToolbarFunctionsProvider>
+				</ScrollArea>
+			</SheetContent>
+		</Sheet>
+	) : (
+		<DataTableWithoutFunctions
+			columns={salary_income_tax_columns({ t, period_id, open, setOpen, mode, setMode })}
+			data={salaryIncomeTaxMapper(data!)}
+			filterColumnKey={filterKey}
+		/>
+	)
 }

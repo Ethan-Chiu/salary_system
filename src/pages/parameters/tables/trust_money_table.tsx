@@ -18,6 +18,7 @@ import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { useState } from "react";
 import { FunctionMode } from "../components/function_sheet/data_table_functions";
 import { trustMoneySchema } from "../schemas/configurations/trust_money_schema";
+import { Sheet, SheetContent } from "~/components/ui/sheet";
 
 export type RowItem = {
 	position: number;
@@ -32,7 +33,7 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-export const trust_money_columns = ({ t, period_id, open, setOpen, mode, setMode }: { t: TFunction<[string], undefined>, period_id: number, open: boolean, setOpen: (open: boolean) => void, mode: FunctionMode, setMode: (mode: FunctionMode) => void }) => [
+export const trust_money_columns = ({ t, setOpen, setMode }: { t: TFunction<[string], undefined>, setOpen: (open: boolean) => void, setMode: (mode: FunctionMode) => void }) => [
 	...["position", "position_type", "org_trust_reserve_limit", "org_special_trust_incent_limit", "start_date", "end_date"].map(
 		(key: string) => columnHelper.accessor(key as RowItemKey, {
 			header: ({ column }) => {
@@ -73,21 +74,12 @@ export const trust_money_columns = ({ t, period_id, open, setOpen, mode, setMode
 		},
 		cell: ({ row }) => {
 			return (
-				<FunctionsComponent t={t} open={open} setOpen={setOpen} mode={mode} setMode={setMode} functionsItem={row.original.functions} >
-					<ParameterToolbarFunctionsProvider
-						selectedTableType={"TableBankSetting"}
-						period_id={period_id}
-					>
-						<ScrollArea className="h-full w-full">
-							<ParameterForm
-								formSchema={trustMoneySchema}
-								mode={mode}
-								closeSheet={() => setOpen(false)}
-							/>
-						</ScrollArea>
-						<ScrollBar orientation="horizontal" />
-					</ParameterToolbarFunctionsProvider>
-				</FunctionsComponent>
+				<FunctionsComponent
+					t={t}
+					setOpen={setOpen}
+					setMode={setMode}
+					functionsItem={row.original.functions}
+				/>
 			);
 		},
 	}),
@@ -137,21 +129,33 @@ export function TrustMoneyTable({ period_id, viewOnly }: TrustMoneyTableProps) {
 		return emptyError ? <EmptyTable err_msg={err_msg} selectedTableType="TableTrustMoney" /> : <></>;
 	}
 
-	return (
-		<>
-			{!viewOnly ? (
-				<DataTableWithFunctions
-					columns={trust_money_columns({ t, period_id, open, setOpen, mode, setMode })}
-					data={trustMoneyMapper(data!)}
-					filterColumnKey={filterKey}
-				/>
-			) : (
-				<DataTableWithoutFunctions
-					columns={trust_money_columns({ t, period_id, open, setOpen, mode, setMode })}
-					data={trustMoneyMapper(data!)}
-					filterColumnKey={filterKey}
-				/>
-			)}
-		</>
-	);
+	return !viewOnly ? (
+		<Sheet open={open} onOpenChange={setOpen}>
+			<DataTableWithFunctions
+				columns={trust_money_columns({ t, setOpen, setMode })}
+				data={trustMoneyMapper(data!)}
+				filterColumnKey={filterKey}
+			/>
+			<SheetContent className="w-[50%] px-12 py-6">
+				<ScrollArea className="h-full w-full">
+					<ParameterToolbarFunctionsProvider
+						selectedTableType={"TableTrustMoney"}
+						period_id={period_id}
+					>
+						<ParameterForm
+							formSchema={trustMoneySchema}
+							mode={mode}
+							closeSheet={() => setOpen(false)}
+						/>
+					</ParameterToolbarFunctionsProvider>
+				</ScrollArea>
+			</SheetContent>
+		</Sheet>
+	) : (
+		<DataTableWithoutFunctions
+			columns={trust_money_columns({ t, setOpen, setMode })}
+			data={trustMoneyMapper(data!)}
+			filterColumnKey={filterKey}
+		/>
+	)
 }
