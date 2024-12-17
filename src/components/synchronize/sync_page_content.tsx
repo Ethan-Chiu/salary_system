@@ -17,7 +17,7 @@ import {
 	CardTitle,
 } from "~/components/ui/card";
 import { useTranslation } from "next-i18next";
-import { EmployeeDataChangeTable } from "./emp_data_table_all";
+import { EmployeeDataChangeTable } from "./emp_data_change_table";
 import {
 	Select,
 	SelectContent,
@@ -220,10 +220,28 @@ export function SyncPageContent({ data }: { data: SyncData[] }) {
 						setDataWithStatus((prevData) => {
 							return prevData.map((employee) => {
 								if (employee.emp_no === emp_no) {
+									const selected = employee.comparisons.some(
+										(c) => c.check_status === "checked"
+									);
+									const newEmployee = employee.comparisons.every(
+										(c) => c.salary_value === undefined
+									);
 									return {
 										...employee,
 										comparisons: employee.comparisons.map((comparison) => {
-											if (comparison.key === key) {
+											if (key === undefined) {
+												return {
+													...comparison,
+													check_status: selected ? "initial" : "checked"
+												};
+											}
+											if (newEmployee) {
+												return {
+													...comparison,
+													check_status: checked ? "checked" : "initial"
+												};
+											}
+											else if (comparison.key === key) {
 												return {
 													...comparison,
 													check_status: checked ? "checked" : "initial"

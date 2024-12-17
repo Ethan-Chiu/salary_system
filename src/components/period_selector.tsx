@@ -16,9 +16,10 @@ import { Button } from "./ui/button";
 import { DialogClose } from "./ui/dialog";
 import { type Period } from "~/server/database/entity/UMEDIA/period";
 import { useTranslation } from "react-i18next";
-import { ScrollArea } from "./ui/scroll-area";
 
 export default function PeriodSelector() {
+	const { t } = useTranslation('common')
+
 	const getPeriod = api.function.getPeriod.useQuery();
 	const {
 		selectedPeriod,
@@ -34,7 +35,9 @@ export default function PeriodSelector() {
 		selectedPayDate ?? null
 	);
 
-	const { t } = useTranslation('common')
+	if (getPeriod.isLoading) {
+		return <></>;
+	}
 
 	return (
 		<div className="flex flex-col items-center">
@@ -59,10 +62,9 @@ export default function PeriodSelector() {
 								<SelectTrigger className="w-full">
 									<SelectValue placeholder={t("others.select_period")} />
 								</SelectTrigger>
-								<SelectContent>
+								<SelectContent className="h-[20em]">
 									<SelectGroup>
 										<SelectLabel>{t('others.period')}</SelectLabel>
-										<ScrollArea className="h-40">
 										{getPeriod.data!.map((period_info) => {
 											const original_name = period_info.period_name
 											return (
@@ -78,7 +80,6 @@ export default function PeriodSelector() {
 												</SelectItem>
 											);
 										})}
-										</ScrollArea>
 									</SelectGroup>
 								</SelectContent>
 							</Select>
