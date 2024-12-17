@@ -8,7 +8,10 @@ import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { formatDate } from "~/lib/utils/format_date";
 import { LevelFEType } from "~/server/api/types/level_type";
-import { FunctionsComponent, FunctionsItem } from "~/components/data_table/functions_component";
+import {
+	FunctionsComponent,
+	FunctionsItem,
+} from "~/components/data_table/functions_component";
 import { TFunction } from "i18next";
 import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
@@ -17,6 +20,7 @@ import { levelSchema } from "../schemas/configurations/level_schema";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { FunctionMode } from "../components/function_sheet/data_table_functions";
+import { Sheet, SheetContent } from "~/components/ui/sheet";
 
 export type RowItem = {
 	level: number;
@@ -28,7 +32,21 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-export const level_columns = ({ t, period_id, open, setOpen, mode, setMode }: { t: TFunction<[string], undefined>, period_id: number, open: boolean, setOpen: (open: boolean) => void, mode: FunctionMode, setMode: (mode: FunctionMode) => void }) => [
+export const level_columns = ({
+	t,
+	period_id,
+	open,
+	setOpen,
+	mode,
+	setMode,
+}: {
+	t: TFunction<[string], undefined>;
+	period_id: number;
+	open: boolean;
+	setOpen: (open: boolean) => void;
+	mode: FunctionMode;
+	setMode: (mode: FunctionMode) => void;
+}) => [
 	...["level", "start_date", "end_date"].map((key: string) =>
 		columnHelper.accessor(key as RowItemKey, {
 			header: ({ column }) => {
@@ -53,10 +71,15 @@ export const level_columns = ({ t, period_id, open, setOpen, mode, setMode }: { 
 			cell: ({ row }) => {
 				switch (key) {
 					default:
-						return <div className="text-center font-medium">{`${row.original[key as RowItemKey]}`}</div>
+						return (
+							<div className="text-center font-medium">{`${
+								row.original[key as RowItemKey]
+							}`}</div>
+						);
 				}
-			}
-		})),
+			},
+		})
+	),
 	columnHelper.accessor("functions", {
 		header: ({ column }) => {
 			return (
@@ -69,21 +92,14 @@ export const level_columns = ({ t, period_id, open, setOpen, mode, setMode }: { 
 		},
 		cell: ({ row }) => {
 			return (
-				<FunctionsComponent t={t} open={open} setOpen={setOpen} mode={mode} setMode={setMode} functionsItem={row.original.functions} >
-					<ParameterToolbarFunctionsProvider
-						selectedTableType={"TableBankSetting"}
-						period_id={period_id}
-					>
-						<ScrollArea className="h-full w-full">
-							<ParameterForm
-								formSchema={levelSchema}
-								mode={mode}
-								closeSheet={() => setOpen(false)}
-							/>
-						</ScrollArea>
-						<ScrollBar orientation="horizontal" />
-					</ParameterToolbarFunctionsProvider>
-				</FunctionsComponent>
+				<FunctionsComponent
+					t={t}
+					open={open}
+					setOpen={setOpen}
+					mode={mode}
+					setMode={setMode}
+					functionsItem={row.original.functions}
+				></FunctionsComponent>
 			);
 		},
 	}),
@@ -95,7 +111,11 @@ export function levelMapper(levelData: LevelFEType[]): RowItem[] {
 			level: d.level,
 			start_date: formatDate("day", d.start_date) ?? "",
 			end_date: formatDate("day", d.end_date) ?? "",
-			functions: { create: d.creatable, update: d.updatable, delete: d.deletable }
+			functions: {
+				create: d.creatable,
+				update: d.updatable,
+				delete: d.deletable,
+			},
 		};
 	});
 }
@@ -127,21 +147,47 @@ export function LevelTable({ period_id, viewOnly }: LevelTableProps) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-	return (
-		<>
-			{!viewOnly ? (
-				<DataTableWithFunctions
-					columns={level_columns({ t, period_id, open, setOpen, mode, setMode })}
-					data={levelMapper(data!)}
-					filterColumnKey={filterKey}
-				/>
-			) : (
-				<DataTableWithoutFunctions
-					columns={level_columns({ t, period_id, open, setOpen, mode, setMode })}
-					data={levelMapper(data!)}
-					filterColumnKey={filterKey}
-				/>
-			)}
-		</>
+	return !viewOnly ? (
+		<Sheet open={open} onOpenChange={setOpen}>
+			<DataTableWithFunctions
+				columns={level_columns({
+					t,
+					period_id,
+					open,
+					setOpen,
+					mode,
+					setMode,
+				})}
+				data={levelMapper(data!)}
+				filterColumnKey={filterKey}
+			/>
+			<SheetContent className="w-[50%] px-12 py-6">
+				<ScrollArea className="h-full w-full">
+					<ParameterToolbarFunctionsProvider
+						selectedTableType={"TableBankSetting"}
+						period_id={period_id}
+					>
+						<ParameterForm
+							formSchema={levelSchema}
+							mode={mode}
+							closeSheet={() => setOpen(false)}
+						/>
+					</ParameterToolbarFunctionsProvider>
+				</ScrollArea>
+			</SheetContent>
+		</Sheet>
+	) : (
+		<DataTableWithoutFunctions
+			columns={level_columns({
+				t,
+				period_id,
+				open,
+				setOpen,
+				mode,
+				setMode,
+			})}
+			data={levelMapper(data!)}
+			filterColumnKey={filterKey}
+		/>
 	);
 }

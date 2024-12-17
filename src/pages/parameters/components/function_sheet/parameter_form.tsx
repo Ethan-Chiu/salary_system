@@ -69,10 +69,10 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	const { t } = useTranslation(["common"]);
 	const functions = useContext(parameterToolbarFunctionsContext);
 
-	const updateFunction = functions.updateFunction!;
-	const batchCreateFunction = functions.batchCreateFunction!;
 	const createFunction = functions.createFunction!;
+	const updateFunction = functions.updateFunction!;
 	const deleteFunction = functions.deleteFunction!;
+	const batchCreateFunction = functions.batchCreateFunction!;
 
 	const [openDialog, setOpenDialog] = useState(false);
 
@@ -85,7 +85,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	});
 
 	const onSubmit = useCallback(
-		async (data: z.infer<typeof LoginFormSchema>) => {
+		async (data: z.infer<typeof formSchema>) => {
 			if (mode === "create") {
 				createFunction.mutate(data);
 			} else if (mode === "update") {
@@ -101,7 +101,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 
 	return (
 		<>
-			<CustomForm formSchema={LoginFormSchema} onSubmit={onSubmit}>
+			<CustomForm formSchema={formSchema} onSubmit={void onSubmit}>
 				<Button
 					type="button"
 					variant={"outline"}

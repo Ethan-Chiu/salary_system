@@ -83,7 +83,7 @@ export default function CustomForm<SchemaType extends ZodObjectOrWrapped>({
 						onParsedValuesChange?.(parsedValues.data);
 					}
 				}}
-				className={cn("space-y-5", className)}
+				className={cn("space-y-5 p-2", className)}
 				id="parameter_form"
 			>
 				{parsedSchema.fields.map((field) => (

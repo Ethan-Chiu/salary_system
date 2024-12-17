@@ -1,9 +1,6 @@
 import React from "react";
 import { useFormContext } from "react-hook-form";
-/* import { useAutoForm } from "./context"; */
-/* import { ObjectField } from "./ObjectField"; */
-/* import { ArrayField } from "./ArrayField"; */
-import { FormFieldProps, ParsedField } from "./types";
+import { type FormFieldProps, type ParsedField } from "./types";
 import { getLabel, getPathInObject } from "./utils";
 import { FieldWrapper } from "./field-wrapper";
 import { ErrorMessage } from "./field-error-message";
