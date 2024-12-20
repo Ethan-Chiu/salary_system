@@ -39,7 +39,7 @@ import {
 	createTrustMoneyAPI,
 	updateTrustMoneyAPI,
 } from "../types/trust_money_type";
-import { createLevelAPI, updateLevelAPI } from "../types/level_type";
+import { batchCreateLevelAPI, createLevelAPI, updateLevelAPI } from "../types/level_type";
 import {
 	batchCreateSalaryIncomeTaxAPI,
 	createSalaryIncomeTaxAPI,
@@ -397,7 +397,15 @@ export const parametersRouter = createTRPCRouter({
 			await levelService.rescheduleLevel();
 			return newdata;
 		}),
-
+	batchCreateLevel: publicProcedure
+		.input(batchCreateLevelAPI)
+		.mutation(async ({ input }) => {
+			const levelService = container.resolve(LevelService);
+			const new_input = input.map((e) => ({ ...e, end_date: null }));
+			const newdata = await levelService.batchCreateLevel(new_input);
+			await levelService.rescheduleLevel();
+			return newdata;
+		}),
 	getCurrentLevel: publicProcedure
 		.input(z.object({ period_id: z.number() }))
 		.query(async ({ input }) => {
@@ -437,7 +445,27 @@ export const parametersRouter = createTRPCRouter({
 		}
 		return levelFE;
 	}),
-
+	getAllLevelByStartDate: publicProcedure
+		.input(z.object({ start_date: z.date() }))
+		.query(async ({ input }) => {
+			const levelService = container.resolve(LevelService);
+			const level = await levelService.getAllLevelByStartDate(input.start_date);
+			const levelFE = await Promise.all(
+				level.map(async (l) => {
+					return {
+						...l,
+						creatable: true,
+						updatable: l.start_date > new Date(),
+						deletable: l.start_date > new Date(),
+					};
+				})
+			);
+			if (level == null) {
+				throw new BaseResponseError("Level does not exist");
+			}
+			return levelFE;
+		}),
+		
 	getAllFutureLevel: publicProcedure.query(async () => {
 		const levelService = container.resolve(LevelService);
 		const level = await levelService.getAllFutureLevel();
