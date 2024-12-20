@@ -1,5 +1,5 @@
 import React, { useState, type PropsWithChildren } from "react";
-import dataTableContext from "./data_table_context";
+import dataTableContext, { FunctionMode } from "./data_table_context";
 import {
 	type ParameterTableEnum,
 	ParameterTableEnumValues,
@@ -7,7 +7,7 @@ import {
 import { TabsEnum, type TabsEnumType } from "./tabs_enum";
 import { type Table } from "@tanstack/react-table";
 
-interface DataTableContextProviderProps {}
+interface DataTableContextProviderProps { }
 
 export type TableObject = {
 	table: Table<any>;
@@ -16,14 +16,16 @@ export type TableObject = {
 export default function DataTableContextProvider({
 	children,
 }: PropsWithChildren<DataTableContextProviderProps>) {
-	const [selectedTableType, setSelectedTableType] =
-		useState<ParameterTableEnum>(ParameterTableEnumValues[0]);
-	const [selectedTab, setSelectedTab] = useState<TabsEnumType>(
-		TabsEnum.Enum.current
-	);
-	const [selectedTable, setSelectedTable] = useState<TableObject | null>(
-		null
-	);
+	const [selectedTableType, setSelectedTableType] = useState<ParameterTableEnum>(ParameterTableEnumValues[0]);
+	const [selectedTab, setSelectedTab] = useState<TabsEnumType>(TabsEnum.Enum.current);
+	const [selectedTable, setSelectedTable] = useState<TableObject | null>(null);
+	const [open, setOpen] = useState<boolean>(false);
+	const [mode, setMode] = useState<FunctionMode>("none");
+	const [functionsItem, setFunctionsItem] = useState<{ create: boolean; update: boolean; delete: boolean }>({
+		create: false,
+		update: false,
+		delete: false,
+	});
 
 	return (
 		<dataTableContext.Provider
@@ -34,6 +36,12 @@ export default function DataTableContextProvider({
 				setSelectedTab,
 				selectedTable,
 				setSelectedTable,
+				mode,
+				setMode,
+				open,
+				setOpen,
+				functionsItem,
+				setFunctionsItem,
 			}}
 		>
 			{children}
