@@ -31,16 +31,18 @@ export default function CalendarAddEvent() {
 				resetMouse();
 			}}
 		>
-			<SheetContent className="w-[50%]">
-				<SheetHeader>
-					<SheetTitle>
-						{`${t(`button.${mode}`)!}${t("button.form")} (${t(getTableNameKey(selectedTableType))})`}
-					</SheetTitle>
-					<SheetDescription>
-						{modeDescription(t, mode)}
-					</SheetDescription>
-				</SheetHeader>
-				<ScrollArea className="h-[85%] w-full">
+			<SheetContent className="w-[50%] px-12 py-6">
+				<ScrollArea className="h-full w-full">
+					<SheetHeader>
+						<SheetTitle>
+							{`${t(`button.${mode}`)!}${t("button.form")} (${t(
+								getTableNameKey(selectedTableType)
+							)})`}
+						</SheetTitle>
+						<SheetDescription>
+							{modeDescription(t, mode)}
+						</SheetDescription>
+					</SheetHeader>
 					<ParameterForm
 						formSchema={getSchema(selectedTableType)!}
 						mode={mode}
@@ -48,24 +50,17 @@ export default function CalendarAddEvent() {
 							setOpenSheet(false);
 							resetMouse();
 						}}
-						defaultValue={
-							{
-								start_date: mouseDownDate
-									? new Date(
-										mouseDownDate.format(
-											"YYYY-MM-DD"
-										)
-									)
-									: undefined,
-								end_date: mouseUpDate
-									? (new Date(
+						defaultValue={{
+							start_date: mouseDownDate
+								? new Date(mouseDownDate.format("YYYY-MM-DD"))
+								: undefined,
+							end_date: mouseUpDate
+								? (new Date(
 										mouseUpDate.format("YYYY-MM-DD")
-									) as any)
-									: undefined,
-							}
-						}
+								  ) as any)
+								: undefined,
+						}}
 					/>
-					<ScrollBar orientation="horizontal" />
 				</ScrollArea>
 			</SheetContent>
 		</Sheet>
