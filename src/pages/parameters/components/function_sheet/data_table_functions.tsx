@@ -152,7 +152,9 @@ export function DataTableFunctions({
 							/>
 						:
 						mode == "excel_upload" ?
-							<ExcelUpload />
+							<ExcelUpload 
+								closeDialog={() => setOpen(false)}
+							/>
 						:
 						<ScrollArea className="h-full w-full">
 							<ParameterForm

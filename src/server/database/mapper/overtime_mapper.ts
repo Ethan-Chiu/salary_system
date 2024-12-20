@@ -21,7 +21,7 @@ export class OvertimeMapper {
 		const OvertimeFE_list = await Promise.all(
 			overtime_list.map(async (overtime) => {
 				const employee_data =
-					await this.employeeDataService.getEmployeeDataByEmpNo(
+					await this.employeeDataService.getEmployeeDataByEmpNoByPeriod(
 						period_id,
 						overtime.emp_no
 					);

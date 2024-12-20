@@ -173,6 +173,13 @@ export default function ParameterToolbarFunctionsProvider({
 			ctx.parameters.getAllFutureLevel.invalidate();
 		},
 	});
+	const batchCreateLevel = api.parameters.batchCreateLevel.useMutation({
+		onSuccess: () => {
+			ctx.parameters.getCurrentLevel.invalidate();
+			ctx.parameters.getAllLevel.invalidate();
+			ctx.parameters.getAllFutureLevel.invalidate();
+		}
+	})
 	const deleteLevel = api.parameters.deleteLevel.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentLevel.invalidate();
@@ -282,7 +289,7 @@ export default function ParameterToolbarFunctionsProvider({
 			updateFunction: updateLevel,
 			createFunction: createLevel,
 			deleteFunction: deleteLevel,
-			batchCreateFunction: undefined,
+			batchCreateFunction: batchCreateLevel,
 		},
 		TableLevelRange: {
 			queryCurrentFunction: getCurrentLevelRange,

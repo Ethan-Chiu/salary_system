@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import { Label } from "~/components/ui/label";
 import { ParsedField, Renderable } from "./types";
+import { useTranslation } from "react-i18next";
 
 const DISABLED_LABELS = ["boolean", "object", "array"];
 
@@ -19,13 +20,14 @@ export function FieldWrapper({
   field,
   error,
 }: FieldWrapperProps) {
+  const { t } = useTranslation();
   const isDisabled = DISABLED_LABELS.includes(field.type);
 
   return (
     <div className="space-y-2">
       {!isDisabled && (
         <Label htmlFor={id}>
-          {label}
+          {t(`table.${label}`)}
           {field.required && <span className="text-destructive"> *</span>}
         </Label>
       )}

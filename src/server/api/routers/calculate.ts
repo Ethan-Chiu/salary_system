@@ -33,7 +33,7 @@ export const calculateRouter = createTRPCRouter({
 			);
 			const ehrService = container.resolve(EHRService);
 			const employee_data =
-				await employeeDataService.getEmployeeDataByEmpNo(input.period_id,input.emp_no);
+				await employeeDataService.getEmployeeDataByEmpNoByPeriod(input.period_id,input.emp_no);
 			const employee_payment =
 				await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
 					input.emp_no,
@@ -96,7 +96,7 @@ export const calculateRouter = createTRPCRouter({
 			);
 			const ehrService = container.resolve(EHRService);
 			const employee_data =
-				await employeeDataService.getEmployeeDataByEmpNo(input.emp_no);
+				await employeeDataService.getEmployeeDataByEmpNoByPeriod(input.emp_no);
 			const employee_payment =
 				await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
 					input.emp_no,
@@ -158,7 +158,7 @@ export const calculateRouter = createTRPCRouter({
 			);
 			const ehrService = container.resolve(EHRService);
 			const employee_data =
-				await employeeDataService.getEmployeeDataByEmpNo(input.emp_no);
+				await employeeDataService.getEmployeeDataByEmpNoByPeriod(input.emp_no);
 			const employee_payment =
 				await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
 					input.emp_no,
@@ -243,7 +243,7 @@ export const calculateRouter = createTRPCRouter({
 		.query(async ({ input }) => {
 			const calculateService = container.resolve(CalculateService);
 			const employeeDataService = container.resolve(EmployeeDataService);
-			const employee_data = await employeeDataService.getEmployeeDataByEmpNo(
+			const employee_data = await employeeDataService.getEmployeeDataByEmpNoByPeriod(
 				input.emp_no
 			);
 			const employeePaymentService = container.resolve(
@@ -286,7 +286,7 @@ export const calculateRouter = createTRPCRouter({
 		.query(async ({ input }) => {
 			const calculateService = container.resolve(CalculateService);
 			const employeeDataService = container.resolve(EmployeeDataService);
-			const employee_data = await employeeDataService.getEmployeeDataByEmpNo(
+			const employee_data = await employeeDataService.getEmployeeDataByEmpNoByPeriod(
 				input.emp_no
 			)
 			const employeePaymentService = container.resolve(
@@ -332,7 +332,7 @@ export const calculateRouter = createTRPCRouter({
 				EmployeePaymentService
 			);
 			const employee_data =
-				await employeeDataService.getEmployeeDataByEmpNo(input.emp_no);
+				await employeeDataService.getEmployeeDataByEmpNoByPeriod(input.emp_no);
 			const employee_payment =
 				await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
 					input.emp_no,
@@ -375,7 +375,7 @@ export const calculateRouter = createTRPCRouter({
 			const ehrService = container.resolve(EHRService);
 			const holidaysTypeService = container.resolve(HolidaysTypeService);
 			const employee_data =
-				await employeeDataService.getEmployeeDataByEmpNo(input.emp_no);
+				await employeeDataService.getEmployeeDataByEmpNoByPeriod(input.emp_no);
 			const employee_payment =
 				await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
 					input.emp_no,

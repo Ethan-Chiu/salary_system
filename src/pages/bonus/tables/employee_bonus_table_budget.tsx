@@ -141,7 +141,7 @@ export function EmployeeBonusTable({ period_id, bonus_type, viewOnly }: Employee
         initFunction.mutate({ period_id, bonus_type });
     }, []);
 
-    if (isLoading) {
+    if (initFunction.isPending || isLoading) {
         return (
             <div className="flex grow items-center justify-center">
                 <LoadingSpinner />

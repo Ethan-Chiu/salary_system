@@ -353,7 +353,11 @@ export function recoverData(data: any): Record<string, any>[] {
 	return mappedData;
 }
 
-export function ExcelUpload() {
+export function ExcelUpload({
+    closeDialog
+}: {
+    closeDialog: () => void
+}) {
 
     const functions = useContext(parameterToolbarFunctionsContext);
     const batchCreateFunction = functions.batchCreateFunction!;
@@ -455,8 +459,9 @@ export function ExcelUpload() {
 						<Button
                             className="ml-auto"
                             onClick={() => {
-                                batchCreateFunction.mutate(recoverData(data.map((d) => d.slice(1))))
                                 console.log(recoverData(data.map((d) => d.slice(1))))
+                                // batchCreateFunction.mutate(recoverData(data.map((d) => d.slice(1))))
+                                // closeDialog();
                             }}>
 							{t("button.excel_upload")}
 						</Button>

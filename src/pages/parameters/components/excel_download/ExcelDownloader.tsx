@@ -45,7 +45,7 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 
 	// MARK: Excel Download Function
 	const handleExportExcel = async (
-		datas: string[][],
+		datas: any[][],
 		filename: string,
 		Translate: (key: string) => string
 	) => {
@@ -76,7 +76,7 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 			);
 			try {
 				if (!datas) return;
-				datas.map((row: string[], i: number) => {
+				datas.map((row: any[], i: number) => {
 					if (i === 0) {
 						worksheet.addRow(
 							row.map((header: string) =>
@@ -84,7 +84,7 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 							)
 						);
 					} else {
-						worksheet.addRow(row.map((content: string) => content));
+						worksheet.addRow(row);
 					}
 
 					worksheet.columns = (datas[0] ?? []).map(() => ({
@@ -94,7 +94,7 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 			} catch {}
 
 			if (datas)
-				datas.forEach((row: string[], ri: number) => {
+				datas.forEach((row: any[], ri: number) => {
 					row.forEach((cellProps: string, ci: number) => {
 						const cellName = getCellName(ri, ci);
 						const cell = worksheet.getCell(cellName);
