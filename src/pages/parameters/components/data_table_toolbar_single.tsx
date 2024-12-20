@@ -78,7 +78,7 @@ export function DataTableToolbar<TData>({
 							period_id={selectedPeriod.period_id}
 						>
 							<div className="flex">
-								<DataTableFunctionsSingle tableType={selectedTableType} />
+								<DataTableFunctionsSingle/>
 								<DataTableFunctions tableType={selectedTableType} />
 							</div>
 							{/* {selectedTab === TabsEnum.Enum.calendar && (

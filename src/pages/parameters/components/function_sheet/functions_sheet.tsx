@@ -31,15 +31,15 @@ export function FunctionsSheet({
         <Sheet open={open} onOpenChange={setOpen}>
             {children}
             <SheetContent className="w-[50%] px-12 py-6">
-                <SheetHeader>
-                    <SheetTitle>
-                        {`${t(`button.${mode}`)!}${t("button.form")} (${t(`${getTableNameKey(selectedTableType)}`)})`}
-                    </SheetTitle>
-                    <SheetDescription>
-                        {modeDescription(t, mode as string)}
-                    </SheetDescription>
-                </SheetHeader>
                 <ScrollArea className="h-full w-full">
+                    <SheetHeader>
+                        <SheetTitle>
+                            {`${t(`button.${mode}`)!}${t("button.form")} (${t(`${getTableNameKey(selectedTableType)}`)})`}
+                        </SheetTitle>
+                        <SheetDescription>
+                            {modeDescription(t, mode as string)}
+                        </SheetDescription>
+                    </SheetHeader>
                     <ParameterToolbarFunctionsProvider
                         selectedTableType={selectedTableType}
                         period_id={period_id}

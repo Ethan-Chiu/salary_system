@@ -138,7 +138,7 @@ interface AttendanceTableProps extends TableComponentProps {
 
 export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 	const { t } = useTranslation(["common"]);
-	const { setFunctionsItem } = useContext(dataTableContext);
+	const { selectedTab, setFunctionsItem } = useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentAttendanceSetting.useQuery({ period_id });
@@ -150,7 +150,7 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 			update: data?.updatable ?? false,
 			delete: data?.deletable ?? false,
 		});
-	}, [data]);
+	}, [data, selectedTab]);
 
 	if (isLoading) {
 		return (
