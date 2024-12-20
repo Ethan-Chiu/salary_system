@@ -14,6 +14,16 @@ import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
 import { AttendanceSettingFEType } from "~/server/api/types/attendance_setting_type";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "~/components/ui/sheet";
+import { useContext, useEffect, useState } from "react";
+import { ScrollArea } from "~/components/ui/scroll-area";
+import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
+import { ParameterForm } from "../components/function_sheet/parameter_form";
+import { attendanceSchema } from "../schemas/configurations/attendance_schema";
+import dataTableContext, { FunctionMode } from "../components/context/data_table_context";
+import { modeDescription } from "~/lib/utils/helper_function";
+import { getTableNameKey } from "../components/context/data_table_enum";
+import { FunctionsSheet } from "../components/function_sheet/functions_sheet";
 
 const rowSchema = z.object({
 	parameters: z.string(),
@@ -128,10 +138,19 @@ interface AttendanceTableProps extends TableComponentProps {
 
 export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 	const { t } = useTranslation(["common"]);
+	const { setFunctionsItem } = useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentAttendanceSetting.useQuery({ period_id });
 	const filterKey: RowItemKey = "parameters";
+
+	useEffect(() => {
+		setFunctionsItem({
+			create: data?.creatable ?? false,
+			update: data?.updatable ?? false,
+			delete: data?.deletable ?? false,
+		});
+	}, [data]);
 
 	if (isLoading) {
 		return (
@@ -151,11 +170,13 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 	return (
 		<>
 			{!viewOnly ? (
-				<DataTableWithFunctions
-					columns={attendance_columns({ t })}
-					data={attendanceMapper([data!])}
-					filterColumnKey={filterKey}
-				/>
+				<FunctionsSheet t={t} period_id={period_id}>
+					<DataTableWithFunctions
+						columns={attendance_columns({ t })}
+						data={attendanceMapper([data!])}
+						filterColumnKey={filterKey}
+					/>
+				</FunctionsSheet>
 			) : (
 				<DataTableWithoutFunctions
 					columns={attendance_columns({ t })}

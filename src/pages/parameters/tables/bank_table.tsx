@@ -12,13 +12,14 @@ import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
 import { BankSettingFEType } from "~/server/api/types/bank_setting_type";
 import { ParameterForm } from "../components/function_sheet/parameter_form";
-import { useState } from "react";
-import { FunctionMode } from "../components/function_sheet/data_table_functions";
+import { useContext } from "react";
 import { bankSchema } from "../schemas/configurations/bank_schema";
 import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
-import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
+import { ScrollArea } from "~/components/ui/scroll-area";
 import { FunctionsComponent, FunctionsItem } from "~/components/data_table/functions_component";
 import { Sheet, SheetContent } from "~/components/ui/sheet";
+import dataTableContext, { FunctionMode } from "../components/context/data_table_context";
+import { FunctionsSheet } from "../components/function_sheet/functions_sheet";
 
 export type RowItem = {
 	bank_name: string;
@@ -111,8 +112,7 @@ interface BankTableProps extends TableComponentProps {
 
 export function BankTable({ period_id, viewOnly }: BankTableProps) {
 	const { t } = useTranslation(["common"]);
-	const [open, setOpen] = useState<boolean>(false);
-	const [mode, setMode] = useState<FunctionMode>("none");
+	const { setMode, setOpen } = useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBankSetting.useQuery({ period_id });
@@ -134,27 +134,13 @@ export function BankTable({ period_id, viewOnly }: BankTableProps) {
 	}
 
 	return (!viewOnly ? (
-		<Sheet open={open} onOpenChange={setOpen}>
+		<FunctionsSheet t={t} period_id={period_id}>
 			<DataTableWithFunctions
 				columns={bank_columns({ t, setOpen, setMode })}
 				data={bankSettingMapper(data!)}
 				filterColumnKey={filterKey}
 			/>
-			<SheetContent className="w-[50%] px-12 py-6">
-				<ScrollArea className="h-full w-full">
-					<ParameterToolbarFunctionsProvider
-						selectedTableType={"TableBankSetting"}
-						period_id={period_id}
-					>
-						<ParameterForm
-							formSchema={bankSchema}
-							mode={mode}
-							closeSheet={() => setOpen(false)}
-						/>
-					</ParameterToolbarFunctionsProvider>
-				</ScrollArea>
-			</SheetContent>
-		</Sheet>
+		</FunctionsSheet>
 	) : (
 		<DataTableWithoutFunctions
 			columns={bank_columns({ t, setOpen, setMode })}

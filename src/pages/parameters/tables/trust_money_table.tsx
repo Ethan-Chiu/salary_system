@@ -13,12 +13,13 @@ import { formatDate } from "~/lib/utils/format_date";
 import { TrustMoneyFEType } from "~/server/api/types/trust_money_type";
 import { FunctionsComponent, FunctionsItem } from "~/components/data_table/functions_component";
 import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
-import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
+import { ScrollArea } from "~/components/ui/scroll-area";
 import { ParameterForm } from "../components/function_sheet/parameter_form";
-import { useState } from "react";
-import { FunctionMode } from "../components/function_sheet/data_table_functions";
+import { useContext } from "react";
 import { trustMoneySchema } from "../schemas/configurations/trust_money_schema";
 import { Sheet, SheetContent } from "~/components/ui/sheet";
+import dataTableContext, { FunctionMode } from "../components/context/data_table_context";
+import { FunctionsSheet } from "../components/function_sheet/functions_sheet";
 
 export type RowItem = {
 	position: number;
@@ -107,8 +108,7 @@ interface TrustMoneyTableProps extends TableComponentProps {
 
 export function TrustMoneyTable({ period_id, viewOnly }: TrustMoneyTableProps) {
 	const { t } = useTranslation(["common"]);
-	const [open, setOpen] = useState<boolean>(false);
-	const [mode, setMode] = useState<FunctionMode>("none");
+	const { mode, setMode, open, setOpen } = useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentTrustMoney.useQuery({ period_id });
@@ -130,27 +130,13 @@ export function TrustMoneyTable({ period_id, viewOnly }: TrustMoneyTableProps) {
 	}
 
 	return !viewOnly ? (
-		<Sheet open={open} onOpenChange={setOpen}>
+		<FunctionsSheet t={t} period_id={period_id}>
 			<DataTableWithFunctions
 				columns={trust_money_columns({ t, setOpen, setMode })}
 				data={trustMoneyMapper(data!)}
 				filterColumnKey={filterKey}
 			/>
-			<SheetContent className="w-[50%] px-12 py-6">
-				<ScrollArea className="h-full w-full">
-					<ParameterToolbarFunctionsProvider
-						selectedTableType={"TableTrustMoney"}
-						period_id={period_id}
-					>
-						<ParameterForm
-							formSchema={trustMoneySchema}
-							mode={mode}
-							closeSheet={() => setOpen(false)}
-						/>
-					</ParameterToolbarFunctionsProvider>
-				</ScrollArea>
-			</SheetContent>
-		</Sheet>
+		</FunctionsSheet>
 	) : (
 		<DataTableWithoutFunctions
 			columns={trust_money_columns({ t, setOpen, setMode })}
