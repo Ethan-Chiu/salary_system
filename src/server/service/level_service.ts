@@ -47,7 +47,12 @@ export class LevelService {
 
 		return newData;
 	}
-
+	async batchCreateLevel(
+		data_array: z.infer<typeof createLevelService>[]
+	): Promise<Level[]> {
+		const newData = await Promise.all(data_array.map(async (d) => await this.createLevel(d))); 
+		return newData;
+	}
 	async getLevelById(id: number): Promise<LevelDecType | null> {
 		const level = await Level.findOne({
 			where: {
@@ -110,7 +115,22 @@ export class LevelService {
 		});
 		return this.levelMapper.decodeList(level);
 	}
-
+	async getAllLevelByStartDate(start_date: Date): Promise<LevelDecType[]> {
+		const start_date_string = get_date_string(
+			new Date(start_date.setFullYear(start_date.getFullYear(), 0, 1))
+		);
+		const level = await Level.findAll({
+			where: {
+				start_date: start_date_string,
+				disabled: false,
+			},
+			order: [
+				["start_date", "DESC"],
+				["level", "ASC"],
+			],
+		});
+		return this.levelMapper.decodeList(level);
+	}
 	async getAllFutureLevel(): Promise<LevelDecType[]> {
 		const current_date_string = get_date_string(new Date());
 		const level = await Level.findAll({

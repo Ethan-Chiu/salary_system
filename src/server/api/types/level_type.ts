@@ -5,6 +5,7 @@ const LevelBase = z.object({
 });
 
 export const createLevelAPI = LevelBase.merge(dateCreate).omit({ end_date: true });
+export const batchCreateLevelAPI = z.array(createLevelAPI);
 export const createLevelService = LevelBase.merge(dateCreate);
 export const updateLevelAPI = LevelBase.merge(dateAll).partial().merge(Id);
 export const updateLevelService = LevelBase.merge(dateAll).partial().merge(Id);
