@@ -18,6 +18,16 @@ import {
 	SheetTrigger,
 } from "~/components/ui/sheet";
 
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "~/components/ui/dialog"
+
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Button } from "~/components/ui/button";
 import { useTranslation } from "react-i18next";
@@ -30,6 +40,8 @@ import { z } from "zod";
 import { type Level } from "~/server/database/entity/SALARY/level";
 import { modeDescription } from "~/lib/utils/helper_function";
 import { zodOptionalDate, zodRequiredDate } from "~/lib/utils/zod_types";
+import { ExcelDownload } from "../excel_download/ExcelDownloader";
+import { ExcelUpload } from "../excel_upload/ExcelUpload";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
@@ -79,7 +91,7 @@ export function DataTableFunctions({
 
 	return (
 		<div className={cn(className, "flex h-full items-center")}>
-			<Sheet open={open} onOpenChange={setOpen}>
+			<Dialog open={open} onOpenChange={setOpen}>
 				{/* Dropdown */}
 				<DropdownMenu modal={false}>
 					<DropdownMenuTrigger asChild>
@@ -117,21 +129,30 @@ export function DataTableFunctions({
 					</DropdownMenuContent>
 				</DropdownMenu>
 				{/* Sheet */}
-				<SheetContent className="w-[50%]">
-					<SheetHeader>
-						<SheetTitle>
+				<DialogContent className={mode == "excel_upload" ? "sm:max-w-[1000px]" : "sm:max-w-[600px]"}>
+					<DialogHeader>
+						<DialogTitle>
 							{`${t(`button.${mode}`)!}${t("button.form")} (${t(getTableNameKey(tableType))})`}
-						</SheetTitle>
-						<SheetDescription>
+						</DialogTitle>
+						<DialogDescription>
 							{modeDescription(t, mode)}
-						</SheetDescription>
-					</SheetHeader>
-					{mode == "batch_create" ?
+						</DialogDescription>
+					</DialogHeader>
+					{	
+						mode == "batch_create" ?
 						<LevelBatchCreateForm
 							formSchema={z.object({ content: z.array(schema) })}
 							mode={mode}
 							closeSheet={() => setOpen(false)}
 						/>
+						:
+						mode == "excel_download" ? 
+							<ExcelDownload 
+								table_name={tableType}
+							/>
+						:
+						mode == "excel_upload" ?
+							<ExcelUpload />
 						:
 						<ScrollArea className="h-full w-full">
 							<ParameterForm
@@ -142,8 +163,8 @@ export function DataTableFunctions({
 							<ScrollBar orientation="horizontal" />
 						</ScrollArea>
 					}
-				</SheetContent>
-			</Sheet>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 
@@ -153,7 +174,7 @@ export function DataTableFunctions({
 		icon: LucideIcon;
 	}) {
 		return (
-			<SheetTrigger
+			<DialogTrigger
 				className="w-full"
 				onClick={() => {
 					setMode(props.mode);
@@ -164,7 +185,7 @@ export function DataTableFunctions({
 					<props.icon className="mr-2 h-4 w-4" />
 					<span>{props.itemName}</span>
 				</DropdownMenuItem>
-			</SheetTrigger>
+			</DialogTrigger>
 		);
 	}
 }

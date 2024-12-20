@@ -275,7 +275,8 @@
     "q2_bonus": "Q2獎金",
     "q3_q4_bonus": "Q3-Q4獎金",
     "employee_dividends_bonus": "員工分紅獎金",
-    "position_position_type": "職等職級"
+    "position_position_type": "職等職級",
+    "filename": "檔案名稱"
   },
   "table_name": {
     "attendanceSetting": "請假加班",
@@ -322,6 +323,7 @@
     "initialize": "初始化",
     "excel_upload": "Excel上傳",
     "excel_download": "Excel下載",
+    "excel_preview": "Excel預覽",
     "auto_calculate": "自動計算",
     "form": "表單",
     "save": "儲存",

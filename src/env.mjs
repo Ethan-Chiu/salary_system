@@ -20,7 +20,8 @@ export const env = createEnv({
 			process.env.VERCEL ? z.string().min(1) : z.string().url()
 		),
 		USE_LOCAL_DB: z.preprocess((str) => str === "true", z.boolean()),
-		ORACLE_LIB_PATH: z.string().transform((str) => (process.env.HOME ?? "") + str).pipe(z.string()),
+		// ORACLE_LIB_PATH: z.string().transform((str) => (process.env.HOME ?? "") + str).pipe(z.string()),
+		ORACLE_LIB_PATH: z.string().transform((str) => str).pipe(z.string()),
 	},
 
 	/**
