@@ -50,7 +50,7 @@ export class TransactionService {
 			await ehrService.getPaysetByEmpNoList(period_id, [emp_no])
 		)[0];
 		const calculateService = container.resolve(CalculateService);
-		const employee_data = await employeeDataService.getEmployeeDataByEmpNo(
+		const employee_data = await employeeDataService.getEmployeeDataByEmpNoByPeriod(
 			period_id,
 			emp_no
 		);

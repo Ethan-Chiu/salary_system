@@ -18,6 +18,14 @@ import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
 import { InsuranceRateSettingFEType } from "~/server/api/types/insurance_rate_setting_type";
 import { TFunction } from "i18next";
+import { useContext, useEffect } from "react";
+import dataTableContext from "../components/context/data_table_context";
+import { Sheet, SheetContent } from "~/components/ui/sheet";
+import { ScrollArea } from "~/components/ui/scroll-area";
+import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
+import { ParameterForm } from "../components/function_sheet/parameter_form";
+import { insuranceSchema } from "../schemas/configurations/insurance_schema";
+import { FunctionsSheet } from "../components/function_sheet/functions_sheet";
 
 export type RowItem = {
 	parameters: string;
@@ -133,10 +141,19 @@ export function InsuranceRateTable({
 	viewOnly,
 }: InsuranceRateTableProps) {
 	const { t } = useTranslation(["common"]);
+	const { setFunctionsItem } = useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentInsuranceRateSetting.useQuery({ period_id });
 	const filterKey: RowItemKey = "parameters";
+
+	useEffect(() => {
+		setFunctionsItem({
+			create: data?.creatable ?? false,
+			update: data?.updatable ?? false,
+			delete: data?.deletable ?? false,
+		});
+	}, [data]);
 
 	if (isLoading) {
 		return (
@@ -156,11 +173,13 @@ export function InsuranceRateTable({
 	return (
 		<>
 			{!viewOnly ? (
-				<DataTableWithFunctions
-					columns={insurance_rate_columns({ t })}
-					data={insuranceRateMapper([data!])}
-					filterColumnKey={filterKey}
-				/>
+				<FunctionsSheet t={t} period_id={period_id}>
+					<DataTableWithFunctions
+						columns={insurance_rate_columns({ t })}
+						data={insuranceRateMapper([data!])}
+						filterColumnKey={filterKey}
+					/>
+				</FunctionsSheet>
 			) : (
 				<DataTableWithoutFunctions
 					columns={insurance_rate_columns({ t })}

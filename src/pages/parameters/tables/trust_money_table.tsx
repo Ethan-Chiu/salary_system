@@ -13,11 +13,13 @@ import { formatDate } from "~/lib/utils/format_date";
 import { TrustMoneyFEType } from "~/server/api/types/trust_money_type";
 import { FunctionsComponent, FunctionsItem } from "~/components/data_table/functions_component";
 import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
-import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
+import { ScrollArea } from "~/components/ui/scroll-area";
 import { ParameterForm } from "../components/function_sheet/parameter_form";
-import { useState } from "react";
-import { FunctionMode } from "../components/function_sheet/data_table_functions";
+import { useContext } from "react";
 import { trustMoneySchema } from "../schemas/configurations/trust_money_schema";
+import { Sheet, SheetContent } from "~/components/ui/sheet";
+import dataTableContext, { FunctionMode } from "../components/context/data_table_context";
+import { FunctionsSheet } from "../components/function_sheet/functions_sheet";
 
 export type RowItem = {
 	position: number;
@@ -32,7 +34,7 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-export const trust_money_columns = ({ t, period_id, open, setOpen, mode, setMode }: { t: TFunction<[string], undefined>, period_id: number, open: boolean, setOpen: (open: boolean) => void, mode: FunctionMode, setMode: (mode: FunctionMode) => void }) => [
+export const trust_money_columns = ({ t, setOpen, setMode }: { t: TFunction<[string], undefined>, setOpen: (open: boolean) => void, setMode: (mode: FunctionMode) => void }) => [
 	...["position", "position_type", "org_trust_reserve_limit", "org_special_trust_incent_limit", "start_date", "end_date"].map(
 		(key: string) => columnHelper.accessor(key as RowItemKey, {
 			header: ({ column }) => {
@@ -73,21 +75,12 @@ export const trust_money_columns = ({ t, period_id, open, setOpen, mode, setMode
 		},
 		cell: ({ row }) => {
 			return (
-				<FunctionsComponent t={t} open={open} setOpen={setOpen} mode={mode} setMode={setMode} functionsItem={row.original.functions} >
-					<ParameterToolbarFunctionsProvider
-						selectedTableType={"TableBankSetting"}
-						period_id={period_id}
-					>
-						<ScrollArea className="h-full w-full">
-							<ParameterForm
-								formSchema={trustMoneySchema}
-								mode={mode}
-								closeSheet={() => setOpen(false)}
-							/>
-						</ScrollArea>
-						<ScrollBar orientation="horizontal" />
-					</ParameterToolbarFunctionsProvider>
-				</FunctionsComponent>
+				<FunctionsComponent
+					t={t}
+					setOpen={setOpen}
+					setMode={setMode}
+					functionsItem={row.original.functions}
+				/>
 			);
 		},
 	}),
@@ -115,8 +108,7 @@ interface TrustMoneyTableProps extends TableComponentProps {
 
 export function TrustMoneyTable({ period_id, viewOnly }: TrustMoneyTableProps) {
 	const { t } = useTranslation(["common"]);
-	const [open, setOpen] = useState<boolean>(false);
-	const [mode, setMode] = useState<FunctionMode>("none");
+	const { mode, setMode, open, setOpen } = useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentTrustMoney.useQuery({ period_id });
@@ -137,21 +129,19 @@ export function TrustMoneyTable({ period_id, viewOnly }: TrustMoneyTableProps) {
 		return emptyError ? <EmptyTable err_msg={err_msg} selectedTableType="TableTrustMoney" /> : <></>;
 	}
 
-	return (
-		<>
-			{!viewOnly ? (
-				<DataTableWithFunctions
-					columns={trust_money_columns({ t, period_id, open, setOpen, mode, setMode })}
-					data={trustMoneyMapper(data!)}
-					filterColumnKey={filterKey}
-				/>
-			) : (
-				<DataTableWithoutFunctions
-					columns={trust_money_columns({ t, period_id, open, setOpen, mode, setMode })}
-					data={trustMoneyMapper(data!)}
-					filterColumnKey={filterKey}
-				/>
-			)}
-		</>
-	);
+	return !viewOnly ? (
+		<FunctionsSheet t={t} period_id={period_id}>
+			<DataTableWithFunctions
+				columns={trust_money_columns({ t, setOpen, setMode })}
+				data={trustMoneyMapper(data!)}
+				filterColumnKey={filterKey}
+			/>
+		</FunctionsSheet>
+	) : (
+		<DataTableWithoutFunctions
+			columns={trust_money_columns({ t, setOpen, setMode })}
+			data={trustMoneyMapper(data!)}
+			filterColumnKey={filterKey}
+		/>
+	)
 }

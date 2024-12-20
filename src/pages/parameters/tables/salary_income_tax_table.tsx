@@ -10,14 +10,16 @@ import { formatDate } from "~/lib/utils/format_date";
 import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
 import { SalaryIncomeTaxFEType } from "~/server/api/types/salary_income_tax";
-import { FunctionMode } from "../components/function_sheet/data_table_functions";
 import { FunctionsComponent, FunctionsItem } from "~/components/data_table/functions_component";
 import { TFunction } from "i18next";
-import { useState } from "react";
+import { useContext } from "react";
 import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
-import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
+import { ScrollArea } from "~/components/ui/scroll-area";
 import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { salaryIncomeTaxSchema } from "../schemas/configurations/salary_income_tax_schema";
+import { Sheet, SheetContent } from "~/components/ui/sheet";
+import dataTableContext, { FunctionMode } from "../components/context/data_table_context";
+import { FunctionsSheet } from "../components/function_sheet/functions_sheet";
 
 export type RowItem = {
 	salary_start: number;
@@ -73,21 +75,12 @@ export const salary_income_tax_columns = ({ t, period_id, open, setOpen, mode, s
 		},
 		cell: ({ row }) => {
 			return (
-				<FunctionsComponent t={t} open={open} setOpen={setOpen} mode={mode} setMode={setMode} functionsItem={row.original.functions} >
-					<ParameterToolbarFunctionsProvider
-						selectedTableType={"TableBankSetting"}
-						period_id={period_id}
-					>
-						<ScrollArea className="h-full w-full">
-							<ParameterForm
-								formSchema={salaryIncomeTaxSchema}
-								mode={mode}
-								closeSheet={() => setOpen(false)}
-							/>
-						</ScrollArea>
-						<ScrollBar orientation="horizontal" />
-					</ParameterToolbarFunctionsProvider>
-				</FunctionsComponent>
+				<FunctionsComponent
+					t={t}
+					setOpen={setOpen}
+					setMode={setMode}
+					functionsItem={row.original.functions}
+				/>
 			);
 		},
 	}),
@@ -117,8 +110,7 @@ interface SalaryIncomeTaxTableProps extends TableComponentProps {
 
 export function SalaryIncomeTaxTable({ viewOnly, period_id }: SalaryIncomeTaxTableProps) {
 	const { t } = useTranslation(["common"]);
-	const [open, setOpen] = useState<boolean>(false);
-	const [mode, setMode] = useState<FunctionMode>("none");
+	const { mode, setMode, open, setOpen } = useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentSalaryIncomeTax.useQuery({ period_id });
@@ -146,21 +138,19 @@ export function SalaryIncomeTaxTable({ viewOnly, period_id }: SalaryIncomeTaxTab
 		);
 	}
 
-	return (
-		<>
-			{!viewOnly ? (
-				<DataTableWithFunctions
-					columns={salary_income_tax_columns({ t, period_id, open, setOpen, mode, setMode })}
-					data={salaryIncomeTaxMapper(data!)}
-					filterColumnKey={filterKey}
-				/>
-			) : (
-				<DataTableWithoutFunctions
-					columns={salary_income_tax_columns({ t, period_id, open, setOpen, mode, setMode })}
-					data={salaryIncomeTaxMapper(data!)}
-					filterColumnKey={filterKey}
-				/>
-			)}
-		</>
-	);
+	return !viewOnly ? (
+		<FunctionsSheet t={t} period_id={period_id}>
+			<DataTableWithFunctions
+				columns={salary_income_tax_columns({ t, period_id, open, setOpen, mode, setMode })}
+				data={salaryIncomeTaxMapper(data!)}
+				filterColumnKey={filterKey}
+			/>
+		</FunctionsSheet>
+	) : (
+		<DataTableWithoutFunctions
+			columns={salary_income_tax_columns({ t, period_id, open, setOpen, mode, setMode })}
+			data={salaryIncomeTaxMapper(data!)}
+			filterColumnKey={filterKey}
+		/>
+	)
 }

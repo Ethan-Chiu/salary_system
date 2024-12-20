@@ -80,7 +80,7 @@ export class HolidayMapper {
 		const HolidayFE_list = await Promise.all(
 			groupedHolidayArray.map(async (holiday_list) => {
 				const employee_data =
-					await this.employeeDataService.getEmployeeDataByEmpNo(
+					await this.employeeDataService.getEmployeeDataByEmpNoByPeriod(
 						period_id,
 						holiday_list[0]!.emp_no
 					);

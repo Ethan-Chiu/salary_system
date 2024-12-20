@@ -25,31 +25,32 @@ import {
 	updateEmployeeBonusAPI,
 } from "../types/employee_bonus_type";
 import { BonusAllService } from "~/server/service/bonus_all_service";
+import { EmployeeDataService } from "~/server/service/employee_data_service";
 
 // 改Enum
 export const bonusRouter = createTRPCRouter({
-	getAllEmployeeBonus: publicProcedure
-		.input(
-			z.object({
-				period_id: z.number(),
-				bonus_type: bonusTypeEnum,
-			})
-		)
-		.query(async ({ input }) => {
-			const bonusService = container.resolve(EmployeeBonusService);
-			const bonusMapper = container.resolve(EmployeeBonusMapper);
-			const result = await bonusService.getAllEmployeeBonus(
-				input.period_id,
-				input.bonus_type
-			);
-			const employeeBonusFE = await Promise.all(
-				result.map(
-					async (e) =>
-						await bonusMapper.getEmployeeBonusFE(e)
-				)
-			);
-			return employeeBonusFE.map((e) => roundProperties(e, 2));
-		}),
+	// getAllEmployeeBonus: publicProcedure
+	// 	.input(
+	// 		z.object({
+	// 			period_id: z.number(),
+	// 			bonus_type: bonusTypeEnum,
+	// 		})
+	// 	)
+	// 	.query(async ({ input }) => {
+	// 		const bonusService = container.resolve(EmployeeBonusService);
+	// 		const bonusMapper = container.resolve(EmployeeBonusMapper);
+	// 		const result = await bonusService.getAllEmployeeBonus(
+	// 			input.period_id,
+	// 			input.bonus_type
+	// 		);
+	// 		const employeeBonusFE = await Promise.all(
+	// 			result.map(
+	// 				async (e) =>
+	// 					await bonusMapper.getEmployeeBonusFE(e)
+	// 			)
+	// 		);
+	// 		return employeeBonusFE.map((e) => roundProperties(e, 2));
+	// 	}),
 	getExcelEmployeeBonus: publicProcedure
 		.input(
 			z.object({
@@ -119,12 +120,10 @@ export const bonusRouter = createTRPCRouter({
 			})
 		)
 		.mutation(async ({ input }) => {
+			console.log("\\n\n\ncalled initCandidateEmployeeBonus\n\n\n");
 			const empBonusService = container.resolve(EmployeeBonusService);
-			const all_emp_no_list = (
-				await EmployeeData.findAll({
-					attributes: ["emp_no", "work_status"],
-				})
-			)
+			const empDataService = container.resolve(EmployeeDataService);
+			const all_emp_no_list = (await empDataService.getAllEmployeeDataByPeriod(input.period_id))
 				.filter((emp) => emp.work_status != "離職人員")
 				.map((emp) => emp.emp_no);
 			await empBonusService.createEmployeeBonusByEmpNoList(
