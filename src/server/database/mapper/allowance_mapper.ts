@@ -19,7 +19,7 @@ export class AllowanceMapper {
 		const employee_data_service = container.resolve(EmployeeDataService);
 		const ehrService = container.resolve(EHRService);
 		const employee_data =
-			await employee_data_service.getEmployeeDataByEmpNo(
+			await employee_data_service.getEmployeeDataByEmpNoByPeriod(
 				period_id,
 				allowance_with_type.emp_no
 			);
@@ -51,7 +51,7 @@ export class AllowanceMapper {
 		const new_allowanceFE_list: NewAllowanceFEType[] = await Promise.all(
 			employee_payment_list.map(async (employee_payment) => {
 				const employee_data =
-					await employee_data_service.getEmployeeDataByEmpNo(
+					await employee_data_service.getEmployeeDataByEmpNoByPeriod(
 						period_id,
 						employee_payment.emp_no
 					);
