@@ -9,9 +9,11 @@ import { FIELD_COMPONENTS } from "./config";
 export function AutoFormField({
 	field,
 	path,
+  render,
 }: {
 	field: ParsedField;
 	path: string[];
+  render?: (props: FormFieldProps) => React.ReactNode
 }) {
 	const {
 		register,
@@ -33,8 +35,10 @@ export function AutoFormField({
 	/* 	FieldComponent = ArrayField; */
 	/* } else if (field.type === "object") { */
 	/* 	FieldComponent = ObjectField; */
-
-	if (field.type in FIELD_COMPONENTS) {
+  if (render){
+    FieldComponent = render
+  }
+  else if (field.type in FIELD_COMPONENTS) {
 		FieldComponent = FIELD_COMPONENTS[field.type as keyof typeof FIELD_COMPONENTS];
 	} else if ("fallback" in FIELD_COMPONENTS) {
 		FieldComponent = FIELD_COMPONENTS.fallback;
