@@ -22,7 +22,13 @@ export class LevelRangeService {
 		data: z.infer<typeof createLevelRangeService>
 	): Promise<LevelRange> {
 		const d = createLevelRangeService.parse(data);
-
+		const start_date = d.start_date ? new Date(d.start_date) : new Date();
+		const start_date_adjust = new Date(
+			start_date.setFullYear(start_date.getFullYear(), 0, 1)
+		);
+		const end_date = new Date(
+			start_date.setFullYear(start_date.getFullYear(), 11, 31)
+		);
 		const levelRange = await this.levelRangeMapper.encode({
 			...d,
 			start_date: d.start_date ?? new Date(),
@@ -30,7 +36,19 @@ export class LevelRangeService {
 			create_by: "system",
 			update_by: "system",
 		});
-
+		const existed_data = await LevelRange.findOne({
+			where: {
+				type: levelRange.type,
+				start_date: levelRange.start_date,
+				end_date: levelRange.end_date,
+				disabled: false,
+			},
+		});
+		if (existed_data != null) {
+			throw new Error(
+				`Data already exist type:${existed_data.type}, start_date: ${start_date}, end_date: ${end_date}`
+			);
+		}
 		const newData = await LevelRange.create(levelRange, {
 			raw: true,
 		});
@@ -185,55 +203,57 @@ export class LevelRangeService {
 		}
 	}
 
-	async rescheduleLevelRange(): Promise<void> {
-		const levelRangeListEnc = await LevelRange.findAll({
-			where: { disabled: false },
-			order: [
-				["type", "ASC"],
-				["start_date", "ASC"],
-				["update_date", "ASC"],
-			],
-		});
-    const levelRangeList = await this.levelRangeMapper.decodeList(levelRangeListEnc);
+	// async rescheduleLevelRange(): Promise<void> {
+	// 	const levelRangeListEnc = await LevelRange.findAll({
+	// 		where: { disabled: false },
+	// 		order: [
+	// 			["type", "ASC"],
+	// 			["start_date", "ASC"],
+	// 			["update_date", "ASC"],
+	// 		],
+	// 	});
+	// 	const levelRangeList = await this.levelRangeMapper.decodeList(
+	// 		levelRangeListEnc
+	// 	);
 
-		for (const levelRange of levelRangeList) {
-			const start_date = new Date(levelRange.start_date);
-			const start_date_adjust = new Date(
-				start_date.setFullYear(start_date.getFullYear(), 0, 1)
-			);
-			const end_date = new Date(
-				start_date.setFullYear(start_date.getFullYear(), 11, 31)
-			);
-			if (
-				levelRange.start_date != start_date_adjust ||
-				levelRange.end_date != end_date
-			) {
-				await this.updateLevelRange({
-					id: levelRange.id,
-					start_date: start_date_adjust,
-					end_date: end_date,
-				});
-			}
-		}
+	// 	for (const levelRange of levelRangeList) {
+	// 		const start_date = new Date(levelRange.start_date);
+	// 		const start_date_adjust = new Date(
+	// 			start_date.setFullYear(start_date.getFullYear(), 0, 1)
+	// 		);
+	// 		const end_date = new Date(
+	// 			start_date.setFullYear(start_date.getFullYear(), 11, 31)
+	// 		);
+	// 		if (
+	// 			levelRange.start_date != start_date_adjust ||
+	// 			levelRange.end_date != end_date
+	// 		) {
+	// 			await this.updateLevelRange({
+	// 				id: levelRange.id,
+	// 				start_date: start_date_adjust,
+	// 				end_date: end_date,
+	// 			});
+	// 		}
+	// 	}
 
-		const updatedLevelRangeList = await LevelRange.findAll({
-			where: { disabled: false },
-			order: [
-				["type", "ASC"],
-				["start_date", "ASC"],
-				["update_date", "ASC"],
-			],
-		});
+	// 	const updatedLevelRangeList = await LevelRange.findAll({
+	// 		where: { disabled: false },
+	// 		order: [
+	// 			["type", "ASC"],
+	// 			["start_date", "ASC"],
+	// 			["update_date", "ASC"],
+	// 		],
+	// 	});
 
-		for (let i = 0; i < updatedLevelRangeList.length - 1; i += 1) {
-			if (
-				updatedLevelRangeList[i]!.type ==
-					updatedLevelRangeList[i + 1]!.type &&
-				updatedLevelRangeList[i]!.start_date ==
-					updatedLevelRangeList[i + 1]!.start_date
-			) {
-				await this.deleteLevelRange(updatedLevelRangeList[i]!.id);
-			}
-		}
-	}
+	// 	for (let i = 0; i < updatedLevelRangeList.length - 1; i += 1) {
+	// 		if (
+	// 			updatedLevelRangeList[i]!.type ==
+	// 				updatedLevelRangeList[i + 1]!.type &&
+	// 			updatedLevelRangeList[i]!.start_date ==
+	// 				updatedLevelRangeList[i + 1]!.start_date
+	// 		) {
+	// 			await this.deleteLevelRange(updatedLevelRangeList[i]!.id);
+	// 		}
+	// 	}
+	// }
 }

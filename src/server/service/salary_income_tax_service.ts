@@ -31,19 +31,36 @@ export class SalaryIncomeTaxService {
 		data: z.infer<typeof createSalaryIncomeTaxService>
 	): Promise<SalaryIncomeTax> {
 		const d = createSalaryIncomeTaxService.parse(data);
-
-		const attendanceSetting = await this.salaryIncomeTaxMapper.encode({
+		const start_date = d.start_date? new Date(d.start_date):new Date();
+		const start_date_adjust = new Date(
+					start_date.setFullYear(start_date.getFullYear(), 0, 1)
+				);
+		const end_date = new Date(
+			start_date.setFullYear(start_date.getFullYear(), 11, 31)
+		);
+		const salaryIncomeTax = await this.salaryIncomeTaxMapper.encode({
 			...d,
-			start_date: d.start_date ?? new Date(),
+			start_date: start_date_adjust,
+			end_date: end_date,
 			disabled: false,
 			create_by: "system",
 			update_by: "system",
 		});
-
-		const newData = await SalaryIncomeTax.create(attendanceSetting, {
+		const existed_data = await SalaryIncomeTax.findOne({ where: {
+			salary_start: salaryIncomeTax.salary_start,
+			salary_end: salaryIncomeTax.salary_end,
+			dependent: salaryIncomeTax.dependent,
+			start_date: salaryIncomeTax.start_date,
+			end_date: salaryIncomeTax.end_date,
+			disabled: false
+		} })
+		if (existed_data!=null) {
+			throw new Error(`Data already exist salary_start: ${salaryIncomeTax.salary_start}, salary_end: ${salaryIncomeTax.salary_end}, dependent: ${salaryIncomeTax.dependent}, start_date: ${start_date}, end_date: ${end_date}`)
+		}
+		const newData = await SalaryIncomeTax.create(salaryIncomeTax, {
 			raw: true,
 		});
-
+		
 		return newData;
 	}
 

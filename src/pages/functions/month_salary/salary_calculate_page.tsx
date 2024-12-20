@@ -25,7 +25,7 @@ export function SalaryCalculatePage({
 	func: FunctionsEnumType;
 }) {
 	const { isLoading, isError, data, error } =
-		api.sync.getPaidEmployees.useQuery({ func });
+		api.sync.getPaidEmployees.useQuery({ period_id: period.period_id, func });
 
 	if (isLoading) {
 		return <LoadingSpinner />; // TODO: Loading element with toast

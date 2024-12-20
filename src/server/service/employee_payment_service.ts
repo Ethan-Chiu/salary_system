@@ -365,13 +365,11 @@ export class EmployeePaymentService {
 			if (employeePayment.end_date != null) {
 				return;
 			}
-
 			const updatedEmployeePayment =
 				await this.getMatchedLevelEmployeePayment(
 					employeePayment,
 					start_date
 				);
-
 			if (
 				employeePayment.l_i != updatedEmployeePayment.l_i ||
 				employeePayment.h_i != updatedEmployeePayment.h_i ||
@@ -542,8 +540,7 @@ export class EmployeePaymentService {
 		}
 
 		const employeeData =
-			await this.employeeDataService.getEmployeeDataByEmpNoByPeriod(
-				period_id!,
+			await this.employeeDataService.getLatestEmployeeDataByEmpNo(
 				employeePayment.emp_no
 			);
 		if (employeeData == null) {

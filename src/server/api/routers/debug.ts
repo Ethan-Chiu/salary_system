@@ -126,7 +126,7 @@ export const debugRouter = createTRPCRouter({
 		)
 		.query(async ({ input }) => {
 			const table_list = [
-				EmployeeBonus
+				// EmployeeBonus
 				// AccessSetting,
 				// AttendanceSetting,
 				// BankSetting,
@@ -144,7 +144,7 @@ export const debugRouter = createTRPCRouter({
 				// EmployeeTrust,
 				// EmployeeData
 				// InsuranceRateSetting,
-				// LevelRange,
+				LevelRange,
 				// Level,
 				// TrustMoney,
 				// SalaryIncomeTax,
@@ -238,6 +238,6 @@ export const debugRouter = createTRPCRouter({
 					});
 				})
 			);
-			await levelService.rescheduleLevel();
+			// await levelService.rescheduleLevel();
 		}),
 });
