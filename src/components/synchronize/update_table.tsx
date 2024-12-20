@@ -49,20 +49,20 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 	function handleUpdate(period_id: number) {
 		const update_input: SyncInputType[] = [];
 
-    data.forEach((d) => {
-      const change_keys: string[] = []
-      for (const c of d.comparisons) {
-        if (c.check_status === "checked") {
-          change_keys.push(c.key) 
-        }
-      }
-      if (change_keys.length > 0) {
-        update_input.push({
-          emp_no: d.emp_no,
-          keys: change_keys
-        })
-      }
-    });
+		data.forEach((d) => {
+			const change_keys: string[] = []
+			for (const c of d.comparisons) {
+				if (c.check_status === "checked") {
+					change_keys.push(c.key)
+				}
+			}
+			if (change_keys.length > 0) {
+				update_input.push({
+					emp_no: d.emp_no,
+					keys: change_keys
+				})
+			}
+		});
 
 		mutate({
 			period: period_id,
@@ -85,7 +85,7 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 					{t("button.update")}
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="w-[90vw] max-w-5xl p-8">
+			<DialogContent className="w-[90vw] max-w-6xl p-8">
 				<DialogHeader className="mx-4 flex items-center">
 					<div className="mr-auto">
 						<DialogTitle>{t("others.changed_data")}</DialogTitle>
@@ -94,14 +94,13 @@ export function UpdateTableDialog({ data }: UpdateTableDialogProps) {
 						</DialogDescription>
 					</div>
 				</DialogHeader>
-				<ScrollArea className="max-h-[70vh]">
+				<div className="max-h-[70vh]">
 					<EmployeeDataChangeTable
 						data={data}
 						mode="changed"
 						setDataStatus={(_, __, ___) => undefined}
 					/>
-					<ScrollBar orientation="horizontal" />
-				</ScrollArea>
+				</div>
 
 				<DialogClose asChild>
 					<Button
