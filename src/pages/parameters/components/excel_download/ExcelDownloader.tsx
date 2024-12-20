@@ -42,6 +42,10 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 
 	const { selectedTable } = useContext(dataTableContext);
 
+	function transposeData(data: any[][]): any[][] {
+        const tranposed_data = (data[0]??[]).map((_, colIndex) => data.map(row => row[colIndex]));
+		return tranposed_data.map((row) => row.slice(1));
+    }
 
 	// MARK: Excel Download Function
 	const handleExportExcel = async (
@@ -49,6 +53,9 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 		filename: string,
 		Translate: (key: string) => string
 	) => {
+
+		const shouldTranspose = (table_name == "TableInsurance") || (table_name == "TableAttendance");
+
 		const workbook = new ExcelJS.Workbook();
 
 		function getCellName(rowIndex: number, colIndex: number): string {
@@ -70,6 +77,9 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 		}
 
 		if (datas) {
+			
+			if (shouldTranspose)	datas = transposeData(datas);
+
 			let name = table_name;
 			const worksheet = workbook.addWorksheet(
 				name === "" ? "blank" : name
@@ -80,7 +90,7 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 					if (i === 0) {
 						worksheet.addRow(
 							row.map((header: string) =>
-								Translate(`table.${header}`)
+								(shouldTranspose) ? header : Translate(`table.${header}`)
 							)
 						);
 					} else {

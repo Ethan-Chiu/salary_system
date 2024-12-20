@@ -459,9 +459,9 @@ export function ExcelUpload({
 						<Button
                             className="ml-auto"
                             onClick={() => {
-                                console.log(recoverData(data.map((d) => d.slice(1))))
-                                // batchCreateFunction.mutate(recoverData(data.map((d) => d.slice(1))))
-                                // closeDialog();
+                                // console.log(recoverData(data.map((d) => d.slice(1))))
+                                batchCreateFunction.mutate(recoverData(data.map((d) => d.slice(1))))
+                                closeDialog();
                             }}>
 							{t("button.excel_upload")}
 						</Button>
