@@ -29,28 +29,28 @@ import { EmployeeDataService } from "~/server/service/employee_data_service";
 
 // 改Enum
 export const bonusRouter = createTRPCRouter({
-	getAllEmployeeBonus: publicProcedure
-		.input(
-			z.object({
-				period_id: z.number(),
-				bonus_type: bonusTypeEnum,
-			})
-		)
-		.query(async ({ input }) => {
-			const bonusService = container.resolve(EmployeeBonusService);
-			const bonusMapper = container.resolve(EmployeeBonusMapper);
-			const result = await bonusService.getAllEmployeeBonus(
-				input.period_id,
-				input.bonus_type
-			);
-			const employeeBonusFE = await Promise.all(
-				result.map(
-					async (e) =>
-						await bonusMapper.getEmployeeBonusFE(e)
-				)
-			);
-			return employeeBonusFE.map((e) => roundProperties(e, 2));
-		}),
+	// getAllEmployeeBonus: publicProcedure
+	// 	.input(
+	// 		z.object({
+	// 			period_id: z.number(),
+	// 			bonus_type: bonusTypeEnum,
+	// 		})
+	// 	)
+	// 	.query(async ({ input }) => {
+	// 		const bonusService = container.resolve(EmployeeBonusService);
+	// 		const bonusMapper = container.resolve(EmployeeBonusMapper);
+	// 		const result = await bonusService.getAllEmployeeBonus(
+	// 			input.period_id,
+	// 			input.bonus_type
+	// 		);
+	// 		const employeeBonusFE = await Promise.all(
+	// 			result.map(
+	// 				async (e) =>
+	// 					await bonusMapper.getEmployeeBonusFE(e)
+	// 			)
+	// 		);
+	// 		return employeeBonusFE.map((e) => roundProperties(e, 2));
+	// 	}),
 	getExcelEmployeeBonus: publicProcedure
 		.input(
 			z.object({

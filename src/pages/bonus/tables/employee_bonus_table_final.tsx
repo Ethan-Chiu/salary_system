@@ -75,7 +75,7 @@ export function EmployeeBonusTable({ period_id, bonus_type, viewOnly }: Employee
     const { t } = useTranslation(["common"]);
 
     const { isLoading, isError, data, error } =
-        api.bonus.getAllEmployeeBonus.useQuery({ period_id, bonus_type });
+        api.bonus.getEmployeeBonus.useQuery({ period_id, bonus_type });
     const filterKey: RowItemKey = "emp_no";
     const { setSelectedTableType } = useContext(dataTableContext);
 
