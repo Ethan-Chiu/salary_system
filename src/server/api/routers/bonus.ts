@@ -25,6 +25,7 @@ import {
 	updateEmployeeBonusAPI,
 } from "../types/employee_bonus_type";
 import { BonusAllService } from "~/server/service/bonus_all_service";
+import { EmployeeDataService } from "~/server/service/employee_data_service";
 
 // 改Enum
 export const bonusRouter = createTRPCRouter({
@@ -119,12 +120,10 @@ export const bonusRouter = createTRPCRouter({
 			})
 		)
 		.mutation(async ({ input }) => {
+			console.log("\\n\n\ncalled initCandidateEmployeeBonus\n\n\n");
 			const empBonusService = container.resolve(EmployeeBonusService);
-			const all_emp_no_list = (
-				await EmployeeData.findAll({
-					attributes: ["emp_no", "work_status"],
-				})
-			)
+			const empDataService = container.resolve(EmployeeDataService);
+			const all_emp_no_list = (await empDataService.getAllEmployeeDataByPeriod(input.period_id))
 				.filter((emp) => emp.work_status != "離職人員")
 				.map((emp) => emp.emp_no);
 			await empBonusService.createEmployeeBonusByEmpNoList(

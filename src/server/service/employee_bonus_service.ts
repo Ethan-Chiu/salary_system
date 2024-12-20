@@ -31,7 +31,6 @@ export class EmployeeBonusService {
 		data: z.input<typeof createEmployeeBonusService>
 	): Promise<EmployeeBonus> {
 		const d = createEmployeeBonusService.parse(data);
-
 		const employeeBonus = await this.employeeBonusMapper.encode({
 			...d,
 			start_date: d.start_date ?? new Date(),
@@ -56,11 +55,13 @@ export class EmployeeBonusService {
 			period_id,
 			bonus_type
 		);
-
+		console.log("\n\n\nCalled Create By List\n\n\n")
+		console.log(emp_no_list)
 		const promises = emp_no_list.map(async (emp_no) => {
 			if (employeeBonus.find((e) => e.emp_no === emp_no)) {
 				return;
 			}
+			console.log(`\n\n\n\ncreate${emp_no}`)
 			await this.createEmployeeBonus({
 				period_id: period_id,
 				bonus_type: bonus_type,
@@ -221,7 +222,7 @@ export class EmployeeBonusService {
 
 		const promises = all_emp_bonus_list.map(async (emp) => {
 			const employee_data =
-				await employee_data_service.getEmployeeDataByEmpNo(
+				await employee_data_service.getEmployeeDataByEmpNoByPeriod(
 					period_id,
 					emp.emp_no
 				);

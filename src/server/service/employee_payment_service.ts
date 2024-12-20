@@ -542,7 +542,7 @@ export class EmployeePaymentService {
 		}
 
 		const employeeData =
-			await this.employeeDataService.getEmployeeDataByEmpNo(
+			await this.employeeDataService.getEmployeeDataByEmpNoByPeriod(
 				period_id!,
 				employeePayment.emp_no
 			);

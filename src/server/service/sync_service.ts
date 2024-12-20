@@ -366,8 +366,8 @@ export class SyncService {
 			emp_no_list.forEach(async (emp_no) => {
 				const old_employee_data =
 					await employee_data_service.getEmployeeDataByEmpNoByPeriod(
-						emp_no,
-						previous_period_id
+						previous_period_id,
+						emp_no
 					);
 				if (!old_employee_data) return;
 				if (

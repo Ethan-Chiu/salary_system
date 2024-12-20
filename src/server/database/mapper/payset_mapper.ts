@@ -14,7 +14,7 @@ export class PaysetMapper {
 		const PaysetFE_list = await Promise.all(
 			payset_list.map(async (payset) => {
 				const employee_data =
-					await this.employeeDataService.getEmployeeDataByEmpNo(
+					await this.employeeDataService.getEmployeeDataByEmpNoByPeriod(
 						period_id,
 						payset.emp_no
 					);

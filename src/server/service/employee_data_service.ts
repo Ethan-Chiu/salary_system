@@ -72,7 +72,7 @@ export class EmployeeDataService {
 		const employee_data_mapper = container.resolve(EmployeeDataMapper);
 		return await employee_data_mapper.decode(employeeData);
 	}
-	async getEmployeeDataByEmpNo(period_id: number,emp_no: string): Promise<EmployeeDataDecType > {
+	async getEmployeeDataByEmpNoByPeriod(period_id: number,emp_no: string): Promise<EmployeeDataDecType > {
 		const employeeData = await EmployeeData.findOne({
 			where: {
 				emp_no: emp_no,
@@ -143,20 +143,21 @@ export class EmployeeDataService {
 		return await employee_data_mapper.decodeList(employeeDataList);
 	}
 
-	async getEmployeeDataByEmpNoByPeriod(emp_no: string, period_id: number): Promise<EmployeeDataDecType | null> {
-		const employeeData = await EmployeeData.findOne({
-			where: {
-				emp_no: emp_no,
-				period_id: period_id,
-			},
-			raw: true,
-		});
-		const employee_data_mapper = container.resolve(EmployeeDataMapper);
-		return await employee_data_mapper.decode(employeeData);
-	}
 
 	async getAllEmployeeData(): Promise<EmployeeDataDecType[]> {
 		const employeeDataList = await EmployeeData.findAll({
+			raw: true,
+			order: [["emp_no", "ASC"]],
+		});
+		const employee_data_mapper = container.resolve(EmployeeDataMapper);
+		return await employee_data_mapper.decodeList(employeeDataList);
+	}
+
+	async getAllEmployeeDataByPeriod(period_id: number): Promise<EmployeeDataDecType[]> {
+		const employeeDataList = await EmployeeData.findAll({
+			where:{
+				period_id:period_id
+			},
 			raw: true,
 			order: [["emp_no", "ASC"]],
 		});
@@ -267,7 +268,7 @@ export class EmployeeDataService {
 		bank_account: bank_account,
 	}: // received_elderly_benefits: received_elderly_benefits,
 		z.infer<typeof updateEmployeeDataByEmpNoService>): Promise<void> {
-		const employeeData = await this.getEmployeeDataByEmpNo(period_id!,emp_no!);
+		const employeeData = await this.getEmployeeDataByEmpNoByPeriod(period_id!,emp_no!);
 		if (employeeData == null) {
 			throw new BaseResponseError("Employee account does not exist");
 		}
