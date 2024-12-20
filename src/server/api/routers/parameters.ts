@@ -316,7 +316,7 @@ export const parametersRouter = createTRPCRouter({
 				create_by: newData.create_by,
 				start_date: levelRange.start_date!,
 			});
-			await levelRangeService.rescheduleLevelRange();
+			// await levelRangeService.rescheduleLevelRange();
 			return levelRangeFE;
 		}),
 
@@ -373,7 +373,7 @@ export const parametersRouter = createTRPCRouter({
 			const newdata = await levelRangeService.updateLevelRange(
 				levelRange
 			);
-			await levelRangeService.rescheduleLevelRange();
+			// await levelRangeService.rescheduleLevelRange();
 			return newdata;
 		}),
 
@@ -383,7 +383,7 @@ export const parametersRouter = createTRPCRouter({
 			const { input } = opts;
 			const levelRangeService = container.resolve(LevelRangeService);
 			await levelRangeService.deleteLevelRange(input.id);
-			await levelRangeService.rescheduleLevelRange();
+			// await levelRangeService.rescheduleLevelRange();
 		}),
 
 	createLevel: publicProcedure
@@ -394,7 +394,7 @@ export const parametersRouter = createTRPCRouter({
 				...input,
 				end_date: null,
 			});
-			await levelService.rescheduleLevel();
+			// await levelService.rescheduleLevel();
 			return newdata;
 		}),
 	batchCreateLevel: publicProcedure
@@ -403,7 +403,7 @@ export const parametersRouter = createTRPCRouter({
 			const levelService = container.resolve(LevelService);
 			const new_input = input.map((e) => ({ ...e, end_date: null }));
 			const newdata = await levelService.batchCreateLevel(new_input);
-			await levelService.rescheduleLevel();
+			// await levelService.rescheduleLevel();
 			return newdata;
 		}),
 	getCurrentLevel: publicProcedure
@@ -477,7 +477,7 @@ export const parametersRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const levelService = container.resolve(LevelService);
 			const newdata = await levelService.updateLevel(input);
-			await levelService.rescheduleLevel();
+			// await levelService.rescheduleLevel();
 			return newdata;
 		}),
 
@@ -487,7 +487,7 @@ export const parametersRouter = createTRPCRouter({
 			const { input } = opts;
 			const levelService = container.resolve(LevelService);
 			await levelService.deleteLevel(input.id);
-			await levelService.rescheduleLevel();
+			// await levelService.rescheduleLevel();
 		}),
 
 	createPerformanceLevel: publicProcedure

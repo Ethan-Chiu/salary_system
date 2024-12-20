@@ -32,15 +32,30 @@ export class LevelService {
 		data: z.infer<typeof createLevelService>
 	): Promise<Level> {
 		const d = createLevelService.parse(data);
-
+		const start_date = d.start_date? new Date(d.start_date):new Date();
+		const start_date_adjust = new Date(
+					start_date.setFullYear(start_date.getFullYear(), 0, 1)
+				);
+		const end_date = new Date(
+			start_date.setFullYear(start_date.getFullYear(), 11, 31)
+		);
 		const level = await this.levelMapper.encode({
 			...d,
-			start_date: d.start_date ?? new Date(),
+			start_date: start_date_adjust,
+			end_date: end_date,
 			disabled: false,
 			create_by: "system",
 			update_by: "system",
 		});
-
+		const existed_data = await Level.findOne({ where: {
+			level: level.level,
+			start_date: level.start_date,
+			end_date: level.end_date,
+			disabled: false
+		} })
+		if (existed_data!=null) {
+			throw new Error(`Data already exist type:${existed_data.level}, start_date: ${start_date}, end_date: ${end_date}`)
+		}
 		const newData = await Level.create(level, {
 			raw: true,
 		});
@@ -207,55 +222,55 @@ export class LevelService {
 		return this.levelMapper.decode(result);
 	}
 
-	async rescheduleLevel(): Promise<void> {
-		const levelListEnc = await Level.findAll({
-			where: { disabled: false },
-			order: [
-				["start_date", "DESC"],
-				["level", "ASC"],
-				["update_date", "ASC"],
-			],
-		});
+	// async rescheduleLevel(): Promise<void> {
+	// 	const levelListEnc = await Level.findAll({
+	// 		where: { disabled: false },
+	// 		order: [
+	// 			["start_date", "DESC"],
+	// 			["level", "ASC"],
+	// 			["update_date", "ASC"],
+	// 		],
+	// 	});
 
-		const levelList = await this.levelMapper.decodeList(levelListEnc);
+	// 	const levelList = await this.levelMapper.decodeList(levelListEnc);
 
-		for (const level of levelList) {
-			const start_date = new Date(level.start_date);
-			const start_date_adjust = new Date(
-				start_date.setFullYear(start_date.getFullYear(), 0, 1)
-			);
-			const end_date = new Date(
-				start_date.setFullYear(start_date.getFullYear(), 11, 31)
-			);
-			if (
-				level.start_date != start_date_adjust ||
-				level.end_date != end_date
-			) {
-				await this.updateLevel({
-					id: level.id,
-					start_date: start_date_adjust,
-					end_date: end_date,
-				});
-			}
-		}
-		const updatedLevelList = await Level.findAll({
-			where: { disabled: false },
-			order: [
-				["start_date", "DESC"],
-				["level", "ASC"],
-				["update_date", "ASC"],
-			],
-		});
-		for (let i = 0; i < updatedLevelList.length - 1; i += 1) {
-			if (
-				updatedLevelList[i]!.level == updatedLevelList[i + 1]!.level &&
-				updatedLevelList[i]!.start_date ==
-					updatedLevelList[i + 1]!.start_date
-			) {
-				await this.deleteLevel(updatedLevelList[i]!.id);
-			}
-		}
-	}
+	// 	for (const level of levelList) {
+	// 		const start_date = new Date(level.start_date);
+	// 		const start_date_adjust = new Date(
+	// 			start_date.setFullYear(start_date.getFullYear(), 0, 1)
+	// 		);
+	// 		const end_date = new Date(
+	// 			start_date.setFullYear(start_date.getFullYear(), 11, 31)
+	// 		);
+	// 		if (
+	// 			level.start_date != start_date_adjust ||
+	// 			level.end_date != end_date
+	// 		) {
+	// 			await this.updateLevel({
+	// 				id: level.id,
+	// 				start_date: start_date_adjust,
+	// 				end_date: end_date,
+	// 			});
+	// 		}
+	// 	}
+	// 	const updatedLevelList = await Level.findAll({
+	// 		where: { disabled: false },
+	// 		order: [
+	// 			["start_date", "DESC"],
+	// 			["level", "ASC"],
+	// 			["update_date", "ASC"],
+	// 		],
+	// 	});
+	// 	for (let i = 0; i < updatedLevelList.length - 1; i += 1) {
+	// 		if (
+	// 			updatedLevelList[i]!.level == updatedLevelList[i + 1]!.level &&
+	// 			updatedLevelList[i]!.start_date ==
+	// 				updatedLevelList[i + 1]!.start_date
+	// 		) {
+	// 			await this.deleteLevel(updatedLevelList[i]!.id);
+	// 		}
+	// 	}
+	// }
 
 	private async getLevelAfterSelectValue({
 		id,

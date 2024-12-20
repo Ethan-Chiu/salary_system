@@ -34,7 +34,7 @@ return {
 });
 
 interface OvertimeTableProps {
-	period: number;
+	period_id: number;
 	emp_no_list: string[];
 	pay_type: PayTypeEnumType;
 }

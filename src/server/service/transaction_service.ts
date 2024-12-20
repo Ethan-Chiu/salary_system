@@ -50,10 +50,11 @@ export class TransactionService {
 			await ehrService.getPaysetByEmpNoList(period_id, [emp_no])
 		)[0];
 		const calculateService = container.resolve(CalculateService);
-		const employee_data = await employeeDataService.getEmployeeDataByEmpNoByPeriod(
-			period_id,
-			emp_no
-		);
+		const employee_data =
+			await employeeDataService.getEmployeeDataByEmpNoByPeriod(
+				period_id,
+				emp_no
+			);
 		const employee_payment_dec =
 			await employeePaymentService.getCurrentEmployeePaymentByEmpNo(
 				emp_no,
@@ -437,8 +438,7 @@ export class TransactionService {
 
 		const disabilty_level = employee_data!.disabilty_level;
 
-		const v_2_h_i = -1;
-			// await calculateService.getSecondGenerationHealthInsurance(period_id, emp_no, pay_type, insurance_rate_setting!, employee_payment_fe);
+		const v_2_h_i = await calculateService.getSecondGenerationHealthInsurance(period_id, emp_no, pay_type, insurance_rate_setting!, employee_payment_dec);
 
 		const emp_trust_reserve = employee_trust_fe
 			? employee_trust_fe.emp_trust_reserve
