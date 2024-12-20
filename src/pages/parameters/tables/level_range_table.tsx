@@ -12,11 +12,16 @@ import { formatDate } from "~/lib/utils/format_date";
 import { useState } from "react";
 import { FunctionMode } from "../components/function_sheet/data_table_functions";
 import { TFunction } from "i18next";
-import { FunctionsComponent, FunctionsItem } from "~/components/data_table/functions_component";
+import {
+	FunctionsComponent,
+	FunctionsItem,
+} from "~/components/data_table/functions_component";
 import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { levelRangeSchema } from "../schemas/configurations/level_range_schema";
+import { Sheet, SheetContent } from "~/components/ui/sheet";
+import { LevelParameterForm } from "../components/function_sheet/level_parameter_form";
 
 export type RowItem = {
 	type: string;
@@ -30,35 +35,50 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-export const level_range_columns = ({ t, period_id, open, setOpen, mode, setMode }: { t: TFunction<[string], undefined>, period_id: number, open: boolean, setOpen: (open: boolean) => void, mode: FunctionMode, setMode: (mode: FunctionMode) => void }) => [
-	...["type", "level_start", "level_end", "start_date", "end_date"].map((key: string) =>
-		columnHelper.accessor(key as RowItemKey, {
-			header: ({ column }) => {
-				return (
-					<div className="flex justify-center">
-						<div className="text-center font-medium">
-							<Button
-								variant="ghost"
-								onClick={() =>
-									column.toggleSorting(
-										column.getIsSorted() === "asc"
-									)
-								}
-							>
-								{t(`table.${key}`)}
-								<ArrowUpDown className="ml-2 h-4 w-4" />
-							</Button>
+export const level_range_columns = ({
+	t,
+	setOpen,
+	setMode,
+}: {
+	t: TFunction<[string], undefined>;
+	period_id: number;
+	setOpen: (open: boolean) => void;
+	setMode: (mode: FunctionMode) => void;
+}) => [
+	...["type", "level_start", "level_end", "start_date", "end_date"].map(
+		(key: string) =>
+			columnHelper.accessor(key as RowItemKey, {
+				header: ({ column }) => {
+					return (
+						<div className="flex justify-center">
+							<div className="text-center font-medium">
+								<Button
+									variant="ghost"
+									onClick={() =>
+										column.toggleSorting(
+											column.getIsSorted() === "asc"
+										)
+									}
+								>
+									{t(`table.${key}`)}
+									<ArrowUpDown className="ml-2 h-4 w-4" />
+								</Button>
+							</div>
 						</div>
-					</div>
-				);
-			},
-			cell: ({ row }) => {
-				switch (key) {
-					default:
-						return <div className="text-center font-medium">{`${row.original[key as RowItemKey]}`}</div>
-				}
-			}
-		})),
+					);
+				},
+				cell: ({ row }) => {
+					switch (key) {
+						default:
+							return (
+								<div className="text-center font-medium">{`${row.original[
+									key as RowItemKey
+								]?.toString()}`}</div>
+							);
+					}
+				},
+			})
+	),
 	columnHelper.accessor("functions", {
 		header: ({ column }) => {
 			return (
@@ -71,27 +91,20 @@ export const level_range_columns = ({ t, period_id, open, setOpen, mode, setMode
 		},
 		cell: ({ row }) => {
 			return (
-				<FunctionsComponent t={t} open={open} setOpen={setOpen} mode={mode} setMode={setMode} functionsItem={row.original.functions} >
-					<ParameterToolbarFunctionsProvider
-						selectedTableType={"TableBankSetting"}
-						period_id={period_id}
-					>
-						<ScrollArea className="h-full w-full">
-							<ParameterForm
-								formSchema={levelRangeSchema}
-								mode={mode}
-								closeSheet={() => setOpen(false)}
-							/>
-						</ScrollArea>
-						<ScrollBar orientation="horizontal" />
-					</ParameterToolbarFunctionsProvider>
-				</FunctionsComponent>
+				<FunctionsComponent
+					t={t}
+					setOpen={setOpen}
+					setMode={setMode}
+					functionsItem={row.original.functions}
+				/>
 			);
 		},
 	}),
 ];
 
-export function levelRangeMapper(levelRangeData: LevelRangeFEType[]): RowItem[] {
+export function levelRangeMapper(
+	levelRangeData: LevelRangeFEType[]
+): RowItem[] {
 	return levelRangeData.map((d) => {
 		return {
 			type: d.type,
@@ -99,7 +112,11 @@ export function levelRangeMapper(levelRangeData: LevelRangeFEType[]): RowItem[] 
 			level_end: d.level_end,
 			start_date: formatDate("day", d.start_date) ?? "",
 			end_date: formatDate("day", d.end_date) ?? "",
-			functions: { create: d.creatable, update: d.updatable, delete: d.deletable }
+			functions: {
+				create: d.creatable,
+				update: d.updatable,
+				delete: d.deletable,
+			},
 		};
 	});
 }
@@ -131,21 +148,40 @@ export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-	return (
-		<>
-			{!viewOnly ? (
-				<DataTableWithFunctions
-					columns={level_range_columns({ t, period_id, open, setOpen, mode, setMode })}
-					data={levelRangeMapper(data!)}
-					filterColumnKey={filterKey}
-				/>
-			) : (
-				<DataTableWithoutFunctions
-					columns={level_range_columns({ t, period_id, open, setOpen, mode, setMode })}
-					data={levelRangeMapper(data!)}
-					filterColumnKey={filterKey}
-				/>
-			)}
-		</>
+	const columns = level_range_columns({
+		t,
+		period_id,
+		setOpen,
+		setMode,
+	});
+
+	return !viewOnly ? (
+		<Sheet open={open} onOpenChange={setOpen}>
+			<DataTableWithFunctions
+				columns={columns}
+				data={levelRangeMapper(data!)}
+				filterColumnKey={filterKey}
+			/>
+			<SheetContent className="w-[50%] px-12 py-6">
+				<ScrollArea className="h-full w-full">
+					<ParameterToolbarFunctionsProvider
+						selectedTableType={"TableLevelRange"}
+						period_id={period_id}
+					>
+						<LevelParameterForm
+							formSchema={levelRangeSchema}
+							mode={mode}
+							closeSheet={() => setOpen(false)}
+						/>
+					</ParameterToolbarFunctionsProvider>
+				</ScrollArea>
+			</SheetContent>
+		</Sheet>
+	) : (
+		<DataTableWithoutFunctions
+			columns={columns}
+			data={levelRangeMapper(data!)}
+			filterColumnKey={filterKey}
+		/>
 	);
 }

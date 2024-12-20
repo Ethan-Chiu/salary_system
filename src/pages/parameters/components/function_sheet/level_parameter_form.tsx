@@ -18,44 +18,47 @@ import {
 	DialogTitle,
 } from "~/components/ui/dialog";
 import CustomForm from "~/components/ui/custom-form";
+import { levelRangeSchema } from "../../schemas/configurations/level_range_schema";
+import { SelectLevelField } from "./form_fields/select_level_field";
 
-interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
+interface LevelParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
 	defaultValue?: any;
 	mode: FunctionMode;
 	closeSheet: () => void;
 }
 
-export function ParameterForm<SchemaType extends z.AnyZodObject>({
+export function LevelParameterForm<SchemaType extends z.AnyZodObject>({
 	formSchema,
 	defaultValue,
 	mode,
 	closeSheet,
-}: ParameterFormProps<SchemaType>) {
+}: LevelParameterFormProps<SchemaType>) {
 	const { t } = useTranslation(["common"]);
 	const functions = useContext(parameterToolbarFunctionsContext);
 
 	const createFunction = functions.createFunction!;
 	const updateFunction = functions.updateFunction!;
-	const deleteFunction = functions.deleteFunction!;
-	const batchCreateFunction = functions.batchCreateFunction!;
 
 	const [openDialog, setOpenDialog] = useState(false);
 
-	const onSubmit = useCallback(async (data: z.infer<typeof formSchema>) => {
-		if (mode === "create") {
-			createFunction.mutate(data);
-		} else if (mode === "update") {
-			updateFunction.mutate({
-				...data,
-				id: data.id,
-			});
-		}
-		// closeSheet();
-	}, []);
+	const onSubmit = useCallback(
+		async (data: z.infer<typeof levelRangeSchema>) => {
+			if (mode === "create") {
+				createFunction.mutate(data);
+			} else if (mode === "update") {
+				updateFunction.mutate({
+					...data,
+					id: data.id,
+				});
+			}
+			// closeSheet();
+		},
+		[]
+	);
 
-	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+	const form = useForm<z.infer<typeof levelRangeSchema>>({
+		resolver: zodResolver(levelRangeSchema),
 		defaultValues: {
 			...defaultValue,
 		},
@@ -64,7 +67,15 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	return (
 		<>
 			<CustomForm
-				formSchema={formSchema}
+				formSchema={levelRangeSchema}
+				formConfig={[
+          {
+            key: "level_start",
+            config: {
+              render: SelectLevelField
+            }
+          }
+        ]}
 				form={form}
 				onSubmit={void onSubmit}
 			>

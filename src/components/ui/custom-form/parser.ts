@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ParsedField, ParsedSchema } from "./types";
+import { FormConfig, ParsedField, ParsedSchema, FormEntries } from "./types";
 import { inferFieldType } from "./infer-field-type";
 
 export type ZodObjectOrWrapped =
@@ -12,10 +12,10 @@ function parseField(
 ): ParsedField {
 	const baseSchema = getBaseSchema(schema);
 	/* const fieldConfig = getFieldConfigInZodStack(schema); */
-	const type = inferFieldType(baseSchema);
+	const type = inferFieldType(baseSchema, undefined);
 	/* const defaultValue = getDefaultValueInZodStack(schema); */
 
-  console.log(baseSchema)
+	console.log(baseSchema);
 	// Enums
 	const options = baseSchema._def.values;
 	let optionValues: [string, string][] = [];
@@ -78,4 +78,19 @@ export function parseSchema(schema: ZodObjectOrWrapped): ParsedSchema {
 	);
 
 	return { fields };
+}
+
+export function createFormEntries<T extends ZodObjectOrWrapped>(
+	formFields: ParsedSchema,
+	config: FormConfig<T> | undefined = []
+): FormEntries {
+	return {
+		entries: formFields.fields.map((field) => {
+      const render = config.find((c) => c.key === field.key)?.config.render;
+			return {
+				field: field,
+        render: render
+			};
+		}),
+	};
 }

@@ -251,7 +251,8 @@
     "q1_bonus": "Q1 Bonus",
     "q2_bonus": "Q2 Bonus",
     "q3_q4_bonus": "Q3-Q4 Bonus",
-    "employee_dividends_bonus": "Employee Dividends Bouns"
+    "employee_dividends_bonus": "Employee Dividends Bouns",
+    "filename": "Filename",
   },
   "table_name": {
     "attendanceSetting": "Attendance Setting",
