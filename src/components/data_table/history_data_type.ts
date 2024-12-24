@@ -6,6 +6,9 @@ export interface HistoryDataType {
 	start_date: Date;
 	end_date: Date | null;
 	update_by: string;
+	creatable: boolean;
+	updatable: boolean;
+	deletable: boolean;
 }
 
 type ParameterExtendableHistoryDataType<T> = T extends object

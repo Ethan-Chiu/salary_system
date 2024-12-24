@@ -40,7 +40,7 @@ function CompHistoryView() {
 	const { t } = useTranslation(['common']);
 	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
-	const { selectedTableType } = useContext(dataTableContext);
+	const { selectedTableType, setFunctionsItem } = useContext(dataTableContext);
 
 	const queryFunctions = useContext(apiFunctionsContext);
 	const queryFunction = queryFunctions.queryFunction! as ParameterHistoryQueryFunctionType;
@@ -55,14 +55,18 @@ function CompHistoryView() {
 
 	useEffect(() => {
 		if (!isLoading && data?.[0]) {
-			setSelectedId(data[0].id);
-			setSelectedDateString(formatDate("day", data[0].start_date) ?? t("others.now"));
+			const targetData = data[0]
+			setSelectedId(targetData.id);
+			setFunctionsItem({ create: targetData.creatable, update: targetData.updatable, delete: targetData.deletable });
+			setSelectedDateString(formatDate("day", targetData.start_date) ?? t("others.now"));
 		}
 	}, [isLoading, data]);
 
 	useEffect(() => {
 		if (!isLoading && selectedDateString && data?.[0]) {
-			setSelectedId(data.filter((e) => formatDate("day", e.start_date) === selectedDateString)[0]!.id);
+			const targetData = data.filter((e) => formatDate("day", e.start_date) === selectedDateString)[0]!
+			setSelectedId(targetData.id);
+			setFunctionsItem({ create: targetData.creatable, update: targetData.updatable, delete: targetData.deletable });
 		}
 	}, [selectedDateString]);
 
@@ -124,7 +128,10 @@ function CompHistoryView() {
 										e.end_date?.toString() ?? ""
 									) && "mb-3 border-blue-500"
 								)}
-								onClick={() => setSelectedId(e.id)}
+								onClick={() => {
+									setSelectedId(e.id)
+									setFunctionsItem({ create: e.creatable, update: e.updatable, delete: e.deletable });
+								}}
 							>
 								<div className="m-1 flex flex-wrap items-center justify-center">
 									<div className="flex-1 whitespace-nowrap text-center">
