@@ -11,7 +11,10 @@ import {
 import { check_date, get_date_string, select_value } from "./helper_function";
 import { EHRService } from "./ehr_service";
 import { BaseMapper } from "../database/mapper/base_mapper";
-import { createInsuranceRateSettingService, updateInsuranceRateSettingService } from "../api/types/insurance_rate_setting_type";
+import {
+	createInsuranceRateSettingService,
+	updateInsuranceRateSettingService,
+} from "../api/types/insurance_rate_setting_type";
 
 @injectable()
 export class InsuranceRateSettingService {
@@ -158,9 +161,8 @@ export class InsuranceRateSettingService {
 			const end_date = insuranceRateSettingList[i]!.end_date;
 			const start_date = insuranceRateSettingList[i + 1]!.start_date;
 
-			const new_end_date = new Date(
-				start_date.setDate(start_date.getDate() - 1)
-			);
+			const new_end_date = new Date(start_date);
+			new_end_date.setDate(new_end_date.getDate() - 1);
 
 			if (end_date?.getTime() != new_end_date.getTime()) {
 				if (new_end_date < insuranceRateSettingList[i]!.start_date) {
