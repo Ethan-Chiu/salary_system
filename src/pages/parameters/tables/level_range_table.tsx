@@ -191,3 +191,4 @@ export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 		/>
 	);
 }
+          /* defaultValue={{start_date: new Date()}} */
