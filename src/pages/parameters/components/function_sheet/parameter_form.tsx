@@ -89,7 +89,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 					{t(`button.${mode}`)}
 				</Button>
 
-				<Dialog open={openDialog} onOpenChange={setOpenDialog}>
+				<Dialog open={openDialog} onOpenChange={setOpenDialog} aria-hidden={false}>
 					<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
 						<DialogHeader>
 							<DialogTitle>{t("others.check_data")}</DialogTitle>

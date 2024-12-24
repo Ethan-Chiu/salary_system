@@ -13,7 +13,7 @@ export function AutoFormField({
 }: {
 	field: ParsedField;
 	path: string[];
-  render?: (props: FormFieldProps) => React.ReactNode
+  render?: React.ComponentType<FormFieldProps> 
 }) {
 	const {
 		register,

@@ -21,8 +21,8 @@ export interface FieldConfig<
 	inputProps?: Record<string, any>;
 	label?: Renderable<AdditionalRenderable>;
 	fieldType?: FieldTypes;
-	render?: (props: FormFieldProps) => React.ReactNode;
-	/* fieldWrapper?: FieldWrapper; */
+	render?: React.ComponentType<FormFieldProps>;	
+  /* fieldWrapper?: FieldWrapper; */
 	/* customData?: CustomData; */
 }
 
