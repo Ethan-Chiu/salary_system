@@ -10,19 +10,9 @@ import {
 	DropdownMenuSeparator,
 } from "~/components/ui/dropdown-menu";
 import {
-	Sheet,
-	SheetContent,
-	SheetDescription,
-	SheetHeader,
-	SheetTitle,
-	SheetTrigger,
-} from "~/components/ui/sheet";
-
-import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
-	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
@@ -37,9 +27,7 @@ import { type TableEnum, getTableNameKey } from "../context/data_table_enum";
 import { getSchema } from "../../schemas/get_schemas";
 import { api } from "~/utils/api";
 import { z } from "zod";
-import { type Level } from "~/server/database/entity/SALARY/level";
 import { modeDescription } from "~/lib/utils/helper_function";
-import { zodOptionalDate, zodRequiredDate } from "~/lib/utils/zod_types";
 import { ExcelDownload } from "../excel_download/ExcelDownloader";
 import { ExcelUpload } from "../excel_upload/ExcelUpload";
 
@@ -47,7 +35,8 @@ interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
 }
 
-export type FunctionMode =
+// TODO: remove
+type FunctionMode =
 	"create"
 	| "batch_create"
 	| "update"
@@ -69,25 +58,6 @@ export function DataTableFunctions({
 
 	// ========================= Additional Condition for Schema =====================================
 	let schema = getSchema(tableType);
-	if (tableType === "TableLevelRange") {
-		if (isLoading || isError) {
-			return <></>;
-		}
-		else {
-			const levelOptions: Array<z.ZodLiteral<number>> =
-				(data as Level[]).map((d: Level) => {
-					return d.level;
-				}).map((d: number) => z.literal(d));
-			const levelDataAsTuple: readonly [z.ZodTypeAny, z.ZodTypeAny, ...z.ZodTypeAny[]] = levelOptions as any as [z.ZodTypeAny, z.ZodTypeAny, ...z.ZodTypeAny[]];
-			const levelSchema = z.union(levelDataAsTuple);
-			schema = schema.extend({
-				level_start: levelSchema,
-				level_end: levelSchema,
-				start_date: zodRequiredDate("start_date"),
-				// end_date: zodOptionalDate(),
-			})
-		}
-	}
 
 	return (
 		<div className={cn(className, "flex h-full items-center")}>

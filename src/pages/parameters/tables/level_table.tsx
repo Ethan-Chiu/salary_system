@@ -16,10 +16,12 @@ import { type TFunction } from "i18next";
 import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { levelSchema } from "../schemas/configurations/level_schema";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
-import { type FunctionMode } from "../components/function_sheet/data_table_functions";
+import { useContext } from "react";
 import { Sheet } from "~/components/ui/sheet";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
+import dataTableContext, {
+	type FunctionMode,
+} from "../components/context/data_table_context";
 
 export type RowItem = {
 	level: number;
@@ -119,8 +121,7 @@ interface LevelTableProps extends TableComponentProps {
 
 export function LevelTable({ period_id, viewOnly }: LevelTableProps) {
 	const { t } = useTranslation(["common"]);
-	const [open, setOpen] = useState<boolean>(false);
-	const [mode, setMode] = useState<FunctionMode>("none");
+	const { mode, setMode, open, setOpen } = useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentLevel.useQuery({ period_id });
