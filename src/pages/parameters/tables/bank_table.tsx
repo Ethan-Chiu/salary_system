@@ -10,16 +10,19 @@ import { formatDate } from "~/lib/utils/format_date";
 import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
-import { BankSettingFEType } from "~/server/api/types/bank_setting_type";
+import { type BankSettingFEType } from "~/server/api/types/bank_setting_type";
 import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { useContext } from "react";
 import { bankSchema } from "../schemas/configurations/bank_schema";
-import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
-import { ScrollArea } from "~/components/ui/scroll-area";
-import { FunctionsComponent, FunctionsItem } from "~/components/data_table/functions_component";
-import { Sheet, SheetContent } from "~/components/ui/sheet";
-import dataTableContext, { FunctionMode } from "../components/context/data_table_context";
-import { FunctionsSheet } from "../components/function_sheet/functions_sheet";
+import {
+	FunctionsComponent,
+	type FunctionsItem,
+} from "~/components/data_table/functions_component";
+import { Sheet } from "~/components/ui/sheet";
+import dataTableContext, {
+	type FunctionMode,
+} from "../components/context/data_table_context";
+import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
 
 export type RowItem = {
 	bank_name: string;
@@ -34,9 +37,17 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-export const bank_columns = ({ t, setOpen, setMode }: { t: TFunction<[string], undefined>, setOpen: (open: boolean) => void, setMode: (mode: FunctionMode) => void }) => [
-	...["bank_name", "org_name", "start_date", "end_date"].map(
-		(key: string) => columnHelper.accessor(key as RowItemKey, {
+export const bank_columns = ({
+	t,
+	setOpen,
+	setMode,
+}: {
+	t: TFunction<[string], undefined>;
+	setOpen: (open: boolean) => void;
+	setMode: (mode: FunctionMode) => void;
+}) => [
+	...["bank_name", "org_name", "start_date", "end_date"].map((key: string) =>
+		columnHelper.accessor(key as RowItemKey, {
 			header: ({ column }) => {
 				return (
 					<div className="flex justify-center">
@@ -59,16 +70,25 @@ export const bank_columns = ({ t, setOpen, setMode }: { t: TFunction<[string], u
 			cell: ({ row }) => {
 				switch (key) {
 					case "bank_name":
-						return <div className="text-center font-medium">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
+						return (
+							<div className="text-center font-medium">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
+						);
 					case "org_name":
-						return <div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>
+						return (
+							<div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>
+						);
 					default:
-						return <div className="text-center font-medium">{`${row.original[key as RowItemKey]}`}</div>
+						return (
+							<div className="text-center font-medium">{`${
+								row.original[key as RowItemKey]?.toString()
+							}`}</div>
+						);
 				}
-			}
-		})),
+			},
+		})
+	),
 	columnHelper.accessor("functions", {
-		header: ({ column }) => {
+		header: () => {
 			return (
 				<div className="flex justify-center">
 					<div className="text-center font-medium">
@@ -90,7 +110,9 @@ export const bank_columns = ({ t, setOpen, setMode }: { t: TFunction<[string], u
 	}),
 ];
 
-export function bankSettingMapper(bankSettingData: BankSettingFEType[]): RowItem[] {
+export function bankSettingMapper(
+	bankSettingData: BankSettingFEType[]
+): RowItem[] {
 	return bankSettingData.map((d) => {
 		return {
 			bank_name: d.bank_name,
@@ -99,7 +121,11 @@ export function bankSettingMapper(bankSettingData: BankSettingFEType[]): RowItem
 			org_code: d.org_code,
 			start_date: formatDate("day", d.start_date) ?? "",
 			end_date: formatDate("day", d.end_date) ?? "",
-			functions: { "create": d.creatable, "update": d.updatable, "delete": d.deletable },
+			functions: {
+				create: d.creatable,
+				update: d.updatable,
+				delete: d.deletable,
+			},
 		};
 	});
 }
@@ -112,7 +138,7 @@ interface BankTableProps extends TableComponentProps {
 
 export function BankTable({ period_id, viewOnly }: BankTableProps) {
 	const { t } = useTranslation(["common"]);
-	const { setMode, setOpen } = useContext(dataTableContext);
+	const { open, setOpen, mode, setMode } = useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBankSetting.useQuery({ period_id });
@@ -130,23 +156,38 @@ export function BankTable({ period_id, viewOnly }: BankTableProps) {
 		// return <span>Error: {error.message}</span>; // TODO: Error element with toast
 		const err_msg = error.message;
 		const emptyError = true;
-		return emptyError ? <EmptyTable err_msg={err_msg} selectedTableType="TableBankSetting" /> : <></>;
+		return emptyError ? (
+			<EmptyTable
+				err_msg={err_msg}
+				selectedTableType="TableBankSetting"
+			/>
+		) : (
+			<></>
+		);
 	}
 
-	return (!viewOnly ? (
-		<FunctionsSheet t={t} period_id={period_id}>
+	return !viewOnly ? (
+		<Sheet open={open} onOpenChange={setOpen}>
 			<DataTableWithFunctions
 				columns={bank_columns({ t, setOpen, setMode })}
 				data={bankSettingMapper(data!)}
 				filterColumnKey={filterKey}
 			/>
-		</FunctionsSheet>
+			<FunctionsSheetContent t={t} period_id={period_id}>
+				<ParameterForm
+					formSchema={bankSchema}
+					mode={mode}
+					closeSheet={() => {
+						setOpen(false);
+					}}
+				/>
+			</FunctionsSheetContent>
+		</Sheet>
 	) : (
 		<DataTableWithoutFunctions
 			columns={bank_columns({ t, setOpen, setMode })}
 			data={bankSettingMapper(data!)}
 			filterColumnKey={filterKey}
 		/>
-	)
 	);
 }

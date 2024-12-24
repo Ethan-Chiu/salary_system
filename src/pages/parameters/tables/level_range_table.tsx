@@ -7,21 +7,20 @@ import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/compon
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { useTranslation } from "react-i18next";
-import { LevelRangeFEType } from "~/server/api/types/level_range_type";
+import { type LevelRangeFEType } from "~/server/api/types/level_range_type";
 import { formatDate } from "~/lib/utils/format_date";
 import { useState } from "react";
-import { FunctionMode } from "../components/function_sheet/data_table_functions";
-import { TFunction } from "i18next";
+import { type FunctionMode } from "../components/function_sheet/data_table_functions";
+import { type TFunction } from "i18next";
 import {
 	FunctionsComponent,
-	FunctionsItem,
+	type FunctionsItem,
 } from "~/components/data_table/functions_component";
-import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
-import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { levelRangeSchema } from "../schemas/configurations/level_range_schema";
-import { Sheet, SheetContent } from "~/components/ui/sheet";
-import { LevelParameterForm } from "../components/function_sheet/level_parameter_form";
+import { Sheet } from "~/components/ui/sheet";
+import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
+import { SelectLevelField } from "../components/function_sheet/form_fields/select_level_field";
 
 export type RowItem = {
 	type: string;
@@ -80,7 +79,7 @@ export const level_range_columns = ({
 			})
 	),
 	columnHelper.accessor("functions", {
-		header: ({ column }) => {
+		header: () => {
 			return (
 				<div className="flex justify-center">
 					<div className="text-center font-medium">
@@ -162,20 +161,21 @@ export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 				data={levelRangeMapper(data!)}
 				filterColumnKey={filterKey}
 			/>
-			<SheetContent className="w-[50%] px-12 py-6">
-				<ScrollArea className="h-full w-full">
-					<ParameterToolbarFunctionsProvider
-						selectedTableType={"TableLevelRange"}
-						period_id={period_id}
-					>
-						<LevelParameterForm
-							formSchema={levelRangeSchema}
-							mode={mode}
-							closeSheet={() => setOpen(false)}
-						/>
-					</ParameterToolbarFunctionsProvider>
-				</ScrollArea>
-			</SheetContent>
+			<FunctionsSheetContent t={t} period_id={period_id}>
+				<ParameterForm
+					formSchema={levelRangeSchema}
+					formConfig={[
+						{
+							key: "level_start",
+							config: {
+								render: SelectLevelField,
+							},
+						},
+					]}
+					mode={mode}
+					closeSheet={() => setOpen(false)}
+				/>
+			</FunctionsSheetContent>
 		</Sheet>
 	) : (
 		<DataTableWithoutFunctions

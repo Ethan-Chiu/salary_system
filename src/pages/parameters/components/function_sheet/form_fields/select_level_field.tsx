@@ -8,6 +8,8 @@ import {
 	SelectContent,
 	SelectItem,
 } from "~/components/ui/select";
+import { useEffect } from "react";
+import { z } from "zod";
 
 export function SelectLevelField({
 	field,
@@ -15,7 +17,21 @@ export function SelectLevelField({
 	error,
 	id,
 }: FormFieldProps) {
-	const { getValues } = useFormContext();
+	const { watch } = useFormContext();
+
+	const startDateInput = watch("start_date", null);
+	const result = z
+		.string()
+		.nullable()
+		.pipe(z.coerce.date().nullable())
+		.safeParse(startDateInput);
+
+	useEffect(() => {
+		const subscription = watch((value, { name, type }) =>
+			console.log(value, name, type)
+		);
+		return () => subscription.unsubscribe();
+	}, [watch]);
 
 	return (
 		<Select {...inputProps}>
@@ -25,27 +41,30 @@ export function SelectLevelField({
 			>
 				<SelectValue placeholder="Select an option" />
 			</SelectTrigger>
-      <SelectLevelOptionsComp start_date={getValues("start_date")} />
+
+			{result.success && result.data ? (
+				<SelectLevelOptionsComp start_date={result.data} />
+			) : (
+				<div>Select a start date</div>
+			)}
 		</Select>
 	);
 }
 
 function SelectLevelOptionsComp({ start_date }: { start_date: Date }) {
-	/* const { data, isLoading } = api.parameters.getAllLevel.useQuery(); */
+	const { data, isLoading } = api.parameters.getAllLevelByStartDate.useQuery({
+		start_date: start_date,
+	});
 
-	/* if (isLoading) { */
-	/* 	return <span>Loading...</span>; */
-	/* } */
-
-  const fake_d = [
-    "a", "b", "c"
-  ]
+	if (isLoading) {
+		return <span>Loading...</span>;
+	}
 
 	return (
 		<SelectContent>
-			{(fake_d ?? []).map((key) => (
-				<SelectItem key={key} value={key}>
-					{key}
+			{(data ?? []).map((d) => (
+				<SelectItem key={d.id} value={d.level.toString()}>
+					{d.level}
 				</SelectItem>
 			))}
 		</SelectContent>

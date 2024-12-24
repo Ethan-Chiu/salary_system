@@ -9,17 +9,20 @@ import { type TableComponentProps } from "../tables_view";
 import { formatDate } from "~/lib/utils/format_date";
 import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
-import { SalaryIncomeTaxFEType } from "~/server/api/types/salary_income_tax";
-import { FunctionsComponent, FunctionsItem } from "~/components/data_table/functions_component";
-import { TFunction } from "i18next";
+import { type SalaryIncomeTaxFEType } from "~/server/api/types/salary_income_tax";
+import {
+	FunctionsComponent,
+	type FunctionsItem,
+} from "~/components/data_table/functions_component";
+import { type TFunction } from "i18next";
 import { useContext } from "react";
-import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
-import { ScrollArea } from "~/components/ui/scroll-area";
 import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { salaryIncomeTaxSchema } from "../schemas/configurations/salary_income_tax_schema";
-import { Sheet, SheetContent } from "~/components/ui/sheet";
-import dataTableContext, { FunctionMode } from "../components/context/data_table_context";
-import { FunctionsSheet } from "../components/function_sheet/functions_sheet";
+import { Sheet } from "~/components/ui/sheet";
+import dataTableContext, {
+	type FunctionMode,
+} from "../components/context/data_table_context";
+import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
 
 export type RowItem = {
 	salary_start: number;
@@ -34,9 +37,24 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-export const salary_income_tax_columns = ({ t, period_id, open, setOpen, mode, setMode }: { t: TFunction<[string], undefined>, period_id: number, open: boolean, setOpen: (open: boolean) => void, mode: FunctionMode, setMode: (mode: FunctionMode) => void }) => [
-	...["salary_start", "salary_end", "dependent", "tax_amount", "start_date", "end_date"].map(
-		(key: string) => columnHelper.accessor(key as RowItemKey, {
+export const salary_income_tax_columns = ({
+	t,
+	setOpen,
+	setMode,
+}: {
+	t: TFunction<[string], undefined>;
+	setOpen: (open: boolean) => void;
+	setMode: (mode: FunctionMode) => void;
+}) => [
+	...[
+		"salary_start",
+		"salary_end",
+		"dependent",
+		"tax_amount",
+		"start_date",
+		"end_date",
+	].map((key: string) =>
+		columnHelper.accessor(key as RowItemKey, {
 			header: ({ column }) => {
 				return (
 					<div className="flex justify-center">
@@ -59,12 +77,17 @@ export const salary_income_tax_columns = ({ t, period_id, open, setOpen, mode, s
 			cell: ({ row }) => {
 				switch (key) {
 					default:
-						return <div className="text-center font-medium">{`${row.original[key as RowItemKey]}`}</div>
+						return (
+							<div className="text-center font-medium">{`${row.original[
+								key as RowItemKey
+							]?.toString()}`}</div>
+						);
 				}
-			}
-		})),
+			},
+		})
+	),
 	columnHelper.accessor("functions", {
-		header: ({ column }) => {
+		header: () => {
 			return (
 				<div className="flex justify-center">
 					<div className="text-center font-medium">
@@ -97,7 +120,11 @@ export function salaryIncomeTaxMapper(
 			tax_amount: d.tax_amount,
 			start_date: formatDate("day", d.start_date) ?? "",
 			end_date: formatDate("day", d.end_date) ?? "",
-			functions: { create: d.creatable, update: d.updatable, delete: d.deletable }
+			functions: {
+				create: d.creatable,
+				update: d.updatable,
+				delete: d.deletable,
+			},
 		};
 	});
 }
@@ -108,7 +135,10 @@ interface SalaryIncomeTaxTableProps extends TableComponentProps {
 	viewOnly?: boolean;
 }
 
-export function SalaryIncomeTaxTable({ viewOnly, period_id }: SalaryIncomeTaxTableProps) {
+export function SalaryIncomeTaxTable({
+	viewOnly,
+	period_id,
+}: SalaryIncomeTaxTableProps) {
 	const { t } = useTranslation(["common"]);
 	const { mode, setMode, open, setOpen } = useContext(dataTableContext);
 
@@ -139,18 +169,35 @@ export function SalaryIncomeTaxTable({ viewOnly, period_id }: SalaryIncomeTaxTab
 	}
 
 	return !viewOnly ? (
-		<FunctionsSheet t={t} period_id={period_id}>
+		<Sheet open={open} onOpenChange={setOpen}>
 			<DataTableWithFunctions
-				columns={salary_income_tax_columns({ t, period_id, open, setOpen, mode, setMode })}
+				columns={salary_income_tax_columns({
+					t,
+					setOpen,
+					setMode,
+				})}
 				data={salaryIncomeTaxMapper(data!)}
 				filterColumnKey={filterKey}
 			/>
-		</FunctionsSheet>
+			<FunctionsSheetContent t={t} period_id={period_id}>
+				<ParameterForm
+					formSchema={salaryIncomeTaxSchema}
+					mode={mode}
+					closeSheet={() => {
+						setOpen(false);
+					}}
+				/>
+			</FunctionsSheetContent>
+		</Sheet>
 	) : (
 		<DataTableWithoutFunctions
-			columns={salary_income_tax_columns({ t, period_id, open, setOpen, mode, setMode })}
+			columns={salary_income_tax_columns({
+				t,
+				setOpen,
+				setMode,
+			})}
 			data={salaryIncomeTaxMapper(data!)}
 			filterColumnKey={filterKey}
 		/>
-	)
+	);
 }
