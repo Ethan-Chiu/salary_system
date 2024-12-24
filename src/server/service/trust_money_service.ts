@@ -108,7 +108,7 @@ export class TrustMoneyService {
 		return await this.trustMoneyMapper.decodeList(trustMoney);
 	}
 
-	async getAllTrustMoney(): Promise<TrustMoneyDecType[]> {
+	async getAllTrustMoney(): Promise<TrustMoneyDecType[][]> {
 		const trustMoney = await TrustMoney.findAll({
 			where: { disabled: false },
 			order: [
@@ -118,7 +118,40 @@ export class TrustMoneyService {
 			],
 			raw: true,
 		});
-		return await this.trustMoneyMapper.decodeList(trustMoney);
+		const data_array = await this.trustMoneyMapper.decodeList(trustMoney);
+		const groupedSalaryIncomeTaxRecords: Record<
+			string,
+			TrustMoneyDecType[]
+		> = {};
+		data_array.forEach((d) => {
+			let key = "";
+			if (d.end_date == null) {
+				key = get_date_string(d.start_date);
+			} else
+				key =
+					get_date_string(d.start_date) + get_date_string(d.end_date);
+			if (!groupedSalaryIncomeTaxRecords[key]) {
+				groupedSalaryIncomeTaxRecords[key] = [];
+			}
+			groupedSalaryIncomeTaxRecords[key]!.push(d);
+		});
+		const grouped_array = Object.values(groupedSalaryIncomeTaxRecords).sort(
+			(a, b) => {
+				if (a[0]!.start_date > b[0]!.start_date) {
+					return -1;
+				} else if (a[0]!.start_date < b[0]!.start_date) {
+					return 1;
+				} else if (a[0]!.end_date == null) {
+					return -1;
+				} else if (b[0]!.end_date == null) {
+					return 1;
+				} else if (a[0]!.end_date > b[0]!.end_date) {
+					return -1;
+				} else return 1;
+			}
+		);
+
+		return grouped_array;
 	}
 
 	async getAllFutureTrustMoney(): Promise<TrustMoneyDecType[]> {
