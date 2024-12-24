@@ -9,8 +9,6 @@ import { type TableComponentProps } from "../tables_view";
 import { useTranslation } from "react-i18next";
 import { type LevelRangeFEType } from "~/server/api/types/level_range_type";
 import { formatDate } from "~/lib/utils/format_date";
-import { useState } from "react";
-import { type FunctionMode } from "../components/function_sheet/data_table_functions";
 import { type TFunction } from "i18next";
 import {
 	FunctionsComponent,
@@ -21,6 +19,10 @@ import { levelRangeSchema } from "../schemas/configurations/level_range_schema";
 import { Sheet } from "~/components/ui/sheet";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
 import { SelectLevelField } from "../components/function_sheet/form_fields/select_level_field";
+import dataTableContext, {
+	type FunctionMode,
+} from "../components/context/data_table_context";
+import { useContext } from "react";
 
 export type RowItem = {
 	type: string;
@@ -128,9 +130,7 @@ interface LevelRangeTableProps extends TableComponentProps {
 
 export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 	const { t } = useTranslation(["common"]);
-	const [open, setOpen] = useState<boolean>(false);
-	const [mode, setMode] = useState<FunctionMode>("none");
-
+	const { mode, setMode, open, setOpen } = useContext(dataTableContext);
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentLevelRange.useQuery({ period_id });
 	const filterKey: RowItemKey = "type";
@@ -155,7 +155,7 @@ export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 	});
 
 	return !viewOnly ? (
-		<Sheet open={open} onOpenChange={setOpen}>
+		<Sheet open={open} onOpenChange={setOpen} aria-hidden={false}>
 			<DataTableWithFunctions
 				columns={columns}
 				data={levelRangeMapper(data!)}
@@ -167,6 +167,12 @@ export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 					formConfig={[
 						{
 							key: "level_start",
+							config: {
+								render: SelectLevelField,
+							},
+						},
+						{
+							key: "level_end",
 							config: {
 								render: SelectLevelField,
 							},
