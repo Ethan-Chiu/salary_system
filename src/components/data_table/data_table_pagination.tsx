@@ -128,7 +128,7 @@ export function DataTablePagination<TData>({
 									table.setPageIndex(0);
 								};
 								if (page >= table.getPageCount()) {
-									setDisplayPageIndex((table.getPageCount() - 1).toString());
+									setDisplayPageIndex((table.getPageCount()).toString());
 									table.setPageIndex(table.getPageCount() - 1);
 								}
 							}}
