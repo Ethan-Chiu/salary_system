@@ -54,8 +54,8 @@ function CompHistoryView() {
 	const filterKey = "name";
 
 	useEffect(() => {
-		if (!isLoading && data?.[0]) {
-			const targetData = data[0]
+		if (!isLoading && data?.[0] && data?.[0]?.[0]) {
+			const targetData = data[0][0]
 			setSelectedId(targetData.id);
 			setFunctionsItem({ create: targetData.creatable, update: targetData.updatable, delete: targetData.deletable });
 			setSelectedDateString(formatDate("day", targetData.start_date) ?? t("others.now"));
@@ -63,8 +63,8 @@ function CompHistoryView() {
 	}, [isLoading, data]);
 
 	useEffect(() => {
-		if (!isLoading && selectedDateString && data?.[0]) {
-			const targetData = data.filter((e) => formatDate("day", e.start_date) === selectedDateString)[0]!
+		if (!isLoading && selectedDateString && data?.[0] && data?.[0]?.[0]) {
+			const targetData = data.filter((e) => formatDate("day", e[0]!.start_date) === selectedDateString)[0]![0]!
 			setSelectedId(targetData.id);
 			setFunctionsItem({ create: targetData.creatable, update: targetData.updatable, delete: targetData.deletable });
 		}
@@ -84,13 +84,15 @@ function CompHistoryView() {
 
 	const dateOpts: PopoverSelectorDataType[] = [];
 	data?.forEach((e) => {
-		if (e.start_date && !dateOpts.some((opt) => opt.key === formatDate("day", e.start_date))) {
+		if (e[0]!.start_date && !dateOpts.some((opt) => opt.key === formatDate("day", e[0]!.start_date))) {
 			dateOpts.push({
-				key: formatDate("day", e.start_date) ?? t("others.now"),
-				value: formatDate("day", e.start_date) ?? t("others.now"),
+				key: formatDate("day", e[0]!.start_date) ?? t("others.now"),
+				value: formatDate("day", e[0]!.start_date) ?? t("others.now"),
 			});
 		}
 	});
+
+	// return <></>
 
 	return (
 		<ResizablePanelGroup direction="horizontal">
@@ -103,19 +105,8 @@ function CompHistoryView() {
 				<Separator />
 				<ScrollArea className="h-full">
 					{data!
-						.filter((e, index, self) =>
-							formatDate("day", e.start_date) === selectedDateString &&
-							self.findIndex(t => formatDate("day", t.start_date) === formatDate("day", e.start_date) && formatDate("day", t.end_date) === formatDate("day", e.end_date)) === index
-						)
-						.sort((a, b) => {
-							if (a.start_date == null) {
-								return -1;
-							} else if (b.start_date == null) {
-								return 1;
-							} else {
-								return a.start_date > b.start_date ? -1 : 1;
-							}
-						})
+						.filter((e) => formatDate("day", e[0]!.start_date) === selectedDateString)
+						.map((e) => e[0]!)
 						.map((e) => (
 							<div
 								key={e.id}
@@ -169,14 +160,11 @@ function CompHistoryView() {
 			</ResizablePanel>
 			<ResizableHandle />
 			<ResizablePanel defaultSize={70}>
-				{data!.filter((e) => e.id === selectedId).length > 0 ? (
+				{data!.filter((e) => e[0]!.id === selectedId).length > 0 ? (
 					<DataTable
 						columns={getTableColumn(selectedTableType, t, selectedPeriod!.period_id, open, setOpen, mode, setMode)}
 						data={getTableMapper(selectedTableType)!(
-							data!.filter((e) =>
-								formatDate("day", e.start_date) === formatDate("day", data!.filter((e) => e.id === selectedId)[0]!.start_date) &&
-								formatDate("day", e.end_date) === formatDate("day", data!.filter((e) => e.id === selectedId)[0]!.end_date)
-							) as any[]
+							data!.filter((e) => e[0]!.id === selectedId)[0]! as any[]
 						)}
 						filterColumnKey={filterKey}
 					/>
