@@ -199,7 +199,7 @@ export function EmployeeDataChangeTable({
 																<Button
 																	variant="link"
 																	size="sm"
-																	className="hidden h-6 w-6 p-0 lg:flex bg-transparent text-black rounded border-black border"
+																	className="h-6 w-6 p-0 lg:flex bg-transparent text-black rounded border-black border"
 																	onClick={() => setDataStatus(d.emp_no)}
 																>
 																	<CheckCheck className="h-4 w-4" />

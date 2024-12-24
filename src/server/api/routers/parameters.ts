@@ -21,7 +21,10 @@ import {
 } from "../types/level_range_type";
 import { LevelRangeMapper } from "~/server/database/mapper/level_range_mapper";
 import { roundProperties } from "~/server/database/mapper/helper_function";
-import { SalaryIncomeTaxService } from "~/server/service/salary_income_tax_service";
+import {
+	primary_key,
+	SalaryIncomeTaxService,
+} from "~/server/service/salary_income_tax_service";
 import {
 	attendanceSettingFE,
 	createAttendanceSettingAPI,
@@ -39,7 +42,11 @@ import {
 	createTrustMoneyAPI,
 	updateTrustMoneyAPI,
 } from "../types/trust_money_type";
-import { batchCreateLevelAPI, createLevelAPI, updateLevelAPI } from "../types/level_type";
+import {
+	batchCreateLevelAPI,
+	createLevelAPI,
+	updateLevelAPI,
+} from "../types/level_type";
 import {
 	batchCreateSalaryIncomeTaxAPI,
 	createSalaryIncomeTaxAPI,
@@ -84,16 +91,17 @@ export const parametersRouter = createTRPCRouter({
 		if (bankSetting.length == 0) {
 			throw new BaseResponseError("BankSetting does not exist");
 		}
-		const bankSettingFE = await Promise.all(
-			bankSetting.map(async (b) => {
+		const bankSettingFE = bankSetting.map((bank_list) => {
+			const list = bank_list.map((b) => {
 				return {
 					...b,
 					creatable: true,
 					updatable: b.start_date > new Date(),
 					deletable: b.start_date > new Date(),
 				};
-			})
-		);
+			});
+			return list;
+		});
 		return bankSettingFE;
 	}),
 
@@ -152,13 +160,16 @@ export const parametersRouter = createTRPCRouter({
 			throw new BaseResponseError("AttendanceSetting does not exist");
 		}
 		const AttendanceSettingFE = await Promise.all(
-			attendanceSetting.map(async (a) => {
-				return {
-					...roundProperties(a, 4),
-					creatable: true,
-					updatable: a.start_date > new Date(),
-					deletable: a.start_date > new Date(),
-				};
+			attendanceSetting.map((attendance_list) => {
+				const list = attendance_list.map((a) => {
+					return {
+						...roundProperties(a, 4),
+						creatable: true,
+						updatable: a.start_date > new Date(),
+						deletable: a.start_date > new Date(),
+					};
+				});
+				return list;
 			})
 		);
 		return AttendanceSettingFE;
@@ -238,15 +249,18 @@ export const parametersRouter = createTRPCRouter({
 		if (insuranceRateSetting.length == 0) {
 			throw new BaseResponseError("InsuranceRateSetting does not exist");
 		}
-		const InsuranceRateSettingFE = await Promise.all(
-			insuranceRateSetting.map(async (a) => {
-				return {
-					...roundProperties(a, 4),
-					creatable: true,
-					updatable: a.start_date > new Date(),
-					deletable: a.start_date > new Date(),
-				};
-			})
+		const InsuranceRateSettingFE = insuranceRateSetting.map(
+			(insurance_rate_setting_list) => {
+				const list = insurance_rate_setting_list.map((a) => {
+					return {
+						...roundProperties(a, 4),
+						creatable: true,
+						updatable: a.start_date > new Date(),
+						deletable: a.start_date > new Date(),
+					};
+				});
+				return list;
+			}
 		);
 		return InsuranceRateSettingFE;
 	}),
@@ -332,7 +346,9 @@ export const parametersRouter = createTRPCRouter({
 				throw new BaseResponseError("LevelRange does not exist");
 			}
 			const levelRangeFE = await Promise.all(
-				levelRange.map(async (e) => await levelRangeMapper.getLevelRangeFE(e))
+				levelRange.map(
+					async (e) => await levelRangeMapper.getLevelRangeFE(e)
+				)
 			);
 			return levelRangeFE;
 		}),
@@ -345,7 +361,12 @@ export const parametersRouter = createTRPCRouter({
 			throw new BaseResponseError("LevelRange does not exist");
 		}
 		const levelRangeFE = await Promise.all(
-			levelRange.map(async (e) => await levelRangeMapper.getLevelRangeFE(e))
+			levelRange.map(async (e_list) => {
+				const list = e_list.map(async (e) => {
+					return await levelRangeMapper.getLevelRangeFE(e);
+				});
+				return list;
+			})
 		);
 		return levelRangeFE;
 	}),
@@ -431,13 +452,16 @@ export const parametersRouter = createTRPCRouter({
 		const levelService = container.resolve(LevelService);
 		const level = await levelService.getAllLevel();
 		const levelFE = await Promise.all(
-			level.map(async (l) => {
-				return {
-					...l,
-					creatable: true,
-					updatable: l.start_date > new Date(),
-					deletable: l.start_date > new Date(),
-				};
+			level.map((level_list) => {
+				const list = level_list.map((l) => {
+					return {
+						...l,
+						creatable: true,
+						updatable: l.start_date > new Date(),
+						deletable: l.start_date > new Date(),
+					};
+				});
+				return list;
 			})
 		);
 		if (level == null) {
@@ -449,7 +473,9 @@ export const parametersRouter = createTRPCRouter({
 		.input(z.object({ start_date: z.date() }))
 		.query(async ({ input }) => {
 			const levelService = container.resolve(LevelService);
-			const level = await levelService.getAllLevelByStartDate(input.start_date);
+			const level = await levelService.getAllLevelByStartDate(
+				input.start_date
+			);
 			const levelFE = await Promise.all(
 				level.map(async (l) => {
 					return {
@@ -465,7 +491,7 @@ export const parametersRouter = createTRPCRouter({
 			}
 			return levelFE;
 		}),
-		
+
 	getAllFutureLevel: publicProcedure.query(async () => {
 		const levelService = container.resolve(LevelService);
 		const level = await levelService.getAllFutureLevel();
@@ -577,7 +603,7 @@ export const parametersRouter = createTRPCRouter({
 						deletable: e.start_date > new Date(),
 					};
 				})
-			)
+			);
 			return trustMoneyFE;
 		}),
 
@@ -588,15 +614,18 @@ export const parametersRouter = createTRPCRouter({
 			throw new BaseResponseError("TrustMoney does not exist");
 		}
 		const trustMoneyFE = await Promise.all(
-			trustMoney.map(async (e) => {
-				return {
-					...e,
-					creatable: true,
-					updatable: e.start_date > new Date(),
-					deletable: e.start_date > new Date(),
-				};
+			trustMoney.map(async (trust_money_list) => {
+				const list = trust_money_list.map((d) => {
+					return {
+						...d,
+						creatable: true,
+						updatable: d.start_date > new Date(),
+						deletable: d.start_date > new Date(),
+					};
+				});
+				return list;
 			})
-		)
+		);
 		return trustMoneyFE;
 	}),
 
@@ -629,11 +658,15 @@ export const parametersRouter = createTRPCRouter({
 			const salaryIncomeTaxService = container.resolve(
 				SalaryIncomeTaxService
 			);
-			const newdata = await salaryIncomeTaxService.createSalaryIncomeTax({
-				...input,
-				end_date: null,
-			});
-			return newdata;
+			const primary_key =
+				await salaryIncomeTaxService.createSalaryIncomeTax({
+					...input,
+					end_date: null,
+				});
+			if (primary_key)
+				await salaryIncomeTaxService.rescheduleSalaryIncomeTax([
+					primary_key,
+				]);
 		}),
 	batchCreateSalaryIncomeTax: publicProcedure
 		.input(batchCreateSalaryIncomeTaxAPI)
@@ -641,14 +674,16 @@ export const parametersRouter = createTRPCRouter({
 			const salaryIncomeTaxService = container.resolve(
 				SalaryIncomeTaxService
 			);
-			const newdata =
+			const unique_primary_keys =
 				await salaryIncomeTaxService.batchCreateSalaryIncomeTax(
 					input.map((e) => ({
 						...e,
 						end_date: null,
 					}))
 				);
-			return newdata;
+			await salaryIncomeTaxService.rescheduleSalaryIncomeTax(
+				unique_primary_keys
+			);
 		}),
 	updateSalaryIncomeTax: publicProcedure
 		.input(updateSalaryIncomeTaxAPI)
@@ -656,10 +691,12 @@ export const parametersRouter = createTRPCRouter({
 			const salaryIncomeTaxService = container.resolve(
 				SalaryIncomeTaxService
 			);
-			const newdata = await salaryIncomeTaxService.updateSalaryIncomeTax(
-				input
-			);
-			return newdata;
+			const primary_key =
+				await salaryIncomeTaxService.updateSalaryIncomeTax(input);
+			if (primary_key)
+				await salaryIncomeTaxService.rescheduleSalaryIncomeTax([
+					primary_key,
+				]);
 		}),
 
 	deleteSalaryIncomeTax: publicProcedure
@@ -669,7 +706,11 @@ export const parametersRouter = createTRPCRouter({
 			const salaryIncomeTaxService = container.resolve(
 				SalaryIncomeTaxService
 			);
-			await salaryIncomeTaxService.deleteSalaryIncomeTax(input.id);
+			const primary_key =
+				await salaryIncomeTaxService.deleteSalaryIncomeTax(input.id);
+			await salaryIncomeTaxService.rescheduleSalaryIncomeTax([
+				primary_key,
+			]);
 		}),
 
 	getCurrentSalaryIncomeTax: publicProcedure
@@ -694,7 +735,7 @@ export const parametersRouter = createTRPCRouter({
 						deletable: e.start_date > new Date(),
 					};
 				})
-			)
+			);
 			return salaryIncomeTaxFE;
 		}),
 
@@ -708,15 +749,18 @@ export const parametersRouter = createTRPCRouter({
 			throw new BaseResponseError("SalaryIncomeTax does not exist");
 		}
 		const salaryIncomeTaxFE = await Promise.all(
-			salaryIncomeTax.map(async (e) => {
-				return {
-					...e,
-					creatable: true,
-					updatable: e.start_date > new Date(),
-					deletable: e.start_date > new Date(),
-				};
+			salaryIncomeTax.map((income_tax_list) => {
+				const list = income_tax_list.map((e) => {
+					return {
+						...e,
+						creatable: true,
+						updatable: e.start_date > new Date(),
+						deletable: e.start_date > new Date(),
+					};
+				});
+				return list;
 			})
-		)
+		);
 		return salaryIncomeTaxFE;
 	}),
 

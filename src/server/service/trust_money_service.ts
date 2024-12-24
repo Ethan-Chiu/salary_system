@@ -12,7 +12,10 @@ import { EHRService } from "./ehr_service";
 import { Op } from "sequelize";
 import { dateToString } from "../api/types/z_utils";
 import { BaseMapper } from "../database/mapper/base_mapper";
-import { createTrustMoneyService, updateTrustMoneyService } from "../api/types/trust_money_type";
+import {
+	createTrustMoneyService,
+	updateTrustMoneyService,
+} from "../api/types/trust_money_type";
 
 @injectable()
 export class TrustMoneyService {
@@ -105,7 +108,7 @@ export class TrustMoneyService {
 		return await this.trustMoneyMapper.decodeList(trustMoney);
 	}
 
-	async getAllTrustMoney(): Promise<TrustMoneyDecType[]> {
+	async getAllTrustMoney(): Promise<TrustMoneyDecType[][]> {
 		const trustMoney = await TrustMoney.findAll({
 			where: { disabled: false },
 			order: [
@@ -115,7 +118,40 @@ export class TrustMoneyService {
 			],
 			raw: true,
 		});
-		return await this.trustMoneyMapper.decodeList(trustMoney);
+		const data_array = await this.trustMoneyMapper.decodeList(trustMoney);
+		const groupedSalaryIncomeTaxRecords: Record<
+			string,
+			TrustMoneyDecType[]
+		> = {};
+		data_array.forEach((d) => {
+			let key = "";
+			if (d.end_date == null) {
+				key = get_date_string(d.start_date);
+			} else
+				key =
+					get_date_string(d.start_date) + get_date_string(d.end_date);
+			if (!groupedSalaryIncomeTaxRecords[key]) {
+				groupedSalaryIncomeTaxRecords[key] = [];
+			}
+			groupedSalaryIncomeTaxRecords[key]!.push(d);
+		});
+		const grouped_array = Object.values(groupedSalaryIncomeTaxRecords).sort(
+			(a, b) => {
+				if (a[0]!.start_date > b[0]!.start_date) {
+					return -1;
+				} else if (a[0]!.start_date < b[0]!.start_date) {
+					return 1;
+				} else if (a[0]!.end_date == null) {
+					return -1;
+				} else if (b[0]!.end_date == null) {
+					return 1;
+				} else if (a[0]!.end_date > b[0]!.end_date) {
+					return -1;
+				} else return 1;
+			}
+		);
+
+		return grouped_array;
 	}
 
 	async getAllFutureTrustMoney(): Promise<TrustMoneyDecType[]> {
@@ -139,9 +175,7 @@ export class TrustMoneyService {
 	async updateTrustMoney(
 		data: z.infer<typeof updateTrustMoneyService>
 	): Promise<void> {
-		const transData = await this.getTrustMoneyAfterSelectValue(
-			data
-		);
+		const transData = await this.getTrustMoneyAfterSelectValue(data);
 		await this.createTrustMoney(transData);
 		await this.deleteTrustMoney(data.id);
 	}
@@ -166,20 +200,19 @@ export class TrustMoneyService {
 				["update_date", "ASC"],
 			],
 		});
-		const trustMoneyList = await this.trustMoneyMapper.decodeList(encodedList);
+		const trustMoneyList = await this.trustMoneyMapper.decodeList(
+			encodedList
+		);
 		for (let i = 0; i < trustMoneyList.length - 1; i += 1) {
-			const end_date =
-				trustMoneyList[i]!.end_date!
-				;
+			const end_date = trustMoneyList[i]!.end_date!;
 			const start_date = trustMoneyList[i + 1]!.start_date;
-			const new_end_date =
-				new Date(start_date.setDate(start_date.getDate() - 1))
-				;
+			const new_end_date = new Date(start_date);
+			new_end_date.setDate(new_end_date.getDate() - 1);
 			if (
 				trustMoneyList[i]!.position ==
-				trustMoneyList[i + 1]!.position &&
+					trustMoneyList[i + 1]!.position &&
 				trustMoneyList[i]!.position_type ==
-				trustMoneyList[i + 1]!.position_type
+					trustMoneyList[i + 1]!.position_type
 			) {
 				if (end_date != new_end_date) {
 					if (new_end_date < trustMoneyList[i]!.start_date) {
@@ -211,7 +244,7 @@ export class TrustMoneyService {
 		position: number,
 		position_type: string,
 		date: Date
-	): Promise<TrustMoneyDecType > {
+	): Promise<TrustMoneyDecType> {
 		const date_str = dateToString.parse(date);
 
 		const trustMoney = await TrustMoney.findOne({
@@ -229,7 +262,9 @@ export class TrustMoneyService {
 			raw: true,
 		});
 		if (trustMoney == null) {
-			throw new Error(`TrustMoney does not exist position = ${position}, position type = ${position_type}, date = ${date}`);
+			throw new Error(
+				`TrustMoney does not exist position = ${position}, position type = ${position_type}, date = ${date}`
+			);
 		}
 		return await this.trustMoneyMapper.decode(trustMoney);
 	}
@@ -244,12 +279,12 @@ export class TrustMoneyService {
 	}: z.infer<typeof updateTrustMoneyService>): Promise<
 		z.infer<typeof createTrustMoneyService>
 	> {
-		const trustMoney = await this.getTrustMoneyById(
-			id
-		);
+		const trustMoney = await this.getTrustMoneyById(id);
 
 		if (trustMoney == null) {
-			throw new Error(`TrustMoney does not exist position = ${position} position type = ${position_type}`);
+			throw new Error(
+				`TrustMoney does not exist position = ${position} position type = ${position_type}`
+			);
 		}
 
 		return {

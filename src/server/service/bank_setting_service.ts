@@ -11,7 +11,11 @@ import { get_date_string, select_value } from "./helper_function";
 import { type z } from "zod";
 import { EHRService } from "./ehr_service";
 import { BaseMapper } from "../database/mapper/base_mapper";
-import { createBankSettingService, updateBankSettingService } from "../api/types/bank_setting_type";
+import {
+	createBankSettingService,
+	updateBankSettingService,
+} from "../api/types/bank_setting_type";
+import { TupleType } from "typescript";
 
 @injectable()
 export class BankSettingService {
@@ -55,7 +59,9 @@ export class BankSettingService {
 		return await this.bankSettingMapper.decode(bankSetting);
 	}
 
-	async getCurrentBankSetting(period_id: number): Promise<BankSettingDecType[]> {
+	async getCurrentBankSetting(
+		period_id: number
+	): Promise<BankSettingDecType[]> {
 		const ehr_service = container.resolve(EHRService);
 		const period = await ehr_service.getPeriodById(period_id);
 		const current_date_string = period.end_date;
@@ -78,7 +84,7 @@ export class BankSettingService {
 		return await this.bankSettingMapper.decodeList(bankSetting);
 	}
 
-	async getAllBankSetting(): Promise<BankSettingDecType[]> {
+	async getAllBankSetting(): Promise<BankSettingDecType[][]> {
 		const bankSetting = await BankSetting.findAll({
 			where: { disabled: false },
 			order: [
@@ -86,8 +92,38 @@ export class BankSettingService {
 				["bank_code", "ASC"],
 			],
 		});
+		const data_array = await this.bankSettingMapper.decodeList(bankSetting);
+		const groupedBankSettingRecords: Record<string, BankSettingDecType[]> =
+			{};
+		data_array.forEach((d) => {
+			let key = "";
+			if (d.end_date == null) {
+				key = get_date_string(d.start_date);
+			} else
+				key =
+					get_date_string(d.start_date) + get_date_string(d.end_date);
+			if (!groupedBankSettingRecords[key]) {
+				groupedBankSettingRecords[key] = [];
+			}
+			groupedBankSettingRecords[key]!.push(d);
+		});
+		const grouped_array = Object.values(groupedBankSettingRecords).sort(
+			(a, b) => {
+				if (a[0]!.start_date > b[0]!.start_date) {
+					return -1;
+				} else if (a[0]!.start_date < b[0]!.start_date) {
+					return 1;
+				} else if (a[0]!.end_date == null) {
+					return -1;
+				} else if (b[0]!.end_date == null) {
+					return 1;
+				} else if (a[0]!.end_date > b[0]!.end_date) {
+					return -1;
+				} else return 1;
+			}
+		);
 
-		return await this.bankSettingMapper.decodeList(bankSetting);
+		return grouped_array;
 	}
 
 	async getAllFutureBankSetting(): Promise<BankSettingDecType[]> {

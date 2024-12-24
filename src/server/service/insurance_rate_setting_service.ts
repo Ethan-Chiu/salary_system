@@ -11,7 +11,10 @@ import {
 import { check_date, get_date_string, select_value } from "./helper_function";
 import { EHRService } from "./ehr_service";
 import { BaseMapper } from "../database/mapper/base_mapper";
-import { createInsuranceRateSettingService, updateInsuranceRateSettingService } from "../api/types/insurance_rate_setting_type";
+import {
+	createInsuranceRateSettingService,
+	updateInsuranceRateSettingService,
+} from "../api/types/insurance_rate_setting_type";
 
 @injectable()
 export class InsuranceRateSettingService {
@@ -81,12 +84,45 @@ export class InsuranceRateSettingService {
 		return await this.insuranceMapper.decode(insuranceRateSetting);
 	}
 
-	async getAllInsuranceRateSetting(): Promise<InsuranceRateSettingDecType[]> {
+	async getAllInsuranceRateSetting(): Promise<
+		InsuranceRateSettingDecType[][]
+	> {
 		const insuranceRateSettingList = await InsuranceRateSetting.findAll({
 			where: { disabled: false },
 			order: [["start_date", "DESC"]],
 		});
-		return await this.insuranceMapper.decodeList(insuranceRateSettingList);
+		const data_array = await this.insuranceMapper.decodeList(
+			insuranceRateSettingList
+		);
+		const groupedRecords: Record<string, InsuranceRateSettingDecType[]> =
+			{};
+		data_array.forEach((d) => {
+			let key = "";
+			if (d.end_date == null) {
+				key = get_date_string(d.start_date);
+			} else
+				key =
+					get_date_string(d.start_date) + get_date_string(d.end_date);
+			if (!groupedRecords[key]) {
+				groupedRecords[key] = [];
+			}
+			groupedRecords[key]!.push(d);
+		});
+		const grouped_array = Object.values(groupedRecords).sort((a, b) => {
+			if (a[0]!.start_date > b[0]!.start_date) {
+				return -1;
+			} else if (a[0]!.start_date < b[0]!.start_date) {
+				return 1;
+			} else if (a[0]!.end_date == null) {
+				return -1;
+			} else if (b[0]!.end_date == null) {
+				return 1;
+			} else if (a[0]!.end_date > b[0]!.end_date) {
+				return -1;
+			} else return 1;
+		});
+
+		return grouped_array;
 	}
 
 	async getAllFutureInsuranceRateSetting(): Promise<
@@ -158,9 +194,8 @@ export class InsuranceRateSettingService {
 			const end_date = insuranceRateSettingList[i]!.end_date;
 			const start_date = insuranceRateSettingList[i + 1]!.start_date;
 
-			const new_end_date = new Date(
-				start_date.setDate(start_date.getDate() - 1)
-			);
+			const new_end_date = new Date(start_date);
+			new_end_date.setDate(new_end_date.getDate() - 1);
 
 			if (end_date?.getTime() != new_end_date.getTime()) {
 				if (new_end_date < insuranceRateSettingList[i]!.start_date) {

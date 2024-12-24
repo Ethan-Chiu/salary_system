@@ -84,12 +84,42 @@ export class AttendanceSettingService {
 		return await this.attendanceMapper.decode(attendanceSetting);
 	}
 
-	async getAllAttendanceSetting(): Promise<AttendanceSettingDecType[]> {
+	async getAllAttendanceSetting(): Promise<AttendanceSettingDecType[][]> {
 		const attendanceSettingList = await AttendanceSetting.findAll({
 			where: { disabled: false },
 			order: [["start_date", "DESC"]],
 		});
-		return await this.attendanceMapper.decodeList(attendanceSettingList);
+		const data_array = await this.attendanceMapper.decodeList(
+			attendanceSettingList
+		);
+		const groupedRecords: Record<string, AttendanceSettingDecType[]> = {};
+		data_array.forEach((d) => {
+			let key = "";
+			if (d.end_date == null) {
+				key = get_date_string(d.start_date);
+			} else
+				key =
+					get_date_string(d.start_date) + get_date_string(d.end_date);
+			if (!groupedRecords[key]) {
+				groupedRecords[key] = [];
+			}
+			groupedRecords[key]!.push(d);
+		});
+		const grouped_array = Object.values(groupedRecords).sort((a, b) => {
+			if (a[0]!.start_date > b[0]!.start_date) {
+				return -1;
+			} else if (a[0]!.start_date < b[0]!.start_date) {
+				return 1;
+			} else if (a[0]!.end_date == null) {
+				return -1;
+			} else if (b[0]!.end_date == null) {
+				return 1;
+			} else if (a[0]!.end_date > b[0]!.end_date) {
+				return -1;
+			} else return 1;
+		});
+
+		return grouped_array;
 	}
 
 	async getAllFutureAttendanceSetting(): Promise<AttendanceSettingDecType[]> {
@@ -152,19 +182,21 @@ export class AttendanceSettingService {
 			encodedList
 		);
 		console.log(`\n\n\n\n\nattendanceSettingList: `);
-		console.log(attendanceSettingList)
+		console.log(attendanceSettingList);
 		for (let i = 0; i < attendanceSettingList.length - 1; i += 1) {
 			const end_date = attendanceSettingList[i]!.end_date;
 			const start_date = attendanceSettingList[i + 1]!.start_date;
 
-			const new_end_date = new Date(start_date)
-			new_end_date.setDate(new_end_date.getDate() - 1)
-			
+			const new_end_date = new Date(start_date);
+			new_end_date.setDate(new_end_date.getDate() - 1);
+
 			// console.log(attendanceSettingList[i]);
 			// console.log(`\n\n\nstart_date: ${attendanceSettingList[i]!.start_date}`);
 			if (end_date?.getTime() != new_end_date.getTime()) {
 				console.log(`\n\n\nnew_end_date: ${new_end_date}`);
-				console.log(`\n\n\nstart_date: ${attendanceSettingList[i]!.start_date}`);
+				console.log(
+					`\n\n\nstart_date: ${attendanceSettingList[i]!.start_date}`
+				);
 				if (new_end_date < attendanceSettingList[i]!.start_date) {
 					await this.deleteAttendanceSetting(
 						attendanceSettingList[i]!.id
@@ -177,7 +209,12 @@ export class AttendanceSettingService {
 				}
 			}
 		}
-		console.log(`\n\n\nstart_date: ${attendanceSettingList[attendanceSettingList.length - 1]!.start_date}`);
+		console.log(
+			`\n\n\nstart_date: ${
+				attendanceSettingList[attendanceSettingList.length - 1]!
+					.start_date
+			}`
+		);
 		if (
 			attendanceSettingList[attendanceSettingList.length - 1]!.end_date !=
 			null
