@@ -36,7 +36,7 @@ export function FunctionsComponent<TMode>({
                 <Button
                     variant="ghost"
                     size="sm"
-                    className="hidden h-8 lg:flex"
+                    className="h-8 lg:flex"
                 >
                     <PencilLine className="cursor-pointer stroke-[1.5]" />
                 </Button>

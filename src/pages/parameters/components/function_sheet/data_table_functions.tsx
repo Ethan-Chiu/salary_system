@@ -98,7 +98,7 @@ export function DataTableFunctions({
 						<Button
 							variant="ghost"
 							size="sm"
-							className="ml-auto hidden h-8 lg:flex"
+							className="ml-auto h-8 lg:flex"
 						>
 							<EllipsisVertical className="cursor-pointer stroke-[1.5]" />
 						</Button>
