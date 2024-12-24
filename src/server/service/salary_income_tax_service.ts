@@ -133,7 +133,7 @@ export class SalaryIncomeTaxService {
 				})
 			)
 		).filter((data) => data != null);
-		console.log("\n\n\n\n\n")
+		console.log("\n\n\n\n\n");
 		console.log("salaryIncomeTax_array", salaryIncomeTax_array);
 		await SalaryIncomeTax.bulkCreate(salaryIncomeTax_array);
 		const unique_primary_keys: primary_key[] = [];
@@ -177,7 +177,7 @@ export class SalaryIncomeTaxService {
 		return await this.salaryIncomeTaxMapper.decodeList(salaryIncomeTax);
 	}
 
-	async getAllSalaryIncomeTax(): Promise<SalaryIncomeTaxDecType[]> {
+	async getAllSalaryIncomeTax(): Promise<SalaryIncomeTaxDecType[][]> {
 		const salaryIncomeTax = await SalaryIncomeTax.findAll({
 			where: { disabled: false },
 			order: [
@@ -186,8 +186,42 @@ export class SalaryIncomeTaxService {
 				["salary_start", "ASC"],
 			],
 		});
-		const data_array = await this.salaryIncomeTaxMapper.decodeList(salaryIncomeTax)
-		return data_array;
+		const data_array = await this.salaryIncomeTaxMapper.decodeList(
+			salaryIncomeTax
+		);
+		const groupedSalaryIncomeTaxRecords: Record<
+			string,
+			SalaryIncomeTaxDecType[]
+		> = {};
+		data_array.forEach((d) => {
+			let key = "";
+			if (d.end_date == null) {
+				key = get_date_string(d.start_date);
+			} else
+				key =
+					get_date_string(d.start_date) + get_date_string(d.end_date);
+			if (!groupedSalaryIncomeTaxRecords[key]) {
+				groupedSalaryIncomeTaxRecords[key] = [];
+			}
+			groupedSalaryIncomeTaxRecords[key]!.push(d);
+		});
+		const grouped_array = Object.values(groupedSalaryIncomeTaxRecords).sort(
+			(a, b) => {
+				if (a[0]!.start_date > b[0]!.start_date) {
+					return -1;
+				} else if (a[0]!.start_date < b[0]!.start_date) {
+					return 1;
+				} else if (a[0]!.end_date == null) {
+					return -1;
+				} else if (b[0]!.end_date == null) {
+					return 1;
+				} else if (a[0]!.end_date > b[0]!.end_date) {
+					return -1;
+				} else return 1;
+			}
+		);
+
+		return grouped_array;
 	}
 
 	async getAllFutureSalaryIncomeTax(): Promise<SalaryIncomeTaxDecType[]> {

@@ -160,13 +160,16 @@ export const parametersRouter = createTRPCRouter({
 			throw new BaseResponseError("AttendanceSetting does not exist");
 		}
 		const AttendanceSettingFE = await Promise.all(
-			attendanceSetting.map(async (a) => {
-				return {
-					...roundProperties(a, 4),
-					creatable: true,
-					updatable: a.start_date > new Date(),
-					deletable: a.start_date > new Date(),
-				};
+			attendanceSetting.map((attendance_list) => {
+				const list = attendance_list.map((a) => {
+					return {
+						...roundProperties(a, 4),
+						creatable: true,
+						updatable: a.start_date > new Date(),
+						deletable: a.start_date > new Date(),
+					};
+				});
+				return list;
 			})
 		);
 		return AttendanceSettingFE;
@@ -246,15 +249,18 @@ export const parametersRouter = createTRPCRouter({
 		if (insuranceRateSetting.length == 0) {
 			throw new BaseResponseError("InsuranceRateSetting does not exist");
 		}
-		const InsuranceRateSettingFE = await Promise.all(
-			insuranceRateSetting.map(async (a) => {
-				return {
-					...roundProperties(a, 4),
-					creatable: true,
-					updatable: a.start_date > new Date(),
-					deletable: a.start_date > new Date(),
-				};
-			})
+		const InsuranceRateSettingFE = insuranceRateSetting.map(
+			(insurance_rate_setting_list) => {
+				const list = insurance_rate_setting_list.map((a) => {
+					return {
+						...roundProperties(a, 4),
+						creatable: true,
+						updatable: a.start_date > new Date(),
+						deletable: a.start_date > new Date(),
+					};
+				});
+				return list;
+			}
 		);
 		return InsuranceRateSettingFE;
 	}),
@@ -355,9 +361,12 @@ export const parametersRouter = createTRPCRouter({
 			throw new BaseResponseError("LevelRange does not exist");
 		}
 		const levelRangeFE = await Promise.all(
-			levelRange.map(
-				async (e) => await levelRangeMapper.getLevelRangeFE(e)
-			)
+			levelRange.map(async (e_list) => {
+				const list = e_list.map(async (e) => {
+					return await levelRangeMapper.getLevelRangeFE(e);
+				});
+				return list;
+			})
 		);
 		return levelRangeFE;
 	}),
@@ -443,13 +452,16 @@ export const parametersRouter = createTRPCRouter({
 		const levelService = container.resolve(LevelService);
 		const level = await levelService.getAllLevel();
 		const levelFE = await Promise.all(
-			level.map(async (l) => {
-				return {
-					...l,
-					creatable: true,
-					updatable: l.start_date > new Date(),
-					deletable: l.start_date > new Date(),
-				};
+			level.map((level_list) => {
+				const list = level_list.map((l) => {
+					return {
+						...l,
+						creatable: true,
+						updatable: l.start_date > new Date(),
+						deletable: l.start_date > new Date(),
+					};
+				});
+				return list;
 			})
 		);
 		if (level == null) {
@@ -602,13 +614,16 @@ export const parametersRouter = createTRPCRouter({
 			throw new BaseResponseError("TrustMoney does not exist");
 		}
 		const trustMoneyFE = await Promise.all(
-			trustMoney.map(async (e) => {
-				return {
-					...e,
-					creatable: true,
-					updatable: e.start_date > new Date(),
-					deletable: e.start_date > new Date(),
-				};
+			trustMoney.map(async (trust_money_list) => {
+				const list = trust_money_list.map((d) => {
+					return {
+						...d,
+						creatable: true,
+						updatable: d.start_date > new Date(),
+						deletable: d.start_date > new Date(),
+					};
+				});
+				return list;
 			})
 		);
 		return trustMoneyFE;
@@ -734,13 +749,16 @@ export const parametersRouter = createTRPCRouter({
 			throw new BaseResponseError("SalaryIncomeTax does not exist");
 		}
 		const salaryIncomeTaxFE = await Promise.all(
-			salaryIncomeTax.map(async (e) => {
-				return {
-					...e,
-					creatable: true,
-					updatable: e.start_date > new Date(),
-					deletable: e.start_date > new Date(),
-				};
+			salaryIncomeTax.map((income_tax_list) => {
+				const list = income_tax_list.map((e) => {
+					return {
+						...e,
+						creatable: true,
+						updatable: e.start_date > new Date(),
+						deletable: e.start_date > new Date(),
+					};
+				});
+				return list;
 			})
 		);
 		return salaryIncomeTaxFE;

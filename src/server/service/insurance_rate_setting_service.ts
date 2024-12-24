@@ -84,12 +84,45 @@ export class InsuranceRateSettingService {
 		return await this.insuranceMapper.decode(insuranceRateSetting);
 	}
 
-	async getAllInsuranceRateSetting(): Promise<InsuranceRateSettingDecType[]> {
+	async getAllInsuranceRateSetting(): Promise<
+		InsuranceRateSettingDecType[][]
+	> {
 		const insuranceRateSettingList = await InsuranceRateSetting.findAll({
 			where: { disabled: false },
 			order: [["start_date", "DESC"]],
 		});
-		return await this.insuranceMapper.decodeList(insuranceRateSettingList);
+		const data_array = await this.insuranceMapper.decodeList(
+			insuranceRateSettingList
+		);
+		const groupedRecords: Record<string, InsuranceRateSettingDecType[]> =
+			{};
+		data_array.forEach((d) => {
+			let key = "";
+			if (d.end_date == null) {
+				key = get_date_string(d.start_date);
+			} else
+				key =
+					get_date_string(d.start_date) + get_date_string(d.end_date);
+			if (!groupedRecords[key]) {
+				groupedRecords[key] = [];
+			}
+			groupedRecords[key]!.push(d);
+		});
+		const grouped_array = Object.values(groupedRecords).sort((a, b) => {
+			if (a[0]!.start_date > b[0]!.start_date) {
+				return -1;
+			} else if (a[0]!.start_date < b[0]!.start_date) {
+				return 1;
+			} else if (a[0]!.end_date == null) {
+				return -1;
+			} else if (b[0]!.end_date == null) {
+				return 1;
+			} else if (a[0]!.end_date > b[0]!.end_date) {
+				return -1;
+			} else return 1;
+		});
+
+		return grouped_array;
 	}
 
 	async getAllFutureInsuranceRateSetting(): Promise<
