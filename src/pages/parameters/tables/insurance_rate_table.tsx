@@ -2,30 +2,22 @@ import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import { isString, isNumber, isDateType } from "~/lib/utils/check_type";
 import { DataTable as DataTableWithFunctions } from "../components/data_table_single";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
-import {
-	c_CreateDateStr,
-	c_EndDateStr,
-	c_StartDateStr,
-	c_UpdateDateStr,
-} from "../constant";
+import { c_EndDateStr, c_StartDateStr } from "../constant";
 import { LoadingSpinner } from "~/components/loading";
 import { formatDate } from "~/lib/utils/format_date";
 import { type TableComponentProps } from "../tables_view";
 import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
-import { InsuranceRateSettingFEType } from "~/server/api/types/insurance_rate_setting_type";
-import { TFunction } from "i18next";
+import { type InsuranceRateSettingFEType } from "~/server/api/types/insurance_rate_setting_type";
+import { type TFunction } from "i18next";
 import { useContext, useEffect } from "react";
 import dataTableContext from "../components/context/data_table_context";
-import { Sheet, SheetContent } from "~/components/ui/sheet";
-import { ScrollArea } from "~/components/ui/scroll-area";
-import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
+import { Sheet } from "~/components/ui/sheet";
 import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { insuranceSchema } from "../schemas/configurations/insurance_schema";
-import { FunctionsSheet } from "../components/function_sheet/functions_sheet";
+import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
 
 export type RowItem = {
 	parameters: string;
@@ -35,9 +27,13 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-export const insurance_rate_columns = ({ t }: { t: TFunction<[string], undefined> }) => [
-	...["parameters", "value"].map(
-		(key: string) => columnHelper.accessor(key as RowItemKey, {
+export const insurance_rate_columns = ({
+	t,
+}: {
+	t: TFunction<[string], undefined>;
+}) => [
+	...["parameters", "value"].map((key: string) =>
+		columnHelper.accessor(key as RowItemKey, {
 			header: ({ column }) => {
 				return (
 					<div className="flex justify-center">
@@ -60,10 +56,15 @@ export const insurance_rate_columns = ({ t }: { t: TFunction<[string], undefined
 			cell: ({ row }) => {
 				switch (key) {
 					default:
-						return <div className="text-center font-medium">{`${row.original[key as RowItemKey]}`}</div>
+						return (
+							<div className="text-center font-medium">{`${
+								row.original[key as RowItemKey].toString()
+							}`}</div>
+						);
 				}
-			}
-		})),
+			},
+		})
+	),
 ];
 
 export function insuranceRateMapper(
@@ -130,7 +131,6 @@ export function insuranceRateMapper(
 	];
 }
 
-
 interface InsuranceRateTableProps extends TableComponentProps {
 	period_id: number;
 	globalFilter?: string;
@@ -141,7 +141,8 @@ export function InsuranceRateTable({
 	viewOnly,
 }: InsuranceRateTableProps) {
 	const { t } = useTranslation(["common"]);
-	const { selectedTab, setFunctionsItem } = useContext(dataTableContext);
+	const { open, setOpen, mode, setFunctionsItem } =
+		useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentInsuranceRateSetting.useQuery({ period_id });
@@ -153,7 +154,7 @@ export function InsuranceRateTable({
 			update: data?.updatable ?? false,
 			delete: data?.deletable ?? false,
 		});
-	}, [data, selectedTab]);
+	}, [setFunctionsItem, data]);
 
 	if (isLoading) {
 		return (
@@ -167,19 +168,32 @@ export function InsuranceRateTable({
 		// return <span>Error: {error.message}</span>; // TODO: Error element with toast
 		const err_msg = error.message;
 		const emptyError = true;
-		return emptyError ? <EmptyTable err_msg={err_msg} selectedTableType="TableInsurance" /> : <></>;
+		return emptyError ? (
+			<EmptyTable err_msg={err_msg} selectedTableType="TableInsurance" />
+		) : (
+			<></>
+		);
 	}
 
 	return (
 		<>
 			{!viewOnly ? (
-				<FunctionsSheet t={t} period_id={period_id}>
+				<Sheet open={open} onOpenChange={setOpen}>
 					<DataTableWithFunctions
 						columns={insurance_rate_columns({ t })}
 						data={insuranceRateMapper([data!])}
 						filterColumnKey={filterKey}
 					/>
-				</FunctionsSheet>
+					<FunctionsSheetContent t={t} period_id={period_id}>
+						<ParameterForm
+							formSchema={insuranceSchema}
+							mode={mode}
+							closeSheet={() => {
+								setOpen(false);
+							}}
+						/>
+					</FunctionsSheetContent>
+				</Sheet>
 			) : (
 				<DataTableWithoutFunctions
 					columns={insurance_rate_columns({ t })}

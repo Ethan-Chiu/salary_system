@@ -1,12 +1,9 @@
-import * as z from "zod";
+import { type z } from "zod";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useContext } from "react";
 import { parameterToolbarFunctionsContext } from "./parameter_functions_context";
-import { FunctionMode } from "./data_table_functions";
-import { Input } from "~/components/ui/input";
-import { FieldConfig } from "~/components/ui/auto-form/types";
-import { ControllerProps, FieldPath, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "~/components/ui/button";
 import {
@@ -18,9 +15,13 @@ import {
 	DialogTitle,
 } from "~/components/ui/dialog";
 import CustomForm from "~/components/ui/custom-form";
+import { type FormConfig } from "~/components/ui/custom-form/types";
+import { FunctionMode } from "../context/data_table_context";
 
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
+	formConfig?: FormConfig<SchemaType>;
+	formSubmit?: (data: z.infer<SchemaType>) => void;
 	defaultValue?: any;
 	mode: FunctionMode;
 	closeSheet: () => void;
@@ -28,17 +29,17 @@ interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 
 export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	formSchema,
+	formConfig,
+	formSubmit,
 	defaultValue,
 	mode,
 	closeSheet,
 }: ParameterFormProps<SchemaType>) {
 	const { t } = useTranslation(["common"]);
-	const functions = useContext(parameterToolbarFunctionsContext);
 
+	const functions = useContext(parameterToolbarFunctionsContext);
 	const createFunction = functions.createFunction!;
 	const updateFunction = functions.updateFunction!;
-	const deleteFunction = functions.deleteFunction!;
-	const batchCreateFunction = functions.batchCreateFunction!;
 
 	const [openDialog, setOpenDialog] = useState(false);
 
@@ -51,7 +52,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 				id: data.id,
 			});
 		}
-		// closeSheet();
+		closeSheet();
 	}, []);
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -65,9 +66,11 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 		<>
 			<CustomForm
 				formSchema={formSchema}
+				formConfig={formConfig}
 				form={form}
 				onSubmit={void onSubmit}
 			>
+        <div className="w-full flex justify-end gap-4 py-4">
 				<Button
 					type="button"
 					variant={"outline"}
@@ -78,11 +81,17 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 					{t("button.cancel")}
 				</Button>
 
-				<Button type="submit" variant={"outline"}>
-					{t("button.submit")}
+				{/* TODO: handle form submit validation */}
+				<Button
+					type="button"
+					variant={"outline"}
+					onClick={() => setOpenDialog(true)}
+				>
+					{t(`button.${mode}`)}
 				</Button>
+        </div>
 
-				<Dialog open={openDialog} onOpenChange={setOpenDialog}>
+				<Dialog open={openDialog} onOpenChange={setOpenDialog} aria-hidden={false}>
 					<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
 						<DialogHeader>
 							<DialogTitle>{t("others.check_data")}</DialogTitle>

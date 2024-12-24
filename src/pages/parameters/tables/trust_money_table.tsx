@@ -10,16 +10,19 @@ import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
 import { formatDate } from "~/lib/utils/format_date";
-import { TrustMoneyFEType } from "~/server/api/types/trust_money_type";
-import { FunctionsComponent, FunctionsItem } from "~/components/data_table/functions_component";
-import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
-import { ScrollArea } from "~/components/ui/scroll-area";
+import { type TrustMoneyFEType } from "~/server/api/types/trust_money_type";
+import {
+	FunctionsComponent,
+	type FunctionsItem,
+} from "~/components/data_table/functions_component";
 import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { useContext } from "react";
 import { trustMoneySchema } from "../schemas/configurations/trust_money_schema";
-import { Sheet, SheetContent } from "~/components/ui/sheet";
-import dataTableContext, { FunctionMode } from "../components/context/data_table_context";
-import { FunctionsSheet } from "../components/function_sheet/functions_sheet";
+import { Sheet } from "~/components/ui/sheet";
+import dataTableContext, {
+	type FunctionMode,
+} from "../components/context/data_table_context";
+import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
 
 export type RowItem = {
 	position: number;
@@ -34,9 +37,24 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-export const trust_money_columns = ({ t, setOpen, setMode }: { t: TFunction<[string], undefined>, setOpen: (open: boolean) => void, setMode: (mode: FunctionMode) => void }) => [
-	...["position", "position_type", "org_trust_reserve_limit", "org_special_trust_incent_limit", "start_date", "end_date"].map(
-		(key: string) => columnHelper.accessor(key as RowItemKey, {
+export const trust_money_columns = ({
+	t,
+	setOpen,
+	setMode,
+}: {
+	t: TFunction<[string], undefined>;
+	setOpen: (open: boolean) => void;
+	setMode: (mode: FunctionMode) => void;
+}) => [
+	...[
+		"position",
+		"position_type",
+		"org_trust_reserve_limit",
+		"org_special_trust_incent_limit",
+		"start_date",
+		"end_date",
+	].map((key: string) =>
+		columnHelper.accessor(key as RowItemKey, {
 			header: ({ column }) => {
 				return (
 					<div className="flex justify-center">
@@ -59,12 +77,17 @@ export const trust_money_columns = ({ t, setOpen, setMode }: { t: TFunction<[str
 			cell: ({ row }) => {
 				switch (key) {
 					default:
-						return <div className="text-center font-medium">{`${row.original[key as RowItemKey]}`}</div>
+						return (
+							<div className="text-center font-medium">{`${row.original[
+								key as RowItemKey
+							]?.toString()}`}</div>
+						);
 				}
-			}
-		})),
+			},
+		})
+	),
 	columnHelper.accessor("functions", {
-		header: ({ column }) => {
+		header: () => {
 			return (
 				<div className="flex justify-center">
 					<div className="text-center font-medium">
@@ -96,7 +119,11 @@ export function trustMoneyMapper(
 		org_special_trust_incent_limit: d.org_special_trust_incent_limit,
 		start_date: formatDate("day", d.start_date) ?? "",
 		end_date: formatDate("day", d.end_date) ?? "",
-		functions: { create: d.creatable, update: d.updatable, delete: d.deletable },
+		functions: {
+			create: d.creatable,
+			update: d.updatable,
+			delete: d.deletable,
+		},
 	}));
 }
 
@@ -126,22 +153,35 @@ export function TrustMoneyTable({ period_id, viewOnly }: TrustMoneyTableProps) {
 		// return <span>Error: {error.message}</span>; // TODO: Error element with toast
 		const err_msg = error.message;
 		const emptyError = true;
-		return emptyError ? <EmptyTable err_msg={err_msg} selectedTableType="TableTrustMoney" /> : <></>;
+		return emptyError ? (
+			<EmptyTable err_msg={err_msg} selectedTableType="TableTrustMoney" />
+		) : (
+			<></>
+		);
 	}
 
 	return !viewOnly ? (
-		<FunctionsSheet t={t} period_id={period_id}>
+		<Sheet open={open} onOpenChange={setOpen}>
 			<DataTableWithFunctions
 				columns={trust_money_columns({ t, setOpen, setMode })}
 				data={trustMoneyMapper(data!)}
 				filterColumnKey={filterKey}
 			/>
-		</FunctionsSheet>
+			<FunctionsSheetContent t={t} period_id={period_id}>
+				<ParameterForm
+					formSchema={trustMoneySchema}
+					mode={mode}
+					closeSheet={() => {
+						setOpen(false);
+					}}
+				/>
+			</FunctionsSheetContent>
+		</Sheet>
 	) : (
 		<DataTableWithoutFunctions
 			columns={trust_money_columns({ t, setOpen, setMode })}
 			data={trustMoneyMapper(data!)}
 			filterColumnKey={filterKey}
 		/>
-	)
+	);
 }

@@ -7,20 +7,21 @@ import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/compon
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { formatDate } from "~/lib/utils/format_date";
-import { LevelFEType } from "~/server/api/types/level_type";
+import { type LevelFEType } from "~/server/api/types/level_type";
 import {
 	FunctionsComponent,
-	FunctionsItem,
+	type FunctionsItem,
 } from "~/components/data_table/functions_component";
-import { TFunction } from "i18next";
-import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
-import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
+import { type TFunction } from "i18next";
 import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { levelSchema } from "../schemas/configurations/level_schema";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
-import { FunctionMode } from "../components/function_sheet/data_table_functions";
-import { Sheet, SheetContent } from "~/components/ui/sheet";
+import { useContext } from "react";
+import { Sheet } from "~/components/ui/sheet";
+import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
+import dataTableContext, {
+	type FunctionMode,
+} from "../components/context/data_table_context";
 
 export type RowItem = {
 	level: number;
@@ -66,16 +67,16 @@ export const level_columns = ({
 				switch (key) {
 					default:
 						return (
-							<div className="text-center font-medium">{`${
-								row.original[key as RowItemKey]?.toString() 
-							}`}</div>
+							<div className="text-center font-medium">{`${row.original[
+								key as RowItemKey
+							]?.toString()}`}</div>
 						);
 				}
 			},
 		})
 	),
 	columnHelper.accessor("functions", {
-		header: ({ column }) => {
+		header: () => {
 			return (
 				<div className="flex justify-center">
 					<div className="text-center font-medium">
@@ -120,8 +121,7 @@ interface LevelTableProps extends TableComponentProps {
 
 export function LevelTable({ period_id, viewOnly }: LevelTableProps) {
 	const { t } = useTranslation(["common"]);
-	const [open, setOpen] = useState<boolean>(false);
-	const [mode, setMode] = useState<FunctionMode>("none");
+	const { mode, setMode, open, setOpen } = useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentLevel.useQuery({ period_id });
@@ -150,20 +150,13 @@ export function LevelTable({ period_id, viewOnly }: LevelTableProps) {
 				data={levelMapper(data!)}
 				filterColumnKey={filterKey}
 			/>
-			<SheetContent className="w-[50%] px-12 py-6">
-				<ScrollArea className="h-full w-full">
-					<ParameterToolbarFunctionsProvider
-						selectedTableType={"TableBankSetting"}
-						period_id={period_id}
-					>
-						<ParameterForm
-							formSchema={levelSchema}
-							mode={mode}
-							closeSheet={() => setOpen(false)}
-						/>
-					</ParameterToolbarFunctionsProvider>
-				</ScrollArea>
-			</SheetContent>
+			<FunctionsSheetContent t={t} period_id={period_id}>
+				<ParameterForm
+					formSchema={levelSchema}
+					mode={mode}
+					closeSheet={() => setOpen(false)}
+				/>
+			</FunctionsSheetContent>
 		</Sheet>
 	) : (
 		<DataTableWithoutFunctions
