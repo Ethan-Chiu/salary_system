@@ -155,7 +155,7 @@ export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 	});
 
 	return !viewOnly ? (
-		<Sheet open={open} onOpenChange={setOpen}>
+		<Sheet open={open} onOpenChange={setOpen} aria-hidden={false}>
 			<DataTableWithFunctions
 				columns={columns}
 				data={levelRangeMapper(data!)}
@@ -171,6 +171,12 @@ export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 								render: SelectLevelField,
 							},
 						},
+            {
+              key: "level_end",
+              config: {
+                render: SelectLevelField,
+              }
+            }
 					]}
 					mode={mode}
 					closeSheet={() => setOpen(false)}

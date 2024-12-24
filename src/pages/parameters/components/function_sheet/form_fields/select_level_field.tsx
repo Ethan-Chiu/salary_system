@@ -10,6 +10,7 @@ import {
 } from "~/components/ui/select";
 import { useEffect } from "react";
 import { z } from "zod";
+import { Input } from "~/components/ui/input";
 
 export function SelectLevelField({
 	field,
@@ -33,7 +34,7 @@ export function SelectLevelField({
 		return () => subscription.unsubscribe();
 	}, [watch]);
 
-	return (
+	return result.success && result.data ? (
 		<Select {...inputProps}>
 			<SelectTrigger
 				id={id}
@@ -41,13 +42,10 @@ export function SelectLevelField({
 			>
 				<SelectValue placeholder="Select an option" />
 			</SelectTrigger>
-
-			{result.success && result.data ? (
-				<SelectLevelOptionsComp start_date={result.data} />
-			) : (
-				<div>Select a start date</div>
-			)}
+			<SelectLevelOptionsComp start_date={result.data} />
 		</Select>
+	) : (
+		<Input disabled placeholder="Select an option" />
 	);
 }
 
@@ -57,7 +55,7 @@ function SelectLevelOptionsComp({ start_date }: { start_date: Date }) {
 	});
 
 	if (isLoading) {
-		return <span>Loading...</span>;
+		return <p>Loading...</p>;
 	}
 
 	return (

@@ -70,6 +70,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 				form={form}
 				onSubmit={void onSubmit}
 			>
+        <div className="w-full flex justify-end gap-4 py-4">
 				<Button
 					type="button"
 					variant={"outline"}
@@ -88,6 +89,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 				>
 					{t(`button.${mode}`)}
 				</Button>
+        </div>
 
 				<Dialog open={openDialog} onOpenChange={setOpenDialog} aria-hidden={false}>
 					<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
