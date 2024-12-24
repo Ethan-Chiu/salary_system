@@ -1,6 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { type Table } from "@tanstack/react-table";
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import {
@@ -11,6 +11,8 @@ import {
 	SelectValue,
 } from "~/components/ui/select";
 import { cn } from "~/lib/utils";
+import { Input } from "../ui/input";
+import { set } from "date-fns";
 
 interface DataTablePaginationProps<TData>
 	extends React.HTMLAttributes<HTMLDivElement> {
@@ -28,6 +30,11 @@ export function DataTablePagination<TData>({
 	const dataNum = table.getFilteredRowModel().rows.length;
 	const [rowNum, setRowNum] = React.useState(10);
 	const [columnNum, setColumnNum] = React.useState(1);
+	const [displayPageIndex, setDisplayPageIndex] = React.useState((pageIndex + 1).toString());
+
+	useEffect(() => {
+		setDisplayPageIndex((pageIndex + 1).toString());
+	}, [pageIndex]);
 
 	const { t } = useTranslation(['common']);
 
@@ -104,9 +111,40 @@ export function DataTablePagination<TData>({
 			<div className="ml-2 flex justify-end">
 				<div className=" flex items-center space-x-4">
 					<div className="flex w-30 items-center justify-center text-sm font-medium">
-						{t('others.page_template')
-							.replace('$1', (table.getState().pagination.pageIndex + 1).toString())
-							.replace('$2', (table.getPageCount()).toString())}
+						<div>
+							{t('others.page_template').replace('$2', (table.getPageCount()).toString()).split('$1')[0]}
+						</div>
+						<Input
+							className="flex text-center p-0 mx-1 w-10 h-6"
+							onKeyDown={(e) => {
+								if (e.key === 'Enter') {
+									e.currentTarget.blur();
+								}
+							}}
+							onBlur={(e) => {
+								const page = Number(e.target.value);
+								if (isNaN(page) || page <= 0) {
+									setDisplayPageIndex('1');
+									table.setPageIndex(0);
+								};
+								if (page >= table.getPageCount()) {
+									setDisplayPageIndex((table.getPageCount() - 1).toString());
+									table.setPageIndex(table.getPageCount() - 1);
+								}
+							}}
+							onChange={(e) => {
+								setDisplayPageIndex(e.target.value);
+								if (e.target.value === '') return;
+								const page = Number(e.target.value);
+								if (page > 0 && page <= table.getPageCount()) {
+									table.setPageIndex(page - 1);
+								}
+							}}
+							value={displayPageIndex}
+						/>
+						<div>
+							{t('others.page_template').replace('$2', (table.getPageCount()).toString()).split('$1')[1]}
+						</div>
 					</div>
 					<div className="flex items-center space-x-2">
 						<Button
