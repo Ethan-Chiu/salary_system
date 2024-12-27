@@ -21,7 +21,7 @@ import { FunctionsSheetContent } from "../components/function_sheet/functions_sh
 
 export type RowItem = {
 	parameters: string;
-	value: number | string | Date;
+	value: number | string | Date | null;
 };
 type RowItemKey = keyof RowItem;
 
@@ -54,13 +54,18 @@ export const insurance_rate_columns = ({
 					);
 				},
 				cell: ({ row }) => {
-					switch (key) {
-						default:
+					if (key === "value") {
+						if (row.original.parameters === c_StartDateStr || row.original.parameters === c_EndDateStr) {
 							return (
-								<div className="text-center font-medium">{`${row.original[key as RowItemKey].toString()
-									}`}</div>
+								<div className="text-center font-medium">{formatDate("day", row.original.value as Date | null) ?? ""}</div>
 							);
+						}
 					}
+					return (
+						<div className="text-center font-medium">{`${row.original[
+							key as RowItemKey
+						]!.toString()}`}</div>
+					);
 				},
 			})
 		),
@@ -113,11 +118,11 @@ export function insuranceRateMapper(
 		},
 		{
 			parameters: c_StartDateStr,
-			value: formatDate("day", data.start_date) ?? "",
+			value: data.start_date,
 		},
 		{
 			parameters: c_EndDateStr,
-			value: formatDate("day", data.end_date) ?? "",
+			value: data.end_date,
 		},
 		// {
 		// 	parameters: c_CreateDateStr,

@@ -20,12 +20,10 @@ import { attendanceSchema } from "../schemas/configurations/attendance_schema";
 import dataTableContext from "../components/context/data_table_context";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
 
-const rowSchema = z.object({
-	parameters: z.string(),
-	value: z.union([z.number(), z.string(), z.date()]),
-});
-type RowItem = z.infer<typeof rowSchema>;
-
+export type RowItem = {
+	parameters: string;
+	value: number | string | Date | null;
+};
 type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
@@ -57,14 +55,18 @@ export const attendance_columns = ({
 					);
 				},
 				cell: ({ row }) => {
-					switch (key) {
-						default:
+					if (key === "value") {
+						if (row.original.parameters === c_StartDateStr || row.original.parameters === c_EndDateStr) {
 							return (
-								<div className="text-center font-medium">{`${row.original[
-									key as RowItemKey
-								].toString()}`}</div>
+								<div className="text-center font-medium">{formatDate("day", row.original.value as Date | null) ?? ""}</div>
 							);
+						}
 					}
+					return (
+						<div className="text-center font-medium">{`${row.original[
+							key as RowItemKey
+						]!.toString()}`}</div>
+					);
 				},
 			})
 		),
@@ -73,7 +75,7 @@ export const attendance_columns = ({
 export function attendanceMapper(
 	attendanceData: AttendanceSettingFEType[]
 ): RowItem[] {
-  // TODO: check assertion
+	// TODO: check assertion
 	const data = attendanceData[0]!;
 	return [
 		{
@@ -118,11 +120,11 @@ export function attendanceMapper(
 		},
 		{
 			parameters: c_StartDateStr,
-			value: formatDate("day", data.start_date) ?? "",
+			value: data.start_date,
 		},
 		{
 			parameters: c_EndDateStr,
-			value: formatDate("day", data.end_date) ?? "",
+			value: data.end_date,
 		},
 		// {
 		// 	parameters: c_CreateDateStr,
