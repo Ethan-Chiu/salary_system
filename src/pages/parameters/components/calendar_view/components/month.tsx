@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { type Dayjs } from "dayjs";
 import DayView from "./day";
+import calendarContext from "../context/calendar_context";
 
 interface MonthViewProps {
 	month: Array<Array<Dayjs>>;
@@ -11,6 +12,8 @@ export default function MonthView({
 	month,
 	target_date,
 }: MonthViewProps): JSX.Element {
+
+
 	return (
 		<div className="relative grid h-full w-full grid-cols-7 grid-rows-5">
 			{month.map((row, i) => (

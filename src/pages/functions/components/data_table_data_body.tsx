@@ -179,7 +179,7 @@ export function DataTableDataBody<TData>({
 					</DialogHeader>
 
 
-					<Tabs defaultValue="other_addition" className="w-full">
+					<Tabs defaultValue="other_addition_tax" className="w-full">
 						<TabsList className="grid w-full grid-cols-4">
 							<TabsTrigger value="other_addition_tax">{t("table.other_addition_tax")}</TabsTrigger>
 							<TabsTrigger value="other_addition">{t("table.other_addition")}</TabsTrigger>

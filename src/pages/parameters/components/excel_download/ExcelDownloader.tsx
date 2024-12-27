@@ -33,11 +33,24 @@ import dataTableContext from "../context/data_table_context";
 import { getExcelData } from "./utils";
 
 export function ExcelDownload({ table_name }: { table_name: string }) {
+
+	function getTableName() {
+		if (table_name == "TableAttendance") return "attendanceSetting";
+		if (table_name == "TableBankSetting") return "bankSetting";
+		if (table_name == "TableInsurance") return "insuranceRateSetting";
+		if (table_name == "TableTrustMoney") return "trustMoney";
+		if (table_name == "TableLevel") return "level";
+		if (table_name == "TableLevelRange") return "levelRange";
+		if (table_name == "TableSalaryIncomeTax") return "salaryIncomeTax";
+
+		return table_name;
+	}
+
 	const { t } = useTranslation();
 
 	const [filename, setFilename] = useState("excel.xlsx");
 	useEffect(() => {
-		setFilename(`${t(`table_name.${table_name}`)}.xlsx`);
+		setFilename(`${t(`table_name.${getTableName()}`)}.xlsx`);
 	}, [table_name]);
 
 	const { selectedTable } = useContext(dataTableContext);
@@ -51,12 +64,13 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 	const handleExportExcel = async (
 		datas: any[][],
 		filename: string,
-		Translate: (key: string) => string
 	) => {
+
+		const workbook = new ExcelJS.Workbook();
 
 		const shouldTranspose = (table_name == "TableInsurance") || (table_name == "TableAttendance");
 
-		const workbook = new ExcelJS.Workbook();
+
 
 		function getCellName(rowIndex: number, colIndex: number): string {
 			const columnName = getColumnLetter(colIndex);
@@ -80,7 +94,7 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 			
 			if (shouldTranspose)	datas = transposeData(datas);
 
-			let name = table_name;
+			let name = t(`table_name.${getTableName()}`);
 			const worksheet = workbook.addWorksheet(
 				name === "" ? "blank" : name
 			);
@@ -90,7 +104,7 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 					if (i === 0) {
 						worksheet.addRow(
 							row.map((header: string) =>
-								(shouldTranspose) ? header : Translate(`table.${header}`)
+								(shouldTranspose) ? header : t(`table.${header}`)
 							)
 						);
 					} else {
@@ -151,8 +165,11 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 			</div>
 			<DialogFooter>
 				<Button type="submit" onClick={() => handleExportExcel(
-					getExcelData(selectedTable?.table.getFilteredRowModel().rows.map((r) => r.original)!, ["functions"])
-				, filename, t)}>{t("download")}</Button>
+						getExcelData(selectedTable?.table.getFilteredRowModel().rows.map((r) => r.original)!, ["functions"]), 
+						filename
+				)}>
+					{t("download")}
+				</Button>
 			</DialogFooter>
 		</>
 	);
