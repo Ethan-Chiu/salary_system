@@ -6,6 +6,7 @@ export function NumberField({ inputProps, error, id }: FormFieldProps) {
 		<Input
 			id={id}
 			type="number"
+      step="any"
 			className={error ? "border-destructive" : ""}
 			{...inputProps}
 		/>
