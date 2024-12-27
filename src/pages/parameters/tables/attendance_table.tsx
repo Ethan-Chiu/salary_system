@@ -146,14 +146,12 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 		api.parameters.getCurrentAttendanceSetting.useQuery({ period_id });
 	const filterKey: RowItemKey = "parameters";
 
-	const { open, setOpen, mode, setData } = useContext(dataTableContext);
+	const { selectedTab, open, setOpen, mode, setData } = useContext(dataTableContext);
 
 	useEffect(() => {
 		if (data) {
 			setData({
 				...data,
-				start_date: formatDate("day", data.start_date) ?? "",
-				end_date: formatDate("day", data.end_date) ?? "",
 				functions: {
 					create: data.creatable,
 					update: data.updatable,
@@ -161,7 +159,7 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 				},
 			});
 		}
-	}, [data]);
+	}, [data, selectedTab]);
 
 	if (isLoading) {
 		return (

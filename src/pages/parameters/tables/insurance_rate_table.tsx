@@ -140,7 +140,7 @@ export function InsuranceRateTable({
 	viewOnly,
 }: InsuranceRateTableProps) {
 	const { t } = useTranslation(["common"]);
-	const { open, setOpen, mode, setData } =
+	const { selectedTab, open, setOpen, mode, setData } =
 		useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
@@ -151,8 +151,6 @@ export function InsuranceRateTable({
 		if (data) {
 			setData({
 				...data,
-				start_date: formatDate("day", data.start_date) ?? "",
-				end_date: formatDate("day", data.end_date) ?? "",
 				functions: {
 					create: data.creatable,
 					update: data.updatable,
@@ -160,7 +158,7 @@ export function InsuranceRateTable({
 				},
 			});
 		}
-	}, [data]);
+	}, [data, selectedTab]);
 
 	if (isLoading) {
 		return (

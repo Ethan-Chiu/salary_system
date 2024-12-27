@@ -28,8 +28,8 @@ export type RowItem = {
 	type: string;
 	level_start: number;
 	level_end: number;
-	start_date: string;
-	end_date: string | null;
+	start_date: Date | null;
+	end_date: Date | null;
 	functions: FunctionsItem;
 };
 type RowItemKey = keyof RowItem;
@@ -72,6 +72,14 @@ export const level_range_columns = ({
 					},
 					cell: ({ row }) => {
 						switch (key) {
+							case "start_date":
+								return (
+									<div className="text-center font-medium">{`${formatDate("day", row.original.start_date) ?? ""}`}</div>
+								);
+							case "end_date":
+								return (
+									<div className="text-center font-medium">{`${formatDate("day", row.original.end_date) ?? ""}`}</div>
+								);
 							default:
 								return (
 									<div className="text-center font-medium">{`${row.original[
@@ -114,8 +122,8 @@ export function levelRangeMapper(
 			type: d.type,
 			level_start: d.level_start,
 			level_end: d.level_end,
-			start_date: formatDate("day", d.start_date) ?? "",
-			end_date: formatDate("day", d.end_date) ?? "",
+			start_date: d.start_date,
+			end_date: d.end_date,
 			functions: {
 				create: d.creatable,
 				update: d.updatable,
@@ -182,7 +190,7 @@ export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 							},
 						},
 					]}
-          defaultValue={{type: "勞保", start_date: new Date()}}
+					defaultValue={{ type: "勞保", start_date: new Date() }}
 					mode={mode}
 					closeSheet={() => setOpen(false)}
 				/>
@@ -196,4 +204,4 @@ export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 		/>
 	);
 }
-          /* defaultValue={{start_date: new Date()}} */
+/* defaultValue={{start_date: new Date()}} */
