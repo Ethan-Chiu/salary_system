@@ -5,7 +5,6 @@ import { ArrowUpDown } from "lucide-react";
 import { DataTable as DataTableWithFunctions } from "../components/data_table_single";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { c_EndDateStr, c_StartDateStr } from "../constant";
-import { z } from "zod";
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { formatDate } from "~/lib/utils/format_date";
@@ -20,12 +19,10 @@ import { attendanceSchema } from "../schemas/configurations/attendance_schema";
 import dataTableContext from "../components/context/data_table_context";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
 
-const rowSchema = z.object({
-	parameters: z.string(),
-	value: z.union([z.number(), z.string(), z.date()]),
-});
-type RowItem = z.infer<typeof rowSchema>;
-
+export type RowItem = {
+	parameters: string;
+	value: number | string | Date | null;
+};
 type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
@@ -53,22 +50,25 @@ export const attendance_columns = ({
 								<ArrowUpDown className="ml-2 h-4 w-4" />
 							</Button>
 						</div>
-					</div>
-				);
-			},
-			cell: ({ row }) => {
-				switch (key) {
-					default:
-						return (
-							<div className="text-center font-medium">{`${row.original[
-								key as RowItemKey
-							].toString()}`}</div>
-						);
-				}
-			},
-		})
-	),
-];
+					);
+				},
+				cell: ({ row }) => {
+					if (key === "value") {
+						if (row.original.parameters === c_StartDateStr || row.original.parameters === c_EndDateStr) {
+							return (
+								<div className="text-center font-medium">{formatDate("day", row.original.value as Date | null) ?? ""}</div>
+							);
+						}
+					}
+					return (
+						<div className="text-center font-medium">{`${row.original[
+							key as RowItemKey
+						]!.toString()}`}</div>
+					);
+				},
+			})
+		),
+	];
 
 export function attendanceMapper(
 	attendanceData: AttendanceSettingFEType[]
@@ -118,11 +118,11 @@ export function attendanceMapper(
 		},
 		{
 			parameters: c_StartDateStr,
-			value: formatDate("day", data.start_date) ?? "",
+			value: data.start_date,
 		},
 		{
 			parameters: c_EndDateStr,
-			value: formatDate("day", data.end_date) ?? "",
+			value: data.end_date,
 		},
 		// {
 		// 	parameters: c_CreateDateStr,

@@ -14,7 +14,6 @@ import { HolidaysTypeService } from "~/server/service/holidays_type_service";
 import { Transaction } from "~/server/database/entity/SALARY/transaction";
 import { BonusDepartment } from "~/server/database/entity/SALARY/bonus_department";
 import { BonusPosition } from "~/server/database/entity/SALARY/bonus_position";
-import { BonusPositionType } from "~/server/database/entity/SALARY/bonus_position_type";
 import { BonusSeniority } from "~/server/database/entity/SALARY/bonus_seniority";
 import { BonusWorkType } from "~/server/database/entity/SALARY/bonus_work_type";
 import { SalaryIncomeTax } from "~/server/database/entity/SALARY/salary_income_tax";
