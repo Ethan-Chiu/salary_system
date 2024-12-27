@@ -20,7 +20,6 @@ export default function CustomForm<SchemaType extends ZodObjectOrWrapped>({
 	formSchema,
 	form,
 	formConfig,
-	values: valuesProp,
 	onValuesChange: onValuesChangeProp,
 	onParsedValuesChange,
 	onSubmit: onSubmitProp,

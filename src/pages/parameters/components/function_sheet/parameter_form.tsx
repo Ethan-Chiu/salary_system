@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useContext } from "react";
 import { parameterToolbarFunctionsContext } from "./parameter_functions_context";
-import { useForm } from "react-hook-form";
+import { DefaultValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "~/components/ui/button";
 import {
@@ -22,7 +22,7 @@ interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
 	formConfig?: FormConfig<SchemaType>;
 	formSubmit?: (data: z.infer<SchemaType>) => void;
-	defaultValue?: any;
+	defaultValue?: DefaultValues<z.infer<SchemaType>>;
 	mode: FunctionMode;
 	closeSheet: () => void;
 }
@@ -57,9 +57,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
-		defaultValues: {
-			...defaultValue,
-		},
+		defaultValues: defaultValue,
 	});
 
 	return (
@@ -70,28 +68,32 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 				form={form}
 				onSubmit={void onSubmit}
 			>
-        <div className="w-full flex justify-end gap-4 py-4">
-				<Button
-					type="button"
-					variant={"outline"}
-					onClick={() => {
-						closeSheet();
-					}}
-				>
-					{t("button.cancel")}
-				</Button>
+				<div className="flex w-full justify-end gap-4 py-4">
+					<Button
+						type="button"
+						variant={"outline"}
+						onClick={() => {
+							closeSheet();
+						}}
+					>
+						{t("button.cancel")}
+					</Button>
 
-				{/* TODO: handle form submit validation */}
-				<Button
-					type="button"
-					variant={"outline"}
-					onClick={() => setOpenDialog(true)}
-				>
-					{t(`button.${mode}`)}
-				</Button>
-        </div>
+					{/* TODO: handle form submit validation */}
+					<Button
+						type="button"
+						variant={"outline"}
+						onClick={() => setOpenDialog(true)}
+					>
+						{t(`button.${mode}`)}
+					</Button>
+				</div>
 
-				<Dialog open={openDialog} onOpenChange={setOpenDialog} aria-hidden={false}>
+				<Dialog
+					open={openDialog}
+					onOpenChange={setOpenDialog}
+					aria-hidden={false}
+				>
 					<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
 						<DialogHeader>
 							<DialogTitle>{t("others.check_data")}</DialogTitle>

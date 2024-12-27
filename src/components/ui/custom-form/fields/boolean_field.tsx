@@ -23,7 +23,7 @@ export function BooleanField({
 							value: checked,
 						},
 					};
-					!onChange ?? onChange(event);
+          onChange?.(event);
 				}}
 				checked={value}
 			/>
