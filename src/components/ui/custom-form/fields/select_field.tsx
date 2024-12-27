@@ -8,8 +8,6 @@ import {
 import { type FormFieldProps } from "../types";
 
 export function SelectField({ field, value, inputProps, error, id }: FormFieldProps) {
-  console.log("value", value)
-
 	return (
 		<Select {...inputProps} defaultValue={value}>
 			<SelectTrigger

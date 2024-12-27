@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { FormConfig, ParsedField, ParsedSchema, FormEntries } from "./types";
+import {
+	type FormConfig,
+	type ParsedField,
+	type ParsedSchema,
+	type FormEntries,
+} from "./types";
 import { inferFieldType } from "./infer-field-type";
 
 export type ZodObjectOrWrapped =
@@ -15,27 +20,31 @@ function parseField(
 	const type = inferFieldType(baseSchema, undefined);
 	/* const defaultValue = getDefaultValueInZodStack(schema); */
 
-	console.log(baseSchema);
+	console.log("base", baseSchema);
 	// Enums
-	const options = baseSchema._def.values;
 	let optionValues: [string, string][] = [];
-	if (options) {
-		if (!Array.isArray(options)) {
-			optionValues = Object.entries(options);
-		} else {
-			optionValues = options.map((value) => [value, value]);
+	if (baseSchema instanceof z.ZodEnum) {
+		const options = baseSchema.Values;
+		console.log("enum values", options);
+		if (options) {
+			if (!Array.isArray(options)) {
+				optionValues = Object.entries(options);
+			} else {
+				optionValues = options.map((value) => [value, value]);
+			}
 		}
 	}
 
 	// Arrays and objects
 	let subSchema: ParsedField[] = [];
 	if (baseSchema instanceof z.ZodObject) {
-		subSchema = Object.entries(baseSchema.shape).map(([key, field]) =>
-			parseField(key, field as z.ZodTypeAny)
+		const shape: z.infer<typeof baseSchema> = baseSchema.shape;
+		subSchema = Object.entries(shape).map(([key, field]) =>
+			parseField(key, field as z.ZodAny)
 		);
 	}
 	if (baseSchema instanceof z.ZodArray) {
-		subSchema = [parseField("0", baseSchema._def.type)];
+		subSchema = [parseField("0", baseSchema.element as z.ZodAny)];
 	}
 
 	return {
@@ -86,10 +95,11 @@ export function createFormEntries<T extends ZodObjectOrWrapped>(
 ): FormEntries {
 	return {
 		entries: formFields.fields.map((field) => {
-      const render = config.find((c) => c.key === field.key)?.config.render;
+			const render = config.find((c) => c.key === field.key)?.config
+				.render;
 			return {
 				field: field,
-        render: render
+				render: render,
 			};
 		}),
 	};
