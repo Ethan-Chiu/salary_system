@@ -24,8 +24,8 @@ import {
 export class LevelRangeMapper extends BaseMapper<
 	LevelRange,
 	LevelRangeDecType,
-	z.input<typeof encLevelRange>,
-	z.input<typeof decLevelRange>
+	typeof encLevelRange,
+	typeof decLevelRange
 > {
 	constructor() {
 		super("Level Rnage Mapper", encLevelRange, decLevelRange);

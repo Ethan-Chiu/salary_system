@@ -22,8 +22,8 @@ export class LevelService {
 	private readonly levelMapper: BaseMapper<
 		Level,
 		LevelDecType,
-		z.input<typeof encLevel>,
-		z.input<typeof decLevel>
+		typeof encLevel,
+		typeof decLevel
 	>;
 
 	constructor() {
