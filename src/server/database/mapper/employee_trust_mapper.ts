@@ -52,8 +52,8 @@ export class EmployeeTrustMapper extends BaseMapper<
 		}
 
 		const trust_money_list =
-			await this.trustMoneyService.getAllTrustMoney();
-
+			(await this.trustMoneyService.getAllTrustMoney()).flat();
+		
 		const start_dates = employee_trust_list
 			.map((emp_trust) => emp_trust.start_date)
 			.sort((a, b) => a.getTime() - b.getTime());
