@@ -19,23 +19,25 @@ import { LevelRangeService } from "./level_range_service";
 
 @injectable()
 export class LevelService {
-	private readonly levelMapper: BaseMapper<Level, LevelDecType>;
+	private readonly levelMapper: BaseMapper<
+		Level,
+		LevelDecType,
+		z.input<typeof encLevel>,
+		z.input<typeof decLevel>
+	>;
 
 	constructor() {
-		this.levelMapper = new BaseMapper<Level, LevelDecType>(
-			encLevel,
-			decLevel
-		);
+		this.levelMapper = new BaseMapper("Level Mapper", encLevel, decLevel);
 	}
 
 	async createLevel(
 		data: z.infer<typeof createLevelService>
 	): Promise<Level> {
 		const d = createLevelService.parse(data);
-		const start_date = d.start_date? new Date(d.start_date):new Date();
+		const start_date = d.start_date ? new Date(d.start_date) : new Date();
 		const start_date_adjust = new Date(
-					start_date.setFullYear(start_date.getFullYear(), 0, 1)
-				);
+			start_date.setFullYear(start_date.getFullYear(), 0, 1)
+		);
 		const end_date = new Date(
 			start_date.setFullYear(start_date.getFullYear(), 11, 31)
 		);
@@ -47,14 +49,20 @@ export class LevelService {
 			create_by: "system",
 			update_by: "system",
 		});
-		const existed_data = await Level.findOne({ where: {
-			level: level.level,
-			start_date: level.start_date,
-			end_date: level.end_date,
-			disabled: false
-		} })
-		if (existed_data!=null) {
-			throw new Error(`Data already exist type:${existed_data.level}, start_date: ${start_date}, end_date: ${end_date}`)
+		const existed_data = await Level.findOne({
+			where: {
+				level: level.level,
+				start_date: level.start_date,
+				end_date: level.end_date,
+				disabled: false,
+			},
+		});
+		if (existed_data != null) {
+			throw new Error(
+				`Data already exist type:${
+					existed_data.level
+				}, start_date: ${start_date.toDateString()}, end_date: ${end_date.toDateString()}`
+			);
 		}
 		const newData = await Level.create(level, {
 			raw: true,
@@ -65,7 +73,9 @@ export class LevelService {
 	async batchCreateLevel(
 		data_array: z.infer<typeof createLevelService>[]
 	): Promise<Level[]> {
-		const newData = await Promise.all(data_array.map(async (d) => await this.createLevel(d))); 
+		const newData = await Promise.all(
+			data_array.map(async (d) => await this.createLevel(d))
+		);
 		return newData;
 	}
 	async getLevelById(id: number): Promise<LevelDecType | null> {
@@ -192,11 +202,14 @@ export class LevelService {
 	}
 
 	async updateLevel(data: z.infer<typeof updateLevelService>): Promise<void> {
-	const levelRangeService = container.resolve(LevelRangeService);
-    const transData = await this.getLevelAfterSelectValue(data);
-    const newData = await this.createLevel(transData);
-    await this.deleteLevel(data.id);
-    await levelRangeService.updateLevelRangeId({old_id: data.id, new_id: newData.id});
+		const levelRangeService = container.resolve(LevelRangeService);
+		const transData = await this.getLevelAfterSelectValue(data);
+		const newData = await this.createLevel(transData);
+		await this.deleteLevel(data.id);
+		await levelRangeService.updateLevelRangeId({
+			old_id: data.id,
+			new_id: newData.id,
+		});
 	}
 
 	async deleteLevel(id: number): Promise<void> {
