@@ -18,12 +18,12 @@ export function AutoFormField({
 	const {
 		register,
 		formState: { errors },
-		getValues,
+    watch,
 	} = useFormContext();
 
 	const fullPath = path.join(".");
 	const error = getPathInObject(errors, path)?.message;
-	const value = getValues(fullPath);
+	const value = watch(fullPath);
 
 	let FieldComponent: React.ComponentType<FormFieldProps> = () => (
 		<ErrorMessage

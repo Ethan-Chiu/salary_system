@@ -10,16 +10,14 @@ import { useTranslation } from "react-i18next";
 import { type LevelRangeFEType } from "~/server/api/types/level_range_type";
 import { formatDate } from "~/lib/utils/format_date";
 import { type TFunction } from "i18next";
-import {
-	FunctionsComponent,
-} from "~/components/data_table/functions_component";
+import { FunctionsComponent } from "~/components/data_table/functions_component";
 import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { levelRangeSchema } from "../schemas/configurations/level_range_schema";
 import { Sheet } from "~/components/ui/sheet";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
 import { SelectLevelField } from "../components/function_sheet/form_fields/select_level_field";
 import dataTableContext, {
-	FunctionsItem,
+	type FunctionsItem,
 	type FunctionMode,
 } from "../components/context/data_table_context";
 import { useContext } from "react";
@@ -47,48 +45,61 @@ export const level_range_columns = ({
 	setOpen: (open: boolean) => void;
 	setMode: (mode: FunctionMode) => void;
 	setData: (data: RowItem) => void;
-}) => [
-		...["type", "level_start", "level_end", "start_date", "end_date"].map(
-			(key: string) =>
-				columnHelper.accessor(key as RowItemKey, {
-					header: ({ column }) => {
-						return (
-							<div className="flex justify-center">
-								<div className="text-center font-medium">
-									<Button
-										variant="ghost"
-										onClick={() =>
-											column.toggleSorting(
-												column.getIsSorted() === "asc"
-											)
-										}
-									>
-										{t(`table.${key}`)}
-										<ArrowUpDown className="ml-2 h-4 w-4" />
-									</Button>
-								</div>
+}) => {
+	const f: RowItemKey[] = [
+		"type",
+		"level_start",
+		"level_end",
+		"start_date",
+		"end_date",
+	];
+	return [
+		...f.map((key) =>
+			columnHelper.accessor(key, {
+				header: ({ column }) => {
+					return (
+						<div className="flex justify-center">
+							<div className="text-center font-medium">
+								<Button
+									variant="ghost"
+									onClick={() =>
+										column.toggleSorting(
+											column.getIsSorted() === "asc"
+										)
+									}
+								>
+									{t(`table.${key}`)}
+									<ArrowUpDown className="ml-2 h-4 w-4" />
+								</Button>
 							</div>
-						);
-					},
-					cell: ({ row }) => {
-						switch (key) {
-							case "start_date":
-								return (
-									<div className="text-center font-medium">{`${formatDate("day", row.original.start_date) ?? ""}`}</div>
-								);
-							case "end_date":
-								return (
-									<div className="text-center font-medium">{`${formatDate("day", row.original.end_date) ?? ""}`}</div>
-								);
-							default:
-								return (
-									<div className="text-center font-medium">{`${row.original[
-										key as RowItemKey
-									]?.toString()}`}</div>
-								);
-						}
-					},
-				})
+						</div>
+					);
+				},
+				cell: ({ row }) => {
+					switch (key) {
+						case "start_date":
+							return (
+								<div className="text-center font-medium">{`${
+									formatDate(
+										"day",
+										row.original.start_date
+									) ?? ""
+								}`}</div>
+							);
+						case "end_date":
+							return (
+								<div className="text-center font-medium">{`${
+									formatDate("day", row.original.end_date) ??
+									""
+								}`}</div>
+							);
+						default:
+							return (
+								<div className="text-center font-medium">{`${row.original[key]}`}</div>
+							);
+					}
+				},
+			})
 		),
 		columnHelper.accessor("functions", {
 			header: () => {
@@ -113,6 +124,7 @@ export const level_range_columns = ({
 			},
 		}),
 	];
+};
 
 export function levelRangeMapper(
 	levelRangeData: LevelRangeFEType[]
@@ -141,7 +153,8 @@ interface LevelRangeTableProps extends TableComponentProps {
 
 export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 	const { t } = useTranslation(["common"]);
-	const { mode, setMode, open, setOpen, setData } = useContext(dataTableContext);
+	const { mode, setMode, open, setOpen, setData, data: dd } =
+		useContext(dataTableContext);
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentLevelRange.useQuery({ period_id });
 	const filterKey: RowItemKey = "type";
@@ -190,7 +203,7 @@ export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 							},
 						},
 					]}
-					defaultValue={{ type: "勞保", start_date: new Date() }}
+					defaultValue={dd}
 					mode={mode}
 					closeSheet={() => setOpen(false)}
 				/>
