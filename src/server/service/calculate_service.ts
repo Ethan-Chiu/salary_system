@@ -1682,7 +1682,7 @@ export class CalculateService {
 				(await employee_bonus_service.getAccumulatedBonus(
 					period_id,
 					emp_no
-				));
+				)); //同一期別中會先發其他獎金才發專案獎金
 			const v2_h_i_rate = insurance_rate_setting.v2_h_i_supp_pay_rate;
 			const v2_h_i_multiplier = insurance_rate_setting.v2_h_i_multiplier;
 			const h_i = employee_payment_dec?.h_i ?? 0;

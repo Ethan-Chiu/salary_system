@@ -362,9 +362,9 @@ export const parametersRouter = createTRPCRouter({
 		}
 		const levelRangeFE = await Promise.all(
 			levelRange.map(async (e_list) => {
-				const list = e_list.map(async (e) => {
+				const list = await Promise.all(e_list.map(async (e) => {
 					return await levelRangeMapper.getLevelRangeFE(e);
-				});
+				}));
 				return list;
 			})
 		);

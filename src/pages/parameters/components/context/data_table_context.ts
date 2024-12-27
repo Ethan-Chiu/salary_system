@@ -8,6 +8,16 @@ import { type TableObject } from "./data_table_context_provider";
 
 export type FunctionMode = "create" | "update" | "delete" | "none";
 
+export type FunctionsItem = {
+	create: boolean;
+	update: boolean;
+	delete: boolean;
+};
+
+export interface DataWithFunctions {
+	functions: FunctionsItem;
+}
+
 const dataTableContext = React.createContext<{
 	selectedTableType: ParameterTableEnum;
 	setSelectedTableType: (table: ParameterTableEnum) => void;
@@ -19,8 +29,8 @@ const dataTableContext = React.createContext<{
 	setMode: (mode: FunctionMode) => void;
 	open: boolean;
 	setOpen: (open: boolean) => void;
-	functionsItem: { create: boolean; update: boolean; delete: boolean };
-	setFunctionsItem: (functions: { create: boolean; update: boolean; delete: boolean }) => void;
+	data: any;
+	setData: (data: any) => void;
 }>({
 	selectedTableType: ParameterTableEnumValues[0],
 	setSelectedTableType: (_: ParameterTableEnum) => undefined,
@@ -32,8 +42,8 @@ const dataTableContext = React.createContext<{
 	setMode: (_: FunctionMode) => undefined,
 	open: false,
 	setOpen: (_: boolean) => undefined,
-	functionsItem: { create: false, update: false, delete: false },
-	setFunctionsItem: (_: { create: boolean; update: boolean; delete: boolean }) => undefined,
+	data: null,
+	setData: (_: any) => undefined,
 });
 
 export default dataTableContext;

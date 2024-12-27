@@ -12,9 +12,8 @@ import { AttendanceSettingService } from "./attendance_setting_service";
 import { InsuranceRateSettingService } from "./insurance_rate_setting_service";
 import { PayTypeEnumType } from "../api/types/pay_type_enum";
 import { HolidaysTypeService } from "./holidays_type_service";
-import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
 import { BaseResponseError } from "../api/error/BaseResponseError";
-import { EmployeeTrustMapper } from "../database/mapper/employee_trust_mapper";
+import { LongServiceEnum } from "../api/types/long_service_enum";
 
 @injectable()
 export class TransactionService {
@@ -86,11 +85,6 @@ export class TransactionService {
 			has_trust = false;
 			// throw new BaseResponseError("Employee Trust does not exist");
 		}
-
-		const attendance_setting =
-			await attendanceSettingService.getCurrentAttendanceSetting(
-				period_id
-			);
 		const overtime_list = await ehrService.getOvertimeByEmpNoList(
 			period_id,
 			[emp_no],
@@ -162,7 +156,8 @@ export class TransactionService {
 		const food_allowance = discounted_employee_payment_dec!.food_allowance;
 		const base_salary = discounted_employee_payment_dec!.base_salary;
 		const received_elderly_benefits = false;
-		const long_service_allowance = 0; //Todo
+		const long_service_allowance_type = discounted_employee_payment_dec!.long_service_allowance_type;
+		const long_service_allowance = (long_service_allowance_type === LongServiceEnum.Enum.month_allowance)? discounted_employee_payment_dec!.long_service_allowance : 0; 
 		// MARK: Calculated Results
 		const other_deduction_tax = await calculateService.getOtherDeductionTax(
 			period_id,

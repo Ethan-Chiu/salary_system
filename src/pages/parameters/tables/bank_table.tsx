@@ -16,10 +16,10 @@ import { useContext } from "react";
 import { bankSchema } from "../schemas/configurations/bank_schema";
 import {
 	FunctionsComponent,
-	type FunctionsItem,
 } from "~/components/data_table/functions_component";
 import { Sheet } from "~/components/ui/sheet";
 import dataTableContext, {
+	FunctionsItem,
 	type FunctionMode,
 } from "../components/context/data_table_context";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
@@ -41,74 +41,76 @@ export const bank_columns = ({
 	t,
 	setOpen,
 	setMode,
+	setData,
 }: {
 	t: TFunction<[string], undefined>;
 	setOpen: (open: boolean) => void;
 	setMode: (mode: FunctionMode) => void;
+	setData: (data: RowItem) => void;
 }) => [
-	...["bank_name", "org_name", "start_date", "end_date"].map((key: string) =>
-		columnHelper.accessor(key as RowItemKey, {
-			header: ({ column }) => {
+		...["bank_name", "org_name", "start_date", "end_date"].map((key: string) =>
+			columnHelper.accessor(key as RowItemKey, {
+				header: ({ column }) => {
+					return (
+						<div className="flex justify-center">
+							<div className="text-center font-medium">
+								<Button
+									variant="ghost"
+									onClick={() =>
+										column.toggleSorting(
+											column.getIsSorted() === "asc"
+										)
+									}
+								>
+									{t(`table.${key}`)}
+									<ArrowUpDown className="ml-2 h-4 w-4" />
+								</Button>
+							</div>
+						</div>
+					);
+				},
+				cell: ({ row }) => {
+					switch (key) {
+						case "bank_name":
+							return (
+								<div className="text-center font-medium">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
+							);
+						case "org_name":
+							return (
+								<div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>
+							);
+						default:
+							return (
+								<div className="text-center font-medium">{`${row.original[key as RowItemKey]?.toString()
+									}`}</div>
+							);
+					}
+				},
+			})
+		),
+		columnHelper.accessor("functions", {
+			header: () => {
 				return (
 					<div className="flex justify-center">
 						<div className="text-center font-medium">
-							<Button
-								variant="ghost"
-								onClick={() =>
-									column.toggleSorting(
-										column.getIsSorted() === "asc"
-									)
-								}
-							>
-								{t(`table.${key}`)}
-								<ArrowUpDown className="ml-2 h-4 w-4" />
-							</Button>
+							{t(`others.functions`)}
 						</div>
 					</div>
 				);
 			},
 			cell: ({ row }) => {
-				switch (key) {
-					case "bank_name":
-						return (
-							<div className="text-center font-medium">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
-						);
-					case "org_name":
-						return (
-							<div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>
-						);
-					default:
-						return (
-							<div className="text-center font-medium">{`${
-								row.original[key as RowItemKey]?.toString()
-							}`}</div>
-						);
-				}
+				return (
+					<FunctionsComponent
+						t={t}
+						setOpen={setOpen}
+						setMode={setMode}
+						data={row.original}
+						setData={setData}
+					/>
+				);
 			},
-		})
-	),
-	columnHelper.accessor("functions", {
-		header: () => {
-			return (
-				<div className="flex justify-center">
-					<div className="text-center font-medium">
-						{t(`others.functions`)}
-					</div>
-				</div>
-			);
-		},
-		cell: ({ row }) => {
-			return (
-				<FunctionsComponent
-					t={t}
-					setOpen={setOpen}
-					setMode={setMode}
-					functionsItem={row.original.functions}
-				/>
-			);
-		},
-	}),
-];
+		}),
+	];
 
 export function bankSettingMapper(
 	bankSettingData: BankSettingFEType[]
@@ -138,7 +140,7 @@ interface BankTableProps extends TableComponentProps {
 
 export function BankTable({ period_id, viewOnly }: BankTableProps) {
 	const { t } = useTranslation(["common"]);
-	const { open, setOpen, mode, setMode } = useContext(dataTableContext);
+	const { open, setOpen, mode, setMode, setData } = useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBankSetting.useQuery({ period_id });
@@ -169,7 +171,7 @@ export function BankTable({ period_id, viewOnly }: BankTableProps) {
 	return !viewOnly ? (
 		<Sheet open={open} onOpenChange={setOpen}>
 			<DataTableWithFunctions
-				columns={bank_columns({ t, setOpen, setMode })}
+				columns={bank_columns({ t, setOpen, setMode, setData })}
 				data={bankSettingMapper(data!)}
 				filterColumnKey={filterKey}
 			/>
@@ -185,7 +187,7 @@ export function BankTable({ period_id, viewOnly }: BankTableProps) {
 		</Sheet>
 	) : (
 		<DataTableWithoutFunctions
-			columns={bank_columns({ t, setOpen, setMode })}
+			columns={bank_columns({ t, setOpen, setMode, setData })}
 			data={bankSettingMapper(data!)}
 			filterColumnKey={filterKey}
 		/>

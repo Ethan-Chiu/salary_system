@@ -153,6 +153,7 @@ export class EmployeeBonusService {
 	}
 
 	async getAccumulatedBonus(period_id: number, emp_no: string) {
+		// return accumulated bonus until period_id - 1
 		const period_name = await this.ehrService
 			.getPeriodById(period_id)
 			.then((period) => period.period_name);

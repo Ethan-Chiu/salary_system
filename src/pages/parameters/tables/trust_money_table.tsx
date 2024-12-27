@@ -13,13 +13,13 @@ import { formatDate } from "~/lib/utils/format_date";
 import { type TrustMoneyFEType } from "~/server/api/types/trust_money_type";
 import {
 	FunctionsComponent,
-	type FunctionsItem,
 } from "~/components/data_table/functions_component";
 import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { useContext } from "react";
 import { trustMoneySchema } from "../schemas/configurations/trust_money_schema";
 import { Sheet } from "~/components/ui/sheet";
 import dataTableContext, {
+	FunctionsItem,
 	type FunctionMode,
 } from "../components/context/data_table_context";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
@@ -41,73 +41,76 @@ export const trust_money_columns = ({
 	t,
 	setOpen,
 	setMode,
+	setData,
 }: {
 	t: TFunction<[string], undefined>;
 	setOpen: (open: boolean) => void;
 	setMode: (mode: FunctionMode) => void;
+	setData: (data: RowItem) => void;
 }) => [
-	...[
-		"position",
-		"position_type",
-		"org_trust_reserve_limit",
-		"org_special_trust_incent_limit",
-		"start_date",
-		"end_date",
-	].map((key: string) =>
-		columnHelper.accessor(key as RowItemKey, {
-			header: ({ column }) => {
+		...[
+			"position",
+			"position_type",
+			"org_trust_reserve_limit",
+			"org_special_trust_incent_limit",
+			"start_date",
+			"end_date",
+		].map((key: string) =>
+			columnHelper.accessor(key as RowItemKey, {
+				header: ({ column }) => {
+					return (
+						<div className="flex justify-center">
+							<div className="text-center font-medium">
+								<Button
+									variant="ghost"
+									onClick={() =>
+										column.toggleSorting(
+											column.getIsSorted() === "asc"
+										)
+									}
+								>
+									{t(`table.${key}`)}
+									<ArrowUpDown className="ml-2 h-4 w-4" />
+								</Button>
+							</div>
+						</div>
+					);
+				},
+				cell: ({ row }) => {
+					switch (key) {
+						default:
+							return (
+								<div className="text-center font-medium">{`${row.original[
+									key as RowItemKey
+								]?.toString()}`}</div>
+							);
+					}
+				},
+			})
+		),
+		columnHelper.accessor("functions", {
+			header: () => {
 				return (
 					<div className="flex justify-center">
 						<div className="text-center font-medium">
-							<Button
-								variant="ghost"
-								onClick={() =>
-									column.toggleSorting(
-										column.getIsSorted() === "asc"
-									)
-								}
-							>
-								{t(`table.${key}`)}
-								<ArrowUpDown className="ml-2 h-4 w-4" />
-							</Button>
+							{t(`others.functions`)}
 						</div>
 					</div>
 				);
 			},
 			cell: ({ row }) => {
-				switch (key) {
-					default:
-						return (
-							<div className="text-center font-medium">{`${row.original[
-								key as RowItemKey
-							]?.toString()}`}</div>
-						);
-				}
+				return (
+					<FunctionsComponent
+						t={t}
+						setOpen={setOpen}
+						setMode={setMode}
+						data={row.original}
+						setData={setData}
+					/>
+				);
 			},
-		})
-	),
-	columnHelper.accessor("functions", {
-		header: () => {
-			return (
-				<div className="flex justify-center">
-					<div className="text-center font-medium">
-						{t(`others.functions`)}
-					</div>
-				</div>
-			);
-		},
-		cell: ({ row }) => {
-			return (
-				<FunctionsComponent
-					t={t}
-					setOpen={setOpen}
-					setMode={setMode}
-					functionsItem={row.original.functions}
-				/>
-			);
-		},
-	}),
-];
+		}),
+	];
 
 export function trustMoneyMapper(
 	TrustMoneyData: TrustMoneyFEType[]
@@ -135,7 +138,7 @@ interface TrustMoneyTableProps extends TableComponentProps {
 
 export function TrustMoneyTable({ period_id, viewOnly }: TrustMoneyTableProps) {
 	const { t } = useTranslation(["common"]);
-	const { mode, setMode, open, setOpen } = useContext(dataTableContext);
+	const { mode, setMode, open, setOpen, setData } = useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentTrustMoney.useQuery({ period_id });
@@ -163,7 +166,7 @@ export function TrustMoneyTable({ period_id, viewOnly }: TrustMoneyTableProps) {
 	return !viewOnly ? (
 		<Sheet open={open} onOpenChange={setOpen}>
 			<DataTableWithFunctions
-				columns={trust_money_columns({ t, setOpen, setMode })}
+				columns={trust_money_columns({ t, setOpen, setMode, setData })}
 				data={trustMoneyMapper(data!)}
 				filterColumnKey={filterKey}
 			/>
@@ -179,7 +182,7 @@ export function TrustMoneyTable({ period_id, viewOnly }: TrustMoneyTableProps) {
 		</Sheet>
 	) : (
 		<DataTableWithoutFunctions
-			columns={trust_money_columns({ t, setOpen, setMode })}
+			columns={trust_money_columns({ t, setOpen, setMode, setData })}
 			data={trustMoneyMapper(data!)}
 			filterColumnKey={filterKey}
 		/>
