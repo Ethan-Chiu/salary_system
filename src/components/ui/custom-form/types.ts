@@ -14,16 +14,12 @@ export type Renderable<AdditionalRenderable = null> =
 export interface FieldConfig<
 	AdditionalRenderable = null,
 	FieldTypes = string,
-	FieldWrapper = any,
-	CustomData = Record<string, any>
 > {
 	description?: Renderable<AdditionalRenderable>;
 	inputProps?: Record<string, any>;
 	label?: Renderable<AdditionalRenderable>;
 	fieldType?: FieldTypes;
 	render?: React.ComponentType<FormFieldProps>;	
-  /* fieldWrapper?: FieldWrapper; */
-	/* customData?: CustomData; */
 }
 
 /**

@@ -178,7 +178,12 @@ export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 							},
 						},
 					]}
-          defaultValue={{type: "勞保", start_date: new Date()}}
+					defaultValue={{
+						type: "勞保",
+						start_date: new Date(),
+						level_start: 15840,
+						level_end: 15840,
+					}}
 					mode={mode}
 					closeSheet={() => setOpen(false)}
 				/>
@@ -192,4 +197,4 @@ export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 		/>
 	);
 }
-          /* defaultValue={{start_date: new Date()}} */
+/* defaultValue={{start_date: new Date()}} */
