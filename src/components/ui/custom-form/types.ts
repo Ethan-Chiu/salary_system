@@ -34,7 +34,7 @@ export type FormConfig<S extends ZodObjectOrWrapped> = FormConfigEntry<S>[];
 export interface FormEntries<AdditionalRenderable = null, FieldTypes = string> {
 	entries: {
 		field: ParsedField<AdditionalRenderable, FieldTypes>;
-		render?: (props: FormFieldProps) => React.ReactNode;
+		render?: React.ComponentType<FormFieldProps>;
 	}[];
 }
 
