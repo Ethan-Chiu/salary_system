@@ -112,6 +112,7 @@ export const level_columns = ({
 export function levelMapper(levelData: LevelFEType[]): RowItem[] {
 	return levelData.map((d) => {
 		return {
+			id: d.id,
 			level: d.level,
 			start_date: d.start_date,
 			end_date: d.end_date,
@@ -165,6 +166,7 @@ export function LevelTable({ period_id, viewOnly }: LevelTableProps) {
 			<FunctionsSheetContent t={t} period_id={period_id}>
 				<ParameterForm
 					formSchema={levelSchema}
+					formConfig={[{ key: "id", config: { hidden: true } }]}
 					mode={mode}
 					closeSheet={() => setOpen(false)}
 				/>

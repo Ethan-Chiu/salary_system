@@ -79,19 +79,17 @@ export const level_range_columns = ({
 					switch (key) {
 						case "start_date":
 							return (
-								<div className="text-center font-medium">{`${
-									formatDate(
-										"day",
-										row.original.start_date
-									) ?? ""
-								}`}</div>
+								<div className="text-center font-medium">{`${formatDate(
+									"day",
+									row.original.start_date
+								) ?? ""
+									}`}</div>
 							);
 						case "end_date":
 							return (
-								<div className="text-center font-medium">{`${
-									formatDate("day", row.original.end_date) ??
+								<div className="text-center font-medium">{`${formatDate("day", row.original.end_date) ??
 									""
-								}`}</div>
+									}`}</div>
 							);
 						default:
 							return (
@@ -131,6 +129,7 @@ export function levelRangeMapper(
 ): RowItem[] {
 	return levelRangeData.map((d) => {
 		return {
+			id: d.id,
 			type: d.type,
 			level_start: d.level_start,
 			level_end: d.level_end,
@@ -190,6 +189,7 @@ export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 				<ParameterForm
 					formSchema={levelRangeSchema}
 					formConfig={[
+						{ key: "id", config: { hidden: true } },
 						{
 							key: "level_start",
 							config: {
@@ -203,7 +203,6 @@ export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 							},
 						},
 					]}
-					defaultValue={dd}
 					mode={mode}
 					closeSheet={() => setOpen(false)}
 				/>

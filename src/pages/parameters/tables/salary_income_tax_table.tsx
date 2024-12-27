@@ -125,6 +125,7 @@ export function salaryIncomeTaxMapper(
 ): RowItem[] {
 	return salaryIncomeTaxData.map((d) => {
 		return {
+			id: d.id,
 			salary_start: d.salary_start,
 			salary_end: d.salary_end,
 			dependent: d.dependent,
@@ -194,6 +195,7 @@ export function SalaryIncomeTaxTable({
 			<FunctionsSheetContent t={t} period_id={period_id}>
 				<ParameterForm
 					formSchema={salaryIncomeTaxSchema}
+					formConfig={[{ key: "id", config: { hidden: true } }]}
 					mode={mode}
 					closeSheet={() => {
 						setOpen(false);
