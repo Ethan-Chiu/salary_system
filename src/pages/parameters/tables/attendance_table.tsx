@@ -5,7 +5,6 @@ import { ArrowUpDown } from "lucide-react";
 import { DataTable as DataTableWithFunctions } from "../components/data_table_single";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { c_EndDateStr, c_StartDateStr } from "../constant";
-import { z } from "zod";
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { formatDate } from "~/lib/utils/format_date";

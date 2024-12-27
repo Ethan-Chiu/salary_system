@@ -37,9 +37,7 @@ export default function HistoryView() {
 
 function CompHistoryView() {
 	const { t } = useTranslation(['common']);
-	const [open, setOpen] = useState<boolean>(false);
-	const [mode, setMode] = useState<FunctionMode>("none");
-	const { selectedTableType, setData } = useContext(dataTableContext);
+	const { selectedTableType, setOpen, setMode, setData } = useContext(dataTableContext);
 
 	const queryFunctions = useContext(apiFunctionsContext);
 	const queryFunction = queryFunctions.queryFunction! as ParameterHistoryQueryFunctionType;
