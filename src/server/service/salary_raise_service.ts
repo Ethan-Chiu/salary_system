@@ -13,6 +13,11 @@ import {
 import { LongServiceEnum } from "../api/types/long_service_enum";
 import { Op } from "sequelize";
 import { EmployeeDataService } from "./employee_data_service";
+import { SalaryRaiseAllService } from "./salary_raise_all_service";
+import { SalaryRaiseWorkTypeService } from "./salary_raise_work_type_service";
+import { SalaryRaisePositionService } from "./salary_raise_position_service";
+import { SalaryRaiseSeniorityService } from "./salary_raise_seniority_service";
+import { SalaryRaiseDepartmentService } from "./salary_raise_department_service";
 
 @injectable()
 export class SalaryRaiseService {
@@ -141,27 +146,27 @@ export class SalaryRaiseService {
 	async initCandidateSalaryRaise(
 		period_id: number
 	) {
-		const all_emp_bonus_list = await this.getAllSalaryRaise(
+		const all_salary_raise_list = await this.getAllSalaryRaise(
 			period_id,
 		);
-		const salary_raise_all_service = container.resolve(BonusAllService);
-		const bonus_work_type_service = container.resolve(BonusWorkTypeService);
-		const bonus_position_service = container.resolve(BonusPositionService);
-		// const bonus_position_type_service = container.resolve(
-		// 	BonusPositionTypeService
+		const salary_raise_all_service = container.resolve(SalaryRaiseAllService);
+		const salary_raise_work_type_service = container.resolve(SalaryRaiseWorkTypeService);
+		const salary_raise_position_service = container.resolve(SalaryRaisePositionService);
+		// const salary_raise_position_type_service = container.resolve(
+		// 	SalaryRaisePositionTypeService
 		// );
-		const bonus_seniority_service = container.resolve(
-			BonusSeniorityService
+		const salary_raise_seniority_service = container.resolve(
+			SalaryRaiseSeniorityService
 		);
-		const bonus_department_service = container.resolve(
-			BonusDepartmentService
+		const salary_raise_department_service = container.resolve(
+			SalaryRaiseDepartmentService
 		);
 		const ehr_service = container.resolve(EHRService);
 		const employee_data_service = container.resolve(EmployeeDataService);
 		const issue_date = (await ehr_service.getPeriodById(period_id))
 			.issue_date;
 
-		const promises = all_emp_bonus_list.map(async (emp) => {
+		const promises = all_salary_raise_list.map(async (emp) => {
 			const employee_data =
 				await employee_data_service.getEmployeeDataByEmpNoByPeriod(
 					period_id,
@@ -172,16 +177,16 @@ export class SalaryRaiseService {
 			}
 			const special_multiplier =
 				(await salary_raise_all_service.getMultiplier(period_id)) *
-				(await bonus_work_type_service.getMultiplier(
+				(await salary_raise_work_type_service.getMultiplier(
 					period_id,
 					employee_data.work_type
 				)) *
-				(await bonus_position_service.getMultiplier(
+				(await salary_raise_position_service.getMultiplier(
 					period_id,
 					employee_data.position,
 					employee_data.position_type
 				)) *
-				(await bonus_seniority_service.getMultiplier(
+				(await salary_raise_seniority_service.getMultiplier(
 					period_id,
 					Math.floor(
 						(new Date(issue_date).getTime() -
@@ -191,7 +196,7 @@ export class SalaryRaiseService {
 							(1000 * 60 * 60 * 24 * 365)
 					)
 				)) *
-				(await bonus_department_service.getMultiplier(
+				(await salary_raise_department_service.getMultiplier(
 					period_id,
 					employee_data.department
 				));
@@ -277,7 +282,7 @@ export class SalaryRaiseService {
 		});
 	}
 
-	async updateMultipleBonusByEmpNoList(
+	async updateMultipleSalaryRaiseByEmpNoList(
 		emp_no_list: string[],
 		period_id: number,
 		multiplier: number,
@@ -285,17 +290,17 @@ export class SalaryRaiseService {
 	): Promise<void> {
 		await Promise.all(
 			emp_no_list.map(async (emp_no) => {
-				const emp_bonus = await this.getSalaryRaiseByEmpNoByType(
+				const salary_raise = await this.getSalaryRaiseByEmpNoByType(
 					period_id,
 					emp_no
 				);
-				if (!emp_bonus) {
+				if (!salary_raise) {
 					throw new BaseResponseError(
-						"Employee bonus does not exist"
+						"Salary Raise does not exist"
 					);
 				}
 				await this.updateSalaryRaise({
-					id: emp_bonus.id,
+					id: salary_raise.id,
 					multiplier: multiplier,
 					fixed_amount: fixed_amount,
 				});
@@ -322,7 +327,7 @@ export class SalaryRaiseService {
 			emp_no!
 		);
 		if (!salaryRaise) {
-			throw new BaseResponseError("Employee bonus does not exist");
+			throw new BaseResponseError("Salary Raise does not exist");
 		}
 		const salary_raise_mapper = container.resolve(SalaryRaiseMapper);
 		const salary_raise_fe =
