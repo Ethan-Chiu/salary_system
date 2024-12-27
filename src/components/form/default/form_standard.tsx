@@ -15,6 +15,7 @@ import {
 import CustomForm from "~/components/ui/custom-form";
 import { type FormConfig } from "~/components/ui/custom-form/types";
 import GeneralTable from "~/components/function_sheet/general_table";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
 interface StandardFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
@@ -87,22 +88,28 @@ export function StandardForm<SchemaType extends z.AnyZodObject>({
 				onOpenChange={setOpenDialog}
 				aria-hidden={false}
 			>
-				<DialogContent className="max-h-[80vh] overflow-y-scroll sm:max-w-[425px]">
-					<DialogHeader>
-						<DialogTitle>{t("others.check_data")}</DialogTitle>
-					</DialogHeader>
-					<GeneralTable data={formValues} />
-					<DialogFooter>
-						<DialogClose asChild>
-							<Button
-								disabled={form.formState.isSubmitting}
-								type="submit"
-								form={formId}
-							>
-								{t("button.save")}
-							</Button>
-						</DialogClose>
-					</DialogFooter>
+				<DialogContent className="p-0 sm:max-w-[425px]">
+					<ScrollArea className="max-h-[80vh] w-full">
+						<div className="p-12">
+							<DialogHeader className="pb-12">
+								<DialogTitle>
+									{t("others.check_data")}
+								</DialogTitle>
+							</DialogHeader>
+							<GeneralTable data={formValues} />
+							<DialogFooter className="pt-12">
+								<DialogClose asChild>
+									<Button
+										disabled={form.formState.isSubmitting}
+										type="submit"
+										form={formId}
+									>
+										{t("button.save")}
+									</Button>
+								</DialogClose>
+							</DialogFooter>
+						</div>
+					</ScrollArea>
 				</DialogContent>
 			</Dialog>
 		</>
