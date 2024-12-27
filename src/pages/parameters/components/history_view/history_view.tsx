@@ -11,7 +11,7 @@ import { cn } from "~/lib/utils";
 import ApiFunctionsProvider, {
 	apiFunctionsContext,
 } from "../context/api_context_provider";
-import dataTableContext from "../context/data_table_context";
+import dataTableContext, { FunctionMode } from "../context/data_table_context";
 import { getTableColumn, getTableMapper } from "../../tables/table_columns";
 import { DataTable } from "./data_table";
 import { is_date_available } from "~/server/service/helper_function";
@@ -22,7 +22,6 @@ import periodContext from "~/components/context/period_context";
 import { formatDate } from "~/lib/utils/format_date";
 import { Separator } from "~/components/ui/separator";
 import { DateStringPopoverSelector, PopoverSelectorDataType } from "~/components/popover_selector";
-import { FunctionMode } from "../function_sheet/data_table_functions";
 
 export default function HistoryView() {
 	const { selectedTableType } = useContext(dataTableContext);
@@ -40,7 +39,7 @@ function CompHistoryView() {
 	const { t } = useTranslation(['common']);
 	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
-	const { selectedTableType, setFunctionsItem } = useContext(dataTableContext);
+	const { selectedTableType, setData } = useContext(dataTableContext);
 
 	const queryFunctions = useContext(apiFunctionsContext);
 	const queryFunction = queryFunctions.queryFunction! as ParameterHistoryQueryFunctionType;
@@ -57,7 +56,14 @@ function CompHistoryView() {
 		if (!isLoading && data?.[0] && data?.[0]?.[0]) {
 			const targetData = data[0][0]
 			setSelectedId(targetData.id);
-			setFunctionsItem({ create: targetData.creatable, update: targetData.updatable, delete: targetData.deletable });
+			setData({
+				...targetData,
+				functions: {
+					create: targetData.creatable,
+					update: targetData.updatable,
+					delete: targetData.deletable
+				}
+			});
 			setSelectedDateString(formatDate("day", targetData.start_date) ?? t("others.now"));
 		}
 	}, [isLoading, data]);
@@ -66,7 +72,14 @@ function CompHistoryView() {
 		if (!isLoading && selectedDateString && data?.[0] && data?.[0]?.[0]) {
 			const targetData = data.filter((e) => formatDate("day", e[0]!.start_date) === selectedDateString)[0]![0]!
 			setSelectedId(targetData.id);
-			setFunctionsItem({ create: targetData.creatable, update: targetData.updatable, delete: targetData.deletable });
+			setData({
+				...targetData,
+				functions: {
+					create: targetData.creatable,
+					update: targetData.updatable,
+					delete: targetData.deletable
+				}
+			});
 		}
 	}, [selectedDateString]);
 
@@ -121,7 +134,15 @@ function CompHistoryView() {
 								)}
 								onClick={() => {
 									setSelectedId(e.id)
-									setFunctionsItem({ create: e.creatable, update: e.updatable, delete: e.deletable });
+									console.log(e)
+									setData({
+										...e,
+										functions: {
+											create: e.creatable,
+											update: e.updatable,
+											delete: e.deletable
+										}
+									});
 								}}
 							>
 								<div className="m-1 flex flex-wrap items-center justify-center">
@@ -162,7 +183,7 @@ function CompHistoryView() {
 			<ResizablePanel defaultSize={70}>
 				{data!.filter((e) => e[0]!.id === selectedId).length > 0 ? (
 					<DataTable
-						columns={getTableColumn(selectedTableType, t, selectedPeriod!.period_id, open, setOpen, mode, setMode)}
+						columns={getTableColumn(selectedTableType, t, selectedPeriod!.period_id, setOpen, setMode, setData)}
 						data={getTableMapper(selectedTableType)!(
 							data!.filter((e) => e[0]!.id === selectedId)[0]! as any[]
 						)}

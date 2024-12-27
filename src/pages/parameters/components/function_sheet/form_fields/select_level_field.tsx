@@ -14,15 +14,17 @@ import { Input } from "~/components/ui/input";
 
 export function SelectLevelField({
 	field,
+  value,
 	inputProps,
 	error,
 	id,
 }: FormFieldProps) {
 	const { watch } = useFormContext();
 
-	const startDateInput = watch("start_date", null);
+	const startDateInput = watch("start_date");
 	const result = z
 		.string()
+		.or(z.date())
 		.nullable()
 		.pipe(z.coerce.date().nullable())
 		.safeParse(startDateInput);
@@ -34,8 +36,10 @@ export function SelectLevelField({
 		return () => subscription.unsubscribe();
 	}, [watch]);
 
+  const valueStr = z.number().pipe(z.coerce.string()).parse(value)
+
 	return result.success && result.data ? (
-		<Select {...inputProps}>
+		<Select {...inputProps} defaultValue={valueStr}>
 			<SelectTrigger
 				id={id}
 				className={error ? "border-destructive" : ""}
@@ -45,7 +49,7 @@ export function SelectLevelField({
 			<SelectLevelOptionsComp start_date={result.data} />
 		</Select>
 	) : (
-		<Input disabled placeholder="Select an option" />
+		<Input disabled placeholder="Set start date first" />
 	);
 }
 

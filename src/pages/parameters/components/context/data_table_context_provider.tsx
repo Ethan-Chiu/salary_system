@@ -21,11 +21,7 @@ export default function DataTableContextProvider({
 	const [selectedTable, setSelectedTable] = useState<TableObject | null>(null);
 	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
-	const [functionsItem, setFunctionsItem] = useState<{ create: boolean; update: boolean; delete: boolean }>({
-		create: false,
-		update: false,
-		delete: false,
-	});
+	const [data, setData] = useState<any>(null);
 
 	return (
 		<dataTableContext.Provider
@@ -40,8 +36,8 @@ export default function DataTableContextProvider({
 				setMode,
 				open,
 				setOpen,
-				functionsItem,
-				setFunctionsItem,
+				data,
+				setData,
 			}}
 		>
 			{children}
