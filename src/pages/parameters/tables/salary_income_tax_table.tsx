@@ -29,8 +29,8 @@ export type RowItem = {
 	salary_end: number;
 	dependent: number;
 	tax_amount: number;
-	start_date: string;
-	end_date: string | null;
+	start_date: Date | null;
+	end_date: Date | null;
 	functions: FunctionsItem;
 };
 type RowItemKey = keyof RowItem;
@@ -78,6 +78,14 @@ export const salary_income_tax_columns = ({
 				},
 				cell: ({ row }) => {
 					switch (key) {
+						case "start_date":
+							return (
+								<div className="text-center font-medium">{`${formatDate("day", row.original.start_date) ?? ""}`}</div>
+							);
+						case "end_date":
+							return (
+								<div className="text-center font-medium">{`${formatDate("day", row.original.end_date) ?? ""}`}</div>
+							);
 						default:
 							return (
 								<div className="text-center font-medium">{`${row.original[
@@ -121,8 +129,8 @@ export function salaryIncomeTaxMapper(
 			salary_end: d.salary_end,
 			dependent: d.dependent,
 			tax_amount: d.tax_amount,
-			start_date: formatDate("day", d.start_date) ?? "",
-			end_date: formatDate("day", d.end_date) ?? "",
+			start_date: d.start_date,
+			end_date: d.end_date,
 			functions: {
 				create: d.creatable,
 				update: d.updatable,

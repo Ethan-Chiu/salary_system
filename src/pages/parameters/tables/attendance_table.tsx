@@ -5,7 +5,6 @@ import { ArrowUpDown } from "lucide-react";
 import { DataTable as DataTableWithFunctions } from "../components/data_table_single";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { c_EndDateStr, c_StartDateStr } from "../constant";
-import { z } from "zod";
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { formatDate } from "~/lib/utils/format_date";
@@ -20,12 +19,10 @@ import { attendanceSchema } from "../schemas/configurations/attendance_schema";
 import dataTableContext from "../components/context/data_table_context";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
 
-const rowSchema = z.object({
-	parameters: z.string(),
-	value: z.union([z.number(), z.string(), z.date()]),
-});
-type RowItem = z.infer<typeof rowSchema>;
-
+export type RowItem = {
+	parameters: string;
+	value: number | string | Date | null;
+};
 type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
@@ -57,14 +54,18 @@ export const attendance_columns = ({
 					);
 				},
 				cell: ({ row }) => {
-					switch (key) {
-						default:
+					if (key === "value") {
+						if (row.original.parameters === c_StartDateStr || row.original.parameters === c_EndDateStr) {
 							return (
-								<div className="text-center font-medium">{`${row.original[
-									key as RowItemKey
-								].toString()}`}</div>
+								<div className="text-center font-medium">{formatDate("day", row.original.value as Date | null) ?? ""}</div>
 							);
+						}
 					}
+					return (
+						<div className="text-center font-medium">{`${row.original[
+							key as RowItemKey
+						]!.toString()}`}</div>
+					);
 				},
 			})
 		),
@@ -73,7 +74,7 @@ export const attendance_columns = ({
 export function attendanceMapper(
 	attendanceData: AttendanceSettingFEType[]
 ): RowItem[] {
-  // TODO: check assertion
+	// TODO: check assertion
 	const data = attendanceData[0]!;
 	return [
 		{
@@ -118,11 +119,11 @@ export function attendanceMapper(
 		},
 		{
 			parameters: c_StartDateStr,
-			value: formatDate("day", data.start_date) ?? "",
+			value: data.start_date,
 		},
 		{
 			parameters: c_EndDateStr,
-			value: formatDate("day", data.end_date) ?? "",
+			value: data.end_date,
 		},
 		// {
 		// 	parameters: c_CreateDateStr,
@@ -147,14 +148,12 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 		api.parameters.getCurrentAttendanceSetting.useQuery({ period_id });
 	const filterKey: RowItemKey = "parameters";
 
-	const { open, setOpen, mode, setData } = useContext(dataTableContext);
+	const { selectedTab, open, setOpen, mode, setData } = useContext(dataTableContext);
 
 	useEffect(() => {
 		if (data) {
 			setData({
 				...data,
-				start_date: formatDate("day", data.start_date) ?? "",
-				end_date: formatDate("day", data.end_date) ?? "",
 				functions: {
 					create: data.creatable,
 					update: data.updatable,
@@ -162,7 +161,7 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 				},
 			});
 		}
-	}, [data]);
+	}, [data, selectedTab]);
 
 	if (isLoading) {
 		return (

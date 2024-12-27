@@ -29,8 +29,8 @@ export type RowItem = {
 	bank_code: string;
 	org_name: string;
 	org_code: string;
-	start_date: string;
-	end_date: string | null;
+	start_date: Date | null;
+	end_date: Date | null;
 	functions: FunctionsItem;
 };
 type RowItemKey = keyof RowItem;
@@ -79,10 +79,17 @@ export const bank_columns = ({
 							return (
 								<div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>
 							);
+						case "start_date":
+							return (
+								<div className="text-center font-medium">{`${formatDate("day", row.original.start_date) ?? ""}`}</div>
+							);
+						case "end_date":
+							return (
+								<div className="text-center font-medium">{`${formatDate("day", row.original.end_date) ?? ""}`}</div>
+							);
 						default:
 							return (
-								<div className="text-center font-medium">{`${row.original[key as RowItemKey]?.toString()
-									}`}</div>
+								<div className="text-center font-medium">{`${row.original[key as RowItemKey]?.toString()}`}</div>
 							);
 					}
 				},
@@ -121,8 +128,8 @@ export function bankSettingMapper(
 			bank_code: d.bank_code,
 			org_name: d.org_name,
 			org_code: d.org_code,
-			start_date: formatDate("day", d.start_date) ?? "",
-			end_date: formatDate("day", d.end_date) ?? "",
+			start_date: d.start_date,
+			end_date: d.end_date,
 			functions: {
 				create: d.creatable,
 				update: d.updatable,
