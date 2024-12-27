@@ -24,7 +24,9 @@ type EmployeeTrustServiceType = EmployeeTrustService;
 @injectable()
 export class EmployeeTrustMapper extends BaseMapper<
 	EmployeeTrust,
-	EmployeeTrustDecType
+	EmployeeTrustDecType,
+  typeof encEmployeeTrust,
+  typeof decEmployeeTrust
 > {
 	constructor(
 		private readonly employeeDataService: EmployeeDataService,
@@ -32,7 +34,7 @@ export class EmployeeTrustMapper extends BaseMapper<
 		@inject(delay(() => EmployeeTrustService))
 		private readonly employeeTrustService: EmployeeTrustServiceType
 	) {
-		super(encEmployeeTrust, decEmployeeTrust);
+		super("Employee Trust Mapper", encEmployeeTrust, decEmployeeTrust);
 	}
 
 	async getEmployeeTrustFE(

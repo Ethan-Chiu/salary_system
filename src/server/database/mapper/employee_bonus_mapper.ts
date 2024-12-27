@@ -1,5 +1,4 @@
 import { container, injectable } from "tsyringe";
-import { BaseResponseError } from "~/server/api/error/BaseResponseError";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { deleteProperties } from "./helper_function";
 import { type EmployeeBonusFEType } from "~/server/api/types/employee_bonus_type";
@@ -16,10 +15,12 @@ import {
 @injectable()
 export class EmployeeBonusMapper extends BaseMapper<
 	EmployeeBonus,
-	EmployeeBonusDecType
+	EmployeeBonusDecType,
+  typeof encEmployeeBonus,
+  typeof decEmployeeBonus
 > {
 	constructor() {
-		super(encEmployeeBonus, decEmployeeBonus, []);
+		super("Employee Bonus Mapper", encEmployeeBonus, decEmployeeBonus, []);
 	}
 
 	// TODO: change to a FE mapper
