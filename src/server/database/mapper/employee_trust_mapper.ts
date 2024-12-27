@@ -69,7 +69,7 @@ export class EmployeeTrustMapper extends BaseMapper<
 				start_dates.push(trust_money_start_date);
 			}
 		});
-		const promises = start_dates
+		const promises = start_dates.filter((d) => d.getTime() > (new Date("1970-01-01")).getTime())
 			.sort((a, b) => a.getTime() - b.getTime())
 			.map(async (start_date, idx) => {
 				const employee_trust =

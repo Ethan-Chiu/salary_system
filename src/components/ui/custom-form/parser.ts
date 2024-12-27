@@ -24,7 +24,6 @@ function parseField(
 	let optionValues: [string, string][] = [];
 	if (baseSchema instanceof z.ZodEnum) {
 		const options = baseSchema.Values;
-		console.log("enum values", options);
 		if (options) {
 			if (!Array.isArray(options)) {
 				optionValues = Object.entries(options);
