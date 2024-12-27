@@ -1,11 +1,9 @@
 import { container, injectable } from "tsyringe";
-import { EmployeeDataDecType, EmployeeData, encEmployeeData, decEmployeeData } from "../entity/SALARY/employee_data";
-import { EmployeeDataService } from "~/server/service/employee_data_service";
+import { type EmployeeDataDecType, type EmployeeData, encEmployeeData, decEmployeeData } from "../entity/SALARY/employee_data";
 import { BaseMapper } from "./base_mapper";
 import { SyncService } from "~/server/service/sync_service";
 import { FunctionsEnum } from "~/server/api/types/functions_enum";
-import { ZodEnum } from "zod";
-import { MonthSalaryStatusEnum, MonthSalaryStatusEnumType } from "~/server/api/types/month_salary_status_enum";
+import { MonthSalaryStatusEnum, type MonthSalaryStatusEnumType } from "~/server/api/types/month_salary_status_enum";
 import { WorkStatusEnum } from "~/server/api/types/work_status_enum";
 
 interface EmployeeInformation {
@@ -14,10 +12,12 @@ interface EmployeeInformation {
 @injectable()
 export class EmployeeDataMapper extends BaseMapper<
 	EmployeeData,
-	EmployeeDataDecType
+	EmployeeDataDecType,
+  typeof encEmployeeData,
+  typeof decEmployeeData
 > {
 	constructor() {
-		super(encEmployeeData, decEmployeeData, [
+		super("Employee Data Mapper", encEmployeeData, decEmployeeData, [
 		]);
 	}
 

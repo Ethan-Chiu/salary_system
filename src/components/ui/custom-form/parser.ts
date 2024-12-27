@@ -24,7 +24,6 @@ function parseField(
 	let optionValues: [string, string][] = [];
 	if (baseSchema instanceof z.ZodEnum) {
 		const options = baseSchema.Values;
-		console.log("enum values", options);
 		if (options) {
 			if (!Array.isArray(options)) {
 				optionValues = Object.entries(options);
@@ -92,14 +91,15 @@ export function createFormEntries<T extends ZodObjectOrWrapped>(
 	formFields: ParsedSchema,
 	config: FormConfig<T> | undefined = []
 ): FormEntries {
+	const entries = formFields.fields.map((field) => {
+		const cfg = config.find((c) => c.key === field.key)?.config;
+		return {
+			field: field,
+			config: cfg,
+		};
+	});
+
 	return {
-		entries: formFields.fields.map((field) => {
-			const render = config.find((c) => c.key === field.key)?.config
-				.render;
-			return {
-				field: field,
-				render: render,
-			};
-		}),
+		entries: entries,
 	};
 }

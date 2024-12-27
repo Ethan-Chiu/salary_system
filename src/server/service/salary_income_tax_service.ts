@@ -13,9 +13,8 @@ import { EHRService } from "./ehr_service";
 import { BaseMapper } from "../database/mapper/base_mapper";
 import {
 	createSalaryIncomeTaxService,
-	updateSalaryIncomeTaxService,
+	type updateSalaryIncomeTaxService,
 } from "../api/types/salary_income_tax";
-import { promises } from "dns";
 
 export interface primary_key {
 	salary_start: number;
@@ -26,14 +25,17 @@ export interface primary_key {
 export class SalaryIncomeTaxService {
 	private readonly salaryIncomeTaxMapper: BaseMapper<
 		SalaryIncomeTax,
-		SalaryIncomeTaxDecType
+		SalaryIncomeTaxDecType,
+		typeof encSalaryIncomeTax,
+		typeof decSalaryIncomeTax
 	>;
 
 	constructor() {
-		this.salaryIncomeTaxMapper = new BaseMapper<
-			SalaryIncomeTax,
-			SalaryIncomeTaxDecType
-		>(encSalaryIncomeTax, decSalaryIncomeTax);
+		this.salaryIncomeTaxMapper = new BaseMapper(
+			"Salary Income Tax Mapper",
+			encSalaryIncomeTax,
+			decSalaryIncomeTax
+		);
 	}
 
 	async createSalaryIncomeTax(
@@ -105,7 +107,7 @@ export class SalaryIncomeTaxService {
 					const salaryIncomeTax =
 						await this.salaryIncomeTaxMapper.encode({
 							...d,
-							satart_date: d.start_date ?? new Date(),
+							start_date: d.start_date ?? new Date(),
 							disabled: false,
 							create_by: "system",
 							update_by: "system",

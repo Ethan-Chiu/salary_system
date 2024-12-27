@@ -5,14 +5,12 @@ import {
 	type createLevelRangeAPI,
 	createLevelRangeService,
 	levelRangeFE,
-	LevelRangeFEType,
+	type LevelRangeFEType,
 	type updateLevelRangeAPI,
 	updateLevelRangeService,
 } from "~/server/api/types/level_range_type";
 import { LevelService } from "~/server/service/level_service";
-import {
-	deleteProperties,
-} from "./helper_function";
+import { deleteProperties } from "./helper_function";
 import { get_date_string } from "~/server/service/helper_function";
 import { BaseMapper } from "./base_mapper";
 import {
@@ -25,10 +23,12 @@ import {
 @injectable()
 export class LevelRangeMapper extends BaseMapper<
 	LevelRange,
-	LevelRangeDecType
+	LevelRangeDecType,
+	typeof encLevelRange,
+	typeof decLevelRange
 > {
 	constructor() {
-		super(encLevelRange, decLevelRange);
+		super("Level Rnage Mapper", encLevelRange, decLevelRange);
 	}
 
 	async getLevelRange(
@@ -47,14 +47,13 @@ export class LevelRangeMapper extends BaseMapper<
 			throw new BaseResponseError("Level does not exist");
 		}
 
-		const levelRange: z.infer<typeof createLevelRangeService> = createLevelRangeService.parse(
-			{
+		const levelRange: z.infer<typeof createLevelRangeService> =
+			createLevelRangeService.parse({
 				level_start_id: level_start.id,
 				level_end_id: level_end.id,
 				end_date: null,
 				...level_range,
-			}
-		);
+			});
 
 		return levelRange;
 	}
@@ -73,16 +72,14 @@ export class LevelRangeMapper extends BaseMapper<
 			throw new BaseResponseError("Level does not exist");
 		}
 
-		const result: LevelRangeFEType = levelRangeFE.parse(
-			{
-				level_start: level_start.level,
-				level_end: level_end.level,
-				creatable: true,
-				updatable: level_range.start_date! > new Date(),
-				deletable: level_range.start_date! > new Date(),
-				...level_range,
-			}
-		);
+		const result: LevelRangeFEType = levelRangeFE.parse({
+			level_start: level_start.level,
+			level_end: level_end.level,
+			creatable: true,
+			updatable: level_range.start_date > new Date(),
+			deletable: level_range.start_date > new Date(),
+			...level_range,
+		});
 
 		return result;
 	}
@@ -95,16 +92,16 @@ export class LevelRangeMapper extends BaseMapper<
 			level_range_FE.level_start == null
 				? null
 				: await levelService.getLevelByLevel(
-					level_range_FE.level_start,
-					get_date_string(level_range_FE.start_date ?? new Date())
-				);
+						level_range_FE.level_start,
+						get_date_string(level_range_FE.start_date ?? new Date())
+				  );
 		const level_end =
 			level_range_FE.level_end == null
 				? null
 				: await levelService.getLevelByLevel(
-					level_range_FE.level_end,
-					get_date_string(level_range_FE.start_date ?? new Date())
-				);
+						level_range_FE.level_end,
+						get_date_string(level_range_FE.start_date ?? new Date())
+				  );
 		if (level_start == null || level_end == null) {
 			throw new BaseResponseError("Level does not exist");
 		}
@@ -124,4 +121,3 @@ export class LevelRangeMapper extends BaseMapper<
 		return levelRange;
 	}
 }
-

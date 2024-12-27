@@ -1,32 +1,35 @@
-import { container, injectable } from "tsyringe";
+import { injectable } from "tsyringe";
 import { Op } from "sequelize";
 import { BaseResponseError } from "../api/error/BaseResponseError";
-import { z } from "zod";
+import { type z } from "zod";
 import {
 	decInsuranceRateSetting,
 	encInsuranceRateSetting,
 	InsuranceRateSetting,
-	InsuranceRateSettingDecType,
+	type InsuranceRateSettingDecType,
 } from "../database/entity/SALARY/insurance_rate_setting";
-import { check_date, get_date_string, select_value } from "./helper_function";
+import { get_date_string, select_value } from "./helper_function";
 import { EHRService } from "./ehr_service";
 import { BaseMapper } from "../database/mapper/base_mapper";
 import {
 	createInsuranceRateSettingService,
-	updateInsuranceRateSettingService,
+	type updateInsuranceRateSettingService,
 } from "../api/types/insurance_rate_setting_type";
 
 @injectable()
 export class InsuranceRateSettingService {
 	private readonly insuranceMapper: BaseMapper<
 		InsuranceRateSetting,
-		InsuranceRateSettingDecType
+		InsuranceRateSettingDecType,
+		typeof encInsuranceRateSetting,
+		typeof decInsuranceRateSetting
 	>;
 	constructor(private readonly ehrService: EHRService) {
-		this.insuranceMapper = new BaseMapper<
-			InsuranceRateSetting,
-			InsuranceRateSettingDecType
-		>(encInsuranceRateSetting, decInsuranceRateSetting);
+		this.insuranceMapper = new BaseMapper(
+			"Insurance Rate Setting Mapper",
+			encInsuranceRateSetting,
+			decInsuranceRateSetting
+		);
 	}
 	async createInsuranceRateSetting(
 		data: z.infer<typeof createInsuranceRateSettingService>

@@ -5,17 +5,21 @@ import {
 	decEmployeePayment,
 	type EmployeePayment,
 } from "../entity/SALARY/employee_payment";
-import { EmployeeDataDecType, type EmployeeData } from "../entity/SALARY/employee_data";
+import {
+	type EmployeeDataDecType,
+} from "../entity/SALARY/employee_data";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { BaseMapper } from "./base_mapper";
 
 @injectable()
 export class EmployeePaymentMapper extends BaseMapper<
 	EmployeePayment,
-	EmployeePaymentDecType
+	EmployeePaymentDecType,
+	typeof encEmployeePayment,
+	typeof decEmployeePayment
 > {
 	constructor(private readonly employeeDataService: EmployeeDataService) {
-		super(encEmployeePayment, decEmployeePayment, [
+		super("Employee Payment Mapper", encEmployeePayment, decEmployeePayment, [
 			"base_salary_enc",
 			"supervisor_allowance_enc",
 			"occupational_allowance_enc",
@@ -30,21 +34,23 @@ export class EmployeePaymentMapper extends BaseMapper<
 		]);
 	}
 
-	async getEmployeePaymentFE(
-		dec: EmployeePaymentDecType[],
-	) {
-		const list = await this.includeEmployee(
-			dec,
-			["department", "emp_name", "position", "position_type"],
+	async getEmployeePaymentFE(dec: EmployeePaymentDecType[]) {
+		const list = await this.includeEmployee(dec, [
+			"department",
+			"emp_name",
+			"position",
+			"position_type",
+		]);
+		const EmployeePaymentFE = await Promise.all(
+			list.map(async (e) => {
+				return {
+					...e,
+					creatable: true,
+					updatable: e.start_date > new Date() || e.base_salary == 0,
+					deletable: e.start_date > new Date(),
+				};
+			})
 		);
-		const EmployeePaymentFE = await Promise.all(list.map(async (e) => {
-			return {
-				...e,
-				creatable:true,
-				updatable: (e.start_date>new Date() ) || e.base_salary == 0,
-				deletable: (e.start_date>new Date() ),
-			}
-		}))
 		return EmployeePaymentFE;
 	}
 
@@ -53,7 +59,7 @@ export class EmployeePaymentMapper extends BaseMapper<
 		K extends Partial<keyof EmployeeDataDecType>
 	>(
 		data: Data,
-		keys: K[],
+		keys: K[]
 	): Promise<(EmployeePaymentDecType & Pick<EmployeeDataDecType, K>)[]> {
 		const employeeDataRecord: Record<string, EmployeeDataDecType> = {};
 
@@ -70,7 +76,9 @@ export class EmployeePaymentMapper extends BaseMapper<
 		await Promise.all(
 			uniqueEmpNoList.map(async (empNo) => {
 				const emp =
-					await this.employeeDataService.getLatestEmployeeDataByEmpNo(empNo);
+					await this.employeeDataService.getLatestEmployeeDataByEmpNo(
+						empNo
+					);
 				if (!emp) {
 					throw new Error(`Employee ${empNo} not found`);
 				}
@@ -78,21 +86,21 @@ export class EmployeePaymentMapper extends BaseMapper<
 			})
 		);
 
-		const resultList: (EmployeePaymentDecType & Pick<EmployeeDataDecType, K>)[] =
-			dataList.map((d) => {
-				const empNo = d.emp_no;
-				const emp = employeeDataRecord[empNo];
-				const result = { ...d } as EmployeePaymentDecType &
-					Pick<EmployeeDataDecType, K>;
-				if (emp) {
-					keys.forEach((key) => {
-						result[key] = emp[key] as any;
-					});
-				} else {
-					throw new Error(`Employee ${empNo} not found`);
-				}
-				return result;
-			});
+		const resultList: (EmployeePaymentDecType &
+			Pick<EmployeeDataDecType, K>)[] = dataList.map((d) => {
+			const empNo = d.emp_no;
+			const emp = employeeDataRecord[empNo];
+			const result = { ...d } as EmployeePaymentDecType &
+				Pick<EmployeeDataDecType, K>;
+			if (emp) {
+				keys.forEach((key) => {
+					result[key] = emp[key] as any;
+				});
+			} else {
+				throw new Error(`Employee ${empNo} not found`);
+			}
+			return result;
+		});
 
 		return resultList;
 	}

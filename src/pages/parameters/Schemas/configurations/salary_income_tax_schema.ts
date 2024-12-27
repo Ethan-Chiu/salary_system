@@ -1,11 +1,14 @@
 import { z } from "zod";
 import { zodOptionalDate, zodRequiredDate } from "~/lib/utils/zod_types";
 
+const zc = z.coerce;
+
 export const salaryIncomeTaxSchema = z.object({
-	salary_start: z.coerce.number(),
-	salary_end: z.coerce.number(),
-	dependent: z.coerce.number(),
-	tax_amount: z.coerce.number(),
+	id: zc.number(),
+	salary_start: zc.number(),
+	salary_end: zc.number(),
+	dependent: zc.number(),
+	tax_amount: zc.number(),
 	start_date: zodRequiredDate("start_date"),
 	end_date: zodOptionalDate(),
 });

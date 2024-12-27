@@ -15,11 +15,13 @@ export interface FieldConfig<
 	AdditionalRenderable = null,
 	FieldTypes = string,
 > {
+	render?: React.ComponentType<FormFieldProps>;	
+  hidden?: boolean;
+  // Determine if any of the following is needed
 	description?: Renderable<AdditionalRenderable>;
 	inputProps?: Record<string, any>;
 	label?: Renderable<AdditionalRenderable>;
 	fieldType?: FieldTypes;
-	render?: React.ComponentType<FormFieldProps>;	
 }
 
 /**
@@ -34,7 +36,7 @@ export type FormConfig<S extends ZodObjectOrWrapped> = FormConfigEntry<S>[];
 export interface FormEntries<AdditionalRenderable = null, FieldTypes = string> {
 	entries: {
 		field: ParsedField<AdditionalRenderable, FieldTypes>;
-		render?: React.ComponentType<FormFieldProps>;
+		config?: FieldConfig;
 	}[];
 }
 

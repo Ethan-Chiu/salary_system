@@ -20,14 +20,17 @@ import { BaseMapper } from "../database/mapper/base_mapper";
 export class AttendanceSettingService {
 	private readonly attendanceMapper: BaseMapper<
 		AttendanceSetting,
-		AttendanceSettingDecType
+		AttendanceSettingDecType,
+		typeof encAttendanceSetting,
+		typeof decAttendanceSetting
 	>;
 
 	constructor(private readonly ehrService: EHRService) {
-		this.attendanceMapper = new BaseMapper<
-			AttendanceSetting,
-			AttendanceSettingDecType
-		>(encAttendanceSetting, decAttendanceSetting);
+		this.attendanceMapper = new BaseMapper(
+			"Attendance Setting Mapper",
+			encAttendanceSetting,
+			decAttendanceSetting
+		);
 	}
 
 	async createAttendanceSetting(
@@ -181,8 +184,6 @@ export class AttendanceSettingService {
 		const attendanceSettingList = await this.attendanceMapper.decodeList(
 			encodedList
 		);
-		console.log(`\n\n\n\n\nattendanceSettingList: `);
-		console.log(attendanceSettingList);
 		for (let i = 0; i < attendanceSettingList.length - 1; i += 1) {
 			const end_date = attendanceSettingList[i]!.end_date;
 			const start_date = attendanceSettingList[i + 1]!.start_date;
@@ -190,12 +191,14 @@ export class AttendanceSettingService {
 			const new_end_date = new Date(start_date);
 			new_end_date.setDate(new_end_date.getDate() - 1);
 
-			// console.log(attendanceSettingList[i]);
-			// console.log(`\n\n\nstart_date: ${attendanceSettingList[i]!.start_date}`);
 			if (end_date?.getTime() != new_end_date.getTime()) {
-				console.log(`\n\n\nnew_end_date: ${new_end_date}`);
 				console.log(
-					`\n\n\nstart_date: ${attendanceSettingList[i]!.start_date}`
+					`\n\n\nnew_end_date: ${new_end_date.toDateString()}`
+				);
+				console.log(
+					`\n\n\nstart_date: ${attendanceSettingList[
+						i
+					]?.start_date?.toDateString()}`
 				);
 				if (new_end_date < attendanceSettingList[i]!.start_date) {
 					await this.deleteAttendanceSetting(
@@ -210,10 +213,9 @@ export class AttendanceSettingService {
 			}
 		}
 		console.log(
-			`\n\n\nstart_date: ${
-				attendanceSettingList[attendanceSettingList.length - 1]!
-					.start_date
-			}`
+			`\n\n\nstart_date: ${attendanceSettingList[
+				attendanceSettingList.length - 1
+			]?.start_date?.toDateString()}`
 		);
 		if (
 			attendanceSettingList[attendanceSettingList.length - 1]!.end_date !=

@@ -124,6 +124,7 @@ export function trustMoneyMapper(
 	TrustMoneyData: TrustMoneyFEType[]
 ): RowItem[] {
 	return TrustMoneyData.map((d) => ({
+		id: d.id,
 		position: d.position,
 		position_type: d.position_type,
 		org_trust_reserve_limit: d.org_trust_reserve_limit,
@@ -181,6 +182,7 @@ export function TrustMoneyTable({ period_id, viewOnly }: TrustMoneyTableProps) {
 			<FunctionsSheetContent t={t} period_id={period_id}>
 				<ParameterForm
 					formSchema={trustMoneySchema}
+					formConfig={[{ key: "id", config: { hidden: true } }]}
 					mode={mode}
 					closeSheet={() => {
 						setOpen(false);

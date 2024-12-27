@@ -124,6 +124,7 @@ export function bankSettingMapper(
 ): RowItem[] {
 	return bankSettingData.map((d) => {
 		return {
+			id: d.id,
 			bank_name: d.bank_name,
 			bank_code: d.bank_code,
 			org_name: d.org_name,
@@ -185,6 +186,7 @@ export function BankTable({ period_id, viewOnly }: BankTableProps) {
 			<FunctionsSheetContent t={t} period_id={period_id}>
 				<ParameterForm
 					formSchema={bankSchema}
+					formConfig={[{ key: "id", config: { hidden: true } }]}
 					mode={mode}
 					closeSheet={() => {
 						setOpen(false);

@@ -25,17 +25,17 @@ export default function CustomForm<SchemaType extends ZodObjectOrWrapped>({
 	onSubmit: onSubmitProp,
 	children,
 	className,
-  formId,
+	formId,
 }: CustomFormProps<SchemaType>) {
-  // NOTE: parse form schema and handle field config
+	// NOTE: parse form schema and handle field config
 	const parsedSchema = parseSchema(formSchema);
-  const formEntries = createFormEntries(parsedSchema, formConfig) 
+	const formEntries = createFormEntries(parsedSchema, formConfig)
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
 		const parsedValues = formSchema.safeParse(values);
-    if (!parsedValues.success) {
-      console.log("Parse value failed", parsedValues.error.message)
-    }
+		if (!parsedValues.success) {
+			console.log("Parse value failed", parsedValues.error.message)
+		}
 		if (parsedValues.success) {
 			onSubmitProp?.(parsedValues.data);
 		}
@@ -44,7 +44,7 @@ export default function CustomForm<SchemaType extends ZodObjectOrWrapped>({
 	return (
 		<Form {...form}>
 			<form
-        id={formId}
+				id={formId}
 				onSubmit={(e) => {
 					void form.handleSubmit(onSubmit)(e);
 				}}
@@ -58,15 +58,17 @@ export default function CustomForm<SchemaType extends ZodObjectOrWrapped>({
 				}}
 				className={cn("space-y-5 p-2", className)}
 			>
-				{formEntries.entries.map((entry) => { 
-          const field = entry.field
-					return <AutoFormField
+				{formEntries.entries.map((entry) => {
+					const field = entry.field
+          const config = entry.config;
+
+					return !config?.hidden && <AutoFormField
 						key={field.key}
 						field={field}
 						path={[field.key]}
-            render={entry.render}
+						render={config?.render}
 					/>
-        })}
+				})}
 				{children}
 			</form>
 		</Form>

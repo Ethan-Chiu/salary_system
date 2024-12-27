@@ -1,7 +1,10 @@
 import { z } from "zod";
 import { zodOptionalDate, zodRequiredDate } from "~/lib/utils/zod_types";
 
+const zc = z.coerce;
+
 export const bankSchema = z.object({
+	id: zc.number(),
 	bank_code: z
 		.string()
 		.length(3)

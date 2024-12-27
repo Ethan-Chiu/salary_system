@@ -4,6 +4,7 @@ import { zodOptionalDate, zodRequiredDate } from "~/lib/utils/zod_types";
 const zc = z.coerce;
 
 export const trustMoneySchema = z.object({
+	id: zc.number(),
 	position: zc.number(),
 	position_type: zc.string().max(2),
 	org_trust_reserve_limit: zc.number(),
