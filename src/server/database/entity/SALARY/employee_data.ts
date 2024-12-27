@@ -29,7 +29,7 @@ const dbEmployeeData = z.object({
 	emp_name: z.string(),
 	position: z.number(), //職等
 	position_type: z.string(), //職級
-	group_insurance_type: z.string(),
+	group_insurance_type: z.string(),//團保類別
 	department: z.string(),
 	work_type: WorkTypeEnum, //工作類別
 	work_status: WorkStatusEnum, //工作型態
