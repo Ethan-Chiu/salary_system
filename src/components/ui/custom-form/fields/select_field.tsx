@@ -7,9 +7,11 @@ import {
 } from "~/components/ui/select";
 import { type FormFieldProps } from "../types";
 
-export function SelectField({ field, inputProps, error, id }: FormFieldProps) {
+export function SelectField({ field, value, inputProps, error, id }: FormFieldProps) {
+  console.log("value", value)
+
 	return (
-		<Select {...inputProps}>
+		<Select {...inputProps} defaultValue={value}>
 			<SelectTrigger
 				id={id}
 				className={error ? "border-destructive" : ""}

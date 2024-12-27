@@ -12,7 +12,6 @@ import { useTranslation } from "react-i18next";
 import { type SalaryIncomeTaxFEType } from "~/server/api/types/salary_income_tax";
 import {
 	FunctionsComponent,
-	type FunctionsItem,
 } from "~/components/data_table/functions_component";
 import { type TFunction } from "i18next";
 import { useContext } from "react";
@@ -20,6 +19,7 @@ import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { salaryIncomeTaxSchema } from "../schemas/configurations/salary_income_tax_schema";
 import { Sheet } from "~/components/ui/sheet";
 import dataTableContext, {
+	FunctionsItem,
 	type FunctionMode,
 } from "../components/context/data_table_context";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
@@ -41,73 +41,76 @@ export const salary_income_tax_columns = ({
 	t,
 	setOpen,
 	setMode,
+	setData,
 }: {
 	t: TFunction<[string], undefined>;
 	setOpen: (open: boolean) => void;
 	setMode: (mode: FunctionMode) => void;
+	setData: (data: RowItem) => void;
 }) => [
-	...[
-		"salary_start",
-		"salary_end",
-		"dependent",
-		"tax_amount",
-		"start_date",
-		"end_date",
-	].map((key: string) =>
-		columnHelper.accessor(key as RowItemKey, {
-			header: ({ column }) => {
+		...[
+			"salary_start",
+			"salary_end",
+			"dependent",
+			"tax_amount",
+			"start_date",
+			"end_date",
+		].map((key: string) =>
+			columnHelper.accessor(key as RowItemKey, {
+				header: ({ column }) => {
+					return (
+						<div className="flex justify-center">
+							<div className="text-center font-medium">
+								<Button
+									variant="ghost"
+									onClick={() =>
+										column.toggleSorting(
+											column.getIsSorted() === "asc"
+										)
+									}
+								>
+									{t(`table.${key}`)}
+									<ArrowUpDown className="ml-2 h-4 w-4" />
+								</Button>
+							</div>
+						</div>
+					);
+				},
+				cell: ({ row }) => {
+					switch (key) {
+						default:
+							return (
+								<div className="text-center font-medium">{`${row.original[
+									key as RowItemKey
+								]?.toString()}`}</div>
+							);
+					}
+				},
+			})
+		),
+		columnHelper.accessor("functions", {
+			header: () => {
 				return (
 					<div className="flex justify-center">
 						<div className="text-center font-medium">
-							<Button
-								variant="ghost"
-								onClick={() =>
-									column.toggleSorting(
-										column.getIsSorted() === "asc"
-									)
-								}
-							>
-								{t(`table.${key}`)}
-								<ArrowUpDown className="ml-2 h-4 w-4" />
-							</Button>
+							{t(`others.functions`)}
 						</div>
 					</div>
 				);
 			},
 			cell: ({ row }) => {
-				switch (key) {
-					default:
-						return (
-							<div className="text-center font-medium">{`${row.original[
-								key as RowItemKey
-							]?.toString()}`}</div>
-						);
-				}
+				return (
+					<FunctionsComponent
+						t={t}
+						setOpen={setOpen}
+						setMode={setMode}
+						data={row.original}
+						setData={setData}
+					/>
+				);
 			},
-		})
-	),
-	columnHelper.accessor("functions", {
-		header: () => {
-			return (
-				<div className="flex justify-center">
-					<div className="text-center font-medium">
-						{t(`others.functions`)}
-					</div>
-				</div>
-			);
-		},
-		cell: ({ row }) => {
-			return (
-				<FunctionsComponent
-					t={t}
-					setOpen={setOpen}
-					setMode={setMode}
-					functionsItem={row.original.functions}
-				/>
-			);
-		},
-	}),
-];
+		}),
+	];
 
 export function salaryIncomeTaxMapper(
 	salaryIncomeTaxData: SalaryIncomeTaxFEType[]
@@ -140,7 +143,7 @@ export function SalaryIncomeTaxTable({
 	period_id,
 }: SalaryIncomeTaxTableProps) {
 	const { t } = useTranslation(["common"]);
-	const { mode, setMode, open, setOpen } = useContext(dataTableContext);
+	const { mode, setMode, open, setOpen, setData } = useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentSalaryIncomeTax.useQuery({ period_id });
@@ -175,6 +178,7 @@ export function SalaryIncomeTaxTable({
 					t,
 					setOpen,
 					setMode,
+					setData,
 				})}
 				data={salaryIncomeTaxMapper(data!)}
 				filterColumnKey={filterKey}
@@ -195,6 +199,7 @@ export function SalaryIncomeTaxTable({
 				t,
 				setOpen,
 				setMode,
+				setData,
 			})}
 			data={salaryIncomeTaxMapper(data!)}
 			filterColumnKey={filterKey}

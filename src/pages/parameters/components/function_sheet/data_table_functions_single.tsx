@@ -5,14 +5,15 @@ import { FunctionsComponent } from "~/components/data_table/functions_component"
 
 export function DataTableFunctions() {
 	const { t } = useTranslation(['common', 'nav']);
-	const { setOpen, setMode, functionsItem } = useContext(dataTableContext);
+	const { setOpen, setMode, data, setData } = useContext(dataTableContext);
 
 	return (
 		<FunctionsComponent
 			t={t}
 			setOpen={setOpen}
 			setMode={setMode}
-			functionsItem={functionsItem}
+			data={data}
+			setData={setData}
 		/>
 	);
 }

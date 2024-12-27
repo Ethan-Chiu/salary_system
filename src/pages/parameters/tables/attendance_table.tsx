@@ -35,40 +35,40 @@ export const attendance_columns = ({
 }: {
 	t: TFunction<[string], undefined>;
 }) => [
-	...["parameters", "value"].map((key: string) =>
-		columnHelper.accessor(key as RowItemKey, {
-			header: ({ column }) => {
-				return (
-					<div className="flex justify-center">
-						<div className="text-center font-medium">
-							<Button
-								variant="ghost"
-								onClick={() =>
-									column.toggleSorting(
-										column.getIsSorted() === "asc"
-									)
-								}
-							>
-								{t(`table.${key}`)}
-								<ArrowUpDown className="ml-2 h-4 w-4" />
-							</Button>
+		...["parameters", "value"].map((key: string) =>
+			columnHelper.accessor(key as RowItemKey, {
+				header: ({ column }) => {
+					return (
+						<div className="flex justify-center">
+							<div className="text-center font-medium">
+								<Button
+									variant="ghost"
+									onClick={() =>
+										column.toggleSorting(
+											column.getIsSorted() === "asc"
+										)
+									}
+								>
+									{t(`table.${key}`)}
+									<ArrowUpDown className="ml-2 h-4 w-4" />
+								</Button>
+							</div>
 						</div>
-					</div>
-				);
-			},
-			cell: ({ row }) => {
-				switch (key) {
-					default:
-						return (
-							<div className="text-center font-medium">{`${row.original[
-								key as RowItemKey
-							].toString()}`}</div>
-						);
-				}
-			},
-		})
-	),
-];
+					);
+				},
+				cell: ({ row }) => {
+					switch (key) {
+						default:
+							return (
+								<div className="text-center font-medium">{`${row.original[
+									key as RowItemKey
+								].toString()}`}</div>
+							);
+					}
+				},
+			})
+		),
+	];
 
 export function attendanceMapper(
 	attendanceData: AttendanceSettingFEType[]
@@ -146,15 +146,22 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 		api.parameters.getCurrentAttendanceSetting.useQuery({ period_id });
 	const filterKey: RowItemKey = "parameters";
 
-	const { open, setOpen, mode, setFunctionsItem } = useContext(dataTableContext);
+	const { open, setOpen, mode, setData } = useContext(dataTableContext);
 
 	useEffect(() => {
-		setFunctionsItem({
-			create: data?.creatable ?? false,
-			update: data?.updatable ?? false,
-			delete: data?.deletable ?? false,
-		});
-	}, [setFunctionsItem, data]);
+		if (data) {
+			setData({
+				...data,
+				start_date: formatDate("day", data.start_date) ?? "",
+				end_date: formatDate("day", data.end_date) ?? "",
+				functions: {
+					create: data.creatable,
+					update: data.updatable,
+					delete: data.deletable,
+				},
+			});
+		}
+	}, [data]);
 
 	if (isLoading) {
 		return (
