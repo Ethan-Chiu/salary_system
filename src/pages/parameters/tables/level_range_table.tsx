@@ -12,7 +12,6 @@ import { formatDate } from "~/lib/utils/format_date";
 import { type TFunction } from "i18next";
 import {
 	FunctionsComponent,
-	type FunctionsItem,
 } from "~/components/data_table/functions_component";
 import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { levelRangeSchema } from "../schemas/configurations/level_range_schema";
@@ -20,6 +19,7 @@ import { Sheet } from "~/components/ui/sheet";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
 import { SelectLevelField } from "../components/function_sheet/form_fields/select_level_field";
 import dataTableContext, {
+	FunctionsItem,
 	type FunctionMode,
 } from "../components/context/data_table_context";
 import { useContext } from "react";
@@ -40,68 +40,71 @@ export const level_range_columns = ({
 	t,
 	setOpen,
 	setMode,
+	setData,
 }: {
 	t: TFunction<[string], undefined>;
 	period_id: number;
 	setOpen: (open: boolean) => void;
 	setMode: (mode: FunctionMode) => void;
+	setData: (data: RowItem) => void;
 }) => [
-	...["type", "level_start", "level_end", "start_date", "end_date"].map(
-		(key: string) =>
-			columnHelper.accessor(key as RowItemKey, {
-				header: ({ column }) => {
-					return (
-						<div className="flex justify-center">
-							<div className="text-center font-medium">
-								<Button
-									variant="ghost"
-									onClick={() =>
-										column.toggleSorting(
-											column.getIsSorted() === "asc"
-										)
-									}
-								>
-									{t(`table.${key}`)}
-									<ArrowUpDown className="ml-2 h-4 w-4" />
-								</Button>
+		...["type", "level_start", "level_end", "start_date", "end_date"].map(
+			(key: string) =>
+				columnHelper.accessor(key as RowItemKey, {
+					header: ({ column }) => {
+						return (
+							<div className="flex justify-center">
+								<div className="text-center font-medium">
+									<Button
+										variant="ghost"
+										onClick={() =>
+											column.toggleSorting(
+												column.getIsSorted() === "asc"
+											)
+										}
+									>
+										{t(`table.${key}`)}
+										<ArrowUpDown className="ml-2 h-4 w-4" />
+									</Button>
+								</div>
 							</div>
+						);
+					},
+					cell: ({ row }) => {
+						switch (key) {
+							default:
+								return (
+									<div className="text-center font-medium">{`${row.original[
+										key as RowItemKey
+									]?.toString()}`}</div>
+								);
+						}
+					},
+				})
+		),
+		columnHelper.accessor("functions", {
+			header: () => {
+				return (
+					<div className="flex justify-center">
+						<div className="text-center font-medium">
+							{t(`others.functions`)}
 						</div>
-					);
-				},
-				cell: ({ row }) => {
-					switch (key) {
-						default:
-							return (
-								<div className="text-center font-medium">{`${row.original[
-									key as RowItemKey
-								]?.toString()}`}</div>
-							);
-					}
-				},
-			})
-	),
-	columnHelper.accessor("functions", {
-		header: () => {
-			return (
-				<div className="flex justify-center">
-					<div className="text-center font-medium">
-						{t(`others.functions`)}
 					</div>
-				</div>
-			);
-		},
-		cell: ({ row }) => {
-			return (
-				<FunctionsComponent
-					t={t}
-					setOpen={setOpen}
-					setMode={setMode}
-					functionsItem={row.original.functions}
-				/>
-			);
-		},
-	}),
-];
+				);
+			},
+			cell: ({ row }) => {
+				return (
+					<FunctionsComponent
+						t={t}
+						setOpen={setOpen}
+						setMode={setMode}
+						data={row.original}
+						setData={setData}
+					/>
+				);
+			},
+		}),
+	];
 
 export function levelRangeMapper(
 	levelRangeData: LevelRangeFEType[]
@@ -130,7 +133,7 @@ interface LevelRangeTableProps extends TableComponentProps {
 
 export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 	const { t } = useTranslation(["common"]);
-	const { mode, setMode, open, setOpen } = useContext(dataTableContext);
+	const { mode, setMode, open, setOpen, setData } = useContext(dataTableContext);
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentLevelRange.useQuery({ period_id });
 	const filterKey: RowItemKey = "type";
@@ -152,6 +155,7 @@ export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 		period_id,
 		setOpen,
 		setMode,
+		setData,
 	});
 
 	return !viewOnly ? (
