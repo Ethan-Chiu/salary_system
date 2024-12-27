@@ -184,8 +184,6 @@ export class AttendanceSettingService {
 		const attendanceSettingList = await this.attendanceMapper.decodeList(
 			encodedList
 		);
-		console.log(`\n\n\n\n\nattendanceSettingList: `);
-		console.log(attendanceSettingList);
 		for (let i = 0; i < attendanceSettingList.length - 1; i += 1) {
 			const end_date = attendanceSettingList[i]!.end_date;
 			const start_date = attendanceSettingList[i + 1]!.start_date;
@@ -193,8 +191,6 @@ export class AttendanceSettingService {
 			const new_end_date = new Date(start_date);
 			new_end_date.setDate(new_end_date.getDate() - 1);
 
-			// console.log(attendanceSettingList[i]);
-			// console.log(`\n\n\nstart_date: ${attendanceSettingList[i]!.start_date}`);
 			if (end_date?.getTime() != new_end_date.getTime()) {
 				console.log(
 					`\n\n\nnew_end_date: ${new_end_date.toDateString()}`

@@ -153,7 +153,7 @@ export function InsuranceRateTable({
 	const filterKey: RowItemKey = "parameters";
 
 	useEffect(() => {
-		if (data) {
+		if (data && selectedTab === "current") {
 			setData({
 				...data,
 				functions: {
@@ -196,6 +196,7 @@ export function InsuranceRateTable({
 					<FunctionsSheetContent t={t} period_id={period_id}>
 						<ParameterForm
 							formSchema={insuranceSchema}
+							formConfig={[{ key: "id", config: { hidden: true } }]}
 							mode={mode}
 							closeSheet={() => {
 								setOpen(false);
