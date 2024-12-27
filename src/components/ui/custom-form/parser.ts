@@ -20,7 +20,6 @@ function parseField(
 	const type = inferFieldType(baseSchema, undefined);
 	/* const defaultValue = getDefaultValueInZodStack(schema); */
 
-	console.log("base", baseSchema);
 	// Enums
 	let optionValues: [string, string][] = [];
 	if (baseSchema instanceof z.ZodEnum) {

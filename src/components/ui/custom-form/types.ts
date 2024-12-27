@@ -48,6 +48,7 @@ export interface CustomFormProps<SchemaType extends ZodObjectOrWrapped>
 	onParsedValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
 	onSubmit?: (values: z.infer<SchemaType>) => void;
 	className?: string;
+  formId?: string;
 }
 
 /**
