@@ -1,7 +1,7 @@
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { container } from "tsyringe";
 import { z } from "zod";
-import { SalaryRaiseService, SalaryRaiseService } from "~/server/service/salary_raise_service";
+import { SalaryRaiseService } from "~/server/service/salary_raise_service";
 import { bonusTypeEnum } from "../types/bonus_type_enum";
 import { EmployeeData } from "~/server/database/entity/SALARY/employee_data";
 import { SalaryRaiseWorkTypeService } from "~/server/service/salary_raise_work_type_service";

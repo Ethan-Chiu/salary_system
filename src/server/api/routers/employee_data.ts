@@ -9,6 +9,7 @@ import {
 } from "../types/employee_data_type";
 import { z } from "zod";
 import { EmployeeDataMapper } from "~/server/database/mapper/employee_data_mapper";
+import { EHRService } from "~/server/service/ehr_service";
 
 export const employeeDataRouter = createTRPCRouter({
 	getCurrentEmployeeDataWithInfo: publicProcedure
@@ -83,5 +84,22 @@ export const employeeDataRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const employeeDataService = container.resolve(EmployeeDataService);
 			await employeeDataService.deleteEmployeeData(input.id);
+		}),
+	initEmployees: publicProcedure
+		.input(z.object({ period_id: z.number() }))
+		.mutation(async ({ input }) => {
+			const ehr_service = container.resolve(EHRService);
+			const employee_data_service =
+				container.resolve(EmployeeDataService);
+			const empAllList = await ehr_service.initEmployeeData(
+				input.period_id
+			);
+			const employeeDataList = empAllList.map(async (data) => {
+				await employee_data_service.createEmployeeData({
+					...data,
+					period_id: input.period_id,
+				});
+			});
+			return employeeDataList;
 		}),
 });

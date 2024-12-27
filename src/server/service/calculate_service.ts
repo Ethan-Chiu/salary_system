@@ -237,7 +237,7 @@ export class CalculateService {
 			}
 		});
 		// rate存哪裡？
-		if (employee_data.work_type === FOREIGN) {
+		if (employee_data.work_type === FOREIGN || employee_data.work_status === FOREIGN) {
 			hourly_fee = insurance_rate_setting.min_wage_rate;
 			return Round(
 				hourly_fee * t1 * 1.34 +
@@ -265,7 +265,7 @@ export class CalculateService {
 	): Promise<number> {
 		// F底薪＋伙食津貼＋營運績效獎金＋全勤獎金
 		// U底薪＋伙食津貼＋主管津貼＋職務津貼＋補助津貼
-		if (employee_data.work_type === FOREIGN) {
+		if (employee_data.work_type === FOREIGN || employee_data.work_status === FOREIGN) {
 			if (pay_type === PayTypeEnum.enum.foreign_15_bonus) {
 				return (
 					employee_payment_dec.base_salary +
@@ -330,7 +330,7 @@ export class CalculateService {
 
 		// if (old_age_benefit)	return 0;	// 'Jerry 100426 已領老年給付者,員工免付勞保
 
-		if (kind1 === FOREIGN || kind2 === FOREIGN)
+		if ( kind1 === FOREIGN || kind2 === FOREIGN)
 			return Round(
 				Round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30) *
 					hinder_rate
@@ -443,7 +443,7 @@ export class CalculateService {
 		const Effect = operational_performance_bonus ?? 0;
 		const Fulltime = full_attendance_bonus ?? 0;
 
-		if (kind1 === FOREIGN)
+		if (kind1 === FOREIGN || kind2 === FOREIGN)
 			return Round((money + food + Effect + Fulltime) * 0.005);
 		if (kind2 === LEAVE_MAN) return 0;
 		if (kind2 === PROFESSOR) return 0;
@@ -451,8 +451,6 @@ export class CalculateService {
 		if (kind2 === PARTTIME2) return 0;
 		if (kind2 === CONTRACT) return 0;
 		if (kind2 === DAY_PAY) return 0;
-		if (kind2 === FOREIGN)
-			return Round((money + food + Effect + Fulltime) * 0.005);
 
 		return Round((money + food) * 0.005);
 	}
@@ -499,7 +497,7 @@ export class CalculateService {
 				(holiday.total_hours ?? 0) *
 				holidays_type_dict[holiday.pay_order!]!;
 		});
-		if (employee_data.work_type === FOREIGN) {
+		if (employee_data.work_type === FOREIGN || employee_data.work_status === FOREIGN) {
 			hourly_fee = insurance_rate_setting.min_wage_rate;
 			return Round(hourly_fee * leave_deduction);
 		} else {
@@ -725,7 +723,7 @@ export class CalculateService {
 		const work_status = employee_data.work_status;
 
 		if (pay_type === PayTypeEnum.Enum.month_salary) {
-			if (work_type === FOREIGN) {
+			if (work_type === FOREIGN || work_status === FOREIGN) {
 				return (
 					Round((l_i * wci_apf * l_i_day) / 30, 1) +
 					Round((l_i * wci_apf * additional_l_i) / 30, 1)
@@ -793,7 +791,7 @@ export class CalculateService {
 		);
 
 		// Jerry 07/01/31 主要區別外籍勞工 同時也是當月離職人員的算法會與間接人員計計算邏輯衝突,因此以工作類別區分外籍勞工
-		if (kind1 === FOREIGN) {
+		if (kind1 === FOREIGN || kind2 === FOREIGN) {
 			// Jerry 07/09/21  15840 ==> 17280   09/4/28 17280 ==> 25920
 			if (differenceInDays > 183) return Round(Tax * 0.06);
 			else {
@@ -803,13 +801,6 @@ export class CalculateService {
 		}
 
 		if (kind2 === LEAVE_MAN) return 0;
-		if (kind2 === FOREIGN) {
-			if (differenceInDays > 183) return Round(Tax * 0.06);
-			else {
-				if (Tax < 25920) return Round(Tax * 0.06);
-				else return Round(Tax * 0.2);
-			}
-		}
 
 		if (Tax > 0) {
 			const salary_income_tax =
@@ -852,7 +843,7 @@ export class CalculateService {
 				non_leave_compensation += h.total_hours ?? 0;
 			}
 		});
-		if (employee_data.work_type === FOREIGN) {
+		if (employee_data.work_type === FOREIGN || employee_data.work_status === FOREIGN) {
 			return (
 				non_leave_compensation * insurance_rate_setting.min_wage_rate
 			);
@@ -1273,7 +1264,7 @@ export class CalculateService {
 				);
 				return x1 + x2;
 			}
-			if (work_type === FOREIGN) {
+			if (work_type === FOREIGN || work_status === FOREIGN) {
 				const x1 = Round(
 					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
 						Round((occupational_injury * wci_oi * l_i_day) / 30)
@@ -1405,7 +1396,7 @@ export class CalculateService {
 		const kind1 = employee_data.work_type;
 		const kind2 = employee_data.work_status;
 		//更新過團保費數值
-		if (kind1 === FOREIGN) {
+		if (kind1 === FOREIGN || kind2 === FOREIGN) {
 			if (level === "F") return 47;
 		} else {
 			if (level === "A") return 441;

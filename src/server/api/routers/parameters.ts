@@ -691,12 +691,12 @@ export const parametersRouter = createTRPCRouter({
 			const salaryIncomeTaxService = container.resolve(
 				SalaryIncomeTaxService
 			);
-			const primary_key =
+			const unique_primary_keys =
 				await salaryIncomeTaxService.updateSalaryIncomeTax(input);
-			if (primary_key)
-				await salaryIncomeTaxService.rescheduleSalaryIncomeTax([
-					primary_key,
-				]);
+			if (unique_primary_keys)
+				await salaryIncomeTaxService.rescheduleSalaryIncomeTax(
+					unique_primary_keys
+				);
 		}),
 
 	deleteSalaryIncomeTax: publicProcedure
