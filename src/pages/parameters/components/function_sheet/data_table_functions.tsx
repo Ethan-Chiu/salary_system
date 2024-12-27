@@ -123,6 +123,7 @@ export function DataTableFunctions({
 						:
 						mode == "excel_upload" ?
 							<ExcelUpload 
+								tableType={tableType}
 								closeDialog={() => setOpen(false)}
 							/>
 						:

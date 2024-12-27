@@ -68,32 +68,28 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 				form={form}
 				onSubmit={void onSubmit}
 			>
-				<div className="flex w-full justify-end gap-4 py-4">
-					<Button
-						type="button"
-						variant={"outline"}
-						onClick={() => {
-							closeSheet();
-						}}
-					>
-						{t("button.cancel")}
-					</Button>
-
-					{/* TODO: handle form submit validation */}
-					<Button
-						type="button"
-						variant={"outline"}
-						onClick={() => setOpenDialog(true)}
-					>
-						{t(`button.${mode}`)}
-					</Button>
-				</div>
-
-				<Dialog
-					open={openDialog}
-					onOpenChange={setOpenDialog}
-					aria-hidden={false}
+        <div className="w-full flex justify-end gap-4 py-4">
+				<Button
+					type="button"
+					variant={"outline"}
+					onClick={() => {
+						closeSheet();
+					}}
 				>
+					{t("button.cancel")}
+				</Button>
+
+				{/* TODO: handle form submit validation */}
+				<Button
+					type="button"
+					variant={"outline"}
+					onClick={() => setOpenDialog(true)}
+				>
+					{t(`button.${mode}`)}
+				</Button>
+        </div>
+
+				<Dialog open={openDialog} onOpenChange={setOpenDialog} aria-hidden={false}>
 					<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
 						<DialogHeader>
 							<DialogTitle>{t("others.check_data")}</DialogTitle>

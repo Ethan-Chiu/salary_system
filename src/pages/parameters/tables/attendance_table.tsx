@@ -73,6 +73,7 @@ export const attendance_columns = ({
 export function attendanceMapper(
 	attendanceData: AttendanceSettingFEType[]
 ): RowItem[] {
+  // TODO: check assertion
 	const data = attendanceData[0]!;
 	return [
 		{

@@ -51,6 +51,16 @@ export default function DayView({ day, rowIdx, target_date }: DayViewProps) {
 	const [dayEvents, setDayEvents] = useState<CalendarEventLevelWithID[]>([]);
 	const { t } = useTranslation(['common']);
 
+	
+	const calendarInformation = useContext(calendarContext);
+	const allEvent = calendarInformation.showEventList;
+	const allEventStartDate = allEvent.map((event) => event.getStartDate());
+
+	const isStartDay = allEventStartDate.find(
+		(d) => (d.getFullYear() === day.year() && d.getMonth() === day.month() && d.getDate() === day.date())
+	) != undefined;
+
+
 	useEffect(() => {
 		const events = showEventList.filter(
 			(evt) =>
@@ -90,6 +100,17 @@ export default function DayView({ day, rowIdx, target_date }: DayViewProps) {
 
 	return (
 		<HoverCard>
+			{/* <Button onClick={() => {
+				console.log(day.year());
+				console.log(day.month()+1);
+				console.log(day.date());
+
+				console.log(allEventStartDate.map((d) => `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`));
+
+				console.log(isStartDay);
+			}}>
+				TEST
+			</Button> */}
 			<div
 				className={cn(
 					"relative flex select-none flex-col",
@@ -110,10 +131,14 @@ export default function DayView({ day, rowIdx, target_date }: DayViewProps) {
 							"my-1 p-1 text-center text-sm",
 							day.format("DD-MM-YY") ===
 							dayjs(target_date).format("DD-MM-YY") &&
-							"w-7 rounded-full bg-primary text-white"
+							"w-7 rounded-full bg-primary text-white",
 						)}
 					>
+						<p className={
+							isStartDay ? "font-bold text-red-500" : ""
+						}>
 						{day.format("DD")}
+						</p>
 					</p>
 				</header>
 				<div className="absolute h-full w-full border border-gray-200" />
