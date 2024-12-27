@@ -179,3 +179,79 @@ export const createHolidaysTypeAPI = HolidaysType;
 export const createHolidaysTypeService = HolidaysType;
 export const updateHolidaysTypeAPI = HolidaysType.partial().merge(Id);
 export const updateHolidaysTypeService = HolidaysType.partial().merge(Id);
+
+
+const SalaryRaiseAll = z.object({
+    period_id: z.number(),
+    multiplier: z.number(),
+});
+
+export const createSalaryRaiseAllAPI = SalaryRaiseAll;
+export const createSalaryRaiseAllService = SalaryRaiseAll;
+export const updateSalaryRaiseAllAPI = SalaryRaiseAll.partial().merge(Id);
+export const updateSalaryRaiseAllService = SalaryRaiseAll.partial().merge(Id);
+export const batchCreateSalaryRaiseAllAPI = z.array(createSalaryRaiseAllAPI);
+
+const SalaryRaiseWorkType = z.object({
+    period_id: z.number(),
+    work_type: WorkTypeEnum,
+    multiplier: z.number(),
+});
+
+export const createSalaryRaiseWorkTypeAPI = SalaryRaiseWorkType;
+export const createSalaryRaiseWorkTypeService = SalaryRaiseWorkType;
+export const updateSalaryRaiseWorkTypeAPI = SalaryRaiseWorkType.partial().merge(Id);
+export const updateSalaryRaiseWorkTypeService = SalaryRaiseWorkType.partial().merge(Id);
+export const batchCreateSalaryRaiseWorkTypeAPI = z.array(createSalaryRaiseWorkTypeAPI);
+
+const SalaryRaiseDepartment = z.object({
+    period_id: z.number(),
+    department: z.string(),
+    multiplier: z.number(),
+});
+
+export const createSalaryRaiseDepartmentAPI = SalaryRaiseDepartment;
+export const createSalaryRaiseDepartmentService = SalaryRaiseDepartment;
+export const updateSalaryRaiseDepartmentAPI = SalaryRaiseDepartment.partial().merge(Id);
+export const updateSalaryRaiseDepartmentService = SalaryRaiseDepartment.partial().merge(Id)
+export const batchCreateSalaryRaiseDepartmentAPI = z.array(createSalaryRaiseDepartmentAPI);
+
+const SalaryRaisePosition = z.object({
+    period_id: z.number(),
+    position: z.number(),
+    position_multiplier: z.number(),
+    position_type: z.string(),
+    position_type_multiplier: z.number(),
+});
+
+export const createSalaryRaisePositionAPI = SalaryRaisePosition;
+export const createSalaryRaisePositionService = SalaryRaisePosition;
+export const updateSalaryRaisePositionAPI = SalaryRaisePosition.partial().merge(Id);
+export const updateSalaryRaisePositionService = SalaryRaisePosition.partial().merge(Id);
+export const batchCreateSalaryRaisePositionAPI = z.array(createSalaryRaisePositionAPI);
+
+const SalaryRaisePositionType = z.object({
+    period_id: z.number(),
+    position_type: z.string(),
+    multiplier: z.number(),
+});
+
+export const createSalaryRaisePositionTypeAPI = SalaryRaisePositionType;
+export const createSalaryRaisePositionTypeService = SalaryRaisePositionType;
+export const updateSalaryRaisePositionTypeAPI = SalaryRaisePositionType.partial().merge(Id);
+export const updateSalaryRaisePositionTypeService = SalaryRaisePositionType.partial().merge(Id);
+export const batchCreateSalaryRaisePositionTypeAPI = z.array(
+    createSalaryRaisePositionTypeAPI
+);
+
+const SalaryRaiseSeniority = z.object({
+    period_id: z.number(),
+    seniority: z.number(),
+    multiplier: z.number(),
+});
+
+export const createSalaryRaiseSeniorityAPI = SalaryRaiseSeniority;
+export const createSalaryRaiseSeniorityService = SalaryRaiseSeniority;
+export const updateSalaryRaiseSeniorityAPI = SalaryRaiseSeniority.partial().merge(Id);
+export const updateSalaryRaiseSeniorityService = SalaryRaiseSeniority.partial().merge(Id);
+export const batchCreateSalaryRaiseSeniorityAPI = z.array(createSalaryRaiseSeniorityAPI);
