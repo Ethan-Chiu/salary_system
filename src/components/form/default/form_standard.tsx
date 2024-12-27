@@ -14,6 +14,7 @@ import {
 } from "~/components/ui/dialog";
 import CustomForm from "~/components/ui/custom-form";
 import { type FormConfig } from "~/components/ui/custom-form/types";
+import GeneralTable from "~/components/function_sheet/general_table";
 
 interface StandardFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
@@ -39,6 +40,7 @@ export function StandardForm<SchemaType extends z.AnyZodObject>({
 		resolver: zodResolver(formSchema),
 		defaultValues: defaultValue,
 	});
+	const [formValues, setFormValues] = useState({});
 
 	return (
 		<>
@@ -66,7 +68,14 @@ export function StandardForm<SchemaType extends z.AnyZodObject>({
 					<Button
 						type="button"
 						variant={"outline"}
-						onClick={() => setOpenDialog(true)}
+						onClick={() => {
+							setOpenDialog(true);
+							const values = form.getValues();
+							const parsedValues = formSchema.safeParse(values);
+							if (parsedValues.success) {
+								setFormValues(parsedValues.data);
+							}
+						}}
 					>
 						{t(`button.${button_text}`)}
 					</Button>
@@ -78,10 +87,11 @@ export function StandardForm<SchemaType extends z.AnyZodObject>({
 				onOpenChange={setOpenDialog}
 				aria-hidden={false}
 			>
-				<DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[425px]">
+				<DialogContent className="max-h-[80vh] overflow-y-scroll sm:max-w-[425px]">
 					<DialogHeader>
 						<DialogTitle>{t("others.check_data")}</DialogTitle>
 					</DialogHeader>
+					<GeneralTable data={formValues} />
 					<DialogFooter>
 						<DialogClose asChild>
 							<Button

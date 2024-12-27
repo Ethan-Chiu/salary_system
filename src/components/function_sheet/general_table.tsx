@@ -44,3 +44,4 @@ export default function GeneralTable({ data }: { data: Record<string, any> }) {
 		</Table>
 	);
 }
+

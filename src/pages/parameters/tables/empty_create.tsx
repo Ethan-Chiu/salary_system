@@ -27,7 +27,7 @@ import { useContext } from "react";
 import ParameterToolbarFunctionsProvider, {
 	parameterToolbarFunctionsContext,
 } from "../components/function_sheet/parameter_functions_context";
-import GeneralTable from "../components/function_sheet/general_table";
+import GeneralTable from "../../../components/function_sheet/general_table";
 import { type FieldConfig } from "~/components/ui/auto-form/types";
 import { type ParameterTableEnum } from "../parameter_tables";
 import { useRouter } from "next/router";
