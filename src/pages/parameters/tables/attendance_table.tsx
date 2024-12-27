@@ -206,6 +206,7 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 					<FunctionsSheetContent t={t} period_id={period_id}>
 						<ParameterForm
 							formSchema={attendanceSchema}
+              formConfig={[{key: "id", config: {hidden: true}}]}
 							mode={mode}
 							closeSheet={() => {
 								setOpen(false);

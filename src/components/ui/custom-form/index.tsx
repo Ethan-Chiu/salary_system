@@ -60,11 +60,13 @@ export default function CustomForm<SchemaType extends ZodObjectOrWrapped>({
 			>
 				{formEntries.entries.map((entry) => {
 					const field = entry.field
-					return <AutoFormField
+          const config = entry.config;
+
+					return !config?.hidden && <AutoFormField
 						key={field.key}
 						field={field}
 						path={[field.key]}
-						render={entry.render}
+						render={config?.render}
 					/>
 				})}
 				{children}

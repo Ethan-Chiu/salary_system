@@ -1,7 +1,6 @@
 import { type z } from "zod";
 import { useContext } from "react";
 import { parameterToolbarFunctionsContext } from "./parameter_functions_context";
-import { type DefaultValues } from "react-hook-form";
 import { type FormConfig } from "~/components/ui/custom-form/types";
 import dataTableContext, { type FunctionMode } from "../context/data_table_context";
 import { StandardForm } from "~/components/form/default/form_standard";
