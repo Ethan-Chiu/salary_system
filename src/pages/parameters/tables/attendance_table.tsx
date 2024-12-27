@@ -31,44 +31,56 @@ export const attendance_columns = ({
 	t,
 }: {
 	t: TFunction<[string], undefined>;
-}) => [
-	...["parameters", "value"].map((key: string) =>
-		columnHelper.accessor(key as RowItemKey, {
-			header: ({ column }) => {
-				return (
-					<div className="flex justify-center">
-						<div className="text-center font-medium">
-							<Button
-								variant="ghost"
-								onClick={() =>
-									column.toggleSorting(
-										column.getIsSorted() === "asc"
-									)
-								}
-							>
-								{t(`table.${key}`)}
-								<ArrowUpDown className="ml-2 h-4 w-4" />
-							</Button>
+}) => {
+	const f: RowItemKey[] = ["parameters", "value"];
+	return [
+		...f.map((key) =>
+			columnHelper.accessor(key, {
+				header: ({ column }) => {
+					return (
+						<div className="flex justify-center">
+							<div className="text-center font-medium">
+								<Button
+									variant="ghost"
+									onClick={() =>
+										column.toggleSorting(
+											column.getIsSorted() === "asc"
+										)
+									}
+								>
+									{t(`table.${key}`)}
+									<ArrowUpDown className="ml-2 h-4 w-4" />
+								</Button>
+							</div>
 						</div>
 					);
 				},
 				cell: ({ row }) => {
 					if (key === "value") {
-						if (row.original.parameters === c_StartDateStr || row.original.parameters === c_EndDateStr) {
+						if (
+							row.original.parameters === c_StartDateStr ||
+							row.original.parameters === c_EndDateStr
+						) {
 							return (
-								<div className="text-center font-medium">{formatDate("day", row.original.value as Date | null) ?? ""}</div>
+								<div className="text-center font-medium">
+									{formatDate(
+										"day",
+										row.original.value as Date | null
+									) ?? ""}
+								</div>
 							);
 						}
 					}
 					return (
 						<div className="text-center font-medium">{`${row.original[
-							key as RowItemKey
-						]!.toString()}`}</div>
+							key
+						]?.toString()}`}</div>
 					);
 				},
 			})
 		),
 	];
+};
 
 export function attendanceMapper(
 	attendanceData: AttendanceSettingFEType[]
