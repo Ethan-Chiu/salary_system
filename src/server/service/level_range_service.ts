@@ -31,7 +31,7 @@ export class LevelRangeService {
 		);
 		const levelRange = await this.levelRangeMapper.encode({
 			...d,
-			start_date: d.start_date ?? new Date(),
+			start_date: start_date_adjust,
 			disabled: false,
 			create_by: "system",
 			update_by: "system",
@@ -46,7 +46,7 @@ export class LevelRangeService {
 		});
 		if (existed_data != null) {
 			throw new Error(
-				`Data already exist type:${existed_data.type}, start_date: ${start_date}, end_date: ${end_date}`
+				`Data already exist type:${existed_data.type}, start_date: ${start_date_adjust}, end_date: ${end_date}`
 			);
 		}
 		const newData = await LevelRange.create(levelRange, {

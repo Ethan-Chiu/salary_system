@@ -25,6 +25,7 @@ export default function CustomForm<SchemaType extends ZodObjectOrWrapped>({
 	onSubmit: onSubmitProp,
 	children,
 	className,
+  formId,
 }: CustomFormProps<SchemaType>) {
   // NOTE: parse form schema and handle field config
 	const parsedSchema = parseSchema(formSchema);
@@ -32,6 +33,9 @@ export default function CustomForm<SchemaType extends ZodObjectOrWrapped>({
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
 		const parsedValues = formSchema.safeParse(values);
+    if (!parsedValues.success) {
+      console.log("Parse value failed", parsedValues.error.message)
+    }
 		if (parsedValues.success) {
 			onSubmitProp?.(parsedValues.data);
 		}
@@ -40,6 +44,7 @@ export default function CustomForm<SchemaType extends ZodObjectOrWrapped>({
 	return (
 		<Form {...form}>
 			<form
+        id={formId}
 				onSubmit={(e) => {
 					void form.handleSubmit(onSubmit)(e);
 				}}
@@ -52,7 +57,6 @@ export default function CustomForm<SchemaType extends ZodObjectOrWrapped>({
 					}
 				}}
 				className={cn("space-y-5 p-2", className)}
-				id="parameter_form"
 			>
 				{formEntries.entries.map((entry) => { 
           const field = entry.field
