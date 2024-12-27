@@ -16,6 +16,7 @@ import { AllowanceType } from "../database/entity/UMEDIA/allowance_type";
 import { Allowance } from "../database/entity/UMEDIA/allowance";
 import { HolidaysTypeService } from "./holidays_type_service";
 import { PayTypeEnum, type PayTypeEnumType } from "../api/types/pay_type_enum";
+import { EmpAll } from "../database/entity/UMEDIA/emp_all";
 
 export type BonusWithType = Omit<Bonus, "bonus_id" | "period_id"> & {
 	period_name: string;
@@ -463,6 +464,18 @@ export class EHRService {
 		});
 		return amount;
 	}
+	async initEmployeeData(period_id:number) {
+		
+		const dbConnection = container.resolve(Database).ehr_connection;
+		const dataList = await dbConnection.query(
+			this.GET_INIT_EMP_QUERY(),
+			{
+				type: QueryTypes.SELECT,
+			}
+		);
+		const empAllList: EmpAll[] = dataList.map((o) => EmpAll.fromDB(o))
+		return empAllList
+	}
 
 	private GET_PERIOD_QUERY(): string {
 		return `SELECT "PERIOD_ID", "PERIOD_NAME", "START_DATE", "END_DATE", "STATUS", "ISSUE_DATE" FROM SYSTEM."U_HR_PERIOD_V" `;
@@ -515,5 +528,8 @@ export class EHRService {
 	}
 	private GET_ALLOWANCE_QUERY(period_id: number): string {
 		return `SELECT * FROM SYSTEM."U_HR_PAYDRAFT_ALLOWANCE_V" WHERE "U_HR_PAYDRAFT_ALLOWANCE_V"."PERIOD_ID" = '${period_id}'`;
+	}
+	private GET_INIT_EMP_QUERY(): string {
+		return `SELECT * FROM SYSTEM."U_HR_Employee_all_V"`;
 	}
 }

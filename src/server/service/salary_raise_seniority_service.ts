@@ -74,7 +74,7 @@ export class SalaryRaiseSeniorityService {
 		)?.multiplier;
 		return multiplier ?? 0;
 	}
-	async getSalaryRaiseSeniorityBySalaryRaiseType(
+	async getSalaryRaiseSeniorityByPeriodId(
 		period_id: number,
 		): Promise<SalaryRaiseSeniority[] | null> {
 		const salaryRaiseSeniority = await SalaryRaiseSeniority.findAll({

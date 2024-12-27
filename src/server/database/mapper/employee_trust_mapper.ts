@@ -38,24 +38,28 @@ export class EmployeeTrustMapper extends BaseMapper<
 	}
 
 	async getEmployeeTrustFE(
-		employee_trust_list: EmployeeTrustDecType[],
+		employee_trust_list: EmployeeTrustDecType[]
 	): Promise<z.infer<typeof employeeTrustFE>[]> {
 		const emp_first = employee_trust_list[0];
 		if (!emp_first) {
 			throw new BaseResponseError("Employee trust records do not exist");
 		}
 
-		const employee = await this.employeeDataService.getLatestEmployeeDataByEmpNo(
-			emp_first.emp_no
-		);
+		const employee =
+			await this.employeeDataService.getLatestEmployeeDataByEmpNo(
+				emp_first.emp_no
+			);
 
 		if (employee == null) {
-			throw new Error(`Employee does not exist, emp_no: ${emp_first.emp_no}`);
+			throw new Error(
+				`Employee does not exist, emp_no: ${emp_first.emp_no}`
+			);
 		}
 
-		const trust_money_list =
-			(await this.trustMoneyService.getAllTrustMoney()).flat();
-		
+		const trust_money_list = (
+			await this.trustMoneyService.getAllTrustMoney()
+		).flat();
+
 		const start_dates = employee_trust_list
 			.map((emp_trust) => emp_trust.start_date)
 			.sort((a, b) => a.getTime() - b.getTime());
@@ -71,7 +75,7 @@ export class EmployeeTrustMapper extends BaseMapper<
 				start_dates.push(trust_money_start_date);
 			}
 		});
-		const promises = start_dates.filter((d) => d.getTime() > (new Date("1970-01-01")).getTime())
+		const promises = start_dates
 			.sort((a, b) => a.getTime() - b.getTime())
 			.map(async (start_date, idx) => {
 				const employee_trust =
@@ -80,15 +84,48 @@ export class EmployeeTrustMapper extends BaseMapper<
 						start_date
 					);
 
-				
+				if (
+					new Date(employee_trust.start_date).getDate() ===
+					new Date("1970-01-01").getDate()
+				) {
+					const employeeTrust: z.infer<typeof employeeTrustFE> = {
+						...employee_trust,
+						id: idx,
+						emp_no: employee.emp_no,
+						emp_name: employee.emp_name,
+						position: employee.position,
+						position_type: employee.position_type,
+						department: employee.department,
+						emp_trust_reserve: 0,
+						org_trust_reserve: 0,
+						emp_special_trust_incent: 0,
+						org_special_trust_incent: 0,
+						start_date: start_date,
+						end_date: start_dates[idx + 1]
+						? new Date(
+								new Date(start_dates[idx + 1]!).setDate(
+									new Date(start_dates[idx + 1]!).getDate() -
+										1
+								)
+						  )
+						: null,
+						creatable: true,
+						updatable: false,
+						deletable: false,
+					};
 
+					return deleteProperties(employeeTrust, [
+						"emp_trust_reserve_enc",
+						"emp_special_trust_incent_enc",
+					]);
+				}
 				const trust_money =
 					await this.trustMoneyService.getCurrentTrustMoneyByPositionByDate(
 						employee.position,
 						employee.position_type,
 						start_date
 					);
-				
+
 				const org_trust_reserve = Math.min(
 					trust_money!.org_trust_reserve_limit,
 					Number(

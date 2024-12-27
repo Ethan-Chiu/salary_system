@@ -29,18 +29,18 @@ const dbEmployeeData = z.object({
 	emp_name: z.string(),
 	position: z.number(), //職等
 	position_type: z.string(), //職級
-	group_insurance_type: z.string(),
+	group_insurance_type: z.string(),//團保類別
 	department: z.string(),
 	work_type: WorkTypeEnum, //工作類別
 	work_status: WorkStatusEnum, //工作型態
-	disabilty_level: z.string().nullable(),
-	sex_type: z.string(),
-	dependents: z.number().nullable(),
-	healthcare_dependents: z.number().nullable(),
-	registration_date: z.string(),
-	quit_date: z.string().nullable(),
-	license_id: z.string().nullable(),
-	bank_account: z.string(),
+	disabilty_level: z.string().nullable(),//殘障等級
+	sex_type: z.string(),//性別
+	dependents: z.number().nullable(),//扶養人數
+	healthcare_dependents: z.number().nullable(),//健保眷口數
+	registration_date: z.string(),//到職日期
+	quit_date: z.string().nullable(),//離職日期
+	license_id: z.string().nullable(),//身分證字號
+	bank_account: z.string(),//帳號
 	create_by: z.string(),
 	update_by: z.string(),
 });
@@ -104,7 +104,9 @@ export class EmployeeData extends Model<
 	// updatedAt can be undefined during creation
 	declare update_date: CreationOptional<Date>;
 	declare update_by: string;
+
 }
+
 
 export function initEmployeeData(sequelize: Sequelize) {
 	EmployeeData.init(

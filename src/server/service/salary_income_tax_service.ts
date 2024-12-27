@@ -135,8 +135,6 @@ export class SalaryIncomeTaxService {
 				})
 			)
 		).filter((data) => data != null);
-		console.log("\n\n\n\n\n");
-		console.log("salaryIncomeTax_array", salaryIncomeTax_array);
 		await SalaryIncomeTax.bulkCreate(salaryIncomeTax_array);
 		const unique_primary_keys: primary_key[] = [];
 		for (const data of salaryIncomeTax_array) {
@@ -222,7 +220,6 @@ export class SalaryIncomeTaxService {
 				} else return 1;
 			}
 		);
-
 		return grouped_array;
 	}
 
@@ -285,14 +282,13 @@ export class SalaryIncomeTaxService {
 		dependent,
 		tax_amount,
 		start_date,
-		end_date,
 	}: z.infer<typeof updateSalaryIncomeTaxService>) {
 		const salaryIncomeTax = await this.getSalaryIncomeTaxById(id);
 		if (salaryIncomeTax == null) {
 			throw new BaseResponseError("Employee account does not exist");
 		}
 
-		await this.deleteSalaryIncomeTax(id);
+		const deleted_primary_key = await this.deleteSalaryIncomeTax(id);
 
 		const primary_key = await this.createSalaryIncomeTax({
 			salary_start: select_value(
@@ -303,9 +299,17 @@ export class SalaryIncomeTaxService {
 			dependent: select_value(dependent, salaryIncomeTax.dependent),
 			tax_amount: select_value(tax_amount, salaryIncomeTax.tax_amount),
 			start_date: select_value(start_date, salaryIncomeTax.start_date),
-			end_date: select_value(end_date, salaryIncomeTax.end_date),
+			end_date: null,
 		});
-		return primary_key;
+		if (primary_key == null) {
+			const unique_primary_keys = [deleted_primary_key]
+			return unique_primary_keys;
+		}
+		const unique_primary_keys: primary_key[] =
+			deleted_primary_key != primary_key
+				? [deleted_primary_key, primary_key]
+				: [primary_key];
+		return unique_primary_keys;
 	}
 
 	async deleteSalaryIncomeTax(id: number) {
