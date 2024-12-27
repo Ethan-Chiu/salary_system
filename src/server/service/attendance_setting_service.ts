@@ -20,14 +20,17 @@ import { BaseMapper } from "../database/mapper/base_mapper";
 export class AttendanceSettingService {
 	private readonly attendanceMapper: BaseMapper<
 		AttendanceSetting,
-		AttendanceSettingDecType
+		AttendanceSettingDecType,
+		typeof encAttendanceSetting,
+		typeof decAttendanceSetting
 	>;
 
 	constructor(private readonly ehrService: EHRService) {
-		this.attendanceMapper = new BaseMapper<
-			AttendanceSetting,
-			AttendanceSettingDecType
-		>(encAttendanceSetting, decAttendanceSetting);
+		this.attendanceMapper = new BaseMapper(
+			"Attendance Setting Mapper",
+			encAttendanceSetting,
+			decAttendanceSetting
+		);
 	}
 
 	async createAttendanceSetting(
@@ -193,9 +196,9 @@ export class AttendanceSettingService {
 			// console.log(attendanceSettingList[i]);
 			// console.log(`\n\n\nstart_date: ${attendanceSettingList[i]!.start_date}`);
 			if (end_date?.getTime() != new_end_date.getTime()) {
-				console.log(`\n\n\nnew_end_date: ${new_end_date}`);
+				console.log(`\n\n\nnew_end_date: ${new_end_date.toDateString()}`);
 				console.log(
-					`\n\n\nstart_date: ${attendanceSettingList[i]!.start_date}`
+					`\n\n\nstart_date: ${attendanceSettingList[i]?.start_date?.toDateString()}`
 				);
 				if (new_end_date < attendanceSettingList[i]!.start_date) {
 					await this.deleteAttendanceSetting(

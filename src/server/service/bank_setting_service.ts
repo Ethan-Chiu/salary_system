@@ -13,22 +13,20 @@ import { EHRService } from "./ehr_service";
 import { BaseMapper } from "../database/mapper/base_mapper";
 import {
 	createBankSettingService,
-	updateBankSettingService,
+	type updateBankSettingService,
 } from "../api/types/bank_setting_type";
-import { TupleType } from "typescript";
 
 @injectable()
 export class BankSettingService {
 	private readonly bankSettingMapper: BaseMapper<
 		BankSetting,
-		BankSettingDecType
+		BankSettingDecType,
+    typeof encBankSetting,
+    typeof decBankSetting
 	>;
 
 	constructor() {
-		this.bankSettingMapper = new BaseMapper<
-			BankSetting,
-			BankSettingDecType
-		>(encBankSetting, decBankSetting);
+		this.bankSettingMapper = new BaseMapper("Bank Setting Mapper", encBankSetting, decBankSetting);
 	}
 
 	async createBankSetting(

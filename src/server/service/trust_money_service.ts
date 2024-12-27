@@ -1,30 +1,33 @@
 import { container, injectable } from "tsyringe";
 import { BaseResponseError } from "../api/error/BaseResponseError";
-import { z } from "zod";
+import { type z } from "zod";
 import {
 	decTrustMoney,
 	encTrustMoney,
 	TrustMoney,
-	TrustMoneyDecType,
+	type TrustMoneyDecType,
 } from "../database/entity/SALARY/trust_money";
-import { check_date, get_date_string, select_value } from "./helper_function";
+import { get_date_string, select_value } from "./helper_function";
 import { EHRService } from "./ehr_service";
 import { Op } from "sequelize";
 import { dateToString } from "../api/types/z_utils";
 import { BaseMapper } from "../database/mapper/base_mapper";
 import {
 	createTrustMoneyService,
-	updateTrustMoneyService,
+	type updateTrustMoneyService,
 } from "../api/types/trust_money_type";
 
 @injectable()
 export class TrustMoneyService {
 	private readonly trustMoneyMapper: BaseMapper<
 		TrustMoney,
-		TrustMoneyDecType
+		TrustMoneyDecType,
+		typeof encTrustMoney,
+		typeof decTrustMoney
 	>;
-	constructor(private readonly ehrService: EHRService) {
-		this.trustMoneyMapper = new BaseMapper<TrustMoney, TrustMoneyDecType>(
+	constructor() {
+		this.trustMoneyMapper = new BaseMapper(
+			"Trust Money Mapper",
 			encTrustMoney,
 			decTrustMoney
 		);
@@ -263,7 +266,7 @@ export class TrustMoneyService {
 		});
 		if (trustMoney == null) {
 			throw new Error(
-				`TrustMoney does not exist position = ${position}, position type = ${position_type}, date = ${date}`
+				`TrustMoney does not exist position = ${position}, position type = ${position_type}, date = ${date.toDateString()}`
 			);
 		}
 		return await this.trustMoneyMapper.decode(trustMoney);
