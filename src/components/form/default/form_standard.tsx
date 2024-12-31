@@ -41,7 +41,8 @@ export function StandardForm<SchemaType extends z.AnyZodObject>({
 		resolver: zodResolver(formSchema),
 		defaultValues: defaultValue,
 	});
-	const [formValues, setFormValues] = useState({});
+	const [formValues, setFormValues] = useState<z.infer<SchemaType> | Record<string, any>>({});
+	const { id, ...displayData } = formValues;
 
 	return (
 		<>
@@ -96,7 +97,7 @@ export function StandardForm<SchemaType extends z.AnyZodObject>({
 									{t("others.check_data")}
 								</DialogTitle>
 							</DialogHeader>
-							<GeneralTable data={formValues} />
+							<GeneralTable data={displayData} />
 							<DialogFooter className="pt-12">
 								<DialogClose asChild>
 									<Button
