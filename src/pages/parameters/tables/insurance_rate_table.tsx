@@ -169,14 +169,14 @@ export function InsuranceRateTable({
 	}
 
 	if (isError) {
-		// return <span>Error: {error.message}</span>; // TODO: Error element with toast
-		const err_msg = error.message;
-		const emptyError = true;
-		return emptyError ? (
-			<EmptyTable err_msg={err_msg} selectedTableType="TableInsurance" />
-		) : (
-			<></>
-		);
+		return <span>Error: {error.message}</span>; // TODO: Error element with toast
+		// const err_msg = error.message;
+		// const emptyError = true;
+		// return emptyError ? (
+		// 	<EmptyTable err_msg={err_msg} selectedTableType="TableInsurance" />
+		// ) : (
+		// 	<></>
+		// );
 	}
 
 	return (
@@ -189,7 +189,7 @@ export function InsuranceRateTable({
 					<Sheet open={open && mode !== "delete"} onOpenChange={setOpen}>
 						<DataTableWithFunctions
 							columns={insurance_rate_columns({ t })}
-							data={insuranceRateMapper([data!])}
+							data={data ? insuranceRateMapper([data]) : []}
 							filterColumnKey={filterKey}
 						/>
 						<FunctionsSheetContent t={t} period_id={period_id}>

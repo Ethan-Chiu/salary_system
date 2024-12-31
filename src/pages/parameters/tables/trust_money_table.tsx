@@ -160,14 +160,14 @@ export function TrustMoneyTable({ period_id, viewOnly }: TrustMoneyTableProps) {
 	}
 
 	if (isError) {
-		// return <span>Error: {error.message}</span>; // TODO: Error element with toast
-		const err_msg = error.message;
-		const emptyError = true;
-		return emptyError ? (
-			<EmptyTable err_msg={err_msg} selectedTableType="TableTrustMoney" />
-		) : (
-			<></>
-		);
+		return <span>Error: {error.message}</span>; // TODO: Error element with toast
+		// const err_msg = error.message;
+		// const emptyError = true;
+		// return emptyError ? (
+		// 	<EmptyTable err_msg={err_msg} selectedTableType="TableTrustMoney" />
+		// ) : (
+		// 	<></>
+		// );
 	}
 
 	return !viewOnly ? (

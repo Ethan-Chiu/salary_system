@@ -130,7 +130,7 @@ export const debugRouter = createTRPCRouter({
 				// EmployeeBonus
 				// AccessSetting,
 				AttendanceSetting,
-				// BankSetting,
+				BankSetting,
 				// BasicInfo,
 				// BonusAll,
 				// BonusDepartment,
@@ -144,11 +144,11 @@ export const debugRouter = createTRPCRouter({
 				// EmployeePayment,
 				// EmployeeTrust,
 				// EmployeeData
-				// InsuranceRateSetting,
-				// LevelRange,
-				// Level,
-				// TrustMoney,
-				// SalaryIncomeTax,
+				InsuranceRateSetting,
+				LevelRange,
+				Level,
+				TrustMoney,
+				SalaryIncomeTax,
 			];
 			const promises = table_list.map(async (model) => {
 				try {

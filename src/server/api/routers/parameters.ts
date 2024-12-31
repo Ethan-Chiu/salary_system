@@ -70,7 +70,7 @@ export const parametersRouter = createTRPCRouter({
 				input.period_id
 			);
 			if (bankSetting.length == 0) {
-				throw new BaseResponseError("BankSetting does not exist");
+				// throw new BaseResponseError("BankSetting does not exist");
 			}
 			const bankSettingFE = await Promise.all(
 				bankSetting.map(async (b) => {
@@ -91,7 +91,7 @@ export const parametersRouter = createTRPCRouter({
 		const bankService = container.resolve(BankSettingService);
 		const bankSetting = await bankService.getAllBankSetting();
 		if (bankSetting.length == 0) {
-			throw new BaseResponseError("BankSetting does not exist");
+			// throw new BaseResponseError("BankSetting does not exist");
 		}
 		const bankSettingFE = bankSetting.map((bank_list) => {
 			const list = bank_list.map((b) => {
@@ -133,7 +133,7 @@ export const parametersRouter = createTRPCRouter({
 
 	getCurrentAttendanceSetting: publicProcedure
 		.input(z.object({ period_id: z.number() }))
-		.output(attendanceSettingFE)
+		.output(attendanceSettingFE.nullable())
 		.query(async ({ input }) => {
 			const attendanceService = container.resolve(
 				AttendanceSettingService
@@ -144,7 +144,8 @@ export const parametersRouter = createTRPCRouter({
 				);
 
 			if (attendanceSetting == null) {
-				throw new BaseResponseError("AttendanceSetting does not exist");
+				// throw new BaseResponseError("AttendanceSetting does not exist");
+				return null;
 			}
 			const AttendanceSettingFE = {
 				...roundProperties(attendanceSetting, 4),
@@ -163,7 +164,7 @@ export const parametersRouter = createTRPCRouter({
 		const attendanceSetting =
 			await attendanceService.getAllAttendanceSetting();
 		if (attendanceSetting.length == 0) {
-			throw new BaseResponseError("AttendanceSetting does not exist");
+			// throw new BaseResponseError("AttendanceSetting does not exist");
 		}
 		const AttendanceSettingFE = await Promise.all(
 			attendanceSetting.map((attendance_list) => {
@@ -235,9 +236,10 @@ export const parametersRouter = createTRPCRouter({
 					input.period_id
 				);
 			if (insuranceRateSetting == null) {
-				throw new BaseResponseError(
-					"InsuranceRateSetting does not exist"
-				);
+				// throw new BaseResponseError(
+				// 	"InsuranceRateSetting does not exist"
+				// );
+				return null;
 			}
 			const InsuranceRateSettingFE = {
 				...roundProperties(insuranceRateSetting, 4),
@@ -257,7 +259,7 @@ export const parametersRouter = createTRPCRouter({
 		const insuranceRateSetting =
 			await insuranceRateService.getAllInsuranceRateSetting();
 		if (insuranceRateSetting.length == 0) {
-			throw new BaseResponseError("InsuranceRateSetting does not exist");
+			// throw new BaseResponseError("InsuranceRateSetting does not exist");
 		}
 		const InsuranceRateSettingFE = insuranceRateSetting.map(
 			(insurance_rate_setting_list) => {
@@ -355,7 +357,7 @@ export const parametersRouter = createTRPCRouter({
 				input.period_id
 			);
 			if (levelRange == null) {
-				throw new BaseResponseError("LevelRange does not exist");
+				// throw new BaseResponseError("LevelRange does not exist");
 			}
 			const levelRangeFE = await Promise.all(
 				levelRange.map(
@@ -370,7 +372,7 @@ export const parametersRouter = createTRPCRouter({
 		const levelRangeMapper = container.resolve(LevelRangeMapper);
 		const levelRange = await levelRangeService.getAllLevelRange();
 		if (levelRange == null) {
-			throw new BaseResponseError("LevelRange does not exist");
+			// throw new BaseResponseError("LevelRange does not exist");
 		}
 		const levelRangeFE = await Promise.all(
 			levelRange.map(async (e_list) => {
@@ -446,7 +448,7 @@ export const parametersRouter = createTRPCRouter({
 			const levelRangeService = container.resolve(LevelRangeService);
 			const level = await levelService.getCurrentLevel(input.period_id);
 			if (level == null) {
-				throw new BaseResponseError("Level does not exist");
+				// throw new BaseResponseError("Level does not exist");
 			}
 			const levelFE = await Promise.all(
 				level.map(async (e) => {
@@ -482,7 +484,7 @@ export const parametersRouter = createTRPCRouter({
 			})
 		);
 		if (level == null) {
-			throw new BaseResponseError("Level does not exist");
+			// throw new BaseResponseError("Level does not exist");
 		}
 		return levelFE;
 	}),
@@ -507,7 +509,7 @@ export const parametersRouter = createTRPCRouter({
 				})
 			);
 			if (level == null) {
-				throw new BaseResponseError("Level does not exist");
+				// throw new BaseResponseError("Level does not exist");
 			}
 			return levelFE;
 		}),
@@ -554,7 +556,7 @@ export const parametersRouter = createTRPCRouter({
 		const performanceLevel =
 			await performanceLevelService.getCurrentPerformanceLevel();
 		if (performanceLevel == null) {
-			throw new BaseResponseError("PerformanceLevel does not exist");
+			// throw new BaseResponseError("PerformanceLevel does not exist");
 		}
 		return performanceLevel;
 	}),
@@ -566,7 +568,7 @@ export const parametersRouter = createTRPCRouter({
 		const performanceLevel =
 			await performanceLevelService.getAllPerformanceLevel();
 		if (performanceLevel == null) {
-			throw new BaseResponseError("LevelRange does not exist");
+			// throw new BaseResponseError("LevelRange does not exist");
 		}
 		return performanceLevel;
 	}),
@@ -612,7 +614,7 @@ export const parametersRouter = createTRPCRouter({
 				input.period_id
 			);
 			if (trustMoney == null) {
-				throw new BaseResponseError("TrustMoney does not exist");
+				// throw new BaseResponseError("TrustMoney does not exist");
 			}
 			const trustMoneyFE = await Promise.all(
 				trustMoney.map(async (e) => {
@@ -633,7 +635,7 @@ export const parametersRouter = createTRPCRouter({
 		const trustMoneyService = container.resolve(TrustMoneyService);
 		const trustMoney = await trustMoneyService.getAllTrustMoney();
 		if (trustMoney == null) {
-			throw new BaseResponseError("TrustMoney does not exist");
+			// throw new BaseResponseError("TrustMoney does not exist");
 		}
 		const trustMoneyFE = await Promise.all(
 			trustMoney.map(async (trust_money_list) => {
@@ -748,7 +750,7 @@ export const parametersRouter = createTRPCRouter({
 					input.period_id
 				);
 			if (salaryIncomeTax == null) {
-				throw new BaseResponseError("SalaryIncomeTax does not exist");
+				// throw new BaseResponseError("SalaryIncomeTax does not exist");
 			}
 			const salaryIncomeTaxFE = await Promise.all(
 				salaryIncomeTax.map(async (e) => {
@@ -772,7 +774,7 @@ export const parametersRouter = createTRPCRouter({
 		const salaryIncomeTax =
 			await salaryIncomeTaxService.getAllSalaryIncomeTax();
 		if (salaryIncomeTax == null) {
-			throw new BaseResponseError("SalaryIncomeTax does not exist");
+			// throw new BaseResponseError("SalaryIncomeTax does not exist");
 		}
 		const salaryIncomeTaxFE = await Promise.all(
 			salaryIncomeTax.map((income_tax_list) => {

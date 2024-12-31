@@ -84,7 +84,7 @@ export class AttendanceSettingService {
 			? attendanceSettingList[0]
 			: null;
 
-		return await this.attendanceMapper.decode(attendanceSetting);
+		return attendanceSetting ? await this.attendanceMapper.decode(attendanceSetting) : null;
 	}
 
 	async getAllAttendanceSetting(): Promise<AttendanceSettingDecType[][]> {

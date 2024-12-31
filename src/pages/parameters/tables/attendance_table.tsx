@@ -164,14 +164,14 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 	}
 
 	if (isError) {
-		// return <span>Error: {error.message}</span>; // TODO: Error element with toast
-		const err_msg = error.message;
-		const emptyError = true;
-		return emptyError ? (
-			<EmptyTable err_msg={err_msg} selectedTableType="TableAttendance" />
-		) : (
-			<></>
-		);
+		return <span>Error: {error.message}</span>; // TODO: Error element with toast
+		// const err_msg = error.message;
+		// const emptyError = true;
+		// return emptyError ? (
+		// 	<EmptyTable err_msg={err_msg} selectedTableType="TableAttendance" />
+		// ) : (
+		// 	<></>
+		// );
 	}
 
 	return (
@@ -187,7 +187,7 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 					>
 						<DataTableWithFunctions
 							columns={attendance_columns({ t })}
-							data={attendanceMapper([data!])}
+							data={data ? attendanceMapper([data]) : []}
 							filterColumnKey={filterKey}
 						/>
 						<FunctionsSheetContent t={t} period_id={period_id}>

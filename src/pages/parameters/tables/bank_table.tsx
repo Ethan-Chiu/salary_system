@@ -161,17 +161,17 @@ export function BankTable({ period_id, viewOnly }: BankTableProps) {
 	}
 
 	if (isError) {
-		// return <span>Error: {error.message}</span>; // TODO: Error element with toast
-		const err_msg = error.message;
-		const emptyError = true;
-		return emptyError ? (
-			<EmptyTable
-				err_msg={err_msg}
-				selectedTableType="TableBankSetting"
-			/>
-		) : (
-			<></>
-		);
+		return <span>Error: {error.message}</span>; // TODO: Error element with toast
+		// const err_msg = error.message;
+		// const emptyError = true;
+		// return emptyError ? (
+		// 	<EmptyTable
+		// 		err_msg={err_msg}
+		// 		selectedTableType="TableBankSetting"
+		// 	/>
+		// ) : (
+		// 	<></>
+		// );
 	}
 
 	return !viewOnly ? (

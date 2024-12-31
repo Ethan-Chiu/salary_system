@@ -84,7 +84,7 @@ export class InsuranceRateSettingService {
 			? insuranceRateSettingList[0]
 			: null;
 
-		return await this.insuranceMapper.decode(insuranceRateSetting);
+		return insuranceRateSetting ? await this.insuranceMapper.decode(insuranceRateSetting) : null;
 	}
 
 	async getAllInsuranceRateSetting(): Promise<
