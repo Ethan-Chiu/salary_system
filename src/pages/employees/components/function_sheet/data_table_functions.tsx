@@ -61,9 +61,6 @@ export function DataTableFunctions({
 	const [mode, setMode] = useState<FunctionMode>("none");
 	const { t } = useTranslation(["common", "nav"]);
 	const functions = useContext(employeeToolbarFunctionsContext);
-	const updateFunction = functions.updateFunction;
-	const createFunction = functions.createFunction;
-	const deleteFunction = functions.deleteFunction;
 	const autoCalculateFunction = functions.autoCalculateFunction;
 
 	return (

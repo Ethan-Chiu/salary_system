@@ -13,6 +13,7 @@ import {
 	Download,
 	Upload,
 	Calculator,
+	CirclePlus,
 } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
@@ -54,23 +55,24 @@ import { Checkbox } from "@radix-ui/react-checkbox";
 import { Input } from "~/components/ui/input";
 
 import { BonusBatchUpdateForm } from "./batch_update_form";
+import { FunctionMode } from "../context/data_table_context";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
 	bonusType: BonusTypeEnumType;
 }
 
-export type FunctionMode =
-	| "create"
-	| "batch_create"
-	| "update"
-	| "batch_update"
-	| "delete"
-	| "auto_calculate"
-	| "excel_download"
-	| "excel_upload"
-	| "initialize"
-	| "none";
+// export type FunctionMode =
+// 	| "create"
+// 	| "batch_create"
+// 	| "update"
+// 	| "batch_update"
+// 	| "delete"
+// 	| "auto_calculate"
+// 	| "excel_download"
+// 	| "excel_upload"
+// 	| "initialize"
+// 	| "none";
 
 export function DataTableFunctions({
 	tableType,
@@ -122,9 +124,9 @@ export function DataTableFunctions({
 							icon={Upload}
 						/>
 						<CompTriggerItem
-							mode={"initialize"}
-							itemName={t("button.initialize")}
-							icon={RefreshCcw}
+							mode={"create_with_blank"}
+							itemName={t("button.create_with_blank")}
+							icon={CirclePlus}
 						/>
 						{batchUpdateFunction && (
 							<CompTriggerItem
@@ -172,8 +174,9 @@ export function DataTableFunctions({
 						<ScrollArea className="h-full w-full">
 							<BonusForm
 								formSchema={schema}
+								formConfig={[{ key: "id", config: { hidden: true } }]}
 								mode={mode}
-								bonus_type={bonusType}
+								// bonus_type={bonusType}
 								closeSheet={() => setOpen(false)}
 							/>
 							<ScrollBar orientation="horizontal" />

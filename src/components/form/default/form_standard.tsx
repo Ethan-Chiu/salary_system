@@ -41,7 +41,9 @@ export function StandardForm<SchemaType extends z.AnyZodObject>({
 		resolver: zodResolver(formSchema),
 		defaultValues: defaultValue,
 	});
-	const [formValues, setFormValues] = useState<z.infer<SchemaType> | Record<string, any>>({});
+	const [formValues, setFormValues] = useState<
+		z.infer<SchemaType> | Record<string, any>
+	>({});
 	const { id, ...displayData } = formValues;
 
 	return (
@@ -76,7 +78,9 @@ export function StandardForm<SchemaType extends z.AnyZodObject>({
 							const parsedValues = formSchema.safeParse(values);
 							if (parsedValues.success) {
 								setFormValues(parsedValues.data);
-							}
+							} else {
+                console.log("Parse value failed", parsedValues.error.message)
+              }
 						}}
 					>
 						{t(`button.${button_text}`)}

@@ -24,6 +24,7 @@ import dataTableContext, {
 } from "../components/context/data_table_context";
 import { FunctionsComponent } from "~/components/data_table/functions_component";
 import { ConfirmDialog } from "../components/function_sheet/confirm_dialog";
+import { BonusDepartmentFEType } from "~/server/api/types/bonus_department_type";
 
 export type RowItem = {
 	department: string;
@@ -103,14 +104,14 @@ export const bonus_department_columns = ({
 ];
 
 export function bonusDepartmentMapper(
-	bonusDepartmentData: BonusDepartment[]
+	bonusDepartmentData: BonusDepartmentFEType[]
 ): RowItem[] {
 	return bonusDepartmentData.map((d) => {
 		return {
 			id: d.id,
 			department: d.department,
 			multiplier: d.multiplier,
-			functions: { create: true, update: true, delete: true },
+			functions: d.functions,
 			// functions: { "create": d.creatable, "update": d.updatable, "delete": d.deletable },
 		};
 	});

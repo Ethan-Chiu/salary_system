@@ -7,7 +7,7 @@ import { useContext } from "react";
 import { EmpTabsEnum } from "./context/employee_tabs_enum";
 import { CurrentView } from "./current_view/current_view";
 import { HistoryView } from "./history_view/history_view";
-import { HistoryDataType, type EmployeeCalenderQueryFunctionType, type EmployeeHistoryQueryFunctionType } from "~/components/data_table/history_data_type";
+import { type HistoryDataType, type EmployeeCalenderQueryFunctionType, type EmployeeHistoryQueryFunctionType } from "~/components/data_table/history_data_type";
 import { type EmployeeHistoryViewCommonEmpInfo } from "./history_view/history_view";
 import dataTableContext from "./context/data_table_context";
 import CalendarView from "./calendar_view/calendar_view";
@@ -15,8 +15,8 @@ import CalendarView from "./calendar_view/calendar_view";
 type DataRow = EmployeeHistoryViewCommonEmpInfo & HistoryDataType;
 
 interface DataTableProps<TData extends DataRow> {
-	columns: ColumnDef<DataRow, any>[];
-	columnNames?: Array<String>;
+	columns: ColumnDef<TData, any>[];
+	columnNames?: Array<string>;
 	data: TData[];
 	historyDataFunction: EmployeeHistoryQueryFunctionType<TData>;
 	calendarDataFunction: EmployeeCalenderQueryFunctionType<TData>;

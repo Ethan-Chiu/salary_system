@@ -20,10 +20,11 @@ import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import BonusToolbarFunctionsProvider from "../components/function_sheet/bonus_functions_context";
 import { BonusForm } from "../components/function_sheet/bonus_form";
 import { bonusAllSchema } from "../schemas/configurations/bonus_all_schema";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Sheet } from "~/components/ui/sheet";
 
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
+import { ConfirmDialog } from "../components/function_sheet/confirm_dialog";
 
 export type RowItem = {
 	parameters: string;
@@ -37,18 +38,8 @@ const columnHelper = createColumnHelper<RowItem>();
 export const bonus_all_columns = (
 	{
 		t,
-		period_id,
-		bonus_type,
-		setOpen,
-		setMode,
-		setData,
 	}: {
 		t: TFunction<[string], undefined>;
-		period_id: number;
-		bonus_type: BonusTypeEnumType;
-		setOpen: (open: boolean) => void;
-		setMode: (mode: FunctionMode) => void;
-	    setData: (data: RowItem) => void;
 	}
 ) => [
 	...["parameters", "value"].map((key: string) =>
@@ -108,18 +99,12 @@ export const bonus_all_columns = (
 	// }),
 ];
 
-export function bonusAllMapper(bonusAllData: BonusAll[]): RowItem[] {
-	return bonusAllData.map((d) => {
-		return {
-			parameters: "倍率",
-			value: d.multiplier,
-            functions: {
-				create: true,
-				update: false,
-				delete: false,
-			},
-		};
-	});
+export function bonusAllMapper(bonusAllData: any): RowItem {
+	return {
+		parameters: "倍率",
+		value: bonusAllData.multiplier,
+		functions: bonusAllData.functions,
+	};
 }
 
 interface BonusAllTableProps extends TableComponentProps {
@@ -146,6 +131,13 @@ export function BonusAllTable({
 	});
 	const filterKey: RowItemKey = "parameters";
 
+	useEffect(() => {
+		if (data) {
+			setData(data);
+		}
+	}, [data, setData]);
+
+
 	if (isLoading) {
 		return (
 			<div className="flex grow items-center justify-center">
@@ -158,24 +150,21 @@ export function BonusAllTable({
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
+	
+
 	return (
 		<>
 			{!viewOnly ? (
 				<BonusToolbarFunctionsProvider selectedTableType={"TableBonusAll"} period_id={period_id} bonus_type={bonus_type}>
 					<Sheet open={open && mode !== "delete"} onOpenChange={setOpen}>
-						<DataTableWithFunctions
+						{bonusAllMapper(data!) && <DataTableWithFunctions
 							columns={bonus_all_columns({
 								t,
-								period_id,
-								bonus_type,
-								setOpen,
-								setMode,
-								setData,
 							})}
-							data={bonusAllMapper(data!)}
+							data={[bonusAllMapper(data!)]}
 							bonusType={bonus_type}
 							filterColumnKey={filterKey}
-						/>
+						/>}
 						<FunctionsSheetContent t={t} period_id={period_id}>
 							<BonusForm
 								formSchema={bonusAllSchema}
@@ -185,6 +174,11 @@ export function BonusAllTable({
 							/>
 						</FunctionsSheetContent>
 					</Sheet>
+					<ConfirmDialog
+						open={open && mode === "delete"}
+						onOpenChange={setOpen}
+						schema={bonusAllSchema}
+					/>
 				</BonusToolbarFunctionsProvider>
 			) : (
 				<></>

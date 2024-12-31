@@ -11,6 +11,7 @@ import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 import { StatsPanel } from "~/components/data_table/toolbar/stats_panel";
 import { DataTableToolbarWrapper } from "~/components/data_table/toolbar/data_table_toolbar_wrapper";
 import { DataTableFunctions } from "./function_sheet/data_table_functions";
+import { Button } from "~/components/ui/button";
 
 interface DataTableToolbarProps<TData> {
 	table: Table<TData>;
@@ -25,6 +26,8 @@ export function DataTableToolbar<TData>({
 }: DataTableToolbarProps<TData>) {
 	const { selectedTableType } = useContext(dataTableContext);
 	const { selectedPeriod } = useContext(periodContext);
+
+	const {data} = useContext(dataTableContext);
 
 	return (
 		<DataTableToolbarWrapper>
@@ -44,7 +47,8 @@ export function DataTableToolbar<TData>({
 							bonus_type={bonusType}
 						>
 							<div className="flex">
-								<DataTableFunctionsSingle tableType={selectedTableType} bonusType={bonusType} />
+								{/* <DataTableFunctionsSingle tableType={selectedTableType} bonusType={bonusType} /> */}
+								<DataTableFunctionsSingle />
 								<DataTableFunctions tableType={selectedTableType} bonusType={bonusType} />
 							</div>
 						</BonusToolbarFunctionsProvider>

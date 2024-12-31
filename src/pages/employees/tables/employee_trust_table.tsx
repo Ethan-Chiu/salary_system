@@ -1,14 +1,14 @@
 import { LoadingSpinner } from "~/components/loading";
 import { DataTableUpdate } from "../components/data_table_update";
 import { api } from "~/utils/api";
-import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
-import { Button } from "~/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { type EmployeeTrustFEType } from "~/server/api/types/employee_trust_type";
 import { formatDate } from "~/lib/utils/format_date";
-import { FunctionsComponent, FunctionsItem } from "~/components/data_table/functions_component";
+import {
+	FunctionsComponent,
+	FunctionsItem,
+} from "~/components/data_table/functions_component";
 import { TFunction } from "i18next";
 import { FunctionMode } from "../components/function_sheet/data_table_functions";
 import EmployeeToolbarFunctionsProvider from "../components/function_sheet/employee_functions_context";
@@ -16,6 +16,7 @@ import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { EmployeeForm } from "../components/function_sheet/employee_form";
 import { employeeTrustSchema } from "../schemas/configurations/employee_trust_schema";
 import { useState } from "react";
+import { ColumnHeaderComponent } from "~/components/data_table/column_header_component";
 
 export type RowItem = Omit<EmployeeTrustFEType, "start_date" | "end_date"> & {
 	start_date: string;
@@ -39,37 +40,39 @@ const columnNames: RowItemKey[] = [
 	"start_date",
 	"end_date",
 ];
-export const employee_trust_columns = ({ t, period_id, open, setOpen, mode, setMode }: { t: TFunction<[string], undefined>, period_id: number, open: boolean, setOpen: (open: boolean) => void, mode: FunctionMode, setMode: (mode: FunctionMode) => void }) => [
-	...columnNames.map((key: string) =>
-		columnHelper.accessor(key as RowItemKey, {
+
+export const employee_trust_columns = ({
+	t,
+	setOpen,
+	setMode,
+	setData,
+}: {
+	t: TFunction<[string], undefined>;
+	setOpen: (open: boolean) => void;
+	setMode: (mode: FunctionMode) => void;
+	setData: (data: RowItem) => void;
+}) => [
+	...columnNames.map((key) =>
+		columnHelper.accessor(key, {
 			header: ({ column }) => {
 				return (
-					<div className="flex justify-center">
-						<div className="text-center font-medium">
-							<Button
-								variant="ghost"
-								onClick={() =>
-									column.toggleSorting(
-										column.getIsSorted() === "asc"
-									)
-								}
-							>
-								{t(`table.${key}`)}
-								<ArrowUpDown className="ml-2 h-4 w-4" />
-							</Button>
-						</div>
-					</div>
+					<ColumnHeaderComponent column={column}>
+						{t(`table.${key}`)}
+					</ColumnHeaderComponent>
 				);
 			},
 			cell: ({ row }) => {
 				switch (key) {
 					default:
-						return <div className="text-center font-medium">{`${row.original[key as RowItemKey]}`}</div>
+						return (
+							<div className="text-center font-medium">{`${row.original[key]}`}</div>
+						);
 				}
-			}
-		})),
+			},
+		})
+	),
 	columnHelper.accessor("functions", {
-		header: ({ column }) => {
+		header: () => {
 			return (
 				<div className="flex justify-center">
 					<div className="text-center font-medium">
@@ -80,34 +83,32 @@ export const employee_trust_columns = ({ t, period_id, open, setOpen, mode, setM
 		},
 		cell: ({ row }) => {
 			return (
-				<FunctionsComponent t={t} open={open} setOpen={setOpen} mode={mode} setMode={setMode} functionsItem={row.original.functions} >
-					<EmployeeToolbarFunctionsProvider
-						tableType={"TableEmployeeTrust"}
-						period_id={period_id}
-					>
-						<ScrollArea className="h-full w-full">
-							<EmployeeForm
-								formSchema={employeeTrustSchema}
-								mode={mode}
-								closeSheet={() => setOpen(false)}
-								columns={null}
-							/>
-						</ScrollArea>
-						<ScrollBar orientation="horizontal" />
-					</EmployeeToolbarFunctionsProvider>
-				</FunctionsComponent>
+				<FunctionsComponent
+					t={t}
+					setOpen={setOpen}
+					setMode={setMode}
+					data={row.original}
+					setData={setData}
+				/>
 			);
 		},
 	}),
-]
+];
 
-export function employeeTrustMapper(t: TFunction<[string], undefined>, employeeTrustData: EmployeeTrustFEType[]): RowItem[] {
+export function employeeTrustMapper(
+	t: TFunction<[string], undefined>,
+	employeeTrustData: EmployeeTrustFEType[]
+): RowItem[] {
 	return employeeTrustData.map((d) => {
 		return {
 			...d,
 			start_date: formatDate("day", d.start_date) ?? "",
 			end_date: formatDate("day", d.end_date) ?? "",
-			functions: { create: d.creatable, update: d.updatable, delete: d.deletable }
+			functions: {
+				create: d.creatable,
+				update: d.updatable,
+				delete: d.deletable,
+			},
 		};
 	});
 }
@@ -134,7 +135,12 @@ export function EmployeeTrustTable({ period_id }: any) {
 		// TODO: figure out its type
 		return (
 			<DataTableUpdate
-				columns={employee_trust_columns({ t, period_id, open, setOpen, mode, setMode })}
+				columns={employee_trust_columns({
+					t,
+					setOpen,
+					setMode,
+          setData: () => {}
+				})}
 				columnNames={columnNames}
 				data={employeeTrustMapper(t, data)}
 				historyDataFunction={() =>
