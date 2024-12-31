@@ -23,6 +23,8 @@ import dataTableContext, {
 	type FunctionMode,
 } from "../components/context/data_table_context";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
+import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
+import { ConfirmDialog } from "../components/function_sheet/confirm_dialog";
 
 export type RowItem = {
 	salary_start: number;
@@ -181,28 +183,34 @@ export function SalaryIncomeTaxTable({
 	}
 
 	return !viewOnly ? (
-		<Sheet open={open} onOpenChange={setOpen}>
-			<DataTableWithFunctions
-				columns={salary_income_tax_columns({
-					t,
-					setOpen,
-					setMode,
-					setData,
-				})}
-				data={salaryIncomeTaxMapper(data!)}
-				filterColumnKey={filterKey}
-			/>
-			<FunctionsSheetContent t={t} period_id={period_id}>
-				<ParameterForm
-					formSchema={salaryIncomeTaxSchema}
-					formConfig={[{ key: "id", config: { hidden: true } }]}
-					mode={mode}
-					closeSheet={() => {
-						setOpen(false);
-					}}
+		<ParameterToolbarFunctionsProvider
+			selectedTableType={"TableSalaryIncomeTax"}
+			period_id={period_id}
+		>
+			<Sheet open={open && mode !== "delete"} onOpenChange={setOpen}>
+				<DataTableWithFunctions
+					columns={salary_income_tax_columns({
+						t,
+						setOpen,
+						setMode,
+						setData,
+					})}
+					data={salaryIncomeTaxMapper(data!)}
+					filterColumnKey={filterKey}
 				/>
-			</FunctionsSheetContent>
-		</Sheet>
+				<FunctionsSheetContent t={t} period_id={period_id}>
+					<ParameterForm
+						formSchema={salaryIncomeTaxSchema}
+						formConfig={[{ key: "id", config: { hidden: true } }]}
+						mode={mode}
+						closeSheet={() => {
+							setOpen(false);
+						}}
+					/>
+				</FunctionsSheetContent>
+			</Sheet>
+			<ConfirmDialog open={open && mode === "delete"} onOpenChange={setOpen} schema={salaryIncomeTaxSchema} />
+		</ParameterToolbarFunctionsProvider>
 	) : (
 		<DataTableWithoutFunctions
 			columns={salary_income_tax_columns({

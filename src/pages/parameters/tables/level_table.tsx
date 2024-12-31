@@ -22,6 +22,8 @@ import dataTableContext, {
 	FunctionsItem,
 	type FunctionMode,
 } from "../components/context/data_table_context";
+import { ConfirmDialog } from "../components/function_sheet/confirm_dialog";
+import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
 
 export type RowItem = {
 	level: number;
@@ -152,26 +154,32 @@ export function LevelTable({ period_id, viewOnly }: LevelTableProps) {
 	}
 
 	return !viewOnly ? (
-		<Sheet open={open} onOpenChange={setOpen}>
-			<DataTableWithFunctions
-				columns={level_columns({
-					t,
-					setOpen,
-					setMode,
-					setData,
-				})}
-				data={levelMapper(data!)}
-				filterColumnKey={filterKey}
-			/>
-			<FunctionsSheetContent t={t} period_id={period_id}>
-				<ParameterForm
-					formSchema={levelSchema}
-					formConfig={[{ key: "id", config: { hidden: true } }]}
-					mode={mode}
-					closeSheet={() => setOpen(false)}
+		<ParameterToolbarFunctionsProvider
+			selectedTableType={"TableLevel"}
+			period_id={period_id}
+		>
+			<Sheet open={open && mode !== "delete"} onOpenChange={setOpen}>
+				<DataTableWithFunctions
+					columns={level_columns({
+						t,
+						setOpen,
+						setMode,
+						setData,
+					})}
+					data={levelMapper(data!)}
+					filterColumnKey={filterKey}
 				/>
-			</FunctionsSheetContent>
-		</Sheet>
+				<FunctionsSheetContent t={t} period_id={period_id}>
+					<ParameterForm
+						formSchema={levelSchema}
+						formConfig={[{ key: "id", config: { hidden: true } }]}
+						mode={mode}
+						closeSheet={() => setOpen(false)}
+					/>
+				</FunctionsSheetContent>
+			</Sheet>
+			<ConfirmDialog open={open && mode === "delete"} onOpenChange={setOpen} schema={levelSchema} />
+		</ParameterToolbarFunctionsProvider>
 	) : (
 		<DataTableWithoutFunctions
 			columns={level_columns({

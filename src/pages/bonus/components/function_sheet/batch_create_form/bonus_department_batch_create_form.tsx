@@ -28,7 +28,6 @@ import { PenSquare, Trash2, PlusCircle } from "lucide-react";
 import { useContext } from "react";
 import { bonusToolbarFunctionsContext } from "../bonus_functions_context";
 import { FunctionMode } from "../data_table_functions";
-import GeneralTable from "../general_table";
 import { LoadingSpinner } from "~/components/loading";
 import { FieldConfig } from "~/components/ui/auto-form/types";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -38,6 +37,7 @@ import { Label } from "~/components/ui/label";
 import { Separator } from "~/components/ui/separator";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 import periodContext from "~/components/context/period_context";
+import GeneralTable from "~/components/function_sheet/general_table";
 
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;

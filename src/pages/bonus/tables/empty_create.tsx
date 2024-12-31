@@ -27,11 +27,11 @@ import { useContext } from "react";
 import BonusToolbarFunctionsProvider, {
 	bonusToolbarFunctionsContext,
 } from "../components/function_sheet/bonus_functions_context";
-import GeneralTable from "../components/function_sheet/general_table";
 import { type FieldConfig } from "~/components/ui/auto-form/types";
 import { type BonusTableEnum } from "../bonus_tables";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
+import GeneralTable from "~/components/function_sheet/general_table";
 
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;

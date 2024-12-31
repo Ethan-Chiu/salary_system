@@ -38,7 +38,6 @@ import { PenSquare, Trash2, PlusCircle } from "lucide-react";
 import { useContext } from "react";
 import { bonusToolbarFunctionsContext } from "../bonus_functions_context";
 import { FunctionMode } from "../data_table_functions";
-import GeneralTable from "../general_table";
 import { LoadingSpinner } from "~/components/loading";
 import { FieldConfig } from "~/components/ui/auto-form/types";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -48,6 +47,7 @@ import { Label } from "~/components/ui/label";
 import { Separator } from "~/components/ui/separator";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 import periodContext from "~/components/context/period_context";
+import GeneralTable from "~/components/function_sheet/general_table";
 
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
@@ -169,7 +169,7 @@ export function BonusWorkTypeBatchCreateForm<
 		const onSubmit = async (data: FormValues) => {
 			data.bonus_work_types.map(async (x) => {
 				await createFunction.mutateAsync(
-					{...x, bonus_type: bonusType, period_id: period.selectedPeriod?.period_id},
+					{ ...x, bonus_type: bonusType, period_id: period.selectedPeriod?.period_id },
 				);
 			});
 			closeSheet();
@@ -191,7 +191,7 @@ export function BonusWorkTypeBatchCreateForm<
 								>
 									<div className="flex w-full flex-row items-center justify-between gap-4">
 										{/* work_type Input */}
-										
+
 										<Select onValueChange={(v: any) => {
 											setValue(`bonus_work_types.${index}.work_type`, v);
 										}}>
@@ -200,10 +200,10 @@ export function BonusWorkTypeBatchCreateForm<
 											</SelectTrigger>
 											<SelectContent>
 												<SelectGroup>
-												<SelectLabel>{t("table.work_type")}{" "}</SelectLabel>
-												<SelectItem value="直接人員" className="cursor-pointer hover:bg-gray-100">直接人員</SelectItem>
-												<SelectItem value="間接人員" className="cursor-pointer hover:bg-gray-100">間接人員</SelectItem>
-												<SelectItem value="外籍勞工" className="cursor-pointer hover:bg-gray-100">外籍勞工</SelectItem>
+													<SelectLabel>{t("table.work_type")}{" "}</SelectLabel>
+													<SelectItem value="直接人員" className="cursor-pointer hover:bg-gray-100">直接人員</SelectItem>
+													<SelectItem value="間接人員" className="cursor-pointer hover:bg-gray-100">間接人員</SelectItem>
+													<SelectItem value="外籍勞工" className="cursor-pointer hover:bg-gray-100">外籍勞工</SelectItem>
 												</SelectGroup>
 											</SelectContent>
 										</Select>

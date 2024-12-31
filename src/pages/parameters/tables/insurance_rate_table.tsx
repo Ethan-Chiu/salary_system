@@ -18,6 +18,8 @@ import { Sheet } from "~/components/ui/sheet";
 import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { insuranceSchema } from "../schemas/configurations/insurance_schema";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
+import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
+import { ConfirmDialog } from "../components/function_sheet/confirm_dialog";
 
 export type RowItem = {
 	parameters: string;
@@ -187,23 +189,29 @@ export function InsuranceRateTable({
 	return (
 		<>
 			{!viewOnly ? (
-				<Sheet open={open} onOpenChange={setOpen}>
-					<DataTableWithFunctions
-						columns={insurance_rate_columns({ t })}
-						data={insuranceRateMapper([data!])}
-						filterColumnKey={filterKey}
-					/>
-					<FunctionsSheetContent t={t} period_id={period_id}>
-						<ParameterForm
-							formSchema={insuranceSchema}
-							formConfig={[{ key: "id", config: { hidden: true } }]}
-							mode={mode}
-							closeSheet={() => {
-								setOpen(false);
-							}}
+				<ParameterToolbarFunctionsProvider
+					selectedTableType={"TableInsurance"}
+					period_id={period_id}
+				>
+					<Sheet open={open && mode !== "delete"} onOpenChange={setOpen}>
+						<DataTableWithFunctions
+							columns={insurance_rate_columns({ t })}
+							data={insuranceRateMapper([data!])}
+							filterColumnKey={filterKey}
 						/>
-					</FunctionsSheetContent>
-				</Sheet>
+						<FunctionsSheetContent t={t} period_id={period_id}>
+							<ParameterForm
+								formSchema={insuranceSchema}
+								formConfig={[{ key: "id", config: { hidden: true } }]}
+								mode={mode}
+								closeSheet={() => {
+									setOpen(false);
+								}}
+							/>
+						</FunctionsSheetContent>
+					</Sheet>
+					<ConfirmDialog open={open && mode === "delete"} onOpenChange={setOpen} schema={insuranceSchema} />
+				</ParameterToolbarFunctionsProvider>
 			) : (
 				<DataTableWithoutFunctions
 					columns={insurance_rate_columns({ t })}

@@ -49,8 +49,8 @@ export function FunctionsComponent<TMode, TData extends object>({
                                 className="w-full"
                                 onClick={() => {
                                     setMode(key as TMode);
-                                    setOpen(true);
                                     setData(data);
+                                    setOpen(true);
                                 }}
                                 disabled={disabled}
                             >

@@ -27,12 +27,12 @@ import { Copy, PenSquare, Trash2 } from "lucide-react";
 import { useContext } from "react";
 import { bonusToolbarFunctionsContext } from "./bonus_functions_context";
 import { FunctionMode } from "./data_table_functions";
-import GeneralTable from "./general_table";
 import { LoadingSpinner } from "~/components/loading";
 import { FieldConfig } from "~/components/ui/auto-form/types";
 import periodContext from "~/components/context/period_context";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 import { Input } from "~/components/ui/input";
+import GeneralTable from "~/components/function_sheet/general_table";
 
 interface BonusFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;

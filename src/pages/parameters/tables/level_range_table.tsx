@@ -21,6 +21,8 @@ import dataTableContext, {
 	type FunctionMode,
 } from "../components/context/data_table_context";
 import { useContext } from "react";
+import { ConfirmDialog } from "../components/function_sheet/confirm_dialog";
+import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
 
 export type RowItem = {
 	type: string;
@@ -179,35 +181,41 @@ export function LevelRangeTable({ period_id, viewOnly }: LevelRangeTableProps) {
 	});
 
 	return !viewOnly ? (
-		<Sheet open={open} onOpenChange={setOpen} aria-hidden={false}>
-			<DataTableWithFunctions
-				columns={columns}
-				data={levelRangeMapper(data!)}
-				filterColumnKey={filterKey}
-			/>
-			<FunctionsSheetContent t={t} period_id={period_id}>
-				<ParameterForm
-					formSchema={levelRangeSchema}
-					formConfig={[
-						{ key: "id", config: { hidden: true } },
-						{
-							key: "level_start",
-							config: {
-								render: SelectLevelField,
-							},
-						},
-						{
-							key: "level_end",
-							config: {
-								render: SelectLevelField,
-							},
-						},
-					]}
-					mode={mode}
-					closeSheet={() => setOpen(false)}
+		<ParameterToolbarFunctionsProvider
+			selectedTableType={"TableLevelRange"}
+			period_id={period_id}
+		>
+			<Sheet open={open && mode !== "delete"} onOpenChange={setOpen} aria-hidden={false}>
+				<DataTableWithFunctions
+					columns={columns}
+					data={levelRangeMapper(data!)}
+					filterColumnKey={filterKey}
 				/>
-			</FunctionsSheetContent>
-		</Sheet>
+				<FunctionsSheetContent t={t} period_id={period_id}>
+					<ParameterForm
+						formSchema={levelRangeSchema}
+						formConfig={[
+							{ key: "id", config: { hidden: true } },
+							{
+								key: "level_start",
+								config: {
+									render: SelectLevelField,
+								},
+							},
+							{
+								key: "level_end",
+								config: {
+									render: SelectLevelField,
+								},
+							},
+						]}
+						mode={mode}
+						closeSheet={() => setOpen(false)}
+					/>
+				</FunctionsSheetContent>
+			</Sheet>
+			<ConfirmDialog open={open && mode === "delete"} onOpenChange={setOpen} schema={levelRangeSchema} />
+		</ParameterToolbarFunctionsProvider>
 	) : (
 		<DataTableWithoutFunctions
 			columns={columns}

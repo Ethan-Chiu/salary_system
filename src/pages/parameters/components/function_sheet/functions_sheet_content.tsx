@@ -6,7 +6,6 @@ import {
 	SheetTitle,
 } from "~/components/ui/sheet";
 import { type TFunction } from "i18next";
-import ParameterToolbarFunctionsProvider from "~/pages/parameters/components/function_sheet/parameter_functions_context";
 import { type PropsWithChildren, useContext } from "react";
 import dataTableContext from "../context/data_table_context";
 import { getTableNameKey } from "../context/data_table_enum";
@@ -43,12 +42,7 @@ export function FunctionsSheetContent({
 						{modeDescription(t, mode as string)}
 					</SheetDescription>
 				</SheetHeader>
-				<ParameterToolbarFunctionsProvider
-					selectedTableType={selectedTableType}
-					period_id={period_id}
-				>
-					{children}
-				</ParameterToolbarFunctionsProvider>
+				{children}
 			</ScrollArea>
 		</SheetContent>
 	);

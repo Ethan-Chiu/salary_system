@@ -23,6 +23,8 @@ import dataTableContext, {
 	type FunctionMode,
 } from "../components/context/data_table_context";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
+import { ConfirmDialog } from "../components/function_sheet/confirm_dialog";
+import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
 
 export type RowItem = {
 	position: number;
@@ -173,23 +175,29 @@ export function TrustMoneyTable({ period_id, viewOnly }: TrustMoneyTableProps) {
 	}
 
 	return !viewOnly ? (
-		<Sheet open={open} onOpenChange={setOpen}>
-			<DataTableWithFunctions
-				columns={trust_money_columns({ t, setOpen, setMode, setData })}
-				data={trustMoneyMapper(data!)}
-				filterColumnKey={filterKey}
-			/>
-			<FunctionsSheetContent t={t} period_id={period_id}>
-				<ParameterForm
-					formSchema={trustMoneySchema}
-					formConfig={[{ key: "id", config: { hidden: true } }]}
-					mode={mode}
-					closeSheet={() => {
-						setOpen(false);
-					}}
+		<ParameterToolbarFunctionsProvider
+			selectedTableType={"TableTrustMoney"}
+			period_id={period_id}
+		>
+			<Sheet open={open && mode !== "delete"} onOpenChange={setOpen}>
+				<DataTableWithFunctions
+					columns={trust_money_columns({ t, setOpen, setMode, setData })}
+					data={trustMoneyMapper(data!)}
+					filterColumnKey={filterKey}
 				/>
-			</FunctionsSheetContent>
-		</Sheet>
+				<FunctionsSheetContent t={t} period_id={period_id}>
+					<ParameterForm
+						formSchema={trustMoneySchema}
+						formConfig={[{ key: "id", config: { hidden: true } }]}
+						mode={mode}
+						closeSheet={() => {
+							setOpen(false);
+						}}
+					/>
+				</FunctionsSheetContent>
+			</Sheet>
+			<ConfirmDialog open={open && mode === "delete"} onOpenChange={setOpen} schema={trustMoneySchema} />
+		</ParameterToolbarFunctionsProvider>
 	) : (
 		<DataTableWithoutFunctions
 			columns={trust_money_columns({ t, setOpen, setMode, setData })}
