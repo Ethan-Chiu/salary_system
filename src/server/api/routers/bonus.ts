@@ -236,14 +236,14 @@ export const bonusRouter = createTRPCRouter({
 				input.period_id,
 				input.bonus_type
 			);
-			return roundProperties(result ? {
+			return result ? roundProperties({
 				...result.dataValues,
 				functions: {
 					creatable: false,
 					updatable: true,
 					deletable: true,
 				}
-			} : {}, 2);
+			}, 2) : null;
 		}),
 	getBonusWorkType: publicProcedure
 		.input(
