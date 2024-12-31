@@ -25,6 +25,7 @@ import dataTableContext, {
 import { FunctionsComponent } from "~/components/data_table/functions_component";
 import { formatDate } from "~/lib/utils/format_date";
 import { ConfirmDialog } from "../components/function_sheet/confirm_dialog";
+import { BonusPositionFEType } from "~/server/api/types/bonus_position_type";
 
 export type RowItem = {
 	position: number;
@@ -112,7 +113,7 @@ export const bonus_position_columns = ({
 ];
 
 export function bonusPositionMapper(
-	bonusPositionData: BonusPosition[]
+	bonusPositionData: BonusPositionFEType[]
 ): RowItem[] {
 	return bonusPositionData.map((d) => {
 		return {
@@ -122,7 +123,7 @@ export function bonusPositionMapper(
 			position_type: d.position_type,
 			position_multiplier: d.position_multiplier,
 			position_type_multiplier: d.position_type_multiplier,
-			functions: { create: true, update: true, delete: true },
+			functions: d.functions,
 			// functions: { "create": d.creatable, "update": d.updatable, "delete": d.deletable },
 		};
 	});

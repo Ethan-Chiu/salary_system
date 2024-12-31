@@ -313,6 +313,7 @@
     "next_page": "下一頁",
     "previous_page": "上一頁",
     "create": "建立",
+    "create_with_blank": "空白建立",
     "batch_create": "批量建立",
     "batch_update": "批量修改",
     "update": "修正",
