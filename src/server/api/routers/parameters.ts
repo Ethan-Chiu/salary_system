@@ -76,9 +76,11 @@ export const parametersRouter = createTRPCRouter({
 				bankSetting.map(async (b) => {
 					return {
 						...b,
-						creatable: true,
-						updatable: b.start_date > new Date(),
-						deletable: b.start_date > new Date(),
+						functions: {
+							creatable: true,
+							updatable: b.start_date > new Date(),
+							deletable: b.start_date > new Date(),
+						},
 					};
 				})
 			);
@@ -95,9 +97,11 @@ export const parametersRouter = createTRPCRouter({
 			const list = bank_list.map((b) => {
 				return {
 					...b,
-					creatable: true,
-					updatable: b.start_date > new Date(),
-					deletable: b.start_date > new Date(),
+					functions: {
+						creatable: true,
+						updatable: b.start_date > new Date(),
+						deletable: b.start_date > new Date(),
+					},
 				};
 			});
 			return list;
@@ -144,9 +148,11 @@ export const parametersRouter = createTRPCRouter({
 			}
 			const AttendanceSettingFE = {
 				...roundProperties(attendanceSetting, 4),
-				creatable: true,
-				updatable: attendanceSetting.start_date > new Date(),
-				deletable: attendanceSetting.start_date > new Date(),
+				functions: {
+					creatable: true,
+					updatable: attendanceSetting.start_date > new Date(),
+					deletable: attendanceSetting.start_date > new Date(),
+				},
 			};
 
 			return AttendanceSettingFE;
@@ -164,9 +170,11 @@ export const parametersRouter = createTRPCRouter({
 				const list = attendance_list.map((a) => {
 					return {
 						...roundProperties(a, 4),
-						creatable: true,
-						updatable: a.start_date > new Date(),
-						deletable: a.start_date > new Date(),
+						functions: {
+							creatable: true,
+							updatable: a.start_date > new Date(),
+							deletable: a.start_date > new Date(),
+						},
 					};
 				});
 				return list;
@@ -233,9 +241,11 @@ export const parametersRouter = createTRPCRouter({
 			}
 			const InsuranceRateSettingFE = {
 				...roundProperties(insuranceRateSetting, 4),
-				creatable: true,
-				updatable: insuranceRateSetting.start_date > new Date(),
-				deletable: insuranceRateSetting.start_date > new Date(),
+				functions: {
+					creatable: true,
+					updatable: insuranceRateSetting.start_date > new Date(),
+					deletable: insuranceRateSetting.start_date > new Date(),
+				},
 			};
 			return InsuranceRateSettingFE;
 		}),
@@ -254,9 +264,11 @@ export const parametersRouter = createTRPCRouter({
 				const list = insurance_rate_setting_list.map((a) => {
 					return {
 						...roundProperties(a, 4),
-						creatable: true,
-						updatable: a.start_date > new Date(),
-						deletable: a.start_date > new Date(),
+						functions: {
+							creatable: true,
+							updatable: a.start_date > new Date(),
+							deletable: a.start_date > new Date(),
+						},
 					};
 				});
 				return list;
@@ -431,6 +443,7 @@ export const parametersRouter = createTRPCRouter({
 		.input(z.object({ period_id: z.number() }))
 		.query(async ({ input }) => {
 			const levelService = container.resolve(LevelService);
+			const levelRangeService = container.resolve(LevelRangeService);
 			const level = await levelService.getCurrentLevel(input.period_id);
 			if (level == null) {
 				throw new BaseResponseError("Level does not exist");
@@ -439,9 +452,11 @@ export const parametersRouter = createTRPCRouter({
 				level.map(async (e) => {
 					return {
 						...e,
-						creatable: true,
-						updatable: e.start_date > new Date(),
-						deletable: e.start_date > new Date(),
+						functions: {
+							creatable: true,
+							updatable: e.start_date > new Date(),
+							deletable: e.start_date > new Date() && ! await levelRangeService.isLevelReferenced(e.id),
+						},
 					};
 				})
 			);
@@ -450,18 +465,20 @@ export const parametersRouter = createTRPCRouter({
 
 	getAllLevel: publicProcedure.query(async () => {
 		const levelService = container.resolve(LevelService);
+		const levelRangeService = container.resolve(LevelRangeService);
 		const level = await levelService.getAllLevel();
 		const levelFE = await Promise.all(
-			level.map((level_list) => {
-				const list = level_list.map((l) => {
+			level.map(async (level_list) => {
+				return await Promise.all(level_list.map(async (l) => {
 					return {
 						...l,
-						creatable: true,
-						updatable: l.start_date > new Date(),
-						deletable: l.start_date > new Date(),
+						functions: {
+							creatable: true,
+							updatable: l.start_date > new Date(),
+							deletable: l.start_date > new Date() && ! await levelRangeService.isLevelReferenced(l.id),
+						},
 					};
-				});
-				return list;
+				}));
 			})
 		);
 		if (level == null) {
@@ -473,6 +490,7 @@ export const parametersRouter = createTRPCRouter({
 		.input(z.object({ start_date: z.date() }))
 		.query(async ({ input }) => {
 			const levelService = container.resolve(LevelService);
+			const levelRangeService = container.resolve(LevelRangeService);
 			const level = await levelService.getAllLevelByStartDate(
 				input.start_date
 			);
@@ -480,9 +498,11 @@ export const parametersRouter = createTRPCRouter({
 				level.map(async (l) => {
 					return {
 						...l,
-						creatable: true,
-						updatable: l.start_date > new Date(),
-						deletable: l.start_date > new Date(),
+						functions: {
+							creatable: true,
+							updatable: l.start_date > new Date(),
+							deletable: l.start_date > new Date() && ! await levelRangeService.isLevelReferenced(l.id),
+						},
 					};
 				})
 			);
@@ -598,9 +618,11 @@ export const parametersRouter = createTRPCRouter({
 				trustMoney.map(async (e) => {
 					return {
 						...e,
-						creatable: true,
-						updatable: e.start_date > new Date(),
-						deletable: e.start_date > new Date(),
+						functions: {
+							creatable: true,
+							updatable: e.start_date > new Date(),
+							deletable: e.start_date > new Date(),
+						}
 					};
 				})
 			);
@@ -618,9 +640,11 @@ export const parametersRouter = createTRPCRouter({
 				const list = trust_money_list.map((d) => {
 					return {
 						...d,
-						creatable: true,
-						updatable: d.start_date > new Date(),
-						deletable: d.start_date > new Date(),
+						functions: {
+							creatable: true,
+							updatable: d.start_date > new Date(),
+							deletable: d.start_date > new Date(),
+						},
 					};
 				});
 				return list;
@@ -730,9 +754,11 @@ export const parametersRouter = createTRPCRouter({
 				salaryIncomeTax.map(async (e) => {
 					return {
 						...e,
-						creatable: true,
-						updatable: e.start_date > new Date(),
-						deletable: e.start_date > new Date(),
+						functions: {
+							creatable: true,
+							updatable: e.start_date > new Date(),
+							deletable: e.start_date > new Date(),
+						},
 					};
 				})
 			);
@@ -753,9 +779,11 @@ export const parametersRouter = createTRPCRouter({
 				const list = income_tax_list.map((e) => {
 					return {
 						...e,
-						creatable: true,
-						updatable: e.start_date > new Date(),
-						deletable: e.start_date > new Date(),
+						functions: {
+							creatable: true,
+							updatable: e.start_date > new Date(),
+							deletable: e.start_date > new Date(),
+						},
 					};
 				});
 				return list;

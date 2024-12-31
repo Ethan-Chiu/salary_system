@@ -156,14 +156,7 @@ export function InsuranceRateTable({
 
 	useEffect(() => {
 		if (data && selectedTab === "current") {
-			setData({
-				...data,
-				functions: {
-					create: data.creatable,
-					update: data.updatable,
-					delete: data.deletable,
-				},
-			});
+			setData(data);
 		}
 	}, [data, selectedTab]);
 

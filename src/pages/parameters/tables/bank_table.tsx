@@ -133,11 +133,7 @@ export function bankSettingMapper(
 			org_code: d.org_code,
 			start_date: d.start_date,
 			end_date: d.end_date,
-			functions: {
-				create: d.creatable,
-				update: d.updatable,
-				delete: d.deletable,
-			},
+			functions: d.functions,
 		};
 	});
 }
