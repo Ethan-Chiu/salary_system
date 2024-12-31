@@ -13,8 +13,7 @@ import { z } from "zod";
 import { Input } from "~/components/ui/input";
 
 export function SelectLevelField({
-	field,
-  value,
+	value,
 	inputProps,
 	error,
 	id,
@@ -36,10 +35,16 @@ export function SelectLevelField({
 		return () => subscription.unsubscribe();
 	}, [watch]);
 
-  const valueStr = z.number().pipe(z.coerce.string()).parse(value)
+	const valueStr = z.number().pipe(z.coerce.string()).parse(value);
+
+	const { onChange }: { onChange: (event: any) => any } = inputProps;
 
 	return result.success && result.data ? (
-		<Select {...inputProps} defaultValue={valueStr}>
+		<Select
+			{...inputProps}
+			onValueChange={onChange}
+			defaultValue={valueStr}
+		>
 			<SelectTrigger
 				id={id}
 				className={error ? "border-destructive" : ""}
