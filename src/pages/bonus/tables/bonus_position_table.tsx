@@ -24,6 +24,7 @@ import dataTableContext, {
 } from "../components/context/data_table_context";
 import { FunctionsComponent } from "~/components/data_table/functions_component";
 import { formatDate } from "~/lib/utils/format_date";
+import { ConfirmDialog } from "../components/function_sheet/confirm_dialog";
 
 export type RowItem = {
 	position: number;
@@ -116,11 +117,12 @@ export function bonusPositionMapper(
 	return bonusPositionData.map((d) => {
 		return {
 			// positionAndPositionType: d.position + d.position_type,
+			id: d.id,
 			position: d.position,
 			position_type: d.position_type,
 			position_multiplier: d.position_multiplier,
 			position_type_multiplier: d.position_type_multiplier,
-			functions: { create: true, update: false, delete: false },
+			functions: { create: true, update: true, delete: true },
 			// functions: { "create": d.creatable, "update": d.updatable, "delete": d.deletable },
 		};
 	});
@@ -144,7 +146,7 @@ export function BonusPositionTable({
 
 	const { isLoading, isError, data, error } =
 		api.bonus.getBonusPosition.useQuery({ period_id, bonus_type });
-	const filterKey: RowItemKey = "positionAndPositionType";
+	const filterKey: RowItemKey = "position";
 
 	if (isLoading) {
 		return (
@@ -185,6 +187,7 @@ export function BonusPositionTable({
 						<FunctionsSheetContent t={t} period_id={period_id}>
 							<BonusForm
 								formSchema={bonusPositionSchema}
+								formConfig={[{ key: "id", config: { hidden: true } }]}
 								mode={mode}
 								closeSheet={() => {
 									setOpen(false);
@@ -192,6 +195,7 @@ export function BonusPositionTable({
 							/>
 						</FunctionsSheetContent>
 					</Sheet>
+					<ConfirmDialog open={open && mode === "delete"} onOpenChange={setOpen} schema={bonusPositionSchema}/>
 				</BonusToolbarFunctionsProvider>
 			) : (
 				<DataTableWithoutFunctions

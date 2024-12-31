@@ -179,6 +179,7 @@ export function BonusAllTable({
 						<FunctionsSheetContent t={t} period_id={period_id}>
 							<BonusForm
 								formSchema={bonusAllSchema}
+								formConfig={[{ key: "id", config: { hidden: true } }]}
 								mode={mode}
 								closeSheet={() => setOpen(false)}
 							/>

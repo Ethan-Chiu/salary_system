@@ -23,6 +23,7 @@ import dataTableContext, {
 	type FunctionMode,
 } from "../components/context/data_table_context";
 import { FunctionsComponent } from "~/components/data_table/functions_component";
+import { ConfirmDialog } from "../components/function_sheet/confirm_dialog";
 
 export type RowItem = {
 	department: string;
@@ -106,9 +107,10 @@ export function bonusDepartmentMapper(
 ): RowItem[] {
 	return bonusDepartmentData.map((d) => {
 		return {
+			id: d.id,
 			department: d.department,
 			multiplier: d.multiplier,
-			functions: { create: true, update: false, delete: false },
+			functions: { create: true, update: true, delete: true },
 			// functions: { "create": d.creatable, "update": d.updatable, "delete": d.deletable },
 		};
 	});
@@ -172,6 +174,7 @@ export function BonusDepartmentTable({
 					<FunctionsSheetContent t={t} period_id={period_id}>
 						<BonusForm
 							formSchema={bonusDepartmentSchema}
+							formConfig={[{ key: "id", config: { hidden: true } }]}
 							mode={mode}
 							closeSheet={() => {
 								setOpen(false);
@@ -179,6 +182,7 @@ export function BonusDepartmentTable({
 						/>
 					</FunctionsSheetContent>
 				</Sheet>
+				<ConfirmDialog open={open && mode === "delete"} onOpenChange={setOpen} schema={bonusDepartmentSchema}/>
 			</BonusToolbarFunctionsProvider>
 			) : (
 				<DataTableWithoutFunctions
