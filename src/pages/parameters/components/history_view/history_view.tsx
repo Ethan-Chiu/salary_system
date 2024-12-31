@@ -54,14 +54,7 @@ function CompHistoryView() {
 		if (!isLoading && data?.[0] && data?.[0]?.[0]) {
 			const targetData = data[0][0]
 			setSelectedId(targetData.id);
-			setData({
-				...targetData,
-				functions: {
-					create: targetData.creatable,
-					update: targetData.updatable,
-					delete: targetData.deletable
-				}
-			});
+			setData(targetData);
 			setSelectedDateString(formatDate("day", targetData.start_date) ?? t("others.now"));
 		}
 	}, [isLoading, data]);
@@ -70,14 +63,7 @@ function CompHistoryView() {
 		if (!isLoading && selectedDateString && data?.[0] && data?.[0]?.[0]) {
 			const targetData = data.filter((e) => formatDate("day", e[0]!.start_date) === selectedDateString)[0]![0]!
 			setSelectedId(targetData.id);
-			setData({
-				...targetData,
-				functions: {
-					create: targetData.creatable,
-					update: targetData.updatable,
-					delete: targetData.deletable
-				}
-			});
+			setData(targetData);
 		}
 	}, [selectedDateString]);
 
@@ -132,15 +118,7 @@ function CompHistoryView() {
 								)}
 								onClick={() => {
 									setSelectedId(e.id)
-									console.log(e)
-									setData({
-										...e,
-										functions: {
-											create: e.creatable,
-											update: e.updatable,
-											delete: e.deletable
-										}
-									});
+									setData(e);
 								}}
 							>
 								<div className="m-1 flex flex-wrap items-center justify-center">

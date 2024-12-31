@@ -75,9 +75,11 @@ export class LevelRangeMapper extends BaseMapper<
 		const result: LevelRangeFEType = levelRangeFE.parse({
 			level_start: level_start.level,
 			level_end: level_end.level,
-			creatable: true,
-			updatable: level_range.start_date > new Date(),
-			deletable: level_range.start_date > new Date(),
+			functions: {
+				creatable: true,
+				updatable: level_range.start_date > new Date(),
+				deletable: level_range.start_date > new Date(),
+			},
 			...level_range,
 		});
 
@@ -92,16 +94,16 @@ export class LevelRangeMapper extends BaseMapper<
 			level_range_FE.level_start == null
 				? null
 				: await levelService.getLevelByLevel(
-						level_range_FE.level_start,
-						get_date_string(level_range_FE.start_date ?? new Date())
-				  );
+					level_range_FE.level_start,
+					get_date_string(level_range_FE.start_date ?? new Date())
+				);
 		const level_end =
 			level_range_FE.level_end == null
 				? null
 				: await levelService.getLevelByLevel(
-						level_range_FE.level_end,
-						get_date_string(level_range_FE.start_date ?? new Date())
-				  );
+					level_range_FE.level_end,
+					get_date_string(level_range_FE.start_date ?? new Date())
+				);
 		if (level_start == null || level_end == null) {
 			throw new BaseResponseError("Level does not exist");
 		}

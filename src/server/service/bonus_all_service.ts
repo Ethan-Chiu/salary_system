@@ -87,8 +87,8 @@ export class BonusAllService {
     async getBonusAllByBonusType(
         period_id: number,
         bonus_type: BonusTypeEnumType
-    ): Promise<BonusAll[] | null> {
-        const bonusAll = await BonusAll.findAll(
+    ): Promise<BonusAll | null> {
+        const bonusAll = await BonusAll.findOne(
             {
                 where: {
                     period_id: period_id,

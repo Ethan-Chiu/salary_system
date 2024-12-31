@@ -16,8 +16,8 @@ import {
 export class EmployeeBonusMapper extends BaseMapper<
 	EmployeeBonus,
 	EmployeeBonusDecType,
-  typeof encEmployeeBonus,
-  typeof decEmployeeBonus
+	typeof encEmployeeBonus,
+	typeof decEmployeeBonus
 > {
 	constructor() {
 		super("Employee Bonus Mapper", encEmployeeBonus, decEmployeeBonus, []);
@@ -91,6 +91,11 @@ export class EmployeeBonusMapper extends BaseMapper<
 			app_effective_salary: employee_bonus.app_effective_salary,
 			app_amount: employee_bonus.app_amount,
 			status: getRandomStatus(),
+			functions: {
+				creatable: false,
+				updatable: true,
+				deletable: false,
+			},
 			create_by: employee_bonus.create_by,
 			update_by: employee_bonus.update_by,
 			create_date: employee_bonus.create_date,

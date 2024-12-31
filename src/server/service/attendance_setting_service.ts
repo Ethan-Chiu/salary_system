@@ -192,14 +192,6 @@ export class AttendanceSettingService {
 			new_end_date.setDate(new_end_date.getDate() - 1);
 
 			if (end_date?.getTime() != new_end_date.getTime()) {
-				console.log(
-					`\n\n\nnew_end_date: ${new_end_date.toDateString()}`
-				);
-				console.log(
-					`\n\n\nstart_date: ${attendanceSettingList[
-						i
-					]?.start_date?.toDateString()}`
-				);
 				if (new_end_date < attendanceSettingList[i]!.start_date) {
 					await this.deleteAttendanceSetting(
 						attendanceSettingList[i]!.id
@@ -212,11 +204,6 @@ export class AttendanceSettingService {
 				}
 			}
 		}
-		console.log(
-			`\n\n\nstart_date: ${attendanceSettingList[
-				attendanceSettingList.length - 1
-			]?.start_date?.toDateString()}`
-		);
 		if (
 			attendanceSettingList[attendanceSettingList.length - 1]!.end_date !=
 			null

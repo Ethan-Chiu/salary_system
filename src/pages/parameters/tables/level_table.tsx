@@ -118,11 +118,7 @@ export function levelMapper(levelData: LevelFEType[]): RowItem[] {
 			level: d.level,
 			start_date: d.start_date,
 			end_date: d.end_date,
-			functions: {
-				create: d.creatable,
-				update: d.updatable,
-				delete: d.deletable,
-			},
+			functions: d.functions,
 		};
 	});
 }
