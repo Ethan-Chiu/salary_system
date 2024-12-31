@@ -25,6 +25,7 @@ import { TFunction } from "i18next";
 import { Sheet } from "~/components/ui/sheet";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
 import { ConfirmDialog } from "../components/function_sheet/confirm_dialog";
+import { BonusWorkTypeFEType } from "~/server/api/types/bonus_work_type_type";
 
 export type RowItem = {
 	work_type: WorkTypeEnumType;
@@ -104,14 +105,14 @@ export const bonus_work_type_columns = ({
 ];
 
 export function bonusWorkTypeMapper(
-	bonusWorkTypeData: BonusWorkType[]
+	bonusWorkTypeData: BonusWorkTypeFEType[]
 ): RowItem[] {
 	return bonusWorkTypeData.map((d) => {
 		return {
 			id: d.id,
 			work_type: d.work_type,
 			multiplier: d.multiplier,
-			functions: { create: true, update: true, delete: true },
+			functions: d.functions,
 			// functions: { "create": d.creatable, "update": d.updatable, "delete": d.deletable },
 		};
 	});

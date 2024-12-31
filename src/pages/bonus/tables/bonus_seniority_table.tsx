@@ -24,6 +24,7 @@ import dataTableContext, {
 } from "../components/context/data_table_context";
 import { FunctionsComponent } from "~/components/data_table/functions_component";
 import { ConfirmDialog } from "../components/function_sheet/confirm_dialog";
+import { BonusSeniorityFEType } from "~/server/api/types/bonus_seniority_type";
 
 export type RowItem = {
 	seniority: number;
@@ -103,14 +104,14 @@ export const bonus_seniority_columns = ({
 ];
 
 export function bonusSeniorityMapper(
-	bonusSeniorityData: BonusSeniority[]
+	bonusSeniorityData: BonusSeniorityFEType[]
 ): RowItem[] {
 	return bonusSeniorityData.map((d) => {
 		return {
 			id: d.id,
 			seniority: d.seniority,
 			multiplier: d.multiplier,
-			functions: { create: true, update: true, delete: true },
+			functions: d.functions,
 			// functions: { "create": d.creatable, "update": d.updatable, "delete": d.deletable },
 		};
 	});

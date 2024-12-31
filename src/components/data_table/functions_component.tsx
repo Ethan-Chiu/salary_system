@@ -42,7 +42,7 @@ export function FunctionsComponent<TMode, TData extends object>({
             <DropdownMenuContent align="end" className="w-[120px]">
                 {(["creatable", "updatable", "deletable"] as FunctionsItemKey[]).map(
                     (key: FunctionsItemKey) => {
-                        const disabled = !data.functions[key]
+                        const disabled = data ? (data.functions ? !data.functions[key] : true) : true;
                         const mode = key == "creatable" ? "create" : key == "updatable" ? "update" : "delete"
                         return (
                             <SheetTrigger

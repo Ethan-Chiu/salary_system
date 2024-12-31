@@ -22,9 +22,9 @@ export type FunctionMode =
 	| "none";
 
 export type FunctionsItem = {
-	create: boolean;
-	update: boolean;
-	delete: boolean;
+	creatable: boolean;
+	updatable: boolean;
+	deletable: boolean;
 };
 
 export interface DataWithFunctions {

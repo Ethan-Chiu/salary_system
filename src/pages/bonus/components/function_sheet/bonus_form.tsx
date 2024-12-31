@@ -29,7 +29,8 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 	const updateFunction = functions.updateFunction!;
 
 	const onSubmit = (data: z.infer<typeof formSchema>) => {
-		if (mode === "create") {
+		if (mode === "create" || mode === "create_with_blank") {
+			console.log(data);
 			createFunction.mutate({ ...data, bonus_type: selectedBonusType, period_id: selectedPeriod!.period_id });
 		} else if (mode === "update") {
 			updateFunction.mutate({ ...data, bonus_type: selectedBonusType, period_id: selectedPeriod!.period_id });
@@ -42,7 +43,7 @@ export function BonusForm<SchemaType extends z.AnyZodObject>({
 			formSchema={formSchema}
 			formConfig={formConfig}
 			formSubmit={onSubmit}
-			defaultValue={mode === "create_with_blank" ? {} : data}
+			defaultValue={mode === "create_with_blank" ? undefined : data}
 			button_text={mode}
 			closeSheet={closeSheet}
 		/>
