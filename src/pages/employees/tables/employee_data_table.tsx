@@ -3,13 +3,35 @@ import { DataTable } from "../components/data_table";
 import { api } from "~/utils/api";
 import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";
-import { Button } from "~/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
-import { type Column } from "@tanstack/react-table";
 import { formatDate } from "~/lib/utils/format_date";
+import { ColumnHeaderComponent } from "~/components/data_table/column_header_component";
+import { createColumnHelper } from "@tanstack/react-table";
 
-const columns = (t: I18nType) =>
-	[
+// TODO: move to schema
+type RowItem = {
+	department: string;
+	emp_no: string;
+	emp_name: string;
+	position: number;
+	position_type: string;
+	group_insurance_type: string;
+	work_type: string;
+	work_status: string;
+	disabilty_level: string | null;
+	sex_type: string;
+	dependents: number | null;
+	healthcare_dependents: number | null;
+	registration_date: string;
+	quit_date: string | null;
+	license_id: string | null;
+	bank_account: string;
+};
+type RowItemKey = keyof RowItem;
+
+const columnHelper = createColumnHelper<RowItem>();
+
+const columns = (t: I18nType) => {
+	const f: RowItemKey[] = [
 		"department",
 		"emp_no",
 		"emp_name",
@@ -26,55 +48,34 @@ const columns = (t: I18nType) =>
 		"quit_date",
 		"license_id",
 		"bank_account",
-		"month_salary",
-	].map((key) => {
-		const header = ({ column }: { column: any }) => {
-			return (
-				<div className="flex justify-center">
-					<div className="text-center font-medium">
-						<Button
-							variant="ghost"
-							onClick={() =>
-								column.toggleSorting(
-									column.getIsSorted() === "asc"
-								)
-							}
-						>
-							{t(`table.${key}`)}
-							<ArrowUpDown className="ml-2 h-4 w-4" />
-						</Button>
-					</div>
-				</div>
-			);
-		}
-		if (key === "registration_date" || key === "quit_date") {
-			return {
-				accessorKey: key,
-				header: header,
-				cell: ({ row }: any) => {
-					const value = row.getValue(key) as string;
-					return (
-						<div className="flex justify-center">
-							<div className="text-center font-medium">
-								{formatDate("day", value)}
-							</div>
-						</div>
-					);
-				},
-			};
-		}
-		else if (key === "work_status") {
-			return {
-				accessorKey: key,
-				header: header,
-				filterFn: 'equalsString',
-			};
-		}
-		return {
-			accessorKey: key,
-			header: header,
-		};
+	];
+
+	return f.map((key: RowItemKey) => {
+		return columnHelper.accessor(key, {
+			header: ({ column }) => {
+				return (
+					<ColumnHeaderComponent column={column}>
+						{t(`table.${key}`)}
+					</ColumnHeaderComponent>
+				);
+			},
+			cell:
+				key === "registration_date" || key === "quit_date"
+					? ({ row }) => {
+							const value: Date = row.getValue(key);
+							return (
+								<div className="flex justify-center">
+									<div className="text-center font-medium">
+										{formatDate("day", value)}
+									</div>
+								</div>
+							);
+					  }
+					: undefined,
+			filterFn: key === "work_status" ? "equalsString" : undefined,
+		});
 	});
+};
 
 export function EmployeeDataTable({ period_id }: any) {
 	const { isLoading, isError, data, error } =

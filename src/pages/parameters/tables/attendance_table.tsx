@@ -1,7 +1,5 @@
 import { api } from "~/utils/api";
-import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
 import { DataTable as DataTableWithFunctions } from "../components/data_table_single";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { c_EndDateStr, c_StartDateStr } from "../constant";
@@ -18,8 +16,9 @@ import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { attendanceSchema } from "../schemas/configurations/attendance_schema";
 import dataTableContext from "../components/context/data_table_context";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
+import { ColumnHeaderComponent } from "~/components/data_table/column_header_component";
 
-export type RowItem = {
+type RowItem = {
 	parameters: string;
 	value: number | string | Date | null;
 };
@@ -33,53 +32,39 @@ export const attendance_columns = ({
 	t: TFunction<[string], undefined>;
 }) => {
 	const f: RowItemKey[] = ["parameters", "value"];
-	return [
-		...f.map((key) =>
-			columnHelper.accessor(key, {
-				header: ({ column }) => {
-					return (
-						<div className="flex justify-center">
+	return f.map((key) =>
+		columnHelper.accessor(key, {
+			header: ({ column }) => {
+				return (
+					<ColumnHeaderComponent column={column}>
+						{t(`table.${key}`)}
+					</ColumnHeaderComponent>
+				);
+			},
+			cell: ({ row }) => {
+				if (key === "value") {
+					if (
+						row.original.parameters === c_StartDateStr ||
+						row.original.parameters === c_EndDateStr
+					) {
+						return (
 							<div className="text-center font-medium">
-								<Button
-									variant="ghost"
-									onClick={() =>
-										column.toggleSorting(
-											column.getIsSorted() === "asc"
-										)
-									}
-								>
-									{t(`table.${key}`)}
-									<ArrowUpDown className="ml-2 h-4 w-4" />
-								</Button>
+								{formatDate(
+									"day",
+									row.original.value as Date | null
+								) ?? ""}
 							</div>
-						</div>
-					);
-				},
-				cell: ({ row }) => {
-					if (key === "value") {
-						if (
-							row.original.parameters === c_StartDateStr ||
-							row.original.parameters === c_EndDateStr
-						) {
-							return (
-								<div className="text-center font-medium">
-									{formatDate(
-										"day",
-										row.original.value as Date | null
-									) ?? ""}
-								</div>
-							);
-						}
+						);
 					}
-					return (
-						<div className="text-center font-medium">{`${row.original[
-							key
-						]?.toString()}`}</div>
-					);
-				},
-			})
-		),
-	];
+				}
+				return (
+					<div className="text-center font-medium">{`${row.original[
+						key
+					]?.toString()}`}</div>
+				);
+			},
+		})
+	);
 };
 
 export function attendanceMapper(
@@ -173,7 +158,7 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 				},
 			});
 		}
-	}, [data, selectedTab]);
+	}, [data, setData, selectedTab]);
 
 	if (isLoading) {
 		return (
@@ -206,7 +191,9 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 					<FunctionsSheetContent t={t} period_id={period_id}>
 						<ParameterForm
 							formSchema={attendanceSchema}
-							formConfig={[{ key: "id", config: { hidden: true } }]}
+							formConfig={[
+								{ key: "id", config: { hidden: true } },
+							]}
 							mode={mode}
 							closeSheet={() => {
 								setOpen(false);
