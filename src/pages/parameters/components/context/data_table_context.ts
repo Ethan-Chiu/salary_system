@@ -9,9 +9,9 @@ import { type TableObject } from "./data_table_context_provider";
 export type FunctionMode = "create" | "update" | "delete" | "none";
 
 export type FunctionsItem = {
-	create: boolean;
-	update: boolean;
-	delete: boolean;
+	creatable: boolean;
+	updatable: boolean;
+	deletable: boolean;
 };
 
 export interface DataWithFunctions {

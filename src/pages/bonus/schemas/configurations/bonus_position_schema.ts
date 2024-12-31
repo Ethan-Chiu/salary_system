@@ -3,6 +3,7 @@ import { z } from "zod";
 const zc = z.coerce;
 
 export const bonusPositionSchema = z.object({
+	id: zc.number(),
 	position: zc.number(),
 	position_type: z.enum(["a", "b"]),
 	position_multiplier: zc.number(),

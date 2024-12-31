@@ -282,6 +282,7 @@ export class SalaryIncomeTaxService {
 		dependent,
 		tax_amount,
 		start_date,
+		end_date,
 	}: z.infer<typeof updateSalaryIncomeTaxService>) {
 		const salaryIncomeTax = await this.getSalaryIncomeTaxById(id);
 		if (salaryIncomeTax == null) {
@@ -299,7 +300,7 @@ export class SalaryIncomeTaxService {
 			dependent: select_value(dependent, salaryIncomeTax.dependent),
 			tax_amount: select_value(tax_amount, salaryIncomeTax.tax_amount),
 			start_date: select_value(start_date, salaryIncomeTax.start_date),
-			end_date: null,
+			end_date: select_value(end_date, salaryIncomeTax.end_date),
 		});
 		if (primary_key == null) {
 			const unique_primary_keys = [deleted_primary_key]
@@ -326,9 +327,9 @@ export class SalaryIncomeTaxService {
 			salary_end: deleted_data.salary_end,
 			dependent: deleted_data.dependent,
 		};
-		await this.rescheduleSalaryIncomeTax([primary_key]);
 		return primary_key;
 	}
+
 	async rescheduleSalaryIncomeTax(unique_primary_keys: primary_key[]) {
 		for (const primary_key of unique_primary_keys) {
 			const encoded_datas = await SalaryIncomeTax.findAll({

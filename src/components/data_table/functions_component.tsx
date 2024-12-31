@@ -40,15 +40,16 @@ export function FunctionsComponent<TMode, TData extends object>({
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-[120px]">
-                {(["create", "update", "delete"] as FunctionsItemKey[]).map(
+                {(["creatable", "updatable", "deletable"] as FunctionsItemKey[]).map(
                     (key: FunctionsItemKey) => {
                         const disabled = !data.functions[key]
+                        const mode = key == "creatable" ? "create" : key == "updatable" ? "update" : "delete"
                         return (
                             <SheetTrigger
                                 key={key}
                                 className="w-full"
                                 onClick={() => {
-                                    setMode(key as TMode);
+                                    setMode(mode as TMode);
                                     setData(data);
                                     setOpen(true);
                                 }}
@@ -58,7 +59,7 @@ export function FunctionsComponent<TMode, TData extends object>({
                                     className="cursor-pointer"
                                     disabled={disabled}
                                 >
-                                    {key == "create" && (
+                                    {key == "creatable" && (
                                         <Plus
                                             className={cn(
                                                 "mr-2 h-4 w-4",
@@ -67,7 +68,7 @@ export function FunctionsComponent<TMode, TData extends object>({
                                             )}
                                         />
                                     )}
-                                    {key == "update" && (
+                                    {key == "updatable" && (
                                         <PenSquare
                                             className={cn(
                                                 "mr-2 h-4 w-4",
@@ -76,7 +77,7 @@ export function FunctionsComponent<TMode, TData extends object>({
                                             )}
                                         />
                                     )}
-                                    {key == "delete" && (
+                                    {key == "deletable" && (
                                         <Trash2
                                             className={cn(
                                                 "mr-2 h-4 w-4",
@@ -91,7 +92,7 @@ export function FunctionsComponent<TMode, TData extends object>({
                                             "text-muted-foreground"
                                         )}
                                     >
-                                        {t(`button.${key}`)}
+                                        {t(`button.${mode}`)}
                                     </span>
                                 </DropdownMenuItem>
                             </SheetTrigger>
