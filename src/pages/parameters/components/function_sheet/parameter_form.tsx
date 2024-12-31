@@ -2,7 +2,9 @@ import { type z } from "zod";
 import { useContext } from "react";
 import { parameterToolbarFunctionsContext } from "./parameter_functions_context";
 import { type FormConfig } from "~/components/ui/custom-form/types";
-import dataTableContext, { type FunctionMode } from "../context/data_table_context";
+import dataTableContext, {
+	type FunctionMode,
+} from "../context/data_table_context";
 import { StandardForm } from "~/components/form/default/form_standard";
 
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
@@ -25,18 +27,22 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	const createFunction = functions.createFunction!;
 	const updateFunction = functions.updateFunction!;
 
-	const onSubmit = (data: z.infer<typeof formSchema>) => {
+	const schema = (
+		mode === "create" ? formSchema.omit({ id: true }) : formSchema
+	) as SchemaType;
+
+	const onSubmit = (d: z.infer<typeof formSchema>) => {
 		if (mode === "create") {
-			createFunction.mutate(data);
+			createFunction.mutate(d);
 		} else if (mode === "update") {
-			updateFunction.mutate(data);
+			updateFunction.mutate(d);
 		}
 		closeSheet();
 	};
 
 	return (
 		<StandardForm
-			formSchema={formSchema}
+			formSchema={schema}
 			formConfig={formConfig}
 			formSubmit={onSubmit}
 			defaultValue={data}

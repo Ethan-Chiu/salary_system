@@ -11,7 +11,6 @@ import { ColumnHeaderBaseComponent, ColumnHeaderComponent } from "~/components/d
 import { Sheet } from "~/components/ui/sheet";
 import { formatDate } from "~/lib/utils/format_date";
 import { ColumnCellComponent } from "~/components/data_table/column_cell_component";
-import { ComputerIcon } from "lucide-react";
 
 type FunctionsItem = {
 	create: boolean;
