@@ -179,8 +179,9 @@ export function DataTableFunctions({
 						<ScrollArea className="h-full w-full">
 							<BonusForm
 								formSchema={schema}
+								formConfig={[{ key: "id", config: { hidden: true } }]}
 								mode={mode}
-								bonus_type={bonusType}
+								// bonus_type={bonusType}
 								closeSheet={() => setOpen(false)}
 							/>
 							<ScrollBar orientation="horizontal" />

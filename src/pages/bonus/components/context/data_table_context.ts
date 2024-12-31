@@ -6,7 +6,20 @@ import { type TableObject } from "./data_table_context_provider";
 import { bonusTypeEnum, type BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
 import { type TableEnum } from "./data_table_enum";
 
-export type FunctionMode = "create" | "update" | "delete" | "none";
+// export type FunctionMode = "create" | "update" | "delete" | "none";
+
+export type FunctionMode =
+	| "create"
+	| "create_with_blank"
+	| "batch_create"
+	| "update"
+	| "batch_update"
+	| "delete"
+	| "auto_calculate"
+	| "excel_download"
+	| "excel_upload"
+	| "initialize"
+	| "none";
 
 export type FunctionsItem = {
 	create: boolean;
