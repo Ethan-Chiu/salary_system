@@ -18,6 +18,8 @@ import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { attendanceSchema } from "../schemas/configurations/attendance_schema";
 import dataTableContext from "../components/context/data_table_context";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
+import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
+import { ConfirmDialog } from "../components/function_sheet/confirm_dialog";
 
 export type RowItem = {
 	parameters: string;
@@ -197,23 +199,29 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 	return (
 		<>
 			{!viewOnly ? (
-				<Sheet open={open} onOpenChange={setOpen}>
-					<DataTableWithFunctions
-						columns={attendance_columns({ t })}
-						data={attendanceMapper([data!])}
-						filterColumnKey={filterKey}
-					/>
-					<FunctionsSheetContent t={t} period_id={period_id}>
-						<ParameterForm
-							formSchema={attendanceSchema}
-							formConfig={[{ key: "id", config: { hidden: true } }]}
-							mode={mode}
-							closeSheet={() => {
-								setOpen(false);
-							}}
+				<ParameterToolbarFunctionsProvider
+					selectedTableType={"TableAttendance"}
+					period_id={period_id}
+				>
+					<Sheet open={open && mode !== "delete"} onOpenChange={setOpen}>
+						<DataTableWithFunctions
+							columns={attendance_columns({ t })}
+							data={attendanceMapper([data!])}
+							filterColumnKey={filterKey}
 						/>
-					</FunctionsSheetContent>
-				</Sheet>
+						<FunctionsSheetContent t={t} period_id={period_id}>
+							<ParameterForm
+								formSchema={attendanceSchema}
+								formConfig={[{ key: "id", config: { hidden: true } }]}
+								mode={mode}
+								closeSheet={() => {
+									setOpen(false);
+								}}
+							/>
+						</FunctionsSheetContent>
+					</Sheet>
+					<ConfirmDialog open={open && mode === "delete"} onOpenChange={setOpen} schema={attendanceSchema}/>
+				</ParameterToolbarFunctionsProvider>
 			) : (
 				<DataTableWithoutFunctions
 					columns={attendance_columns({ t })}

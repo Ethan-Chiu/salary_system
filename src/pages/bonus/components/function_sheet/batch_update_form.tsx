@@ -15,7 +15,6 @@ import { z } from "zod";
 import periodContext from "~/components/context/period_context";
 import { LoadingSpinner } from "~/components/loading";
 import { DialogHeader, DialogFooter } from "~/components/ui/dialog";
-import GeneralTable from "./general_table";
 import { FunctionMode } from "./data_table_functions";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 

@@ -29,12 +29,12 @@ import { type FunctionMode } from "./data_table_functions";
 import { LoadingSpinner } from "~/components/loading";
 import { type FieldConfig } from "~/components/ui/auto-form/types";
 import { employeeToolbarFunctionsContext } from "./employee_functions_context";
-import GeneralTable from "~/pages/employees/components/function_sheet/general_table";
 import { Input } from "~/components/ui/input";
 import { Checkbox } from "~/components/ui/checkbox";
 import { get_date_string } from "~/server/service/helper_function";
 import { isDate } from "date-fns";
 import { formatDate } from "~/lib/utils/format_date";
+import GeneralTable from "~/components/function_sheet/general_table";
 
 interface EmployeeFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;

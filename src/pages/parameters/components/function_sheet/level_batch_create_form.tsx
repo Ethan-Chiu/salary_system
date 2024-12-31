@@ -27,7 +27,6 @@ import { PenSquare, Trash2 } from "lucide-react";
 
 import { useContext } from "react";
 import { parameterToolbarFunctionsContext } from "./parameter_functions_context";
-import { FunctionMode } from "./data_table_functions";
 import GeneralTable from "../../../../components/function_sheet/general_table";
 import { LoadingSpinner } from "~/components/loading";
 import { FieldConfig } from "~/components/ui/auto-form/types";
@@ -36,6 +35,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Separator } from "~/components/ui/separator";
+import { FunctionMode } from "../context/data_table_context";
 
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;

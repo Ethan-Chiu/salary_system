@@ -23,6 +23,8 @@ import dataTableContext, {
 	type FunctionMode,
 } from "../components/context/data_table_context";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
+import { ConfirmDialog } from "../components/function_sheet/confirm_dialog";
+import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
 
 export type RowItem = {
 	bank_name: string;
@@ -177,23 +179,29 @@ export function BankTable({ period_id, viewOnly }: BankTableProps) {
 	}
 
 	return !viewOnly ? (
-		<Sheet open={open} onOpenChange={setOpen}>
-			<DataTableWithFunctions
-				columns={bank_columns({ t, setOpen, setMode, setData })}
-				data={bankSettingMapper(data!)}
-				filterColumnKey={filterKey}
-			/>
-			<FunctionsSheetContent t={t} period_id={period_id}>
-				<ParameterForm
-					formSchema={bankSchema}
-					formConfig={[{ key: "id", config: { hidden: true } }]}
-					mode={mode}
-					closeSheet={() => {
-						setOpen(false);
-					}}
+		<ParameterToolbarFunctionsProvider
+			selectedTableType={"TableBankSetting"}
+			period_id={period_id}
+		>
+			<Sheet open={open && mode !== "delete"} onOpenChange={setOpen}>
+				<DataTableWithFunctions
+					columns={bank_columns({ t, setOpen, setMode, setData })}
+					data={bankSettingMapper(data!)}
+					filterColumnKey={filterKey}
 				/>
-			</FunctionsSheetContent>
-		</Sheet>
+				<FunctionsSheetContent t={t} period_id={period_id}>
+					<ParameterForm
+						formSchema={bankSchema}
+						formConfig={[{ key: "id", config: { hidden: true } }]}
+						mode={mode}
+						closeSheet={() => {
+							setOpen(false);
+						}}
+					/>
+				</FunctionsSheetContent>
+			</Sheet>
+			<ConfirmDialog open={open && mode === "delete"} onOpenChange={setOpen} schema={bankSchema}/>
+		</ParameterToolbarFunctionsProvider>
 	) : (
 		<DataTableWithoutFunctions
 			columns={bank_columns({ t, setOpen, setMode, setData })}

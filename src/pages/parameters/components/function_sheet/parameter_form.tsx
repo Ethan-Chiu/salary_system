@@ -20,17 +20,15 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 	mode,
 	closeSheet,
 }: ParameterFormProps<SchemaType>) {
-	const functions = useContext(parameterToolbarFunctionsContext);
 	const { data } = useContext(dataTableContext);
+	const functions = useContext(parameterToolbarFunctionsContext);
 	const createFunction = functions.createFunction!;
 	const updateFunction = functions.updateFunction!;
 
 	const onSubmit = (data: z.infer<typeof formSchema>) => {
-		console.log(mode, data);
 		if (mode === "create") {
 			createFunction.mutate(data);
 		} else if (mode === "update") {
-			console.log(data);
 			updateFunction.mutate({
 				...data,
 				id: data.id,
