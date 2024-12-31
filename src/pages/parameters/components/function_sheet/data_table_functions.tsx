@@ -18,15 +18,11 @@ import {
 	DialogTrigger,
 } from "~/components/ui/dialog"
 
-import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Button } from "~/components/ui/button";
 import { useTranslation } from "react-i18next";
-import { ParameterForm } from "./parameter_form";
-import { LevelBatchCreateForm } from "./level_batch_create_form";
 import { type TableEnum, getTableNameKey } from "../context/data_table_enum";
 import { getSchema } from "../../schemas/get_schemas";
 import { api } from "~/utils/api";
-import { z } from "zod";
 import { modeDescription } from "~/lib/utils/helper_function";
 import { ExcelDownload } from "../excel_download/ExcelDownloader";
 import { ExcelUpload } from "../excel_upload/ExcelUpload";
@@ -38,12 +34,11 @@ interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 // TODO: remove
 type FunctionMode =
 	"create"
-	| "batch_create"
 	| "update"
 	| "delete"
 	| "excel_download"
 	| "excel_upload"
-	| "initialize"
+	// | "initialize"
 	| "none";
 
 export function DataTableFunctions({
@@ -53,8 +48,6 @@ export function DataTableFunctions({
 	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
 	const { t } = useTranslation(['common', 'nav']);
-
-	const { isLoading, isError, data, error } = api.parameters.getAllLevel.useQuery();
 
 	// ========================= Additional Condition for Schema =====================================
 	let schema = getSchema(tableType);
@@ -76,11 +69,6 @@ export function DataTableFunctions({
 					<DropdownMenuContent align="end" className="w-[120px]">
 						<DropdownMenuLabel>{t("others.functions")}</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						{tableType == "TableLevel" && <CompTriggerItem
-							mode={"batch_create"}
-							itemName={t("button.batch_create")}
-							icon={Copy}
-						/>}
 						<CompTriggerItem
 							mode={"excel_download"}
 							itemName={t("button.excel_download")}
@@ -91,11 +79,11 @@ export function DataTableFunctions({
 							itemName={t("button.excel_upload")}
 							icon={Upload}
 						/>
-						<CompTriggerItem
+						{/* <CompTriggerItem
 							mode={"initialize"}
 							itemName={t("button.initialize")}
 							icon={RefreshCcw}
-						/>
+						/> */}
 					</DropdownMenuContent>
 				</DropdownMenu>
 				{/* Sheet */}
@@ -108,33 +96,19 @@ export function DataTableFunctions({
 							{modeDescription(t, mode)}
 						</DialogDescription>
 					</DialogHeader>
-					{	
-						mode == "batch_create" ?
-						<LevelBatchCreateForm
-							formSchema={z.object({ content: z.array(schema) })}
-							mode={mode}
-							closeSheet={() => setOpen(false)}
-						/>
-						:
-						mode == "excel_download" ? 
-							<ExcelDownload 
+					{
+						mode == "excel_download" ?
+							<ExcelDownload
 								table_name={tableType}
 							/>
-						:
-						mode == "excel_upload" ?
-							<ExcelUpload 
-								tableType={tableType}
-								closeDialog={() => setOpen(false)}
-							/>
-						:
-						<ScrollArea className="h-full w-full">
-							<ParameterForm
-								formSchema={schema}
-								mode={mode}
-								closeSheet={() => setOpen(false)}
-							/>
-							<ScrollBar orientation="horizontal" />
-						</ScrollArea>
+							:
+							mode == "excel_upload" ?
+								<ExcelUpload
+									tableType={tableType}
+									closeDialog={() => setOpen(false)}
+								/>
+								:
+								<></>
 					}
 				</DialogContent>
 			</Dialog>
