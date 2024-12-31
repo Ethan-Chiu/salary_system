@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { dateAll, dateCreate, empData, Id } from "./common_type";
+import { dateAll, dateCreate, empData, func, Id } from "./common_type";
 import { bonusTypeEnum } from "./bonus_type_enum";
 import { optionalNumDefaultZero } from "./z_utils";
 
@@ -73,6 +73,7 @@ const employeeBonusFE = z
 	.merge(Id)
 	.merge(empData)
 	.merge(dateAll)
+	.merge(func)
 	.omit({ start_date: true, end_date: true });
 
 export type EmployeeBonusFEType = z.infer<typeof employeeBonusFE>;
