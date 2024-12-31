@@ -30,7 +30,7 @@ import dataTableContext from "../context/data_table_context";
 import { FunctionMode } from "../function_sheet/data_table_functions";
 
 export interface EmployeeHistoryViewCommonEmpInfo {
-	emp_name: string;
+	emp_name?: string;
 	emp_no: string;
 }
 
@@ -41,10 +41,10 @@ interface DataTableProps<TData extends DataRow> {
 	dataFunction: EmployeeHistoryQueryFunctionType<TData>;
 }
 
-export function HistoryView({
+export function HistoryView<TData extends DataRow>({
 	columns,
 	dataFunction,
-}: DataTableProps<DataRow>) {
+}: DataTableProps<TData>) {
 	const { t } = useTranslation(['common']);
 	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
