@@ -188,7 +188,10 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 					selectedTableType={"TableAttendance"}
 					period_id={period_id}
 				>
-					<Sheet open={open && mode !== "delete"} onOpenChange={setOpen}>
+					<Sheet
+						open={open && mode !== "delete"}
+						onOpenChange={setOpen}
+					>
 						<DataTableWithFunctions
 							columns={attendance_columns({ t })}
 							data={attendanceMapper([data!])}
@@ -197,7 +200,9 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 						<FunctionsSheetContent t={t} period_id={period_id}>
 							<ParameterForm
 								formSchema={attendanceSchema}
-								formConfig={[{ key: "id", config: { hidden: true } }]}
+								formConfig={[
+									{ key: "id", config: { hidden: true } },
+								]}
 								mode={mode}
 								closeSheet={() => {
 									setOpen(false);
@@ -205,7 +210,11 @@ export function AttendanceTable({ period_id, viewOnly }: AttendanceTableProps) {
 							/>
 						</FunctionsSheetContent>
 					</Sheet>
-					<ConfirmDialog open={open && mode === "delete"} onOpenChange={setOpen} schema={attendanceSchema}/>
+					<ConfirmDialog
+						open={open && mode === "delete"}
+						onOpenChange={setOpen}
+						schema={attendanceSchema}
+					/>
 				</ParameterToolbarFunctionsProvider>
 			) : (
 				<DataTableWithoutFunctions

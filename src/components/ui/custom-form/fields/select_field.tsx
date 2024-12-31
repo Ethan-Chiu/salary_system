@@ -16,8 +16,22 @@ export function SelectField({
 }: FormFieldProps) {
 	const { onChange }: { onChange: (event: any) => any } = inputProps;
 
+	const onValueChange = (v: string) => {
+		const event = {
+			target: {
+				name: field.key,
+				value: v,
+			},
+		};
+		onChange?.(event);
+	};
+
 	return (
-		<Select {...inputProps} onValueChange={onChange} defaultValue={value}>
+		<Select
+			{...inputProps}
+			onValueChange={onValueChange}
+			defaultValue={value}
+		>
 			<SelectTrigger
 				id={id}
 				className={error ? "border-destructive" : ""}

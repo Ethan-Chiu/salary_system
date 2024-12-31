@@ -13,6 +13,7 @@ import { z } from "zod";
 import { Input } from "~/components/ui/input";
 
 export function SelectLevelField({
+	field,
 	value,
 	inputProps,
 	error,
@@ -35,14 +36,29 @@ export function SelectLevelField({
 		return () => subscription.unsubscribe();
 	}, [watch]);
 
-	const valueStr = z.number().pipe(z.coerce.string()).parse(value);
+	// TODO: safe parse, (why is the input sometimes a string?)
+	const valueStr = z
+		.number()
+		.or(z.string())
+		.pipe(z.coerce.string())
+		.parse(value);
 
 	const { onChange }: { onChange: (event: any) => any } = inputProps;
+
+	const onValueChange = (v: string) => {
+		const event = {
+			target: {
+				name: field.key,
+				value: v,
+			},
+		};
+		onChange?.(event);
+	};
 
 	return result.success && result.data ? (
 		<Select
 			{...inputProps}
-			onValueChange={onChange}
+			onValueChange={onValueChange}
 			defaultValue={valueStr}
 		>
 			<SelectTrigger
