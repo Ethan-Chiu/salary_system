@@ -11,19 +11,20 @@ export const func = z.object({
 		deletable: z.boolean(),
 	}),
 })
-export const dateAll = z.object({
+
+export const dateCreate = z.object({
 	start_date: z.date().nullable(),
 	end_date: z.date().nullable(),
+});
+
+export const metadata = z.object({
 	create_by: z.string(),
 	create_date: z.date(),
 	update_by: z.string(),
 	update_date: z.date(),
 });
 
-export const dateCreate = z.object({
-	start_date: z.date().nullable(),
-	end_date: z.date().nullable(),
-});
+export const dateAll = dateCreate.merge(metadata);
 
 export const empData = z.object({
 	emp_name: z.string(),

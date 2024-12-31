@@ -24,7 +24,7 @@ export function DataTableToolbar<TData>({
 	filterColumnKey,
 	showTabs,
 }: DataTableToolbarProps<TData>) {
-	const { selectedTab, selectedTableType, selectedTable } =
+	const { data, selectedTableType, selectedTable } =
 		useContext(dataTableContext);
 	const { selectedPeriod } = useContext(periodContext);
 	const table = selectedTable?.table;
@@ -78,7 +78,7 @@ export function DataTableToolbar<TData>({
 							period_id={selectedPeriod.period_id}
 						>
 							<div className="flex">
-								<DataTableFunctionsSingle/>
+								{data && <DataTableFunctionsSingle />}
 								<DataTableFunctions tableType={selectedTableType} />
 							</div>
 							{/* {selectedTab === TabsEnum.Enum.calendar && (
