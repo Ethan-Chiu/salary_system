@@ -1,7 +1,5 @@
 import { api } from "~/utils/api";
-import { Button } from "~/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
 import { DataTable as DataTableWithFunctions } from "../components/data_table";
 import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/components/data_table";
 import { LoadingSpinner } from "~/components/loading";
@@ -14,17 +12,17 @@ import { type BankSettingFEType } from "~/server/api/types/bank_setting_type";
 import { ParameterForm } from "../components/function_sheet/parameter_form";
 import { useContext } from "react";
 import { bankSchema } from "../schemas/configurations/bank_schema";
-import {
-	FunctionsComponent,
-} from "~/components/data_table/functions_component";
+import { FunctionsComponent } from "~/components/data_table/functions_component";
 import { Sheet } from "~/components/ui/sheet";
 import dataTableContext, {
-	FunctionsItem,
+	type FunctionsItem,
 	type FunctionMode,
 } from "../components/context/data_table_context";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
 import { ConfirmDialog } from "../components/function_sheet/confirm_dialog";
 import ParameterToolbarFunctionsProvider from "../components/function_sheet/parameter_functions_context";
+import { ColumnHeaderBaseComponent, ColumnHeaderComponent } from "~/components/data_table/column_header_component";
+import { ColumnCellComponent } from "~/components/data_table/column_cell_component";
 
 export type RowItem = {
 	bank_name: string;
@@ -38,6 +36,7 @@ export type RowItem = {
 type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
+const f = ["bank_name", "org_name", "start_date", "end_date"] as const;
 
 export const bank_columns = ({
 	t,
@@ -50,76 +49,60 @@ export const bank_columns = ({
 	setMode: (mode: FunctionMode) => void;
 	setData: (data: RowItem) => void;
 }) => [
-		...["bank_name", "org_name", "start_date", "end_date"].map((key: string) =>
-			columnHelper.accessor(key as RowItemKey, {
-				header: ({ column }) => {
-					return (
-						<div className="flex justify-center">
-							<div className="text-center font-medium">
-								<Button
-									variant="ghost"
-									onClick={() =>
-										column.toggleSorting(
-											column.getIsSorted() === "asc"
-										)
-									}
-								>
-									{t(`table.${key}`)}
-									<ArrowUpDown className="ml-2 h-4 w-4" />
-								</Button>
-							</div>
-						</div>
-					);
-				},
-				cell: ({ row }) => {
-					switch (key) {
-						case "bank_name":
-							return (
-								<div className="text-center font-medium">{`(${row.original.bank_code})${row.original.bank_name}`}</div>
-							);
-						case "org_name":
-							return (
-								<div className="text-center font-medium">{`(${row.original.org_code})${row.original.org_name}`}</div>
-							);
-						case "start_date":
-							return (
-								<div className="text-center font-medium">{`${formatDate("day", row.original.start_date) ?? ""}`}</div>
-							);
-						case "end_date":
-							return (
-								<div className="text-center font-medium">{`${formatDate("day", row.original.end_date) ?? ""}`}</div>
-							);
-						default:
-							return (
-								<div className="text-center font-medium">{`${row.original[key as RowItemKey]?.toString()}`}</div>
-							);
-					}
-				},
-			})
-		),
-		columnHelper.accessor("functions", {
-			header: () => {
+	...f.map((key) =>
+		columnHelper.accessor(key, {
+			header: ({ column }) => {
 				return (
-					<div className="flex justify-center">
-						<div className="text-center font-medium">
-							{t(`others.functions`)}
-						</div>
-					</div>
+					<ColumnHeaderComponent column={column}>
+						{t(`table.${key}`)}
+					</ColumnHeaderComponent>
 				);
 			},
 			cell: ({ row }) => {
-				return (
-					<FunctionsComponent
-						t={t}
-						setOpen={setOpen}
-						setMode={setMode}
-						data={row.original}
-						setData={setData}
-					/>
-				);
+				let content = "";
+				switch (key) {
+					case "bank_name":
+						content = `(${row.original.bank_code})${row.original.bank_name}`;
+						break;
+					case "org_name":
+						content = `(${row.original.org_code})${row.original.org_name}`;
+						break;
+					case "start_date":
+						content = `${
+							formatDate("day", row.original.start_date) ?? ""
+						}`;
+						break;
+					case "end_date":
+						content = `${
+							formatDate("day", row.original.end_date) ?? ""
+						}`;
+						break;
+				}
+				return <ColumnCellComponent>{content}</ColumnCellComponent>;
 			},
-		}),
-	];
+		})
+	),
+	columnHelper.accessor("functions", {
+		header: () => {
+			return (
+				<ColumnHeaderBaseComponent>
+					{t(`others.functions`)}
+				</ColumnHeaderBaseComponent>
+			);
+		},
+		cell: ({ row }) => {
+			return (
+				<FunctionsComponent
+					t={t}
+					setOpen={setOpen}
+					setMode={setMode}
+					data={row.original}
+					setData={setData}
+				/>
+			);
+		},
+	}),
+];
 
 export function bankSettingMapper(
 	bankSettingData: BankSettingFEType[]
@@ -150,7 +133,8 @@ interface BankTableProps extends TableComponentProps {
 
 export function BankTable({ period_id, viewOnly }: BankTableProps) {
 	const { t } = useTranslation(["common"]);
-	const { open, setOpen, mode, setMode, setData } = useContext(dataTableContext);
+	const { open, setOpen, mode, setMode, setData } =
+		useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.parameters.getCurrentBankSetting.useQuery({ period_id });
@@ -200,7 +184,11 @@ export function BankTable({ period_id, viewOnly }: BankTableProps) {
 					/>
 				</FunctionsSheetContent>
 			</Sheet>
-			<ConfirmDialog open={open && mode === "delete"} onOpenChange={setOpen} schema={bankSchema}/>
+			<ConfirmDialog
+				open={open && mode === "delete"}
+				onOpenChange={setOpen}
+				schema={bankSchema}
+			/>
 		</ParameterToolbarFunctionsProvider>
 	) : (
 		<DataTableWithoutFunctions
