@@ -24,6 +24,7 @@ import { bonusWorkTypeSchema } from "../schemas/configurations/bonus_work_type";
 import { TFunction } from "i18next";
 import { Sheet } from "~/components/ui/sheet";
 import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
+import { ConfirmDialog } from "../components/function_sheet/confirm_dialog";
 
 export type RowItem = {
 	work_type: WorkTypeEnumType;
@@ -107,9 +108,10 @@ export function bonusWorkTypeMapper(
 ): RowItem[] {
 	return bonusWorkTypeData.map((d) => {
 		return {
+			id: d.id,
 			work_type: d.work_type,
 			multiplier: d.multiplier,
-			functions: { create: true, update: false, delete: false },
+			functions: { create: true, update: true, delete: true },
 			// functions: { "create": d.creatable, "update": d.updatable, "delete": d.deletable },
 		};
 	});
@@ -175,6 +177,7 @@ export function BonusWorkTypeTable({
 						<FunctionsSheetContent t={t} period_id={period_id}>
 							<BonusForm
 								formSchema={bonusWorkTypeSchema}
+								formConfig={[{ key: "id", config: { hidden: true } }]}
 								mode={mode}
 								closeSheet={() => {
 									setOpen(false);
@@ -182,6 +185,7 @@ export function BonusWorkTypeTable({
 							/>
 						</FunctionsSheetContent>
 					</Sheet>
+					<ConfirmDialog open={open && mode === "delete"} onOpenChange={setOpen} schema={bonusWorkTypeSchema}/>
 				</BonusToolbarFunctionsProvider>
 			) : (
 				<DataTableWithoutFunctions

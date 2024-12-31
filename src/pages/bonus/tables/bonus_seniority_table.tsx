@@ -23,6 +23,7 @@ import dataTableContext, {
 	type FunctionMode,
 } from "../components/context/data_table_context";
 import { FunctionsComponent } from "~/components/data_table/functions_component";
+import { ConfirmDialog } from "../components/function_sheet/confirm_dialog";
 
 export type RowItem = {
 	seniority: number;
@@ -106,9 +107,10 @@ export function bonusSeniorityMapper(
 ): RowItem[] {
 	return bonusSeniorityData.map((d) => {
 		return {
+			id: d.id,
 			seniority: d.seniority,
 			multiplier: d.multiplier,
-			functions: { create: true, update: false, delete: false },
+			functions: { create: true, update: true, delete: true },
 			// functions: { "create": d.creatable, "update": d.updatable, "delete": d.deletable },
 		};
 	});
@@ -172,6 +174,7 @@ export function BonusSeniorityTable({
 						<FunctionsSheetContent t={t} period_id={period_id}>
 							<BonusForm
 								formSchema={bonusSenioritySchema}
+								formConfig={[{ key: "id", config: { hidden: true } }]}
 								mode={mode}
 								closeSheet={() => {
 									setOpen(false);
@@ -179,6 +182,7 @@ export function BonusSeniorityTable({
 							/>
 						</FunctionsSheetContent>
 					</Sheet>
+					<ConfirmDialog open={open && mode === "delete"} onOpenChange={setOpen} schema={bonusSenioritySchema}/>
 				</BonusToolbarFunctionsProvider>
 			) : (
 				<DataTableWithoutFunctions
