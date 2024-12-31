@@ -1,5 +1,5 @@
 import React, { useState, type PropsWithChildren } from "react";
-import dataTableContext from "./data_table_context";
+import dataTableContext, { FunctionMode } from "./data_table_context";
 import {
 	BonusTableEnumValues,
 } from "../../bonus_tables";
@@ -24,6 +24,9 @@ export default function DataTableContextProvider({
 	const [selectedTable, setSelectedTable] = useState<TableObject | null>(
 		null
 	);
+	const [open, setOpen] = useState<boolean>(false);
+	const [mode, setMode] = useState<FunctionMode>("none");
+	const [data, setData] = useState<any>(null);
 
 	return (
 		<dataTableContext.Provider
@@ -34,6 +37,12 @@ export default function DataTableContextProvider({
 				setSelectedBonusType,
 				selectedTable,
 				setSelectedTable,
+				mode,
+				setMode,
+				open,
+				setOpen,
+				data,
+				setData,
 			}}
 		>
 			{children}

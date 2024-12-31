@@ -65,7 +65,7 @@ function ExportPage() {
 	const [selectedSheetIndex, setSelectedSheetIndex] = useState(0);
 
 	const [toExcludedColumns, setToExcludedColumns] = useState([
-		"id", "create_by", "create_date", "update_by", "update_date"
+		"id", "create_by", "create_date", "update_by", "update_date", "disable"
 	]);
 
 	const [toDisplayData, setToDisplayData] = useState<any>(null);
@@ -118,14 +118,14 @@ function ExportPage() {
 		return (
 			<>
 				<Sheet open={open} onOpenChange={setOpen}>
-					<SheetTrigger asChild>
+					<SheetTrigger>
 						<Button variant="outline">Keys</Button>
 					</SheetTrigger>
 					<SheetContent className="w-[40%]">
 						<SheetHeader>
-							<SheetTitle>Set show keys</SheetTitle>
+							<SheetTitle>
+							</SheetTitle>
 							<SheetDescription>
-								Show some keys in the excel table
 							</SheetDescription>
 						</SheetHeader>
 						<ScrollArea className="h-[85%] w-full">

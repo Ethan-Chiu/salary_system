@@ -9,17 +9,25 @@ import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../pre_calculate_bonus/bonus_filter";
 import { useTranslation } from "react-i18next";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
-import { useState } from "react";
-import { FunctionMode } from "../components/function_sheet/data_table_functions_single";
+import { useState, useContext } from "react";
 import { bonusPositionSchema } from "../schemas/configurations/bonus_position_schema";
 import { BonusForm } from "../components/function_sheet/bonus_form";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import BonusToolbarFunctionsProvider from "../components/function_sheet/bonus_functions_context";
-import { FunctionsComponent, FunctionsItem } from "~/components/data_table/functions_component";
 import { TFunction } from "i18next";
 
+import { Sheet } from "~/components/ui/sheet";
+import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
+import dataTableContext, {
+	FunctionsItem,
+	type FunctionMode,
+} from "../components/context/data_table_context";
+import { FunctionsComponent } from "~/components/data_table/functions_component";
+import { formatDate } from "~/lib/utils/format_date";
+
 export type RowItem = {
-	positionAndPositionType: string;
+	position: number;
+	position_type: string;
 	position_multiplier: number;
 	position_type_multiplier: number;
 	functions: FunctionsItem;
@@ -28,9 +36,23 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-export const bonus_position_columns = ({ t, period_id, bonus_type, open, setOpen, mode, setMode }: { t: TFunction<[string], undefined>, period_id: number, bonus_type: BonusTypeEnumType, open: boolean, setOpen: (open: boolean) => void, mode: FunctionMode, setMode: (mode: FunctionMode) => void }) => [
-	...["positionAndPositionType", "position_multiplier", "position_type_multiplier"].map(
-		(key: string) => columnHelper.accessor(key as RowItemKey, {
+export const bonus_position_columns = ({
+	t,
+	setOpen,
+	setMode,
+	setData,
+}: {
+	t: TFunction<[string], undefined>;
+	setOpen: (open: boolean) => void;
+	setMode: (mode: FunctionMode) => void;
+	setData: (data: RowItem) => void;
+}) => [
+	...[
+		"position",
+		"position_multiplier",
+		"position_type_multiplier",
+	].map((key: string) =>
+		columnHelper.accessor(key as RowItemKey, {
 			header: ({ column }) => {
 				return (
 					<div className="flex justify-center">
@@ -52,11 +74,18 @@ export const bonus_position_columns = ({ t, period_id, bonus_type, open, setOpen
 			},
 			cell: ({ row }) => {
 				switch (key) {
+					case "position":
+						return (
+							<div className="text-center font-medium">{`${row.original.position}${row.original.position_type}`}</div>
+						);
 					default:
-						return <div className="text-center font-medium">{`${row.original[key as RowItemKey]}`}</div>
+						return (
+							<div className="text-center font-medium">{`${row.original[key as RowItemKey]?.toString()}`}</div>
+						);
 				}
-			}
-		})),
+			},
+		})
+	),
 	columnHelper.accessor("functions", {
 		header: ({ column }) => {
 			return (
@@ -69,23 +98,13 @@ export const bonus_position_columns = ({ t, period_id, bonus_type, open, setOpen
 		},
 		cell: ({ row }) => {
 			return (
-				<FunctionsComponent t={t} open={open} setOpen={setOpen} mode={mode} setMode={setMode} functionsItem={row.original.functions} >
-					<BonusToolbarFunctionsProvider
-						selectedTableType={"TableBonusPosition"}
-						bonus_type={bonus_type}
-						period_id={period_id}
-					>
-						<ScrollArea className="h-full w-full">
-							<BonusForm
-								formSchema={bonusPositionSchema}
-								bonus_type={bonus_type}
-								mode={mode}
-								closeSheet={() => setOpen(false)}
-							/>
-						</ScrollArea>
-						<ScrollBar orientation="horizontal" />
-					</BonusToolbarFunctionsProvider>
-				</FunctionsComponent>
+				<FunctionsComponent
+					t={t}
+					setOpen={setOpen}
+					setMode={setMode}
+					data={row.original}
+					setData={setData}
+				/>
 			);
 		},
 	}),
@@ -96,10 +115,12 @@ export function bonusPositionMapper(
 ): RowItem[] {
 	return bonusPositionData.map((d) => {
 		return {
-			positionAndPositionType: d.position + d.position_type,
+			// positionAndPositionType: d.position + d.position_type,
+			position: d.position,
+			position_type: d.position_type,
 			position_multiplier: d.position_multiplier,
 			position_type_multiplier: d.position_type_multiplier,
-			functions: { "create": true, "update": false, "delete": false },
+			functions: { create: true, update: false, delete: false },
 			// functions: { "create": d.creatable, "update": d.updatable, "delete": d.deletable },
 		};
 	});
@@ -112,15 +133,18 @@ interface BonusPositionTableProps extends TableComponentProps {
 	viewOnly?: boolean;
 }
 
-export function BonusPositionTable({ period_id, bonus_type, viewOnly }: BonusPositionTableProps) {
+export function BonusPositionTable({
+	period_id,
+	bonus_type,
+	viewOnly,
+}: BonusPositionTableProps) {
 	const { t } = useTranslation(["common"]);
-	const [open, setOpen] = useState<boolean>(false);
-	const [mode, setMode] = useState<FunctionMode>("none");
+	const { selectedBonusType, open, setOpen, mode, setMode, setData } =
+		useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.bonus.getBonusPosition.useQuery({ period_id, bonus_type });
 	const filterKey: RowItemKey = "positionAndPositionType";
-
 
 	if (isLoading) {
 		return (
@@ -137,15 +161,46 @@ export function BonusPositionTable({ period_id, bonus_type, viewOnly }: BonusPos
 	return (
 		<>
 			{!viewOnly ? (
-				<DataTableWithFunctions
-					columns={bonus_position_columns({ t, period_id, bonus_type, open, setOpen, mode, setMode })}
-					data={bonusPositionMapper(data!)}
-					bonusType={bonus_type}
-					filterColumnKey={filterKey}
-				/>
+				<BonusToolbarFunctionsProvider
+					selectedTableType={"TableBonusPosition"}
+					period_id={period_id}
+					bonus_type={bonus_type}
+				>
+					<Sheet
+						open={open && mode !== "delete"}
+						onOpenChange={setOpen}
+					>
+						{/* <Button onClick={() => console.log(selectedBonusType)}>TEST</Button> */}
+						<DataTableWithFunctions
+							columns={bonus_position_columns({
+								t,
+								setOpen,
+								setMode,
+								setData,
+							})}
+							data={bonusPositionMapper(data!)}
+							bonusType={bonus_type}
+							filterColumnKey={filterKey}
+						/>
+						<FunctionsSheetContent t={t} period_id={period_id}>
+							<BonusForm
+								formSchema={bonusPositionSchema}
+								mode={mode}
+								closeSheet={() => {
+									setOpen(false);
+								}}
+							/>
+						</FunctionsSheetContent>
+					</Sheet>
+				</BonusToolbarFunctionsProvider>
 			) : (
 				<DataTableWithoutFunctions
-					columns={bonus_position_columns({ t, period_id, bonus_type, open, setOpen, mode, setMode })}
+					columns={bonus_position_columns({
+						t,					
+						setOpen,
+						setMode,
+						setData,
+					})}
 					data={bonusPositionMapper(data!)}
 					filterColumnKey={filterKey}
 				/>

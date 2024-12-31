@@ -9,14 +9,20 @@ import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../pre_calculate_bonus/bonus_filter";
 import { useTranslation } from "react-i18next";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
-import { useState } from "react";
-import { FunctionMode } from "../components/function_sheet/data_table_functions_single";
-import { FunctionsComponent, FunctionsItem } from "~/components/data_table/functions_component";
+import { useContext, useState } from "react";
 import { TFunction } from "i18next";
 import BonusToolbarFunctionsProvider from "../components/function_sheet/bonus_functions_context";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { BonusForm } from "../components/function_sheet/bonus_form";
 import { bonusDepartmentSchema } from "../schemas/configurations/bonus_department_schema";
+
+import { Sheet } from "~/components/ui/sheet";
+import { FunctionsSheetContent } from "../components/function_sheet/functions_sheet_content";
+import dataTableContext, {
+	FunctionsItem,
+	type FunctionMode,
+} from "../components/context/data_table_context";
+import { FunctionsComponent } from "~/components/data_table/functions_component";
 
 export type RowItem = {
 	department: string;
@@ -27,9 +33,19 @@ type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
 
-export const bonus_department_columns = ({ t, period_id, bonus_type, open, setOpen, mode, setMode }: { t: TFunction<[string], undefined>, period_id: number, bonus_type: BonusTypeEnumType, open: boolean, setOpen: (open: boolean) => void, mode: FunctionMode, setMode: (mode: FunctionMode) => void }) => [
-	...["department", "multiplier"].map(
-		(key: string) => columnHelper.accessor(key as RowItemKey, {
+export const bonus_department_columns = ({
+	t,
+	setOpen,
+	setMode,
+	setData,
+}: {
+	t: TFunction<[string], undefined>;
+	setOpen: (open: boolean) => void;
+	setMode: (mode: FunctionMode) => void;
+	setData: (data: RowItem) => void;
+})  => [
+	...["department", "multiplier"].map((key: string) =>
+		columnHelper.accessor(key as RowItemKey, {
 			header: ({ column }) => {
 				return (
 					<div className="flex justify-center">
@@ -52,10 +68,15 @@ export const bonus_department_columns = ({ t, period_id, bonus_type, open, setOp
 			cell: ({ row }) => {
 				switch (key) {
 					default:
-						return <div className="text-center font-medium">{`${row.original[key as RowItemKey]}`}</div>
+						return (
+							<div className="text-center font-medium">{`${
+								row.original[key as RowItemKey]
+							}`}</div>
+						);
 				}
-			}
-		})),
+			},
+		})
+	),
 	columnHelper.accessor("functions", {
 		header: ({ column }) => {
 			return (
@@ -68,23 +89,13 @@ export const bonus_department_columns = ({ t, period_id, bonus_type, open, setOp
 		},
 		cell: ({ row }) => {
 			return (
-				<FunctionsComponent t={t} open={open} setOpen={setOpen} mode={mode} setMode={setMode} functionsItem={row.original.functions} >
-					<BonusToolbarFunctionsProvider
-						selectedTableType={"TableBonusDepartment"}
-						bonus_type={bonus_type}
-						period_id={period_id}
-					>
-						<ScrollArea className="h-full w-full">
-							<BonusForm
-								formSchema={bonusDepartmentSchema}
-								bonus_type={bonus_type}
-								mode={mode}
-								closeSheet={() => setOpen(false)}
-							/>
-						</ScrollArea>
-						<ScrollBar orientation="horizontal" />
-					</BonusToolbarFunctionsProvider>
-				</FunctionsComponent>
+				<FunctionsComponent
+					t={t}
+					setOpen={setOpen}
+					setMode={setMode}
+					data={row.original}
+					setData={setData}
+				/>
 			);
 		},
 	}),
@@ -97,7 +108,7 @@ export function bonusDepartmentMapper(
 		return {
 			department: d.department,
 			multiplier: d.multiplier,
-			functions: { "create": true, "update": false, "delete": false },
+			functions: { create: true, update: false, delete: false },
 			// functions: { "create": d.creatable, "update": d.updatable, "delete": d.deletable },
 		};
 	});
@@ -110,10 +121,13 @@ interface BonusDepartmentTableProps extends TableComponentProps {
 	viewOnly?: boolean;
 }
 
-export function BonusDepartmentTable({ period_id, bonus_type, viewOnly }: BonusDepartmentTableProps) {
+export function BonusDepartmentTable({
+	period_id,
+	bonus_type,
+	viewOnly,
+}: BonusDepartmentTableProps) {
 	const { t } = useTranslation(["common"]);
-	const [open, setOpen] = useState<boolean>(false);
-	const [mode, setMode] = useState<FunctionMode>("none");
+	const { selectedBonusType, open, setOpen, mode, setMode, setData } = useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.bonus.getBonusDepartment.useQuery({ period_id, bonus_type });
@@ -134,15 +148,46 @@ export function BonusDepartmentTable({ period_id, bonus_type, viewOnly }: BonusD
 	return (
 		<>
 			{!viewOnly ? (
-				<DataTableWithFunctions
-					columns={bonus_department_columns({ t, period_id, bonus_type, open, setOpen, mode, setMode })}
-					data={bonusDepartmentMapper(data!)}
-					bonusType={bonus_type}
-					filterColumnKey={filterKey}
-				/>
+				<BonusToolbarFunctionsProvider
+				selectedTableType={"TableBonusDepartment"}
+				period_id={period_id}
+				bonus_type={bonus_type}
+			>
+				<Sheet
+					open={open && mode !== "delete"}
+					onOpenChange={setOpen}
+				>
+					{/* <Button onClick={() => console.log(selectedBonusType)}>TEST</Button> */}
+					<DataTableWithFunctions
+						columns={bonus_department_columns({
+							t,
+							setOpen,
+							setMode,
+							setData,
+						})}
+						data={bonusDepartmentMapper(data!)}
+						bonusType={bonus_type}
+						filterColumnKey={filterKey}
+					/>
+					<FunctionsSheetContent t={t} period_id={period_id}>
+						<BonusForm
+							formSchema={bonusDepartmentSchema}
+							mode={mode}
+							closeSheet={() => {
+								setOpen(false);
+							}}
+						/>
+					</FunctionsSheetContent>
+				</Sheet>
+			</BonusToolbarFunctionsProvider>
 			) : (
 				<DataTableWithoutFunctions
-					columns={bonus_department_columns({ t, period_id, bonus_type, open, setOpen, mode, setMode })}
+					columns={bonus_department_columns({
+						t,
+						setOpen,
+						setMode,
+						setData
+					})}
 					data={bonusDepartmentMapper(data!)}
 					filterColumnKey={filterKey}
 				/>
