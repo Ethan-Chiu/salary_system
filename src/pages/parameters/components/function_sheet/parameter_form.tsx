@@ -29,10 +29,7 @@ export function ParameterForm<SchemaType extends z.AnyZodObject>({
 		if (mode === "create") {
 			createFunction.mutate(data);
 		} else if (mode === "update") {
-			updateFunction.mutate({
-				...data,
-				id: data.id,
-			});
+			updateFunction.mutate(data);
 		}
 		closeSheet();
 	};
