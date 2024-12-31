@@ -10,20 +10,13 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
-	DialogClose,
 } from "~/components/ui/dialog";
 
 import { Button } from "~/components/ui/button";
 
-import { Table as SimpleTable } from "~/components/ui/table"
 import {
 	TableBody,
-	TableCaption,
 	TableCell,
-	TableFooter,
-	TableHead,
-	TableHeader,
 	TableRow,
 } from "~/components/ui/table"
 import { cn } from "~/lib/utils";

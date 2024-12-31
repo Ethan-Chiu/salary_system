@@ -9,7 +9,7 @@ import { Button } from "../ui/button";
 import { PencilLine, PenSquare, Plus, Trash2 } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { type TFunction } from "i18next";
-import { DataWithFunctions, FunctionsItem } from "~/pages/parameters/components/context/data_table_context";
+import { type DataWithFunctions, type FunctionsItem } from "~/pages/parameters/components/context/data_table_context";
 
 export type FunctionsItemKey = keyof FunctionsItem;
 
