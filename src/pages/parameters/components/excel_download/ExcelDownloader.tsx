@@ -1,34 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
 import ExcelJS from "exceljs";
 import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectLabel,
-	SelectTrigger,
-	SelectValue,
-} from "~/components/ui/select";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
 	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
 } from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "~/components/ui/popover";
 import { Button } from "~/components/ui/button";
 
 import { useTranslation } from "react-i18next";
-import { parameterToolbarFunctionsContext } from "../function_sheet/parameter_functions_context";
 import dataTableContext from "../context/data_table_context";
 import { getExcelData } from "./utils";
 
@@ -56,9 +35,9 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 	const { selectedTable } = useContext(dataTableContext);
 
 	function transposeData(data: any[][]): any[][] {
-        const tranposed_data = (data[0]??[]).map((_, colIndex) => data.map(row => row[colIndex]));
+		const tranposed_data = (data[0] ?? []).map((_, colIndex) => data.map(row => row[colIndex]));
 		return tranposed_data.map((row) => row.slice(1));
-    }
+	}
 
 	// MARK: Excel Download Function
 	const handleExportExcel = async (
@@ -91,8 +70,8 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 		}
 
 		if (datas) {
-			
-			if (shouldTranspose)	datas = transposeData(datas);
+
+			if (shouldTranspose) datas = transposeData(datas);
 
 			let name = t(`table_name.${getTableName()}`);
 			const worksheet = workbook.addWorksheet(
@@ -115,7 +94,7 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 						width: 25, // Adjust this value as needed
 					}));
 				});
-			} catch {}
+			} catch { }
 
 			if (datas)
 				datas.forEach((row: any[], ri: number) => {
@@ -147,7 +126,7 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 	};
 
 	return (
-		<>
+		<div className="m-2">
 			<div className="grid gap-4 py-4">
 				<div className="grid grid-cols-4 items-center gap-4">
 					<Label htmlFor="name" className="text-right">
@@ -165,12 +144,12 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 			</div>
 			<DialogFooter>
 				<Button type="submit" onClick={() => handleExportExcel(
-						getExcelData(selectedTable?.table.getFilteredRowModel().rows.map((r) => r.original)!, ["functions"]), 
-						filename
+					getExcelData(selectedTable?.table.getFilteredRowModel().rows.map((r) => r.original)!, ["functions"]),
+					filename
 				)}>
-					{t("download")}
+					{t("button.excel_download")}
 				</Button>
 			</DialogFooter>
-		</>
+		</div>
 	);
 }

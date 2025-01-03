@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next";
 import { formatDate } from "~/lib/utils/format_date";
 import { ColumnHeaderComponent } from "~/components/data_table/column_header_component";
 import { createColumnHelper } from "@tanstack/react-table";
+import { ColumnCellComponent } from "~/components/data_table/column_cell_component";
+import { MonthSalaryStatusEnumType } from "~/server/api/types/month_salary_status_enum";
 
 // TODO: move to schema
 type RowItem = {
@@ -25,6 +27,7 @@ type RowItem = {
 	quit_date: string | null;
 	license_id: string | null;
 	bank_account: string;
+	month_salary_status: MonthSalaryStatusEnumType,
 };
 type RowItemKey = keyof RowItem;
 
@@ -48,6 +51,7 @@ const columns = (t: I18nType) => {
 		"quit_date",
 		"license_id",
 		"bank_account",
+		"month_salary_status",
 	];
 
 	return f.map((key: RowItemKey) => {
@@ -59,20 +63,19 @@ const columns = (t: I18nType) => {
 					</ColumnHeaderComponent>
 				);
 			},
-			cell:
-				key === "registration_date" || key === "quit_date"
-					? ({ row }) => {
-							const value: Date = row.getValue(key);
-							return (
-								<div className="flex justify-center">
-									<div className="text-center font-medium">
-										{formatDate("day", value)}
-									</div>
-								</div>
-							);
-					  }
-					: undefined,
-			filterFn: key === "work_status" ? "equalsString" : undefined,
+			cell: ({ row }) => {
+				let content = row.original[key]?.toString() ?? "";
+				switch (key) {
+					case "registration_date":
+						content = formatDate("day", row.original.registration_date) ?? "";
+						break;
+					case "quit_date":
+						content = formatDate("day", row.original.quit_date) ?? "";
+						break;
+				}
+				return <ColumnCellComponent>{content}</ColumnCellComponent>
+			},
+			// filterFn: key === "work_status" ? "equalsString" : undefined,
 		});
 	});
 };
@@ -96,7 +99,7 @@ export function EmployeeDataTable({ period_id }: any) {
 			<DataTable
 				columns={columns(t)}
 				data={data}
-				initialColumnVisibility={{ month_salary: false }}
+				initialColumnVisibility={{ month_salary_status: false }}
 			/>
 		);
 	}

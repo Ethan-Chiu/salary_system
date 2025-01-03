@@ -127,7 +127,7 @@
     "registration_date": "到職日期",
     "quit_date": "離職日期",
     "license_id": "身份（居留）證字號",
-    "month_salary": "月薪",
+    "month_salary_status": "月薪狀態",
     "period_id": "期別代碼",
     "period_name": "期別名稱",
     "pay_order": "Pay Order",

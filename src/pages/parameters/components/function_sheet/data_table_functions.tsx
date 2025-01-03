@@ -1,6 +1,6 @@
 import { cn } from "~/lib/utils";
 import { useState } from "react";
-import { type LucideIcon, Copy, Download, EllipsisVertical, RefreshCcw, Upload } from "lucide-react";
+import { type LucideIcon, Download, EllipsisVertical, Plus, Upload } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
 	DropdownMenu,
@@ -22,10 +22,11 @@ import { Button } from "~/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { type TableEnum, getTableNameKey } from "../context/data_table_enum";
 import { getSchema } from "../../schemas/get_schemas";
-import { api } from "~/utils/api";
 import { modeDescription } from "~/lib/utils/helper_function";
 import { ExcelDownload } from "../excel_download/ExcelDownloader";
 import { ExcelUpload } from "../excel_upload/ExcelUpload";
+import { ParameterForm } from "./parameter_form";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
@@ -45,9 +46,9 @@ export function DataTableFunctions({
 	tableType,
 	className,
 }: DataTableFunctionsProps) {
+	const { t } = useTranslation(['common', 'nav']);
 	const [open, setOpen] = useState<boolean>(false);
 	const [mode, setMode] = useState<FunctionMode>("none");
-	const { t } = useTranslation(['common', 'nav']);
 
 	// ========================= Additional Condition for Schema =====================================
 	let schema = getSchema(tableType);
@@ -79,6 +80,11 @@ export function DataTableFunctions({
 							itemName={t("button.excel_upload")}
 							icon={Upload}
 						/>
+						<CompTriggerItem
+							mode={"create"}
+							itemName={t("button.create")}
+							icon={Plus}
+						/>
 						{/* <CompTriggerItem
 							mode={"initialize"}
 							itemName={t("button.initialize")}
@@ -87,29 +93,38 @@ export function DataTableFunctions({
 					</DropdownMenuContent>
 				</DropdownMenu>
 				{/* Sheet */}
-				<DialogContent className={mode == "excel_upload" ? "sm:max-w-[1000px]" : "sm:max-w-[600px]"}>
-					<DialogHeader>
-						<DialogTitle>
-							{`${t(`button.${mode}`)!}${t("button.form")} (${t(getTableNameKey(tableType))})`}
-						</DialogTitle>
-						<DialogDescription>
-							{modeDescription(t, mode)}
-						</DialogDescription>
-					</DialogHeader>
-					{
-						mode == "excel_download" ?
-							<ExcelDownload
-								table_name={tableType}
-							/>
-							:
-							mode == "excel_upload" ?
-								<ExcelUpload
-									tableType={tableType}
-									closeDialog={() => setOpen(false)}
+				<DialogContent className={cn("h-[90vh]", mode == "excel_upload" ? "sm:max-w-[1000px]" : "sm:max-w-[600px]")}>
+					<ScrollArea className="w-full h-full">
+						<DialogHeader>
+							<DialogTitle>
+								{`${t(`button.${mode}`)!}${t("button.form")} (${t(getTableNameKey(tableType))})`}
+							</DialogTitle>
+							<DialogDescription>
+								{modeDescription(t, mode)}
+							</DialogDescription>
+						</DialogHeader>
+						{
+							mode == "excel_download" ?
+								<ExcelDownload
+									table_name={tableType}
 								/>
 								:
-								<></>
-					}
+								mode == "excel_upload" ?
+									<ExcelUpload
+										tableType={tableType}
+										closeDialog={() => setOpen(false)}
+									/>
+									:
+									mode == "create" ?
+										<ParameterForm
+											formSchema={schema}
+											mode={"create"}
+											closeSheet={() => setOpen(false)}
+										/>
+										:
+										<></>
+						}
+					</ScrollArea>
 				</DialogContent>
 			</Dialog>
 		</div>

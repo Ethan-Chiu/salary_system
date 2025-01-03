@@ -117,7 +117,7 @@
     "registration_date": "Registration Date",
     "quit_date": "Quit Date",
     "license_id": "License Id",
-    "month_salary": "Month Salary",
+    "month_salary_status": "Month Salary Status",
     "period_id": "Period Id",
     "period_name": "Period Name",
     "pay_order": "Pay Order",
@@ -252,7 +252,7 @@
     "q2_bonus": "Q2 Bonus",
     "q3_q4_bonus": "Q3-Q4 Bonus",
     "employee_dividends_bonus": "Employee Dividends Bouns",
-    "filename": "Filename",
+    "filename": "Filename"
   },
   "table_name": {
     "attendanceSetting": "Attendance Setting",
