@@ -4,6 +4,7 @@ import { type FunctionMode } from "./data_table_functions";
 import { employeeToolbarFunctionsContext } from "./employee_functions_context";
 import { StandardForm } from "~/components/form/default/form_standard";
 import { type FormConfig } from "~/components/ui/custom-form/types";
+import dataTableContext from "../context/data_table_context";
 
 interface EmployeeFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
@@ -21,9 +22,14 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 	columns,
 	closeSheet,
 }: EmployeeFormProps<SchemaType>) {
+	const { data } = useContext(dataTableContext);
 	const functions = useContext(employeeToolbarFunctionsContext);
 	const updateFunction = functions.updateFunction!;
 	const createFunction = functions.createFunction!;
+
+	const schema = (
+		mode === "create" ? formSchema.omit({ id: true }) : formSchema
+	) as SchemaType;
 
 	const onSubmit = (data: z.infer<typeof formSchema>) => {
 		if (mode === "create") {
@@ -37,10 +43,10 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 	// Create or update an entry
 	return (
 		<StandardForm
-			formSchema={formSchema}
+			formSchema={schema}
 			formConfig={formConfig}
 			formSubmit={onSubmit}
-			/* defaultValue={data} */
+			defaultValue={data}
 			button_text={mode}
 			closeSheet={closeSheet}
 		/>

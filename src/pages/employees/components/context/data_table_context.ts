@@ -6,6 +6,18 @@ import {
 import { type EmpTableObject } from "./data_table_context_provider";
 import { EmpTabsEnum, type EmpTabsEnumType } from "./employee_tabs_enum";
 
+export type FunctionMode = "create" | "update" | "delete" | "none";
+
+export type FunctionsItem = {
+	creatable: boolean;
+	updatable: boolean;
+	deletable: boolean;
+};
+
+export interface DataWithFunctions {
+	functions: FunctionsItem;
+}
+
 const dataTableContext = React.createContext<{
 	selectedTableType: EmployeeTableEnum;
 	setSelectedTableType: (table: EmployeeTableEnum) => void;
@@ -13,6 +25,12 @@ const dataTableContext = React.createContext<{
 	setSelectedTab: (tab: EmpTabsEnumType) => void;
 	selectedTable: EmpTableObject | null;
 	setSelectedTable: (table: EmpTableObject | null) => void;
+	mode: FunctionMode;
+	setMode: (mode: FunctionMode) => void;
+	open: boolean;
+	setOpen: (open: boolean) => void;
+	data: any;
+	setData: (data: any) => void;
 }>({
 	selectedTableType: EmployeeTableEnumValues[0],
 	setSelectedTableType: (_: EmployeeTableEnum) => undefined,
@@ -20,6 +38,12 @@ const dataTableContext = React.createContext<{
 	setSelectedTab: (_: EmpTabsEnumType) => undefined,
 	selectedTable: null,
 	setSelectedTable: (_: EmpTableObject | null) => undefined,
+	mode: "none",
+	setMode: (_: FunctionMode) => undefined,
+	open: false,
+	setOpen: (_: boolean) => undefined,
+	data: null,
+	setData: (_: any) => undefined,
 });
 
 export default dataTableContext;

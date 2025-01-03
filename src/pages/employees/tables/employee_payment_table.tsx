@@ -5,17 +5,21 @@ import { useTranslation } from "react-i18next";
 import { createColumnHelper } from "@tanstack/react-table";
 import { type EmployeePaymentFEType } from "~/server/api/types/employee_payment_type";
 import { FunctionsComponent } from "~/components/data_table/functions_component";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { type TFunction } from "i18next";
-import { ColumnHeaderBaseComponent, ColumnHeaderComponent } from "~/components/data_table/column_header_component";
+import {
+	ColumnHeaderBaseComponent,
+	ColumnHeaderComponent,
+} from "~/components/data_table/column_header_component";
 import { Sheet } from "~/components/ui/sheet";
 import { formatDate } from "~/lib/utils/format_date";
 import { ColumnCellComponent } from "~/components/data_table/column_cell_component";
+import dataTableContext from "../components/context/data_table_context";
 
 type FunctionsItem = {
-	create: boolean;
-	update: boolean;
-	delete: boolean;
+	creatable: boolean;
+	updatable: boolean;
+	deletable: boolean;
 };
 type FunctionMode = "create" | "update" | "delete" | "none";
 
@@ -126,19 +130,15 @@ export function employeePaymentMapper(
 			),
 			start_date: d.start_date,
 			end_date: d.end_date,
-			functions: {
-				create: d.creatable,
-				update: d.updatable,
-				delete: d.deletable,
-			},
+			functions: d.functions,
 		};
 	});
 }
 
 export function EmployeePaymentTable({ period_id }: any) {
 	const { t } = useTranslation(["common"]);
-	const [open, setOpen] = useState<boolean>(false);
-	const [mode, setMode] = useState<FunctionMode>("none");
+	const { open, setOpen, mode, setMode, setData } =
+		useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.employeePayment.getCurrentEmployeePayment.useQuery({ period_id });
@@ -159,7 +159,7 @@ export function EmployeePaymentTable({ period_id }: any) {
 					t,
 					setOpen,
 					setMode,
-					setData: () => {},
+					setData,
 				})}
 				columnNames={columnNames}
 				data={employeePaymentMapper(t, data)}

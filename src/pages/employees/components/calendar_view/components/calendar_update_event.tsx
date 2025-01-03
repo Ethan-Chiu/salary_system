@@ -26,7 +26,7 @@ import { z } from "zod";
 import { employeeToolbarFunctionsContext } from "../../function_sheet/employee_functions_context";
 import { modeDescription } from "~/lib/utils/helper_function";
 import { getSchema } from "~/pages/employees/schemas/get_schemas";
-import GeneralTable from "~/components/function_sheet/general_table";
+import GeneralTable from "~/components/table_functions/general_table";
 
 /* interface CalendarUpdateEventProps<SchemaType extends z.AnyZodObject> { } */
 interface CalendarUpdateEventProps {}

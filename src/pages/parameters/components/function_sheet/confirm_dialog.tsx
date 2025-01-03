@@ -5,7 +5,7 @@ import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogT
 import { ScrollArea } from "~/components/ui/scroll-area";
 import dataTableContext from "../context/data_table_context";
 import { parameterToolbarFunctionsContext } from "./parameter_functions_context";
-import GeneralTable from "~/components/function_sheet/general_table";
+import GeneralTable from "~/components/table_functions/general_table";
 import { z } from "zod";
 import { zodOptionalDate } from "~/lib/utils/zod_types";
 

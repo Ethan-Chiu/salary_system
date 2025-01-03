@@ -27,7 +27,7 @@ import { PenSquare, Trash2 } from "lucide-react";
 
 import { useContext } from "react";
 import { parameterToolbarFunctionsContext } from "./parameter_functions_context";
-import GeneralTable from "../../../../components/function_sheet/general_table";
+import GeneralTable from "../../../../components/table_functions/general_table";
 import { LoadingSpinner } from "~/components/loading";
 import { FieldConfig } from "~/components/ui/auto-form/types";
 import { useFieldArray, useForm } from "react-hook-form";

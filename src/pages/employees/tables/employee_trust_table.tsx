@@ -7,17 +7,18 @@ import { type EmployeeTrustFEType } from "~/server/api/types/employee_trust_type
 import { formatDate } from "~/lib/utils/format_date";
 import {
 	FunctionsComponent,
-	FunctionsItem,
 } from "~/components/data_table/functions_component";
 import { TFunction } from "i18next";
 import { FunctionMode } from "../components/function_sheet/data_table_functions";
-import EmployeeToolbarFunctionsProvider from "../components/function_sheet/employee_functions_context";
-import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
-import { EmployeeForm } from "../components/function_sheet/employee_form";
-import { employeeTrustSchema } from "../schemas/configurations/employee_trust_schema";
-import { useState } from "react";
-import { ColumnHeaderComponent } from "~/components/data_table/column_header_component";
+import { useContext, useState } from "react";
+import { ColumnHeaderBaseComponent, ColumnHeaderComponent } from "~/components/data_table/column_header_component";
+import dataTableContext from "../components/context/data_table_context";
 
+type FunctionsItem = {
+	creatable: boolean;
+	updatable: boolean;
+	deletable: boolean;
+};
 export type RowItem = Omit<EmployeeTrustFEType, "start_date" | "end_date"> & {
 	start_date: string;
 	end_date: string | null;
@@ -65,7 +66,7 @@ export const employee_trust_columns = ({
 				switch (key) {
 					default:
 						return (
-							<div className="text-center font-medium">{`${row.original[key]}`}</div>
+							<div className="text-center font-medium">{`${row.original[key]?.toString()}`}</div>
 						);
 				}
 			},
@@ -74,11 +75,9 @@ export const employee_trust_columns = ({
 	columnHelper.accessor("functions", {
 		header: () => {
 			return (
-				<div className="flex justify-center">
-					<div className="text-center font-medium">
+        <ColumnHeaderBaseComponent>
 						{t(`others.functions`)}
-					</div>
-				</div>
+				</ColumnHeaderBaseComponent>
 			);
 		},
 		cell: ({ row }) => {
@@ -104,19 +103,15 @@ export function employeeTrustMapper(
 			...d,
 			start_date: formatDate("day", d.start_date) ?? "",
 			end_date: formatDate("day", d.end_date) ?? "",
-			functions: {
-				create: d.creatable,
-				update: d.updatable,
-				delete: d.deletable,
-			},
+			functions: d.functions,
 		};
 	});
 }
 
 export function EmployeeTrustTable({ period_id }: any) {
 	const { t } = useTranslation(["common"]);
-	const [open, setOpen] = useState<boolean>(false);
-	const [mode, setMode] = useState<FunctionMode>("none");
+	const { setOpen, setMode, setData } =
+		useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.employeeTrust.getCurrentEmployeeTrust.useQuery({
@@ -139,7 +134,7 @@ export function EmployeeTrustTable({ period_id }: any) {
 					t,
 					setOpen,
 					setMode,
-          setData: () => {}
+          setData,
 				})}
 				columnNames={columnNames}
 				data={employeeTrustMapper(t, data)}

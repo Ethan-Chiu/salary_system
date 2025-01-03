@@ -47,7 +47,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "~/components/ui/select";
-import GeneralTable from "~/components/function_sheet/general_table";
+import GeneralTable from "~/components/table_functions/general_table";
 
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;

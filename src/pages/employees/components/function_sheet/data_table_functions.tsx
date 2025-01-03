@@ -36,6 +36,8 @@ import { EmployeeForm } from "./employee_form";
 import { getSchema } from "~/pages/employees/schemas/get_schemas";
 import { modeDescription } from "~/lib/utils/helper_function";
 import { employeeToolbarFunctionsContext } from "./employee_functions_context";
+import dataTableContext from "../context/data_table_context";
+import { ConfirmDialog } from "./confirm_dialog";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
@@ -57,15 +59,15 @@ export function DataTableFunctions({
 	columns,
 	className,
 }: DataTableFunctionsProps) {
-	const [open, setOpen] = useState<boolean>(false);
-	const [mode, setMode] = useState<FunctionMode>("none");
+	const { open, setOpen, mode, setMode } = useContext(dataTableContext);
+
 	const { t } = useTranslation(["common", "nav"]);
 	const functions = useContext(employeeToolbarFunctionsContext);
 	const autoCalculateFunction = functions.autoCalculateFunction;
 
 	return (
 		<div className={cn(className, "flex h-full items-center")}>
-			<Sheet open={open} onOpenChange={setOpen}>
+			<Sheet open={open && mode !== "delete"} onOpenChange={setOpen}>
 				{/* Dropdown */}
 				<DropdownMenu modal={false}>
 					<DropdownMenuTrigger asChild>
@@ -97,11 +99,13 @@ export function DataTableFunctions({
 							itemName={t("button.initialize")}
 							icon={RefreshCcw}
 						/>
-						{autoCalculateFunction && <CompTriggerItem
-							mode={"auto_calculate"}
-							itemName={t("button.auto_calculate")}
-							icon={Calculator}
-						/>}
+						{autoCalculateFunction && (
+							<CompTriggerItem
+								mode={"auto_calculate"}
+								itemName={t("button.auto_calculate")}
+								icon={Calculator}
+							/>
+						)}
 					</DropdownMenuContent>
 				</DropdownMenu>
 				{/* Sheet */}
@@ -121,6 +125,9 @@ export function DataTableFunctions({
 							<ScrollArea className="h-full w-full">
 								<EmployeeForm
 									formSchema={getSchema(tableType)!}
+									formConfig={[
+										{ key: "id", config: { hidden: true } },
+									]}
 									mode={mode}
 									columns={columns}
 									closeSheet={() => setOpen(false)}
@@ -130,6 +137,11 @@ export function DataTableFunctions({
 						</>
 					)}
 				</SheetContent>
+				<ConfirmDialog
+					open={open && mode === "delete"}
+					onOpenChange={setOpen}
+					schema={getSchema(tableType)!}
+				/>
 			</Sheet>
 		</div>
 	);

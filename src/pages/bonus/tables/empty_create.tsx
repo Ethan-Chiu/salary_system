@@ -31,7 +31,7 @@ import { type FieldConfig } from "~/components/ui/auto-form/types";
 import { type BonusTableEnum } from "../bonus_tables";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
-import GeneralTable from "~/components/function_sheet/general_table";
+import GeneralTable from "~/components/table_functions/general_table";
 
 interface ParameterFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;

@@ -14,7 +14,7 @@ import {
 } from "~/components/ui/dialog";
 import CustomForm from "~/components/ui/custom-form";
 import { type FormConfig } from "~/components/ui/custom-form/types";
-import GeneralTable from "~/components/function_sheet/general_table";
+import GeneralTable from "~/components/table_functions/general_table";
 import { ScrollArea } from "~/components/ui/scroll-area";
 
 interface StandardFormProps<SchemaType extends z.AnyZodObject> {

@@ -6,7 +6,6 @@ import { c_EndDateStr, c_StartDateStr } from "../constant";
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { formatDate } from "~/lib/utils/format_date";
-import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
 import { type AttendanceSettingFEType } from "~/server/api/types/attendance_setting_type";

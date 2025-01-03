@@ -1,5 +1,5 @@
 import React, { useState, type PropsWithChildren } from "react";
-import dataTableContext from "./data_table_context";
+import dataTableContext, { FunctionMode } from "./data_table_context";
 import {
 	type EmployeeTableEnum,
 	EmployeeTableEnumValues,
@@ -27,6 +27,10 @@ export default function DataTableContextProvider({
 		null
 	);
 
+	const [open, setOpen] = useState<boolean>(false);
+	const [mode, setMode] = useState<FunctionMode>("none");
+	const [data, setData] = useState<any>(null);
+
 	return (
 		<dataTableContext.Provider
 			value={{
@@ -36,6 +40,12 @@ export default function DataTableContextProvider({
         setSelectedTab,
         selectedTable,
         setSelectedTable,
+				mode,
+				setMode,
+				open,
+				setOpen,
+				data,
+				setData,
 			}}
 		>
 			{children}
