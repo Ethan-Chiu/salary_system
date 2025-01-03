@@ -25,7 +25,7 @@ export class EmployeeTrustService {
 		@inject(delay(() => EmployeeTrustMapper))
 		private readonly employeeTrustMapper: EmployeeTrustMapperType,
 		private readonly ehrService: EHRService
-	) {}
+	) { }
 
 	async createEmployeeTrust(
 		data: z.input<typeof employeeTrustCreateService>
@@ -74,7 +74,6 @@ export class EmployeeTrustService {
 		const employeeTrust = await EmployeeTrust.findAll({
 			where: { disabled: false },
 			order: [["emp_no", "ASC"]],
-			raw: true,
 		});
 
 		return await this.employeeTrustMapper.decodeList(employeeTrust);
@@ -467,7 +466,7 @@ export class EmployeeTrustService {
 		emp_no: string,
 		date: Date
 	): Promise<EmployeeTrust> {
-		
+
 		const date_str = dateToString.parse(date);
 
 		const employeeTrust = await EmployeeTrust.findOne({
