@@ -16,14 +16,8 @@ import dataTableContext from "../components/context/data_table_context";
 import { Sheet } from "~/components/ui/sheet";
 import { ColumnCellComponent } from "~/components/data_table/column_cell_component";
 
-type FunctionsItem = {
-	creatable: boolean;
-	updatable: boolean;
-	deletable: boolean;
-};
-export type RowItem = EmployeeTrustFEType & {
-	functions: FunctionsItem;
-};
+// TODO: should we use Frontend Type directly?
+type RowItem = EmployeeTrustFEType;
 type RowItemKey = keyof RowItem;
 
 const columnHelper = createColumnHelper<RowItem>();
@@ -84,7 +78,7 @@ export const employee_trust_columns = ({
 		header: () => {
 			return (
         <ColumnHeaderBaseComponent>
-						{t(`others.functions`)}
+          {t(`others.functions`)}
 				</ColumnHeaderBaseComponent>
 			);
 		},
@@ -133,8 +127,8 @@ export function EmployeeTrustTable({ period_id }: any) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
+  // TODO: figure out data's type
 	if (data) {
-		// TODO: figure out its type
 		return (
 		<Sheet open={open && mode !== "delete"} onOpenChange={setOpen}>
 			<DataTableUpdate

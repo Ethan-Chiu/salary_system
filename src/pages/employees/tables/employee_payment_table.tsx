@@ -15,6 +15,7 @@ import { Sheet } from "~/components/ui/sheet";
 import { formatDate } from "~/lib/utils/format_date";
 import { ColumnCellComponent } from "~/components/data_table/column_cell_component";
 import dataTableContext from "../components/context/data_table_context";
+import { createTableFunctionContext } from "~/components/table_functions/context/table_functions_context";
 
 type FunctionsItem = {
 	creatable: boolean;
@@ -138,6 +139,9 @@ export function employeePaymentMapper(
 
 export function EmployeePaymentTable({ period_id }: any) {
 	const { t } = useTranslation(["common"]);
+
+  const tableFunctionContext = createTableFunctionContext<"none" | "create" | "update" | "delete", RowItem>("none")
+
 	const { open, setOpen, mode, setMode, setData } =
 		useContext(dataTableContext);
 

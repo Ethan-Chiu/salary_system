@@ -21,6 +21,7 @@ export function get_date_string(date: Date): string {
 	return localISOTime.split("T")[0]!;
 }
 
+// TODO: fix this function, don't take in string
 export function is_date_available(
 	period: Period | null,
 	start_date: string | null,
