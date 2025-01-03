@@ -85,8 +85,8 @@ export class EmployeeTrustMapper extends BaseMapper<
 					);
 
 				if (
-					new Date(employee_trust.start_date).getDate() ===
-					new Date("1970-01-01").getDate()
+					new Date(employee_trust.start_date).getTime() ===
+					new Date("1970-01-01").getTime()
 				) {
 					const employeeTrust: z.infer<typeof employeeTrustFE> = {
 						...employee_trust,
