@@ -18,7 +18,7 @@ import { type EmployeeTableEnum } from "./employee_tables";
 
 const tabOptions = ["table_name.employeeData", "table_name.employeePayment", "table_name.employeeTrust"];
 
-const PageEmployeesContent = () => {
+function PageEmployeesContent() {
 	const { setSelectedTableType} = useContext(dataTableContext);
 	const { selectedPeriod } = useContext(periodContext);
 

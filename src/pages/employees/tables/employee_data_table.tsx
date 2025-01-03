@@ -7,7 +7,7 @@ import { formatDate } from "~/lib/utils/format_date";
 import { ColumnHeaderComponent } from "~/components/data_table/column_header_component";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ColumnCellComponent } from "~/components/data_table/column_cell_component";
-import { MonthSalaryStatusEnumType } from "~/server/api/types/month_salary_status_enum";
+import { type MonthSalaryStatusEnumType } from "~/server/api/types/month_salary_status_enum";
 
 // TODO: move to schema
 type RowItem = {

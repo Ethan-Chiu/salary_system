@@ -15,10 +15,5 @@ export const employeePaymentSchema = z.object({
 	long_service_allowance: zc.number(),
 	long_service_allowance_type: LongServiceEnum,
 	l_r_self: zc.number(),
-	// l_i: zc.number(),
-	// h_i: zc.number(),
-	// l_r: zc.number(),
-	// occupational_injury: zc.number(),
 	start_date: zodRequiredDate("start_date"),
-	// end_date: zodOptionalDate(),
 });

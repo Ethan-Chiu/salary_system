@@ -81,6 +81,10 @@ export const employee_payment_columns = ({
 			cell: ({ row }) => {
 				let content = row.original[key]?.toString() ?? "";
 				switch (key) {
+					case "long_service_allowance_type":
+						content = t(
+							`long_service_allowance_type.${row.original.long_service_allowance_type}`
+						);
 					case "start_date":
 						content = `${
 							formatDate("day", row.original.start_date) ?? ""
@@ -119,15 +123,12 @@ export const employee_payment_columns = ({
 ];
 
 export function employeePaymentMapper(
-	t: TFunction<[string], undefined>,
 	employeePaymentData: EmployeePaymentFEType[]
 ): RowItem[] {
 	return employeePaymentData.map((d) => {
 		return {
 			...d,
-			long_service_allowance_type: t(
-				`long_service_allowance_type.${d.long_service_allowance_type}`
-			),
+			long_service_allowance_type: d.long_service_allowance_type,
 			start_date: d.start_date,
 			end_date: d.end_date,
 			functions: d.functions,
@@ -162,7 +163,7 @@ export function EmployeePaymentTable({ period_id }: any) {
 					setData,
 				})}
 				columnNames={columnNames}
-				data={employeePaymentMapper(t, data)}
+				data={employeePaymentMapper(data)}
 				historyDataFunction={() =>
 					api.employeePayment.getAllEmployeePayment.useQuery()
 				}

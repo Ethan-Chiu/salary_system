@@ -197,7 +197,7 @@ export function HistoryView<TData extends DataRow>({
 					<>
 						<DataTable
 							columns={columns}
-							data={selectedEmpData ? getTableMapper(selectedTableType)(t, [selectedEmpData]) : []}
+							data={selectedEmpData ? getTableMapper(selectedTableType)([selectedEmpData]) : []}
 						/>
 					</>
 				) : (

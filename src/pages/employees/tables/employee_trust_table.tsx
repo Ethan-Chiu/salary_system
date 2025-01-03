@@ -13,15 +13,15 @@ import { FunctionMode } from "../components/function_sheet/data_table_functions"
 import { useContext, useState } from "react";
 import { ColumnHeaderBaseComponent, ColumnHeaderComponent } from "~/components/data_table/column_header_component";
 import dataTableContext from "../components/context/data_table_context";
+import { Sheet } from "~/components/ui/sheet";
+import { ColumnCellComponent } from "~/components/data_table/column_cell_component";
 
 type FunctionsItem = {
 	creatable: boolean;
 	updatable: boolean;
 	deletable: boolean;
 };
-export type RowItem = Omit<EmployeeTrustFEType, "start_date" | "end_date"> & {
-	start_date: string;
-	end_date: string | null;
+export type RowItem = EmployeeTrustFEType & {
 	functions: FunctionsItem;
 };
 type RowItemKey = keyof RowItem;
@@ -63,12 +63,20 @@ export const employee_trust_columns = ({
 				);
 			},
 			cell: ({ row }) => {
+				let content = row.original[key]?.toString() ?? "";
 				switch (key) {
-					default:
-						return (
-							<div className="text-center font-medium">{`${row.original[key]?.toString()}`}</div>
-						);
+					case "start_date":
+						content = `${
+							formatDate("day", row.original.start_date) ?? ""
+						}`;
+						break;
+					case "end_date":
+						content = `${
+							formatDate("day", row.original.end_date) ?? ""
+						}`;
+						break;
 				}
+				return <ColumnCellComponent>{content}</ColumnCellComponent>;
 			},
 		})
 	),
@@ -95,14 +103,13 @@ export const employee_trust_columns = ({
 ];
 
 export function employeeTrustMapper(
-	t: TFunction<[string], undefined>,
 	employeeTrustData: EmployeeTrustFEType[]
 ): RowItem[] {
 	return employeeTrustData.map((d) => {
 		return {
 			...d,
-			start_date: formatDate("day", d.start_date) ?? "",
-			end_date: formatDate("day", d.end_date) ?? "",
+			start_date: d.start_date,
+			end_date: d.end_date,
 			functions: d.functions,
 		};
 	});
@@ -110,7 +117,7 @@ export function employeeTrustMapper(
 
 export function EmployeeTrustTable({ period_id }: any) {
 	const { t } = useTranslation(["common"]);
-	const { setOpen, setMode, setData } =
+	const { open, setOpen, mode, setMode, setData } =
 		useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
@@ -129,6 +136,7 @@ export function EmployeeTrustTable({ period_id }: any) {
 	if (data) {
 		// TODO: figure out its type
 		return (
+		<Sheet open={open && mode !== "delete"} onOpenChange={setOpen}>
 			<DataTableUpdate
 				columns={employee_trust_columns({
 					t,
@@ -137,7 +145,7 @@ export function EmployeeTrustTable({ period_id }: any) {
           setData,
 				})}
 				columnNames={columnNames}
-				data={employeeTrustMapper(t, data)}
+				data={employeeTrustMapper(data)}
 				historyDataFunction={() =>
 					api.employeeTrust.getAllEmployeeTrust.useQuery()
 				}
@@ -145,6 +153,7 @@ export function EmployeeTrustTable({ period_id }: any) {
 					api.employeeTrust.getAllEmployeeTrust.useQuery()
 				}
 			/>
+      </Sheet>
 		);
 	}
 	return <div />;
