@@ -23,7 +23,7 @@ export type BonusWithType = Omit<Bonus, "bonus_id" | "period_id"> & {
 	bonus_type_name: string;
 };
 
-export type ExpenseWithType = Omit<Expense, "period_id" > & {
+export type ExpenseWithType = Omit<Expense, "period_id"> & {
 	period_name: string;
 	expense_type_name: string;
 };
@@ -63,7 +63,7 @@ export class EHRService {
 		return Period.fromDB(dataList[0]!);
 	}
 
-	async getPeriodByName(period_name:string){
+	async getPeriodByName(period_name: string) {
 		const dbConnection = container.resolve(Database).ehr_connection;
 		const dataList = await dbConnection.query(
 			this.GET_PERIOD_BY_NAME_QUERY(period_name),
@@ -76,7 +76,7 @@ export class EHRService {
 		}
 		return Period.fromDB(dataList[0]!);
 	}
-	async getPeriodIdByDate(date:Date){
+	async getPeriodIdByDate(date: Date) {
 		const dataList = await this.getPeriod();
 		if (dataList.length === 0) {
 			throw new BaseResponseError("Period Not Found");
@@ -224,7 +224,7 @@ export class EHRService {
 		return dataList;
 	}
 
-	
+
 
 	async getBonus(period_id: number, pay: number): Promise<Bonus[]> {
 		const dbConnection = container.resolve(Database).ehr_connection;
@@ -464,8 +464,8 @@ export class EHRService {
 		});
 		return amount;
 	}
-	async initEmployeeData(period_id:number) {
-		
+	async initEmployeeData(period_id: number) {
+
 		const dbConnection = container.resolve(Database).ehr_connection;
 		const dataList = await dbConnection.query(
 			this.GET_INIT_EMP_QUERY(),
@@ -473,15 +473,16 @@ export class EHRService {
 				type: QueryTypes.SELECT,
 			}
 		);
+		console.log(dataList)
 		const empAllList: EmpAll[] = dataList.map((o) => EmpAll.fromDB(o))
 		return empAllList
 	}
 
 	private GET_PERIOD_QUERY(): string {
 		return `SELECT "PERIOD_ID", "PERIOD_NAME", "START_DATE", "END_DATE", "STATUS", "ISSUE_DATE" FROM SYSTEM."U_HR_PERIOD_V" `;
-		
+
 	}
-		// WHERE "U_HR_PERIOD_V"."STATUS" = 'OPEN'`
+	// WHERE "U_HR_PERIOD_V"."STATUS" = 'OPEN'`
 	private GET_PERIOD_BY_ID_QUERY(period_id: number): string {
 		return `SELECT "PERIOD_ID", "PERIOD_NAME", "START_DATE", "END_DATE", "STATUS", "ISSUE_DATE" FROM SYSTEM."U_HR_PERIOD_V" WHERE "U_HR_PERIOD_V"."PERIOD_ID" = '${period_id}'`;
 	}
@@ -509,7 +510,7 @@ export class EHRService {
 		return `SELECT * FROM SYSTEM."U_HR_PROMOTION_V"`;
 	}
 
-	
+
 	private GET_BONUS_QUERY(period_id: number, pay: number): string {
 		return `SELECT * FROM SYSTEM."U_HR_PAYDRAFT_BONUS_V" WHERE "U_HR_PAYDRAFT_BONUS_V"."PERIOD_ID" = '${period_id}' AND "U_HR_PAYDRAFT_BONUS_V"."PAY" = '${pay}'`;
 	}
@@ -530,6 +531,6 @@ export class EHRService {
 		return `SELECT * FROM SYSTEM."U_HR_PAYDRAFT_ALLOWANCE_V" WHERE "U_HR_PAYDRAFT_ALLOWANCE_V"."PERIOD_ID" = '${period_id}'`;
 	}
 	private GET_INIT_EMP_QUERY(): string {
-		return `SELECT * FROM SYSTEM."U_HR_Employee_all_V"`;
+		return `SELECT * FROM SYSTEM."U_HR_EMPLOYEE_ALL_V" WHERE "U_HR_EMPLOYEE_ALL_V"."EMPLOYEE_NO" = 'U093011'`;
 	}
 }

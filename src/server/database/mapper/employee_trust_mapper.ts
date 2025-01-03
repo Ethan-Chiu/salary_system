@@ -25,8 +25,8 @@ type EmployeeTrustServiceType = EmployeeTrustService;
 export class EmployeeTrustMapper extends BaseMapper<
 	EmployeeTrust,
 	EmployeeTrustDecType,
-  typeof encEmployeeTrust,
-  typeof decEmployeeTrust
+	typeof encEmployeeTrust,
+	typeof decEmployeeTrust
 > {
 	constructor(
 		private readonly employeeDataService: EmployeeDataService,
@@ -102,16 +102,18 @@ export class EmployeeTrustMapper extends BaseMapper<
 						org_special_trust_incent: 0,
 						start_date: start_date,
 						end_date: start_dates[idx + 1]
-						? new Date(
+							? new Date(
 								new Date(start_dates[idx + 1]!).setDate(
 									new Date(start_dates[idx + 1]!).getDate() -
-										1
+									1
 								)
-						  )
-						: null,
-						creatable: true,
-						updatable: false,
-						deletable: false,
+							)
+							: null,
+						functions: {
+							creatable: true,
+							updatable: false,
+							deletable: false,
+						},
 					};
 
 					return deleteProperties(employeeTrust, [
@@ -166,15 +168,17 @@ export class EmployeeTrustMapper extends BaseMapper<
 					start_date: start_date,
 					end_date: start_dates[idx + 1]
 						? new Date(
-								new Date(start_dates[idx + 1]!).setDate(
-									new Date(start_dates[idx + 1]!).getDate() -
-										1
-								)
-						  )
+							new Date(start_dates[idx + 1]!).setDate(
+								new Date(start_dates[idx + 1]!).getDate() -
+								1
+							)
+						)
 						: null,
-					creatable: true,
-					updatable: false,
-					deletable: false,
+					functions: {
+						creatable: true,
+						updatable: false,
+						deletable: false,
+					},
 				};
 
 				return deleteProperties(employeeTrust, [
@@ -195,13 +199,13 @@ export class EmployeeTrustMapper extends BaseMapper<
 				if (
 					acc[acc.length - 1]!.emp_no == cur.emp_no &&
 					acc[acc.length - 1]!.emp_trust_reserve ==
-						cur.emp_trust_reserve &&
+					cur.emp_trust_reserve &&
 					acc[acc.length - 1]!.emp_special_trust_incent ==
-						cur.emp_special_trust_incent &&
+					cur.emp_special_trust_incent &&
 					acc[acc.length - 1]!.org_trust_reserve ==
-						cur.org_trust_reserve &&
+					cur.org_trust_reserve &&
 					acc[acc.length - 1]!.org_special_trust_incent ==
-						cur.org_special_trust_incent
+					cur.org_special_trust_incent
 				) {
 					acc[acc.length - 1]!.end_date = cur.end_date;
 					return acc;
@@ -226,14 +230,14 @@ export class EmployeeTrustMapper extends BaseMapper<
 					emp_trust_reserve_enc:
 						employee_trust.emp_trust_reserve != undefined
 							? CryptoHelper.encrypt(
-									employee_trust.emp_trust_reserve.toString()
-							  )
+								employee_trust.emp_trust_reserve.toString()
+							)
 							: undefined,
 					emp_special_trust_incent_enc:
 						employee_trust.emp_special_trust_incent != undefined
 							? CryptoHelper.encrypt(
-									employee_trust.emp_special_trust_incent.toString()
-							  )
+								employee_trust.emp_special_trust_incent.toString()
+							)
 							: undefined,
 					...employee_trust,
 				}

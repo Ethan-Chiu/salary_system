@@ -94,6 +94,7 @@ export const employeeDataRouter = createTRPCRouter({
 			const empAllList = await ehr_service.initEmployeeData(
 				input.period_id
 			);
+			return empAllList;
 			const employeeDataList = empAllList.map(async (data) => {
 				await employee_data_service.createEmployeeData({
 					...data,

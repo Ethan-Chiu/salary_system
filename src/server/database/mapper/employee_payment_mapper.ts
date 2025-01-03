@@ -45,9 +45,11 @@ export class EmployeePaymentMapper extends BaseMapper<
 			list.map(async (e) => {
 				return {
 					...e,
-					creatable: true,
-					updatable: e.start_date > new Date() || e.base_salary == 0,
-					deletable: e.start_date > new Date(),
+					functions: {
+						creatable: true,
+						updatable: e.start_date > new Date() || e.base_salary == 0,
+						deletable: e.start_date > new Date(),
+					},
 				};
 			})
 		);
@@ -88,19 +90,19 @@ export class EmployeePaymentMapper extends BaseMapper<
 
 		const resultList: (EmployeePaymentDecType &
 			Pick<EmployeeDataDecType, K>)[] = dataList.map((d) => {
-			const empNo = d.emp_no;
-			const emp = employeeDataRecord[empNo];
-			const result = { ...d } as EmployeePaymentDecType &
-				Pick<EmployeeDataDecType, K>;
-			if (emp) {
-				keys.forEach((key) => {
-					result[key] = emp[key] as any;
-				});
-			} else {
-				throw new Error(`Employee ${empNo} not found`);
-			}
-			return result;
-		});
+				const empNo = d.emp_no;
+				const emp = employeeDataRecord[empNo];
+				const result = { ...d } as EmployeePaymentDecType &
+					Pick<EmployeeDataDecType, K>;
+				if (emp) {
+					keys.forEach((key) => {
+						result[key] = emp[key] as any;
+					});
+				} else {
+					throw new Error(`Employee ${empNo} not found`);
+				}
+				return result;
+			});
 
 		return resultList;
 	}
