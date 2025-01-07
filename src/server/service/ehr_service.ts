@@ -473,7 +473,6 @@ export class EHRService {
 				type: QueryTypes.SELECT,
 			}
 		);
-		console.log(dataList)
 		const empAllList: EmpAll[] = dataList.map((o) => EmpAll.fromDB(o))
 		return empAllList
 	}
@@ -531,6 +530,7 @@ export class EHRService {
 		return `SELECT * FROM SYSTEM."U_HR_PAYDRAFT_ALLOWANCE_V" WHERE "U_HR_PAYDRAFT_ALLOWANCE_V"."PERIOD_ID" = '${period_id}'`;
 	}
 	private GET_INIT_EMP_QUERY(): string {
-		return `SELECT * FROM SYSTEM."U_HR_EMPLOYEE_ALL_V" WHERE "U_HR_EMPLOYEE_ALL_V"."EMPLOYEE_NO" = 'U093011'`;
+		return `SELECT * FROM SYSTEM."U_HR_EMPLOYEE_ALL_V"`;
+		return `SELECT * FROM SYSTEM."U_HR_EMPLOYEE_ALL_V" WHERE "U_HR_EMPLOYEE_ALL_V"."LEAVE_DATE" is null`;
 	}
 }

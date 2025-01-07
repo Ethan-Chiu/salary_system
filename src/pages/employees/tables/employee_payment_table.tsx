@@ -87,6 +87,7 @@ export const employee_payment_columns = ({
 						content = t(
 							`long_service_allowance_type.${row.original.long_service_allowance_type}`
 						);
+						break;
 					case "start_date":
 						content = `${
 							formatDate("day", row.original.start_date) ?? ""
