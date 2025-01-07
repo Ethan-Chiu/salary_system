@@ -12,6 +12,8 @@ import {
 } from "../types/employee_payment_type";
 import { EmployeePaymentMapper } from "~/server/database/mapper/employee_payment_mapper";
 import { EmployeeDataService } from "~/server/service/employee_data_service";
+import { ValidateService } from "~/server/service/validate_service";
+import { select_value } from "~/server/service/helper_function";
 
 export const employeePaymentRouter = createTRPCRouter({
 	getCurrentEmployeePayment: publicProcedure
@@ -63,7 +65,8 @@ export const employeePaymentRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const employeePaymentService = container.resolve(EmployeePaymentService);
 			const employeePaymentMapper = container.resolve(EmployeePaymentMapper);
-			const employeeDataService = container.resolve(EmployeeDataService);
+			const validateService = container.resolve(ValidateService);
+
 			const previousEmployeePaymentFE =
 				await employeePaymentService.getCurrentEmployeePaymentByEmpNoByDate(
 					input.emp_no,
@@ -75,10 +78,7 @@ export const employeePaymentRouter = createTRPCRouter({
 				);
 			}
 
-			const quit_date = (await employeeDataService.getLatestEmployeeDataByEmpNo(input.emp_no)).quit_date;
-			if (quit_date) {
-				return
-			}
+			await validateService.validateEmployeePayment({ ...input, end_date: null });
 
 			const newdata = await employeePaymentService.createEmployeePayment({
 				...input,
@@ -98,10 +98,20 @@ export const employeePaymentRouter = createTRPCRouter({
 	updateEmployeePayment: publicProcedure
 		.input(updateEmployeePaymentAPI)
 		.mutation(async ({ input }) => {
-			const employeePaymentService = container.resolve(
-				EmployeePaymentService
-			);
+			const employeePaymentService = container.resolve(EmployeePaymentService);
+			const validateService = container.resolve(ValidateService);
+
 			const employeePayment = updateEmployeePaymentService.parse(input);
+
+			const originalEmployeePayment = await employeePaymentService.getEmployeePaymentById(input.id);
+			if (originalEmployeePayment == null) {
+				throw new BaseResponseError("Employee Payment does not exist");
+			}
+			await validateService.validateEmployeePayment({
+				emp_no: select_value(input.emp_no, originalEmployeePayment.emp_no),
+				start_date: select_value(input.start_date, originalEmployeePayment.start_date),
+				end_date: select_value(input.end_date, originalEmployeePayment.end_date),
+			});
 
 			await employeePaymentService.updateEmployeePaymentAndMatchLevel(
 				employeePayment
@@ -112,9 +122,19 @@ export const employeePaymentRouter = createTRPCRouter({
 	deleteEmployeePayment: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.mutation(async ({ input }) => {
-			const employeePaymentService = container.resolve(
-				EmployeePaymentService
-			);
+			const employeePaymentService = container.resolve(EmployeePaymentService);
+			const validateService = container.resolve(ValidateService);
+
+			const originalEmployeePayment = await employeePaymentService.getEmployeePaymentById(input.id);
+			if (originalEmployeePayment == null) {
+				throw new BaseResponseError("Employee Payment does not exist");
+			}
+			await validateService.validateEmployeePayment({
+				emp_no: originalEmployeePayment.emp_no,
+				start_date: originalEmployeePayment.start_date,
+				end_date: originalEmployeePayment.end_date,
+			});
+
 			await employeePaymentService.deleteEmployeePayment(input.id);
 			await employeePaymentService.rescheduleEmployeePayment();
 		}),
@@ -124,9 +144,19 @@ export const employeePaymentRouter = createTRPCRouter({
 			z.object({ emp_no_list: z.string().array(), start_date: z.date() })
 		)
 		.mutation(async ({ input }) => {
-			const employeePaymentService = container.resolve(
-				EmployeePaymentService
-			);
+			const employeePaymentService = container.resolve(EmployeePaymentService);
+			const validateService = container.resolve(ValidateService);
+
+			const validates = input.emp_no_list.map(async (emp_no) => {
+				await validateService.validateEmployeePayment({
+					emp_no: emp_no,
+					start_date: input.start_date,
+					end_date: null,
+				});
+			});
+
+			await Promise.all(validates);
+
 			await employeePaymentService.autoCalculateEmployeePayment(
 				input.emp_no_list,
 				input.start_date
