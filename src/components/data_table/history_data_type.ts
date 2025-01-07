@@ -1,14 +1,12 @@
 import { type TRPCClientErrorLike } from "@trpc/client";
 import { type UseTRPCQueryResult } from "@trpc/react-query/shared";
+import { type DataWithFunctions } from "~/components/table_functions/table_functions_types";
 
-export interface HistoryDataType {
+export interface HistoryDataType extends DataWithFunctions{
 	id: number;
 	start_date: Date | null;
 	end_date: Date | null;
 	update_by: string;
-	creatable: boolean;
-	updatable: boolean;
-	deletable: boolean;
 }
 
 type ParameterExtendableHistoryDataType<T> = T extends object

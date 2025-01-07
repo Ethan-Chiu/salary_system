@@ -132,7 +132,7 @@ function CompHistoryView() {
 			</ResizablePanel>
 			<ResizableHandle />
 			<ResizablePanel defaultSize={70}>
-				{data.filter((e) => e[0]!.id === selectedData?.id).length >
+				{data.filter((e) => e[0]?.id === selectedData?.id).length >
 				0 ? (
 					<DataTable
 						columns={getTableColumn(
@@ -145,7 +145,7 @@ function CompHistoryView() {
 						)}
 						data={getTableMapper(selectedTableType)!(
 							data.filter(
-								(e) => e[0]!.id === selectedData?.id
+								(e) => e[0]?.id === selectedData?.id
 							)[0]! as any[]
 						)}
 						filterColumnKey={filterKey}

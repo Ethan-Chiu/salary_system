@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { createColumnHelper } from "@tanstack/react-table";
 import { type EmployeePaymentFEType } from "~/server/api/types/employee_payment_type";
 import { FunctionsComponent } from "~/components/data_table/functions_component";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { type TFunction } from "i18next";
 import {
 	ColumnHeaderBaseComponent,
@@ -17,14 +17,15 @@ import { ColumnCellComponent } from "~/components/data_table/column_cell_compone
 import dataTableContext from "../components/context/data_table_context";
 import { createTableFunctionContext } from "~/components/table_functions/context/table_functions_context";
 
+type FunctionMode = "create" | "update" | "delete" | "none";
+
 type FunctionsItem = {
 	creatable: boolean;
 	updatable: boolean;
 	deletable: boolean;
 };
-type FunctionMode = "create" | "update" | "delete" | "none";
 
-export type RowItem = Omit<
+type RowItem = Omit<
 	EmployeePaymentFEType,
 	"start_date" | "end_date" | "long_service_allowance_type"
 > & {
@@ -137,10 +138,10 @@ export function employeePaymentMapper(
 	});
 }
 
+const employeePaymentFunctionContext = createTableFunctionContext<"none" | "create" | "update" | "delete", RowItem>("none")
+
 export function EmployeePaymentTable({ period_id }: any) {
 	const { t } = useTranslation(["common"]);
-
-  const tableFunctionContext = createTableFunctionContext<"none" | "create" | "update" | "delete", RowItem>("none")
 
 	const { open, setOpen, mode, setMode, setData } =
 		useContext(dataTableContext);
@@ -155,6 +156,10 @@ export function EmployeePaymentTable({ period_id }: any) {
 	if (isError) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
+
+  if (!data) {
+    return <div/>
+  }
 
 	return (
 		<Sheet open={open && mode !== "delete"} onOpenChange={setOpen}>

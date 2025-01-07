@@ -15,6 +15,7 @@ import { ColumnHeaderBaseComponent, ColumnHeaderComponent } from "~/components/d
 import dataTableContext from "../components/context/data_table_context";
 import { Sheet } from "~/components/ui/sheet";
 import { ColumnCellComponent } from "~/components/data_table/column_cell_component";
+import { createTableFunctionContext } from "~/components/table_functions/context/table_functions_context";
 
 // TODO: should we use Frontend Type directly?
 type RowItem = EmployeeTrustFEType;
@@ -108,6 +109,9 @@ export function employeeTrustMapper(
 		};
 	});
 }
+
+const employeeTrustFunctionContext = createTableFunctionContext<"none" | "create" | "update" | "delete", RowItem>("none")
+
 
 export function EmployeeTrustTable({ period_id }: any) {
 	const { t } = useTranslation(["common"]);
