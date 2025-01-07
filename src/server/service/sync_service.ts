@@ -32,7 +32,7 @@ export class SyncService {
 		private readonly employeeDataService: EmployeeDataService,
 		private readonly employeePaymentService: EmployeePaymentService,
 		private readonly employeeTrustService: EmployeeTrustService
-	) {}
+	) { }
 	// TODO: move this
 	parsedPeriod(
 		period: Period
@@ -372,9 +372,9 @@ export class SyncService {
 				if (!old_employee_data) return;
 				if (
 					old_employee_data?.work_status ==
-						WorkStatusEnum.Values.當月離職人員破月 ||
+					WorkStatusEnum.Values.當月離職人員破月 ||
 					old_employee_data?.work_status ==
-						WorkStatusEnum.Values.當月離職人員全月
+					WorkStatusEnum.Values.當月離職人員全月
 				) {
 					employee_data_service.createEmployeeData({
 						...old_employee_data,
@@ -383,9 +383,9 @@ export class SyncService {
 					});
 				} else if (
 					old_employee_data?.work_status ==
-						WorkStatusEnum.Values.當月新進人員破月 ||
+					WorkStatusEnum.Values.當月新進人員破月 ||
 					old_employee_data?.work_status ==
-						WorkStatusEnum.Values.當月新進人員全月
+					WorkStatusEnum.Values.當月新進人員全月
 				) {
 					employee_data_service.createEmployeeData({
 						...old_employee_data,
@@ -421,7 +421,7 @@ export class SyncService {
 					period_id: period_id,
 				},
 			});
-		} 
+		}
 		// else {
 		// 	salary_datas = await EmployeeData.findAll({}); // 否則查找所有工資數據
 		// }
@@ -468,9 +468,10 @@ export class SyncService {
 		return changedDatas;
 	}
 
-	async synchronize(period: number, change_emp_list: SyncInputType[]) {
+	async synchronize(period_id: number, change_emp_list: SyncInputType[]) {
 		// NOTE: All employee data from EHR
-		const ehr_datas = await this.ehrService.getEmp(period);
+		const period = await this.ehrService.getPeriodById(period_id);
+		const ehr_datas = await this.ehrService.getEmp(period_id);
 		const ehrDict: Map<string, Emp> = new Map<string, Emp>();
 		ehr_datas.forEach((emp) => {
 			ehrDict.set(emp.emp_no, emp);
@@ -481,7 +482,7 @@ export class SyncService {
 
 		// All existing employee data from Salary
 		const salary_datas = await EmployeeData.findAll({
-			where: { period_id: period, emp_no: { [Op.in]: changed_emp_nos } },
+			where: { period_id: period_id, emp_no: { [Op.in]: changed_emp_nos } },
 		});
 
 		// Get services
@@ -492,7 +493,7 @@ export class SyncService {
 			// TODO: the data type is incorrect, lacking type check (period_id is missing)
 			// TODO: append period_id
 			const ehr_emp_data: z.infer<typeof createEmployeeDataService> =
-				this.empToEmployee(ehrDict.get(changeEmp.emp_no)!, period);
+				this.empToEmployee(ehrDict.get(changeEmp.emp_no)!, period_id);
 
 			let salary_emp_data: EmployeeData | undefined = salary_datas.find(
 				(emp) => emp.emp_no == changeEmp.emp_no
@@ -509,7 +510,7 @@ export class SyncService {
 					emp_no: ehr_emp_data.emp_no,
 					long_service_allowance_type:
 						LongServiceEnum.Enum.month_allowance,
-					start_date: new Date(ehr_emp_data.registration_date),
+					start_date: new Date(period.start_date),
 					end_date: null,
 					base_salary: 0,
 					food_allowance: 0,
@@ -550,6 +551,11 @@ export class SyncService {
 				updatedData
 			);
 			updatedDatas.push(updatedData);
+
+			if (updatedData.quit_date) {
+				await this.employeePaymentService.rescheduleEmployeePaymentByQuitDate(updatedData.emp_no, period_id)
+				await this.employeeTrustService.rescheduleEmployeeTrustByQuitDate(updatedData.emp_no, period_id)
+			}
 		}
 
 		return updatedDatas;

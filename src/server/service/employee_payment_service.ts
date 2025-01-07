@@ -17,7 +17,6 @@ import {
 } from "../api/types/employee_payment_type";
 import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
 import { EmployeeDataService } from "./employee_data_service";
-import { Period } from "../database/entity/UMEDIA/period";
 
 @injectable()
 export class EmployeePaymentService {
@@ -28,7 +27,7 @@ export class EmployeePaymentService {
 		private readonly levelService: LevelService,
 		private readonly levelRangeService: LevelRangeService,
 		private readonly employeeDataService: EmployeeDataService
-	) {}
+	) { }
 
 	async createEmployeePayment(
 		data: z.input<typeof employeePaymentCreateService>
@@ -375,7 +374,7 @@ export class EmployeePaymentService {
 				employeePayment.h_i != updatedEmployeePayment.h_i ||
 				employeePayment.l_r != updatedEmployeePayment.l_r ||
 				employeePayment.occupational_injury !=
-					updatedEmployeePayment.occupational_injury
+				updatedEmployeePayment.occupational_injury
 			) {
 				await this.createEmployeePayment({
 					...updatedEmployeePayment,
@@ -406,6 +405,10 @@ export class EmployeePaymentService {
 			const new_end_date_string = get_date_string(
 				new Date(start_date.setDate(start_date.getDate() - 1))
 			);
+			const quit_date = (await this.employeeDataService.getLatestEmployeeDataByEmpNo(employeePaymentList[i]!.emp_no)).quit_date;
+			if (quit_date != null) {
+				continue;
+			}
 			if (
 				employeePaymentList[i]!.emp_no ==
 				employeePaymentList[i + 1]!.emp_no
@@ -441,6 +444,36 @@ export class EmployeePaymentService {
 				id: employeePaymentList[employeePaymentList.length - 1]!.id,
 				end_date: null,
 			});
+		}
+	}
+
+	async rescheduleEmployeePaymentByQuitDate(emp_no: string, period_id: number): Promise<void> {
+		const period = await this.ehrService.getPeriodById(period_id);
+		const quit_date = period.end_date;
+		const employeePaymentList = await EmployeePayment.findAll({
+			where: { emp_no: emp_no, disabled: false },
+			order: [
+				["start_date", "ASC"],
+				["update_date", "ASC"],
+			],
+		});
+
+		for (let i = 0; i < employeePaymentList.length; i += 1) {
+			const start_date_string = get_date_string(
+				new Date(employeePaymentList[i]!.start_date)
+			);
+			const end_date_string = employeePaymentList[i]!.end_date
+				? get_date_string(new Date(employeePaymentList[i]!.end_date!))
+				: null;
+			if (start_date_string > quit_date) {
+				await this.deleteEmployeePayment(employeePaymentList[i]!.id);
+			}
+			else if (end_date_string == null || end_date_string > quit_date) {
+				await this.updateEmployeePayment({
+					id: employeePaymentList[i]!.id,
+					end_date: new Date(quit_date),
+				});
+			}
 		}
 	}
 

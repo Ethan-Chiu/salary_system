@@ -16,6 +16,7 @@ import {
 } from "../api/types/employee_trust_type";
 import { EmployeeTrustMapper } from "../database/mapper/employee_trust_mapper";
 import { dateToString, stringToDate } from "../api/types/z_utils";
+import { EmployeeDataService } from "./employee_data_service";
 
 type EmployeeTrustMapperType = EmployeeTrustMapper;
 
@@ -24,7 +25,8 @@ export class EmployeeTrustService {
 	constructor(
 		@inject(delay(() => EmployeeTrustMapper))
 		private readonly employeeTrustMapper: EmployeeTrustMapperType,
-		private readonly ehrService: EHRService
+		private readonly ehrService: EHRService,
+		private readonly employeeDataService: EmployeeDataService
 	) { }
 
 	async createEmployeeTrust(
@@ -261,6 +263,10 @@ export class EmployeeTrustService {
 			const new_end_date_string = get_date_string(
 				new Date(start_date.setDate(start_date.getDate() - 1))
 			);
+			const quit_date = (await this.employeeDataService.getLatestEmployeeDataByEmpNo(employeeTrustList[i]!.emp_no)).quit_date;
+			if (quit_date != null) {
+				continue;
+			}
 			if (
 				employeeTrustList[i]!.emp_no == employeeTrustList[i + 1]!.emp_no
 			) {
@@ -290,6 +296,36 @@ export class EmployeeTrustService {
 				id: employeeTrustList[employeeTrustList.length - 1]!.id,
 				end_date: null,
 			});
+		}
+	}
+
+	async rescheduleEmployeeTrustByQuitDate(emp_no: string, period_id: number): Promise<void> {
+		const period = await this.ehrService.getPeriodById(period_id);
+		const quit_date = period.end_date;
+		const employeeTrustList = await EmployeeTrust.findAll({
+			where: { emp_no: emp_no, disabled: false },
+			order: [
+				["start_date", "ASC"],
+				["update_date", "ASC"],
+			],
+		});
+
+		for (let i = 0; i < employeeTrustList.length; i += 1) {
+			const start_date_string = get_date_string(
+				new Date(employeeTrustList[i]!.start_date)
+			);
+			const end_date_string = employeeTrustList[i]!.end_date
+				? get_date_string(new Date(employeeTrustList[i]!.end_date!))
+				: null;
+			if (start_date_string > quit_date) {
+				await this.deleteEmployeeTrust(employeeTrustList[i]!.id);
+			}
+			else if (end_date_string == null || end_date_string > quit_date) {
+				await this.updateEmployeeTrust({
+					id: employeeTrustList[i]!.id,
+					end_date: new Date(quit_date),
+				});
+			}
 		}
 	}
 
@@ -340,11 +376,11 @@ export class EmployeeTrustService {
 					? emp_trust.end_date > new_emp_trust.end_date
 					: true)
 		);
-		console.log("new_emp_trust", new_emp_trust);
-		// console.log("endOverlapList", endOverlapList);
-		console.log("startOverlapList", startOverlapList);
-		console.log("twoEndInsideList", twoEndInsideList);
-		console.log("twoEndOutsideList", twoEndOutsideList);
+		// console.log("new_emp_trust", new_emp_trust);
+		// // console.log("endOverlapList", endOverlapList);
+		// console.log("startOverlapList", startOverlapList);
+		// console.log("twoEndInsideList", twoEndInsideList);
+		// console.log("twoEndOutsideList", twoEndOutsideList);
 
 		// endOverlapList.forEach(async (emp_trust) => {
 		// 	await this.updateEmployeeTrust({

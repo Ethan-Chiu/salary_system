@@ -7,6 +7,7 @@ import {
 	updateEmployeeTrustAPI,
 } from "../types/employee_trust_type";
 import { EmployeeTrustMapper } from "~/server/database/mapper/employee_trust_mapper";
+import { EmployeeDataService } from "~/server/service/employee_data_service";
 
 export const employeeTrustRouter = createTRPCRouter({
 	getCurrentEmployeeTrust: publicProcedure
@@ -33,6 +34,12 @@ export const employeeTrustRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const employeeTrustService =
 				container.resolve(EmployeeTrustService);
+			const employeeDataService =
+				container.resolve(EmployeeDataService);
+			const quit_date = (await employeeDataService.getLatestEmployeeDataByEmpNo(input.emp_no)).quit_date;
+			if (quit_date) {
+				return
+			}
 			const newdata = await employeeTrustService.createEmployeeTrust(
 				input
 			);

@@ -64,6 +64,8 @@ export class EmployeeTrustMapper extends BaseMapper<
 			.map((emp_trust) => emp_trust.start_date)
 			.sort((a, b) => a.getTime() - b.getTime());
 
+		const last_end_date = employee_trust_list[employee_trust_list.length - 1]!.end_date;
+
 		trust_money_list.forEach((trust_money) => {
 			const trust_money_start_date = trust_money.start_date;
 			if (
@@ -108,7 +110,7 @@ export class EmployeeTrustMapper extends BaseMapper<
 									1
 								)
 							)
-							: null,
+							: last_end_date,
 						functions: {
 							creatable: true,
 							updatable: false,
@@ -173,7 +175,7 @@ export class EmployeeTrustMapper extends BaseMapper<
 								1
 							)
 						)
-						: null,
+						: last_end_date,
 					functions: {
 						creatable: true,
 						updatable: false,

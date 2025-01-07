@@ -11,6 +11,7 @@ import {
 	updateEmployeePaymentService,
 } from "../types/employee_payment_type";
 import { EmployeePaymentMapper } from "~/server/database/mapper/employee_payment_mapper";
+import { EmployeeDataService } from "~/server/service/employee_data_service";
 
 export const employeePaymentRouter = createTRPCRouter({
 	getCurrentEmployeePayment: publicProcedure
@@ -60,12 +61,9 @@ export const employeePaymentRouter = createTRPCRouter({
 	createEmployeePayment: publicProcedure
 		.input(employeePaymentCreateAPI)
 		.mutation(async ({ input }) => {
-			const employeePaymentService = container.resolve(
-				EmployeePaymentService
-			);
-			const employeePaymentMapper = container.resolve(
-				EmployeePaymentMapper
-			);
+			const employeePaymentService = container.resolve(EmployeePaymentService);
+			const employeePaymentMapper = container.resolve(EmployeePaymentMapper);
+			const employeeDataService = container.resolve(EmployeeDataService);
 			const previousEmployeePaymentFE =
 				await employeePaymentService.getCurrentEmployeePaymentByEmpNoByDate(
 					input.emp_no,
@@ -75,6 +73,11 @@ export const employeePaymentRouter = createTRPCRouter({
 				throw new BaseResponseError(
 					`EmployeePayment for emp_no: ${input.emp_no} not exists yet`
 				);
+			}
+
+			const quit_date = (await employeeDataService.getLatestEmployeeDataByEmpNo(input.emp_no)).quit_date;
+			if (quit_date) {
+				return
 			}
 
 			const newdata = await employeePaymentService.createEmployeePayment({
