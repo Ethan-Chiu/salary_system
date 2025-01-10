@@ -1,9 +1,9 @@
 import { type ColumnDef, type Table } from "@tanstack/react-table";
-import { useContext, useState } from "react";
-import dataTableContext from "../context/data_table_context";
+import { useState } from "react";
 import { DataTablePagination } from "~/components/data_table/data_table_pagination";
 import { WithDataTableStandardState } from "~/components/data_table/default/data_table_standard_state";
 import { DataTableStandardBody } from "~/components/data_table/default/data_table_standard_body";
+import { useEmployeeTableContext } from "../context/data_table_context_provider";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
@@ -11,7 +11,7 @@ interface DataTableProps<TData> {
 }
 
 export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
-	const { setSelectedTable } = useContext(dataTableContext);
+	const { setSelectedTable } = useEmployeeTableContext();
 
 	return WithDataTableStandardState({
 		columns: columns,

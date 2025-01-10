@@ -4,6 +4,7 @@ import { z } from "zod";
 import { EmployeeTrustService } from "~/server/service/employee_trust_service";
 import {
 	employeeTrustCreateAPI,
+	employeeTrustFE,
 	updateEmployeeTrustAPI,
 } from "../types/employee_trust_type";
 import { EmployeeTrustMapper } from "~/server/database/mapper/employee_trust_mapper";
@@ -14,6 +15,7 @@ import { select_value } from "~/server/service/helper_function";
 export const employeeTrustRouter = createTRPCRouter({
 	getCurrentEmployeeTrust: publicProcedure
 		.input(z.object({ period_id: z.number() }))
+    .output(z.array(employeeTrustFE))
 		.query(async ({ input }) => {
 			const employeeTrustService =
 				container.resolve(EmployeeTrustService);

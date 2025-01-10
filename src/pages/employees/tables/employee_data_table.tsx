@@ -8,6 +8,7 @@ import { ColumnHeaderComponent } from "~/components/data_table/column_header_com
 import { createColumnHelper } from "@tanstack/react-table";
 import { ColumnCellComponent } from "~/components/data_table/column_cell_component";
 import { type MonthSalaryStatusEnumType } from "~/server/api/types/month_salary_status_enum";
+import { useEmployeeTableContext } from "../components/context/data_table_context_provider";
 
 // TODO: move to schema
 type RowItem = {
@@ -27,7 +28,7 @@ type RowItem = {
 	quit_date: string | null;
 	license_id: string | null;
 	bank_account: string;
-	month_salary_status: MonthSalaryStatusEnumType,
+	month_salary_status: MonthSalaryStatusEnumType;
 };
 type RowItemKey = keyof RowItem;
 
@@ -67,26 +68,30 @@ const columns = (t: I18nType) => {
 				let content = row.original[key]?.toString() ?? "";
 				switch (key) {
 					case "registration_date":
-						content = formatDate("day", row.original.registration_date) ?? "";
+						content =
+							formatDate("day", row.original.registration_date) ??
+							"";
 						break;
 					case "quit_date":
-						content = formatDate("day", row.original.quit_date) ?? "";
+						content =
+							formatDate("day", row.original.quit_date) ?? "";
 						break;
 				}
-				return <ColumnCellComponent>{content}</ColumnCellComponent>
+				return <ColumnCellComponent>{content}</ColumnCellComponent>;
 			},
 			// filterFn: key === "work_status" ? "equalsString" : undefined,
 		});
 	});
 };
 
-export function EmployeeDataTable({ period_id }: any) {
-	const { isLoading, isError, data, error } =
+export function EmployeeDataTable() {
+	const { period_id } = useEmployeeTableContext();
+	const { isPending, isError, data, error } =
 		api.employeeData.getCurrentEmployeeDataWithInfo.useQuery({ period_id });
 
 	const { t } = useTranslation(["common"]);
 
-	if (isLoading) {
+	if (isPending) {
 		return <LoadingSpinner />; // TODO: Loading element with toast
 	}
 
@@ -94,15 +99,11 @@ export function EmployeeDataTable({ period_id }: any) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-	if (data) {
-		return (
-			<DataTable
-				columns={columns(t)}
-				data={data}
-				initialColumnVisibility={{ month_salary_status: false }}
-			/>
-		);
-	}
-
-	return <div> </div>;
+	return (
+		<DataTable
+			columns={columns(t)}
+			data={data}
+			initialColumnVisibility={{ month_salary_status: false }}
+		/>
+	);
 }

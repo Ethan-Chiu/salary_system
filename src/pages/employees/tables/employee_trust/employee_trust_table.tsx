@@ -1,4 +1,3 @@
-import { LoadingSpinner } from "~/components/loading";
 import { DataTableUpdate } from "../../components/data_table_update";
 import { api } from "~/utils/api";
 import { useTranslation } from "react-i18next";
@@ -114,39 +113,16 @@ export function employeeTrustMapper(
 	});
 }
 
-export function EmployeeTrustTable({ period_id }: any) {
-	const { t } = useTranslation(["common"]);
+export function EmployeeTrustTable() {
 
-	const { isLoading, isError, data, error } =
-		api.employeeTrust.getCurrentEmployeeTrust.useQuery({
-			period_id: period_id,
-		});
-
-	if (isLoading) {
-		return <LoadingSpinner />; // TODO: Loading element with toast
-	}
-
-	if (isError) {
-		return <span>Error: {error.message}</span>; // TODO: Error element with toast
-	}
-
-	// TODO: figure out data's type
-	if (data) {
-		return (
-			<EmployeeTrustFunctionContextProvider>
-				<DataTableUpdate
-					columns={employee_trust_columns({ t })}
-					columnNames={columnNames}
-					data={employeeTrustMapper(data)}
-					historyDataFunction={() =>
-						api.employeeTrust.getAllEmployeeTrust.useQuery()
-					}
-					calendarDataFunction={() =>
-						api.employeeTrust.getAllEmployeeTrust.useQuery()
-					}
-				/>
-			</EmployeeTrustFunctionContextProvider>
-		);
-	}
-	return <div />;
+  return (
+    <EmployeeTrustFunctionContextProvider>
+      <DataTableUpdate
+        columnNames={columnNames}
+        historyDataFunction={() =>
+          api.employeeTrust.getAllEmployeeTrust.useQuery()
+        }
+      />
+    </EmployeeTrustFunctionContextProvider>
+  );
 }

@@ -36,8 +36,8 @@ import { EmployeeForm } from "./employee_form";
 import { getSchema } from "~/pages/employees/schemas/get_schemas";
 import { modeDescription } from "~/lib/utils/helper_function";
 import { employeeToolbarFunctionsContext } from "./employee_functions_context";
-import dataTableContext from "../context/data_table_context";
 import { ConfirmDialog } from "./confirm_dialog";
+import { useTrustFunctionContext } from "../../tables/employee_trust/employee_trust_provider";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
@@ -59,7 +59,7 @@ export function DataTableFunctions({
 	columns,
 	className,
 }: DataTableFunctionsProps) {
-	const { open, setOpen, mode, setMode } = useContext(dataTableContext);
+	const { open, setOpen, mode, setMode } = useTrustFunctionContext();
 
 	const { t } = useTranslation(["common", "nav"]);
 	const functions = useContext(employeeToolbarFunctionsContext);

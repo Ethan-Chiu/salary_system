@@ -7,32 +7,35 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { EmployeeDataTable } from "./tables/employee_data_table";
 import { EmployeePaymentTable } from "./tables/employee_payment/employee_payment_table";
 import { EmployeeTrustTable } from "./tables/employee_trust/employee_trust_table";
-import DataTableContextProvider from "./components/context/data_table_context_provider";
-import dataTableContext from "./components/context/data_table_context";
+import {
+	EmployeeTableContextProvider,
+	useEmployeeTableContext,
+} from "./components/context/data_table_context_provider";
 import periodContext from "~/components/context/period_context";
 import { useTranslation } from "react-i18next";
 
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { i18n, locales } from '~/components/lang_config'
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { i18n, locales } from "~/components/lang_config";
 import { type EmployeeTableEnum } from "./employee_tables";
 
-const tabOptions = ["table_name.employeeData", "table_name.employeePayment", "table_name.employeeTrust"];
+const tabOptions = [
+	"table_name.employeeData",
+	"table_name.employeePayment",
+	"table_name.employeeTrust",
+];
 
 function PageEmployeesContent() {
-	const { setSelectedTableType} = useContext(dataTableContext);
-	const { selectedPeriod } = useContext(periodContext);
+	const { setSelectedTableType } = useEmployeeTableContext();
+	const { t } = useTranslation(["common", "nav"]);
 
 	function getTable(table_name: string) {
-		if (selectedPeriod == null) {
-			return <p>{t("others.select_period")}</p>;
-		}
 		switch (table_name) {
 			case tabOptions[0]:
-				return <EmployeeDataTable period_id={selectedPeriod.period_id} />
+				return <EmployeeDataTable />;
 			case tabOptions[1]:
-				return <EmployeePaymentTable period_id={selectedPeriod.period_id} />
+				return <EmployeePaymentTable />;
 			case tabOptions[2]:
-				return <EmployeeTrustTable period_id={selectedPeriod.period_id} />
+				return <EmployeeTrustTable />;
 			default:
 				return <p>No implement</p>;
 		}
@@ -49,11 +52,13 @@ function PageEmployeesContent() {
 		}
 	}
 
-	const { t } = useTranslation(['common', 'nav']);
-
 	return (
 		<div className="flex h-full w-full flex-col">
-			<Header title={t("employees", { ns: "nav" })} showOptions className="mb-4" />
+			<Header
+				title={t("employees", { ns: "nav" })}
+				showOptions
+				className="mb-4"
+			/>
 			<div className="m-4 h-0 grow">
 				<Tabs
 					defaultValue={tabOptions[0]}
@@ -93,22 +98,34 @@ function PageEmployeesContent() {
 			</div>
 		</div>
 	);
-};
+}
 
 const PageEmployees: NextPageWithLayout = () => {
+	const { selectedPeriod } = useContext(periodContext);
+	const { t } = useTranslation(["common", "nav"]);
+
+	if (selectedPeriod === null) {
+		return <p>{t("others.select_period")}</p>;
+	}
+
 	return (
-		<DataTableContextProvider>
+		<EmployeeTableContextProvider period_id={selectedPeriod.period_id}>
 			<PageEmployeesContent />
-		</DataTableContextProvider>
+		</EmployeeTableContextProvider>
 	);
 };
 
 export const getStaticProps = async ({ locale }: { locale: string }) => {
-	return ({
+	return {
 		props: {
-			...(await serverSideTranslations(locale, ["common", "nav"], i18n, locales)),
-		}
-	});
+			...(await serverSideTranslations(
+				locale,
+				["common", "nav"],
+				i18n,
+				locales
+			)),
+		},
+	};
 };
 
 PageEmployees.getLayout = function getLayout(page: ReactElement) {

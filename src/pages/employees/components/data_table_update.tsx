@@ -1,37 +1,27 @@
-import { type ColumnDef } from "@tanstack/react-table";
 import { Separator } from "~/components/ui/separator";
 import { Tabs, TabsContent } from "~/components/ui/tabs";
-
 import { DataTableToolbarUpdate } from "./data_table_toolbar_update";
-import { useContext } from "react";
 import { EmpTabsEnum } from "./context/employee_tabs_enum";
-import { CurrentView } from "./current_view/current_view";
 import { HistoryView } from "./history_view/history_view";
-import { type HistoryDataType, type EmployeeCalenderQueryFunctionType, type EmployeeHistoryQueryFunctionType } from "~/components/data_table/history_data_type";
+import { type HistoryDataType, type EmployeeHistoryQueryFunctionType } from "~/components/data_table/history_data_type";
 import { type EmployeeHistoryViewCommonEmpInfo } from "./history_view/history_view";
-import dataTableContext from "./context/data_table_context";
-import CalendarView from "./calendar_view/calendar_view";
+import { useEmployeeTableContext } from "./context/data_table_context_provider";
+import { CurrentViewSelector } from "./current_view/current_view_selector";
 
 type DataRow = EmployeeHistoryViewCommonEmpInfo & HistoryDataType;
 
 interface DataTableProps<TData extends DataRow> {
-	columns: ColumnDef<TData, any>[];
 	columnNames?: Array<string>;
-	data: TData[];
 	historyDataFunction: EmployeeHistoryQueryFunctionType<TData>;
-	calendarDataFunction: EmployeeCalenderQueryFunctionType<TData>;
 	filterColumnKey?: keyof TData;
 }
 
 export function DataTableUpdate<TData extends DataRow>({
-	columns,
 	columnNames,
-	data,
 	historyDataFunction,
-	calendarDataFunction,
 	filterColumnKey,
 }: DataTableProps<TData>) {
-	const { selectedTab, setSelectedTab } = useContext(dataTableContext);
+	const { selectedTab, setSelectedTab } = useEmployeeTableContext();
 
 	return (
 		<Tabs
@@ -46,23 +36,23 @@ export function DataTableUpdate<TData extends DataRow>({
 				<Separator />
 				<TabsContent value={EmpTabsEnum.Enum.current} asChild>
 					<div className="flex h-0 w-full flex-grow flex-col">
-						<CurrentView columns={columns} data={data} />
+            <CurrentViewSelector />
 					</div>
 				</TabsContent>
 				<TabsContent value={EmpTabsEnum.Enum.history} asChild>
 					<div className="flex h-0 w-full flex-grow flex-col">
-						<HistoryView
-							columns={columns}
-							dataFunction={historyDataFunction}
-						/>
+						{/* <HistoryView */}
+						{/* 	columns={columns} */}
+						{/* 	dataFunction={historyDataFunction} */}
+						{/* /> */}
 					</div>
 				</TabsContent>
-				<TabsContent value={EmpTabsEnum.Enum.calendar} asChild>
-					<div className="flex h-0 w-full flex-grow flex-col">
-						<CalendarView
-							dataFunction={calendarDataFunction} />
-					</div>
-				</TabsContent>
+				{/* <TabsContent value={EmpTabsEnum.Enum.calendar} asChild> */}
+				{/* 	<div className="flex h-0 w-full flex-grow flex-col"> */}
+						{/* <CalendarView */}
+						{/* 	dataFunction={calendarDataFunction} /> */}
+					{/* </div> */}
+				{/* </TabsContent> */}
 			</div>
 		</Tabs>
 	);

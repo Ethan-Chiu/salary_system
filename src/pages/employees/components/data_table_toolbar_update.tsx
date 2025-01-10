@@ -2,16 +2,15 @@ import { DataTableViewOptions } from "~/components/data_table/toolbar/data_table
 import EmployeeToolbarFunctionsProvider from "./function_sheet/employee_functions_context";
 import { DataTableFunctions } from "./function_sheet/data_table_functions";
 import { useContext } from "react";
-import dataTableContext from "./context/data_table_context";
 import periodContext from "~/components/context/period_context";
 import { ToolbarFilter } from "~/components/data_table/toolbar/toolbar_filter";
 import { TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { EmpTabsEnum } from "./context/employee_tabs_enum";
 import { useTranslation } from "react-i18next";
 import { LoadingSpinner } from "~/components/loading";
-import { CalendarToolbarFunctions } from "./calendar_view/components/calendar_toolbar_functions";
 import { DataTableToolbarWrapper } from "~/components/data_table/toolbar/data_table_toolbar_wrapper";
 import { StatsPanel } from "~/components/data_table/toolbar/stats_panel";
+import { useEmployeeTableContext } from "./context/data_table_context_provider";
 
 interface DataTableToolbarProps<TData> {
 	filterColumnKey?: keyof TData;
@@ -22,8 +21,7 @@ export function DataTableToolbarUpdate<TData>({
 	filterColumnKey,
 	columns,
 }: DataTableToolbarProps<TData>) {
-	const { selectedTab, selectedTableType, selectedTable } =
-		useContext(dataTableContext);
+	const { selectedTab, selectedTableType, selectedTable } = useEmployeeTableContext()
 	const { selectedPeriod } = useContext(periodContext);
 
 	const { t } = useTranslation(["common"]);
@@ -46,16 +44,16 @@ export function DataTableToolbarUpdate<TData>({
 				<StatsPanel table={table} />
 			</div>
 			{/* tabs */}
-			<TabsList className="grid h-8 w-96 grid-cols-3">
+			<TabsList className="grid h-8 w-96 grid-cols-2">
 				<TabsTrigger value={EmpTabsEnum.Enum.current} className="h-6">
 					{t("table.current")}
 				</TabsTrigger>
 				<TabsTrigger value={EmpTabsEnum.Enum.history} className="h-6">
 					{t("table.history")}
 				</TabsTrigger>
-				<TabsTrigger value={EmpTabsEnum.Enum.calendar} className="h-6">
-					{t("table.calendar")}
-				</TabsTrigger>
+				{/* <TabsTrigger value={EmpTabsEnum.Enum.calendar} className="h-6"> */}
+				{/* 	{t("table.calendar")} */}
+				{/* </TabsTrigger> */}
 			</TabsList>
 			{/* functions */}
 			<div className="flex">

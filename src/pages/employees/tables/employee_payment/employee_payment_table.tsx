@@ -1,7 +1,5 @@
-import { LoadingSpinner } from "~/components/loading";
 import { DataTableUpdate } from "../../components/data_table_update";
 import { api } from "~/utils/api";
-import { useTranslation } from "react-i18next";
 import { createColumnHelper } from "@tanstack/react-table";
 import { type EmployeePaymentFEType } from "~/server/api/types/employee_payment_type";
 import { FunctionsComponent } from "~/components/data_table/functions_component";
@@ -18,6 +16,7 @@ import {
 	type PaymentRowItemKey,
 	usePaymentFunctionContext,
 } from "./employee_payment_provider";
+import { useTrustFunctionContext } from "../employee_trust/employee_trust_provider";
 
 const columnHelper = createColumnHelper<PaymentRowItem>();
 
@@ -101,7 +100,7 @@ function PaymentFunctionComponent({
 	t: TFunction<[string], undefined>;
 	data: PaymentRowItem;
 }) {
-	const { setOpen, setMode, setData } = usePaymentFunctionContext();
+	const { setOpen, setMode, setData } = useTrustFunctionContext();
 
 	return (
 		<FunctionsComponent
@@ -128,30 +127,11 @@ export function employeePaymentMapper(
 	});
 }
 
-export function EmployeePaymentTable({ period_id }: any) {
-	const { t } = useTranslation(["common"]);
-
-	const { isLoading, isError, data, error } =
-		api.employeePayment.getCurrentEmployeePayment.useQuery({ period_id });
-
-	if (isLoading) {
-		return <LoadingSpinner />; // TODO: Loading element with toast
-	}
-
-	if (isError) {
-		return <span>Error: {error.message}</span>; // TODO: Error element with toast
-	}
-
-	if (!data) {
-		return <div />;
-	}
-
+export function EmployeePaymentTable() {
 	return (
 		<EmployeePaymentFunctionContextProvider>
 			<DataTableUpdate
-				columns={employee_payment_columns({ t })}
 				columnNames={columnNames}
-				data={employeePaymentMapper(data)}
 				historyDataFunction={() =>
 					api.employeePayment.getAllEmployeePayment.useQuery()
 				}

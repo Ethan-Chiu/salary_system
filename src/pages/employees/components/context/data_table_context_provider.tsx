@@ -1,5 +1,4 @@
-import React, { useState, type PropsWithChildren } from "react";
-import dataTableContext, { FunctionMode } from "./data_table_context";
+import { createContext, useContext, useState, type PropsWithChildren } from "react";
 import {
 	type EmployeeTableEnum,
 	EmployeeTableEnumValues,
@@ -7,13 +6,27 @@ import {
 import { type Table } from "@tanstack/react-table";
 import { EmpTabsEnum, type EmpTabsEnumType } from "./employee_tabs_enum";
 
-interface DataTableContextProviderProps {}
 
-export type EmpTableObject = {
+type EmpTableObject = {
 	table: Table<any>;
 };
 
-export default function DataTableContextProvider({
+const dataTableContext = createContext<{
+  period_id: number
+	selectedTableType: EmployeeTableEnum;
+	setSelectedTableType: (table: EmployeeTableEnum) => void;
+	selectedTab: EmpTabsEnumType;
+	setSelectedTab: (tab: EmpTabsEnumType) => void;
+	selectedTable: EmpTableObject | null;
+	setSelectedTable: (table: EmpTableObject | null) => void;
+} | null >(null);
+
+interface DataTableContextProviderProps {
+	period_id: number;
+}
+
+export function EmployeeTableContextProvider({
+  period_id,
 	children,
 }: PropsWithChildren<DataTableContextProviderProps>) {
 	const [selectedTableType, setSelectedTableType] =
@@ -27,28 +40,29 @@ export default function DataTableContextProvider({
 		null
 	);
 
-	const [open, setOpen] = useState<boolean>(false);
-	const [mode, setMode] = useState<FunctionMode>("none");
-	const [data, setData] = useState<any>(null);
-
 	return (
 		<dataTableContext.Provider
 			value={{
+				period_id,
 				selectedTableType,
 				setSelectedTableType,
-        selectedTab,
-        setSelectedTab,
-        selectedTable,
-        setSelectedTable,
-				mode,
-				setMode,
-				open,
-				setOpen,
-				data,
-				setData,
+				selectedTab,
+				setSelectedTab,
+				selectedTable,
+				setSelectedTable,
 			}}
 		>
 			{children}
 		</dataTableContext.Provider>
 	);
+}
+
+export function useEmployeeTableContext() {
+  const context = useContext(dataTableContext);
+  if (context === null) {
+    throw new Error(
+      "useEmployeeTableContext must be used within a EmployeeTableContextProvider"
+    );
+  }
+  return context;
 }
