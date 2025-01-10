@@ -17,6 +17,7 @@ import {
 } from "../api/types/employee_payment_type";
 import { EmployeePaymentMapper } from "../database/mapper/employee_payment_mapper";
 import { EmployeeDataService } from "./employee_data_service";
+import { LongServiceEnum } from "../api/types/long_service_enum";
 
 @injectable()
 export class EmployeePaymentService {
@@ -554,7 +555,8 @@ export class EmployeePaymentService {
 			employeePayment.food_allowance +
 			employeePayment.supervisor_allowance +
 			employeePayment.occupational_allowance +
-			employeePayment.subsidy_allowance;
+			employeePayment.subsidy_allowance +
+			(employeePayment.long_service_allowance_type == LongServiceEnum.Enum.month_allowance ? employeePayment.long_service_allowance : 0);
 
 		const result = [];
 		const levelRangeList =
@@ -585,7 +587,7 @@ export class EmployeePaymentService {
 			l_i: result.find((r) => r.type === "勞保")?.level ?? 0,
 			h_i: result.find((r) => r.type === "健保")?.level ?? 0,
 			l_r:
-				employeeData.work_type != "外籍勞工"
+				employeeData.work_type != "外籍勞工" && employeeData.work_status != "外籍勞工"
 					? result.find((r) => r.type === "勞退")?.level ?? 0
 					: 0,
 			occupational_injury:

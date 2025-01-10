@@ -8,20 +8,20 @@ import { stringToEnum } from "~/server/api/types/z_utils";
 import { get_date_string } from "~/server/service/helper_function";
 
 const dbEmpAll = z.object({
-    EMP_NO: z.string(),
-    EMP_NAME: z.string(),
+    EMPLOYEE_NO: z.string(),
+    NAME: z.string(),
     POSITION: z.number(),
     POSITION_TYPE: z.string(),
-    GINSURANCE_TYPE: z.string(),
-    U_DEP: z.string(),
-    WORK_TYPE: stringToEnum.pipe(WorkTypeEnum),
+    GIN: z.string(),
+    USER_YIM: z.string(),
+    DL_IDL: stringToEnum.pipe(WorkTypeEnum),
     WORK_STATUS: stringToEnum.pipe(WorkStatusEnum),
     ACCESSIBLE: z.string().nullable(),
     SEX_TYPE: z.string(),
-    DEPENDENTS: z.number().nullable(),
-    HEALTHCARE: z.number().nullable(),
+    扶養人數: z.number().nullable(),
+    健保眷口數: z.number().nullable(),
     REGISTRATION_DATE: z.date(),
-    QUIT_DATE: z.date().nullable(),
+    LEAVE_DATE: z.date().nullable(),
     LICENS_ID: z.string(),
     NBANKNUMBER: z.string(),
 });
@@ -82,7 +82,13 @@ export class EmpAll {
     }
 
     static fromDB(db_data: any): EmpAll {
-        const result = dbEmpAll.safeParse(db_data);
+        const result = dbEmpAll.safeParse({
+            ...db_data,
+            USER_YIM: db_data.USER_YIM ?? "MISSING",
+            WORK_STATUS: db_data.WORK_STATUS ?? "一般員工",
+            ACCESSIBLE: db_data.ACCESSIBLE !== 0 ? db_data.ACCESSIBLE : null,
+            NBANKNUMBER: db_data.NBANKNUMBER ?? "MISSING",
+        });
 
         if (!result.success) {
             throw new Error(result.error.message);
@@ -94,23 +100,23 @@ export class EmpAll {
         const FORMAT_REGISTRATION_DATE = get_date_string(
             data.REGISTRATION_DATE
         );
-        const FORMAT_QUIT_DATE = data.QUIT_DATE
-            ? get_date_string(data.QUIT_DATE)
+        const FORMAT_QUIT_DATE = data.LEAVE_DATE
+            ? get_date_string(data.LEAVE_DATE)
             : null;
 
         return new EmpAll(
-            data.EMP_NO,
-            data.EMP_NAME,
+            data.EMPLOYEE_NO,
+            data.NAME,
             data.POSITION,
             data.POSITION_TYPE,
-            data.GINSURANCE_TYPE,
-            data.U_DEP,
-            data.WORK_TYPE,
+            data.GIN,
+            data.USER_YIM,
+            data.DL_IDL,
             data.WORK_STATUS,
             data.ACCESSIBLE,
             data.SEX_TYPE,
-            data.DEPENDENTS,
-            data.HEALTHCARE,
+            data.扶養人數,
+            data.健保眷口數,
             FORMAT_REGISTRATION_DATE,
             FORMAT_QUIT_DATE,
             data.LICENS_ID,

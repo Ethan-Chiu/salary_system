@@ -70,6 +70,7 @@ export class EmployeeTrustMapper extends BaseMapper<
 			const trust_money_start_date = trust_money.start_date;
 			if (
 				trust_money_start_date.getTime() > start_dates[0]!.getTime() &&
+				(last_end_date == null || trust_money_start_date.getTime() <= last_end_date.getTime()) &&
 				!start_dates
 					.map((d) => d.getTime())
 					.includes(trust_money_start_date.getTime())
