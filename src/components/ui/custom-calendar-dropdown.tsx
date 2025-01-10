@@ -8,11 +8,13 @@ import {
 	SelectGroup,
 } from "~/components/ui/select";
 import { type DropdownProps } from "react-day-picker";
+import { cn } from "~/lib/utils";
 
 export function CustomCalendarDropdown({
 	value,
 	onChange,
 	children,
+  className,
 	...props
 }: DropdownProps) {
 	const options = React.Children.toArray(children) as React.ReactElement<
@@ -32,7 +34,7 @@ export function CustomCalendarDropdown({
 				handleChange(value);
 			}}
 		>
-			<SelectTrigger className="pr-1.5 focus:ring-0">
+			<SelectTrigger className={cn("pr-1.5 focus:ring-0", className)}>
 				<SelectValue>{selected?.props?.children}</SelectValue>
 			</SelectTrigger>
 			<SelectContent>
