@@ -18,3 +18,9 @@
 2. Run the command `yarn install` to install the dependencies.
 3. Run the command `yarn dev` to enter develop mode. 
 4. Then open browser (or use `curl` command) to check the website. The project will be launched at `http://localhost:3000/`.
+
+## Notice
+
+Follow this issue:
+https://github.com/shadcn-ui/ui/issues/1647
+

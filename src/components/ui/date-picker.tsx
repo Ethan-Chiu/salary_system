@@ -19,7 +19,7 @@ const DatePicker = forwardRef<
 		setDate: (date?: Date) => void;
 	} & React.HTMLAttributes<HTMLDivElement>
 >(({ className, date, setDate, ...props }, ref) => (
-	<Popover {...props}>
+	<Popover {...props} modal>
 		<PopoverTrigger asChild>
 			<Button
 				variant={"outline"}
@@ -32,15 +32,15 @@ const DatePicker = forwardRef<
 				{date ? format(date, "PPP") : <span>Pick a date</span>}
 			</Button>
 		</PopoverTrigger>
-		<PopoverContent
-			className={cn("pointer-events-auto w-auto p-0", className)}
-			ref={ref}
-		>
+		<PopoverContent className={cn("w-auto p-0", className)} ref={ref}>
 			<Calendar
 				mode="single"
 				selected={date}
 				onSelect={setDate}
-				initialFocus
+				fixedWeeks
+				captionLayout="dropdown-buttons"
+				fromYear={new Date().getFullYear() - 30}
+				toYear={new Date().getFullYear() + 30}
 			/>
 		</PopoverContent>
 	</Popover>
