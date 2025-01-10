@@ -17,13 +17,13 @@ import {
 	DropdownMenuSeparator,
 } from "~/components/ui/dropdown-menu";
 import {
-	Sheet,
-	SheetContent,
-	SheetDescription,
-	SheetHeader,
-	SheetTitle,
-	SheetTrigger,
-} from "~/components/ui/sheet";
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "~/components/ui/dialog";
 
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { Button } from "~/components/ui/button";
@@ -38,6 +38,7 @@ import { modeDescription } from "~/lib/utils/helper_function";
 import { employeeToolbarFunctionsContext } from "./employee_functions_context";
 import dataTableContext from "../context/data_table_context";
 import { ConfirmDialog } from "./confirm_dialog";
+import { ExcelDownload } from "../excel_download/ExcelDownloader";
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
@@ -67,7 +68,7 @@ export function DataTableFunctions({
 
 	return (
 		<div className={cn(className, "flex h-full items-center")}>
-			<Sheet open={open && mode !== "delete"} onOpenChange={setOpen}>
+			<Dialog open={open && mode !== "delete"} onOpenChange={setOpen}>
 				{/* Dropdown */}
 				<DropdownMenu modal={false}>
 					<DropdownMenuTrigger asChild>
@@ -109,8 +110,16 @@ export function DataTableFunctions({
 					</DropdownMenuContent>
 				</DropdownMenu>
 				{/* Sheet */}
-				<SheetContent className="w-[50%]">
-					{mode !== "none" && (
+				<DialogContent className="w-[50%]">
+					{mode === "excel_download" && (
+						<>
+							<ExcelDownload
+								table_name={tableType}
+								closeSheet={() => setOpen(false)}
+							/>
+						</>
+					)}
+					{/* {mode !== "none" && (
 						<>
 							<SheetHeader>
 								<SheetTitle>
@@ -135,14 +144,14 @@ export function DataTableFunctions({
 								<ScrollBar orientation="horizontal" />
 							</ScrollArea>
 						</>
-					)}
-				</SheetContent>
+					)} */}
+				</DialogContent>
 				<ConfirmDialog
 					open={open && mode === "delete"}
 					onOpenChange={setOpen}
 					schema={getSchema(tableType)!}
 				/>
-			</Sheet>
+			</Dialog>
 		</div>
 	);
 
@@ -152,7 +161,7 @@ export function DataTableFunctions({
 		icon: LucideIcon;
 	}) {
 		return (
-			<SheetTrigger
+			<DialogTrigger
 				className="w-full"
 				onClick={() => {
 					setMode(props.mode);
@@ -163,7 +172,7 @@ export function DataTableFunctions({
 					<props.icon className="mr-2 h-4 w-4" />
 					<span>{props.itemName}</span>
 				</DropdownMenuItem>
-			</SheetTrigger>
+			</DialogTrigger>
 		);
 	}
 }
