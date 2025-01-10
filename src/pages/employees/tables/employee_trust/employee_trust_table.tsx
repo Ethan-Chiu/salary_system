@@ -1,5 +1,5 @@
 import { LoadingSpinner } from "~/components/loading";
-import { DataTableUpdate } from "../components/data_table_update";
+import { DataTableUpdate } from "../../components/data_table_update";
 import { api } from "~/utils/api";
 import { useTranslation } from "react-i18next";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -17,7 +17,7 @@ import {
 	type TrustRowItem,
 	type TrustRowItemKey,
 	useTrustFunctionContext,
-} from "./providers/employee_trust_provider";
+} from "./employee_trust_provider";
 
 const columnHelper = createColumnHelper<TrustRowItem>();
 

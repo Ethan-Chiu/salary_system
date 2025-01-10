@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { type PropsWithChildren, useContext } from "react";
 import {
 	createTableFunctionContext,
 	useTableFunctionState,
@@ -15,7 +15,7 @@ const employeeTrustFunctionContext = createTableFunctionContext<
 	TrustRowItem
 >();
 
-export function EmployeeTrustFunctionContextProvider({ children }: any) {
+export function EmployeeTrustFunctionContextProvider({ children }: PropsWithChildren) {
 	const { open, setOpen, mode, setMode, data, setData } =
 		useTableFunctionState<TrustFunctionModes, TrustRowItem>("none");
 

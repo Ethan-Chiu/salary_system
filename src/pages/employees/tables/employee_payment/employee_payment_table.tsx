@@ -1,44 +1,27 @@
 import { LoadingSpinner } from "~/components/loading";
-import { DataTableUpdate } from "../components/data_table_update";
+import { DataTableUpdate } from "../../components/data_table_update";
 import { api } from "~/utils/api";
 import { useTranslation } from "react-i18next";
 import { createColumnHelper } from "@tanstack/react-table";
 import { type EmployeePaymentFEType } from "~/server/api/types/employee_payment_type";
 import { FunctionsComponent } from "~/components/data_table/functions_component";
-import { useContext } from "react";
 import { type TFunction } from "i18next";
 import {
 	ColumnHeaderBaseComponent,
 	ColumnHeaderComponent,
 } from "~/components/data_table/column_header_component";
-import { Sheet } from "~/components/ui/sheet";
 import { formatDate } from "~/lib/utils/format_date";
 import { ColumnCellComponent } from "~/components/data_table/column_cell_component";
-import dataTableContext from "../components/context/data_table_context";
-import { createTableFunctionContext } from "~/components/table_functions/context/table_functions_context";
+import {
+	EmployeePaymentFunctionContextProvider,
+	type PaymentRowItem,
+	type PaymentRowItemKey,
+	usePaymentFunctionContext,
+} from "./employee_payment_provider";
 
-type FunctionMode = "create" | "update" | "delete" | "none";
+const columnHelper = createColumnHelper<PaymentRowItem>();
 
-type FunctionsItem = {
-	creatable: boolean;
-	updatable: boolean;
-	deletable: boolean;
-};
-
-type RowItem = Omit<
-	EmployeePaymentFEType,
-	"start_date" | "end_date" | "long_service_allowance_type"
-> & {
-	long_service_allowance_type: string;
-	start_date: Date | null;
-	end_date: Date | null;
-	functions: FunctionsItem;
-};
-type RowItemKey = keyof RowItem;
-
-const columnHelper = createColumnHelper<RowItem>();
-
-const columnNames: RowItemKey[] = [
+const columnNames: PaymentRowItemKey[] = [
 	"department",
 	"emp_no",
 	"emp_name",
@@ -62,14 +45,8 @@ const columnNames: RowItemKey[] = [
 
 export const employee_payment_columns = ({
 	t,
-	setOpen,
-	setMode,
-	setData,
 }: {
 	t: TFunction<[string], undefined>;
-	setOpen: (open: boolean) => void;
-	setMode: (mode: FunctionMode) => void;
-	setData: (data: RowItem) => void;
 }) => [
 	...columnNames.map((key) =>
 		columnHelper.accessor(key, {
@@ -112,22 +89,34 @@ export const employee_payment_columns = ({
 			);
 		},
 		cell: ({ row }) => {
-			return (
-				<FunctionsComponent
-					t={t}
-					setOpen={setOpen}
-					setMode={setMode}
-					data={row.original}
-					setData={setData}
-				/>
-			);
+			return <PaymentFunctionComponent t={t} data={row.original} />;
 		},
 	}),
 ];
 
+function PaymentFunctionComponent({
+	t,
+	data,
+}: {
+	t: TFunction<[string], undefined>;
+	data: PaymentRowItem;
+}) {
+	const { setOpen, setMode, setData } = usePaymentFunctionContext();
+
+	return (
+		<FunctionsComponent
+			t={t}
+			setOpen={setOpen}
+			setMode={setMode}
+			data={data}
+			setData={setData}
+		/>
+	);
+}
+
 export function employeePaymentMapper(
 	employeePaymentData: EmployeePaymentFEType[]
-): RowItem[] {
+): PaymentRowItem[] {
 	return employeePaymentData.map((d) => {
 		return {
 			...d,
@@ -139,13 +128,8 @@ export function employeePaymentMapper(
 	});
 }
 
-const employeePaymentFunctionContext = createTableFunctionContext<"none" | "create" | "update" | "delete", RowItem>("none")
-
 export function EmployeePaymentTable({ period_id }: any) {
 	const { t } = useTranslation(["common"]);
-
-	const { open, setOpen, mode, setMode, setData } =
-		useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.employeePayment.getCurrentEmployeePayment.useQuery({ period_id });
@@ -158,20 +142,14 @@ export function EmployeePaymentTable({ period_id }: any) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-  if (!data) {
-    return <div/>
-  }
+	if (!data) {
+		return <div />;
+	}
 
 	return (
-		<Sheet open={open && mode !== "delete"} onOpenChange={setOpen}>
-			{/* // TODO: figure out its type */}
+		<EmployeePaymentFunctionContextProvider>
 			<DataTableUpdate
-				columns={employee_payment_columns({
-					t,
-					setOpen,
-					setMode,
-					setData,
-				})}
+				columns={employee_payment_columns({ t })}
 				columnNames={columnNames}
 				data={employeePaymentMapper(data)}
 				historyDataFunction={() =>
@@ -181,6 +159,6 @@ export function EmployeePaymentTable({ period_id }: any) {
 					api.employeePayment.getAllEmployeePayment.useQuery()
 				}
 			/>
-		</Sheet>
+		</EmployeePaymentFunctionContextProvider>
 	);
 }
