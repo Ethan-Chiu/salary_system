@@ -40,8 +40,10 @@ import {
 } from "~/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { TabsContent } from "@radix-ui/react-tabs";
-import { parameterToolbarFunctionsContext } from "../function_sheet/parameter_functions_context";
+import { bonusToolbarFunctionsContext } from "../function_sheet/bonus_functions_context";
 import { FileUploader } from "./fileUpload";
+import periodContext from "~/components/context/period_context";
+import dataTableContext from "../context/data_table_context";
 
 function transposeData(data: any[][]): any[][] {
 	const tranposed_data = (data[0] ?? []).map((_, colIndex) =>
@@ -52,8 +54,10 @@ function transposeData(data: any[][]): any[][] {
 
 export function recoverData(
 	data: any,
+	period_id: number,
+	bonus_type: string,
 	isList: boolean,
-	table_name?: string
+	table_name?: string,
 ): Record<string, any>[] | Record<string, any> {
 	if (!Array.isArray(data) || data.length === 0) return [];
 
@@ -62,60 +66,61 @@ export function recoverData(
 		inverse_translate(String(original_header), table_name)
 	);
 
-
-
 	// Map each row to an object using the keys
 	const mappedData = data.slice(1).map((row: any[]) => {
-		let obj: Record<string, any> = {}
-		for (let i = 0; i < keys.length; i++) {
-			if (i < row.length) {
-				obj[keys[i]] = row[i];
-
-				if (row[i] !== undefined) {
-					if (typeof row[i] === "string") {
-						if (row[i].includes("年") && row[i].includes("月") && row[i].includes("日")) {
+		return row.reduce(
+			(obj: Record<string, any>, value: any, index: number) => {
+				if (keys[index] !== undefined) {
+					obj[keys[index]] = value;
+					if (typeof value === "string") {
+						if (
+							value.includes("年") &&
+							value.includes("月") &&
+							value.includes("日")
+						) {
 							// Replace "年", "月", "日" with "/" and construct the date
-							const formattedDate = row[i]
+							const formattedDate = value
 								.replace("年", "/")
 								.replace("月", "/")
 								.replace("日", "");
 							const parsedDate = new Date(formattedDate);
-	
+
 							// Check if the date is valid
 							if (!isNaN(parsedDate.getTime())) {
-								obj[keys[i]] = parsedDate;
+								obj[keys[index]] = parsedDate;
 							} else {
 								console.warn("Invalid date:", formattedDate);
 							}
 						}
 					}
 				}
-			}
-			else {
-				obj[keys[i]] = null;
-			}
-		}
-		return obj;
-
+				return obj;
+			},
+			{}
+		);
 	});
-	
 
 	// Remove Empty Objects
 	while (
 		mappedData.length > 0 &&
-		(
-			Object.keys((mappedData as any)[mappedData.length - 1]).length === 0 ||
-			Object.keys((mappedData as any)[mappedData.length - 1]).filter((key) => mappedData[mappedData.length - 1]![key] === null).length === keys.length
-		)
+		Object.keys((mappedData as any)[mappedData.length - 1]).length === 0
 	) {
 		mappedData.pop();
 	}
 
-
 	if (isList) {
-		return mappedData;
+		return mappedData.map((row) => {
+			// add key period_id and bonus_type
+			return {
+				...row,
+				period_id: period_id,
+				bonus_type: bonus_type,
+			};
+		});
 	} else {
-		return mappedData[0] ?? {};
+		return mappedData[0]
+			? { ...mappedData[0], period_id: period_id, bonus_type: bonus_type }
+			: {};
 	}
 }
 
@@ -126,16 +131,24 @@ export function ExcelUpload({
 	tableType: string;
 	closeDialog: () => void;
 }) {
+
+	const { selectedPeriod } = useContext(periodContext);
+	const { selectedTableType, selectedBonusType } = useContext(dataTableContext);
+	const functions = useContext(bonusToolbarFunctionsContext);
+
 	const [view, setView] = useState("upload");
 	const [files, setFiles] = useState<File[]>([]);
 	const [data, setData] = useState<any[]>([]);
 
-	const notList =
-		tableType == "TableAttendance" || tableType == "TableInsurance";
+	const notList = tableType == "TableBonusAll";
 	const isList = !notList;
-	const notListData: any = recoverData(data.map((d) => d.slice(1)), false);
+	const notListData: any = recoverData(
+		data.map((d) => d.slice(1)),
+		selectedPeriod?.period_id ?? 0,
+		selectedBonusType,
+		false
+	);
 
-	const functions = useContext(parameterToolbarFunctionsContext);
 	const createFunction = functions.createFunction!;
 	const batchCreateFunction = functions.batchCreateFunction!;
 	const { t } = useTranslation("common");
@@ -253,13 +266,25 @@ export function ExcelUpload({
 										))}
 
 								{notList &&
-									Object.keys(notListData).map((key: string) => (
+									Object.keys(notListData).map(
+										(key: string) => (
 											<TableRow key={key}>
-												<TableCell>{t(`table.${key}`)}</TableCell>
 												<TableCell>
-													{isDateType(notListData[key]) ? formatDate("day", notListData[key]) : notListData[key]}</TableCell>
+													{t(`table.${key}`)}
+												</TableCell>
+												<TableCell>
+													{isDateType(
+														notListData[key]
+													)
+														? formatDate(
+																"day",
+																notListData[key]
+														  )
+														: notListData[key]}
+												</TableCell>
 											</TableRow>
-										))}
+										)
+									)}
 							</TableBody>
 						</Table>
 					</div>
@@ -269,20 +294,27 @@ export function ExcelUpload({
 							<Button
 								className="ml-auto"
 								onClick={() => {
-									if (notList) {
+									// console.log(recoverData(data.map((d) => d.slice(1))))
+									if (notList)
 										createFunction.mutate(
 											recoverData(
 												data.map((d) => d.slice(1)),
-												false
+												selectedPeriod?.period_id ?? 0,
+												selectedBonusType,
+												false,
+												selectedTableType
 											)
 										);
-									}
-									else {
-										console.log(recoverData(data.map((d) => d.slice(1)), isList, tableType))
+									else
 										batchCreateFunction.mutate(
-											recoverData(data.map((d) => d.slice(1)), true, tableType)
+											recoverData(
+												data.map((d) => d.slice(1)),
+												selectedPeriod?.period_id ?? 0,
+												selectedBonusType,
+												true,
+												selectedTableType
+											)
 										);
-									}
 									closeDialog();
 								}}
 							>

@@ -56,6 +56,15 @@ export class LevelRangeService {
 		return newData;
 	}
 
+	async batchCreateLevelRange(
+		data_array: z.infer<typeof createLevelRangeService>[]
+	): Promise<LevelRange[]> {
+		const newData = await Promise.all(
+			data_array.map(async (d) => await this.createLevelRange(d))
+		);
+		return newData;
+	}
+
 	async getLevelRangeById(id: number): Promise<LevelRangeDecType | null> {
 		const levelRange = await LevelRange.findOne({
 			where: { id: id },

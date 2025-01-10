@@ -13,6 +13,9 @@ export const createTrustMoneyAPI = TrustMoneyBase
 export const createTrustMoneyService = TrustMoneyBase
 	.merge(dateCreate);
 
+export const batchCreateTrustMoneyAPI = z.array(createTrustMoneyAPI);
+export const batchCreateTrustMoneyService = z.array(createTrustMoneyService);
+
 export const updateTrustMoneyAPI = TrustMoneyBase
 	.merge(dateAll)
 	.partial()

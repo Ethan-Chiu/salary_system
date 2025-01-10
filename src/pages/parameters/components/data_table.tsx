@@ -15,6 +15,8 @@ interface DataTableProps<TData> {
 	data: TData[];
 	filterColumnKey?: keyof TData;
 	showTabs?: boolean;
+
+	original_columns?: Array<string>;
 }
 
 export function DataTable<TData>({
@@ -22,6 +24,7 @@ export function DataTable<TData>({
 	data,
 	/* filterColumnKey, */
 	showTabs,
+	original_columns
 }: DataTableProps<TData>) {
 
 	const { selectedTab, setSelectedTab, selectedTableType } =
@@ -48,7 +51,7 @@ export function DataTable<TData>({
 				<Separator />
 				<TabsContent value={TabsEnum.Enum.current} asChild>
 					<div className="flex h-0 w-full flex-grow flex-col">
-						<CurrentView columns={columns} data={data} />
+						<CurrentView columns={columns} data={data} original_columns={original_columns}/>
 					</div>
 				</TabsContent>
 				<TabsContent

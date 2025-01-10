@@ -1,26 +1,37 @@
 import React, { useEffect, useState, useContext } from "react";
 import ExcelJS from "exceljs";
-import {
-	DialogFooter,
-} from "~/components/ui/dialog";
+import { DialogFooter } from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
 
 import { useTranslation } from "react-i18next";
-import dataTableContext from "../context/data_table_context";
+
 import { getExcelData } from "./utils";
 
-export function ExcelDownload({ table_name }: { table_name: string }) {
+import dataTableContext from "../context/data_table_context";
+import periodContext from "~/components/context/period_context";
+
+export function ExcelDownload({ 
+	table_name,
+	bonus_type
+}: { 
+	table_name: string,
+	bonus_type: string
+}) {
+
+	const { selectedTable, selectedTableType } = useContext(dataTableContext);
+	const { selectedPeriod } = useContext(periodContext);
+	
+	const period_name = selectedPeriod?.period_name ?? "ERROR";
 
 	function getTableName() {
-		if (table_name == "TableAttendance") return "attendanceSetting";
-		if (table_name == "TableBankSetting") return "bankSetting";
-		if (table_name == "TableInsurance") return "insuranceRateSetting";
-		if (table_name == "TableTrustMoney") return "trustMoney";
-		if (table_name == "TableLevel") return "level";
-		if (table_name == "TableLevelRange") return "levelRange";
-		if (table_name == "TableSalaryIncomeTax") return "salaryIncomeTax";
+		if (table_name == "TableBonusAll") 			return "bonusAll";
+		if (table_name == "TableBonusWorkType") 	return "bonusWorkType";
+		if (table_name == "TableBonusDepartment") 	return "bonusDepartment";
+		if (table_name == "TableBonusPosition") 	return "bonusPosition";
+		if (table_name == "TableBonusPositionType") return "bonusPositionType";
+		if (table_name == "TableBonusSeniority") 	return "bonusSeniority";
 
 		return table_name;
 	}
@@ -34,10 +45,9 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 
 	const [filename, setFilename] = useState("excel.xlsx");
 	useEffect(() => {
-		setFilename(`${t(`table_name.${getTableName()}`)}.xlsx`);
+		// [table_name]_[bonus_type]_[period_name].xlsx
+		setFilename(`${t(`table_name.${getTableName()}`)}_${t(`table.${bonus_type}`)}_${period_name}.xlsx`);
 	}, [table_name]);
-
-	const { selectedTable } = useContext(dataTableContext);
 
 	function transposeData(data: any[][]): any[][] {
 		const tranposed_data = (data[0] ?? []).map((_, colIndex) => data.map(row => row[colIndex]));
@@ -53,7 +63,9 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 
 		const workbook = new ExcelJS.Workbook();
 
-		const shouldTranspose = (table_name == "TableInsurance") || (table_name == "TableAttendance");
+		const shouldTranspose = [
+			"TableBonusAll",
+		].includes(table_name);
 
 
 
@@ -87,7 +99,6 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 				if (datas.length == 0) {
 					const translated_headers = getColumns()?.map((header: string) => t(`table.${header}`));
 					if (shouldTranspose) {
-						// TODO: Where to get the headers?
 						worksheet.addRow(translated_headers);
 					}
 					else {
@@ -167,6 +178,8 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 			</div>
 			<DialogFooter>
 				<Button type="submit" onClick={() => 
+					// console.log(selectedTable?.table.getFilteredRowModel().rows.map((r) => r.original))
+					// console.log(selectedTable?.table.options.meta?.original_columns)
 					handleExportExcel(
 						getExcelData(selectedTable?.table.getFilteredRowModel().rows.map((r) => r.original)!, ["id", "functions"]),
 						filename
