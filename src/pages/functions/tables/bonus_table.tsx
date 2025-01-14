@@ -1,6 +1,5 @@
 import { LoadingSpinner } from "~/components/loading";
 import { DataTable } from "../components/data_table";
-import { BonusWithType } from "~/server/service/ehr_service";
 import { api } from "~/utils/api";
 import { type I18nType } from "~/lib/utils/i18n_type";
 import { useTranslation } from "react-i18next";

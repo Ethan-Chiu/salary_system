@@ -10,7 +10,6 @@ import { BaseResponseError } from "../api/error/BaseResponseError";
 import { select_value } from "./helper_function";
 import { Op } from "sequelize";
 import { EmployeeDataMapper } from "../database/mapper/employee_data_mapper";
-import { EHRService } from "./ehr_service";
 
 @injectable()
 export class EmployeeDataService {
@@ -94,11 +93,27 @@ export class EmployeeDataService {
 			order: [["period_id", "DESC"]],
 			raw: true,
 		});
-		if (employeeData == null) {
-			throw new Error(`Employee data does not exist,emp_no: ${emp_no}`)
-		}
 		const employee_data_mapper = container.resolve(EmployeeDataMapper);
-		return await employee_data_mapper.decode(employeeData[0]);
+		return await employee_data_mapper.decode(employeeData[0]!);
+	}
+
+	async getLatestEmployeeDataByEmpNoList(emp_no_list: string[]): Promise<EmployeeDataDecType[]> {
+		const candidates = await EmployeeData.findAll({
+			where: {
+				emp_no: { [Op.in]: emp_no_list },
+			},
+			order: [["period_id", "DESC"]],
+			raw: true,
+		});
+		const employeeDataList = emp_no_list.map((emp_no) => {
+			const employeeData = candidates.find((candidate) => candidate.emp_no === emp_no);
+			if (employeeData == null) {
+				throw new BaseResponseError(`Employee data does not exist, emp_no: ${emp_no}`);
+			}
+			return employeeData;
+		})
+		const employee_data_mapper = container.resolve(EmployeeDataMapper);
+		return await employee_data_mapper.decodeList(employeeDataList);
 	}
 	// async getEmployeeDataByEmpNoByDate(date: Date,emp_no: string): Promise<EmployeeDataDecType | null> {
 	// 	const ehr_service = container.resolve(EHRService);
@@ -118,8 +133,8 @@ export class EmployeeDataService {
 	// 	return await employee_data_mapper.decode(employeeData);
 	// }
 
-	async getEmployeeDataByEmpNoList(period_id: number, emp_no_list: string[]): Promise<EmployeeDataDecType[] | null> {
-		const employeeDataList = await EmployeeData.findAll({
+	async getEmployeeDataByEmpNoListByPeriod(period_id: number, emp_no_list: string[]): Promise<EmployeeDataDecType[]> {
+		const employeeDataList = (await EmployeeData.findAll({
 			where: {
 				emp_no: {
 					[Op.in]: emp_no_list,
@@ -127,7 +142,7 @@ export class EmployeeDataService {
 				period_id: period_id
 			},
 			raw: true,
-		});
+		})).filter((employeeData) => emp_no_list.includes(employeeData.emp_no));
 		const employee_data_mapper = container.resolve(EmployeeDataMapper);
 		return await employee_data_mapper.decodeList(employeeDataList);
 	}

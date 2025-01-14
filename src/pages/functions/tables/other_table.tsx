@@ -120,8 +120,6 @@ export function OtherTable({ period_id, emp_no_list }: OtherTableProps) {
 	// 	return <Button onClick={() => console.log(details.data)}>test</Button>
 	// }	
 
-
-
 	if (data) {
 		const filteredData = data.filter((d: any) =>
 			["other_addition",

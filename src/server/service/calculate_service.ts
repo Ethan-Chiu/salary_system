@@ -7,29 +7,26 @@
 */
 import { container, injectable } from "tsyringe";
 import { EmployeeDataDecType } from "../database/entity/SALARY/employee_data";
-import { AllowanceWithType, EHRService, ExpenseWithType } from "./ehr_service";
+import { ExpenseWithType } from "./ehr_service";
 import { Overtime } from "../database/entity/UMEDIA/overtime";
 import { Payset } from "../database/entity/UMEDIA/payset";
 import {
-	InsuranceRateSetting,
 	InsuranceRateSettingDecType,
 } from "../database/entity/SALARY/insurance_rate_setting";
 import { Holiday } from "../database/entity/UMEDIA/holiday";
 import { PayTypeEnum, PayTypeEnumType } from "../api/types/pay_type_enum";
 import { HolidaysType } from "../database/entity/SALARY/holidays_type";
-import { employeePaymentFE } from "../api/types/employee_payment_type";
-import { z } from "zod";
 import { Round } from "./helper_function";
-import { SalaryIncomeTaxService } from "./salary_income_tax_service";
 import { bonusTypeEnum } from "../api/types/bonus_type_enum";
-import { EmployeeTrust } from "../database/entity/SALARY/employee_trust";
-import { EmployeeDataService } from "./employee_data_service";
 import { EmployeeBonusService } from "./employee_bonus_service";
-import { EmployeePaymentDecType } from "../database/entity/SALARY/employee_payment";
 import { LongServiceEnum } from "../api/types/long_service_enum";
 import { Expense } from "../database/entity/UMEDIA/expense";
 import { AllowanceType } from "../database/entity/UMEDIA/allowance_type";
 import { ExpenseClass } from "../database/entity/UMEDIA/expense_class";
+import { EmployeePaymentFEType } from "../api/types/employee_payment_type";
+import { Bonus } from "../database/entity/UMEDIA/bonus";
+import { BonusType } from "../database/entity/UMEDIA/bonus_type";
+import { SalaryIncomeTaxDecType } from "../database/entity/SALARY/salary_income_tax";
 
 const FOREIGN = "外籍勞工";
 const PROFESSOR = "顧問";
@@ -47,12 +44,12 @@ const rd = (key: string) => {
 };
 @injectable()
 export class CalculateService {
-	constructor() {}
+	constructor() { }
 
 	// MARK: 平日加班費
 	async getWeekdayOvertimePay(
 		employee_data: EmployeeDataDecType,
-		discounted_employee_payment_dec: EmployeePaymentDecType,
+		discounted_employee_payment_dec: EmployeePaymentFEType,
 		overtime_list: Overtime[],
 		payset: Payset,
 		insurance_rate_setting: InsuranceRateSettingDecType,
@@ -104,23 +101,23 @@ export class CalculateService {
 			return Round(
 				// hourly_fee * t1 +
 				hourly_fee * t2 * 1.34 +
-					hourly_fee * t3 * 1.67 +
-					hourly_fee * t4 * 2 +
-					hourly_fee * t5 * 2.67
+				hourly_fee * t3 * 1.67 +
+				hourly_fee * t4 * 2 +
+				hourly_fee * t5 * 2.67
 			);
 		} else
 			return Round(
 				// hourly_fee * t1 +
 				hourly_fee * t2 * 1.34 +
-					hourly_fee * t3 * 1.67 +
-					hourly_fee * t4 * 2 +
-					hourly_fee * t5 * 2.67
+				hourly_fee * t3 * 1.67 +
+				hourly_fee * t4 * 2 +
+				hourly_fee * t5 * 2.67
 			);
 	}
 	//MARK: 假日加班費
 	async getHolidayOvertimePay(
 		employee_data: EmployeeDataDecType,
-		discounted_employee_payment_dec: EmployeePaymentDecType,
+		discounted_employee_payment_dec: EmployeePaymentFEType,
 		overtime_list: Overtime[],
 		payset: Payset,
 		insurance_rate_setting: InsuranceRateSettingDecType,
@@ -190,7 +187,7 @@ export class CalculateService {
 	// MARK: 超時加班費
 	async getExceedOvertimePay(
 		employee_data: EmployeeDataDecType,
-		discounted_employee_payment_dec: EmployeePaymentDecType,
+		discounted_employee_payment_dec: EmployeePaymentFEType,
 		overtime_list: Overtime[],
 		payset: Payset,
 		insurance_rate_setting: InsuranceRateSettingDecType,
@@ -241,21 +238,21 @@ export class CalculateService {
 			hourly_fee = insurance_rate_setting.min_wage_rate;
 			return Round(
 				hourly_fee * t1 * 1.34 +
-					hourly_fee * t2 * 1.67 +
-					hourly_fee * t3 * 2 +
-					hourly_fee * t4 * 2.67
+				hourly_fee * t2 * 1.67 +
+				hourly_fee * t3 * 2 +
+				hourly_fee * t4 * 2.67
 			);
 		} else
 			return Round(
 				hourly_fee * t1 * 1.34 +
-					hourly_fee * t2 * 1.67 +
-					hourly_fee * t3 * 2 +
-					hourly_fee * t4 * 2.67
+				hourly_fee * t2 * 1.67 +
+				hourly_fee * t3 * 2 +
+				hourly_fee * t4 * 2.67
 			);
 	}
 	//MARK: 應發底薪
 	async getGrossSalary(
-		employee_payment_dec: EmployeePaymentDecType,
+		employee_payment_dec: EmployeePaymentFEType,
 		payset: Payset,
 		professional_cert_allowance: number,
 		pay_type: PayTypeEnumType,
@@ -287,7 +284,7 @@ export class CalculateService {
 				(employee_payment_dec.occupational_allowance ?? 0) +
 				(employee_payment_dec.subsidy_allowance ?? 0) +
 				(employee_payment_dec.long_service_allowance_type ==
-				LongServiceEnum.enum.month_allowance
+					LongServiceEnum.enum.month_allowance
 					? employee_payment_dec.long_service_allowance
 					: 0);
 			return gross_salary;
@@ -296,7 +293,7 @@ export class CalculateService {
 	//MARK: 勞保扣除額
 	async getLaborInsuranceDeduction(
 		employee_data: EmployeeDataDecType,
-		discounted_employee_payment_dec: EmployeePaymentDecType,
+		discounted_employee_payment_dec: EmployeePaymentFEType,
 		payset: Payset,
 		insuranceRateSetting: InsuranceRateSettingDecType
 	): Promise<number> {
@@ -330,10 +327,10 @@ export class CalculateService {
 
 		// if (old_age_benefit)	return 0;	// 'Jerry 100426 已領老年給付者,員工免付勞保
 
-		if ( kind1 === FOREIGN || kind2 === FOREIGN)
+		if (kind1 === FOREIGN || kind2 === FOREIGN)
 			return Round(
 				Round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30) *
-					hinder_rate
+				hinder_rate
 			); // 'Jerry 2023/04/06 由工作天數改為加勞保天數計算
 		if (kind2 === PROFESSOR) return 0;
 		if (kind2 === BOSS)
@@ -345,7 +342,7 @@ export class CalculateService {
 			return (
 				Round(
 					Round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30) +
-						Round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
+					Round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
 				) * hinder_rate
 			);
 		if (
@@ -358,21 +355,21 @@ export class CalculateService {
 			return (
 				Round(
 					Round((Tax * wci_normal * 0.200001 * PartTimeDay) / 30) +
-						Round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
+					Round((Tax * wci_ji * 0.200001 * PartTimeDay) / 30)
 				) * hinder_rate
 			); // 'Jerry 07/07/19 由工作天數改為加勞保天數計算
 
 		return (
 			Round(
 				Round(Tax * wci_normal * 0.200001) +
-					Round(Tax * wci_ji * 0.200001)
+				Round(Tax * wci_ji * 0.200001)
 			) * hinder_rate
 		);
 	}
 	//MARK: 健保扣除額(要多考慮本人障礙 眷屬正常)
 	async getHealthInsuranceDeduction(
 		employee_data: EmployeeDataDecType,
-		discounted_employee_payment_dec: EmployeePaymentDecType,
+		discounted_employee_payment_dec: EmployeePaymentFEType,
 		insurance_rate_setting: InsuranceRateSettingDecType
 	): Promise<number> {
 		// rd("健保扣除額") = CalacHelTax(rd("健保"), rd("健保眷口數"), rd("工作形態"), CheckNull(rd("殘障等級"), "正常"), 0, rd("健保追加"))   'Jerry 07/03/30 加入殘障等級計算  , 07/11/26 增加健保追加計算
@@ -431,7 +428,7 @@ export class CalculateService {
 	//MARK:福利金提撥
 	async getWelfareContribution(
 		employee_data: EmployeeDataDecType,
-		discounted_employee_payment_dec: EmployeePaymentDecType,
+		discounted_employee_payment_dec: EmployeePaymentFEType,
 		full_attendance_bonus: number,
 		operational_performance_bonus: number
 	): Promise<number> {
@@ -518,21 +515,14 @@ export class CalculateService {
 	}
 	//MARK: 全勤獎金
 	async getFullAttendanceBonus(
-		period_id: number,
-		emp_no: string,
-		pay_type: PayTypeEnumType
+		bonus_list: Bonus[],
+		bonus_type_list: BonusType[],
 	): Promise<number> {
-		const ehrService = container.resolve(EHRService);
-		const bonusList = await ehrService.getBonusByEmpNoList(
-			period_id,
-			[emp_no],
-			pay_type
-		);
-		const full_attendance_bonus_id = (await ehrService.getBonusType()).find(
+		const full_attendance_bonus_id = bonus_type_list.find(
 			(bt) => bt.name === "全勤獎金"
 		)?.id!;
 		let full_attendance_bonus = 0;
-		for (const bonus of bonusList) {
+		for (const bonus of bonus_list) {
 			if (bonus.bonus_id === full_attendance_bonus_id) {
 				full_attendance_bonus += bonus.amount ?? 0;
 			}
@@ -541,21 +531,14 @@ export class CalculateService {
 	}
 	//MARK: 團保費代扣
 	async getGroupInsuranceDeduction(
-		period_id: number,
-		emp_no: string
+		expense_list: Expense[],
+		expense_class_list: ExpenseClass[]
 	): Promise<number> {
 		// 在"其他"這張表裡面
-		const ehrService = container.resolve(EHRService);
-		const group_insurance_deduction_ids = (
-			await ehrService.getExpenseClass()
-		)
-			.filter(
-				(ec) => ec.name === "團保費代扣" || ec.name === "團保代扣-眷屬"
-			)
+		const expenseList = expense_list.filter((e) => e.kind === 2);
+		const group_insurance_deduction_ids = expense_class_list
+			.filter((ec) => ec.name === "團保費代扣" || ec.name === "團保代扣-眷屬")
 			.map((ec) => ec.id!);
-		const expenseList = (
-			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
-		).filter((e) => e.kind === 2);
 		let group_insurance_deduction = 0;
 		for (const expense of expenseList) {
 			if (group_insurance_deduction_ids.includes(expense.id!)) {
@@ -565,15 +548,13 @@ export class CalculateService {
 		return group_insurance_deduction;
 	}
 	//MARK: 補發薪資
-	async getReissueSalary(period_id: number, emp_no: string): Promise<number> {
+	async getReissueSalary(
+		expense_list: Expense[],
+		expense_class_list: ExpenseClass[]
+	): Promise<number> {
 		// 在"其他"這張表裡面
-		const ehrService = container.resolve(EHRService);
-		const reissue_salary_id = (await ehrService.getExpenseClass()).find(
-			(ec) => ec.name === "補發薪資"
-		)?.id!;
-		const expenseList = (
-			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
-		).filter((e) => e.kind === 2);
+		const expenseList = expense_list.filter((e) => e.kind === 2);
+		const reissue_salary_id = expense_class_list.find((ec) => ec.name === "補發薪資")?.id!;
 		let reissue_salary = 0;
 		for (const expense of expenseList) {
 			if (expense.id === reissue_salary_id) {
@@ -584,9 +565,8 @@ export class CalculateService {
 	}
 	//MARK: 年終獎金
 	async getYearEndBonus(
-		period_id: number,
-		emp_no: string,
-		pay_set: PayTypeEnumType
+		bonus_list: Bonus[],
+		bonus_type_list: BonusType[],
 	): Promise<number> {
 		// 		=======年終獎金計算=========090121
 
@@ -610,17 +590,9 @@ export class CalculateService {
 		//         End If
 
 		// '============================
-		const ehrService = container.resolve(EHRService);
-		const end_of_year_bonus_id = (await ehrService.getBonusType()).find(
-			(bt) => bt.name === "年終獎金"
-		)?.id!;
-		const bonusList = await ehrService.getBonusByEmpNoList(
-			period_id,
-			[emp_no],
-			pay_set
-		);
+		const end_of_year_bonus_id = bonus_type_list.find((bt) => bt.name === "年終獎金")?.id!;
 		let end_of_year_bonus = 0;
-		for (const bonus of bonusList) {
+		for (const bonus of bonus_list) {
 			if (bonus.bonus_id === end_of_year_bonus_id) {
 				end_of_year_bonus += bonus.amount ?? 0;
 			}
@@ -630,22 +602,14 @@ export class CalculateService {
 
 	//MARK: 營運績效獎金
 	async getOperationalPerformanceBonus(
-		period_id: number,
-		emp_no: string,
-		pay_type: PayTypeEnumType
+		pay_type: PayTypeEnumType,
+		bonus_list: Bonus[],
+		bonus_type_list: BonusType[],
 	): Promise<number> {
 		if (pay_type === PayTypeEnum.enum.foreign_15_bonus) {
-			const ehrService = container.resolve(EHRService);
-			const operational_performance_bonus_id = (
-				await ehrService.getBonusType()
-			).find((bt) => bt.name === "營運績效獎金")?.id!;
-			const bonusList = await ehrService.getBonusByEmpNoList(
-				period_id,
-				[emp_no],
-				pay_type
-			);
+			const operational_performance_bonus_id = bonus_type_list.find((bt) => bt.name === "營運績效獎金")?.id!;
 			let operational_performance_bonus = 0;
-			for (const bonus of bonusList) {
+			for (const bonus of bonus_list) {
 				if (bonus.bonus_id === operational_performance_bonus_id) {
 					operational_performance_bonus += bonus.amount ?? 0;
 				}
@@ -656,7 +620,7 @@ export class CalculateService {
 
 	//MARK: 薪資所得扣繳總額
 	async getSalaryIncomeDeduction(
-		discounted_employee_payment_dec: EmployeePaymentDecType,
+		discounted_employee_payment_dec: EmployeePaymentFEType,
 		reissue_salary: number,
 		full_attendance_bonus: number,
 		exceed_overtime_pay: number,
@@ -692,7 +656,7 @@ export class CalculateService {
 			(discounted_employee_payment_dec.occupational_allowance ?? 0) +
 			operational_performance_bonus +
 			(discounted_employee_payment_dec.long_service_allowance_type ==
-			LongServiceEnum.enum.month_allowance
+				LongServiceEnum.enum.month_allowance
 				? discounted_employee_payment_dec.long_service_allowance
 				: 0) +
 			reissue_salary +
@@ -711,7 +675,7 @@ export class CalculateService {
 	async getSalaryAdvance(
 		pay_type: PayTypeEnumType,
 		payset: Payset | undefined,
-		discounted_employee_payment_dec: EmployeePaymentDecType,
+		discounted_employee_payment_dec: EmployeePaymentFEType,
 		insurance_rate_setting: InsuranceRateSettingDecType,
 		employee_data: EmployeeDataDecType
 	): Promise<number> {
@@ -757,6 +721,7 @@ export class CalculateService {
 	async getSalaryIncomeTax(
 		employee_data: EmployeeDataDecType,
 		issue_date: string,
+		salary_income_tax_list: SalaryIncomeTaxDecType[],
 		salary_income_deduction: number
 	): Promise<number> {
 		/*
@@ -777,9 +742,6 @@ export class CalculateService {
 		const Entity = rd("入境日期");
 		const Day = rd("工作天數");			// no use in prev salary system code
 		*/
-		const salary_income_tax_service = container.resolve(
-			SalaryIncomeTaxService
-		);
 
 		const START_WORK_DAY = new Date(employee_data.registration_date);
 		const PAY_DATE = new Date(issue_date);
@@ -803,11 +765,7 @@ export class CalculateService {
 		if (kind2 === LEAVE_MAN) return 0;
 
 		if (Tax > 0) {
-			const salary_income_tax =
-				await salary_income_tax_service.getTargetSalaryIncomeTax(
-					Tax,
-					Num ?? 0
-				);
+			const salary_income_tax = salary_income_tax_list.find((sit) => sit.salary_start <= Tax && sit.salary_end >= Tax && sit.dependent === (Num ?? 0));
 			if (salary_income_tax != null) {
 				if (kind2 === NEWBIE || kind2 === WILL_LEAVE)
 					return Round(salary_income_tax.tax_amount);
@@ -853,7 +811,7 @@ export class CalculateService {
 	}
 	//MARK: 課稅所得
 	async getTaxableIncome(
-		discounted_employee_payment_dec: EmployeePaymentDecType,
+		discounted_employee_payment_dec: EmployeePaymentFEType,
 		exceed_overtime_pay: number,
 		professional_cert_allowance: number
 	): Promise<number> {
@@ -870,7 +828,7 @@ export class CalculateService {
 	//MARK: 課稅小計
 	async getTaxableSubtotal(
 		pay_type: PayTypeEnumType,
-		discounted_employee_payment_dec: EmployeePaymentDecType,
+		discounted_employee_payment_dec: EmployeePaymentFEType,
 		operational_performance_bonus: number,
 		reissue_salary: number,
 		exceed_overtime_pay: number,
@@ -905,7 +863,7 @@ export class CalculateService {
 				(professional_cert_allowance ?? 0) +
 				(discounted_employee_payment_dec.occupational_allowance ?? 0) +
 				(discounted_employee_payment_dec.long_service_allowance_type ==
-				LongServiceEnum.Enum.month_allowance
+					LongServiceEnum.Enum.month_allowance
 					? discounted_employee_payment_dec.long_service_allowance
 					: 0) +
 				operational_performance_bonus + //在bonus裡 id=2
@@ -950,18 +908,13 @@ export class CalculateService {
 	}
 	//MARK: 其他減項?
 	async getOtherDeduction(
-		period_id: number,
-		emp_no: string,
-		expense_list?: Expense[], expense_class_list?: ExpenseClass[]
+		expense_list: Expense[],
+		expense_class_list: ExpenseClass[]
 	): Promise<number> {
-		const ehrService = container.resolve(EHRService);
-		const expenseClassList = expense_class_list??(await ehrService.getExpenseClass());
-		let other_deduction_ids = expenseClassList
+		const expenseList = expense_list.filter((e) => e.kind === 2);
+		let other_deduction_ids = expense_class_list
 			.filter((ec) => ec.other_less === 1)
 			.map((ec) => ec.id);
-		const expenseList = expense_list??(
-			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
-		).filter((e) => e.kind === 2);
 		let other_deduction = 0;
 		for (const expense of expenseList) {
 			if (other_deduction_ids.includes(expense.id)) {
@@ -971,10 +924,10 @@ export class CalculateService {
 		return other_deduction;
 	}
 	async getOtherDeductionDetail(
-		expense_with_type_list: ExpenseWithType[]
+		expense_with_type_list: ExpenseWithType[],
+		expense_class_list: ExpenseClass[]
 	): Promise<ExpenseWithType[] | null> {
-		const ehrService = container.resolve(EHRService);
-		let other_deduction_ids = (await ehrService.getExpenseClass())
+		let other_deduction_ids = expense_class_list
 			.filter((ec) => ec.other_less === 1)
 			.map((ec) => ec.id);
 		const other_deduction_list = expense_with_type_list.filter(
@@ -983,15 +936,14 @@ export class CalculateService {
 		return other_deduction_list;
 	}
 	//MARK: 其他加項?
-	async getOtherAddition(period_id: number, emp_no: string, expense_list?: Expense[], allowance_type_list?: AllowanceType[] ): Promise<number> {
-		const ehrService = container.resolve(EHRService);
-		const allowanceTypeList = allowance_type_list ?? (await ehrService.getAllowanceType());
-		let other_addition_ids = allowanceTypeList
+	async getOtherAddition(
+		expense_list: Expense[],
+		allowance_type_list: AllowanceType[]
+	): Promise<number> {
+		const expenseList = expense_list.filter((e) => e.kind === 1);
+		let other_addition_ids = allowance_type_list
 			.filter((at) => at.other_add === 1)
 			.map((at) => at.id);
-		const expenseList = expense_list ?? (
-			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
-		).filter((e) => e.kind === 1);
 		let other_addition = 0;
 		for (const expense of expenseList) {
 			if (other_addition_ids.includes(expense.id)) {
@@ -1001,10 +953,10 @@ export class CalculateService {
 		return other_addition;
 	}
 	async getOtherAdditionDetail(
-		expense_with_type_list: ExpenseWithType[]
+		expense_with_type_list: ExpenseWithType[],
+		allowance_type_list: AllowanceType[]
 	): Promise<ExpenseWithType[] | null> {
-		const ehrService = container.resolve(EHRService);
-		let other_addition_ids = (await ehrService.getAllowanceType())
+		let other_addition_ids = allowance_type_list
 			.filter((at) => at.other_add === 1)
 			.map((at) => at.id);
 		const other_addition_list = expense_with_type_list.filter(
@@ -1014,22 +966,13 @@ export class CalculateService {
 	}
 	//MARK: 其他加項稅 ?
 	async getOtherAdditionTax(
-		period_id: number,
-		emp_no: string,
-		expense_list?: Expense[], 
-		allowance_type_list?: AllowanceType[]
+		expense_list: Expense[],
+		allowance_type_list: AllowanceType[]
 	): Promise<number> {
-		// const other_addition_tax = 0
-		// return other_addition_tax
-		const ehrService = container.resolve(EHRService);
-		const allowanceTypeList = allowance_type_list ?? (await ehrService.getAllowanceType());
-		let other_addition_tax_ids = allowanceTypeList
+		const expenseList = expense_list.filter((e) => e.kind === 1);
+		let other_addition_tax_ids = allowance_type_list
 			.filter((at) => at.other_tax === 1)
 			.map((at) => at.id);
-
-		const expenseList = expense_list ?? (
-			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
-		).filter((e) => e.kind === 1);
 		let other_addition_tax = 0;
 		for (const expense of expenseList) {
 			if (other_addition_tax_ids.includes(expense.id)) {
@@ -1039,10 +982,10 @@ export class CalculateService {
 		return other_addition_tax;
 	}
 	async getOtherAdditionTaxDetail(
-		expense_with_type_list: ExpenseWithType[]
+		expense_with_type_list: ExpenseWithType[],
+		allowance_type_list: AllowanceType[]
 	): Promise<ExpenseWithType[] | null> {
-		const ehrService = container.resolve(EHRService);
-		let other_addition_tax_ids = (await ehrService.getAllowanceType())
+		let other_addition_tax_ids = allowance_type_list
 			.filter((at) => at.other_tax === 1)
 			.map((at) => at.id);
 		const other_addition_tax_list = expense_with_type_list.filter(
@@ -1052,19 +995,13 @@ export class CalculateService {
 	}
 	//MARK: 其他減項稅 ?
 	async getOtherDeductionTax(
-		period_id: number,
-		emp_no: string,
-		expense_list?: Expense[],
-		expense_class_list?: ExpenseClass[]
+		expense_list: Expense[],
+		expense_class_list: ExpenseClass[]
 	): Promise<number> {
-		const ehrService = container.resolve(EHRService);
-		const expenseClassList = expense_class_list??(await ehrService.getExpenseClass());
-		let other_deduction_tax_ids = expenseClassList
+		const expenseList = expense_list.filter((e) => e.kind === 2);
+		let other_deduction_tax_ids = expense_class_list
 			.filter((ec) => ec.other_tax === 1)
 			.map((ec) => ec.id);
-		const expenseList = expense_list??(
-			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
-		).filter((e) => e.kind === 2);
 		let other_deduction_tax = 0;
 		for (const expense of expenseList) {
 			if (other_deduction_tax_ids.includes(expense.id)) {
@@ -1074,10 +1011,10 @@ export class CalculateService {
 		return other_deduction_tax;
 	}
 	async getOtherDeductionTaxDetail(
-		expense_with_type_list: ExpenseWithType[]
+		expense_with_type_list: ExpenseWithType[],
+		expense_class_list: ExpenseClass[]
 	): Promise<ExpenseWithType[]> {
-		const ehrService = container.resolve(EHRService);
-		let other_deduction_tax_ids = (await ehrService.getExpenseClass())
+		let other_deduction_tax_ids = expense_class_list
 			.filter((ec) => ec.other_tax === 1)
 			.map((ec) => ec.id);
 		const other_deduction_tax_list = expense_with_type_list.filter(
@@ -1086,14 +1023,12 @@ export class CalculateService {
 		return other_deduction_tax_list;
 	}
 	//MARK: 住宿代扣款（舊伙食扣款）
-	async getMealDeduction(period_id: number, emp_no: string): Promise<number> {
-		const ehrService = container.resolve(EHRService);
-		const meal_deduction_id = (await ehrService.getExpenseClass()).find(
-			(ec) => ec.name === "住宿代扣款"
-		)?.id;
-		const expenseList = (
-			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
-		).filter((e) => e.kind === 2);
+	async getMealDeduction(
+		expense_list: Expense[],
+		expense_class_list: ExpenseClass[]
+	): Promise<number> {
+		const expenseList = expense_list.filter((e) => e.kind === 2);
+		const meal_deduction_id = expense_class_list.find((ec) => ec.name === "住宿代扣款")?.id;
 		let meal_deduction = 0;
 		for (const expense of expenseList) {
 			if (expense.id === meal_deduction_id) {
@@ -1104,26 +1039,23 @@ export class CalculateService {
 	}
 	//MARK: 非課稅小計
 	async getNonTaxableSubtotal(
-		discounted_employee_payment_dec: EmployeePaymentDecType,
+		discounted_employee_payment_dec: EmployeePaymentFEType,
 		weekday_overtime_pay: number,
 		holiday_overtime_pay: number,
 		non_leave_compensation: number,
 		other_addition: number,
 		retirement_income: number,
-		period_id: number,
-		emp_no: string
+		expense_list: Expense[],
+		expense_class_list: ExpenseClass[]
 	): Promise<number> {
 		// rd("非課稅小計") = rd("伙食津貼") + rd("平日加班費") + rd("假日加班費") + rd("補助津貼") + rd("其他加項") + rd("不休假代金") + rd("退職所得") + rd("勞保減免") + rd("健保補助") 'hm 111/0427const ehrService = container.resolve(EHRService);
-		const ehrService = container.resolve(EHRService);
-		const l_i_subsidy_id = (await ehrService.getExpenseClass()).find(
+		const l_i_subsidy_id = expense_class_list.find(
 			(ec) => ec.name === "勞保殘障減免"
 		)?.id!;
-		const h_i_subsidy_id = (await ehrService.getExpenseClass()).find(
+		const h_i_subsidy_id = expense_class_list.find(
 			(ec) => ec.name === "健保補助"
 		)?.id!;
-		const expenseList = (
-			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
-		).filter((e) => e.kind === 1);
+		const expenseList = expense_list.filter((e) => e.kind === 1);
 		let l_i_subsidy = 0;
 		let h_i_subsidy = 0;
 		for (const expense of expenseList) {
@@ -1215,7 +1147,7 @@ export class CalculateService {
 	}
 	//MARK: 勞保費
 	async getLaborInsurancePay(
-		discounted_employee_payment_dec: EmployeePaymentDecType,
+		discounted_employee_payment_dec: EmployeePaymentFEType,
 		employee_data: EmployeeDataDecType,
 		insurance_rate_setting: InsuranceRateSettingDecType,
 		payset: Payset | undefined,
@@ -1267,25 +1199,25 @@ export class CalculateService {
 			if (work_type === FOREIGN || work_status === FOREIGN) {
 				const x1 = Round(
 					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
-						Round((occupational_injury * wci_oi * l_i_day) / 30)
+					Round((occupational_injury * wci_oi * l_i_day) / 30)
 				); //'Jerry 20220823工資墊償基金分開計算
 				const x2 = Round(
 					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
-						Round(
-							(occupational_injury * wci_oi * additional_l_i) / 30
-						)
+					Round(
+						(occupational_injury * wci_oi * additional_l_i) / 30
+					)
 				); //'Jerry 20220823工資墊償基金分開計算
 				return x1 + x2;
 			} else if (employee_data.work_status === BOSS) {
 				const x1 = Round(
 					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
-						Round((occupational_injury * wci_oi * l_i_day) / 30)
+					Round((occupational_injury * wci_oi * l_i_day) / 30)
 				); //'Jerry 20220823工資墊償基金分開計算
 				const x2 = Round(
 					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
-						Round(
-							(occupational_injury * wci_oi * additional_l_i) / 30
-						)
+					Round(
+						(occupational_injury * wci_oi * additional_l_i) / 30
+					)
 				); //'Jerry 20220823工資墊償基金分開計算
 				return x1 + x2;
 			} else if (
@@ -1297,29 +1229,29 @@ export class CalculateService {
 			) {
 				const x1 = Round(
 					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
-						Round((l_i * 0.700001 * wci_ji * l_i_day) / 30) +
-						Round((occupational_injury * wci_oi * l_i_day) / 30)
+					Round((l_i * 0.700001 * wci_ji * l_i_day) / 30) +
+					Round((occupational_injury * wci_oi * l_i_day) / 30)
 				); //'Jerry 20220823工資墊償基金分開計算
 				const x2 = Round(
 					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
-						Round((l_i * wci_ji * 0.700001 * additional_l_i) / 30) +
-						Round(
-							(occupational_injury * wci_oi * additional_l_i) / 30
-						)
+					Round((l_i * wci_ji * 0.700001 * additional_l_i) / 30) +
+					Round(
+						(occupational_injury * wci_oi * additional_l_i) / 30
+					)
 				); //'Jerry 20220823工資墊償基金分開計算
 				return x1 + x2;
 			} else {
 				const x1 = Round(
 					Round((l_i * wci_normal * 0.700001 * l_i_day) / 30) +
-						Round((l_i * wci_ji * 0.700001 * l_i_day) / 30) +
-						Round((occupational_injury * wci_oi * l_i_day) / 30)
+					Round((l_i * wci_ji * 0.700001 * l_i_day) / 30) +
+					Round((occupational_injury * wci_oi * l_i_day) / 30)
 				);
 				const x2 = Round(
 					Round((l_i * wci_normal * 0.700001 * additional_l_i) / 30) +
-						Round((l_i * wci_ji * 0.700001 * additional_l_i) / 30) +
-						Round(
-							(occupational_injury * wci_oi * additional_l_i) / 30
-						)
+					Round((l_i * wci_ji * 0.700001 * additional_l_i) / 30) +
+					Round(
+						(occupational_injury * wci_oi * additional_l_i) / 30
+					)
 				); //'Jerry 20220823工資墊償基金分開計算
 				return x1 + x2;
 			}
@@ -1328,7 +1260,7 @@ export class CalculateService {
 	}
 	//MARK: 健保費
 	async getHealthInsurancePay(
-		discounted_employee_payment_dec: EmployeePaymentDecType,
+		discounted_employee_payment_dec: EmployeePaymentFEType,
 		employee_data: EmployeeDataDecType,
 		insurance_rate_setting: InsuranceRateSettingDecType
 	): Promise<number> {
@@ -1406,14 +1338,14 @@ export class CalculateService {
 		throw new Error("No Implement");
 	}
 	//MARK: 停車費
-	async getParkingFee(period_id: number, emp_no: string): Promise<number> {
-		const ehrService = container.resolve(EHRService);
-		const parking_fee_id = (await ehrService.getExpenseClass()).find(
+	async getParkingFee(
+		expense_list: Expense[],
+		expense_class_list: ExpenseClass[],
+	): Promise<number> {
+		const expenseList = expense_list.filter((e) => e.kind === 2);
+		const parking_fee_id = expense_class_list.find(
 			(ec) => ec.name === "停車費"
 		)?.id!;
-		const expenseList = (
-			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
-		).filter((e) => e.kind === 2);
 		let parking_fee = 0;
 		for (const expense of expenseList) {
 			if (expense.id === parking_fee_id) {
@@ -1423,14 +1355,12 @@ export class CalculateService {
 		return parking_fee;
 	}
 	//MARK: 仲介費
-	async getBrokerageFee(period_id: number, emp_no: string): Promise<number> {
-		const ehrService = container.resolve(EHRService);
-		const brokerage_fee_id = (await ehrService.getExpenseClass()).find(
-			(ec) => ec.name === "仲介費"
-		)?.id!;
-		const expenseList = (
-			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
-		).filter((e) => e.kind === 2);
+	async getBrokerageFee(
+		expense_list: Expense[],
+		expense_class_list: ExpenseClass[],
+	): Promise<number> {
+		const expenseList = expense_list.filter((e) => e.kind === 2);
+		const brokerage_fee_id = expense_class_list.find((ec) => ec.name === "仲介費")?.id!;
 		let brokerage_fee = 0;
 		for (const expense of expenseList) {
 			if (expense.id === brokerage_fee_id) {
@@ -1441,16 +1371,11 @@ export class CalculateService {
 	}
 	//MARK: 所得稅代扣 可能要查表
 	async getIncomeTaxDeduction(
-		period_id: number,
-		emp_no: string
+		expense_list: Expense[],
+		expense_class_list: ExpenseClass[],
 	): Promise<number> {
-		const ehrService = container.resolve(EHRService);
-		const income_tax_deduction_id = (
-			await ehrService.getExpenseClass()
-		).find((ec) => ec.name === "所得稅代扣")?.id!;
-		const expenseList = (
-			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
-		).filter((e) => e.kind === 2);
+		const expenseList = expense_list.filter((e) => e.kind === 2);
+		const income_tax_deduction_id = expense_class_list.find((ec) => ec.name === "所得稅代扣")?.id!;
 		let income_tax_deduction = 0;
 		for (const expense of expenseList) {
 			if (expense.id === income_tax_deduction_id) {
@@ -1462,7 +1387,7 @@ export class CalculateService {
 	//MARK: 勞退金自提
 	// 勞退級距＊勞退自提%
 	async getLRSelf(
-		discounted_employee_payment_dec: EmployeePaymentDecType
+		discounted_employee_payment_dec: EmployeePaymentFEType
 	): Promise<number> {
 		return (
 			discounted_employee_payment_dec.l_r *
@@ -1518,7 +1443,7 @@ export class CalculateService {
 	}
 	//MARK: 薪資總額
 	async getTotalSalary(
-		discounted_employee_payment_dec: EmployeePaymentDecType,
+		discounted_employee_payment_dec: EmployeePaymentFEType,
 		full_attendance_bonus: number,
 		professional_cert_allowance: number,
 		shift_allowance: number
@@ -1532,7 +1457,7 @@ export class CalculateService {
 			(discounted_employee_payment_dec.occupational_allowance ?? 0) +
 			(discounted_employee_payment_dec.subsidy_allowance ?? 0) +
 			(discounted_employee_payment_dec.long_service_allowance_type ==
-			LongServiceEnum.enum.month_allowance
+				LongServiceEnum.enum.month_allowance
 				? discounted_employee_payment_dec.long_service_allowance
 				: 0) +
 			full_attendance_bonus +
@@ -1542,7 +1467,7 @@ export class CalculateService {
 	//MARK: 勞退金提撥
 	async getLaborRetirementContribution(
 		employee_data: EmployeeDataDecType,
-		discounted_employee_payment_dec: EmployeePaymentDecType
+		discounted_employee_payment_dec: EmployeePaymentFEType
 	): Promise<number> {
 		/*
 			rd("勞退金提撥") = ComRetire(
@@ -1651,7 +1576,7 @@ export class CalculateService {
 		emp_no: string,
 		pay_type: PayTypeEnumType,
 		insurance_rate_setting: InsuranceRateSettingDecType,
-		employee_payment_dec: EmployeePaymentDecType
+		employee_payment_dec: EmployeePaymentFEType
 	): Promise<number> {
 		const employee_bonus_service = container.resolve(EmployeeBonusService);
 		const employee_bonus_list =
@@ -1769,16 +1694,11 @@ export class CalculateService {
 	//MARK: 團保費代扣＿升等;
 	// 感覺在這裡: DoCmd.OpenQuery "其他更新", acNormal, acEdit    'Jerry 07/09/03  增加退職所得  23/6/3 增加團保費代扣_升等
 	async getGroupInsuranceDeductionPromotion(
-		period_id: number,
-		emp_no: string
+		expense_list: Expense[],
+		expense_class_list: ExpenseClass[]
 	): Promise<number> {
-		const ehrService = container.resolve(EHRService);
-		const g_i_deduction_promotion_id = (
-			await ehrService.getExpenseClass()
-		).find((ec) => ec.name === "團保代扣-升等")?.id!;
-		const expenseList = (
-			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
-		).filter((e) => e.kind === 2);
+		const expenseList = expense_list.filter((e) => e.kind === 2);
+		const g_i_deduction_promotion_id = expense_class_list.find((ec) => ec.name === "團保代扣-升等")?.id!;
 		let group_insurance_deduction_promotion = 0;
 		for (const expense of expenseList) {
 			if (expense.id === g_i_deduction_promotion_id) {
@@ -1789,16 +1709,11 @@ export class CalculateService {
 	}
 	//MARK: 退職所得
 	async getRetirementIncome(
-		period_id: number,
-		emp_no: string
+		expense_list: Expense[],
+		expense_class_list: ExpenseClass[],
 	): Promise<number> {
-		const ehrService = container.resolve(EHRService);
-		const retirement_income_id = (await ehrService.getExpenseClass()).find(
-			(ec) => ec.name === "退職所得"
-		)?.id!;
-		const expenseList = (
-			await ehrService.getExpenseByEmpNoList(period_id, [emp_no])
-		).filter((e) => e.kind === 2);
+		const expenseList = expense_list.filter((e) => e.kind === 2);
+		const retirement_income_id = expense_class_list.find((ec) => ec.name === "退職所得")?.id!;
 		let retirement_income = 0;
 		for (const expense of expenseList) {
 			if (expense.id === retirement_income_id) {
@@ -1940,7 +1855,7 @@ export class CalculateService {
 		return full_attendance_sick_leave;
 	}
 	async discountedPayment(
-		employee_payment_dec: EmployeePaymentDecType,
+		employee_payment_dec: EmployeePaymentFEType,
 		payset: Payset | undefined
 	) {
 		employee_payment_dec.base_salary =
@@ -1965,7 +1880,7 @@ export class CalculateService {
 			30;
 		employee_payment_dec.long_service_allowance =
 			((employee_payment_dec.long_service_allowance_type ==
-			LongServiceEnum.Enum.month_allowance
+				LongServiceEnum.Enum.month_allowance
 				? employee_payment_dec.long_service_allowance
 				: 0) *
 				(payset ? payset.work_day! : 30)) /

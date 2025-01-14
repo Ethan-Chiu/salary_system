@@ -74,13 +74,11 @@ export class EmployeePaymentMapper extends BaseMapper<
 			uniqueEmpNos.add(item.emp_no);
 		});
 		const uniqueEmpNoList = Array.from(uniqueEmpNos);
+		const employeeDataList = await this.employeeDataService.getLatestEmployeeDataByEmpNoList(uniqueEmpNoList);
 
 		await Promise.all(
 			uniqueEmpNoList.map(async (empNo) => {
-				const emp =
-					await this.employeeDataService.getLatestEmployeeDataByEmpNo(
-						empNo
-					);
+				const emp = employeeDataList.find((e) => e.emp_no === empNo);
 				if (!emp) {
 					throw new Error(`Employee ${empNo} not found`);
 				}

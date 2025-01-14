@@ -12,39 +12,24 @@ export class BonusMapper {
 		private readonly employeeDataService: EmployeeDataService,
 		private readonly employeeBonusService: EmployeeBonusService,
 		private readonly employeeBonusMapper: EmployeeBonusMapper
-	) {}
+	) { }
 
 	async getBonusFE(
 		period_id: number,
 		bonus_with_type_list: BonusWithType[],
 		emp_no_list: string[]
 	): Promise<BonusFEType[]> {
+		const employeeDataList = await this.employeeDataService.getLatestEmployeeDataByEmpNoList(emp_no_list);
+		const payset_list = await this.ehrService.getPaysetByEmpNoList(period_id, emp_no_list);
+		const employee_bonus_list = await this.employeeBonusService.getEmployeeBonusByEmpNoListByType(period_id, "project_bonus", emp_no_list);
+
 		const new_bonusFE_list: BonusFEType[] = await Promise.all(
 			emp_no_list.map(async (emp_no) => {
-				const employee_data =
-					await this.employeeDataService.getLatestEmployeeDataByEmpNo(
-						emp_no
-					);
-				const payset = (
-					await this.ehrService.getPaysetByEmpNoList(period_id, [
-						emp_no,
-					])
-				)[0];
-				const employee_bonus =
-					await this.employeeBonusService.getEmployeeBonusByEmpNoByType(
-						period_id,
-						"project_bonus",
-						emp_no
-					);
-				let project_bonus = 0;
-				if (employee_bonus !== null) {
-					project_bonus =
-						(
-							await this.employeeBonusMapper.getEmployeeBonusFE(
-								employee_bonus
-							)
-						).app_amount ?? -1;
-				}
+				const employee_data = employeeDataList.find((e) => e.emp_no === emp_no);
+				const payset = payset_list.find((p) => p.emp_no === emp_no);
+				const employee_bonus = employee_bonus_list.find((e) => e.emp_no === emp_no);
+				const project_bonus = employee_bonus ? employee_bonus.app_amount ?? -1 : 0;
+
 				return {
 					// ...employee_bonus,
 					emp_no: emp_no,

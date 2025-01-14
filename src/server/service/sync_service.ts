@@ -93,12 +93,10 @@ export class SyncService {
 		return previous_period_id;
 	}
 	async checkQuitDate(
-		period: number,
+		parsedPeriod: Period & { period_year: number; period_month: number },
 		quit_date: string | null
 	): Promise<QuitDateEnumType> {
 		if (!quit_date) return QuitDateEnum.Values.null;
-		const periodInfo = await this.ehrService.getPeriodById(period);
-		const parsedPeriod = this.parsedPeriod(periodInfo);
 
 		const leaving_year_str = quit_date.split("-")[0]!; //讀出來是2023-05-04的形式
 		const leaving_month_str = quit_date.split("-")[1]!;
@@ -221,7 +219,7 @@ export class SyncService {
 	// Stage 1
 	async getCandPaidEmployees(
 		func: FunctionsEnumType, // 要執行的功能
-		period: number // 期間
+		period_id: number // 期間
 	): Promise<PaidEmployee[]> {
 		// 返回需支付的員工數組的Promise
 		let cand_paid_emps: PaidEmployee[] = [];
@@ -254,7 +252,7 @@ export class SyncService {
 				});
 
 			const salary_emp_nos = salary_emps.map((emp) => emp.emp_no); // 提取工資員工的員工編號
-			const ehr_emps = await this.ehrService.getEmp(period); // 從EHR服務中獲取員工數據
+			const ehr_emps = await this.ehrService.getEmp(period_id); // 從EHR服務中獲取員工數據
 
 			// 步驟1: 創建ehr_emps的字典
 			const ehrDict: Map<string, Emp> = new Map<string, Emp>();
@@ -273,7 +271,7 @@ export class SyncService {
 			});
 			// 將新員工轉換為Employee
 			const new_employees: z.infer<typeof createEmployeeDataService>[] = newEmps.map(
-				(emp) => this.empToEmployee(emp, period)
+				(emp) => this.empToEmployee(emp, period_id)
 			);
 
 			const all_emps = salary_emps.concat(new_employees); // 合併所有員工數據
@@ -282,16 +280,18 @@ export class SyncService {
 			const updated_all_emps = all_emps.map((salaryEmp) => {
 				const matchingEhrEmp = ehrDict.get(salaryEmp.emp_no);
 				return matchingEhrEmp
-					? this.empToEmployee(matchingEhrEmp, period)
+					? this.empToEmployee(matchingEhrEmp, period_id)
 					: salaryEmp;
 			});
+			const periodInfo = await this.ehrService.getPeriodById(period_id);
+			const parsedPeriod = this.parsedPeriod(periodInfo);
 			// NOTE: check employee work status
 			// NOTE: 檢查所有員工的支付狀態有無不合理處
 			cand_paid_emps = await Promise.all(
 				updated_all_emps.map(async (emp) => {
 					let msg = "";
 					const quit_date = await this.checkQuitDate(
-						period,
+						parsedPeriod,
 						emp.quit_date
 					);
 					switch (emp.work_status) {
@@ -576,13 +576,13 @@ export class SyncService {
 			];
 			const paid_emps = await EmployeeData.findAll({
 				where: {
-					work_status: {
-						[Op.in]: paid_status,
-					},
+					// work_status: {
+					// 	[Op.in]: paid_status,
+					// },
 					period_id: period_id,
 				},
 			});
-			return paid_emps;
+			return paid_emps.filter((emp) => paid_status.includes(emp.work_status));
 		} else {
 			// 如果功能不是月薪計算
 			const paid_emps = await EmployeeData.findAll({}); // 查找所有需支付的員工數據
