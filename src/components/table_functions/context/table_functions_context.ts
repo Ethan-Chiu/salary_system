@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 
-export function createTableFunctionContext<TMode, TData>(initialMode: TMode) {
+export function createTableFunctionContext<TMode, TData>() {
 	return React.createContext<{
 		mode: TMode;
 		setMode: (mode: TMode) => void;
@@ -8,12 +8,13 @@ export function createTableFunctionContext<TMode, TData>(initialMode: TMode) {
 		setOpen: (open: boolean) => void;
 		data: TData | null;
 		setData: (data: TData) => void;
-	}>({
-		mode: initialMode,
-		setMode: (_: TMode) => undefined,
-		open: false,
-		setOpen: (_: boolean) => undefined,
-		data: null,
-		setData: (_: TData) => undefined,
-	});
+	} | null>(null);
+}
+
+export function useTableFunctionState<TMode, TData>(initialMode: TMode) {
+	const [open, setOpen] = useState<boolean>(false);
+	const [mode, setMode] = useState<TMode>(initialMode);
+	const [data, setData] = useState<TData | null>(null);
+
+	return { open, setOpen, mode, setMode, data, setData };
 }

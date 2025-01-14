@@ -12,6 +12,7 @@ import { type z } from "zod";
 import { EHRService } from "./ehr_service";
 import { BaseMapper } from "../database/mapper/base_mapper";
 import {
+	batchCreateBankSettingService,
 	createBankSettingService,
 	type updateBankSettingService,
 } from "../api/types/bank_setting_type";
@@ -36,6 +37,8 @@ export class BankSettingService {
 
 		const bankSetting = await this.bankSettingMapper.encode({
 			...d,
+			bank_code: (typeof d.bank_code === "string") ? d.bank_code.padStart(3, "0") : d.bank_code.toString().padStart(3, "0"),
+			org_code: (typeof d.org_code === "string") ? d.org_code.padStart(3, "0") : d.org_code.toString().padStart(3, "0"),
 			start_date: d.start_date ?? new Date(),
 			disabled: false,
 			create_by: "system",
@@ -48,6 +51,31 @@ export class BankSettingService {
 
 		return newData;
 	}
+
+	async batchCreateBankSetting(
+		data: z.infer<typeof batchCreateBankSettingService>
+	): Promise<BankSetting[]> {
+		const ds = batchCreateBankSettingService.parse(data);
+
+		const newDatas = ds.map(async (d) => {
+			const bankSetting = await this.bankSettingMapper.encode({
+				...d,
+				bank_code: (typeof d.bank_code === "string") ? d.bank_code.padStart(3, "0") : d.bank_code.toString().padStart(3, "0"),
+				org_code: (typeof d.org_code === "string") ? d.org_code.padStart(3, "0") : d.org_code.toString().padStart(3, "0"),
+				start_date: d.start_date ?? new Date(),
+				disabled: false,
+				create_by: "system",
+				update_by: "system",
+			});
+	
+			return await BankSetting.create(bankSetting, {
+				raw: true,
+			});
+		})
+
+		return Promise.all(newDatas);
+	}
+
 
 	async getBankSettingById(id: number): Promise<BankSettingDecType | null> {
 		const bankSetting = await BankSetting.findOne({

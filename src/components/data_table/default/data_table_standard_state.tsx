@@ -14,6 +14,14 @@ import {
 } from "@tanstack/react-table";
 import { type ComponentType, useEffect, useState } from "react";
 
+import { RowData } from '@tanstack/table-core';
+declare module '@tanstack/table-core' {
+	interface TableMeta<TData extends RowData> {
+		original_columns: Array<string> | undefined
+	}
+}
+
+
 type WithTableProps<TableT, P> = { table: TableT } & P;
 
 interface DataTableStandardStateProps<TData, P> {
@@ -22,6 +30,7 @@ interface DataTableStandardStateProps<TData, P> {
 	WrappedComponent: ComponentType<WithTableProps<Table<TData>, P>>;
 	onUpdate?: (table: Table<TData>) => void;
 	props: P;
+	original_columns?: Array<string>;
 	initialColumnVisibility?: VisibilityState;
 }
 
@@ -31,6 +40,7 @@ export function WithDataTableStandardState<TData, P>({
 	WrappedComponent,
 	onUpdate,
 	props,
+	original_columns,
 	initialColumnVisibility = {},
 }: DataTableStandardStateProps<TData, P>) {
 	const [rowSelection, setRowSelection] = useState({});
@@ -60,6 +70,10 @@ export function WithDataTableStandardState<TData, P>({
 		getSortedRowModel: getSortedRowModel(),
 		getFacetedRowModel: getFacetedRowModel(),
 		getFacetedUniqueValues: getFacetedUniqueValues(),
+
+		meta: {
+			original_columns: original_columns
+		}
 	});
 
 	useEffect(() => {

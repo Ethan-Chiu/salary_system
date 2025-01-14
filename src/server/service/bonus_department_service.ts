@@ -23,7 +23,7 @@ export class BonusDepartmentService {
 			{
 				period_id: period_id,
 				bonus_type: bonus_type,
-				department: department,
+				department: (typeof department === "number") ? department.toString() : department,
 				multiplier: multiplier,
 				disabled: false,
 				create_by: "system",
@@ -39,7 +39,7 @@ export class BonusDepartmentService {
 			return {
 				period_id: data.period_id,
 				bonus_type: data.bonus_type,
-				department: data.department,
+				department: (typeof data.department === "number") ? data.department.toString() : data.department,
 				multiplier: data.multiplier,
 				disabled: false,
 				create_by: "system",

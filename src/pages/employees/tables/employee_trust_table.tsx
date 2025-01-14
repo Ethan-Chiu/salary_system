@@ -5,25 +5,23 @@ import { useTranslation } from "react-i18next";
 import { createColumnHelper } from "@tanstack/react-table";
 import { type EmployeeTrustFEType } from "~/server/api/types/employee_trust_type";
 import { formatDate } from "~/lib/utils/format_date";
+import { FunctionsComponent } from "~/components/data_table/functions_component";
+import { type TFunction } from "i18next";
 import {
-	FunctionsComponent,
-} from "~/components/data_table/functions_component";
-import { TFunction } from "i18next";
-import { FunctionMode } from "../components/function_sheet/data_table_functions";
-import { useContext, useState } from "react";
-import { ColumnHeaderBaseComponent, ColumnHeaderComponent } from "~/components/data_table/column_header_component";
-import dataTableContext from "../components/context/data_table_context";
-import { Sheet } from "~/components/ui/sheet";
+	ColumnHeaderBaseComponent,
+	ColumnHeaderComponent,
+} from "~/components/data_table/column_header_component";
 import { ColumnCellComponent } from "~/components/data_table/column_cell_component";
-import { createTableFunctionContext } from "~/components/table_functions/context/table_functions_context";
+import {
+	EmployeeTrustFunctionContextProvider,
+	type TrustRowItem,
+	type TrustRowItemKey,
+	useTrustFunctionContext,
+} from "./providers/employee_trust_provider";
 
-// TODO: should we use Frontend Type directly?
-type RowItem = EmployeeTrustFEType;
-type RowItemKey = keyof RowItem;
+const columnHelper = createColumnHelper<TrustRowItem>();
 
-const columnHelper = createColumnHelper<RowItem>();
-
-const columnNames: RowItemKey[] = [
+const columnNames: TrustRowItemKey[] = [
 	"department",
 	"emp_no",
 	"emp_name",
@@ -39,14 +37,8 @@ const columnNames: RowItemKey[] = [
 
 export const employee_trust_columns = ({
 	t,
-	setOpen,
-	setMode,
-	setData,
 }: {
 	t: TFunction<[string], undefined>;
-	setOpen: (open: boolean) => void;
-	setMode: (mode: FunctionMode) => void;
-	setData: (data: RowItem) => void;
 }) => [
 	...columnNames.map((key) =>
 		columnHelper.accessor(key, {
@@ -78,28 +70,40 @@ export const employee_trust_columns = ({
 	columnHelper.accessor("functions", {
 		header: () => {
 			return (
-        <ColumnHeaderBaseComponent>
-          {t(`others.functions`)}
+				<ColumnHeaderBaseComponent>
+					{t(`others.functions`)}
 				</ColumnHeaderBaseComponent>
 			);
 		},
 		cell: ({ row }) => {
-			return (
-				<FunctionsComponent
-					t={t}
-					setOpen={setOpen}
-					setMode={setMode}
-					data={row.original}
-					setData={setData}
-				/>
-			);
+			return <TrustFunctionComponent t={t} data={row.original} />;
 		},
 	}),
 ];
 
+function TrustFunctionComponent({
+	t,
+	data,
+}: {
+	t: TFunction<[string], undefined>;
+	data: TrustRowItem;
+}) {
+	const { setOpen, setMode, setData } = useTrustFunctionContext();
+
+	return (
+		<FunctionsComponent
+			t={t}
+			setOpen={setOpen}
+			setMode={setMode}
+			data={data}
+			setData={setData}
+		/>
+	);
+}
+
 export function employeeTrustMapper(
 	employeeTrustData: EmployeeTrustFEType[]
-): RowItem[] {
+): TrustRowItem[] {
 	return employeeTrustData.map((d) => {
 		return {
 			...d,
@@ -110,13 +114,8 @@ export function employeeTrustMapper(
 	});
 }
 
-const employeeTrustFunctionContext = createTableFunctionContext<"none" | "create" | "update" | "delete", RowItem>("none")
-
-
 export function EmployeeTrustTable({ period_id }: any) {
 	const { t } = useTranslation(["common"]);
-	const { open, setOpen, mode, setMode, setData } =
-		useContext(dataTableContext);
 
 	const { isLoading, isError, data, error } =
 		api.employeeTrust.getCurrentEmployeeTrust.useQuery({
@@ -131,27 +130,22 @@ export function EmployeeTrustTable({ period_id }: any) {
 		return <span>Error: {error.message}</span>; // TODO: Error element with toast
 	}
 
-  // TODO: figure out data's type
+	// TODO: figure out data's type
 	if (data) {
 		return (
-		<Sheet open={open && mode !== "delete"} onOpenChange={setOpen}>
-			<DataTableUpdate
-				columns={employee_trust_columns({
-					t,
-					setOpen,
-					setMode,
-          setData,
-				})}
-				columnNames={columnNames}
-				data={employeeTrustMapper(data)}
-				historyDataFunction={() =>
-					api.employeeTrust.getAllEmployeeTrust.useQuery()
-				}
-				calendarDataFunction={() =>
-					api.employeeTrust.getAllEmployeeTrust.useQuery()
-				}
-			/>
-      </Sheet>
+			<EmployeeTrustFunctionContextProvider>
+				<DataTableUpdate
+					columns={employee_trust_columns({ t })}
+					columnNames={columnNames}
+					data={employeeTrustMapper(data)}
+					historyDataFunction={() =>
+						api.employeeTrust.getAllEmployeeTrust.useQuery()
+					}
+					calendarDataFunction={() =>
+						api.employeeTrust.getAllEmployeeTrust.useQuery()
+					}
+				/>
+			</EmployeeTrustFunctionContextProvider>
 		);
 	}
 	return <div />;

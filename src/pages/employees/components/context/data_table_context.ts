@@ -6,7 +6,15 @@ import {
 import { type EmpTableObject } from "./data_table_context_provider";
 import { EmpTabsEnum, type EmpTabsEnumType } from "./employee_tabs_enum";
 
-export type FunctionMode = "create" | "update" | "delete" | "none";
+export type FunctionMode =
+	| "create"
+	| "update"
+	| "delete"
+	| "excel_upload"
+	| "excel_download"
+	| "initialize"
+	| "auto_calculate"
+	| "none";
 
 export type FunctionsItem = {
 	creatable: boolean;
