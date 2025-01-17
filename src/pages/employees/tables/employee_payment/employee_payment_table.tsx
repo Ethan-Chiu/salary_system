@@ -129,12 +129,7 @@ export function employeePaymentMapper(
 export function EmployeePaymentTable() {
 	return (
 		<EmployeePaymentFunctionContextProvider>
-      <DataTableUpdate
-				columnNames={columnNames}
-				historyDataFunction={() =>
-					api.employeePayment.getAllEmployeePayment.useQuery()
-				}
-			/>
+      <DataTableUpdate/>
 		</EmployeePaymentFunctionContextProvider>
 	);
 }
