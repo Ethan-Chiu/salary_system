@@ -12,14 +12,12 @@ interface EmployeeFormProps<SchemaType extends z.AnyZodObject> {
 	mode: FunctionMode;
 	formSubmit?: (data: z.infer<SchemaType>) => void;
 	closeSheet: () => void;
-	columns: any;
 }
 
 export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 	formSchema,
 	formConfig,
 	mode,
-	columns,
 	closeSheet,
 }: EmployeeFormProps<SchemaType>) {
 	const { data } = useTrustFunctionContext();
@@ -46,7 +44,7 @@ export function EmployeeForm<SchemaType extends z.AnyZodObject>({
 			formSchema={schema}
 			formConfig={formConfig}
 			formSubmit={onSubmit}
-			defaultValue={data}
+			defaultValue={data ?? undefined}
 			button_text={mode}
 			closeSheet={closeSheet}
 		/>

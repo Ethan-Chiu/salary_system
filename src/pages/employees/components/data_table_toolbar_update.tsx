@@ -14,12 +14,10 @@ import { useEmployeeTableContext } from "./context/data_table_context_provider";
 
 interface DataTableToolbarProps<TData> {
 	filterColumnKey?: keyof TData;
-	columns?: any;
 }
 
 export function DataTableToolbarUpdate<TData>({
 	filterColumnKey,
-	columns,
 }: DataTableToolbarProps<TData>) {
 	const { selectedTab, selectedTableType, selectedTable } = useEmployeeTableContext()
 	const { selectedPeriod } = useContext(periodContext);
@@ -51,9 +49,6 @@ export function DataTableToolbarUpdate<TData>({
 				<TabsTrigger value={EmpTabsEnum.Enum.history} className="h-6">
 					{t("table.history")}
 				</TabsTrigger>
-				{/* <TabsTrigger value={EmpTabsEnum.Enum.calendar} className="h-6"> */}
-				{/* 	{t("table.calendar")} */}
-				{/* </TabsTrigger> */}
 			</TabsList>
 			{/* functions */}
 			<div className="flex">
@@ -69,13 +64,7 @@ export function DataTableToolbarUpdate<TData>({
 						>
 							{/* <DataTableFunctions */}
 							{/* 	tableType={selectedTableType} */}
-							{/* 	columns={columns} */}
 							{/* /> */}
-							{/* {selectedTab === EmpTabsEnum.Enum.calendar && (
-								<CalendarToolbarFunctions
-									tableType={selectedTableType}
-								/>
-							)} */}
 						</EmployeeToolbarFunctionsProvider>
 					)}
 				</div>

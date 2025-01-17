@@ -3,22 +3,20 @@ import { Separator } from "~/components/ui/separator";
 import { Tabs, TabsContent } from "~/components/ui/tabs";
 import { DataTableToolbarUpdate } from "./data_table_toolbar_update";
 import { EmpTabsEnum } from "./context/employee_tabs_enum";
-import { type HistoryDataType, type EmployeeHistoryQueryFunctionType } from "~/components/data_table/history_data_type";
+import { type HistoryDataType } from "~/components/data_table/history_data_type";
 import { type EmployeeHistoryViewCommonEmpInfo } from "./history_view/history_view";
 import { useEmployeeTableContext } from "./context/data_table_context_provider";
 import { CurrentViewSelector } from "./current_view/current_view_selector";
+import { HistoryViewSelector } from "./history_view/history_view_selector";
 
 type DataRow = EmployeeHistoryViewCommonEmpInfo & HistoryDataType;
 
 interface DataTableProps<TData extends DataRow> {
-	columnNames?: Array<string>;
-	historyDataFunction: EmployeeHistoryQueryFunctionType<TData>;
 	filterColumnKey?: keyof TData;
 }
 
 export function DataTableUpdate<TData extends DataRow>({
   children,
-	columnNames,
 	filterColumnKey,
 }: PropsWithChildren<DataTableProps<TData>>) {
 	const { selectedTab, setSelectedTab } = useEmployeeTableContext();
@@ -32,7 +30,7 @@ export function DataTableUpdate<TData extends DataRow>({
 			}}
 		>
 			<div className="flex h-full w-full flex-col rounded-md border">
-				<DataTableToolbarUpdate filterColumnKey={filterColumnKey} columns={columnNames} />
+				<DataTableToolbarUpdate filterColumnKey={filterColumnKey} />
 				<Separator />
 				<TabsContent value={EmpTabsEnum.Enum.current} asChild>
 					<div className="flex h-0 w-full flex-grow flex-col">
@@ -41,10 +39,7 @@ export function DataTableUpdate<TData extends DataRow>({
 				</TabsContent>
 				<TabsContent value={EmpTabsEnum.Enum.history} asChild>
 					<div className="flex h-0 w-full flex-grow flex-col">
-						{/* <HistoryView */}
-						{/* 	columns={columns} */}
-						{/* 	dataFunction={historyDataFunction} */}
-						{/* /> */}
+            <HistoryViewSelector />
 					</div>
 				</TabsContent>
 			</div>

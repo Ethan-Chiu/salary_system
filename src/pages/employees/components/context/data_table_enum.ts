@@ -1,3 +1,6 @@
+// TODO: should extract these types from employee_tables.ts
+// TODO: rename to Table Function Enum
+
 export const TableEnumValues = [
 	"TableEmployeePayment",
 	"TableEmployeeTrust",

@@ -41,7 +41,6 @@ import { useTrustFunctionContext } from "../../tables/employee_trust/employee_tr
 
 interface DataTableFunctionsProps extends React.HTMLAttributes<HTMLDivElement> {
 	tableType: TableEnum;
-	columns: any;
 }
 
 export type FunctionMode =
@@ -56,7 +55,6 @@ export type FunctionMode =
 
 export function DataTableFunctions({
 	tableType,
-	columns,
 	className,
 }: DataTableFunctionsProps) {
 	const { open, setOpen, mode, setMode } = useTrustFunctionContext();
@@ -129,7 +127,6 @@ export function DataTableFunctions({
 										{ key: "id", config: { hidden: true } },
 									]}
 									mode={mode}
-									columns={columns}
 									closeSheet={() => setOpen(false)}
 								/>
 								<ScrollBar orientation="horizontal" />

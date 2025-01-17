@@ -116,12 +116,7 @@ export function employeeTrustMapper(
 export function EmployeeTrustTable() {
   return (
     <EmployeeTrustFunctionContextProvider>
-      <DataTableUpdate
-        columnNames={columnNames}
-        historyDataFunction={() =>
-          api.employeeTrust.getAllEmployeeTrust.useQuery()
-        }
-      />
+      <DataTableUpdate/>
     </EmployeeTrustFunctionContextProvider>
   );
 }
