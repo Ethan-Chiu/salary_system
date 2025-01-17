@@ -49,9 +49,7 @@ export function EmployeePaymentFunctionContextProvider({ children }: PropsWithCh
 export function usePaymentFunctionContext() {
 	const context = useContext(employeePaymentFunctionContext);
 	if (context === null) {
-		throw new Error(
-			"usePaymentFunctionContext must be used within a EmployeeTrustFunctionContextProvider"
-		);
+    throw new Error("usePaymentFunctionContext must be used within a EmployeePaymentFunctionContextProvider")
 	}
 	return context;
 }

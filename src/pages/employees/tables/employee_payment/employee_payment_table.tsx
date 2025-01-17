@@ -16,7 +16,6 @@ import {
 	type PaymentRowItemKey,
 	usePaymentFunctionContext,
 } from "./employee_payment_provider";
-import { useTrustFunctionContext } from "../employee_trust/employee_trust_provider";
 
 const columnHelper = createColumnHelper<PaymentRowItem>();
 
@@ -100,7 +99,7 @@ function PaymentFunctionComponent({
 	t: TFunction<[string], undefined>;
 	data: PaymentRowItem;
 }) {
-	const { setOpen, setMode, setData } = useTrustFunctionContext();
+	const { setOpen, setMode, setData } = usePaymentFunctionContext();
 
 	return (
 		<FunctionsComponent
@@ -130,12 +129,9 @@ export function employeePaymentMapper(
 export function EmployeePaymentTable() {
 	return (
 		<EmployeePaymentFunctionContextProvider>
-			<DataTableUpdate
+      <DataTableUpdate
 				columnNames={columnNames}
 				historyDataFunction={() =>
-					api.employeePayment.getAllEmployeePayment.useQuery()
-				}
-				calendarDataFunction={() =>
 					api.employeePayment.getAllEmployeePayment.useQuery()
 				}
 			/>

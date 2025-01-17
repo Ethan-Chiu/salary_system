@@ -1,8 +1,8 @@
+import { type PropsWithChildren } from "react";
 import { Separator } from "~/components/ui/separator";
 import { Tabs, TabsContent } from "~/components/ui/tabs";
 import { DataTableToolbarUpdate } from "./data_table_toolbar_update";
 import { EmpTabsEnum } from "./context/employee_tabs_enum";
-import { HistoryView } from "./history_view/history_view";
 import { type HistoryDataType, type EmployeeHistoryQueryFunctionType } from "~/components/data_table/history_data_type";
 import { type EmployeeHistoryViewCommonEmpInfo } from "./history_view/history_view";
 import { useEmployeeTableContext } from "./context/data_table_context_provider";
@@ -17,10 +17,10 @@ interface DataTableProps<TData extends DataRow> {
 }
 
 export function DataTableUpdate<TData extends DataRow>({
+  children,
 	columnNames,
-	historyDataFunction,
 	filterColumnKey,
-}: DataTableProps<TData>) {
+}: PropsWithChildren<DataTableProps<TData>>) {
 	const { selectedTab, setSelectedTab } = useEmployeeTableContext();
 
 	return (
@@ -47,12 +47,6 @@ export function DataTableUpdate<TData extends DataRow>({
 						{/* /> */}
 					</div>
 				</TabsContent>
-				{/* <TabsContent value={EmpTabsEnum.Enum.calendar} asChild> */}
-				{/* 	<div className="flex h-0 w-full flex-grow flex-col"> */}
-						{/* <CalendarView */}
-						{/* 	dataFunction={calendarDataFunction} /> */}
-					{/* </div> */}
-				{/* </TabsContent> */}
 			</div>
 		</Tabs>
 	);

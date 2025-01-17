@@ -16,39 +16,28 @@ import { useTranslation } from "react-i18next";
 
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { i18n, locales } from "~/components/lang_config";
-import { type EmployeeTableEnum } from "./employee_tables";
-
-const tabOptions = [
-	"table_name.employeeData",
-	"table_name.employeePayment",
-	"table_name.employeeTrust",
-];
+import {
+	EmployeeTableEnumValues,
+	type EmployeeTableEnum,
+	getTableNameKey,
+} from "./employee_tables";
+import { TabMountGuard } from "./components/context/tab_mount_guard";
 
 function PageEmployeesContent() {
-	const { setSelectedTableType } = useEmployeeTableContext();
+	const { setSelectedTableType } =
+		useEmployeeTableContext();
 	const { t } = useTranslation(["common", "nav"]);
 
-	function getTable(table_name: string) {
-		switch (table_name) {
-			case tabOptions[0]:
+	function getTable(table_type: EmployeeTableEnum) {
+		switch (table_type) {
+			case "TableEmployee":
 				return <EmployeeDataTable />;
-			case tabOptions[1]:
+			case "TableEmployeePayment":
 				return <EmployeePaymentTable />;
-			case tabOptions[2]:
+			case "TableEmployeeTrust":
 				return <EmployeeTrustTable />;
 			default:
 				return <p>No implement</p>;
-		}
-	}
-
-	function getTypeByOption(options: string): EmployeeTableEnum {
-		switch (options) {
-			case tabOptions[1]:
-				return "TableEmployeePayment";
-			case tabOptions[2]:
-				return "TableEmployeeTrust";
-			default:
-				return "TableEmployeePayment";
 		}
 	}
 
@@ -61,35 +50,33 @@ function PageEmployeesContent() {
 			/>
 			<div className="m-4 h-0 grow">
 				<Tabs
-					defaultValue={tabOptions[0]}
+					defaultValue={EmployeeTableEnumValues[0]}
 					className="flex h-full w-full flex-col"
 				>
 					<TabsList className={"grid w-full grid-cols-3"}>
-						{tabOptions.map((option) => {
+						{EmployeeTableEnumValues.map((option) => {
 							return (
 								<TabsTrigger
 									key={option}
 									value={option}
-									onClick={() =>
-										setSelectedTableType(
-											getTypeByOption(option)
-										)
-									}
+                  onClick={() => setSelectedTableType(option)}
 								>
-									{t(option)}
+									{t(getTableNameKey(option))}
 								</TabsTrigger>
 							);
 						})}
 					</TabsList>
 					<div className="mt-2 h-0 grow">
-						{tabOptions.map((option) => {
+						{EmployeeTableEnumValues.map((option) => {
 							return (
 								<TabsContent
 									key={option}
 									value={option}
 									className="h-full"
 								>
-									{getTable(option)}
+                  <TabMountGuard tableType={option}>
+                    {getTable(option)}
+                  </TabMountGuard>
 								</TabsContent>
 							);
 						})}

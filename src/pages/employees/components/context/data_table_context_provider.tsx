@@ -11,7 +11,7 @@ type EmpTableObject = {
 	table: Table<any>;
 };
 
-const dataTableContext = createContext<{
+interface EmployeeTableContextType {
   period_id: number
 	selectedTableType: EmployeeTableEnum;
 	setSelectedTableType: (table: EmployeeTableEnum) => void;
@@ -19,7 +19,8 @@ const dataTableContext = createContext<{
 	setSelectedTab: (tab: EmpTabsEnumType) => void;
 	selectedTable: EmpTableObject | null;
 	setSelectedTable: (table: EmpTableObject | null) => void;
-} | null >(null);
+}
+const dataTableContext = createContext<EmployeeTableContextType | null >(null);
 
 interface DataTableContextProviderProps {
 	period_id: number;
