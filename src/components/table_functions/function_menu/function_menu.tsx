@@ -11,7 +11,7 @@ import { type PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 
 export function FunctionMenu({ children }: PropsWithChildren) {
-	const { t } = useTranslation(["common", "nav"]);
+	const { t } = useTranslation(["common"]);
 
 	/* 	React.HTMLProps<HTMLElement> */
 	/* const options = Children.toArray(children) as React.ReactElement< */

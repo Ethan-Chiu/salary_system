@@ -1,5 +1,4 @@
 import { DataTableUpdate } from "../../components/data_table_update";
-import { api } from "~/utils/api";
 import { createColumnHelper } from "@tanstack/react-table";
 import { type EmployeePaymentFEType } from "~/server/api/types/employee_payment_type";
 import { FunctionsComponent } from "~/components/data_table/functions_component";
@@ -16,6 +15,7 @@ import {
 	type PaymentRowItemKey,
 	usePaymentFunctionContext,
 } from "./employee_payment_provider";
+import { EmployeePaymentFunctions } from "./employee_payment_functions";
 
 const columnHelper = createColumnHelper<PaymentRowItem>();
 
@@ -130,6 +130,7 @@ export function EmployeePaymentTable() {
 	return (
 		<EmployeePaymentFunctionContextProvider>
       <DataTableUpdate/>
+      <EmployeePaymentFunctions />
 		</EmployeePaymentFunctionContextProvider>
 	);
 }

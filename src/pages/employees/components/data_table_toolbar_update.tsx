@@ -10,7 +10,7 @@ import { LoadingSpinner } from "~/components/loading";
 import { DataTableToolbarWrapper } from "~/components/data_table/toolbar/data_table_toolbar_wrapper";
 import { StatsPanel } from "~/components/data_table/toolbar/stats_panel";
 import { useEmployeeTableContext } from "./context/data_table_context_provider";
-import { TableFunctionSelector } from "./function_sheet/table_function_selector";
+import { TableFunctionMenuSelector } from "./function_sheet/table_function_selector";
 
 interface DataTableToolbarProps<TData> {
 	filterColumnKey?: keyof TData;
@@ -19,7 +19,7 @@ interface DataTableToolbarProps<TData> {
 export function DataTableToolbarUpdate<TData>({
 	filterColumnKey,
 }: DataTableToolbarProps<TData>) {
-	const { selectedTab, selectedTableType, selectedTable } = useEmployeeTableContext()
+	const { selectedTableType, selectedTable } = useEmployeeTableContext()
 	const { selectedPeriod } = useContext(periodContext);
 
 	const { t } = useTranslation(["common"]);
@@ -52,17 +52,14 @@ export function DataTableToolbarUpdate<TData>({
 			</TabsList>
 			{/* functions */}
 			<div className="flex">
-				{(selectedTab === EmpTabsEnum.Enum.current ||
-					selectedTab === EmpTabsEnum.Enum.history) && (
-						<DataTableViewOptions table={table} />
-					)}
+        <DataTableViewOptions table={table} />
 				<div className="ml-2 w-12">
 					{selectedPeriod && (
 						<EmployeeToolbarFunctionsProvider
 							tableType={selectedTableType}
 							period_id={selectedPeriod.period_id}
 						>
-              <TableFunctionSelector />
+              <TableFunctionMenuSelector />
 						</EmployeeToolbarFunctionsProvider>
 					)}
 				</div>

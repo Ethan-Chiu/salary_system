@@ -1,5 +1,4 @@
 import { DataTableUpdate } from "../../components/data_table_update";
-import { api } from "~/utils/api";
 import { createColumnHelper } from "@tanstack/react-table";
 import { type EmployeeTrustFEType } from "~/server/api/types/employee_trust_type";
 import { formatDate } from "~/lib/utils/format_date";
@@ -16,7 +15,7 @@ import {
 	type TrustRowItemKey,
 	useTrustFunctionContext,
 } from "./employee_trust_provider";
-import { useEmployeeTableContext } from "../../components/context/data_table_context_provider";
+import { EmployeeTrustFunctions } from "./employee_trust_functions";
 
 const columnHelper = createColumnHelper<TrustRowItem>();
 
@@ -117,6 +116,7 @@ export function EmployeeTrustTable() {
   return (
     <EmployeeTrustFunctionContextProvider>
       <DataTableUpdate/>
+      <EmployeeTrustFunctions />
     </EmployeeTrustFunctionContextProvider>
   );
 }
