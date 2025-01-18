@@ -17,7 +17,7 @@ export type PaymentRowItem = Omit<
 	functions: FunctionsItem;
 };
 export type PaymentRowItemKey = keyof PaymentRowItem;
-export type PaymentFunctionModes = "create" | "update" | "delete" | "none";
+export type PaymentFunctionModes = "create" | "update" | "delete" | "excel_download" | "none";
 
 const employeePaymentFunctionContext = createTableFunctionContext<
 	PaymentFunctionModes,

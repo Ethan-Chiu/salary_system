@@ -72,11 +72,6 @@ export function DataTableFunctions({
 						{/* </> */}
 					{/* )} */}
 				</SheetContent>
-				{/* <ConfirmDialog */}
-				{/* 	open={openSheet && mode === "delete"} */}
-				{/* 	onOpenChange={setOpenSheet} */}
-				{/* 	schema={getSchema(tableType)!} */}
-				{/* /> */}
 			</Sheet>
 		</div>
 	);

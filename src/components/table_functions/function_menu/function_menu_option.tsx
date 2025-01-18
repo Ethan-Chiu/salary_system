@@ -62,9 +62,3 @@ export const FunctionMenuOption = {
   AutoCalculate: createOptionComponent("auto_calculate", Calculator),
 };
 
-
-/* () => { */
-/* 				setMode(props.mode); */
-/* 				setOpen(true); */
-/* 			} */
-
