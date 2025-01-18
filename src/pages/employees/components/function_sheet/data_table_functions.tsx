@@ -39,6 +39,8 @@ export function DataTableFunctions({
 
 /* open && mode !== "delete" */
 
+// Shouldn't need the sheet
+// Or remove the sheet in the context (maybe better)
 	return (
 		<div className={cn(className, "flex h-full items-center")}>
 			<Sheet open={openSheet} onOpenChange={setOpenSheet}>

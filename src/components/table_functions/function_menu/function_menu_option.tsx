@@ -1,54 +1,70 @@
-import { type LucideIcon } from "lucide-react";
+import { Calculator, Download, PenSquare, Plus, RefreshCcw, Trash2, type LucideIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { DropdownMenuItem } from "~/components/ui/dropdown-menu";
+import { cn } from "~/lib/utils";
 
 interface FunctionMenuOptionProps {
 	onClick: () => void;
 	itemName: string;
 	icon: LucideIcon;
+	disabled?: boolean;
 }
 
-export function FunctionMenuOption({
+export function FunctionMenuOptionBase({
 	onClick,
 	itemName,
 	icon: Icon,
+	disabled,
 }: FunctionMenuOptionProps) {
 	return (
 		<div className="w-full" onClick={onClick}>
-			<DropdownMenuItem className="cursor-pointer">
-				<Icon className="mr-2 h-4 w-4" />
-				<span>{itemName}</span>
+			<DropdownMenuItem className="cursor-pointer" disabled={disabled}>
+				<Icon
+					className={cn(
+						"mr-2 h-4 w-4",
+						disabled && "stroke-muted-foreground"
+					)}
+				/>
+				<span className={cn(disabled && "stroke-muted-foreground")}>
+					{itemName}
+				</span>
 			</DropdownMenuItem>
 		</div>
 	);
 }
 
+interface SubProps {
+	onClick: () => void;
+	disabled?: boolean;
+}
+
+function createOptionComponent(buttonKey: string, Icon: LucideIcon) {
+	return function OptionComponent({ onClick, disabled }: SubProps) {
+		const { t } = useTranslation(["common"]);
+		return (
+			<FunctionMenuOptionBase
+				onClick={onClick}
+				disabled={disabled}
+				itemName={t(`button.${buttonKey}`)}
+				icon={Icon}
+			/>
+		);
+	};
+}
+
+export const FunctionMenuOption = {
+	Create: createOptionComponent("create", Plus),
+	Update: createOptionComponent("update", PenSquare),
+	Delete: createOptionComponent("delete", Trash2),
+  ExcelDownload: createOptionComponent("excel_download", Download), 
+  ExcelUpload: createOptionComponent("excel_upload", PenSquare),
+  Initialize: createOptionComponent("initialize", RefreshCcw),
+  AutoCalculate: createOptionComponent("auto_calculate", Calculator),
+};
+
+
 /* () => { */
 /* 				setMode(props.mode); */
 /* 				setOpen(true); */
 /* 			} */
-
-
-/* <CompTriggerItem */
-/*   mode={"excel_download"} */
-/*   itemName={t("button.excel_download")} */
-/*   icon={Download} */
-/* /> */
-/* <CompTriggerItem */
-/*   mode={"excel_upload"} */
-/*   itemName={t("button.excel_upload")} */
-/*   icon={Upload} */
-/* /> */
-/* <CompTriggerItem */
-/*   mode={"initialize"} */
-/*   itemName={t("button.initialize")} */
-/*   icon={RefreshCcw} */
-/* /> */
-/* {autoCalculateFunction && ( */
-/*   <CompTriggerItem */
-/*     mode={"auto_calculate"} */
-/*     itemName={t("button.auto_calculate")} */
-/*     icon={Calculator} */
-/*   /> */
-/* )} */
-
 
