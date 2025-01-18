@@ -17,7 +17,6 @@ import {
 import { EmployeeForm } from "./employee_form";
 import { getSchema } from "~/pages/employees/schemas/get_schemas";
 import { modeDescription } from "~/lib/utils/helper_function";
-import { ConfirmDialog } from "./confirm_dialog";
 
 interface DataTableFunctionsProps extends HTMLAttributes<HTMLDivElement> {
   openSheet: boolean,
