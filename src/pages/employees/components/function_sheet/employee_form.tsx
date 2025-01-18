@@ -1,6 +1,5 @@
 import { type z } from "zod";
 import { useContext } from "react";
-import { type FunctionMode } from "./data_table_functions";
 import { employeeToolbarFunctionsContext } from "./employee_functions_context";
 import { StandardForm } from "~/components/form/default/form_standard";
 import { type FormConfig } from "~/components/ui/custom-form/types";
@@ -9,7 +8,7 @@ import { useTrustFunctionContext } from "../../tables/employee_trust/employee_tr
 interface EmployeeFormProps<SchemaType extends z.AnyZodObject> {
 	formSchema: SchemaType;
 	formConfig?: FormConfig<SchemaType>;
-	mode: FunctionMode;
+	mode: string; // TODO
 	formSubmit?: (data: z.infer<SchemaType>) => void;
 	closeSheet: () => void;
 }

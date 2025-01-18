@@ -1,6 +1,5 @@
 import { DataTableViewOptions } from "~/components/data_table/toolbar/data_table_view_options";
 import EmployeeToolbarFunctionsProvider from "./function_sheet/employee_functions_context";
-import { DataTableFunctions } from "./function_sheet/data_table_functions";
 import { useContext } from "react";
 import periodContext from "~/components/context/period_context";
 import { ToolbarFilter } from "~/components/data_table/toolbar/toolbar_filter";
@@ -11,6 +10,7 @@ import { LoadingSpinner } from "~/components/loading";
 import { DataTableToolbarWrapper } from "~/components/data_table/toolbar/data_table_toolbar_wrapper";
 import { StatsPanel } from "~/components/data_table/toolbar/stats_panel";
 import { useEmployeeTableContext } from "./context/data_table_context_provider";
+import { TableFunctionSelector } from "./function_sheet/table_function_selector";
 
 interface DataTableToolbarProps<TData> {
 	filterColumnKey?: keyof TData;
@@ -62,9 +62,7 @@ export function DataTableToolbarUpdate<TData>({
 							tableType={selectedTableType}
 							period_id={selectedPeriod.period_id}
 						>
-							{/* <DataTableFunctions */}
-							{/* 	tableType={selectedTableType} */}
-							{/* /> */}
+              <TableFunctionSelector />
 						</EmployeeToolbarFunctionsProvider>
 					)}
 				</div>
