@@ -43,7 +43,9 @@ export class EmpAll {
     registration_date: string;
     quit_date: string | null;
     license_id: string | null;
-    bank_account: string;
+    bank_account_taiwan: string;
+    bank_account_foreign: string | null;
+    received_elderly_benefits: boolean;
 
     constructor(
         emp_no: string,
@@ -61,7 +63,9 @@ export class EmpAll {
         registration_date: string,
         quit_date: string | null,
         license_id: string | null,
-        bank_account: string
+        bank_account_taiwan: string,
+        bank_account_foreign: string,
+        received_elderly_benefits: boolean
     ) {
         this.emp_no = emp_no;
         this.emp_name = emp_name;
@@ -78,7 +82,9 @@ export class EmpAll {
         this.registration_date = registration_date;
         this.quit_date = quit_date;
         this.license_id = license_id;
-        this.bank_account = bank_account;
+        this.bank_account_taiwan = bank_account_taiwan;
+        this.bank_account_foreign = bank_account_foreign;
+        this.received_elderly_benefits = received_elderly_benefits;
     }
 
     static fromDB(db_data: any): EmpAll {
@@ -120,7 +126,9 @@ export class EmpAll {
             FORMAT_REGISTRATION_DATE,
             FORMAT_QUIT_DATE,
             data.LICENS_ID,
-            data.NBANKNUMBER
+            data.NBANKNUMBER,
+            "",
+            false
         );
     }
 }

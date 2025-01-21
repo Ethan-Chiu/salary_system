@@ -12,6 +12,8 @@ import { EHRService } from "~/server/service/ehr_service";
 import { EmployeePaymentService } from "~/server/service/employee_payment_service";
 import { EmployeeTrustService } from "~/server/service/employee_trust_service";
 import { LongServiceEnum } from "../types/long_service_enum";
+import { EmpAll } from "~/server/database/entity/UMEDIA/emp_all";
+var XLSX = require("xlsx");
 
 export const employeeDataRouter = createTRPCRouter({
 	getCurrentEmployeeDataWithInfo: publicProcedure
@@ -97,9 +99,36 @@ export const employeeDataRouter = createTRPCRouter({
 			const employeeTrustService = container.resolve(EmployeeTrustService);
 
 			const period = await ehrService.getPeriodById(input.period_id);
-			const empAllList = await ehrService.initEmployeeData(
-				input.period_id
-			);
+			// DB
+			// const empAllList = await ehrService.initEmployeeData(input.period_id);
+
+			// Excel
+			const workbook = XLSX.readFile("/Users/max.liu/Downloads/TEST.xls");
+			const sheet = workbook.Sheets['員工基本資料'];
+			const data = XLSX.utils.sheet_to_json(sheet, { raw: false });
+			const empAllList: EmpAll[] = data.map((data: { [x: string]: any; }): EmpAll => {
+				return {
+					emp_no: data["員工編號"],
+					emp_name: data["姓名"],
+					position: Number(data["職等"]),
+					position_type: data["職級"],
+					group_insurance_type: data["團保類別"],
+					department: data["部門"],
+					work_type: data["工作類別"],
+					work_status: data["工作形態"],
+					disabilty_level: data["殘障等級"],
+					sex_type: data["性別"],
+					dependents: Number(data["扶養人數"]),
+					healthcare_dependents: Number(data["健保眷口數"]),
+					registration_date: data["到職日期"],
+					quit_date: data["離職日期"] ?? null,
+					license_id: data["身份字號"],
+					bank_account_taiwan: data["帳號2"],
+					bank_account_foreign: data["外幣帳號"],
+					received_elderly_benefits: false
+				}
+			})
+
 			// return empAllList
 
 			const employeeDataList = empAllList.map(async (data) => {

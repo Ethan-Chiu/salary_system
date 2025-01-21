@@ -192,7 +192,7 @@ export class TransactionService {
 		const salary_range = await this.calculateService.getSalaryRange(total_salary);
 		const dragon_boat_festival_bonus = await this.calculateService.getDragonBoatFestivalBonus();
 		const mid_autumn_festival_bonus = await this.calculateService.getMidAutumnFestivalBonus();
-		const bank_account_1 = employee_data!.bank_account;
+		const bank_account_1 = employee_data!.bank_account_taiwan;
 		// const bank_account_2 = employee_acount![1]?.bank_account!;
 		// const foreign_currency_account =("");
 		const bonus_ratio = -1; //bonus_setting!.fixed_multiplier;
