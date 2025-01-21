@@ -46,6 +46,8 @@ export const functionRouter = createTRPCRouter({
 			const employeeDataService = container.resolve(EmployeeDataService);
 			const holiday_mapper = container.resolve(HolidayMapper);
 
+			await ehrService.getHolidayWithTypeByEmpNoList(input.period_id, input.emp_no_list);
+
 			const holiday_list = await ehrService.getHolidayByEmpNoList(input.period_id, input.emp_no_list);
 			const employee_data_list = await employeeDataService.getEmployeeDataByEmpNoListByPeriod(input.period_id, input.emp_no_list);
 			const payset_list = await ehrService.getPaysetByEmpNoList(input.period_id, input.emp_no_list);

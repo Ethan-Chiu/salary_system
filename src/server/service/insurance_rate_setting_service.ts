@@ -228,7 +228,7 @@ export class InsuranceRateSettingService {
 	}
 	private async getInsuranceRateSettingAfterSelectValue({
 		id,
-		min_wage_rate,
+		min_wage,
 		l_i_accident_rate,
 		l_i_employment_pay_rate,
 		l_i_occupational_injury_rate,
@@ -252,9 +252,9 @@ export class InsuranceRateSettingService {
 		}
 
 		return {
-			min_wage_rate: select_value(
-				min_wage_rate,
-				insurance_rate_setting.min_wage_rate
+			min_wage: select_value(
+				min_wage,
+				insurance_rate_setting.min_wage
 			),
 			l_i_accident_rate: select_value(
 				l_i_accident_rate,

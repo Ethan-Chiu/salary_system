@@ -79,8 +79,8 @@ export function insuranceRateMapper(
 	const data = insuranceRateData[0]!;
 	return [
 		{
-			parameters: "最低薪資率",
-			value: data.min_wage_rate,
+			parameters: "最低薪資",
+			value: data.min_wage,
 		},
 		{
 			parameters: "勞保事故費率",

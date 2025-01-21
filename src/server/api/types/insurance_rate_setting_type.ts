@@ -2,7 +2,7 @@ import { z } from "zod";
 import { dateAll, dateCreate, func, Id } from "./common_type";
 
 const InsuranceRateSettingBase = z.object({
-    min_wage_rate: z.number(),
+    min_wage: z.number(),
     l_i_accident_rate: z.number(),
     l_i_employment_pay_rate: z.number(),
     l_i_occupational_injury_rate: z.number(),

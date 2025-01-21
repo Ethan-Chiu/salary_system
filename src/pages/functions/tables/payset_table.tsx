@@ -58,7 +58,7 @@ export function PaysetTable({ period_id, emp_no_list }: PaysetTableProps) {
 		const filteredData = data.filter((d: any) =>
 			["work_day",
 				"li_day"]
-				.some(key => d[key] > 0)
+				.some(key => d[key] !== 30)
 		);
 		return <DataTable columns={columns(t)} data={filteredData} />;
 	}
