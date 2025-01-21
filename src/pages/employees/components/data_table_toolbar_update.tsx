@@ -1,5 +1,4 @@
 import { DataTableViewOptions } from "~/components/data_table/toolbar/data_table_view_options";
-import EmployeeToolbarFunctionsProvider from "./function_sheet/employee_functions_context";
 import { useContext } from "react";
 import periodContext from "~/components/context/period_context";
 import { ToolbarFilter } from "~/components/data_table/toolbar/toolbar_filter";
@@ -19,7 +18,7 @@ interface DataTableToolbarProps<TData> {
 export function DataTableToolbarUpdate<TData>({
 	filterColumnKey,
 }: DataTableToolbarProps<TData>) {
-	const { selectedTableType, selectedTable } = useEmployeeTableContext()
+	const { selectedTable } = useEmployeeTableContext();
 	const { selectedPeriod } = useContext(periodContext);
 
 	const { t } = useTranslation(["common"]);
@@ -38,7 +37,10 @@ export function DataTableToolbarUpdate<TData>({
 		<DataTableToolbarWrapper>
 			{/* search bar */}
 			<div className="flex">
-				<ToolbarFilter table={table} filterColumnKey={filterColumnKey} />
+				<ToolbarFilter
+					table={table}
+					filterColumnKey={filterColumnKey}
+				/>
 				<StatsPanel table={table} />
 			</div>
 			{/* tabs */}
@@ -52,16 +54,9 @@ export function DataTableToolbarUpdate<TData>({
 			</TabsList>
 			{/* functions */}
 			<div className="flex">
-        <DataTableViewOptions table={table} />
+				<DataTableViewOptions table={table} />
 				<div className="ml-2 w-12">
-					{selectedPeriod && (
-						<EmployeeToolbarFunctionsProvider
-							tableType={selectedTableType}
-							period_id={selectedPeriod.period_id}
-						>
-              <TableFunctionMenuSelector />
-						</EmployeeToolbarFunctionsProvider>
-					)}
+					{selectedPeriod && <TableFunctionMenuSelector />}
 				</div>
 			</div>
 		</DataTableToolbarWrapper>
