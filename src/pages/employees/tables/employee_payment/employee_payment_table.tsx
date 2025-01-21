@@ -87,23 +87,20 @@ export const employee_payment_columns = ({
 			);
 		},
 		cell: ({ row }) => {
-			return <PaymentFunctionComponent t={t} data={row.original} />;
+			return <PaymentFunctionComponent data={row.original} />;
 		},
 	}),
 ];
 
 function PaymentFunctionComponent({
-	t,
 	data,
 }: {
-	t: TFunction<[string], undefined>;
 	data: PaymentRowItem;
 }) {
 	const { setOpen, setMode, setData } = usePaymentFunctionContext();
 
 	return (
 		<FunctionsComponent
-			t={t}
 			setOpen={setOpen}
 			setMode={setMode}
 			data={data}

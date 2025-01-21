@@ -74,23 +74,20 @@ export const employee_trust_columns = ({
 			);
 		},
 		cell: ({ row }) => {
-			return <TrustFunctionComponent t={t} data={row.original} />;
+			return <TrustFunctionComponent data={row.original} />;
 		},
 	}),
 ];
 
 function TrustFunctionComponent({
-	t,
 	data,
 }: {
-	t: TFunction<[string], undefined>;
 	data: TrustRowItem;
 }) {
 	const { setOpen, setMode, setData } = useTrustFunctionContext();
 
 	return (
 		<FunctionsComponent
-			t={t}
 			setOpen={setOpen}
 			setMode={setMode}
 			data={data}
