@@ -5,7 +5,7 @@ const zc = z.coerce;
 
 export const insuranceSchema = z.object({
 	id: zc.number(),
-	min_wage_rate: zc.number(),
+	min_wage: zc.number(),
 	l_i_accident_rate: zc.number(),
 	l_i_employment_pay_rate: zc.number(),
 	l_i_occupational_injury_rate: zc.number(),

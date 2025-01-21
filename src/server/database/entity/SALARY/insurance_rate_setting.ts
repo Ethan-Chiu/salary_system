@@ -20,7 +20,7 @@ import {
 	stringToDateNullable,
 } from "~/server/api/types/z_utils";
 const dbInsuranceRateSetting = z.object({
-	min_wage_rate: z.number(),
+	min_wage: z.number(),
 	l_i_accident_rate: z.number(),
 	l_i_employment_pay_rate: z.number(),
 	l_i_occupational_injury_rate: z.number(),
@@ -67,7 +67,7 @@ export class InsuranceRateSetting extends Model<
 > {
 	// id can be undefined during creation when using `autoIncrement`
 	declare id: CreationOptional<number>;
-	declare min_wage_rate: number;
+	declare min_wage: number;
 	declare l_i_accident_rate: number;
 	declare l_i_employment_pay_rate: number;
 	declare l_i_occupational_injury_rate: number;
@@ -99,7 +99,7 @@ export function initInsuranceRateSetting(sequelize: Sequelize) {
 				autoIncrement: true,
 				primaryKey: true,
 			},
-			min_wage_rate: {
+			min_wage: {
 				type: DataTypes.FLOAT,
 				unique: false,
 				allowNull: false,

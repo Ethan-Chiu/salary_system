@@ -120,13 +120,13 @@ export class Emp {
 			data.WORK_STATUS,
 			data.ACCESSIBLE,
 			data.SEX_TYPE,
-			data.DEPENDENTS,
-			data.HEALTHCARE,
+			data.DEPENDENTS !== 0 ? data.DEPENDENTS : null,
+			data.HEALTHCARE !== 0 ? data.HEALTHCARE : null,
 			FORMAT_REGISTRATION_DATE,
 			FORMAT_QUIT_DATE,
 			data.LICENS_ID,
 			data.NBANKNUMBER,
-			"",
+			null,
 			false
 		);
 	}

@@ -97,7 +97,7 @@ export class CalculateService {
 		});
 
 		if (employee_data.work_type === FOREIGN) {
-			hourly_fee = insurance_rate_setting.min_wage_rate;
+			hourly_fee = insurance_rate_setting.min_wage;
 			return Round(
 				// hourly_fee * t1 +
 				hourly_fee * t2 * 1.34 +
@@ -166,7 +166,7 @@ export class CalculateService {
 		});
 		// rate存哪裡？
 		if (employee_data.work_type === FOREIGN) {
-			hourly_fee = insurance_rate_setting.min_wage_rate;
+			hourly_fee = insurance_rate_setting.min_wage;
 			return Round(
 				hourly_fee * t1 //+
 				// hourly_fee * t2 * 1.34 +
@@ -235,7 +235,7 @@ export class CalculateService {
 		});
 		// rate存哪裡？
 		if (employee_data.work_type === FOREIGN || employee_data.work_status === FOREIGN) {
-			hourly_fee = insurance_rate_setting.min_wage_rate;
+			hourly_fee = insurance_rate_setting.min_wage;
 			return Round(
 				hourly_fee * t1 * 1.34 +
 				hourly_fee * t2 * 1.67 +
@@ -495,7 +495,7 @@ export class CalculateService {
 				holidays_type_dict[holiday.pay_order!]!;
 		});
 		if (employee_data.work_type === FOREIGN || employee_data.work_status === FOREIGN) {
-			hourly_fee = insurance_rate_setting.min_wage_rate;
+			hourly_fee = insurance_rate_setting.min_wage;
 			return Round(hourly_fee * leave_deduction);
 		} else {
 			return Round(hourly_fee * leave_deduction);
@@ -803,7 +803,7 @@ export class CalculateService {
 		});
 		if (employee_data.work_type === FOREIGN || employee_data.work_status === FOREIGN) {
 			return (
-				non_leave_compensation * insurance_rate_setting.min_wage_rate
+				non_leave_compensation * insurance_rate_setting.min_wage
 			);
 		} else {
 			return (non_leave_compensation * gross_salary) / 240;
