@@ -40,7 +40,9 @@ const dbEmployeeData = z.object({
 	registration_date: z.string(),//到職日期
 	quit_date: z.string().nullable(),//離職日期
 	license_id: z.string().nullable(),//身分證字號
-	bank_account: z.string(),//帳號
+	bank_account_taiwan: z.string(),//台幣帳號
+	bank_account_foreign: z.string().nullable(),//外幣帳號
+	received_elderly_benefits: z.boolean(),
 	create_by: z.string(),
 	update_by: z.string(),
 });
@@ -93,9 +95,9 @@ export class EmployeeData extends Model<
 	declare registration_date: string;
 	declare quit_date: string | null;
 	declare license_id: string | null;
-	declare bank_account: string;
-	// accumulated_bonus: z.number;
-	// received_elderly_benefits: boolean;
+	declare bank_account_taiwan: string;
+	declare bank_account_foreign: string | null;
+	declare received_elderly_benefits: boolean;
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -171,9 +173,6 @@ export function initEmployeeData(sequelize: Sequelize) {
 				type: DataTypes.STRING(32),
 				allowNull: false,
 			},
-			bank_account: {
-				type: DataTypes.STRING(32),
-			},
 			quit_date: {
 				type: DataTypes.STRING(32),
 				allowNull: true,
@@ -181,10 +180,17 @@ export function initEmployeeData(sequelize: Sequelize) {
 			license_id: {
 				type: DataTypes.STRING(32),
 			},
-			// accumulated_bonus: {
-			// 	type: DataTypes.INTEGER.UNSIGNED,
-			// 	defaultValue: 0,
-			// },
+			bank_account_taiwan: {
+				type: DataTypes.STRING(32),
+			},
+			bank_account_foreign: {
+				type: DataTypes.STRING(32),
+				allowNull: true,
+			},
+			received_elderly_benefits: {
+				type: DataTypes.BOOLEAN,
+				defaultValue: false,
+			},
 			create_date: {
 				type: DataTypes.DATE,
 			},

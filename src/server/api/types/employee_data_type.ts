@@ -22,8 +22,9 @@ const employeeData = z.object({
 	registration_date: z.string(),
 	quit_date: z.string().nullable(),
 	license_id: z.string().nullable(),
-	bank_account: z.string(),
-	// received_elderly_benefits: z.boolean(),
+	bank_account_taiwan: z.string(),
+	bank_account_foreign: z.string().nullable(),
+	received_elderly_benefits: z.boolean(),
 });
 
 export const createEmployeeDataAPI = employeeData;

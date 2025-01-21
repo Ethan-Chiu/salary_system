@@ -20,7 +20,9 @@ const columns = (t: I18nType) => [
 	"registration_date",
 	"quit_date",
 	"license_id",
-	"bank_account",
+	"bank_account_taiwan",
+	"bank_account_foreign",
+	"received_elderly_benefits",
 ].map((key) => {
 	return {
 		accessorKey: key,

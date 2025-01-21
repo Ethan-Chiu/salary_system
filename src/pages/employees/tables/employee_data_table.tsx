@@ -27,8 +27,10 @@ type RowItem = {
 	registration_date: string;
 	quit_date: string | null;
 	license_id: string | null;
-	bank_account: string;
-	month_salary_status: MonthSalaryStatusEnumType;
+	bank_account_taiwan: string;
+	bank_account_foreign: string | null;
+	received_elderly_benefits: boolean;
+	month_salary_status: MonthSalaryStatusEnumType,
 };
 type RowItemKey = keyof RowItem;
 
@@ -51,7 +53,9 @@ const columns = (t: I18nType) => {
 		"registration_date",
 		"quit_date",
 		"license_id",
-		"bank_account",
+		"bank_account_taiwan",
+		"bank_account_foreign",
+		"received_elderly_benefits",
 		"month_salary_status",
 	];
 
