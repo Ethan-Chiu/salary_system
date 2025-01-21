@@ -4,6 +4,7 @@ import { zodOptionalDate, zodRequiredDate } from "~/lib/utils/zod_types";
 const zc = z.coerce;
 
 export const employeeTrustSchema = z.object({
+	id: zc.number(),
 	emp_no: zc.string(),
 	emp_trust_reserve: zc.number(),
 	emp_special_trust_incent: zc.number(),

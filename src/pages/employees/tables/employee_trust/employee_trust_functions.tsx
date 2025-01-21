@@ -1,5 +1,4 @@
 import { useTrustFunctionContext } from "./employee_trust_provider";
-import { DataTableFunctions } from "../../components/function_sheet/data_table_functions";
 import { FunctionMenu } from "~/components/table_functions/function_menu/function_menu";
 import { FunctionMenuOption } from "~/components/table_functions/function_menu/function_menu_option";
 import { ConfirmDialog } from "~/components/table_functions/confirm_dialog";
@@ -7,6 +6,8 @@ import { employeeTrustSchema } from "../../schemas/configurations/employee_trust
 import { z } from "zod";
 import { zodOptionalDate } from "~/lib/utils/zod_types";
 import { api } from "~/utils/api";
+import { TableFunctionSheet } from "~/components/table_functions/function_sheet/function_sheet";
+import { StandardForm } from "~/components/form/default/form_standard";
 
 export function EmployeeTrustFunctionMenu() {
 	const { setMode } = useTrustFunctionContext();
@@ -28,6 +29,7 @@ export function EmployeeTrustFunctionMenu() {
 export function EmployeeTrustFunctions() {
 	const { data, open, setOpen, mode } = useTrustFunctionContext();
 
+  // TODO: move
 	const ctx = api.useUtils();
 	const deleteEmployeeTrust =
 		api.employeeTrust.deleteEmployeeTrust.useMutation({
@@ -35,6 +37,33 @@ export function EmployeeTrustFunctions() {
 				void ctx.employeeTrust.invalidate();
 			},
 		});
+  const updateEmployeeTrust =
+		api.employeeTrust.updateEmployeeTrust.useMutation({
+			onSuccess: () => {
+				void ctx.employeeTrust.invalidate();
+			},
+		});
+	const createEmployeeTrust =
+		api.employeeTrust.createEmployeeTrust.useMutation({
+			onSuccess: () => {
+				void ctx.employeeTrust.invalidate();
+			},
+		});
+
+
+	const schema =
+		mode === "create"
+			? employeeTrustSchema.omit({ id: true })
+			: employeeTrustSchema;
+
+	const onSubmit = (data: z.infer<typeof schema>) => {
+		if (mode === "create") {
+			createEmployeeTrust.mutate(data);
+		} else if (mode === "update") {
+			updateEmployeeTrust.mutate(data);
+		}
+		setOpen(false);
+	};
 
 	return (
 		<>
@@ -50,13 +79,21 @@ export function EmployeeTrustFunctions() {
 						.safeParse(data).data
 				}
 			/>
-
-			<DataTableFunctions
-				openSheet={open}
+			<TableFunctionSheet
+				openSheet={open && mode !== "delete"}
 				setOpenSheet={setOpen}
 				mode={mode}
 				tableType={"TableEmployeeTrust"}
-			/>
+			>
+				<StandardForm
+					formSchema={schema}
+					formConfig={[{ key: "id", config: { hidden: true } }]}
+          formSubmit={onSubmit}
+					defaultValue={data}
+					mode={mode}
+					closeSheet={() => setOpen(false)}
+				/>
+			</TableFunctionSheet>
 		</>
 	);
 }

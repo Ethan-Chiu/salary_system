@@ -44,6 +44,7 @@ export function StandardForm<SchemaType extends z.AnyZodObject>({
 	const [formValues, setFormValues] = useState<
 		z.infer<SchemaType> | Record<string, any>
 	>({});
+  // TODO: parse with schema
 	const { id, ...displayData } = formValues;
 
 	return (
