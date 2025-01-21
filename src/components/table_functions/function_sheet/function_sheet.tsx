@@ -17,55 +17,42 @@ import {
 import { modeDescription } from "~/lib/utils/helper_function";
 
 interface TableFunctionSheetProps extends HTMLAttributes<HTMLDivElement> {
-  openSheet: boolean,
-  setOpenSheet: (open: boolean) => void,
-  mode: string; // TODO:
+	openSheet: boolean;
+	setOpenSheet: (open: boolean) => void;
+	mode: string; // TODO:
 	tableType: TableEnum;
 }
 
 export function TableFunctionSheet({
-  openSheet,
-  setOpenSheet,
+	openSheet,
+	setOpenSheet,
 	tableType,
-  mode,
+	mode,
 	className,
-  children,
+	children,
 }: PropsWithChildren<TableFunctionSheetProps>) {
-
-
 	const { t } = useTranslation(["common", "nav"]);
 
-/* open && mode !== "delete" */
-
-// Shouldn't need the sheet
-// Or remove the sheet in the context (maybe better)
 	return (
 		<div className={cn(className, "flex h-full items-center")}>
 			<Sheet open={openSheet} onOpenChange={setOpenSheet}>
-				{/* Sheet */}
-				<SheetContent className="w-[50%]">
-					{/* {mode !== "none" && ( */}
-						{/* <> */}
-							<SheetHeader>
-								<SheetTitle>
-									{`${t(`button.${mode}`)!}${t(
-										"button.form"
-									)} (${t(getTableNameKey(tableType))})`}
-								</SheetTitle>
-								<SheetDescription>
-									{modeDescription(t, mode)}
-								</SheetDescription>
-							</SheetHeader>
-							<ScrollArea className="h-full w-full">
-                {children}
-								<ScrollBar orientation="horizontal" />
-							</ScrollArea>
-						{/* </> */}
-					{/* )} */}
+				<SheetContent className="w-[50%] px-10 py-6">
+					<ScrollArea className="h-full w-full px-2">
+						<SheetHeader>
+							<SheetTitle>
+								{`${t(`button.${mode}`)!}${t(
+									"button.form"
+								)} (${t(getTableNameKey(tableType))})`}
+							</SheetTitle>
+							<SheetDescription>
+								{modeDescription(t, mode)}
+							</SheetDescription>
+						</SheetHeader>
+						{children}
+						<ScrollBar orientation="horizontal" />
+					</ScrollArea>
 				</SheetContent>
 			</Sheet>
 		</div>
 	);
 }
-
-
