@@ -4,7 +4,6 @@ import {
 	useTableFunctionState,
 } from "~/components/table_functions/context/table_functions_context";
 import { type FunctionsItem } from "~/components/table_functions/table_functions_types";
-import { Sheet } from "~/components/ui/sheet";
 import { type EmployeePaymentFEType } from "~/server/api/types/employee_payment_type";
 
 export type PaymentRowItem = Omit<
@@ -17,14 +16,24 @@ export type PaymentRowItem = Omit<
 	functions: FunctionsItem;
 };
 export type PaymentRowItemKey = keyof PaymentRowItem;
-export type PaymentFunctionModes = "create" | "update" | "delete" | "excel_download" | "none";
+export type PaymentFunctionModes =
+	| "create"
+	| "update"
+	| "delete"
+	| "excel_download"
+	| "excel_upload"
+	| "initialize"
+	| "auto_calculate"
+	| "none";
 
 const employeePaymentFunctionContext = createTableFunctionContext<
 	PaymentFunctionModes,
 	PaymentRowItem
 >();
 
-export function EmployeePaymentFunctionContextProvider({ children }: PropsWithChildren) {
+export function EmployeePaymentFunctionContextProvider({
+	children,
+}: PropsWithChildren) {
 	const { open, setOpen, mode, setMode, data, setData } =
 		useTableFunctionState<PaymentFunctionModes, PaymentRowItem>("none");
 
@@ -39,9 +48,7 @@ export function EmployeePaymentFunctionContextProvider({ children }: PropsWithCh
 				setData,
 			}}
 		>
-			<Sheet open={open && mode !== "delete"} onOpenChange={setOpen}>
-				{children}
-			</Sheet>
+			{children}
 		</employeePaymentFunctionContext.Provider>
 	);
 }
@@ -49,7 +56,9 @@ export function EmployeePaymentFunctionContextProvider({ children }: PropsWithCh
 export function usePaymentFunctionContext() {
 	const context = useContext(employeePaymentFunctionContext);
 	if (context === null) {
-    throw new Error("usePaymentFunctionContext must be used within a EmployeePaymentFunctionContextProvider")
+		throw new Error(
+			"usePaymentFunctionContext must be used within a EmployeePaymentFunctionContextProvider"
+		);
 	}
 	return context;
 }

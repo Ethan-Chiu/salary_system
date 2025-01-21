@@ -15,9 +15,9 @@ export function EmployeePaymentFunctionMenu() {
   return (
     <FunctionMenu>
       <FunctionMenuOption.ExcelDownload onClick={() => setMode("excel_download")}/>
-      <FunctionMenuOption.ExcelUpload onClick={() => setMode("excel_download")}/>
-      <FunctionMenuOption.Initialize onClick={() => setMode("excel_download")}/>
-      <FunctionMenuOption.AutoCalculate onClick={() => setMode("excel_download")}/>
+      <FunctionMenuOption.ExcelUpload onClick={() => setMode("excel_upload")}/>
+      <FunctionMenuOption.Initialize onClick={() => setMode("initialize")}/>
+      <FunctionMenuOption.AutoCalculate onClick={() => setMode("auto_calculate")}/>
     </FunctionMenu>
   )
 }

@@ -15,12 +15,12 @@ export function EmployeeTrustFunctionMenu() {
 	return (
 		<FunctionMenu>
 			<FunctionMenuOption.ExcelDownload
-				onClick={() => setMode("create")}
+				onClick={() => setMode("excel_download")}
 			/>
-			<FunctionMenuOption.ExcelUpload onClick={() => setMode("create")} />
-			<FunctionMenuOption.Initialize onClick={() => setMode("create")} />
+			<FunctionMenuOption.ExcelUpload onClick={() => setMode("excel_upload")} />
+			<FunctionMenuOption.Initialize onClick={() => setMode("initialize")} />
 			<FunctionMenuOption.AutoCalculate
-				onClick={() => setMode("create")}
+				onClick={() => setMode("auto_calculate")}
 			/>
 		</FunctionMenu>
 	);
