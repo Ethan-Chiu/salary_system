@@ -26,6 +26,7 @@ export function DataTableToolbarUpdate<TData>({
 	const table = selectedTable?.table;
 
 	if (!table) {
+    // TODO: the ui of this need to change 
 		return (
 			<div className="flex grow items-center justify-center">
 				<LoadingSpinner />

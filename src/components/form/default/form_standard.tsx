@@ -22,16 +22,22 @@ interface StandardFormProps<SchemaType extends z.AnyZodObject> {
 	formConfig?: FormConfig<SchemaType>;
 	formSubmit?: (data: z.infer<SchemaType>) => void;
 	defaultValue?: DefaultValues<z.infer<SchemaType>>;
-	button_text: string;
+	buttonText: string;
 	closeSheet: () => void;
 }
+
+export const buildStandardFormProps = <T extends z.AnyZodObject>(
+	props: StandardFormProps<T>
+): StandardFormProps<T> => {
+	return props;
+};
 
 export function StandardForm<SchemaType extends z.AnyZodObject>({
 	formSchema,
 	formConfig,
 	formSubmit,
 	defaultValue,
-	button_text,
+	buttonText,
 	closeSheet,
 }: StandardFormProps<SchemaType>) {
 	const formId = "standard_form";
@@ -44,7 +50,7 @@ export function StandardForm<SchemaType extends z.AnyZodObject>({
 	const [formValues, setFormValues] = useState<
 		z.infer<SchemaType> | Record<string, any>
 	>({});
-  // TODO: parse with schema
+	// TODO: parse with schema
 	const { id, ...displayData } = formValues;
 
 	return (
@@ -80,11 +86,14 @@ export function StandardForm<SchemaType extends z.AnyZodObject>({
 							if (parsedValues.success) {
 								setFormValues(parsedValues.data);
 							} else {
-                console.log("Parse value failed", parsedValues.error.message)
-              }
+								console.log(
+									"Parse value failed",
+									parsedValues.error.message
+								);
+							}
 						}}
 					>
-						{t(`button.${button_text}`)}
+						{t(`button.${buttonText}`)}
 					</Button>
 				</div>
 			</CustomForm>

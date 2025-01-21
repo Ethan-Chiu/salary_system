@@ -43,5 +43,5 @@ export function zodOptionalDate() {
 		} else {
 			return d;
 		}
-	}, z.coerce.date().optional().nullable());
+	}, z.coerce.date().nullable());
 }

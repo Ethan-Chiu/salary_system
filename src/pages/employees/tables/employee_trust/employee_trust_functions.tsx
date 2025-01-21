@@ -7,7 +7,10 @@ import { z } from "zod";
 import { zodOptionalDate } from "~/lib/utils/zod_types";
 import { api } from "~/utils/api";
 import { TableFunctionSheet } from "~/components/table_functions/function_sheet/function_sheet";
-import { StandardForm } from "~/components/form/default/form_standard";
+import {
+	buildStandardFormProps,
+	StandardForm,
+} from "~/components/form/default/form_standard";
 
 export function EmployeeTrustFunctionMenu() {
 	const { setMode } = useTrustFunctionContext();
@@ -17,8 +20,12 @@ export function EmployeeTrustFunctionMenu() {
 			<FunctionMenuOption.ExcelDownload
 				onClick={() => setMode("excel_download")}
 			/>
-			<FunctionMenuOption.ExcelUpload onClick={() => setMode("excel_upload")} />
-			<FunctionMenuOption.Initialize onClick={() => setMode("initialize")} />
+			<FunctionMenuOption.ExcelUpload
+				onClick={() => setMode("excel_upload")}
+			/>
+			<FunctionMenuOption.Initialize
+				onClick={() => setMode("initialize")}
+			/>
 			<FunctionMenuOption.AutoCalculate
 				onClick={() => setMode("auto_calculate")}
 			/>
@@ -29,7 +36,7 @@ export function EmployeeTrustFunctionMenu() {
 export function EmployeeTrustFunctions() {
 	const { data, open, setOpen, mode } = useTrustFunctionContext();
 
-  // TODO: move
+	// TODO: move
 	const ctx = api.useUtils();
 	const deleteEmployeeTrust =
 		api.employeeTrust.deleteEmployeeTrust.useMutation({
@@ -37,7 +44,7 @@ export function EmployeeTrustFunctions() {
 				void ctx.employeeTrust.invalidate();
 			},
 		});
-  const updateEmployeeTrust =
+	const updateEmployeeTrust =
 		api.employeeTrust.updateEmployeeTrust.useMutation({
 			onSuccess: () => {
 				void ctx.employeeTrust.invalidate();
@@ -50,20 +57,26 @@ export function EmployeeTrustFunctions() {
 			},
 		});
 
+	const createForm = buildStandardFormProps({
+		formSchema: employeeTrustSchema.omit({ id: true }),
+		formSubmit: (d) => {
+			createEmployeeTrust.mutate(d);
+			setOpen(false);
+		},
+		buttonText: "create",
+		closeSheet: () => setOpen(false),
+	});
 
-	const schema =
-		mode === "create"
-			? employeeTrustSchema.omit({ id: true })
-			: employeeTrustSchema;
-
-	const onSubmit = (data: z.infer<typeof schema>) => {
-		if (mode === "create") {
-			createEmployeeTrust.mutate(data);
-		} else if (mode === "update") {
-			updateEmployeeTrust.mutate(data);
-		}
-		setOpen(false);
-	};
+	const updateForm = buildStandardFormProps({
+		formSchema: employeeTrustSchema,
+		formConfig: [{ key: "id", config: { hidden: true } }],
+		formSubmit: (d) => {
+			updateEmployeeTrust.mutate(d);
+			setOpen(false);
+		},
+		buttonText: "update",
+		closeSheet: () => setOpen(false),
+	});
 
 	return (
 		<>
@@ -85,14 +98,11 @@ export function EmployeeTrustFunctions() {
 				mode={mode}
 				tableType={"TableEmployeeTrust"}
 			>
-				<StandardForm
-					formSchema={schema}
-					formConfig={[{ key: "id", config: { hidden: true } }]}
-          formSubmit={onSubmit}
-					defaultValue={data}
-					mode={mode}
-					closeSheet={() => setOpen(false)}
-				/>
+				{mode === "create" ? (
+					<StandardForm {...createForm} />
+				) : (
+					<StandardForm {...updateForm} />
+				)}
 			</TableFunctionSheet>
 		</>
 	);
