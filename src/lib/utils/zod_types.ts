@@ -34,6 +34,7 @@ export function zodRequiredDate(fieldName: string) {
 // }
 
 
+// TODO: should be nullable date
 export function zodOptionalDate() {
 	return z.preprocess((d) => {
 		if (d === "") {

@@ -57,13 +57,15 @@ export function EmployeeTrustFunctions() {
 			},
 		});
 
+	const createFormSchema = employeeTrustSchema.omit({ id: true });
 	const createForm = buildStandardFormProps({
-		formSchema: employeeTrustSchema.omit({ id: true }),
+		formSchema: createFormSchema,
 		formSubmit: (d) => {
 			createEmployeeTrust.mutate(d);
 			setOpen(false);
 		},
 		buttonText: "create",
+		defaultValue: data ? createFormSchema.safeParse(data).data : undefined, // TODO: move this into buildStandardFormProps function
 		closeSheet: () => setOpen(false),
 	});
 
@@ -75,6 +77,9 @@ export function EmployeeTrustFunctions() {
 			setOpen(false);
 		},
 		buttonText: "update",
+		defaultValue: data
+			? employeeTrustSchema.safeParse(data).data
+			: undefined,
 		closeSheet: () => setOpen(false),
 	});
 

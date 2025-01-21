@@ -87,6 +87,7 @@ export const employee_payment_columns = ({
 			);
 		},
 		cell: ({ row }) => {
+      // TODO: Should use data with Frontend Type instead of data in table?
 			return <PaymentFunctionComponent data={row.original} />;
 		},
 	}),
