@@ -1,5 +1,4 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { LoadingSpinner } from "~/components/loading";
 import {
 	ResizableHandle,
 	ResizablePanel,
@@ -8,19 +7,16 @@ import {
 import { DataTable } from "./history_data_table";
 import {
 	type HistoryDataType,
-	type EmployeeHistoryQueryFunctionType,
 } from "~/components/data_table/history_data_type";
 import { type ColumnDef } from "@tanstack/react-table";
 import { Separator } from "~/components/ui/separator";
 import { EmployeePopoverSelector } from "~/components/popover_selector";
 import periodContext from "~/components/context/period_context";
-import { getTableMapper } from "../../tables/table_columns";
 import { HistoryViewMenuItem } from "~/components/data_table/history_view/history_view_menu_item";
 import { HistoryViewMenu } from "~/components/data_table/history_view/history_view_menu";
 import { buildEmployeeSelectOptions } from "~/components/data_table/history_view/utils";
 import { useHistoryState } from "~/components/data_table/history_view/use_history_state";
 import { type HistoryViewEmployeeCommonEmpInfo } from "~/components/data_table/history_view/types";
-import { useEmployeeTableContext } from "../context/data_table_context_provider";
 
 // TODO: delete this type and use HistoryViewEmployeeCommonEmpInfo instead
 export interface EmployeeHistoryViewCommonEmpInfo {
@@ -32,22 +28,18 @@ type DataRow = HistoryViewEmployeeCommonEmpInfo & HistoryDataType;
 
 interface DataTableProps<TData extends DataRow> {
 	columns: ColumnDef<TData, any>[];
-	dataFunction: EmployeeHistoryQueryFunctionType<TData>;
+	data: TData[][];
 }
 
 export function HistoryView<TData extends DataRow>({
+	data,
 	columns,
-	dataFunction,
 }: DataTableProps<TData>) {
-	const { selectedTableType } = useEmployeeTableContext();
-
-	const { isLoading, isError, data, error } = dataFunction();
-
 	const { selectedPeriod } = useContext(periodContext);
 
 	const [selectedEmpNo, setSelectedEmpNo] = useState<string | null>(null);
 
-	const onLoad = useCallback((d: DataRow) => {
+	const onLoad = useCallback((d: TData) => {
 		setSelectedEmpNo(d.emp_no);
 	}, []);
 
@@ -56,7 +48,7 @@ export function HistoryView<TData extends DataRow>({
 		selectedDataList,
 		setSelectedData,
 		setSelectedDataList,
-	} = useHistoryState<DataRow>(isLoading, data, onLoad);
+	} = useHistoryState<TData>(false, data, onLoad);
 
 	useEffect(() => {
 		const newList = data?.find(
@@ -66,22 +58,6 @@ export function HistoryView<TData extends DataRow>({
 			setSelectedDataList(newList);
 		}
 	}, [selectedEmpNo, data, setSelectedDataList]);
-
-	if (isLoading) {
-		return (
-			<div className="flex grow items-center justify-center">
-				<LoadingSpinner />
-			</div>
-		); // TODO: Loading element with toast
-	}
-
-	if (isError) {
-		return <span>Error: {error.message}</span>; // TODO: Error element with toast
-	}
-
-	if (!data) {
-		return <div />;
-	}
 
 	return (
 		<ResizablePanelGroup direction="horizontal">
@@ -113,13 +89,7 @@ export function HistoryView<TData extends DataRow>({
 					<>
 						<DataTable
 							columns={columns}
-							data={
-								selectedData
-									? getTableMapper(selectedTableType)([
-											selectedData,
-									  ])
-									: []
-							}
+							data={selectedData ? [selectedData] : []}
 						/>
 					</>
 				) : (
