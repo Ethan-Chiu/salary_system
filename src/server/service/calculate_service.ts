@@ -1576,7 +1576,7 @@ export class CalculateService {
 		emp_no: string,
 		pay_type: PayTypeEnumType,
 		insurance_rate_setting: InsuranceRateSettingDecType,
-		employee_payment_dec: EmployeePaymentFEType
+		employee_payment: EmployeePaymentFEType
 	): Promise<number> {
 		const employee_bonus_service = container.resolve(EmployeeBonusService);
 		const employee_bonus_list =
@@ -1601,7 +1601,7 @@ export class CalculateService {
 				)); //同一期別中會先發其他獎金才發專案獎金
 			const v2_h_i_rate = insurance_rate_setting.v2_h_i_supp_pay_rate;
 			const v2_h_i_multiplier = insurance_rate_setting.v2_h_i_multiplier;
-			const h_i = employee_payment_dec?.h_i ?? 0;
+			const h_i = employee_payment?.h_i ?? 0;
 
 			if (new_bonus + accumulated_bonus > h_i * v2_h_i_multiplier) {
 				const v2_h_i =
@@ -1623,7 +1623,7 @@ export class CalculateService {
 				);
 			const v2_h_i_rate = insurance_rate_setting.v2_h_i_supp_pay_rate;
 			const v2_h_i_multiplier = insurance_rate_setting.v2_h_i_multiplier;
-			const h_i = employee_payment_dec?.h_i ?? 0;
+			const h_i = employee_payment?.h_i ?? 0;
 
 			if (new_bonus + accumulated_bonus > h_i * v2_h_i_multiplier) {
 				const v2_h_i =
