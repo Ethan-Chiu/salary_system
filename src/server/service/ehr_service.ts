@@ -148,7 +148,8 @@ export class EHRService {
 		return holidayWithTypeList;
 	}
 
-	async getOvertime(period_id: number, pay: number): Promise<Overtime[]> {
+	async getOvertime(period_id: number, pay_type: PayTypeEnumType): Promise<Overtime[]> {
+		const pay = pay_type === PayTypeEnum.Enum.foreign_15_bonus ? 2 : 1;
 		const dbConnection = container.resolve(Database).ehr_connection;
 		const dataList = await dbConnection.query(
 			this.GET_OVERTIME_QUERY(period_id, pay),
@@ -172,8 +173,7 @@ export class EHRService {
 		emp_no_list: string[],
 		pay_type: PayTypeEnumType,
 	): Promise<Overtime[]> {
-		const pay = pay_type === PayTypeEnum.Enum.foreign_15_bonus ? 2 : 1;
-		const all_overtime = await this.getOvertime(period_id, pay);
+		const all_overtime = await this.getOvertime(period_id, pay_type);
 		const filtered_overtime = all_overtime.filter((overtime) =>
 			emp_no_list.includes(overtime.emp_no)
 		);
@@ -226,7 +226,8 @@ export class EHRService {
 
 
 
-	async getBonus(period_id: number, pay: number): Promise<Bonus[]> {
+	async getBonus(period_id: number, pay_type: PayTypeEnumType): Promise<Bonus[]> {
+		const pay = pay_type === "foreign_15_bonus" ? 2 : 1;
 		const dbConnection = container.resolve(Database).ehr_connection;
 		const dataList = await dbConnection.query(
 			this.GET_BONUS_QUERY(period_id, pay),
@@ -253,8 +254,7 @@ export class EHRService {
 		emp_no_list: string[],
 		pay_type: PayTypeEnumType
 	): Promise<Bonus[]> {
-		const pay = pay_type === "foreign_15_bonus" ? 2 : 1;
-		const all_bonus = await this.getBonus(period_id, pay);
+		const all_bonus = await this.getBonus(period_id, pay_type);
 		const filtered_bonus = all_bonus.filter((bonus) =>
 			emp_no_list.includes(bonus.emp_no)
 		);
@@ -276,8 +276,7 @@ export class EHRService {
 		emp_no_list: string[],
 		pay_type: PayTypeEnumType
 	): Promise<BonusWithType[]> {
-		const pay = pay_type === "foreign_15_bonus" ? 2 : 1;
-		const all_bonus = await this.getBonus(period_id, pay);
+		const all_bonus = await this.getBonus(period_id, pay_type);
 		const filtered_bonus = all_bonus.filter((bonus) =>
 			emp_no_list.includes(bonus.emp_no)
 		);

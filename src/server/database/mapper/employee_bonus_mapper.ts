@@ -35,9 +35,7 @@ export class EmployeeBonusMapper extends BaseMapper<
 
 		const employeeBonusService = container.resolve(EmployeeBonusService);
 		const employeeDataService = container.resolve(EmployeeDataService);
-		const employeePaymentService = container.resolve(
-			EmployeePaymentService
-		);
+		const employeePaymentService = container.resolve(EmployeePaymentService);
 
 		const employee = await employeeDataService.getLatestEmployeeDataByEmpNo(
 			employee_bonus.emp_no

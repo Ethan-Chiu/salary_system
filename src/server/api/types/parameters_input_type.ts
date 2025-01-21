@@ -47,7 +47,7 @@ export const batchCreateBonusWorkTypeAPI = z.array(createBonusWorkTypeAPI);
 const BonusDepartment = z.object({
 	period_id: z.number(),
 	bonus_type: bonusTypeEnum,
-	department: z.string(),
+	department: z.union([z.string(), z.coerce.number()]),
 	multiplier: z.number(),
 });
 

@@ -9,25 +9,25 @@ import { ArrowUpDown } from "lucide-react";
 import { overtimeFE } from "~/server/api/types/overtime_type";
 
 const columns = (t: I18nType) => Object.keys(overtimeFE.shape).map((key) => {
-return {
-	accessorKey: key,
-	header: ({ column }: any) => {
-		return (
-			<div className="flex justify-center">
-				<div className="text-center font-medium">
-					<Button
-						variant="ghost"
-						onClick={() =>
-							column.toggleSorting(
-								column.getIsSorted() === "asc"
-							)
-						}
-					>
-						{t(`table.${key}`)}
-						<ArrowUpDown className="ml-2 h-4 w-4" />
-					</Button>
+	return {
+		accessorKey: key,
+		header: ({ column }: any) => {
+			return (
+				<div className="flex justify-center">
+					<div className="text-center font-medium">
+						<Button
+							variant="ghost"
+							onClick={() =>
+								column.toggleSorting(
+									column.getIsSorted() === "asc"
+								)
+							}
+						>
+							{t(`table.${key}`)}
+							<ArrowUpDown className="ml-2 h-4 w-4" />
+						</Button>
+					</div>
 				</div>
-			</div>
 			);
 		},
 	};

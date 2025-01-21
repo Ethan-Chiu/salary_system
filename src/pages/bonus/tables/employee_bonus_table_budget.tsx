@@ -121,7 +121,7 @@ export function employeeBonusMapper(
 		return {
 			...d,
             id: d.id,
-			functions: { create: true, update: true, delete: true },
+			functions: d.functions,
 			// functions: { create: d.creatable, update: d.updatable, delete: d.deletable }
 		};
 	});

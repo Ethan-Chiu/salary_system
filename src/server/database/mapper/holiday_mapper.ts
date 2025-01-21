@@ -1,20 +1,18 @@
-import { EmployeeDataService } from "~/server/service/employee_data_service";
-import { EHRService, type HolidayWithType } from "~/server/service/ehr_service";
 import { HolidayFE, type HolidayFEType } from "~/server/api/types/holiday_type";
 import { container, injectable } from "tsyringe";
 import { Holiday } from "../entity/UMEDIA/holiday";
 import { HolidaysTypeService } from "~/server/service/holidays_type_service";
+import { EmployeeDataDecType } from "../entity/SALARY/employee_data";
+import { Payset } from "../entity/UMEDIA/payset";
 
 @injectable()
 export class HolidayMapper {
-	constructor(
-		private readonly ehrService: EHRService,
-		private readonly employeeDataService: EmployeeDataService
-	) {}
+	constructor() { }
 
 	async getHolidayFE(
-		period_id: number,
-		holiday_list: Holiday[]
+		holiday_list: Holiday[],
+		employee_data_list: EmployeeDataDecType[],
+		payset_list: Payset[]
 	): Promise<HolidayFEType[]> {
 		const groupedHolidayRecords: Record<string, Holiday[]> = {};
 
@@ -79,17 +77,8 @@ export class HolidayMapper {
 		// )?.pay_id ?? -1;
 		const HolidayFE_list = await Promise.all(
 			groupedHolidayArray.map(async (holiday_list) => {
-				const employee_data =
-					await this.employeeDataService.getEmployeeDataByEmpNoByPeriod(
-						period_id,
-						holiday_list[0]!.emp_no
-					);
-				const work_day =
-					(
-						await this.ehrService.getPaysetByEmpNoList(period_id, [
-							holiday_list[0]!.emp_no,
-						])
-					)[0]?.work_day ?? 30;
+				const employee_data = employee_data_list.find((e) => e.emp_no === holiday_list[0]!.emp_no);
+				const work_day = payset_list.find((p) => p.emp_no === holiday_list[0]!.emp_no)?.work_day ?? 30;
 				let special_personal_leave = 0;
 				let personal_leave = 0;
 				let full_attendance_personal_leave = 0;

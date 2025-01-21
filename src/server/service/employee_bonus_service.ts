@@ -25,7 +25,7 @@ export class EmployeeBonusService {
 	constructor(
 		private readonly ehrService: EHRService,
 		private readonly employeeBonusMapper: EmployeeBonusMapper
-	) {}
+	) { }
 
 	async createEmployeeBonus(
 		data: z.input<typeof createEmployeeBonusService>
@@ -33,7 +33,7 @@ export class EmployeeBonusService {
 		const d = createEmployeeBonusService.parse(data);
 		const employeeBonus = await this.employeeBonusMapper.encode({
 			...d,
-			start_date: d.start_date ?? new Date(),
+			// start_date: d.start_date ?? new Date(),
 			disabled: false,
 			create_by: "system",
 			update_by: "system",
@@ -90,25 +90,24 @@ export class EmployeeBonusService {
 		return await this.employeeBonusMapper.decode(result);
 	}
 
-	async getEmployeeBonusByEmpNoByType(
+	async getEmployeeBonusByEmpNoListByType(
 		period_id: number,
 		bonus_type: BonusTypeEnumType,
-		emp_no: string
+		emp_no_list: string[]
 	) {
-		const result = await EmployeeBonus.findOne({
+		const result = await EmployeeBonus.findAll({
 			where: {
 				period_id: period_id,
 				bonus_type: bonus_type,
-				emp_no: emp_no,
+				emp_no: { [Op.in]: emp_no_list },
 				disabled: false,
 			},
 			raw: true,
 		});
-		if (result === null) {
-			return null;
-		}
-		return await this.employeeBonusMapper.decode(result);
+
+		return await this.employeeBonusMapper.decodeList(result);
 	}
+
 
 	async getEmployeeBonusByEmpNo(period_id: number, emp_no: string) {
 		const empList = await EmployeeBonus.findAll({
@@ -251,7 +250,7 @@ export class EmployeeBonusService {
 							new Date(
 								employee_data.registration_date
 							).getTime()) /
-							(1000 * 60 * 60 * 24 * 365)
+						(1000 * 60 * 60 * 24 * 365)
 					)
 				)) *
 				(await bonus_department_service.getMultiplier(
@@ -350,13 +349,10 @@ export class EmployeeBonusService {
 		multiplier: number,
 		fixed_amount: number
 	): Promise<void> {
+		const emp_bonus_list = await this.getEmployeeBonusByEmpNoListByType(period_id, bonus_type, emp_no_list)
 		await Promise.all(
 			emp_no_list.map(async (emp_no) => {
-				const emp_bonus = await this.getEmployeeBonusByEmpNoByType(
-					period_id,
-					bonus_type,
-					emp_no
-				);
+				const emp_bonus = emp_bonus_list.find((e) => e.emp_no === emp_no);
 				if (!emp_bonus) {
 					throw new BaseResponseError(
 						"Employee bonus does not exist"
@@ -386,11 +382,8 @@ export class EmployeeBonusService {
 		}: z.infer<typeof updateEmployeeBonusService>
 	) {
 		let error = false;
-		const employeeBonus = await this.getEmployeeBonusByEmpNoByType(
-			period_id!,
-			bonus_type!,
-			emp_no!
-		);
+		const emp_bonus_list = await this.getEmployeeBonusByEmpNoListByType(period_id!, bonus_type!, [emp_no!]);
+		const employeeBonus = emp_bonus_list[0];
 		if (!employeeBonus) {
 			throw new BaseResponseError("Employee bonus does not exist");
 		}
@@ -457,9 +450,9 @@ export class EmployeeBonusService {
 			bud_effective_salary: number;
 			budget_amount: number;
 		}[] = [];
-		const emp_no_list = (
-			await this.getAllEmployeeBonus(period_id, bonus_type)
-		).map((e) => e.emp_no);
+		const emp_no_list = (await this.getAllEmployeeBonus(period_id, bonus_type)).map((e) => e.emp_no);
+		const emp_bonus_list = await this.getEmployeeBonusByEmpNoListByType(period_id, bonus_type, emp_no_list);
+
 		const promises = emp_no_list.map(async (emp_no) => {
 			const employee_payment_service = container.resolve(
 				EmployeePaymentService
@@ -474,11 +467,7 @@ export class EmployeeBonusService {
 				return;
 			}
 
-			const employee_bonus = await this.getEmployeeBonusByEmpNoByType(
-				period_id,
-				bonus_type,
-				emp_no
-			);
+			const employee_bonus = emp_bonus_list.find((e) => e.emp_no === emp_no);
 			if (!employee_bonus) {
 				return;
 			}
@@ -495,11 +484,11 @@ export class EmployeeBonusService {
 					employee_payment_dec.occupational_allowance +
 					employee_payment_dec.subsidy_allowance +
 					(employee_payment_dec.long_service_allowance_type ==
-					LongServiceEnum.enum.month_allowance
+						LongServiceEnum.enum.month_allowance
 						? employee_payment_dec.long_service_allowance
 						: 0)) *
-					employee_bonus_fe.special_multiplier *
-					employee_bonus_fe.multiplier +
+				employee_bonus_fe.special_multiplier *
+				employee_bonus_fe.multiplier +
 				employee_bonus_fe.fixed_amount;
 			if (budget_amount <= 0) {
 				budget_amount_list.push({
@@ -512,11 +501,11 @@ export class EmployeeBonusService {
 					emp_no: emp_no,
 					bud_effective_salary: Round(
 						budget_amount /
-							(employee_payment_dec.base_salary +
-								employee_payment_dec.food_allowance +
-								employee_payment_dec.supervisor_allowance +
-								employee_payment_dec.occupational_allowance +
-								employee_payment_dec.subsidy_allowance),
+						(employee_payment_dec.base_salary +
+							employee_payment_dec.food_allowance +
+							employee_payment_dec.supervisor_allowance +
+							employee_payment_dec.occupational_allowance +
+							employee_payment_dec.subsidy_allowance),
 						3
 					),
 					budget_amount: budget_amount,
@@ -541,11 +530,7 @@ export class EmployeeBonusService {
 		}
 
 		const promises2 = budget_amount_list.map(async (e) => {
-			const employee_bonus = await this.getEmployeeBonusByEmpNoByType(
-				period_id,
-				bonus_type,
-				e.emp_no
-			);
+			const employee_bonus = emp_bonus_list.find((b) => b.emp_no === e.emp_no);
 			if (!employee_bonus) {
 				return;
 			}

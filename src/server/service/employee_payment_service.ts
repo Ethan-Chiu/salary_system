@@ -180,7 +180,7 @@ export class EmployeePaymentService {
 	async getCurrentEmployeePaymentByEmpNoList(
 		emp_no_list: string[],
 		period_id: number
-	): Promise<EmployeePaymentDecType[] | null> {
+	): Promise<EmployeePaymentDecType[]> {
 		const period = await this.ehrService.getPeriodById(period_id);
 		const current_date_string = period.end_date;
 		const employeePayment = await EmployeePayment.findAll({
@@ -200,10 +200,6 @@ export class EmployeePaymentService {
 				disabled: false,
 			},
 		});
-
-		if (employeePayment == null) {
-			return null;
-		}
 
 		return await this.employeePaymentMapper.decodeList(employeePayment);
 	}

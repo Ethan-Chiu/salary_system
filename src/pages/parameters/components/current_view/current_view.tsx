@@ -8,10 +8,13 @@ import { WithDataTableStandardState } from "~/components/data_table/default/data
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
 	data: TData[];
+	
+	original_columns?: Array<string>;
 }
 export default function CurrentView<TData>({
 	columns,
 	data,
+	original_columns,
 }: DataTableProps<TData>) {
 	const { setSelectedTable } = useContext(dataTableContext);
 
@@ -19,6 +22,7 @@ export default function CurrentView<TData>({
 		columns: columns,
 		data,
 		props: {},
+		original_columns,
 		WrappedComponent: CurrentViewContent,
 		onUpdate: (table) => {
 			setSelectedTable({ table: table });

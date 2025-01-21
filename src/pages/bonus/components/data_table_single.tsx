@@ -8,6 +8,9 @@ import { DataTablePagination } from "~/components/data_table/data_table_paginati
 import { DataTableStandardBody } from "~/components/data_table/default/data_table_standard_body";
 import { WithDataTableStandardState } from "~/components/data_table/default/data_table_standard_state";
 import { BonusTypeEnumType } from "~/server/api/types/bonus_type_enum";
+import dataTableContext from "./context/data_table_context";
+
+import { useContext } from "react";
 
 interface DataTableProps<TData> {
 	columns: ColumnDef<TData, any>[];
@@ -22,11 +25,16 @@ export function DataTable<TData>({
 	bonusType,
 	filterColumnKey,
 }: DataTableProps<TData>) {
+	const { setSelectedTable } = useContext(dataTableContext);
 	return WithDataTableStandardState({
 		columns: columns,
 		data,
 		props: { bonusType, filterColumnKey },
 		WrappedComponent: DataTableContent,
+		
+		onUpdate: (table) => {
+			setSelectedTable({ table: table });
+		},
 	});
 }
 
@@ -56,3 +64,4 @@ function DataTableContent<TData>({
 		</div>
 	);
 }
+

@@ -9,26 +9,18 @@ import {
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { container } from "tsyringe";
 import { type EmployeePaymentDecType } from "../entity/SALARY/employee_payment";
+import { EmployeeDataDecType } from "../entity/SALARY/employee_data";
+import { Payset } from "../entity/UMEDIA/payset";
 
 export class AllowanceMapper {
 
 	async getAllowanceFE(
-		period_id:number,
-		allowance_with_type: AllowanceWithType
+		allowance_with_type: AllowanceWithType,
+		employee_data_list: EmployeeDataDecType[],
+		payset_list: Payset[]
 	): Promise<AllowanceFEType> {
-		const employee_data_service = container.resolve(EmployeeDataService);
-		const ehrService = container.resolve(EHRService);
-		const employee_data =
-			await employee_data_service.getEmployeeDataByEmpNoByPeriod(
-				period_id,
-				allowance_with_type.emp_no
-			);
-		const payset = (
-			await ehrService.getPaysetByEmpNoList(
-				allowance_with_type.period_id,
-				[allowance_with_type.emp_no]
-			)
-		)[0];
+		const employee_data = employee_data_list.find((e) => e.emp_no === allowance_with_type.emp_no);
+		const payset = payset_list.find((p) => p.emp_no === allowance_with_type.emp_no);
 
 		const allowanceFE: AllowanceFEType = {
 			...allowance_with_type,
@@ -42,24 +34,15 @@ export class AllowanceMapper {
 	}
 
 	async getNewAllowanceFE(
-		period_id: number,
 		allowanceFE_list: AllowanceFEType[],
-		employee_payment_list: EmployeePaymentDecType[]
+		employee_payment_list: EmployeePaymentDecType[],
+		employee_data_list: EmployeeDataDecType[],
+		payset_list: Payset[]
 	): Promise<NewAllowanceFEType[]> {
-		const ehrService = container.resolve(EHRService);
-		const employee_data_service = container.resolve(EmployeeDataService);
 		const new_allowanceFE_list: NewAllowanceFEType[] = await Promise.all(
 			employee_payment_list.map(async (employee_payment) => {
-				const employee_data =
-					await employee_data_service.getEmployeeDataByEmpNoByPeriod(
-						period_id,
-						employee_payment.emp_no
-					);
-				const payset = (
-					await ehrService.getPaysetByEmpNoList(period_id, [
-						employee_payment.emp_no,
-					])
-				)[0];
+				const employee_data = employee_data_list.find((e) => e.emp_no === employee_payment.emp_no);
+				const payset = payset_list.find((p) => p.emp_no === employee_payment.emp_no);
 				return {
 					...employee_payment,
 					emp_no: employee_payment.emp_no,
@@ -71,14 +54,14 @@ export class AllowanceMapper {
 						allowanceFE_list.findLast(
 							(allowanceFE) =>
 								allowanceFE.emp_no ===
-									employee_payment.emp_no &&
+								employee_payment.emp_no &&
 								allowanceFE.allowance_type_name === "輪班津貼"
 						)?.amount ?? 0,
 					professional_cert_allowance:
 						allowanceFE_list.findLast(
 							(allowanceFE) =>
 								allowanceFE.emp_no ===
-									employee_payment.emp_no &&
+								employee_payment.emp_no &&
 								allowanceFE.allowance_type_name === "證照津貼"
 						)?.amount ?? 0,
 				};

@@ -102,8 +102,8 @@ export const bonus_all_columns = (
 export function bonusAllMapper(bonusAllData: any): RowItem {
 	return {
 		parameters: "倍率",
-		value: bonusAllData.multiplier,
-		functions: bonusAllData.functions,
+		value: bonusAllData?.multiplier,
+		functions: bonusAllData?.functions,
 	};
 }
 
@@ -161,7 +161,7 @@ export function BonusAllTable({
 							columns={bonus_all_columns({
 								t,
 							})}
-							data={[bonusAllMapper(data!)]}
+							data={data ? [bonusAllMapper(data!)] : []}
 							bonusType={bonus_type}
 							filterColumnKey={filterKey}
 						/>}

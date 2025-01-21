@@ -5,7 +5,6 @@ import { DataTable as DataTableWithoutFunctions } from "~/pages/functions/compon
 import { LoadingSpinner } from "~/components/loading";
 import { type TableComponentProps } from "../tables_view";
 import { formatDate } from "~/lib/utils/format_date";
-import { EmptyTable } from "./empty_table";
 import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
 import { type BankSettingFEType } from "~/server/api/types/bank_setting_type";
@@ -116,7 +115,10 @@ export function bankSettingMapper(
 			org_code: d.org_code,
 			start_date: d.start_date,
 			end_date: d.end_date,
-			functions: d.functions,
+			// functions: d.functions,
+			functions: {
+				deletable: true,
+			}
 		};
 	});
 }
@@ -168,6 +170,9 @@ export function BankTable({ period_id, viewOnly }: BankTableProps) {
 					columns={bank_columns({ t, setOpen, setMode, setData })}
 					data={bankSettingMapper(data!)}
 					filterColumnKey={filterKey}
+					original_columns={
+						["bank_name", "bank_code", "org_name", "org_code", "start_date", "end_date"]
+					}
 				/>
 				<FunctionsSheetContent t={t} period_id={period_id}>
 					<ParameterForm

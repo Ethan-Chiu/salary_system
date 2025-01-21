@@ -53,6 +53,24 @@ export class TrustMoneyService {
 		return newData;
 	}
 
+	async batchCreateTrustMoney(
+		data: z.infer<typeof createTrustMoneyService>[]
+	): Promise<TrustMoney[]> {
+		const newData = await Promise.all(
+			data.map(async (d) => {
+				const trustMoney = await this.trustMoneyMapper.encode({
+					...d,
+					start_date: d.start_date ?? new Date(),
+					disabled: false,
+					create_by: "system",
+					update_by: "system",
+				});
+				return TrustMoney.create(trustMoney, { raw: true });
+			})
+		);
+		return newData;
+	}
+
 	async getTrustMoneyById(id: number): Promise<TrustMoneyDecType | null> {
 		const trustMoney = await TrustMoney.findOne({
 			where: { id: id },

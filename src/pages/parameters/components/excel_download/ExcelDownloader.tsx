@@ -25,6 +25,11 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 		return table_name;
 	}
 
+	function getColumns() {
+		if (selectedTable?.table.options.meta?.original_columns)	return selectedTable?.table.options.meta?.original_columns;
+		return selectedTable?.table.getAllColumns().map(c => c.id).filter(c => !["id", "functions"].includes(c));
+	}
+
 	const { t } = useTranslation();
 
 	const [filename, setFilename] = useState("excel.xlsx");
@@ -44,6 +49,7 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 		datas: any[][],
 		filename: string,
 	) => {
+
 
 		const workbook = new ExcelJS.Workbook();
 
@@ -78,24 +84,40 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 				name === "" ? "blank" : name
 			);
 			try {
-				if (!datas) return;
-				datas.map((row: any[], i: number) => {
-					if (i === 0) {
-						worksheet.addRow(
-							row.map((header: string) =>
-								(shouldTranspose) ? header : t(`table.${header}`)
-							)
-						);
-					} else {
-						worksheet.addRow(row);
+				if (datas.length == 0) {
+					const translated_headers = getColumns()?.map((header: string) => t(`table.${header}`));
+					if (shouldTranspose) {
+						// TODO: Where to get the headers?
+						worksheet.addRow(translated_headers);
+					}
+					else {
+						worksheet.addRow(translated_headers);
 					}
 
-					worksheet.columns = (datas[0] ?? []).map(() => ({
+					// Increase cell width
+					worksheet.columns = (translated_headers ?? []).map(() => ({
 						width: 25, // Adjust this value as needed
 					}));
-				});
-			} catch { }
+				}
+				else {
+					datas.map((row: any[], i: number) => {
+						if (i === 0) {
+							worksheet.addRow(
+								row.map((header: string) =>
+									(shouldTranspose) ? header : t(`table.${header}`)
+								)
+							);
+						} else {
+							worksheet.addRow(row);
+						}
 
+						worksheet.columns = (datas[0] ?? []).map(() => ({
+							width: 25, // Adjust this value as needed
+						}));
+					});
+				}
+			} catch { }
+			/* MARK: add cell props
 			if (datas)
 				datas.forEach((row: any[], ri: number) => {
 					row.forEach((cellProps: string, ci: number) => {
@@ -110,6 +132,7 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 						};
 					});
 				});
+			*/
 		}
 
 		// Save the workbook to a file
@@ -143,10 +166,12 @@ export function ExcelDownload({ table_name }: { table_name: string }) {
 				</div>
 			</div>
 			<DialogFooter>
-				<Button type="submit" onClick={() => handleExportExcel(
-					getExcelData(selectedTable?.table.getFilteredRowModel().rows.map((r) => r.original)!, ["functions"]),
-					filename
-				)}>
+				<Button type="submit" onClick={() => 
+					handleExportExcel(
+						getExcelData(selectedTable?.table.getFilteredRowModel().rows.map((r) => r.original)!, ["id", "functions"]),
+						filename
+					)
+				}>
 					{t("button.excel_download")}
 				</Button>
 			</DialogFooter>

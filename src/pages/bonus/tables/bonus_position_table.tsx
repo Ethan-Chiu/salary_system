@@ -181,6 +181,7 @@ export function BonusPositionTable({
 								setMode,
 								setData,
 							})}
+							original_columns={["position", "position_type", "position_multiplier", "position_type_multiplier"]}
 							data={bonusPositionMapper(data!)}
 							bonusType={bonus_type}
 							filterColumnKey={filterKey}
@@ -199,16 +200,17 @@ export function BonusPositionTable({
 					<ConfirmDialog open={open && mode === "delete"} onOpenChange={setOpen} schema={bonusPositionSchema}/>
 				</BonusToolbarFunctionsProvider>
 			) : (
-				<DataTableWithoutFunctions
-					columns={bonus_position_columns({
-						t,					
-						setOpen,
-						setMode,
-						setData,
-					})}
-					data={bonusPositionMapper(data!)}
-					filterColumnKey={filterKey}
-				/>
+				<></>
+				// <DataTableWithoutFunctions
+				// 	columns={bonus_position_columns({
+				// 		t,					
+				// 		setOpen,
+				// 		setMode,
+				// 		setData,
+				// 	})}
+				// 	data={bonusPositionMapper(data!)}
+				// 	filterColumnKey={filterKey}
+				// />
 			)}
 		</>
 	);

@@ -31,6 +31,7 @@ import {
 	updateAttendanceSettingAPI,
 } from "../types/attendance_setting_type";
 import {
+	batchCreateBankSettingAPI,
 	createBankSettingAPI,
 	updateBankSettingAPI,
 } from "../types/bank_setting_type";
@@ -39,6 +40,7 @@ import {
 	updateInsuranceRateSettingAPI,
 } from "../types/insurance_rate_setting_type";
 import {
+	batchCreateTrustMoneyAPI,
 	createTrustMoneyAPI,
 	updateTrustMoneyAPI,
 } from "../types/trust_money_type";
@@ -59,6 +61,14 @@ export const parametersRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const bankService = container.resolve(BankSettingService);
 			const newdata = await bankService.createBankSetting(input);
+			return newdata;
+		}),
+
+	batchCreateBankSetting: publicProcedure
+		.input(batchCreateBankSettingAPI)
+		.mutation(async ({ input }) => {
+			const bankService = container.resolve(BankSettingService);
+			const newdata = await bankService.batchCreateBankSetting(input);
 			return newdata;
 		}),
 
@@ -347,6 +357,21 @@ export const parametersRouter = createTRPCRouter({
 			// await levelRangeService.rescheduleLevelRange();
 			return levelRangeFE;
 		}),
+	
+	batchCreateLevelRange: publicProcedure
+		.input(z.array(createLevelRangeAPI))
+		.mutation(async ({ input }) => {
+			const levelRangeService = container.resolve(LevelRangeService);
+			const levelRangeMapper = container.resolve(LevelRangeMapper);
+			const levelRange = await Promise.all(
+				input.map(async (e) => await levelRangeMapper.getLevelRange(e))
+			);
+			const newData = await levelRangeService.batchCreateLevelRange(
+				levelRange
+			);
+			// await levelRangeService.rescheduleLevelRange();
+			return newData;
+		}),
 
 	getCurrentLevelRange: publicProcedure
 		.input(z.object({ period_id: z.number() }))
@@ -602,6 +627,17 @@ export const parametersRouter = createTRPCRouter({
 				...input,
 				end_date: null,
 			});
+			await trustMoneyService.rescheduleTrustMoney();
+			return newdata;
+		}),
+	
+	batchCreateTrustMoney: publicProcedure
+		.input(batchCreateTrustMoneyAPI)
+		.mutation(async ({ input }) => {
+			const trustMoneyService = container.resolve(TrustMoneyService);
+			const newdata = await trustMoneyService.batchCreateTrustMoney(
+				input.map((item) => ({ ...item, end_date: null }))
+			);
 			await trustMoneyService.rescheduleTrustMoney();
 			return newdata;
 		}),

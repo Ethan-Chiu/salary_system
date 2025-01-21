@@ -86,6 +86,13 @@ export default function ParameterToolbarFunctionsProvider({
 			ctx.parameters.getAllFutureBankSetting.invalidate();
 		},
 	});
+	const batchCreateBankSetting = api.parameters.batchCreateBankSetting.useMutation({
+		onSuccess: () => {
+			ctx.parameters.getCurrentBankSetting.invalidate();
+			ctx.parameters.getAllBankSetting.invalidate();
+			ctx.parameters.getAllFutureBankSetting.invalidate();
+		},
+	})
 	const deleteBankSetting = api.parameters.deleteBankSetting.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentBankSetting.invalidate();
@@ -147,6 +154,14 @@ export default function ParameterToolbarFunctionsProvider({
 				ctx.parameters.getAllFutureTrustMoney.invalidate();
 			},
 		});
+	const batchCreateTrustMoneySetting =
+		api.parameters.batchCreateTrustMoney.useMutation({
+			onSuccess: () => {
+				ctx.parameters.getCurrentTrustMoney.invalidate();
+				ctx.parameters.getAllTrustMoney.invalidate();
+				ctx.parameters.getAllFutureTrustMoney.invalidate();
+			}
+		})
 	const deleteTrustMoneySetting =
 		api.parameters.deleteTrustMoney.useMutation({
 			onSuccess: () => {
@@ -203,6 +218,13 @@ export default function ParameterToolbarFunctionsProvider({
 			ctx.parameters.getAllFutureLevelRange.invalidate();
 		},
 	});
+	const batchCreateLevelRange = api.parameters.batchCreateLevelRange.useMutation({
+		onSuccess: () => {
+			ctx.parameters.getCurrentLevelRange.invalidate();
+			ctx.parameters.getAllLevelRange.invalidate();
+			ctx.parameters.getAllFutureLevelRange.invalidate();
+		}
+	})
 	const deleteLevelRange = api.parameters.deleteLevelRange.useMutation({
 		onSuccess: () => {
 			ctx.parameters.getCurrentLevelRange.invalidate();
@@ -265,7 +287,7 @@ export default function ParameterToolbarFunctionsProvider({
 			updateFunction: updateBankSetting,
 			createFunction: createBankSetting,
 			deleteFunction: deleteBankSetting,
-			batchCreateFunction: undefined,
+			batchCreateFunction: batchCreateBankSetting,
 		},
 		TableInsurance: {
 			queryCurrentFunction: getCurrentInsuranceRateSetting,
@@ -281,7 +303,7 @@ export default function ParameterToolbarFunctionsProvider({
 			updateFunction: updateTrustMoneySetting,
 			createFunction: createTrustMoneySetting,
 			deleteFunction: deleteTrustMoneySetting,
-			batchCreateFunction: undefined,
+			batchCreateFunction: batchCreateTrustMoneySetting,
 		},
 		TableLevel: {
 			queryCurrentFunction: getCurrentLevel,
@@ -297,7 +319,7 @@ export default function ParameterToolbarFunctionsProvider({
 			updateFunction: updateLevelRange,
 			createFunction: createLevelRange,
 			deleteFunction: deleteLevelRange,
-			batchCreateFunction: undefined,
+			batchCreateFunction: batchCreateLevelRange,
 		},
 		TableSalaryIncomeTax: {
 			queryCurrentFunction: getCurrentSalaryIncomeTax,
