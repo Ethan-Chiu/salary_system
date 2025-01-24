@@ -156,7 +156,7 @@ export class TransactionService {
 		const other_deduction_tax = await this.calculateService.getOtherDeductionTax(expense_list, expense_class_list);
 		const gross_salary = await this.calculateService.getGrossSalary(employee_payment!, payset!, professional_cert_allowance, pay_type, full_attendance_bonus, employee_data!, operational_performance_bonus);
 		const discounted_gross_salary = await this.calculateService.getGrossSalary(discounted_employee_payment!, payset!, professional_cert_allowance, pay_type, full_attendance_bonus, employee_data!, operational_performance_bonus);
-		const special_leave_deduction = await this.calculateService.getSpecialLeaveDeduction(employee_data!, holidays_type_list, holiday_list, gross_salary, insurance_rate_setting!, professional_cert_allowance);
+		const special_leave_deduction = await this.calculateService.getSpecialPersonalLeaveDeduction(employee_data!, holidays_type_list, holiday_list, gross_salary, insurance_rate_setting!, professional_cert_allowance);
 		const l_i_deduction = await this.calculateService.getLaborInsuranceDeduction(employee_data!, discounted_employee_payment!, payset!, insurance_rate_setting!);
 		const h_i_deduction = await this.calculateService.getHealthInsuranceDeduction(employee_data!, discounted_employee_payment!, insurance_rate_setting!);
 		const welfare_contribution = await this.calculateService.getWelfareContribution(employee_data!, discounted_employee_payment!, full_attendance_bonus, operational_performance_bonus);
@@ -212,7 +212,7 @@ export class TransactionService {
 		const g_i_deduction_promotion = await this.calculateService.getGroupInsuranceDeductionPromotion(expense_list, expense_class_list);
 		const deduction_subtotal = await this.calculateService.getDeductionSubtotal(pay_type, salary_income_tax, bonus_tax, welfare_contribution, l_i_deduction, h_i_deduction, group_insurance_deduction, g_i_deduction_promotion, leave_deduction, special_leave_deduction, other_deduction, other_deduction_tax, income_tax_deduction, l_r_self, parking_fee, brokerage_fee, v_2_h_i, meal_deduction);
 		const net_salary = await this.calculateService.getNetSalary(pay_type, taxable_subtotal, non_taxable_subtotal, deduction_subtotal);
-		const special_leave = await this.calculateService.getSpecialLeave(holiday_list, holidays_type_list);
+		const special_leave = await this.calculateService.getSpecialPersonalLeave(holiday_list, holidays_type_list);
 		const full_attendance_personal_leave = await this.calculateService.getFullAtendancePersonalLeave(holiday_list, holidays_type_list);
 		const full_attendance_sick_leave = await this.calculateService.getFullAtendanceSickLeave(holiday_list, holidays_type_list);
 
