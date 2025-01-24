@@ -26,8 +26,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "~/components/ui/select";
+import { useTranslation } from "react-i18next";
 import { useQueryHandle } from "~/components/query_boundary/query_handle";
 import { api } from "~/utils/api";
+import Link from "next/link";
 
 const adjustBaseSalarySchema = z.object({
 	insurance_rate_setting_id: z.string(),
@@ -50,6 +52,8 @@ export function AdjustBaseSalaryDialog({
 	const form = useForm<z.infer<typeof adjustBaseSalarySchema>>({
 		resolver: zodResolver(adjustBaseSalarySchema),
 	});
+
+	const { t } = useTranslation(["common"]);
 
 	const employeePaymentAdjustBaseSalary =
 		api.employeePayment.adjustBaseSalary.useMutation();
@@ -86,11 +90,9 @@ export function AdjustBaseSalaryDialog({
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Are you absolutely sure?</DialogTitle>
+					<DialogTitle>{t("form.adjust_base_salary.title")}</DialogTitle>
 					<DialogDescription>
-						This action cannot be undone. This will permanently
-						delete your account and remove your data from our
-						servers.
+            {t("form.adjust_base_salary.description")}
 					</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
@@ -98,7 +100,7 @@ export function AdjustBaseSalaryDialog({
 						onSubmit={(event) =>
 							void form.handleSubmit(onSubmit)(event)
 						}
-						className="w-2/3 space-y-6"
+						className="w-full space-y-6"
 					>
 						<FormField
 							control={form.control}
@@ -114,7 +116,7 @@ export function AdjustBaseSalaryDialog({
 					</form>
 				</Form>
 				<DialogFooter>
-					<Button type="submit">Confirm</Button>
+					<Button type="submit">{t("button.confirm")}</Button>
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>
@@ -128,13 +130,16 @@ interface BaseSalarySelectProps {
 }
 
 function BaseSalarySelect({ onChange, options }: BaseSalarySelectProps) {
+
+	const { t } = useTranslation(["common"]);
+
 	return (
 		<FormItem>
-			<FormLabel>Email</FormLabel>
+			<FormLabel>{t("table.min_wage")}</FormLabel>
 			<Select onValueChange={onChange}>
 				<FormControl>
 					<SelectTrigger>
-						<SelectValue placeholder="Select a verified email to display" />
+						<SelectValue placeholder={t("form.adjust_base_salary.placeholder")} />
 					</SelectTrigger>
 				</FormControl>
 				<SelectContent>
@@ -149,7 +154,8 @@ function BaseSalarySelect({ onChange, options }: BaseSalarySelectProps) {
 				</SelectContent>
 			</Select>
 			<FormDescription>
-				You can manage email addresses in your{" "}
+        {t("form.adjust_base_salary.footer_desc")}
+        <Link className="underline" href="/parameters">{t("table_name.insuranceRateSetting")}</Link>
 			</FormDescription>
 			<FormMessage />
 		</FormItem>
