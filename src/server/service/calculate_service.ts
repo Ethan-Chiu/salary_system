@@ -618,6 +618,14 @@ export class CalculateService {
 		} else return 0;
 	}
 
+	// MARK: 職務績效獎金
+	async getOccupationalPerformanceBonus(		
+		// TODO
+	): Promise<number> {
+		// TODO
+		return 0
+	}
+
 	//MARK: 薪資所得扣繳總額
 	async getSalaryIncomeDeduction(
 		discounted_employee_payment_dec: EmployeePaymentFEType,
