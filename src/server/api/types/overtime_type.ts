@@ -14,15 +14,15 @@ export const overtimeFE=z.object({
 	// pay_period: number | null;
 	// period_name: string | null;
 	// pay_delay: number | null;
-	hours_1: z.number(),
+	// hours_1: z.number(),
 	hours_134: z.number(),
 	hours_167: z.number(),
 	hours_267: z.number(),
-	hours_2: z.number(),
+	// hours_2: z.number(),
 	hours_134_TAX: z.number(),
 	hours_167_TAX: z.number(),
 	hours_267_TAX: z.number(),
-	hours_2_TAX: z.number()
+	// hours_2_TAX: z.number()
 })
 
 export type OvertimeFEType = z.infer<typeof overtimeFE>

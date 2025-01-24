@@ -47,19 +47,22 @@ const columns = (t: I18nType) =>
 		"emp_name",
 		"position",
 		"work_day",
-		"other_addition_tax",
-		"other_addition",
-		"other_deduction_tax",
-		"other_deduction",
-		"dorm_deduction",
+
 		"reissue_salary",
-		"g_i_deduction_family",
+		"retirement_income",
+		"other_addition",
+		"other_addition_tax",
+
+		"dorm_deduction",
 		"g_i_deduction_promotion",
 		"income_tax_deduction",
 		"l_r_self",
 		"parking_fee",
 		"brokerage_fee",
-		"retirement_income",
+		"other_deduction",
+		"other_deduction_tax",
+
+		"g_i_deduction_family",
 		"l_i_disability_reduction",
 		"h_i_subsidy",
 	].map((key) => {
@@ -122,19 +125,19 @@ export function OtherTable({ period_id, emp_no_list }: OtherTableProps) {
 
 	if (data) {
 		const filteredData = data.filter((d: any) =>
-			["other_addition",
+			["reissue_salary",
+				"retirement_income",
+				"other_addition",
 				"other_addition_tax",
-				"other_deduction",
-				"other_deduction_tax",
 				"dorm_deduction",
-				"reissue_salary",
 				"g_i_deduction_promotion",
-				"g_i_deduction_family",
 				"income_tax_deduction",
 				"l_r_self",
 				"parking_fee",
 				"brokerage_fee",
-				"retirement_income",
+				"other_deduction",
+				"other_deduction_tax",
+				"g_i_deduction_family",
 				"l_i_disability_reduction",
 				"h_i_subsidy",]
 				.some(key => d[key] > 0)

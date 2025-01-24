@@ -23,6 +23,7 @@ export const newAllowanceFE = z.object({
     shift_allowance: z.number(),
     professional_cert_allowance: z.number(),
     long_service_allowance: z.number(),
+    food_allowance: z.number(),
 })
 
 export type AllowanceFEType = z.infer<typeof allowanceFE>;
