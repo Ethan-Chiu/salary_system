@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { dateAll, dateCreate, empData, func, Id } from "./common_type";
+import { dateAll, dateCreate, dateMetaFE, empData, func, Id } from "./common_type";
 import { LongServiceEnum } from "./long_service_enum";
 import { optionalNumDefaultZero } from "./z_utils";
 
@@ -62,7 +62,7 @@ export const updateEmployeePaymentService = employeePaymentUpdate
 export const employeePaymentFE = employeePaymentBase
 	.merge(Id)
 	.merge(empData)
-	.merge(dateAll)
+	.merge(dateMetaFE)
 	.merge(func);
 
 export type EmployeePaymentFEType = z.infer<typeof employeePaymentFE>;
