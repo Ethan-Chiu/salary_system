@@ -126,7 +126,6 @@ export function EmployeePaymentFunctions() {
 				onSubmit={(date) => {
 					autoCalculateEmployeePayment.mutate({
 						start_date: date,
-						emp_no_list: [],
 					});
 				}}
 			/>

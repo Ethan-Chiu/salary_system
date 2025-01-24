@@ -93,6 +93,7 @@ export class EmployeeDataService {
 			order: [["period_id", "DESC"]],
 		});
 		const employee_data_mapper = container.resolve(EmployeeDataMapper);
+    // TODO: why assert??? without check???
 		return await employee_data_mapper.decode(employeeData[0]!);
 	}
 
