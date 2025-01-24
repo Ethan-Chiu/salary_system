@@ -1,4 +1,3 @@
-import { LoadingSpinner } from "~/components/loading";
 import { api } from "~/utils/api";
 import { HistoryView } from "../../components/history_view/history_view";
 import {
@@ -6,19 +5,16 @@ import {
 	employeeTrustMapper,
 } from "./employee_trust_table";
 import { useTranslation } from "react-i18next";
+import { useQueryHandle } from "~/components/query_boundary/query_handle";
 
 export function EmployeeTrustHistory() {
 	const { t } = useTranslation(["common"]);
 
-	const { isPending, isError, data, error } =
-		api.employeeTrust.getAllEmployeeTrust.useQuery();
+	const q = api.employeeTrust.getAllEmployeeTrust.useQuery();
+	const { data, isPending, content } = useQueryHandle(q);
 
 	if (isPending) {
-		return <LoadingSpinner />; // TODO: Loading element with toast
-	}
-
-	if (isError) {
-		return <span>Error: {error.message}</span>; // TODO: Error element with toast
+		return content;
 	}
 
 	const tableData = data.map((d) => employeeTrustMapper(d));
