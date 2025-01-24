@@ -62,21 +62,21 @@ export class Transaction extends Model<
 	declare full_attendance_bonus: number; // 全勤獎金
 	declare operational_performance_bonus: number; // 營運績效獎金
 	declare occupational_performance_bonus: number; // 職務績效獎金
-	declare retroactive_salary: number; // 補發薪資
+	declare reissue_salary: number; // 補發薪資
 	declare non_leave_compensation: number; // 不休假代金
 	declare retirement_income: number; // 退職所得
 	declare project_bonus: number; // 專案獎金
 	declare quarterly_performance_bonus: number; // 季績效獎金
 	declare weekday_134_overtime_hours: number; // 平日134加班時數
 	declare weekday_167_overtime_hours: number; // 平日167加班時數
-	declare rest_134_overtime_hours: number; // 休息日134加班時數
-	declare rest_167_overtime_hours: number; // 休息日167加班時數
-	declare rest_267_overtime_hours: number; // 休息日267加班時數
+	declare rest_134_overtime_hours: number; 	// 休息日134加班時數
+	declare rest_167_overtime_hours: number; 	// 休息日167加班時數
+	declare rest_267_overtime_hours: number; 	// 休息日267加班時數
 	declare weekday_134_tax_overtime_hours: number; // 平日134加班時數(稅)
 	declare weekday_167_tax_overtime_hours: number; // 平日167加班時數(稅)
-	declare rest_134_tax_overtime_hours: number; // 休息日134加班時數(稅)
-	declare rest_167_tax_overtime_hours: number; // 休息日167加班時數(稅)
-	declare rest_267_tax_overtime_hours: number; // 休息日267加班時數(稅)
+	declare rest_134_tax_overtime_hours: number; 	// 休息日134加班時數(稅)
+	declare rest_167_tax_overtime_hours: number; 	// 休息日167加班時數(稅)
+	declare rest_267_tax_overtime_hours: number; 	// 休息日267加班時數(稅)
 	declare weekday_overtime_pay: number; // 平日加班費
 	declare rest_overtime_pay: number; // 休息日加班費
 	declare exceed_overtime_pay: number; // 超時加班費
@@ -96,7 +96,7 @@ export class Transaction extends Model<
 	declare welfare_contribution: number; // 福利金提撥
 	declare group_insurance_deduction: number; // 團保費代扣
 	declare g_i_deduction_promotion: number; // 團保費代扣_升等
-	declare accommodation_deduction: number; // 住宿代扣款
+	declare dorm_deduction: number; // 住宿代扣款
 	declare income_tax: number; // 薪資所得稅
 	declare bonus_tax: number; // 獎金所得稅
 	declare fixed_deposit_deduction: number; // 定存扣款
@@ -321,7 +321,7 @@ export function initTransaction(sequelize: Sequelize) {
 				type: DataTypes.INTEGER,
 				comment: "職務績效獎金",
 			},
-			retroactive_salary: {
+			reissue_salary: {
 				type: DataTypes.INTEGER,
 				comment: "補發薪資",
 			},
@@ -445,7 +445,7 @@ export function initTransaction(sequelize: Sequelize) {
 				type: DataTypes.INTEGER,
 				comment: "團保費代扣_升等",
 			},
-			accommodation_deduction: {
+			dorm_deduction: {
 				type: DataTypes.INTEGER,
 				comment: "住宿代扣款",
 			},

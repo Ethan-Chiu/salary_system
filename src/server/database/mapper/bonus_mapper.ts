@@ -28,7 +28,7 @@ export class BonusMapper {
 				const employee_data = employeeDataList.find((e) => e.emp_no === emp_no);
 				const payset = payset_list.find((p) => p.emp_no === emp_no);
 				const employee_bonus = employee_bonus_list.find((e) => e.emp_no === emp_no);
-				const project_bonus = employee_bonus ? employee_bonus.app_amount ?? -1 : 0;
+				const project_bonus = employee_bonus ? employee_bonus.app_amount ?? 0 : 0;
 
 				return {
 					// ...employee_bonus,
