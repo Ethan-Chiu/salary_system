@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 
-export function createTableFunctionContext<TMode, TData>() {
-	return React.createContext<{
-		mode: TMode;
-		setMode: (mode: TMode) => void;
-		open: boolean;
-		setOpen: (open: boolean) => void;
-		data: TData | null;
-		setData: (data: TData) => void;
-	} | null>(null);
+interface TableFunctionContext<TMode, TData> {
+	mode: TMode;
+	setMode: (mode: TMode) => void;
+	open: boolean;
+	setOpen: (open: boolean) => void;
+	data: TData | null;
+	setData: (data: TData) => void;
+}
+
+export function createTableFunctionContext<TMode, TData, T extends object = object>() {
+	return React.createContext<(TableFunctionContext<TMode, TData> & T) | null>(
+		null
+	);
 }
 
 export function useTableFunctionState<TMode, TData>(initialMode: TMode) {

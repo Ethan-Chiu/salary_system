@@ -26,9 +26,6 @@ export function EmployeeTrustFunctionMenu() {
 			<FunctionMenuOption.Initialize
 				onClick={() => setMode("initialize")}
 			/>
-			<FunctionMenuOption.AutoCalculate
-				onClick={() => setMode("auto_calculate")}
-			/>
 		</FunctionMenu>
 	);
 }

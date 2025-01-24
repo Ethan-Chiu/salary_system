@@ -428,76 +428,7 @@ export class EmployeeTrustService {
 			})
 		);
 	}
-	// async autoCalculateEmployeeTrust(
-	// 	period_id: number,
-	// 	emp_no_list: string[],
-	// 	start_date: string
-	// ): Promise<void> {
-	// 	const employee_data_service = container.resolve(EmployeeDataService);
-	// 	const trust_money_service = container.resolve(TrustMoneyService);
-	// 	const employee_trust_mapper = container.resolve(EmployeeTrustMapper);
 
-	// 	const promises = emp_no_list.map(async (emp_no: string) => {
-	// 		const employeeTrust = await this.getCurrentEmployeeTrustByEmpNo(
-	// 			emp_no,
-	// 			period_id
-	// 		);
-
-	// 		if (employeeTrust == null) {
-	// 			throw new BaseResponseError("Employee Trust does not exist");
-	// 		}
-
-	// 		if (employeeTrust.end_date != null) {
-	// 			return;
-	// 		}
-
-	// 		const employee_data =
-	// 			await employee_data_service.getEmployeeDataByEmpNo(emp_no);
-	// 		if (employee_data == null) {
-	// 			throw new BaseResponseError("Employee data does not exist");
-	// 		}
-	// 		const trust_money =
-	// 			await trust_money_service.getCurrentTrustMoneyByPosition(
-	// 				period_id,
-	// 				employee_data.position,
-	// 				employee_data.position_type
-	// 			);
-	// 		if (trust_money == null) {
-	// 			return;
-	// 		}
-
-	// 		const employeeTrustDec =
-	// 			await employee_trust_mapper.getEmployeeTrustDec(employeeTrust);
-
-	// 		const originalEmployeeTrust =
-	// 			await employee_trust_mapper.getEmployeeTrust(employeeTrustDec);
-
-	// 		const updatedEmployeeTrust =
-	// 			await employee_trust_mapper.getEmployeeTrust({
-	// 				...employeeTrustDec,
-	// 				// org_trust_reserve: Math.min(trust_money.org_trust_reserve_limit, employeeTrustFE.emp_trust_reserve),
-	// 				// org_special_trust_incent:
-	// 				// Math.min(trust_money.org_special_trust_incent_limit, employeeTrustFE.emp_special_trust_incent),
-	// 			});
-
-	// 		if (
-	// 			originalEmployeeTrust.emp_trust_reserve_enc !=
-	// 				updatedEmployeeTrust.emp_trust_reserve_enc ||
-	// 			// originalEmployeeTrust.org_trust_reserve_enc != updatedEmployeeTrust.org_trust_reserve_enc ||
-	// 			originalEmployeeTrust.emp_special_trust_incent_enc !=
-	// 				updatedEmployeeTrust.emp_special_trust_incent_enc
-	// 			// originalEmployeeTrust.org_special_trust_incent_enc != updatedEmployeeTrust.org_special_trust_incent_enc
-	// 		) {
-	// 			await this.createEmployeeTrust({
-	// 				...updatedEmployeeTrust,
-	// 				start_date: start_date,
-	// 				end_date: null,
-	// 			});
-	// 		}
-	// 	});
-
-	// 	await Promise.all(promises);
-	// }
 	async getCurrentEmployeeTrustByEmpNoByDate(
 		emp_no: string,
 		date: Date

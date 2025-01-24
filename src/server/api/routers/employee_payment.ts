@@ -11,10 +11,8 @@ import {
 	updateEmployeePaymentService,
 } from "../types/employee_payment_type";
 import { EmployeePaymentMapper } from "~/server/database/mapper/employee_payment_mapper";
-import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { ValidateService } from "~/server/service/validate_service";
 import { select_value } from "~/server/service/helper_function";
-import { InsuranceRateSettingService } from "~/server/service/insurance_rate_setting_service";
 
 export const employeePaymentRouter = createTRPCRouter({
 	getCurrentEmployeePayment: publicProcedure
@@ -64,8 +62,12 @@ export const employeePaymentRouter = createTRPCRouter({
 	createEmployeePayment: publicProcedure
 		.input(employeePaymentCreateAPI)
 		.mutation(async ({ input }) => {
-			const employeePaymentService = container.resolve(EmployeePaymentService);
-			const employeePaymentMapper = container.resolve(EmployeePaymentMapper);
+			const employeePaymentService = container.resolve(
+				EmployeePaymentService
+			);
+			const employeePaymentMapper = container.resolve(
+				EmployeePaymentMapper
+			);
 			const validateService = container.resolve(ValidateService);
 
 			const previousEmployeePaymentFE =
@@ -79,7 +81,10 @@ export const employeePaymentRouter = createTRPCRouter({
 				);
 			}
 
-			await validateService.validateEmployeePayment({ ...input, end_date: null });
+			await validateService.validateEmployeePayment({
+				...input,
+				end_date: null,
+			});
 
 			const newdata = await employeePaymentService.createEmployeePayment({
 				...input,
@@ -99,12 +104,15 @@ export const employeePaymentRouter = createTRPCRouter({
 	updateEmployeePayment: publicProcedure
 		.input(updateEmployeePaymentAPI)
 		.mutation(async ({ input }) => {
-			const employeePaymentService = container.resolve(EmployeePaymentService);
+			const employeePaymentService = container.resolve(
+				EmployeePaymentService
+			);
 			const validateService = container.resolve(ValidateService);
 
 			const employeePayment = updateEmployeePaymentService.parse(input);
 
-			const originalEmployeePayment = await employeePaymentService.getEmployeePaymentById(input.id);
+			const originalEmployeePayment =
+				await employeePaymentService.getEmployeePaymentById(input.id);
 			if (originalEmployeePayment == null) {
 				throw new BaseResponseError("Employee Payment does not exist");
 			}
@@ -123,10 +131,13 @@ export const employeePaymentRouter = createTRPCRouter({
 	deleteEmployeePayment: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.mutation(async ({ input }) => {
-			const employeePaymentService = container.resolve(EmployeePaymentService);
+			const employeePaymentService = container.resolve(
+				EmployeePaymentService
+			);
 			const validateService = container.resolve(ValidateService);
 
-			const originalEmployeePayment = await employeePaymentService.getEmployeePaymentById(input.id);
+			const originalEmployeePayment =
+				await employeePaymentService.getEmployeePaymentById(input.id);
 			if (originalEmployeePayment == null) {
 				throw new BaseResponseError("Employee Payment does not exist");
 			}
@@ -141,34 +152,27 @@ export const employeePaymentRouter = createTRPCRouter({
 		}),
 
 	autoCalculateEmployeePayment: publicProcedure
-		.input(
-			z.object({ emp_no_list: z.string().array(), start_date: z.date() })
-		)
+		.input(z.object({ start_date: z.date() }))
 		.mutation(async ({ input }) => {
-			const employeePaymentService = container.resolve(EmployeePaymentService);
-			const validateService = container.resolve(ValidateService);
-
-			const validates = input.emp_no_list.map(async (emp_no) => {
-				await validateService.validateEmployeePayment({
-					emp_no: emp_no,
-					start_date: input.start_date,
-					end_date: null,
-				});
-			});
-
-			await Promise.all(validates);
+			const employeePaymentService = container.resolve(
+				EmployeePaymentService
+			);
 
 			await employeePaymentService.autoCalculateEmployeePayment(
-				input.emp_no_list,
 				input.start_date
 			);
 			await employeePaymentService.rescheduleEmployeePayment();
 		}),
 
-    adjustBaseSalary: publicProcedure
-      .input(z.object({base_salary: z.number(), start_date: z.date()}))
-      .mutation(async ({input}) => {
-        const employeePaymentService = container.resolve(EmployeePaymentService);
-        await employeePaymentService.adjustBaseSalary(input.base_salary, input.start_date);
-    }),
+	adjustBaseSalary: publicProcedure
+		.input(z.object({ base_salary: z.number(), start_date: z.date() }))
+		.mutation(async ({ input }) => {
+			const employeePaymentService = container.resolve(
+				EmployeePaymentService
+			);
+			await employeePaymentService.adjustBaseSalary(
+				input.base_salary,
+				input.start_date
+			);
+		}),
 });
