@@ -48,3 +48,7 @@ export function select_value<T>(newData: T | undefined, oldData: T): T {
 export function Round(num: number, decimals = 0): number {
 	return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
 }
+
+export function Floor(num: number, decimals = 0): number {
+	return Math.floor(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+}

@@ -16,7 +16,7 @@ import {
 import { Holiday } from "../database/entity/UMEDIA/holiday";
 import { PayTypeEnum, PayTypeEnumType } from "../api/types/pay_type_enum";
 import { HolidaysType } from "../database/entity/SALARY/holidays_type";
-import { Round } from "./helper_function";
+import { Floor, Round } from "./helper_function";
 import { bonusTypeEnum } from "../api/types/bonus_type_enum";
 import { EmployeeBonusService } from "./employee_bonus_service";
 import { LongServiceEnum } from "../api/types/long_service_enum";
@@ -97,7 +97,7 @@ export class CalculateService {
 		});
 
 		if (employee_data.work_type === FOREIGN) {
-			hourly_fee = insurance_rate_setting.min_wage;
+			hourly_fee = Floor(insurance_rate_setting.min_wage / 240, 2);
 			return Round(
 				// hourly_fee * t1 +
 				hourly_fee * t2 * 1.34 +
@@ -166,7 +166,7 @@ export class CalculateService {
 		});
 		// rate存哪裡？
 		if (employee_data.work_type === FOREIGN) {
-			hourly_fee = insurance_rate_setting.min_wage;
+			hourly_fee = Floor(insurance_rate_setting.min_wage / 240, 2);
 			return Round(
 				hourly_fee * t1 //+
 				// hourly_fee * t2 * 1.34 +
@@ -235,7 +235,7 @@ export class CalculateService {
 		});
 		// rate存哪裡？
 		if (employee_data.work_type === FOREIGN || employee_data.work_status === FOREIGN) {
-			hourly_fee = insurance_rate_setting.min_wage;
+			hourly_fee = Floor(insurance_rate_setting.min_wage / 240, 2);
 			return Round(
 				hourly_fee * t1 * 1.34 +
 				hourly_fee * t2 * 1.67 +
@@ -495,7 +495,7 @@ export class CalculateService {
 				holidays_type_dict[holiday.pay_order!]!;
 		});
 		if (employee_data.work_type === FOREIGN || employee_data.work_status === FOREIGN) {
-			hourly_fee = insurance_rate_setting.min_wage;
+			hourly_fee = Floor(insurance_rate_setting.min_wage / 240, 2);
 			return Round(hourly_fee * leave_deduction);
 		} else {
 			return Round(hourly_fee * leave_deduction);
@@ -627,7 +627,7 @@ export class CalculateService {
 		leave_deduction: number,
 		operational_performance_bonus: number,
 		other_addition_tax: number,
-		special_leave_deduction: number,
+		special_personal_leave_deduction: number,
 		other_deduction_tax: number,
 		shift_allowance: number,
 		professional_cert_allowance: number
@@ -666,7 +666,7 @@ export class CalculateService {
 			(shift_allowance ?? 0) - //+
 			// rd("夜點費") -
 			leave_deduction -
-			special_leave_deduction -
+			special_personal_leave_deduction -
 			other_deduction_tax;
 
 		return salary_income_deduction;
@@ -803,7 +803,7 @@ export class CalculateService {
 		});
 		if (employee_data.work_type === FOREIGN || employee_data.work_status === FOREIGN) {
 			return (
-				non_leave_compensation * insurance_rate_setting.min_wage
+				non_leave_compensation * Floor(insurance_rate_setting.min_wage / 240, 2)
 			);
 		} else {
 			return (non_leave_compensation * gross_salary) / 240;
@@ -1089,7 +1089,7 @@ export class CalculateService {
 		group_insurance_deduction: number,
 		group_insurance_deduction_promotion: number,
 		leave_deduction: number,
-		special_leave_deduction: number,
+		special_personal_leave_deduction: number,
 		other_deduction: number,
 		other_deduction_tax: number,
 		income_tax_deduction: number,
@@ -1122,7 +1122,7 @@ export class CalculateService {
 				group_insurance_deduction +
 				group_insurance_deduction_promotion +
 				leave_deduction +
-				special_leave_deduction +
+				special_personal_leave_deduction +
 				meal_deduction +
 				other_deduction +
 				other_deduction_tax +
@@ -1735,7 +1735,7 @@ export class CalculateService {
 		return -1;
 	}
 	//MARK: 特別事假扣款
-	async getSpecialLeaveDeduction(
+	async getSpecialPersonalLeaveDeduction(
 		employee_data: EmployeeDataDecType,
 		holidays_type: HolidaysType[],
 		holiday_list: Holiday[],
@@ -1761,14 +1761,14 @@ export class CalculateService {
 		// 薪資查詢.特別事假扣款 = GetLeave2Money(薪資查詢!工作類別,薪資查詢!工作形態,薪資查詢!原應發底薪,薪資查詢!補助津貼+薪資查詢!專業証照津貼,薪資查詢!特別事假時數);
 		const kind1 = employee_data.work_type;
 		const kind2 = employee_data.work_status;
-		const special_leave_id = holidays_type.find(
+		const special_personal_leave_id = holidays_type.find(
 			(ht) => ht.holidays_name === "特別事假"
 		)?.pay_id;
 		let t1 = 0;
 		const hourly_fee =
 			(gross_salary + (professional_cert_allowance ?? 0)) / 240;
 		for (const h of holiday_list) {
-			if (h.pay_order === special_leave_id) {
+			if (h.pay_order === special_personal_leave_id) {
 				t1 += h.total_hours ?? 0;
 			}
 		}
@@ -1807,20 +1807,20 @@ export class CalculateService {
 		return -1;
 	}
 	//MARK: 特別事假
-	async getSpecialLeave(
+	async getSpecialPersonalLeave(
 		holiday_list: Holiday[],
 		holidays_type: HolidaysType[]
 	): Promise<number> {
-		const special_leave_id = holidays_type.find(
+		const special_personal_leave_id = holidays_type.find(
 			(ht) => ht.holidays_name === "特別事假"
 		)?.pay_id;
-		let special_leave = 0;
+		let special_personal_leave = 0;
 		holiday_list.map((h) => {
-			if (h.pay_order === special_leave_id) {
-				special_leave += h.total_hours ?? 0;
+			if (h.pay_order === special_personal_leave_id) {
+				special_personal_leave += h.total_hours ?? 0;
 			}
 		});
-		return special_leave;
+		return special_personal_leave;
 	}
 	//MARK: 有全勤事假
 	async getFullAtendancePersonalLeave(
