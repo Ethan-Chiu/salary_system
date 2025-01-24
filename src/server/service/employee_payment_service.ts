@@ -551,7 +551,7 @@ export class EmployeePaymentService {
 		subsidy_allowance,
 		long_service_allowance,
 		long_service_allowance_type,
-		l_r_self,
+		l_r_self_ratio,
 		l_i,
 		h_i,
 		l_r,
@@ -594,7 +594,7 @@ export class EmployeePaymentService {
 				long_service_allowance_type,
 				employeePayment.long_service_allowance_type
 			),
-			l_r_self: select_value(l_r_self, employeePayment.l_r_self),
+			l_r_self_ratio: select_value(l_r_self_ratio, employeePayment.l_r_self_ratio),
 			l_i: select_value(l_i, employeePayment.l_i),
 			h_i: select_value(h_i, employeePayment.h_i),
 			l_r: select_value(l_r, employeePayment.l_r),

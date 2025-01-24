@@ -42,7 +42,7 @@ const decFields = z.object({
 	occupational_allowance: z.number(),
 	subsidy_allowance: z.number(),
 	long_service_allowance: z.number(),
-	l_r_self: z.number(),
+	l_r_self_ratio: z.number(),
 	l_i: z.number(),
 	h_i: z.number(),
 	l_r: z.number(),
@@ -56,7 +56,7 @@ const encFields = z.object({
 	occupational_allowance_enc: z.string(),
 	subsidy_allowance_enc: z.string(),
 	long_service_allowance_enc: z.string(),
-	l_r_self_enc: z.string(),
+	l_r_self_ratio_enc: z.string(),
 	l_i_enc: z.string(),
 	h_i_enc: z.string(),
 	l_r_enc: z.string(),
@@ -79,7 +79,7 @@ export const decEmployeePayment = encF
 			occupational_allowance: dSN.parse(v.occupational_allowance_enc),
 			subsidy_allowance: dSN.parse(v.subsidy_allowance_enc),
 			long_service_allowance: dSN.parse(v.long_service_allowance_enc),
-			l_r_self: dSN.parse(v.l_r_self_enc),
+			l_r_self_ratio: dSN.parse(v.l_r_self_ratio_enc),
 			l_i: dSN.parse(v.l_i_enc),
 			h_i: dSN.parse(v.h_i_enc),
 			l_r: dSN.parse(v.l_r_enc),
@@ -104,7 +104,7 @@ export const encEmployeePayment = decF
 		long_service_allowance_enc: encodeString.parse(
 			v.long_service_allowance
 		),
-		l_r_self_enc: encodeString.parse(v.l_r_self),
+		l_r_self_ratio_enc: encodeString.parse(v.l_r_self_ratio),
 		l_i_enc: encodeString.parse(v.l_i),
 		h_i_enc: encodeString.parse(v.h_i),
 		l_r_enc: encodeString.parse(v.l_r),
@@ -128,7 +128,7 @@ export class EmployeePayment extends Model<
 	declare subsidy_allowance_enc: string;
 	declare long_service_allowance_enc: string;
 	declare long_service_allowance_type: LongServiceEnumType;
-	declare l_r_self_enc: string;
+	declare l_r_self_ratio_enc: string;
 	declare l_i_enc: string;
 	declare h_i_enc: string;
 	declare l_r_enc: string;
@@ -186,7 +186,7 @@ export function initEmployeePayment(sequelize: Sequelize) {
 				type: DataTypes.STRING(128),
 				allowNull: false,
 			},
-			l_r_self_enc: {
+			l_r_self_ratio_enc: {
 				type: DataTypes.STRING(128),
 				allowNull: false,
 			},

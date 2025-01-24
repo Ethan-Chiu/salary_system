@@ -32,7 +32,7 @@ const columnNames: PaymentRowItemKey[] = [
 	"subsidy_allowance",
 	"long_service_allowance",
 	"long_service_allowance_type",
-	"l_r_self",
+	"l_r_self_ratio",
 	"l_i",
 	"h_i",
 	"l_r",
