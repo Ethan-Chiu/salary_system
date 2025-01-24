@@ -14,6 +14,6 @@ export const employeePaymentSchema = z.object({
 	subsidy_allowance: zc.number(),
 	long_service_allowance: zc.number(),
 	long_service_allowance_type: LongServiceEnum,
-	l_r_self: zc.number(),
+	l_r_self_ratio: zc.number(),
 	start_date: zodRequiredDate("start_date"),
 });

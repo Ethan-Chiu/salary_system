@@ -26,7 +26,7 @@ export class EmployeePaymentMapper extends BaseMapper<
 			"subsidy_allowance_enc",
 			"food_allowance_enc",
 			"long_service_allowance_enc",
-			"l_r_self_enc",
+			"l_r_self_ratio_enc",
 			"l_i_enc",
 			"h_i_enc",
 			"l_r_enc",

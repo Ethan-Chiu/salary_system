@@ -148,7 +148,7 @@ export const employeeDataRouter = createTRPCRouter({
 					occupational_allowance: 0,
 					subsidy_allowance: 0,
 					long_service_allowance: 0,
-					l_r_self: 0,
+					l_r_self_ratio: 0,
 					l_i: 0,
 					h_i: 0,
 					l_r: 0,

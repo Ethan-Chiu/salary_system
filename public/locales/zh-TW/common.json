@@ -90,7 +90,7 @@
     "tax_identification_code": "稅務識別碼",
     "probation_period_over": "試用期滿",
     "accumulated_bonus": "累計獎金",
-    "l_r_self_ratio": "勞退自提比例",
+    "l_r_self_ratio": "勞退自提比例(%)",
     "h_i": "健保",
     "h_i_subsidy": "健保補助",
     "l_i": "勞保",

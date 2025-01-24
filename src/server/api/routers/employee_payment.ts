@@ -116,20 +116,11 @@ export const employeePaymentRouter = createTRPCRouter({
 			if (originalEmployeePayment == null) {
 				throw new BaseResponseError("Employee Payment does not exist");
 			}
-			await validateService.validateEmployeePayment({
-				emp_no: select_value(
-					input.emp_no,
-					originalEmployeePayment.emp_no
-				),
-				start_date: select_value(
-					input.start_date,
-					originalEmployeePayment.start_date
-				),
-				end_date: select_value(
-					input.end_date,
-					originalEmployeePayment.end_date
-				),
-			});
+			// await validateService.validateEmployeePayment({
+			// 	emp_no: select_value(input.emp_no, originalEmployeePayment.emp_no),
+			// 	start_date: select_value(input.start_date, originalEmployeePayment.start_date),
+			// 	end_date: select_value(input.end_date, originalEmployeePayment.end_date),
+			// });
 
 			await employeePaymentService.updateEmployeePaymentAndMatchLevel(
 				employeePayment
