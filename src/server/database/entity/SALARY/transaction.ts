@@ -69,16 +69,16 @@ export class Transaction extends Model<
 	declare quarterly_performance_bonus: number; // 季績效獎金
 	declare weekday_134_overtime_hours: number; // 平日134加班時數
 	declare weekday_167_overtime_hours: number; // 平日167加班時數
-	declare rest_day_134_overtime_hours: number; // 休息日134加班時數
-	declare rest_day_167_overtime_hours: number; // 休息日167加班時數
-	declare rest_day_267_overtime_hours: number; // 休息日267加班時數
+	declare rest_134_overtime_hours: number; // 休息日134加班時數
+	declare rest_167_overtime_hours: number; // 休息日167加班時數
+	declare rest_267_overtime_hours: number; // 休息日267加班時數
 	declare weekday_134_tax_overtime_hours: number; // 平日134加班時數(稅)
 	declare weekday_167_tax_overtime_hours: number; // 平日167加班時數(稅)
-	declare rest_day_134_tax_overtime_hours: number; // 休息日134加班時數(稅)
-	declare rest_day_167_tax_overtime_hours: number; // 休息日167加班時數(稅)
-	declare rest_day_267_tax_overtime_hours: number; // 休息日267加班時數(稅)
+	declare rest_134_tax_overtime_hours: number; // 休息日134加班時數(稅)
+	declare rest_167_tax_overtime_hours: number; // 休息日167加班時數(稅)
+	declare rest_267_tax_overtime_hours: number; // 休息日267加班時數(稅)
 	declare weekday_overtime_pay: number; // 平日加班費
-	declare rest_day_overtime_pay: number; // 休息日加班費
+	declare rest_overtime_pay: number; // 休息日加班費
 	declare exceed_overtime_pay: number; // 超時加班費
 	declare l_i_addition_previous: number; // 勞保加項
 	declare h_i_addition_previous: number; // 健保加項
@@ -87,7 +87,7 @@ export class Transaction extends Model<
 
 	// 減項
 	// TODO: 請假時數
-	declare special_personal_leave_deduction: number; // 特別事假扣款
+	declare special_personal_leave_deduct: number; // 特別事假扣款
 	declare leave_deduction: number; // 請假扣款
 	declare emp_trust_reserve: number; // 員工信託提存金
 	declare emp_special_trust_incent: number; // 特別信託獎勵金_員工
@@ -349,15 +349,15 @@ export function initTransaction(sequelize: Sequelize) {
 				type: DataTypes.FLOAT,
 				comment: "平日167加班時數",
 			},
-			rest_day_134_overtime_hours: {
+			rest_134_overtime_hours: {
 				type: DataTypes.FLOAT,
 				comment: "休息日134加班時數",
 			},
-			rest_day_167_overtime_hours: {
+			rest_167_overtime_hours: {
 				type: DataTypes.FLOAT,
 				comment: "休息日167加班時數",
 			},
-			rest_day_267_overtime_hours: {
+			rest_267_overtime_hours: {
 				type: DataTypes.FLOAT,
 				comment: "休息日267加班時數",
 			},
@@ -369,15 +369,15 @@ export function initTransaction(sequelize: Sequelize) {
 				type: DataTypes.FLOAT,
 				comment: "平日167加班時數(稅)",
 			},
-			rest_day_134_tax_overtime_hours: {
+			rest_134_tax_overtime_hours: {
 				type: DataTypes.FLOAT,
 				comment: "休息日134加班時數(稅)",
 			},
-			rest_day_167_tax_overtime_hours: {
+			rest_167_tax_overtime_hours: {
 				type: DataTypes.FLOAT,
 				comment: "休息日167加班時數(稅)",
 			},
-			rest_day_267_tax_overtime_hours: {
+			rest_267_tax_overtime_hours: {
 				type: DataTypes.FLOAT,
 				comment: "休息日267加班時數(稅)",
 			},
@@ -385,7 +385,7 @@ export function initTransaction(sequelize: Sequelize) {
 				type: DataTypes.INTEGER,
 				comment: "平日加班費",
 			},
-			rest_day_overtime_pay: {
+			rest_overtime_pay: {
 				type: DataTypes.INTEGER,
 				comment: "休息日加班費",
 			},
@@ -409,7 +409,7 @@ export function initTransaction(sequelize: Sequelize) {
 				type: DataTypes.INTEGER,
 				comment: "其他加項稅",
 			},
-			special_personal_leave_deduction: {
+			special_personal_leave_deduct: {
 				type: DataTypes.INTEGER,
 				comment: "特別事假扣款",
 			},
