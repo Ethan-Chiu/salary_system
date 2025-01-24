@@ -1399,7 +1399,7 @@ export class CalculateService {
 	): Promise<number> {
 		return (
 			discounted_employee_payment_dec.l_r *
-			discounted_employee_payment_dec.l_r_self
+			discounted_employee_payment_dec.l_r_self_ratio * 0.01
 		);
 		// const ehrService = container.resolve(EHRService);
 		// const l_r_self_id = (await ehrService.getExpenseClass()).find(

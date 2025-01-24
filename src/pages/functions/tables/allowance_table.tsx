@@ -15,13 +15,14 @@ const columns = (t: I18nType) =>
 		"position",
 		"work_day",
 
-		// "主管職務補助輪班證照久任"
+		// "主管職務久任補助伙食輪班證照"
 		"supervisor_allowance",
 		"occupational_allowance",
+		"long_service_allowance",
 		"subsidy_allowance",
+		"food_allowance",
 		"shift_allowance",
 		"professional_cert_allowance",
-		"long_service_allowance"
 
 		// "amount",
 		// "remark",
@@ -83,6 +84,7 @@ export function AllowanceTable({ period_id, emp_no_list }: AllowanceTableProps) 
 				"professional_cert_allowance",
 				"long_service_allowance"]
 				.some(key => d[key] > 0)
+			|| d.food_allowance !== 2400
 		);
 		return <DataTable columns={columns(t)} data={filteredData} />;
 	}

@@ -1,4 +1,12 @@
-import { Calculator, Download, PenSquare, Plus, RefreshCcw, Trash2, type LucideIcon } from "lucide-react";
+import {
+	Calculator,
+	Download,
+	PenSquare,
+	Plus,
+	RefreshCcw,
+	Trash2,
+	type LucideIcon,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { DropdownMenuItem } from "~/components/ui/dropdown-menu";
 import { cn } from "~/lib/utils";
@@ -17,19 +25,21 @@ export function FunctionMenuOptionBase({
 	disabled,
 }: FunctionMenuOptionProps) {
 	return (
-		<div className="w-full" onClick={onClick}>
-			<DropdownMenuItem className="cursor-pointer" disabled={disabled}>
-				<Icon
-					className={cn(
-						"mr-2 h-4 w-4",
-						disabled && "stroke-muted-foreground"
-					)}
-				/>
-				<span className={cn(disabled && "stroke-muted-foreground")}>
-					{itemName}
-				</span>
-			</DropdownMenuItem>
-		</div>
+		<DropdownMenuItem
+			className="cursor-pointer"
+			disabled={disabled}
+			onClick={onClick}
+		>
+			<Icon
+				className={cn(
+					"mr-2 h-4 w-4",
+					disabled && "stroke-muted-foreground"
+				)}
+			/>
+			<span className={cn(disabled && "stroke-muted-foreground")}>
+				{itemName}
+			</span>
+		</DropdownMenuItem>
 	);
 }
 
@@ -56,9 +66,8 @@ export const FunctionMenuOption = {
 	Create: createOptionComponent("create", Plus),
 	Update: createOptionComponent("update", PenSquare),
 	Delete: createOptionComponent("delete", Trash2),
-  ExcelDownload: createOptionComponent("excel_download", Download), 
-  ExcelUpload: createOptionComponent("excel_upload", PenSquare),
-  Initialize: createOptionComponent("initialize", RefreshCcw),
-  AutoCalculate: createOptionComponent("auto_calculate", Calculator),
+	ExcelDownload: createOptionComponent("excel_download", Download),
+	ExcelUpload: createOptionComponent("excel_upload", PenSquare),
+	Initialize: createOptionComponent("initialize", RefreshCcw),
+	AutoCalculate: createOptionComponent("auto_calculate", Calculator),
 };
-

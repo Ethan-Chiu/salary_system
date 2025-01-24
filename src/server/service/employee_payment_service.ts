@@ -206,6 +206,33 @@ export class EmployeePaymentService {
 		return await this.employeePaymentMapper.decodeList(employeePayment);
 	}
 
+	async getCurrentEmployeePaymentByDate(
+		date: Date
+	): Promise<EmployeePaymentDecType[]> {
+		const date_string = get_date_string(date);
+		const employeePayment = await EmployeePayment.findAll({
+			where: {
+				start_date: {
+					[Op.lte]: date_string,
+				},
+				end_date: {
+					[Op.or]: [{ [Op.gte]: date_string }, { [Op.eq]: null }],
+				},
+				disabled: false,
+			},
+			order: [["emp_no", "ASC"]],
+			raw: true,
+		});
+
+		const employeePaymentList = await Promise.all(
+			employeePayment.map(
+				async (e) => await this.employeePaymentMapper.decode(e)
+			)
+		);
+
+		return employeePaymentList;
+	}
+
 	async getCurrentEmployeePaymentByEmpNoByDate(
 		emp_no: string,
 		date: Date
@@ -345,43 +372,43 @@ export class EmployeePaymentService {
 		}
 	}
 
-	async autoCalculateEmployeePayment(
-		emp_no_list: string[],
-		start_date: Date
-	): Promise<void> {
-		const promises = emp_no_list.map(async (emp_no: string) => {
-			const employeePayment =
-				await this.getCurrentEmployeePaymentByEmpNoByDate(
-					emp_no,
-					start_date
-				);
+	async autoCalculateEmployeePayment(start_date: Date): Promise<void> {
+		const emp_list = await this.getCurrentEmployeePaymentByDate(start_date);
 
-			if (employeePayment == null) {
-				throw new BaseResponseError("Employee Payment does not exist");
-			}
+		const promises = emp_list.map(
+			async (empPayment: EmployeePaymentDecType) => {
+				// TODO: this is bad. (or not?) figure out a systematic way to handle relation between tables
+				const quit_date = (
+					await this.employeeDataService.getLatestEmployeeDataByEmpNo(
+						empPayment.emp_no
+					)
+				).quit_date;
 
-			if (employeePayment.end_date != null) {
-				return;
+				if (quit_date != null || empPayment.end_date != null) {
+					return;
+				}
+
+				const updatedEmployeePayment =
+					await this.getMatchedLevelEmployeePayment(
+						empPayment,
+						start_date
+					);
+
+				if (
+					empPayment.l_i != updatedEmployeePayment.l_i ||
+					empPayment.h_i != updatedEmployeePayment.h_i ||
+					empPayment.l_r != updatedEmployeePayment.l_r ||
+					empPayment.occupational_injury !=
+						updatedEmployeePayment.occupational_injury
+				) {
+					await this.createEmployeePayment({
+						...updatedEmployeePayment,
+						start_date: start_date,
+						end_date: null,
+					});
+				}
 			}
-			const updatedEmployeePayment =
-				await this.getMatchedLevelEmployeePayment(
-					employeePayment,
-					start_date
-				);
-			if (
-				employeePayment.l_i != updatedEmployeePayment.l_i ||
-				employeePayment.h_i != updatedEmployeePayment.h_i ||
-				employeePayment.l_r != updatedEmployeePayment.l_r ||
-				employeePayment.occupational_injury !=
-					updatedEmployeePayment.occupational_injury
-			) {
-				await this.createEmployeePayment({
-					...updatedEmployeePayment,
-					start_date: start_date,
-					end_date: null,
-				});
-			}
-		});
+		);
 
 		await Promise.all(promises);
 	}
@@ -513,7 +540,7 @@ export class EmployeePaymentService {
 			});
 		}
 
-    await Promise.all(tasks.map((task) => task()));
+		await Promise.all(tasks.map((task) => task()));
 	}
 
 	// TODO: should not be here
@@ -551,7 +578,7 @@ export class EmployeePaymentService {
 		subsidy_allowance,
 		long_service_allowance,
 		long_service_allowance_type,
-		l_r_self,
+		l_r_self_ratio,
 		l_i,
 		h_i,
 		l_r,
@@ -594,7 +621,7 @@ export class EmployeePaymentService {
 				long_service_allowance_type,
 				employeePayment.long_service_allowance_type
 			),
-			l_r_self: select_value(l_r_self, employeePayment.l_r_self),
+			l_r_self_ratio: select_value(l_r_self_ratio, employeePayment.l_r_self_ratio),
 			l_i: select_value(l_i, employeePayment.l_i),
 			h_i: select_value(h_i, employeePayment.h_i),
 			l_r: select_value(l_r, employeePayment.l_r),

@@ -91,23 +91,4 @@ export const employeeTrustRouter = createTRPCRouter({
 			await employeeTrustService.deleteEmployeeTrust(input.id);
 			await employeeTrustService.rescheduleEmployeeTrust();
 		}),
-
-	// autoCalculateEmployeeTrust: publicProcedure
-	// 	.input(
-	// 		z.object({
-	// 			period_id: z.number(),
-	// 			emp_no_list: z.string().array(),
-	// 			start_date: z.date(),
-	// 		})
-	// 	)
-	// 	.mutation(async ({ input }) => {
-	// 		const employeeTrustService =
-	// 			container.resolve(EmployeeTrustService);
-	// 		await employeeTrustService.autoCalculateEmployeeTrust(
-	// 			input.period_id,
-	// 			input.emp_no_list,
-	// 			get_date_string(input.start_date)
-	// 		);
-	// 		await employeeTrustService.rescheduleEmployeeTrust();
-	// 	}),
 });

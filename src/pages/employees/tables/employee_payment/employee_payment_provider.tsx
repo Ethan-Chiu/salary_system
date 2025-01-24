@@ -1,4 +1,4 @@
-import { type PropsWithChildren, useContext } from "react";
+import { type PropsWithChildren, useContext, useState } from "react";
 import {
 	createTableFunctionContext,
 	useTableFunctionState,
@@ -26,9 +26,14 @@ export type PaymentFunctionModes =
 	| "auto_calculate"
 	| "none";
 
+interface AdditionalPaymentFunctionContext {
+  openCalculate: boolean;
+  setOpenCalculate: (open: boolean) => void;
+}
 const employeePaymentFunctionContext = createTableFunctionContext<
 	PaymentFunctionModes,
-	PaymentRowItem
+	PaymentRowItem,
+  AdditionalPaymentFunctionContext
 >();
 
 export function EmployeePaymentFunctionContextProvider({
@@ -36,6 +41,7 @@ export function EmployeePaymentFunctionContextProvider({
 }: PropsWithChildren) {
 	const { open, setOpen, mode, setMode, data, setData } =
 		useTableFunctionState<PaymentFunctionModes, PaymentRowItem>("none");
+  const [ openCalculate, setOpenCalculate ] = useState<boolean>(false);
 
 	return (
 		<employeePaymentFunctionContext.Provider
@@ -46,6 +52,8 @@ export function EmployeePaymentFunctionContextProvider({
 				setMode,
 				data,
 				setData,
+        openCalculate,
+        setOpenCalculate
 			}}
 		>
 			{children}
