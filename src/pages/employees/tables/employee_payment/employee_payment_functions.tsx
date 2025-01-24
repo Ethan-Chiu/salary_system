@@ -11,9 +11,10 @@ import {
 	StandardForm,
 } from "~/components/form/default/form_standard";
 import { zodOptionalDate } from "~/lib/utils/zod_types";
+import { DateDialog } from "../../components/function_sheet/date_dialog";
 
 export function EmployeePaymentFunctionMenu() {
-	const { setMode } = usePaymentFunctionContext();
+	const { setMode, setOpenCalculate } = usePaymentFunctionContext();
 
 	return (
 		<FunctionMenu>
@@ -27,14 +28,18 @@ export function EmployeePaymentFunctionMenu() {
 				onClick={() => setMode("initialize")}
 			/>
 			<FunctionMenuOption.AutoCalculate
-				onClick={() => setMode("auto_calculate")}
+				onClick={() => {
+					setMode("auto_calculate");
+					setOpenCalculate(true);
+				}}
 			/>
 		</FunctionMenu>
 	);
 }
 
 export function EmployeePaymentFunctions() {
-	const { data, open, setOpen, mode } = usePaymentFunctionContext();
+	const { data, open, setOpen, mode, openCalculate, setOpenCalculate } =
+		usePaymentFunctionContext();
 
 	// TODO: move
 	const ctx = api.useUtils();
@@ -52,6 +57,12 @@ export function EmployeePaymentFunctions() {
 		});
 	const deleteEmployeePayment =
 		api.employeePayment.deleteEmployeePayment.useMutation({
+			onSuccess: () => {
+				void ctx.employeePayment.invalidate();
+			},
+		});
+	const autoCalculateEmployeePayment =
+		api.employeePayment.autoCalculateEmployeePayment.useMutation({
 			onSuccess: () => {
 				void ctx.employeePayment.invalidate();
 			},
@@ -109,6 +120,16 @@ export function EmployeePaymentFunctions() {
 					<StandardForm {...updateForm} />
 				)}
 			</TableFunctionSheet>
+			<DateDialog
+				open={openCalculate}
+				setOpen={setOpenCalculate}
+				onSubmit={(date) => {
+					autoCalculateEmployeePayment.mutate({
+						start_date: date,
+						emp_no_list: [],
+					});
+				}}
+			/>
 		</>
 	);
 }
