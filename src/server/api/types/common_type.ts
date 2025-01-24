@@ -1,4 +1,3 @@
-import { createTable } from "@tanstack/react-table";
 import { z } from "zod";
 
 export const Id = z.object({
@@ -11,6 +10,11 @@ export const func = z.object({
 		deletable: z.boolean(),
 	}),
 })
+
+export const dateFE = z.object({
+	start_date: z.date(),
+	end_date: z.date().nullable(),
+});
 
 export const dateCreate = z.object({
 	start_date: z.date().nullable(),
@@ -25,6 +29,7 @@ export const metadata = z.object({
 });
 
 export const dateAll = dateCreate.merge(metadata);
+export const dateMetaFE = dateFE.merge(metadata);
 
 export const empData = z.object({
 	emp_name: z.string(),

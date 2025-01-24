@@ -14,6 +14,7 @@ import { EmployeePaymentMapper } from "~/server/database/mapper/employee_payment
 import { EmployeeDataService } from "~/server/service/employee_data_service";
 import { ValidateService } from "~/server/service/validate_service";
 import { select_value } from "~/server/service/helper_function";
+import { InsuranceRateSettingService } from "~/server/service/insurance_rate_setting_service";
 
 export const employeePaymentRouter = createTRPCRouter({
 	getCurrentEmployeePayment: publicProcedure
@@ -163,4 +164,11 @@ export const employeePaymentRouter = createTRPCRouter({
 			);
 			await employeePaymentService.rescheduleEmployeePayment();
 		}),
+
+    adjustBaseSalary: publicProcedure
+      .input(z.object({base_salary: z.number(), start_date: z.date()}))
+      .mutation(async ({input}) => {
+        const employeePaymentService = container.resolve(EmployeePaymentService);
+        await employeePaymentService.adjustBaseSalary(input.base_salary, input.start_date);
+    }),
 });

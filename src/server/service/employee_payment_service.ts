@@ -28,7 +28,7 @@ export class EmployeePaymentService {
 		private readonly levelService: LevelService,
 		private readonly levelRangeService: LevelRangeService,
 		private readonly employeeDataService: EmployeeDataService
-	) { }
+	) {}
 
 	async createEmployeePayment(
 		data: z.input<typeof employeePaymentCreateService>
@@ -77,7 +77,9 @@ export class EmployeePaymentService {
 		});
 
 		if (employeePayment == null) {
-			throw new Error(`Employee payment does not exist,emp_no: ${emp_no}`);
+			throw new Error(
+				`Employee payment does not exist,emp_no: ${emp_no}`
+			);
 		}
 
 		return await this.employeePaymentMapper.decode(employeePayment);
@@ -230,6 +232,7 @@ export class EmployeePaymentService {
 		return await this.employeePaymentMapper.decode(employeePayment);
 	}
 
+	// TODO: change the return type of this function
 	async getAllEmployeePayment(): Promise<EmployeePaymentFEType[][]> {
 		const allEmployeePayment = await EmployeePayment.findAll({
 			where: {
@@ -266,8 +269,7 @@ export class EmployeePaymentService {
 		return Object.values(groupedEmployeePaymenttRecords);
 	}
 
-	async getAllFutureEmployeePayment(
-	): Promise<EmployeePaymentFEType[][]> {
+	async getAllFutureEmployeePayment(): Promise<EmployeePaymentFEType[][]> {
 		const current_date_string = get_date_string(new Date());
 		const allEmployeePayment = await EmployeePayment.findAll({
 			where: {
@@ -371,7 +373,7 @@ export class EmployeePaymentService {
 				employeePayment.h_i != updatedEmployeePayment.h_i ||
 				employeePayment.l_r != updatedEmployeePayment.l_r ||
 				employeePayment.occupational_injury !=
-				updatedEmployeePayment.occupational_injury
+					updatedEmployeePayment.occupational_injury
 			) {
 				await this.createEmployeePayment({
 					...updatedEmployeePayment,
@@ -402,7 +404,11 @@ export class EmployeePaymentService {
 			const new_end_date_string = get_date_string(
 				new Date(start_date.setDate(start_date.getDate() - 1))
 			);
-			const quit_date = (await this.employeeDataService.getLatestEmployeeDataByEmpNo(employeePaymentList[i]!.emp_no)).quit_date;
+			const quit_date = (
+				await this.employeeDataService.getLatestEmployeeDataByEmpNo(
+					employeePaymentList[i]!.emp_no
+				)
+			).quit_date;
 			if (quit_date != null) {
 				continue;
 			}
@@ -444,9 +450,13 @@ export class EmployeePaymentService {
 		}
 	}
 
-	async rescheduleEmployeePaymentByQuitDate(emp_no: string, period_id: number): Promise<void> {
+	async rescheduleEmployeePaymentByQuitDate(
+		emp_no: string,
+		period_id: number
+	): Promise<void> {
 		const period = await this.ehrService.getPeriodById(period_id);
 		const quit_date = period.end_date;
+		// TODO: why not use the getAll function
 		const employeePaymentList = await EmployeePayment.findAll({
 			where: { emp_no: emp_no, disabled: false },
 			order: [
@@ -455,23 +465,80 @@ export class EmployeePaymentService {
 			],
 		});
 
-		for (let i = 0; i < employeePaymentList.length; i += 1) {
+		for (const empPayment of employeePaymentList) {
 			const start_date_string = get_date_string(
-				new Date(employeePaymentList[i]!.start_date)
+				new Date(empPayment.start_date)
 			);
-			const end_date_string = employeePaymentList[i]!.end_date
-				? get_date_string(new Date(employeePaymentList[i]!.end_date!))
+			const end_date_string = empPayment.end_date
+				? get_date_string(new Date(empPayment.end_date))
 				: null;
 			if (start_date_string > quit_date) {
-				await this.deleteEmployeePayment(employeePaymentList[i]!.id);
-			}
-			else if (end_date_string == null || end_date_string > quit_date) {
+				await this.deleteEmployeePayment(empPayment.id);
+			} else if (end_date_string == null || end_date_string > quit_date) {
 				await this.updateEmployeePayment({
-					id: employeePaymentList[i]!.id,
+					id: empPayment.id,
 					end_date: new Date(quit_date),
 				});
 			}
 		}
+	}
+
+	async adjustBaseSalary(base_salary: number, start_date: Date) {
+		const employeePaymentList = await this.getAllEmployeePayment();
+
+		const tasks = [];
+		for (const empPayment of employeePaymentList) {
+			const [before, after] = this.findSurroundingItems(
+				empPayment,
+				start_date
+			);
+
+			if (!before) {
+				throw new BaseResponseError(
+					"Employee payment format error: Expect at least one entry in the employee payment list"
+				);
+			}
+
+			tasks.push(async () => {
+				await this.updateEmployeePayment({
+					id: before?.id,
+					end_date: start_date,
+				});
+				await this.createEmployeePayment({
+					...before,
+					start_date: start_date,
+					base_salary: base_salary,
+					end_date: after?.start_date ?? null,
+				});
+			});
+		}
+
+    await Promise.all(tasks.map((task) => task()));
+	}
+
+	// TODO: should not be here
+	private findSurroundingItems<T extends { start_date: Date }>(
+		items: T[],
+		targetDate: Date
+	): [T | null, T | null] {
+		// Sort the items by start_date
+		const sortedItems = items.sort(
+			(a, b) => a.start_date.getTime() - b.start_date.getTime()
+		);
+
+		let beforeItem: T | null = null;
+		let afterItem: T | null = null;
+
+		for (const item of sortedItems) {
+			if (item.start_date < targetDate) {
+				beforeItem = item;
+			} else if (item.start_date >= targetDate && afterItem === null) {
+				afterItem = item;
+				break;
+			}
+		}
+
+		return [beforeItem, afterItem];
 	}
 
 	private async getEmployeePaymentAfterSelectValue({
@@ -552,7 +619,10 @@ export class EmployeePaymentService {
 			employeePayment.supervisor_allowance +
 			employeePayment.occupational_allowance +
 			employeePayment.subsidy_allowance +
-			(employeePayment.long_service_allowance_type == LongServiceEnum.Enum.month_allowance ? employeePayment.long_service_allowance : 0);
+			(employeePayment.long_service_allowance_type ==
+			LongServiceEnum.Enum.month_allowance
+				? employeePayment.long_service_allowance
+				: 0);
 
 		const result = [];
 		const levelRangeList =
@@ -583,7 +653,8 @@ export class EmployeePaymentService {
 			l_i: result.find((r) => r.type === "勞保")?.level ?? 0,
 			h_i: result.find((r) => r.type === "健保")?.level ?? 0,
 			l_r:
-				employeeData.work_type != "外籍勞工" && employeeData.work_status != "外籍勞工"
+				employeeData.work_type != "外籍勞工" &&
+				employeeData.work_status != "外籍勞工"
 					? result.find((r) => r.type === "勞退")?.level ?? 0
 					: 0,
 			occupational_injury:
